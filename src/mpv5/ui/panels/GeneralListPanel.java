@@ -21,9 +21,11 @@
  */
 package mpv5.ui.panels;
 
+import freemarker.template.utility.Collections12;
 import java.awt.Color;
 import java.awt.Component;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -37,6 +39,7 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.DatabaseSearch;
 import mpv5.db.common.NodataFoundException;
+import mpv5.db.common.QueryCriteria2;
 import mpv5.db.objects.Group;
 import mpv5.db.objects.User;
 import mpv5.globals.GlobalSettings;
@@ -349,11 +352,21 @@ public final class GeneralListPanel extends javax.swing.JPanel {
             setData(DatabaseObject.getObjects(context));
         } catch (NodataFoundException ex) {
             Log.Debug(ex);
+            setData(Collections.EMPTY_LIST);
+        }
+    }
+    
+    void setData(Context context, QueryCriteria2 q) {
+        try {
+            setData(DatabaseObject.getObjects(context, q));
+        } catch (NodataFoundException ex) {
+            Log.Debug(ex);
+            setData(Collections.EMPTY_LIST);
         }
     }
 
     void setData(Context context, String needle) {
-        d = new DatabaseSearch(context, GlobalSettings.getIntegerProperty("org.openyabs.search.limit", 5000));
+        d = new DatabaseSearch(context, GlobalSettings.getIntegerProperty("org.openyabs.search.limit", -1));
         setData(d.searchDataFor(new Context[]{Context.getSubItem()}, new Context[]{Context.getCustomer()}, needle));
     }
 }

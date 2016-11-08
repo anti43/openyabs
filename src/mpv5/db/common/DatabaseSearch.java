@@ -117,7 +117,8 @@ public class DatabaseSearch {
         List<Integer> l = new ArrayList<Integer>();
         try {
             Context contx = context;
-            ReturnValue rdata = QueryHandler.instanceOf().clone(contx, ROWLIMIT).freeQuery(QueryHandler.instanceOf().clone(contx, ROWLIMIT).buildIdQuery(val, DatabaseObject.getObject(contx).getStringVars().toArray(new String[]{})), MPSecurityManager.VIEW, null);
+            ReturnValue rdata = QueryHandler.instanceOf().clone(contx, ROWLIMIT).freeQuery(QueryHandler.instanceOf().clone(contx, ROWLIMIT)
+                    .buildIdQuery(val, DatabaseObject.getObject(contx).getStringVars().toArray(new String[]{})), MPSecurityManager.VIEW, null);
             Object[] ndata = rdata.getFirstColumn();
 
             if (ndata != null) {

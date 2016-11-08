@@ -300,23 +300,34 @@ public class QueryHandler implements Cloneable {
             cols = "*";
         }
         String conds = "";
-        if (conditionColumns != null && conditionColumns.length > 0) {
-            for (int i = 0; i < conditionColumns.length; i++) {
-                String string = conditionColumns[i];
-                if (value instanceof String) {
-                    conds += " UPPER(" + string + ") LIKE '%" + String.valueOf(value).toUpperCase() + "%'  " + command + " ";
-                } else if (value instanceof Date) {
-                    conds += string + " = '" + DateConverter.getSQLDateString((Date) value) + "'  " + command + " ";
-                } else {
-                    conds += string + " = " + value + "  " + command + " ";
-                }
-            }
-            conds = " WHERE (" + conds.substring(0, conds.length() - 4) + ")";
+        if (String.valueOf(value).startsWith("SQL:")) { 
+            conds = " WHERE (" + String.valueOf(value).replace("SQL:", "") + ")";
             if (context.getGroupRestrictionSQLString() != null) {
                 conds += " AND " + context.getGroupRestrictionSQLString();
             }
             if (context.getNoTrashSQLString() != null) {
                 conds += " AND " + context.getNoTrashSQLString();
+            }
+        } else {
+
+            if (conditionColumns != null && conditionColumns.length > 0) {
+                for (int i = 0; i < conditionColumns.length; i++) {
+                    String string = conditionColumns[i];
+                    if (value instanceof String) {
+                        conds += " UPPER(" + string + ") LIKE '%" + String.valueOf(value).toUpperCase() + "%'  " + command + " ";
+                    } else if (value instanceof Date) {
+                        conds += string + " = '" + DateConverter.getSQLDateString((Date) value) + "'  " + command + " ";
+                    } else {
+                        conds += string + " = " + value + "  " + command + " ";
+                    }
+                }
+                conds = " WHERE (" + conds.substring(0, conds.length() - 4) + ")";
+                if (context.getGroupRestrictionSQLString() != null) {
+                    conds += " AND " + context.getGroupRestrictionSQLString();
+                }
+                if (context.getNoTrashSQLString() != null) {
+                    conds += " AND " + context.getNoTrashSQLString();
+                }
             }
         }
         String query = "SELECT ids," + cols + " FROM " + table + conds;
