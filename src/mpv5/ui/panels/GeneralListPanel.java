@@ -366,7 +366,7 @@ public final class GeneralListPanel extends javax.swing.JPanel {
     }
 
     void setData(Context context, String needle) {
-        d = new DatabaseSearch(context, GlobalSettings.getIntegerProperty("org.openyabs.search.limit", -1));
+        d = new DatabaseSearch(context);
         setData(d.searchDataFor(new Context[]{Context.getSubItem()}, new Context[]{Context.getCustomer()}, needle));
     }
 }

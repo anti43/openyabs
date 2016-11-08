@@ -19,37 +19,19 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="search" alignment="1" max="32767" attributes="1"/>
-                  <Component id="type" alignment="1" pref="233" max="32767" attributes="1"/>
-              </Group>
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="jLabel1" max="32767" attributes="1"/>
-                  <Component id="status" alignment="0" pref="233" max="32767" attributes="1"/>
-              </Group>
-              <EmptySpace min="-2" pref="448" max="-2" attributes="0"/>
+          <Group type="102" attributes="0">
+              <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
+              <EmptySpace pref="43" max="32767" attributes="0"/>
           </Group>
-          <Component id="generalListPanel1" alignment="1" pref="930" max="32767" attributes="0"/>
+          <Component id="generalListPanel1" alignment="0" pref="681" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="1" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
+              <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="type" min="-2" max="-2" attributes="0"/>
-                  <Component id="status" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace max="32767" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="search" min="-2" max="-2" attributes="1"/>
-                  <Component id="jLabel1" pref="23" max="32767" attributes="1"/>
-              </Group>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="generalListPanel1" pref="333" max="32767" attributes="0"/>
+              <Component id="generalListPanel1" pref="295" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -60,25 +42,76 @@
         <Property name="name" type="java.lang.String" value="generalListPanel1" noResource="true"/>
       </Properties>
     </Component>
-    <Component class="mpv5.ui.beans.LabeledTextField" name="search">
+    <Container class="javax.swing.JPanel" name="jPanel1">
       <Properties>
-        <Property name="name" type="java.lang.String" value="search" noResource="true"/>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+            <TitledBorder title="Receipt lookup">
+              <Property name="titleX" resourceKey="jPanel1.border.title"/>
+            </TitledBorder>
+          </Border>
+        </Property>
+        <Property name="name" type="java.lang.String" value="jPanel1" noResource="true"/>
       </Properties>
-    </Component>
-    <Component class="mpv5.ui.beans.LabeledCombobox" name="type">
-      <Properties>
-        <Property name="name" type="java.lang.String" value="type" noResource="true"/>
-      </Properties>
-    </Component>
-    <Component class="mpv5.ui.beans.LabeledCombobox" name="status">
-      <Properties>
-        <Property name="name" type="java.lang.String" value="status" noResource="true"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JLabel" name="jLabel1">
-      <Properties>
-        <Property name="name" type="java.lang.String" value="jLabel1" noResource="true"/>
-      </Properties>
-    </Component>
+
+      <Layout>
+        <DimensionLayout dim="0">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="type" alignment="1" pref="300" max="32767" attributes="1"/>
+                      <Component id="search" alignment="1" pref="300" max="32767" attributes="1"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="1" attributes="0">
+                      <Component id="jLabel1" min="-2" pref="300" max="-2" attributes="1"/>
+                      <Component id="status" alignment="1" min="-2" pref="300" max="-2" attributes="1"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+        <DimensionLayout dim="1">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="1" attributes="0">
+                      <Component id="type" min="-2" max="-2" attributes="0"/>
+                      <Component id="status" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="1" attributes="0">
+                      <Component id="search" min="-2" max="-2" attributes="1"/>
+                      <Component id="jLabel1" pref="23" max="32767" attributes="1"/>
+                  </Group>
+                  <EmptySpace min="-2" max="-2" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+      </Layout>
+      <SubComponents>
+        <Component class="mpv5.ui.beans.LabeledTextField" name="search">
+          <Properties>
+            <Property name="name" type="java.lang.String" value="search" noResource="true"/>
+          </Properties>
+        </Component>
+        <Component class="mpv5.ui.beans.LabeledCombobox" name="type">
+          <Properties>
+            <Property name="name" type="java.lang.String" value="type" noResource="true"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabel1">
+          <Properties>
+            <Property name="name" type="java.lang.String" value="jLabel1" noResource="true"/>
+          </Properties>
+        </Component>
+        <Component class="mpv5.ui.beans.LabeledCombobox" name="status">
+          <Properties>
+            <Property name="name" type="java.lang.String" value="status" noResource="true"/>
+          </Properties>
+        </Component>
+      </SubComponents>
+    </Container>
   </SubComponents>
 </Form>
