@@ -124,6 +124,13 @@ public class ReceiptLookup extends javax.swing.JPanel {
                     popup(e);
                 }
             }
+            
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    popup(e);
+                }
+            }
         });
     }
 
