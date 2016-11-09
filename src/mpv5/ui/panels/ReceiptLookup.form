@@ -46,9 +46,7 @@
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-            <TitledBorder title="Receipt lookup">
-              <Property name="titleX" resourceKey="jPanel1.border.title"/>
-            </TitledBorder>
+            <TitledBorder title="Receipt lookup"/>
           </Border>
         </Property>
         <Property name="name" type="java.lang.String" value="jPanel1" noResource="true"/>
@@ -65,8 +63,8 @@
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" attributes="0">
+                      <Component id="status" min="-2" pref="300" max="-2" attributes="1"/>
                       <Component id="jLabel1" min="-2" pref="300" max="-2" attributes="1"/>
-                      <Component id="status" alignment="1" min="-2" pref="300" max="-2" attributes="1"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -81,11 +79,11 @@
                       <Component id="status" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="1" attributes="0">
-                      <Component id="search" min="-2" max="-2" attributes="1"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="search" alignment="1" min="-2" max="-2" attributes="1"/>
                       <Component id="jLabel1" pref="23" max="32767" attributes="1"/>
                   </Group>
-                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -93,21 +91,25 @@
       <SubComponents>
         <Component class="mpv5.ui.beans.LabeledTextField" name="search">
           <Properties>
+            <Property name="_Label" type="java.lang.String" resourceKey="search._Label"/>
             <Property name="name" type="java.lang.String" value="search" noResource="true"/>
           </Properties>
         </Component>
         <Component class="mpv5.ui.beans.LabeledCombobox" name="type">
           <Properties>
+            <Property name="_Label" type="java.lang.String" resourceKey="type._Label"/>
             <Property name="name" type="java.lang.String" value="type" noResource="true"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel1">
           <Properties>
+            <Property name="text" type="java.lang.String" resourceKey="jLabel1.text"/>
             <Property name="name" type="java.lang.String" value="jLabel1" noResource="true"/>
           </Properties>
         </Component>
         <Component class="mpv5.ui.beans.LabeledCombobox" name="status">
           <Properties>
+            <Property name="_Label" type="java.lang.String" resourceKey="status._Label"/>
             <Property name="name" type="java.lang.String" value="status" noResource="true"/>
           </Properties>
         </Component>
