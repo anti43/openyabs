@@ -1224,7 +1224,7 @@ public class Context implements Serializable, Comparable<Context> {
     /**
      * @return the itemType
      */
-    public int getItemType() {
+    public Integer getItemType() {
         return itemType;
     }
 

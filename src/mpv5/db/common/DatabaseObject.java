@@ -200,6 +200,17 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
         boolean value();
     }
+    
+    /**
+     * Marks a relation getter
+     */
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.METHOD)
+    public @interface Relation {
+
+        boolean value();
+    }
+    
 
     /**
      * If set, the auto-database-schema creator will create a foreign key
@@ -540,7 +551,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @return The preferred view for this do's data
      */
     public abstract JComponent getView();
-    
+
     /**
      *
      * @return returns true if the do has a view
@@ -706,6 +717,27 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             }
         }
         return setVars_cached.get(getClass().getCanonicalName());
+    }
+
+    /**
+     *
+     * @return A list of all <b>getters with annotation Relation</b> in this do 
+     */
+    public Map<String, Method> getAllRelationGetters() {
+        String key = this.getClass().getCanonicalName()+ "_Relation";
+        if (!getVars_cached.containsKey(key)) {
+            Log.Debug(this, "Caching " + key);
+            getVars_cached.put(key, new HashMap<String, Method>());
+            Method[] methods = this.getClass().getMethods();
+            for (int i = 0; i < this.getClass().getMethods().length; i++) {
+                 if ((methods[i].isAnnotationPresent(Relation.class)
+                        && methods[i].getAnnotation(Relation.class).value()
+                        && methods[i].getParameterTypes().length == 0)) {
+                    getVars_cached.get(key).put(methods[i].getName().substring(methods[i].getName().startsWith("__") ? 5 : 3).toLowerCase(), methods[i]);
+                }
+            }
+        }
+        return getVars_cached.get(key);
     }
 
     /**
@@ -1324,6 +1356,30 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         return vals;
     }
 
+    
+    /**
+     *
+     * @return A list containing pairs of <b>VARNAME</b> and their <b>VALUE</b>
+     * of this Databaseobject, those which return in <code>getAllRelationGetters()</code>, as
+     * two-fields Object-Array. Example: new Object[]{"dateadded",
+     * java.util.Date }
+     */
+    public List<Object[]> getValues5() {
+        Map<String, Method> vars = getAllRelationGetters();
+        List<Object[]> vals = new ArrayList<Object[]>();
+        for (String name : vars.keySet()) {
+            try {
+                vals.add(new Object[]{name.toLowerCase(),
+                            (vars.get(name).invoke(this, new Object[0]))});
+            } catch (Exception n) {
+                Log.Debug(this, "Failed to invoke " + vars.get(name) + " ( " + this + " ) ");
+//                Log.Debug(this, n);
+            }
+        }
+
+        return vals;
+    }
+    
     /**
      *
      * @return A list containing pairs of <b>VARNAME</b> and their <b>VALUE</b>
@@ -2740,6 +2796,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @return the Group
      */
     @Persistable(true)
+    @Relation(true)
     public Group getGroup() {
         try {
             return (Group) getObject(Context.getGroup(), __getGroupsids());
@@ -2785,6 +2842,21 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                 YabsViewProxy.instance().addMessage(Messages.NO_TEMPLATE_LOADED + ": " + getClass().getSimpleName() + " (" + mpv5.db.objects.User.getCurrentUser() + ")", Color.YELLOW);
             }
         }
+    }
+
+    /**
+     * Returns the first found object with Context r within this object's getters (all)
+     * @param r
+     * @return R
+     */
+    public DatabaseObject getRelationObject(Context r) {
+        for (int i = 0; i < getValues5().size(); i++) {
+            Object object = getValues5().get(i)[1]; 
+            if (object instanceof DatabaseObject && ((DatabaseObject) object).getContext().equals(r)) {
+                return (DatabaseObject) object;
+            }
+        }
+        return null;
     }
 
     static class InlineObjectModifier implements DatabaseObjectModifier {

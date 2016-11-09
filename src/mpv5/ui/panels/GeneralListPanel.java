@@ -30,17 +30,23 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.TreeMap;
 import java.util.Vector;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.DatabaseSearch;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria2;
 import mpv5.db.objects.Group;
+import mpv5.db.objects.Item;
 import mpv5.db.objects.User;
 import mpv5.globals.GlobalSettings;
 import mpv5.globals.Messages;
@@ -64,6 +70,8 @@ public final class GeneralListPanel extends javax.swing.JPanel {
     TableCellRendererForDatabaseObjects rend = new TableCellRendererForDatabaseObjects();
     private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
     private DatabaseSearch d;
+    private Context groupBy;
+    private Random random = new Random(43);
 
     /** Creates new form GeneralListPanel
      * @param <T>
@@ -81,16 +89,18 @@ public final class GeneralListPanel extends javax.swing.JPanel {
         initComponents();
         setName("generallistpanel");
         rend.setDbColumn(1);
-        
+
         listtable.setDefaultRenderer(String.class, rend);
         listtable.setDefaultRenderer(Date.class, rend);
         listtable.setDefaultRenderer(DatabaseObject.class, rend);
-        
+        listtable.setDefaultRenderer(Context.class, rend);
+        //listtable.setDefaultRenderer(ImageIcon.class, rend);
+
         labeledCombobox1.setSearchEnabled(true);
         labeledCombobox1.setContext(Context.getGroup());
         labeledCombobox1.triggerSearch();
 
-        ((MPTable) listtable).setDefaultColumns(new Integer[]{20, 100, 100, 100, 100, 100, 100}, new Boolean[]{true, true, true, true, true, true, true});
+        ((MPTable) listtable).setDefaultColumns(new Integer[]{50, 100, 50, 100, 100, 20}, new Boolean[]{true, true, true, true, true, true});
         ((MPTable) listtable).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) listtable, this));
         TableFormat.hideHeader(listtable);
     }
@@ -137,27 +147,110 @@ public final class GeneralListPanel extends javax.swing.JPanel {
     public <T extends DatabaseObject> void setData(List<T> list) {
         odata = list;
 
-        Object[][] data = new Object[list.size()][7];
-
-        for (int i = 0; i < list.size(); i++) {
-            DatabaseObject databaseObject = list.get(i);
-            data[i][0] = i+1;
-            data[i][1] = databaseObject;
-            data[i][2] = User.getUsername(databaseObject.__getIntaddedby());
-            data[i][3] = databaseObject.__getDateadded();
-            try {
-                data[i][4] = DatabaseObject.getObject(Context.getGroup(), databaseObject.__getGroupsids());
-            } catch (NodataFoundException ex) {
-                data[i][4] = "N/A";
+        Object[][] model = null;
+        if (groupBy != null) {  
+            List<Object[]> datalist = new ArrayList<>();
+            Map<DatabaseObject, List<DatabaseObject>> sorted = new TreeMap<>();
+            for (int i = 0; i < list.size(); i++) {
+                DatabaseObject root = list.get(i);
+                DatabaseObject key = root.getRelationObject(groupBy);
+                if (key != null && !sorted.containsKey(key)) {
+                    sorted.put(key, new ArrayList<DatabaseObject>());
+                }
+                if (key != null) {
+                    sorted.get(key).add(root);
+                } else {
+                    Log.Debug(this, "Missing RelationObject(" + groupBy + ") for " + root);
+                }
             }
 
+            int overallindex = 0;
+
+            for (Map.Entry<DatabaseObject, List<DatabaseObject>> en : sorted.entrySet()) {
+                DatabaseObject key = en.getKey();
+                List<DatabaseObject> val = en.getValue();
+
+                Object[] data0 = new Object[6];
+                datalist.add(data0);
+
+                data0[0] = "<html><b>" + groupBy.getIdentityClass().getSimpleName() + "</b></html>";
+                data0[1] = key;
+                data0[2] = User.getUsername(key.__getIntaddedby());
+                data0[3] = key.__getDateadded();
+                try {
+                    data0[4] = DatabaseObject.getObject(Context.getGroup(), key.__getGroupsids());
+                } catch (NodataFoundException ex) {
+                    data0[4] = "N/A";
+                }
+
 //            data[i][4] = databaseObject.getColor();
-            data[i][5] = databaseObject.getIcon();
-            data[i][6] = databaseObject.getContext();
+                data0[5] = key.getIcon();
+                //data[overallindex][6] = Item.getTypeString(key.getContext().getItemType());
+
+                overallindex++;
+
+                final float hue = random.nextFloat();
+                final float saturation = (random.nextInt(2000) + 1000) / 10000f;
+                final float luminance = 0.8f;
+                final Color color = Color.getHSBColor(hue, saturation, luminance);
+
+                key.defineColor(color);
+
+                Color lastColor = key.getColor();
+                for (int i = 0; i < val.size(); i++) {
+                    lastColor = Color.getHSBColor(hue, saturation / (i + 1), 1.0f);
+                    DatabaseObject databaseObject = val.get(i);
+                    databaseObject.defineColor(lastColor);
+                    
+                    Object[] data1 = new Object[6];
+                    datalist.add(data1);
+
+                    data1[0] = i + 1;
+                    data1[1] = databaseObject;
+                    data1[2] = User.getUsername(databaseObject.__getIntaddedby());
+                    data1[3] = databaseObject.__getDateadded();
+                    try {
+                        data1[4] = DatabaseObject.getObject(Context.getGroup(), databaseObject.__getGroupsids());
+                    } catch (NodataFoundException ex) {
+                        data1[4] = "N/A";
+                    }
+
+//            data[i][4] = databaseObject.getColor();
+                    data1[5] = databaseObject.getIcon();
+                    //data[overallindex][6] = Item.getTypeString(key.getContext().getItemType());
+
+                    overallindex++;
+                }
+            }
+
+            model = new Object[overallindex][6];
+            for (int i = 0; i < datalist.size(); i++) {
+                Object[] objects = datalist.get(i);
+                model[i] = objects;
+            }
+        } else {
+            Object[][] data = new Object[list.size()][6];
+            for (int i = 0; i < list.size(); i++) {
+                DatabaseObject databaseObject = list.get(i);
+                data[i][0] = i + 1;
+                data[i][1] = databaseObject;
+                data[i][2] = User.getUsername(databaseObject.__getIntaddedby());
+                data[i][3] = databaseObject.__getDateadded();
+                try {
+                    data[i][4] = DatabaseObject.getObject(Context.getGroup(), databaseObject.__getGroupsids());
+                } catch (NodataFoundException ex) {
+                    data[i][4] = "N/A";
+                }
+
+//            data[i][4] = databaseObject.getColor();
+                data[i][5] = databaseObject.getIcon();
+                //data[i][6] = Item.getTypeString(databaseObject.getContext().getItemType());
+            }
+            model = data;
         }
 
-        MPTableModel m = new MPTableModel(data);
-        m.setTypes(new Class[]{Integer.class, DatabaseObject.class, String.class, Date.class, DatabaseObject.class, ImageIcon.class, Object.class, Object.class, Context.class});
+        MPTableModel m = new MPTableModel(model);
+        m.setTypes(new Class[]{Integer.class, DatabaseObject.class, String.class, Date.class, DatabaseObject.class, ImageIcon.class});
         listtable.setModel(m);
 
 //        TableFormat.hideHeader(listtable);
@@ -332,7 +425,7 @@ public final class GeneralListPanel extends javax.swing.JPanel {
         if (evt.getClickCount() > 1) {
             try {
                 //System.err.println(mpv5.YabsViewProxy.instance().getIdentifierView());
-                mpv5.YabsViewProxy.instance().getIdentifierView().addTab(((DatabaseObject) listtable.getModel().getValueAt(listtable.getSelectedRow(), 0)));
+                mpv5.YabsViewProxy.instance().getIdentifierView().addTab(((DatabaseObject) listtable.getModel().getValueAt(listtable.getSelectedRow(), 1)));
             } catch (Exception e) {
                 Log.Debug(e);
             }
@@ -355,7 +448,7 @@ public final class GeneralListPanel extends javax.swing.JPanel {
             setData(Collections.EMPTY_LIST);
         }
     }
-    
+
     void setData(Context context, QueryCriteria2 q) {
         try {
             setData(DatabaseObject.getObjects(context, q));
@@ -368,5 +461,34 @@ public final class GeneralListPanel extends javax.swing.JPanel {
     void setData(Context context, String needle) {
         d = new DatabaseSearch(context);
         setData(d.searchDataFor(new Context[]{Context.getSubItem()}, new Context[]{Context.getCustomer()}, needle));
+    }
+
+    /**
+     * @return the groupBy
+     */
+    public Context getGroupBy() {
+        return groupBy;
+    }
+
+    /**
+     * @param groupBy the groupBy to set
+     */
+    public void setGroupBy(Context groupBy) {
+        this.groupBy = groupBy;
+    }
+
+    public void setSortable(final boolean b) {
+        TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(listtable.getModel()) {
+
+            @Override
+            public boolean isSortable(int column) {
+                return b;
+            }
+        };
+        listtable.setRowSorter(sorter);
+    }
+
+    public JTable getTable() {
+        return listtable;
     }
 }

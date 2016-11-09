@@ -162,7 +162,10 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
      * @param type
      * @return
      */
-    public static String getTypeString(int type) {
+    public static String getTypeString(Integer type) {
+        if (type == null) {
+            return "";
+        }
         switch (type) {
             case (TYPE_INVOICE):
                 return Messages.TYPE_INVOICE.toString();
@@ -170,6 +173,10 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
                 return Messages.TYPE_OFFER.toString();
             case (TYPE_ORDER):
                 return Messages.TYPE_ORDER.toString();
+            case (TYPE_ORDER_CONFIRMATION):
+                return Messages.TYPE_CONFIRMATION.toString();
+            case (TYPE_DELIVERY_NOTE):
+                return Messages.TYPE_DELIVERY.toString();
         }
         return "";
     }
@@ -798,6 +805,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
      * is persisting via contactsids
      */
     @Persistable(false)
+    @Relation(true)
     public Contact getContact() throws NodataFoundException {
         return (Contact) getObject(Context.getContact(), contactsids);
     }
@@ -815,6 +823,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
      * @throws mpv5.db.common.NodataFoundException
      */
     @Persistable(false)
+    @Relation(true)
     public Account getAccount() throws NodataFoundException {
         return (Account) getObject(Context.getAccounts(), accountsids);
     }

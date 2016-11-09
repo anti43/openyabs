@@ -8,6 +8,7 @@ import java.awt.Color;
 import java.awt.Component;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
+import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 
 /**
@@ -27,13 +28,21 @@ public class TableCellRendererForDatabaseObjects extends DefaultTableCellRendere
         setBackground(adaptee.getBackground());
         setBorder(adaptee.getBorder());
         setFont(adaptee.getFont());
-        setText(adaptee.getText());
+
+        if (value instanceof Context) {
+            setText(((Context) value).getIdentityClass().getSimpleName());
+        } else {
+            setText(adaptee.getText());
+        }
         if (hasFocus) {
             setBackground(Color.BLUE);
             setForeground(Color.WHITE);
         }
-        if (!isSelected) {
-            setBackground(((DatabaseObject) table.getModel().getValueAt(table.convertRowIndexToModel(row), getDbColumn())).getColor());
+        if (value != null && !isSelected) {
+            try {
+                setBackground(((DatabaseObject) table.getModel().getValueAt(table.convertRowIndexToModel(row), getDbColumn())).getColor());
+            } catch (Exception e) {
+            }
         }
         return this;
     }

@@ -91,25 +91,21 @@
       <SubComponents>
         <Component class="mpv5.ui.beans.LabeledTextField" name="search">
           <Properties>
-            <Property name="_Label" type="java.lang.String" resourceKey="search._Label"/>
             <Property name="name" type="java.lang.String" value="search" noResource="true"/>
           </Properties>
         </Component>
         <Component class="mpv5.ui.beans.LabeledCombobox" name="type">
           <Properties>
-            <Property name="_Label" type="java.lang.String" resourceKey="type._Label"/>
             <Property name="name" type="java.lang.String" value="type" noResource="true"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel1">
           <Properties>
-            <Property name="text" type="java.lang.String" resourceKey="jLabel1.text"/>
             <Property name="name" type="java.lang.String" value="jLabel1" noResource="true"/>
           </Properties>
         </Component>
         <Component class="mpv5.ui.beans.LabeledCombobox" name="status">
           <Properties>
-            <Property name="_Label" type="java.lang.String" resourceKey="status._Label"/>
             <Property name="name" type="java.lang.String" value="status" noResource="true"/>
           </Properties>
         </Component>

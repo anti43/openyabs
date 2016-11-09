@@ -16,12 +16,21 @@ import freemarker.template.utility.Collections12;
 import java.awt.AWTEventMulticaster;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import mpv5.db.common.Context;
+import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria2;
 import mpv5.db.common.QueryParameter;
+import mpv5.db.objects.Contact;
 import mpv5.db.objects.Item;
 import mpv5.handler.MPEnum;
 import mpv5.logging.Log;
@@ -36,6 +45,10 @@ public class ReceiptLookup extends javax.swing.JPanel {
     /** Creates new form ReceiptLookup */
     public ReceiptLookup() {
         initComponents();
+
+        generalListPanel1.setGroupBy(Context.getContact());
+        generalListPanel1.setSortable(false);
+
         final Object[][] typeModel = new Object[][]{
             new Object[]{Context.getInvoice(), Item.getTypeString(Item.TYPE_INVOICE)},
             new Object[]{Context.getOffer(), Item.getTypeString(Item.TYPE_OFFER)},
@@ -102,6 +115,16 @@ public class ReceiptLookup extends javax.swing.JPanel {
                 generalListPanel1.setData((Context) typeModel[0][0], getStatusQuery());
             }
         });
+
+        generalListPanel1.getTable().addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    popup(e);
+                }
+            }
+        });
     }
 
     private QueryCriteria2 getStatusQuery() {
@@ -115,6 +138,52 @@ public class ReceiptLookup extends javax.swing.JPanel {
             }
         }
         return null;
+    }
+
+    private void popup(MouseEvent e) {
+        JPopupMenu menu = new JPopupMenu();
+        JMenuItem x = new JMenuItem("Add to new invoice");
+        x.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int[] rows = generalListPanel1.getTable().getSelectedRows();
+                final List<DatabaseObject> list = new ArrayList<>();
+                if (rows.length == 0) {
+                    return;
+                }
+                Contact dataOwner = null;
+                for (int i = 0; i < rows.length; i++) {
+                    int j = rows[i];
+                    DatabaseObject obj = (DatabaseObject) generalListPanel1.getTable().getModel().getValueAt(generalListPanel1.getTable().convertRowIndexToModel(j), 1);
+                    if (obj instanceof Item) {
+                        if (dataOwner == null) {
+                            try {
+                                dataOwner = ((Item) obj).getContact();
+                            } catch (NodataFoundException ex) {
+                                Log.Debug(ex);
+                            }
+                        }
+                        list.add(obj);
+                    }
+                }
+                if (list.size() > 0) {
+                    Item i = Item.createFor(dataOwner);
+                    final DataPanel tab = mpv5.YabsViewProxy.instance().getIdentifierView().addTab(i);
+
+                    SwingUtilities.invokeLater(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            tab.paste(list.toArray(new DatabaseObject[0]));
+                        }
+                    });
+
+                }
+            }
+        });
+        menu.add(x);
+        menu.show(e.getComponent(), e.getX(), e.getY());
     }
 
     /** This method is called from within the constructor to
