@@ -353,7 +353,8 @@ public enum Messages {
     STOCK_MANAGER("Stock management"), 
     PLEASE_WAIT("Please wait.."), 
     TYPE_SUBITEM("Subitem"),
-    NO_ENTRY("No Entry");
+    NO_ENTRY("No Entry"), 
+    ENTRIES("entries");
 
     /**
      * @return the missing

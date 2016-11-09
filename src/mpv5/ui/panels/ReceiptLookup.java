@@ -62,7 +62,7 @@ public class ReceiptLookup extends javax.swing.JPanel {
         type.getComboBox().addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                search.setText("");
+                //search.setText("");
                 int index = type.getComboBox().getSelectedIndex();
                 if (index < 0) {
                     index = 0;//type must be selected
@@ -71,13 +71,13 @@ public class ReceiptLookup extends javax.swing.JPanel {
             }
         });
 
-        search.getTextField().addActionListener(new ActionListener() {
+        /*search.getTextField().addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 generalListPanel1.setData((Context) typeModel[type.getComboBox().getSelectedIndex()][0], search.getText());
             }
-        });
+        });*/
         MPEnum[] stati = new MPEnum[Item.getStatusStrings().length + 1];
         for (int i = 0; i < stati.length; i++) {
             if (i == 0) {
@@ -104,7 +104,7 @@ public class ReceiptLookup extends javax.swing.JPanel {
         status.getComboBox().addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                search.setText("");
+                //search.setText("");
                 generalListPanel1.setData((Context) type.getSelectedItem().getIdObject(), getStatusQuery());
             }
         });
@@ -197,28 +197,19 @@ public class ReceiptLookup extends javax.swing.JPanel {
 
         generalListPanel1 = new mpv5.ui.panels.GeneralListPanel();
         jPanel1 = new javax.swing.JPanel();
-        search = new mpv5.ui.beans.LabeledTextField();
         type = new mpv5.ui.beans.LabeledCombobox();
-        jLabel1 = new javax.swing.JLabel();
         status = new mpv5.ui.beans.LabeledCombobox();
 
         setName("Form"); // NOI18N
 
-        generalListPanel1.setName("generalListPanel1"); // NOI18N
-		
         java.util.ResourceBundle resourceMap = mpv5.i18n.LanguageManager.getBundle();
+        generalListPanel1.setName("generalListPanel1"); // NOI18N
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(resourceMap.getString("ReceiptLookup.jPanel1.border.title")));
         jPanel1.setName("jPanel1"); // NOI18N
 
-        search.set_Label(resourceMap.getString("ReceiptLookup.search._Label")); // NOI18N
-        search.setName("search"); // NOI18N
-
         type.set_Label(resourceMap.getString("ReceiptLookup.type._Label")); // NOI18N
         type.setName("type"); // NOI18N
-
-        jLabel1.setText(resourceMap.getString("ReceiptLookup.jLabel1.text")); // NOI18N
-        jLabel1.setName("jLabel1"); // NOI18N
 
         status.set_Label(resourceMap.getString("ReceiptLookup.status._Label")); // NOI18N
         status.setName("status"); // NOI18N
@@ -229,13 +220,9 @@ public class ReceiptLookup extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(type, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
-                    .addComponent(search, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE))
+                .addComponent(type, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(status, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(status, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -245,11 +232,7 @@ public class ReceiptLookup extends javax.swing.JPanel {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(type, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(status, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(search, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE))
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -266,14 +249,12 @@ public class ReceiptLookup extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(generalListPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 295, Short.MAX_VALUE))
+                .addComponent(generalListPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 324, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private mpv5.ui.panels.GeneralListPanel generalListPanel1;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
-    private mpv5.ui.beans.LabeledTextField search;
     private mpv5.ui.beans.LabeledCombobox status;
     private mpv5.ui.beans.LabeledCombobox type;
     // End of variables declaration//GEN-END:variables

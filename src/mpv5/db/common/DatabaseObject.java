@@ -200,7 +200,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
         boolean value();
     }
-    
+
     /**
      * Marks a relation getter
      */
@@ -210,7 +210,6 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
         boolean value();
     }
-    
 
     /**
      * If set, the auto-database-schema creator will create a foreign key
@@ -724,13 +723,13 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @return A list of all <b>getters with annotation Relation</b> in this do 
      */
     public Map<String, Method> getAllRelationGetters() {
-        String key = this.getClass().getCanonicalName()+ "_Relation";
+        String key = this.getClass().getCanonicalName() + "_Relation";
         if (!getVars_cached.containsKey(key)) {
             Log.Debug(this, "Caching " + key);
             getVars_cached.put(key, new HashMap<String, Method>());
             Method[] methods = this.getClass().getMethods();
             for (int i = 0; i < this.getClass().getMethods().length; i++) {
-                 if ((methods[i].isAnnotationPresent(Relation.class)
+                if ((methods[i].isAnnotationPresent(Relation.class)
                         && methods[i].getAnnotation(Relation.class).value()
                         && methods[i].getParameterTypes().length == 0)) {
                     getVars_cached.get(key).put(methods[i].getName().substring(methods[i].getName().startsWith("__") ? 5 : 3).toLowerCase(), methods[i]);
@@ -1356,7 +1355,6 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         return vals;
     }
 
-    
     /**
      *
      * @return A list containing pairs of <b>VARNAME</b> and their <b>VALUE</b>
@@ -1379,7 +1377,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
         return vals;
     }
-    
+
     /**
      *
      * @return A list containing pairs of <b>VARNAME</b> and their <b>VALUE</b>
@@ -1704,6 +1702,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             return list;//all from cache
         }
         criterias.or(uncachedIds);
+        if (Context.getGroupableContexts().contains(context)) {
+            criterias.setOrder("dateadded", false);
+        }
         criterias.setIncludeInvisible(true);
 //        Log.Debug(DatabaseObject.class, criterias.getQuery());
         ReturnValue data = QueryHandler.instanceOf().clone(context).select("*", criterias);
@@ -2851,7 +2852,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      */
     public DatabaseObject getRelationObject(Context r) {
         for (int i = 0; i < getValues5().size(); i++) {
-            Object object = getValues5().get(i)[1]; 
+            Object object = getValues5().get(i)[1];
             if (object instanceof DatabaseObject && ((DatabaseObject) object).getContext().equals(r)) {
                 return (DatabaseObject) object;
             }

@@ -120,6 +120,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
     private JLabel hidden = new JLabel();
     private boolean loading = true;
     private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
+    private List<Runnable> afterSaveRunnables = new ArrayList<>();
 
     /**
      * Creates new form ContactPanel
@@ -1891,7 +1892,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                 return o1.__getDateadded().compareTo(o2.__getDateadded());
             }
         });
-        for (DatabaseObject dbo : dbolist) {
+        for (final DatabaseObject dbo : dbolist) {
             if (dbo.getContext().equals(Context.getInvoice())
                     || dbo.getContext().equals(Context.getOffer())
                     || dbo.getContext().equals(Context.getOrder())) {
@@ -1926,8 +1927,15 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
 //                    }
 
 //                    Log.PrintArray(s.toStringArray());
-                    ((Item) dbo).setIntstatus(Item.STATUS_FINISHED);
-                    dbo.save();
+                    afterSaveRunnables.add(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            ((Item) dbo).setIntstatus(Item.STATUS_FINISHED);
+                            dbo.save();
+                        }
+                    });
+                    
                     omodel = (MPTableModel) itemtable.getModel();
                     omodel.addRow(s.getRowData(omodel.getRowCount() + 1));
                     ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
@@ -2043,6 +2051,11 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         saveSubItems(true);
         omodel = (MPTableModel) itemtable.getModel();
         setTitle();
+        for (int i = 0; i < afterSaveRunnables.size(); i++) {
+            Runnable runnable = afterSaveRunnables.get(i);
+            runnable.run();
+        }
+        afterSaveRunnables.clear();
     }
 
     @Override

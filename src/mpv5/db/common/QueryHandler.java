@@ -248,6 +248,7 @@ public class QueryHandler implements Cloneable {
     }
 
     protected void setLimit(int limit) {
+        //Log.Debug(new RuntimeException("Setting row limit for this connection ('" + table + "') to: " + limit));
         if (limit > this.limit || limit < this.limit) {
             Log.Debug(QueryHandler.class, "Setting row limit for this connection ('" + table + "') to: " + limit);
             this.limit = limit;
@@ -300,7 +301,7 @@ public class QueryHandler implements Cloneable {
             cols = "*";
         }
         String conds = "";
-        if (String.valueOf(value).startsWith("SQL:")) { 
+        if (String.valueOf(value).startsWith("SQL:")) {
             conds = " WHERE (" + String.valueOf(value).replace("SQL:", "") + ")";
             if (context.getGroupRestrictionSQLString() != null) {
                 conds += " AND " + context.getGroupRestrictionSQLString();
@@ -2015,6 +2016,7 @@ public class QueryHandler implements Cloneable {
         }
         try {
             theClone = (QueryHandler) this.clone();
+            theClone.setLimit(0);
             theClone.setTable(tablename);
             theClone.runInBackground = false;
         } catch (CloneNotSupportedException ex) {
@@ -2052,6 +2054,7 @@ public class QueryHandler implements Cloneable {
         try {
             theClone = (QueryHandler) this.clone();
             theClone.setTable(context.getDbIdentity());
+            theClone.setLimit(0);
             theClone.runInBackground = false;
         } catch (CloneNotSupportedException ex) {
             mpv5.logging.Log.Debug(ex);//Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
@@ -2545,7 +2548,7 @@ public class QueryHandler implements Cloneable {
                 stm.setMaxRows(limit);
             }
 
-            Log.Debug(this, "freeSelectQuery::" + query);
+            Log.Debug(this, "freeSelectQuery: limit " + limit + ":" + query);
             try {
                 sqlWatch = new SQLWatch(query);
                 resultSet = stm.executeQuery(query);

@@ -145,10 +145,11 @@ public final class GeneralListPanel extends javax.swing.JPanel {
      * @param list
      */
     public <T extends DatabaseObject> void setData(List<T> list) {
+        jLabel1.setText(list.size() + " " + Messages.ENTRIES);
         odata = list;
 
         Object[][] model = null;
-        if (groupBy != null) {  
+        if (groupBy != null) {
             List<Object[]> datalist = new ArrayList<>();
             Map<DatabaseObject, List<DatabaseObject>> sorted = new TreeMap<>();
             for (int i = 0; i < list.size(); i++) {
@@ -201,7 +202,7 @@ public final class GeneralListPanel extends javax.swing.JPanel {
                     lastColor = Color.getHSBColor(hue, saturation / (i + 1), 1.0f);
                     DatabaseObject databaseObject = val.get(i);
                     databaseObject.defineColor(lastColor);
-                    
+
                     Object[] data1 = new Object[6];
                     datalist.add(data1);
 
@@ -265,21 +266,16 @@ public final class GeneralListPanel extends javax.swing.JPanel {
      */
     @SuppressWarnings({"unchecked"})
     public void filterByGroup(Group g) {
-        setData(odata);
-        Object[][] data = ((MPTableModel) listtable.getModel()).getData();
         List<DatabaseObject> list = new Vector<DatabaseObject>();
         if (g.__getIDS().intValue() != 1) {
-            for (int i = 0; i < data.length; i++) {
-                DatabaseObject d = (DatabaseObject) data[i][0];
+            for (int i = 0; i < odata.size(); i++) {
+                DatabaseObject d = (DatabaseObject) odata.get(i);
                 if (d.__getGroupsids() == g.__getIDS()) {
                     list.add(d);
                 }
             }
         } else {
-            for (int i = 0; i < data.length; i++) {
-                DatabaseObject d = (DatabaseObject) data[i][0];
-                list.add(d);
-            }
+            list = odata;
         }
         setData(list);
     }
@@ -290,11 +286,10 @@ public final class GeneralListPanel extends javax.swing.JPanel {
      */
     @SuppressWarnings("unchecked")
     public void filterByTimeframe(vTimeframe g) {
-        setData(odata);
-        Object[][] data = ((MPTableModel) listtable.getModel()).getData();
+
         List<DatabaseObject> list = new Vector<DatabaseObject>();
-        for (int i = 0; i < data.length; i++) {
-            DatabaseObject d = (DatabaseObject) data[i][0];
+        for (int i = 0; i < odata.size(); i++) {
+            DatabaseObject d = (DatabaseObject) odata.get(i);
             if (g.contains(d.__getDateadded())) {
                 list.add(d);
             }
@@ -327,8 +322,9 @@ public final class GeneralListPanel extends javax.swing.JPanel {
         labeledCombobox1 = new mpv5.ui.beans.LabeledCombobox();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("GeneralListPanel.border.title"))); // NOI18N
         setName("Form"); // NOI18N
 
@@ -376,6 +372,9 @@ public final class GeneralListPanel extends javax.swing.JPanel {
             }
         });
 
+        jLabel1.setText(bundle.getString("GeneralListPanel.jLabel1.text")); // NOI18N
+        jLabel1.setName("jLabel1"); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -390,6 +389,7 @@ public final class GeneralListPanel extends javax.swing.JPanel {
                     .addComponent(jButton2))
                 .addGap(33, 33, 33))
             .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 451, Short.MAX_VALUE)
+            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 451, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -404,7 +404,9 @@ public final class GeneralListPanel extends javax.swing.JPanel {
                     .addComponent(labeledCombobox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 239, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -434,6 +436,7 @@ public final class GeneralListPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private mpv5.ui.beans.LabeledCombobox labeledCombobox1;
     private javax.swing.JTable listtable;
