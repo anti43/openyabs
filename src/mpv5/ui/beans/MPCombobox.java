@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-/*
+ /*
  * LabeledTextField.java
  *
  * Created on 20.11.2008, 19:26:39
@@ -24,6 +24,7 @@ import javax.swing.ComboBoxEditor;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
+import mpv5.Main;
 import mpv5.db.common.ConnectionTypeHandler;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -38,7 +39,7 @@ import mpv5.utils.renderer.ComboBoxRendererForTooltip;
 
 /**
  *
- *  
+ *
  */
 public class MPCombobox extends javax.swing.JPanel {
 
@@ -53,13 +54,16 @@ public class MPCombobox extends javax.swing.JPanel {
 
     /**
      * If this combobox is within a table cell, set the table here
+     *
      * @param table
      */
     public void setTable(JTable table) {
         this.table = table;
     }
 
-    /** Creates new form LabeledTextField */
+    /**
+     * Creates new form LabeledTextField
+     */
     public MPCombobox() {
         initComponents();
         jComboBox1.getEditor().getEditorComponent().addKeyListener(new KeyListener() {
@@ -91,7 +95,6 @@ public class MPCombobox extends javax.swing.JPanel {
             public void keyReleased(KeyEvent e) {
             }
         });
-
 
         jComboBox1.getComponent(0).addMouseListener(new MouseListener() {
 
@@ -125,15 +128,16 @@ public class MPCombobox extends javax.swing.JPanel {
             }
         });
 
-
         jComboBox1.setRenderer(new ComboBoxRendererForTooltip());
 //        jComboBox1.setToolTipText(Messages.SEARCHABLE.toString());
         setModel();
     }
 
     /**
-     * Creates a new ComboBox with {@link MPCombobox#setSearchOnEnterEnabled(boolean)} enabled and the given search {@link Context}
-     * 
+     * Creates a new ComboBox with
+     * {@link MPCombobox#setSearchOnEnterEnabled(boolean)} enabled and the given
+     * search {@link Context}
+     *
      * @param c
      * @param table
      */
@@ -158,9 +162,13 @@ public class MPCombobox extends javax.swing.JPanel {
 
     /**
      * Triggers the search functionality
+     *
      * @param hidePopup
      */
     public synchronized void search(final boolean hidePopup) {
+        if (!Main.INSTANTIATED) {
+            return;
+        }
         if (SEARCH_ON_ENTER) {
             instantiated = true;
             Runnable runnable = new Runnable() {
@@ -179,10 +187,10 @@ public class MPCombobox extends javax.swing.JPanel {
                     Object[][] data = null;
                     if (getComboBox().isEditable()) {
                         if (getContext().equals(Context.getProduct())) {
-                            data = new DatabaseSearch(getContext(), 200).getValuesFor2("ids, " + ConnectionTypeHandler.concat("cname","' '", ConnectionTypeHandler.getToChar("externalnetvalue")), String.valueOf(value), null, true, true);
-                        } else if (((getContext().equals(Context.getCustomer()) || getContext().equals(Context.getManufacturer()) || getContext().equals(Context.getSupplier())) && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "companiesovernames")) || getContext().isCompany()==true) {
+                            data = new DatabaseSearch(getContext(), 200).getValuesFor2("ids, " + ConnectionTypeHandler.concat("cname", "' '", ConnectionTypeHandler.getToChar("externalnetvalue")), String.valueOf(value), null, true, true);
+                        } else if (((getContext().equals(Context.getCustomer()) || getContext().equals(Context.getManufacturer()) || getContext().equals(Context.getSupplier())) && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "companiesovernames")) || getContext().isCompany() == true) {
                             data = new DatabaseSearch(getContext(), 200).getValuesFor("ids, company", "company", jComboBox1.getSelectedItem().toString(), true);
-                        } else if(getContext().equals(Context.getCustomer()) || getContext().equals(Context.getManufacturer()) || getContext().equals(Context.getSupplier())){
+                        } else if (getContext().equals(Context.getCustomer()) || getContext().equals(Context.getManufacturer()) || getContext().equals(Context.getSupplier())) {
                             data = new DatabaseSearch(getContext(), 200).getValuesFor("ids, cname, prename", "cname", jComboBox1.getSelectedItem().toString(), true);
                         } else {
                             data = new DatabaseSearch(getContext(), 200).getValuesFor("ids, cname", "cname", jComboBox1.getSelectedItem().toString(), true);
@@ -225,7 +233,7 @@ public class MPCombobox extends javax.swing.JPanel {
     }
 
     /**
-     * 
+     *
      * @param values
      * @param compareMode
      */
@@ -235,6 +243,7 @@ public class MPCombobox extends javax.swing.JPanel {
 
     /**
      * Uses enum.name() as ID, and enum.toString() as value.
+     *
      * @param values
      */
     public void setModel(Enum[] values) {
@@ -248,8 +257,9 @@ public class MPCombobox extends javax.swing.JPanel {
     }
 
     /**
-     * Delegates to setModel(MPComboBoxModelItem.toModel(data));
-     * {id (hidden), value (shown in the list)}
+     * Delegates to setModel(MPComboBoxModelItem.toModel(data)); {id (hidden),
+     * value (shown in the list)}
+     *
      * @param data
      */
     public void setModel(Object[][] data) {
@@ -270,6 +280,7 @@ public class MPCombobox extends javax.swing.JPanel {
 
     /**
      * The textual representation of the seleceted item
+     *
      * @return
      */
     public String getSelectedValue() {
@@ -278,6 +289,7 @@ public class MPCombobox extends javax.swing.JPanel {
 
     /**
      * Set the model. Should contain only {@link MPComboBoxModelItem}s
+     *
      * @param model
      */
     public void setModel(MPComboboxModel model) {
@@ -285,20 +297,24 @@ public class MPCombobox extends javax.swing.JPanel {
     }
 
     /**
-     * Convenience Method to set a single {@link DatabaseObject} as the model of the combobox.<br/>
+     * Convenience Method to set a single {@link DatabaseObject} as the model of
+     * the combobox.<br/>
      * Will set the DO as the selected item after adding.
+     *
      * @param obj
      */
     public void setModel(DatabaseObject obj) {
         Log.Print(this, "setting to model " + String.valueOf(obj));
         setModel(new Vector<DatabaseObject>(Arrays.asList(new DatabaseObject[]{
-                    obj
-                })));
+            obj
+        })));
         setSelectedIndex(0);
     }
 
     /**
-     * Convenience Method to set a {@link List} of {@link DatabaseObject}s as the model of the combobox.<br/>
+     * Convenience Method to set a {@link List} of {@link DatabaseObject}s as
+     * the model of the combobox.<br/>
+     *
      * @param vector
      */
     public void setModel(List<DatabaseObject> vector) {
@@ -307,6 +323,7 @@ public class MPCombobox extends javax.swing.JPanel {
 
     /**
      * Delegates to getComboBox().setSelectedIndex(itemID);
+     *
      * @param itemID
      */
     public void setSelectedIndex(int itemID) {
@@ -317,6 +334,7 @@ public class MPCombobox extends javax.swing.JPanel {
 
     /**
      * Sets the item with the given value as selected item
+     *
      * @param valueOfItem
      */
     public void setSelectedItem(String valueOfItem) {
@@ -325,6 +343,7 @@ public class MPCombobox extends javax.swing.JPanel {
 
     /**
      * Sets the item with the given ID as selected item
+     *
      * @param ID
      */
     public void setSelectedItem(Object ID) {
@@ -332,8 +351,11 @@ public class MPCombobox extends javax.swing.JPanel {
     }
 
     /**
-     * If set to true, hitting "Enter" on the text field will trigger a search for the entered value and popup the results if any.
-     * <br/>{@link LabeledCombobox#setContext(Context)} must be called before this can work.
+     * If set to true, hitting "Enter" on the text field will trigger a search
+     * for the entered value and popup the results if any.
+     * <br/>{@link LabeledCombobox#setContext(Context)} must be called before
+     * this can work.
+     *
      * @param enabled
      */
     public void setSearchEnabled(boolean enabled) {
@@ -346,16 +368,17 @@ public class MPCombobox extends javax.swing.JPanel {
 
     /**
      * Set the context for database queries
+     *
      * @param c
      */
     public void setContext(Context c) {
         this.context = c;
     }
 
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -403,12 +426,20 @@ public class MPCombobox extends javax.swing.JPanel {
     }
 
     /**
-    Sets the selected item in the combo box display area to the object in the argument. If anObject is in the list, the display area shows anObject selected.
-    If anObject is not in the list and the combo box is uneditable, it will not change the current selection. For editable combo boxes, the selection will change to anObject.
-    If this constitutes a change in the selected item, ItemListeners added to the combo box will be notified with one or two ItemEvents. If there is a current selected item, an ItemEvent will be fired and the state change will be ItemEvent.DESELECTED. If anObject is in the list and is not currently selected then an ItemEvent will be fired and the state change will be ItemEvent.SELECTED.
-    ActionListeners added to the combo box will be notified with an ActionEvent when this method is called.
-    Parameters:
-    anObject - the list object to select; use null to clear the selection
+     * Sets the selected item in the combo box display area to the object in the
+     * argument. If anObject is in the list, the display area shows anObject
+     * selected. If anObject is not in the list and the combo box is uneditable,
+     * it will not change the current selection. For editable combo boxes, the
+     * selection will change to anObject. If this constitutes a change in the
+     * selected item, ItemListeners added to the combo box will be notified with
+     * one or two ItemEvents. If there is a current selected item, an ItemEvent
+     * will be fired and the state change will be ItemEvent.DESELECTED. If
+     * anObject is in the list and is not currently selected then an ItemEvent
+     * will be fired and the state change will be ItemEvent.SELECTED.
+     * ActionListeners added to the combo box will be notified with an
+     * ActionEvent when this method is called. Parameters: anObject - the list
+     * object to select; use null to clear the selection
+     *
      * @param text
      */
     public void setValue(String text) {
