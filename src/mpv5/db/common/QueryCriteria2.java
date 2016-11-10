@@ -16,6 +16,7 @@
  */
 package mpv5.db.common;
 
+import com.lowagie.text.Anchor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -30,12 +31,13 @@ public class QueryCriteria2 {
 
     private String query = "";
     private String order = "";
-    
-    private List<QueryParameter> fields =  new ArrayList<QueryParameter>();
+
+    private List<QueryParameter> fields = new ArrayList<QueryParameter>();
     private boolean includeDeleted;
 
     /**
      * Add AND conditions
+     *
      * @param params
      */
     public void and(QueryParameter... params) {
@@ -78,6 +80,7 @@ public class QueryCriteria2 {
 
     /**
      * Add OR conditions
+     *
      * @param params
      */
     public void or(List<QueryParameter> params) {
@@ -87,7 +90,8 @@ public class QueryCriteria2 {
             //Log.Debug(this, "Converting 1-sized OR list to AND!!");
             and(params.get(0));
             return;
-        } /*else if (params.size() < 2) {
+        }
+        /*else if (params.size() < 2) {
         throw new IllegalArgumentException("Params.size must be > 2, is " + params.size());
         }*/
         or(params.get(0), params.toArray(new QueryParameter[params.size()]));
@@ -95,6 +99,7 @@ public class QueryCriteria2 {
 
     /**
      * Add OR conditions
+     *
      * @param params
      */
     public void or(QueryParameter param1, List<QueryParameter> params) {
@@ -103,7 +108,8 @@ public class QueryCriteria2 {
 
     /**
      * Add OR conditions
-     * @param param1 
+     *
+     * @param param1
      * @param params
      */
     public void or(QueryParameter param1, QueryParameter... params) {
@@ -123,18 +129,7 @@ public class QueryCriteria2 {
                 throw new IllegalArgumentException("You cannot mix LIKE and boolean/number values!");
             }
 
-            String val = "";
-            if (p.getValue() instanceof Number) {
-                val = String.valueOf(p.getValue());
-            } else if (p.getValue() instanceof Boolean) {
-                if ((Boolean) p.getValue()) {
-                    val = "1";
-                } else {
-                    val = "0";
-                }
-            } else {
-                val = "'" + p.getValue() + "'";
-            }
+            String val = value(p);
 
             switch (p.getCondition()) {
                 case QueryParameter.EQUALS:
@@ -203,7 +198,7 @@ public class QueryCriteria2 {
     }
 
     /**
-     * 
+     *
      * @param queryParameter
      */
     public void is(QueryParameter queryParameter) {
@@ -211,7 +206,7 @@ public class QueryCriteria2 {
     }
 
     /**
-     * 
+     *
      * @param params
      */
     public void and(List<QueryParameter> params) {
@@ -223,13 +218,14 @@ public class QueryCriteria2 {
 
     /**
      * All fields
-     * @return 
+     *
+     * @return
      */
     public List<QueryParameter> getFields() {
         return Collections.unmodifiableList(fields);
     }
-    
-        public boolean getIncludeInvisible() {
+
+    public boolean getIncludeInvisible() {
         return includeDeleted;
     }
 
@@ -238,5 +234,35 @@ public class QueryCriteria2 {
      */
     public void setIncludeInvisible(boolean in) {
         this.includeDeleted = in;
+    }
+
+    void list(List<QueryParameter> list) {
+        if (list.size() > 0) {
+            QueryParameter p = list.get(0);
+            String key = p.getKey();
+            StringBuilder b = new StringBuilder();
+            for (int i = 0; i < list.size(); i++) {
+                QueryParameter get = list.get(i);
+                b.append(value(get)).append(",");
+            }
+            query += " AND " + key + " IN (" + b + value(p) + ")";
+        }
+
+    }
+
+    private String value(QueryParameter p) {
+        String val = "";
+        if (p.getValue() instanceof Number) {
+            val = String.valueOf(p.getValue());
+        } else if (p.getValue() instanceof Boolean) {
+            if ((Boolean) p.getValue()) {
+                val = "1";
+            } else {
+                val = "0";
+            }
+        } else {
+            val = "'" + p.getValue() + "'";
+        }
+        return val;
     }
 }

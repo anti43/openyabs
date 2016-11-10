@@ -1701,7 +1701,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         if (uncachedIds.isEmpty()) {
             return list;//all from cache
         }
-        criterias.or(uncachedIds);
+        criterias.list(uncachedIds);
         if (Context.getGroupableContexts().contains(context)) {
             criterias.setOrder("dateadded", false);
         }

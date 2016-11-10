@@ -30,7 +30,7 @@ public interface Constants {
      *
      * Full Version number
      */
-    public static final String VERSION = "Yabs-1.2.6-beta2";
+    public static final String VERSION = "Yabs-1.2.7";
 
     /**
      * The original database version of this release
@@ -40,7 +40,7 @@ public interface Constants {
      * The minimal Database Version which is compatible with
      * this release
      */
-    public static final Double DATABASE_VERSION = 1.1980;
+    public static final Double DATABASE_VERSION = 1.1981;
     /**
      * The max Database Version which is compatible with
      * this release

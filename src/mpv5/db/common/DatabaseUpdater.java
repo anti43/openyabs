@@ -268,6 +268,16 @@ public class DatabaseUpdater {
         UPDATES_DERBY.put(1.1980, new String[]{
             "ALTER TABLE contacts ADD COLUMN payterm SMALLINT DEFAULT 0"
         });
+        UPDATES_DERBY.put(1.1981, new String[]{
+            "CREATE INDEX index01 ON items(ids)",
+            "CREATE INDEX index02 ON subitems(ids)",
+            "CREATE INDEX index03 ON contacts(ids)",
+            "CREATE INDEX index04 ON products(ids)",
+            "CREATE INDEX index05 ON history(ids)",
+            "CREATE INDEX index06 ON searchindex(ids)",
+            "CREATE INDEX index07 ON expenses(ids)",
+            "CREATE INDEX index08 ON revenues(ids)",
+        });
         ////////////////////////////////////////////////////////////////////////////////////////////
         // mysql updates
         UPDATES_MYSQL.put(1.11, new String[]{
@@ -564,6 +574,9 @@ public class DatabaseUpdater {
         });
         UPDATES_MYSQL.put(1.1980, new String[]{
             "ALTER TABLE contacts ADD COLUMN payterm SMALLINT DEFAULT 0"
+        });
+        UPDATES_MYSQL.put(1.1981, new String[]{ 
+            //nop
         });
     }
 
