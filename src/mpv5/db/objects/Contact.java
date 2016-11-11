@@ -494,7 +494,7 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
                 //already resolved?
             }
         }
-        Log.Print(map);
+        Log.Debug(this, map);
         return super.resolveReferences(map);
     }
 

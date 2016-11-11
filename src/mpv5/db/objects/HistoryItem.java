@@ -20,23 +20,24 @@ import java.util.Date;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.QueryHandler;
 import mpv5.ui.panels.HistoryPanel;
+import mpv5.utils.export.Exportable;
 
 /**
  *
- *  
+ *
  */
 public class HistoryItem extends DatabaseObject {
 
-  private String username = "";
-  private String dbidentity = "";
-  private Date dateadded = new Date();
-  private int intitem;
+    private String username = "";
+    private String dbidentity = "";
+    private Date dateadded = new Date();
+    private int intitem;
 
-  public HistoryItem() {
+    public HistoryItem() {
         setContext(Context.getHistory());
     }
-
 
     /**
      * @return the user
@@ -80,11 +81,12 @@ public class HistoryItem extends DatabaseObject {
         this.intitem = item;
     }
 
-     @Override
+    @Override
     public JComponent getView() {
-      return new HistoryPanel();
+        return new HistoryPanel();
     }
- @Override
+
+    @Override
     public mpv5.utils.images.MPIcon getIcon() {
         return null;
     }

@@ -43,6 +43,7 @@ import mpv5.db.common.Formattable;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria;
 import mpv5.db.objects.Contact;
+import mpv5.db.objects.HistoryItem;
 import mpv5.db.objects.MailMessage;
 import mpv5.db.objects.Template;
 import mpv5.globals.GlobalSettings;

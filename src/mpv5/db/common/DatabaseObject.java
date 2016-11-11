@@ -308,8 +308,10 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     public static synchronized void cacheObject(final DatabaseObject databaseObject) {
-        if (databaseObject != null && databaseObject.__getIDS()> 0) {
-            if(databaseObject.IDENTITY == null)throw new IllegalStateException("IDENTITY must bes set!");
+        if (databaseObject != null && databaseObject.__getIDS() > 0) {
+            if (databaseObject.IDENTITY == null) {
+                throw new IllegalStateException("IDENTITY must bes set!");
+            }
             cache.put(databaseObject.getDbIdentity() + "@" + databaseObject.__getIDS(), new SoftReference<DatabaseObject>(databaseObject));
         }
     }
@@ -2414,6 +2416,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @return
      */
     public Map<String, Object> resolveReferences(Map<String, Object> map) {
+        map.put("dataOwner", this);
         resolveValueProperties(map);
 
         if (map.containsKey("groupsids")) {
