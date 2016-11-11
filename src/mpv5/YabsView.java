@@ -53,6 +53,8 @@ public interface YabsView{
     public void showFilesaveDialogFor(File createFile);
 
     public DataPanel addTab(DatabaseObject object);
+    
+    public DataPanel addTab(DatabaseObject object, boolean forceNew);
 
     public DialogForFile getFiledialog();
 

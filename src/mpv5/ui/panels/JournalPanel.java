@@ -14,7 +14,7 @@
  *      You should have received a copy of the GNU General Public License
  *      along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*
+ /*
  * HistoryPanel.java
  *
  * Created on 30.03.2009, 12:05:51
@@ -41,7 +41,6 @@ import javax.swing.table.TableCellRenderer;
 import mpv5.db.common.Context;
 
 import mpv5.db.common.DatabaseObject;
-import mpv5.db.common.DatabaseObject.Entity;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria2;
 import mpv5.db.common.QueryHandler;
@@ -84,15 +83,11 @@ import mpv5.ui.misc.TableViewPersistenceHandler;
  */
 public class JournalPanel extends javax.swing.JPanel implements ListPanel {
 
-    private static JournalPanel t;
     private static final long serialVersionUID = 1L;
     private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
 
     public static JComponent instanceOf() {
-        if (t == null) {
-            t = new JournalPanel();
-        }
-        return t;
+        return new JournalPanel();
     }
     private Contact dataOwner;
     private Template journalOrContactTemplate;
@@ -680,13 +675,9 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
         if (evt.getClickCount() > 1) {
-            try {
-                int index = jTable1.convertRowIndexToModel(jTable1.getSelectedRow());
-                DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getModel().getValueAt(index, 0));
-                mpv5.YabsViewProxy.instance().addTab(obj);
-            } catch (NodataFoundException ex) {
-                Log.Debug(ex);
-            }
+            int index = jTable1.convertRowIndexToModel(jTable1.getSelectedRow());
+            DatabaseObject obj = (DatabaseObject) jTable1.getModel().getValueAt(index, 0);
+            mpv5.YabsViewProxy.instance().addTab(obj);
         }
     }//GEN-LAST:event_jTable1MouseClicked
 
@@ -866,7 +857,6 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                         itemsParams.and(new QueryParameter(Context.getInvoice(), "intaddedby", forUser.__getIDS(), QueryParameter.EQUALS));
                     }
 
-
                     ArrayList<QueryParameter> l = new ArrayList<QueryParameter>();
 
                     for (int i = 0; i < jList1.getSelectedValues().length; i++) {
@@ -914,9 +904,9 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                             d = new Object[0][17];
                         }
 
-                        DatabaseObject.Entity<?, ?>[] es = new DatabaseObject.Entity<?, ?>[d.length];
+                        DatabaseObject[] es = new DatabaseObject[d.length];
                         for (int i = 0; i < d.length; i++) {
-                            es[i] = new DatabaseObject.Entity<Context, Integer>(Context.getInvoice(), Integer.valueOf(d[i][0].toString()));
+                            es[i] = DatabaseObject.getObject(Context.getInvoice(), Integer.valueOf(d[i][0].toString()));
                         }
 
                         d = ArrayUtilities.replaceColumn(d, 0, es);
@@ -925,6 +915,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                         }
                     } catch (Exception ex) {
                         Log.Debug(ex);
+                        throw ex;
                     }
                     if (dataOwner == null && additional) {
                         try {
@@ -997,14 +988,15 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                                 }
                             }
 
-                            DatabaseObject.Entity<?, ?>[] es = new DatabaseObject.Entity<?, ?>[d1.length];
+                            DatabaseObject[] es = new DatabaseObject[d1.length];
                             for (int i = 0; i < d1.length; i++) {
-                                es[i] = new DatabaseObject.Entity<Context, Integer>(Context.getExpense(), Integer.valueOf(d1[i][0].toString()));
+                                es[i] = DatabaseObject.getObject(Context.getExpense(), Integer.valueOf(d1[i][0].toString()));
                             }
                             d1 = ArrayUtilities.replaceColumn(d1, 0, es);
 
                         } catch (Exception ex) {
                             Log.Debug(this, ex);
+                            throw ex;
                         }
 
                         try {
@@ -1062,25 +1054,27 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                                 d2[i][11] = Item.STATUS_PAID;//revenues are currently always paid :-/
                             }
 
-                            DatabaseObject.Entity<?, ?>[] es = new DatabaseObject.Entity<?, ?>[d2.length];
+                            DatabaseObject[] es = new DatabaseObject[d2.length];
                             for (int i = 0; i < d2.length; i++) {
-                                es[i] = new DatabaseObject.Entity<Context, Integer>(Context.getRevenue(), Integer.valueOf(d2[i][0].toString()));
+                                es[i] = DatabaseObject.getObject(Context.getRevenue(), Integer.valueOf(d2[i][0].toString()));
                             }
                             d2 = ArrayUtilities.replaceColumn(d2, 0, es);
 
                         } catch (Exception ex) {
                             Log.Debug(this, ex);
+                            throw ex;
                         }
 
                         d = ArrayUtilities.merge(ArrayUtilities.merge(d, d1), d2);
                     }
                     d = parse(d);
                     jTable1.setModel(new MPTableModel(d, Headers.JOURNAL.getValue(),
-                            new Class[]{Entity.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class}));
-                    TableFormat.stripColumn(jTable1, DatabaseObject.Entity.class);
+                            new Class[]{DatabaseObject.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class}));
+                    //TableFormat.stripColumn(jTable1, 0);
                     count.setText("" + d.length);
                 } catch (Exception e) {
                     Log.Debug(this, e);
+                    Popup.error(e);
                 }
             }
         };
@@ -1114,11 +1108,9 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                         for (int i = 0; i < rows.length; i++) {
                             try {
                                 int index = jTable1.convertRowIndexToModel(rows[i]);
-                                DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getModel().getValueAt(index, 0));
+                                DatabaseObject obj = (DatabaseObject) jTable1.getModel().getValueAt(index, 0);
                                 obj.delete();
                                 jTable1.getSelectionModel().removeSelectionInterval(rows[i] - 1, rows[i]);
-                            } catch (NodataFoundException ex) {
-                                Log.Debug(ex);
                             } catch (Exception exc) {
                                 Log.Debug(exc);
                                 Popup.error(exc);
@@ -1137,63 +1129,60 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                     null,
                     new ActionListener() {
 
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            dta();
-                        }
-                    },
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    dta();
+                }
+            },
                     new ActionListener() {
 
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            pdf();
-                        }
-                    },
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    pdf();
+                }
+            },
                     new ActionListener() {
 
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            odt();
-                        }
-                    },
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    odt();
+                }
+            },
                     null,
                     new ActionListener() {
 
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            if (Popup.Y_N_dialog(Messages.REALLY_CHANGE2 + " (" + jTable1.getSelectedRowCount() + ")")) {
-                                int[] rows = jTable1.getSelectedRows();
-                                for (int i = 0; i < rows.length; i++) {
-                                    try {
-                                        int index = jTable1.convertRowIndexToModel(rows[i]);
-                                        DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getModel().getValueAt(index, 0));
-                                        if (obj instanceof Item) {
-                                            Item dbi = (Item) obj;
-                                            if (dbi.__getIntstatus() != Item.STATUS_PAID) {
-                                                dbi.setIntstatus(Item.STATUS_PAID);
-                                                dbi.save();
-                                            }
-                                        } else if (obj instanceof Expense) {
-                                            Expense dbi = (Expense) obj;
-                                            if (!dbi.__getIspaid()) {
-                                                dbi.setIspaid(true);
-                                                dbi.save();
-                                            }
-                                        }
-                                        jTable1.getSelectionModel().removeSelectionInterval(rows[i] - 1, rows[i]);
-                                    } catch (NodataFoundException ex) {
-                                        Log.Debug(ex);
-                                    } catch (Exception exc) {
-                                        Log.Debug(exc);
-                                        Popup.error(exc);
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (Popup.Y_N_dialog(Messages.REALLY_CHANGE2 + " (" + jTable1.getSelectedRowCount() + ")")) {
+                        int[] rows = jTable1.getSelectedRows();
+                        for (int i = 0; i < rows.length; i++) {
+                            try {
+                                int index = jTable1.convertRowIndexToModel(rows[i]);
+                                DatabaseObject obj = (DatabaseObject) jTable1.getModel().getValueAt(index, 0);
+                                if (obj instanceof Item) {
+                                    Item dbi = (Item) obj;
+                                    if (dbi.__getIntstatus() != Item.STATUS_PAID) {
+                                        dbi.setIntstatus(Item.STATUS_PAID);
+                                        dbi.save();
+                                    }
+                                } else if (obj instanceof Expense) {
+                                    Expense dbi = (Expense) obj;
+                                    if (!dbi.__getIspaid()) {
+                                        dbi.setIspaid(true);
+                                        dbi.save();
                                     }
                                 }
-                                setData();
+                                jTable1.getSelectionModel().removeSelectionInterval(rows[i] - 1, rows[i]);
+                            } catch (Exception exc) {
+                                Log.Debug(exc);
+                                Popup.error(exc);
                             }
                         }
+                        setData();
                     }
+                }
+            }
                 });
-
 
     }
 
@@ -1249,9 +1238,8 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                 map.put("journal.accounts", Arrays.asList(jList1.getSelectedValues()).toString());
             } catch (Exception e) {
                 Log.Debug(e);
+                throw e;
             }
-            Log.Debug(this, map.keySet());
-            Log.Debug(this, map.values());
 
             journalOrContactTemplate.injectData(map);
             MPTableModel xx = (MPTableModel) jTable1.getModel();
@@ -1266,7 +1254,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                 }
                 d[i] = nd;
             }
-            Log.Debug(this, xx.getColumnIdentifiers());
+
             journalOrContactTemplate.injectTable(TableHandler.KEY_TABLE + 1, new MPTableModel(d));
             if (GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.journalasodt")) {
                 new Job(Export.createFile(journalOrContactTemplate, dataOwner), pr).execute();
@@ -1302,17 +1290,14 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         } else {
             ArrayList<Item> items = new ArrayList<Item>();
             for (int i = 0; i < jTable1.getSelectedRows().length; i++) {
-                try {
-                    int index = jTable1.convertRowIndexToModel(jTable1.getSelectedRows()[i]);
-                    DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getModel().getValueAt(index, 0));
-                    if (obj.getContext().equals(Context.getInvoice())) {
-                        Item item = (Item) obj;
-                        if (item.__getIntstatus() != Item.STATUS_PAID) {
-                            items.add(item);
-                        }
+
+                int index = jTable1.convertRowIndexToModel(jTable1.getSelectedRows()[i]);
+                DatabaseObject obj = (DatabaseObject) jTable1.getModel().getValueAt(index, 0);
+                if (obj.getContext().equals(Context.getInvoice())) {
+                    Item item = (Item) obj;
+                    if (item.__getIntstatus() != Item.STATUS_PAID) {
+                        items.add(item);
                     }
-                } catch (NodataFoundException ex) {
-                    Log.Debug(ex);
                 }
             }
 
@@ -1337,16 +1322,14 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         } else {
             ArrayList<Templateable> items = new ArrayList<Templateable>();
             for (int i = 0; i < jTable1.getSelectedRows().length; i++) {
-                try {
-                    int index = jTable1.convertRowIndexToModel(jTable1.getSelectedRows()[i]);
-                    DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getModel().getValueAt(index, 0));
-                    if (obj instanceof Templateable) {
-                        Templateable item = (Templateable) obj;
-                        items.add(item);
-                    }
-                } catch (NodataFoundException ex) {
-                    Log.Debug(ex);
+
+                int index = jTable1.convertRowIndexToModel(jTable1.getSelectedRows()[i]);
+                DatabaseObject obj = (DatabaseObject) jTable1.getModel().getValueAt(index, 0);
+                if (obj instanceof Templateable) {
+                    Templateable item = (Templateable) obj;
+                    items.add(item);
                 }
+
             }
 
             List<Waitable> files = new ArrayList<Waitable>();
@@ -1381,13 +1364,14 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             for (int i = 0; i < jTable1.getSelectedRows().length; i++) {
                 try {
                     int index = jTable1.convertRowIndexToModel(jTable1.getSelectedRows()[i]);
-                    DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getModel().getValueAt(index, 0));
+                    DatabaseObject obj = (DatabaseObject) jTable1.getModel().getValueAt(index, 0);
                     if (obj instanceof Templateable) {
                         Templateable item = (Templateable) obj;
                         items.add(item);
                     }
                 } catch (Exception ex) {
                     Log.Debug(ex);
+                    throw ex;
                 }
             }
 

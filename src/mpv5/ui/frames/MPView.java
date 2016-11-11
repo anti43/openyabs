@@ -2,7 +2,7 @@
  * MPView.java
  */
 package mpv5.ui.frames;
- 
+
 import com.l2fprod.common.swing.JOutlookBar;
 import enoa.connection.NoaConnection;
 import enoa.connection.NoaConnectionLocalServer;
@@ -210,8 +210,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     }
 
     /**
-     * Returns the currently selected tab on the main tab
-     * pane
+     * Returns the currently selected tab on the main tab pane
      *
      * @return
      */
@@ -238,10 +237,9 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     }
 
     /**
-     * Shows a file save dialog with the selcted file f. If
-     * the file's parent directory is not the current
-     * directory, changes the current directory to be the
-     * file's parent directory.
+     * Shows a file save dialog with the selcted file f. If the file's parent
+     * directory is not the current directory, changes the current directory to
+     * be the file's parent directory.
      *
      * @param f
      */
@@ -252,16 +250,14 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     }
 
     /**
-     * Initialize and show the secondary JFrame. This method
-     * is intended for showing "secondary" windows, like
-     * message dialogs, about boxes, and so on.
+     * Initialize and show the secondary JFrame. This method is intended for
+     * showing "secondary" windows, like message dialogs, about boxes, and so
+     * on.
      *
-     * Unlike the mainFrame, dismissing a secondary window
-     * will not exit the application. Session state is only
-     * automatically saved if the specified JFrame has a
-     * name, and then only for component descendants that
-     * are named. Throws an IllegalArgumentException if c is
-     * null
+     * Unlike the mainFrame, dismissing a secondary window will not exit the
+     * application. Session state is only automatically saved if the specified
+     * JFrame has a name, and then only for component descendants that are
+     * named. Throws an IllegalArgumentException if c is null
      *
      * @param c
      */
@@ -274,8 +270,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     private static YabsPluginLoader pluginLoader;
 
     /**
-     * Let the view notify the user about an unexpected
-     * error
+     * Let the view notify the user about an unexpected error
      */
     public static void showError() {
         if (Main.INSTANTIATED) {
@@ -512,8 +507,8 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     }
 
     /**
-     * Returns the curently selected tab or null if this is
-     * not a {@link DataPanel}
+     * Returns the curently selected tab or null if this is not a
+     * {@link DataPanel}
      *
      * @return
      */
@@ -537,8 +532,8 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     }
 
     /**
-     * Returns the tab at the specified position, or NULL if
-     * the tab is not existing OR not a {@link DataPanel}
+     * Returns the tab at the specified position, or NULL if the tab is not
+     * existing OR not a {@link DataPanel}
      *
      * @param position
      * @return
@@ -660,8 +655,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         if (fs != null) {
             wizard_FirstSettings1.build(getIdentifierFrame());
         }
-        
- 
+
     }
 
     private GroovyShell getGroovyShell() {
@@ -700,8 +694,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     }
 
     /**
-     * Add a tab to the main tab pane, automatically
-     * determines the needed View
+     * Add a tab to the main tab pane, automatically determines the needed View
      *
      * @param item
      * @param tabTitle
@@ -709,10 +702,14 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
      */
     @Override
     public DataPanel addTab(final DatabaseObject item, Object tabTitle) {
+        return addTab(item, tabTitle, false);
+    }
+
+    private DataPanel addTab(final DatabaseObject item, Object tabTitle, boolean forceNew) {
         setWaiting(true);
         boolean found = false;
         boolean proceed = true;
-        if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "avoidmultipleviews")) {
+        if (!forceNew && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "avoidmultipleviews")) {
             Log.Debug(this, "Looking for an existing view for: " + item);
             int count = getTabPane().getTabCount();
             for (int i = 0; i < count; i++) {
@@ -733,7 +730,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         }
 
         if (proceed) {
-            if (item.hasView() && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "norecycletabs")) {
+            if (item.hasView() && (forceNew || mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "norecycletabs"))) {
                 if (tabTitle == null) {
                     final DataPanel p = ((DataPanel) item.getView());
                     addTab((JComponent) p, item.__getCname());
@@ -810,8 +807,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     }
 
     /**
-     * Add a tab to the main tab pane, automatically
-     * determines the needed View
+     * Add a tab to the main tab pane, automatically determines the needed View
      *
      * @param item
      * @return
@@ -819,6 +815,11 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     @Override
     public DataPanel addTab(DatabaseObject item) {
         return addTab(item, null);
+    }
+
+    @Override
+    public DataPanel addTab(DatabaseObject object, boolean forceNew) {
+        return addTab(object, null, forceNew);
     }
 
     /**
@@ -884,9 +885,8 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     }
 
     /**
-     * This method is called from within the constructor to
-     * initialize the form. WARNING: Do NOT modify this
-     * code. The content of this method is always
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
      * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
@@ -2819,12 +2819,12 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
    }//GEN-LAST:event_jMenuItem2ActionPerformed
 
 private void jMenuItem51ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem51ActionPerformed
- 
+
 }//GEN-LAST:event_jMenuItem51ActionPerformed
 
 private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton23ActionPerformed
 
-     addOrShowTab(new ReceiptLookup(), Messages.OVERVIEW);
+    addOrShowTab(new ReceiptLookup(), Messages.OVERVIEW);
 }//GEN-LAST:event_jButton23ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -3320,8 +3320,8 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     /**
      * Add a Button to the navigation panel
      *
-     * @param TARGET The target navigation section, which
-     * can be one of the following:<li>NAV_CONTACTS
+     * @param TARGET The target navigation section, which can be one of the
+     * following:<li>NAV_CONTACTS
      * <li>NAV_PRODUCTS <li>NAV_ACCOUNTING
      * <li>NAV_EXTRAS
      *
@@ -3387,7 +3387,8 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 
     /**
      * Paste the current clipboard items (if any)
-     * @return 
+     *
+     * @return
      */
     @Override
     public DatabaseObject[] getClipboardItems() {
@@ -3516,15 +3517,15 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         }
 
 //        if (Platform.isMacOS()) {
-            try {
-                Class util = Class.forName("com.apple.eawt.FullScreenUtilities");
-                Class params[] = new Class[]{Window.class, Boolean.TYPE};
-                Method method = util.getMethod("setWindowCanFullScreen", params);
-                method.invoke(util, this, true);
-            } catch (Exception e) {
-               // Messages.loge("Could not enable OSX fullscreen", e);
-            }
-   //     }
+        try {
+            Class util = Class.forName("com.apple.eawt.FullScreenUtilities");
+            Class params[] = new Class[]{Window.class, Boolean.TYPE};
+            Method method = util.getMethod("setWindowCanFullScreen", params);
+            method.invoke(util, this, true);
+        } catch (Exception e) {
+            // Messages.loge("Could not enable OSX fullscreen", e);
+        }
+        //     }
     }
 
     @Override
@@ -3534,4 +3535,5 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         }
         throw new RuntimeException("Not a YabsApplication: " + getApplication());
     }
+
 }

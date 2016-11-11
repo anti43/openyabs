@@ -188,7 +188,20 @@ public class YabsViewProxy implements YabsView {
         } else {
             return views.getFirst().addTab(object);
         }
-
+    }
+    
+        @Override
+    public synchronized DataPanel addTab(DatabaseObject object, boolean forceNew) {
+        if (views.size() > 1) {
+            for (int i = 1; i < views.size(); i++) {
+                views.get(i).addTab(object, forceNew);
+            }
+        }
+        if (views.isEmpty()) {
+            return null;
+        } else {
+            return views.getFirst().addTab(object, forceNew);
+        }
     }
 
     @Override

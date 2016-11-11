@@ -6,6 +6,8 @@ package mpv5.utils.renderer;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import mpv5.db.common.Context;
@@ -19,6 +21,7 @@ public class TableCellRendererForDatabaseObjects extends DefaultTableCellRendere
 
     private DefaultTableCellRenderer adaptee = new DefaultTableCellRenderer();
     private int dbColumn = 0;
+    private List<Integer> groupingRows = new ArrayList<Integer>();
 
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
@@ -31,6 +34,9 @@ public class TableCellRendererForDatabaseObjects extends DefaultTableCellRendere
 
         if (value instanceof Context) {
             setText(((Context) value).getIdentityClass().getSimpleName());
+        }
+        if (groupingRows.contains(row)) {
+            setText("<html><b>" + adaptee.getText() + "</b></html>");
         } else {
             setText(adaptee.getText());
         }
@@ -38,7 +44,7 @@ public class TableCellRendererForDatabaseObjects extends DefaultTableCellRendere
             setBackground(Color.BLUE);
             setForeground(Color.WHITE);
         }
-        if (value != null && !isSelected) {
+        if (!isSelected) {
             try {
                 setBackground(((DatabaseObject) table.getModel().getValueAt(table.convertRowIndexToModel(row), getDbColumn())).getColor());
             } catch (Exception e) {
@@ -59,5 +65,18 @@ public class TableCellRendererForDatabaseObjects extends DefaultTableCellRendere
      */
     public void setDbColumn(int dbColumn) {
         this.dbColumn = dbColumn;
+    }
+
+    /**
+     * @return the groupingColumn
+     */
+    public List<Integer> getGroupingRows() {
+        return groupingRows;
+    }
+
+    /**
+     */
+    public void setGroupingRows(List<Integer> groupingRows) {
+        this.groupingRows = groupingRows;
     }
 }

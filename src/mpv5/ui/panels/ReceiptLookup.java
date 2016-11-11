@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-/*
+ /*
  * ReceiptLookup.java
  *
  * Created on 07.11.2016, 08:56:18
@@ -21,7 +21,11 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
@@ -42,7 +46,9 @@ import mpv5.utils.models.MPComboBoxModelItem;
  */
 public class ReceiptLookup extends javax.swing.JPanel {
 
-    /** Creates new form ReceiptLookup */
+    /**
+     * Creates new form ReceiptLookup
+     */
     public ReceiptLookup() {
         initComponents();
 
@@ -121,14 +127,22 @@ public class ReceiptLookup extends javax.swing.JPanel {
             @Override
             public void mouseReleased(MouseEvent e) {
                 if (e.isPopupTrigger()) {
-                    popup(e);
+                    try {
+                        popup(e);
+                    } catch (Exception ex) {
+                        Logger.getLogger(ReceiptLookup.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             }
-            
+
             @Override
             public void mousePressed(MouseEvent e) {
                 if (e.isPopupTrigger()) {
-                    popup(e);
+                    try {
+                        popup(e);
+                    } catch (Exception ex) {
+                        Logger.getLogger(ReceiptLookup.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             }
         });
@@ -147,7 +161,7 @@ public class ReceiptLookup extends javax.swing.JPanel {
         return null;
     }
 
-    private void popup(MouseEvent e) {
+    private void popup(MouseEvent e) throws Exception {
         JPopupMenu menu = new JPopupMenu();
         JMenuItem x = new JMenuItem("Add to new invoice");
         x.addActionListener(new ActionListener() {
@@ -155,48 +169,115 @@ public class ReceiptLookup extends javax.swing.JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int[] rows = generalListPanel1.getTable().getSelectedRows();
-                final List<DatabaseObject> list = new ArrayList<>();
                 if (rows.length == 0) {
                     return;
                 }
-                Contact dataOwner = null;
+
+                final Map<Contact, List<Item>> list = new HashMap<Contact, List<Item>>();
                 for (int i = 0; i < rows.length; i++) {
                     int j = rows[i];
                     DatabaseObject obj = (DatabaseObject) generalListPanel1.getTable().getModel().getValueAt(generalListPanel1.getTable().convertRowIndexToModel(j), 1);
                     if (obj instanceof Item) {
-                        if (dataOwner == null) {
-                            try {
-                                dataOwner = ((Item) obj).getContact();
-                            } catch (NodataFoundException ex) {
-                                Log.Debug(ex);
+                        try {
+                            Contact dataOwner = ((Item) obj).getContact();
+                            if (!list.containsKey(dataOwner)) {
+                                list.put(dataOwner, new ArrayList<Item>());
                             }
+                            list.get(dataOwner).add((Item) obj);
+                        } catch (NodataFoundException ex) {
+                            Logger.getLogger(ReceiptLookup.class.getName()).log(Level.SEVERE, null, ex);
                         }
-                        list.add(obj);
                     }
                 }
-                if (list.size() > 0) {
-                    Item i = Item.createFor(dataOwner);
-                    final DataPanel tab = mpv5.YabsViewProxy.instance().getIdentifierView().addTab(i);
+                for (Map.Entry<Contact, List<Item>> entry : list.entrySet()) {
+                    final Contact key = entry.getKey();
+                    final List<Item> value = entry.getValue();
+                    Item i = Item.createFor(key);
+                    final DataPanel tab = mpv5.YabsViewProxy.instance().getIdentifierView().addTab(i, true);
 
                     SwingUtilities.invokeLater(new Runnable() {
 
                         @Override
                         public void run() {
-                            tab.paste(list.toArray(new DatabaseObject[0]));
+                            tab.paste(value.toArray(new DatabaseObject[value.size()]));
                         }
                     });
-
                 }
             }
         });
+
+        JMenuItem x2 = new JMenuItem("Add to new invoice, save and print");
+        x2.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int[] rows = generalListPanel1.getTable().getSelectedRows();
+                if (rows.length == 0) {
+                    return;
+                }
+
+                final Map<Contact, List<Item>> list = new HashMap<Contact, List<Item>>();
+                for (int i = 0; i < rows.length; i++) {
+                    int j = rows[i];
+                    DatabaseObject obj = (DatabaseObject) generalListPanel1.getTable().getModel().getValueAt(generalListPanel1.getTable().convertRowIndexToModel(j), 1);
+                    if (obj instanceof Item) {
+                        try {
+                            Contact dataOwner = ((Item) obj).getContact();
+                            if (!list.containsKey(dataOwner)) {
+                                list.put(dataOwner, new ArrayList<Item>());
+                            }
+                            list.get(dataOwner).add((Item) obj);
+                        } catch (NodataFoundException ex) {
+                            Logger.getLogger(ReceiptLookup.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                }
+                for (Map.Entry<Contact, List<Item>> entry : list.entrySet()) {
+                    final Contact key = entry.getKey();
+                    final List<Item> value = entry.getValue();
+                    Item i = Item.createFor(key);
+                    final DataPanel tab = mpv5.YabsViewProxy.instance().getIdentifierView().addTab(i, true);
+
+                    SwingUtilities.invokeLater(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            tab.paste(value.toArray(new DatabaseObject[value.size()]));
+
+                            try {
+                                DatabaseObject dato = tab.getDataOwner();
+                                tab.actionBeforeSave();
+                                if (dato.getPanelData(tab) && dato.save()) {
+                                    try {
+                                        tab.actionAfterSave();
+                                        tab.setDataOwner(dato, true);
+                                        dato.toPdf(false);
+                                    } catch (Exception e) {
+                                        Log.Debug(this, e);
+                                    }
+                                } else {
+                                    tab.showRequiredFields();
+                                }
+                            } catch (ChangeNotApprovedException ex) {
+                                Log.Debug(this, ex.getMessage());
+                            }
+
+                        }
+                    });
+                }
+            }
+        });
+
         menu.add(x);
+        menu.add(x2);
+
         menu.show(e.getComponent(), e.getX(), e.getY());
     }
 
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

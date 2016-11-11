@@ -1,4 +1,4 @@
-  /*
+/*
  *  This file is part of YaBS.
  *
  *  YaBS is free software: you can redistribute it and/or modify
@@ -308,7 +308,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     public static synchronized void cacheObject(final DatabaseObject databaseObject) {
-        if (databaseObject != null && databaseObject.__getIDS().intValue() > 0) {
+        if (databaseObject != null && databaseObject.__getIDS()> 0) {
+            if(databaseObject.IDENTITY == null)throw new IllegalStateException("IDENTITY must bes set!");
             cache.put(databaseObject.getDbIdentity() + "@" + databaseObject.__getIDS(), new SoftReference<DatabaseObject>(databaseObject));
         }
     }
@@ -442,8 +443,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                         try {
                             //defaults to java.lang.String, Object args are not supported.. possibly later via XMLEncoder?
                             method.invoke(dbo, new Object[]{(argument instanceof byte[])
-                                        ? new String((byte[]) argument)
-                                        : String.valueOf(argument)});
+                                ? new String((byte[]) argument)
+                                : String.valueOf(argument)});
                         } catch (Exception uie) {
                             Log.Debug(dbo, new IllegalArgumentException(method + ": " + argument.getClass(), uie));
                         }
@@ -537,10 +538,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     /**
      * Some DatabaseObjects have unique fields, and calling this method shall
-     * ensure they are unique before saving.
-     * The native implementation
-     * actually does nothing, you need to override the method if you define
-     * unique columns for a DO.
+     * ensure they are unique before saving. The native implementation actually
+     * does nothing, you need to override the method if you define unique
+     * columns for a DO.
      */
     public void ensureUniqueness() {
     }
@@ -560,12 +560,10 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     /**
-     * This can be used to graphically represent a do.
-     * The programmer has
-     * to take care of the icon size! See
-     * {@link MPIcon#getIcon(int width, int height)}
-     * It is recommended to
-     * use 22*22 sized icons which do not need to get resized for performance
+     * This can be used to graphically represent a do. The programmer has to
+     * take care of the icon size! See
+     * {@link MPIcon#getIcon(int width, int height)} It is recommended to use
+     * 22*22 sized icons which do not need to get resized for performance
      * reasons.
      *
      * @return An Icon representing the type of this do
@@ -720,7 +718,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     /**
      *
-     * @return A list of all <b>getters with annotation Relation</b> in this do 
+     * @return A list of all <b>getters with annotation Relation</b> in this do
      */
     public Map<String, Method> getAllRelationGetters() {
         String key = this.getClass().getCanonicalName() + "_Relation";
@@ -899,7 +897,6 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                         ((Triggerable) this).triggerOnUpdate();
                     }
                 }
-
 
                 final String fmessage = message;
                 final String fdbid = this.getDbIdentity();
@@ -1277,13 +1274,13 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                 } else if (DatabaseObject.class.isAssignableFrom(vars.get(key).getReturnType())) {
                     try {
                         vals.add(new String[]{key,
-                                    String.valueOf(vars.get(key).invoke(this, new Object[0]))});
+                            String.valueOf(vars.get(key).invoke(this, new Object[0]))});
                     } catch (Exception ex) {
                         vals.add(new String[]{key, ""});
                     }
                 } else {
                     vals.add(new String[]{key,
-                                String.valueOf(vars.get(key).invoke(this, new Object[0]))});
+                        String.valueOf(vars.get(key).invoke(this, new Object[0]))});
                 }
             } catch (Exception n) {
                 Log.Debug(this, n);
@@ -1345,7 +1342,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         for (String name : vars.keySet()) {
             try {
                 vals.add(new Object[]{name.toLowerCase(),
-                            (vars.get(name).invoke(this, new Object[0]))});
+                    (vars.get(name).invoke(this, new Object[0]))});
             } catch (Exception n) {
                 Log.Debug(this, "Failed to invoke " + vars.get(name) + " ( " + this + " ) ");
 //                Log.Debug(this, n);
@@ -1358,9 +1355,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     /**
      *
      * @return A list containing pairs of <b>VARNAME</b> and their <b>VALUE</b>
-     * of this Databaseobject, those which return in <code>getAllRelationGetters()</code>, as
-     * two-fields Object-Array. Example: new Object[]{"dateadded",
-     * java.util.Date }
+     * of this Databaseobject, those which return in
+     * <code>getAllRelationGetters()</code>, as two-fields Object-Array.
+     * Example: new Object[]{"dateadded", java.util.Date }
      */
     public List<Object[]> getValues5() {
         Map<String, Method> vars = getAllRelationGetters();
@@ -1368,7 +1365,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         for (String name : vars.keySet()) {
             try {
                 vals.add(new Object[]{name.toLowerCase(),
-                            (vars.get(name).invoke(this, new Object[0]))});
+                    (vars.get(name).invoke(this, new Object[0]))});
             } catch (Exception n) {
                 Log.Debug(this, "Failed to invoke " + vars.get(name) + " ( " + this + " ) ");
 //                Log.Debug(this, n);
@@ -1506,6 +1503,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             if (cdo == null) {
                 try {
                     Object obj = context.getIdentityClass().newInstance();
+                    ((DatabaseObject) obj).IDENTITY = new Entity<>(context, -1);
                     ((DatabaseObject) obj).fetchDataOf(id, includeInvisible);
                     cacheObject((DatabaseObject) obj);
                     return (DatabaseObject) obj;
@@ -1534,6 +1532,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     public static DatabaseObject getObject(Context context, String cname) throws NodataFoundException {
         try {
             Object obj = context.getIdentityClass().newInstance();
+            ((DatabaseObject) obj).IDENTITY = new Entity<>(context, -1);
             if (((DatabaseObject) obj).fetchDataOf(cname)) {
                 cacheObject((DatabaseObject) obj);
                 return (DatabaseObject) obj;
@@ -1561,6 +1560,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     public static DatabaseObject getObject(Context context, String column, Object value) throws NodataFoundException {
         try {
             Object obj = context.getIdentityClass().newInstance();
+            ((DatabaseObject) obj).IDENTITY = new Entity<>(context, -1);
             if (((DatabaseObject) obj).fetchDataOf(column, value)) {
                 cacheObject((DatabaseObject) obj);
                 return (DatabaseObject) obj;
@@ -1785,9 +1785,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     /**
-     * Return objects which are referenced in the given Context@table As
-     * list of getObject(inReference, (SELECT ids FROM Context@table WHERE
-     * dataOwnerIDS = dataowner.ids))
+     * Return objects which are referenced in the given Context@table As list of
+     * getObject(inReference, (SELECT ids FROM Context@table WHERE dataOwnerIDS
+     * = dataowner.ids))
      *
      * @param <T>
      * @param dataOwner
@@ -1834,9 +1834,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 //        return cvals;
 //    }
     /**
-     * Return objects which are referenced in the given Context@table 
-     * As list of getObject(inReference, (SELECT ids FROM Context@table WHERE
-     * dataOwnerIDS = dataowner.ids))
+     * Return objects which are referenced in the given Context@table As list of
+     * getObject(inReference, (SELECT ids FROM Context@table WHERE dataOwnerIDS
+     * = dataowner.ids))
      *
      * @param <T>
      * @param dataOwner
@@ -2185,7 +2185,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             Method method = m[i];
             if (method.getName().startsWith("set")) {
                 Object o = method.invoke(sdo, new Object[]{this.getClass().getMethod(method.getName().replace("set", "get"),
-                            (Class[]) null).invoke(this, new Object[0])});
+                    (Class[]) null).invoke(this, new Object[0])});
             }
         }
     }
@@ -2846,7 +2846,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     /**
-     * Returns the first found object with Context r within this object's getters (all)
+     * Returns the first found object with Context r within this object's
+     * getters (all)
+     *
      * @param r
      * @return R
      */

@@ -14,17 +14,17 @@
  *      You should have received a copy of the GNU General Public License
  *      along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*
+ /*
  * GeneralListPanel.java
  *
  * Created on 03.04.2009, 15:26:37
  */
 package mpv5.ui.panels;
 
-import freemarker.template.utility.Collections12;
 import java.awt.Color;
 import java.awt.Component;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -61,7 +61,7 @@ import mpv5.ui.misc.TableViewPersistenceHandler;
 
 /**
  *
- *  
+ *
  */
 public final class GeneralListPanel extends javax.swing.JPanel {
 
@@ -73,7 +73,9 @@ public final class GeneralListPanel extends javax.swing.JPanel {
     private Context groupBy;
     private Random random = new Random(43);
 
-    /** Creates new form GeneralListPanel
+    /**
+     * Creates new form GeneralListPanel
+     *
      * @param <T>
      * @param list
      */
@@ -83,7 +85,7 @@ public final class GeneralListPanel extends javax.swing.JPanel {
     }
 
     /**
-     * 
+     *
      */
     public GeneralListPanel() {
         initComponents();
@@ -91,10 +93,16 @@ public final class GeneralListPanel extends javax.swing.JPanel {
         rend.setDbColumn(1);
 
         listtable.setDefaultRenderer(String.class, rend);
+        listtable.setDefaultRenderer(Object.class, rend);
         listtable.setDefaultRenderer(Date.class, rend);
         listtable.setDefaultRenderer(DatabaseObject.class, rend);
         listtable.setDefaultRenderer(Context.class, rend);
+        listtable.setGridColor(Color.LIGHT_GRAY);
         //listtable.setDefaultRenderer(ImageIcon.class, rend);
+
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.YEAR, c.get(Calendar.YEAR) - 1);
+        timeframeChooser1.setTime(new vTimeframe(c.getTime(), new Date()));
 
         labeledCombobox1.setSearchEnabled(true);
         labeledCombobox1.setContext(Context.getGroup());
@@ -116,6 +124,7 @@ public final class GeneralListPanel extends javax.swing.JPanel {
 
     /**
      * Show the data
+     *
      * @param <T>
      * @param map
      */
@@ -134,19 +143,18 @@ public final class GeneralListPanel extends javax.swing.JPanel {
         }
 
         setData(ndata);
-        labeledCombobox1.setSearchEnabled(true);
-        labeledCombobox1.setContext(Context.getGroup());
-        labeledCombobox1.triggerSearch();
     }
 
     /**
      * Set the data of the list
+     *
      * @param <T>
      * @param list
      */
     public <T extends DatabaseObject> void setData(List<T> list) {
         jLabel1.setText(list.size() + " " + Messages.ENTRIES);
         odata = list;
+        List<Integer> groupingRows = new ArrayList<>();
 
         Object[][] model = null;
         if (groupBy != null) {
@@ -176,18 +184,15 @@ public final class GeneralListPanel extends javax.swing.JPanel {
 
                 data0[0] = "<html><b>" + groupBy.getIdentityClass().getSimpleName() + "</b></html>";
                 data0[1] = key;
-                data0[2] = User.getUsername(key.__getIntaddedby());
-                data0[3] = key.__getDateadded();
-                try {
-                    data0[4] = DatabaseObject.getObject(Context.getGroup(), key.__getGroupsids());
-                } catch (NodataFoundException ex) {
-                    data0[4] = "N/A";
-                }
+                data0[2] = null;
+                data0[3] = null;
+                data0[4] = null;
+                
 
 //            data[i][4] = databaseObject.getColor();
                 data0[5] = key.getIcon();
                 //data[overallindex][6] = Item.getTypeString(key.getContext().getItemType());
-
+                groupingRows.add(overallindex);
                 overallindex++;
 
                 final float hue = random.nextFloat();
@@ -251,21 +256,23 @@ public final class GeneralListPanel extends javax.swing.JPanel {
         }
 
         MPTableModel m = new MPTableModel(model);
-        m.setTypes(new Class[]{Integer.class, DatabaseObject.class, String.class, Date.class, DatabaseObject.class, ImageIcon.class});
+        m.setTypes(new Class[]{Object.class, DatabaseObject.class, String.class, Date.class, DatabaseObject.class, ImageIcon.class});
+        rend.setGroupingRows(groupingRows);
         listtable.setModel(m);
 
 //        TableFormat.hideHeader(listtable);
 //        TableFormat.stripColumn(listtable, 4);
-
 //        TableFormat.stripColumn(jTable1, 5);
     }
 
     /**
      * Filter by group
+     *
      * @param g
      */
     @SuppressWarnings({"unchecked"})
     public void filterByGroup(Group g) {
+        List fullData = odata;
         List<DatabaseObject> list = new Vector<DatabaseObject>();
         if (g.__getIDS().intValue() != 1) {
             for (int i = 0; i < odata.size(); i++) {
@@ -278,15 +285,17 @@ public final class GeneralListPanel extends javax.swing.JPanel {
             list = odata;
         }
         setData(list);
+        odata = fullData;
     }
 
     /**
      * Filter by group
+     *
      * @param g
      */
     @SuppressWarnings("unchecked")
     public void filterByTimeframe(vTimeframe g) {
-
+        List fullData = odata;
         List<DatabaseObject> list = new Vector<DatabaseObject>();
         for (int i = 0; i < odata.size(); i++) {
             DatabaseObject d = (DatabaseObject) odata.get(i);
@@ -295,12 +304,13 @@ public final class GeneralListPanel extends javax.swing.JPanel {
             }
         }
         setData(list);
+        odata = fullData;
     }
 
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -343,7 +353,6 @@ public final class GeneralListPanel extends javax.swing.JPanel {
             }
         ));
         listtable.setName("listtable"); // NOI18N
-        listtable.setShowVerticalLines(false);
         listtable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 listtableMouseClicked(evt);

@@ -655,7 +655,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
         map.put("netvaluef", FormatNumber.formatLokalCurrency(__getNetvalue().subtract(__getDiscountvalue())));
         map.put("taxvaluef", FormatNumber.formatLokalCurrency(__getTaxvalue()));
         map.put("grosnodiscvaluef", FormatNumber.formatLokalCurrency(__getTaxvalue().add(__getNetvalue()).add(__getDiscountGrosvalue()).subtract(__getDiscountvalue())));
-        map.put("grosvaluef", FormatNumber.formatLokalCurrency(__getTaxvalue().add(__getNetvalue().subtract(__getDiscountvalue()))));
+        map.put("grosvaluef", FormatNumber.formatLokalCurrency(getGrossAmount()));
         map.put("discountvaluef", FormatNumber.formatLokalCurrency(__getDiscountvalue()));
         map.put("discounttaxf", FormatNumber.formatLokalCurrency(__getDiscountGrosvalue().subtract(__getDiscountvalue())));
 
@@ -724,16 +724,12 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
         }
         return saved;
     }
-
+    
     @Override
     public String toString() {
-        try {
-            return ((Contact) getObject(Context.getContact(), contactsids)).__getCname() + "-" + getCname();
-        } catch (NodataFoundException ex) {
-            return super.toString();
-        }
+        return getCname() + " (" + (FormatNumber.formatLokalCurrency(getGrossAmount()))+ ")";
     }
-
+    
     @Override
     public boolean reset() {
         if (ids > 0) {
@@ -854,5 +850,9 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
             default:
                 return false;
         }
+    }
+
+    public BigDecimal getGrossAmount() {
+        return __getTaxvalue().add(__getNetvalue().subtract(__getDiscountvalue()));
     }
 }
