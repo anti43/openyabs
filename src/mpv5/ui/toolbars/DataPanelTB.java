@@ -514,18 +514,6 @@ public class DataPanelTB extends javax.swing.JPanel implements ActionListener, I
         DatabaseObject dato = parents.getDataOwner();
         if (dato.isExisting() && parents instanceof ExportablePanel) {
             ((ExportablePanel) parents).pdf();
-            final String fmessage = Messages.PDF + dato.__getCname();
-            final String fdbid = dato.getDbIdentity();
-            final int fids = dato.__getIDS();
-            final int fgids = dato.__getGroupsids();
-            Runnable runnable = new Runnable() {
-
-                @Override
-                public void run() {
-                    QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, mpv5.db.objects.User.getCurrentUser().__getCname(), fdbid, fids, fgids);
-                }
-            };
-            new Thread(runnable).start();
         }
 
     }//GEN-LAST:event_pdfButtonActionPerformed
@@ -534,18 +522,6 @@ public class DataPanelTB extends javax.swing.JPanel implements ActionListener, I
         DatabaseObject dato = parents.getDataOwner();
         if (dato.isExisting()) {
             ((ExportablePanel) parents).odt();
-            final String fmessage = Messages.ODT + dato.__getCname();
-            final String fdbid = dato.getDbIdentity();
-            final int fids = dato.__getIDS();
-            final int fgids = dato.__getGroupsids();
-            Runnable runnable = new Runnable() {
-
-                @Override
-                public void run() {
-                    QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, mpv5.db.objects.User.getCurrentUser().__getCname(), fdbid, fids, fgids);
-                }
-            };
-            new Thread(runnable).start();
         }
 
     }//GEN-LAST:event_odtButtonActionPerformed

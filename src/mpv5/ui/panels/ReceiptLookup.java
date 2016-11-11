@@ -38,6 +38,9 @@ import mpv5.db.objects.Contact;
 import mpv5.db.objects.Item;
 import mpv5.handler.MPEnum;
 import mpv5.logging.Log;
+import mpv5.ui.dialogs.Wizard;
+import mpv5.ui.dialogs.Wizardable;
+import mpv5.ui.dialogs.subcomponents.wizard_MassExportPanel;
 import mpv5.utils.models.MPComboBoxModelItem;
 
 /**
@@ -172,7 +175,6 @@ public class ReceiptLookup extends javax.swing.JPanel {
                 if (rows.length == 0) {
                     return;
                 }
-
                 final Map<Contact, List<Item>> list = new HashMap<Contact, List<Item>>();
                 for (int i = 0; i < rows.length; i++) {
                     int j = rows[i];
@@ -189,88 +191,14 @@ public class ReceiptLookup extends javax.swing.JPanel {
                         }
                     }
                 }
-                for (Map.Entry<Contact, List<Item>> entry : list.entrySet()) {
-                    final Contact key = entry.getKey();
-                    final List<Item> value = entry.getValue();
-                    Item i = Item.createFor(key);
-                    final DataPanel tab = mpv5.YabsViewProxy.instance().getIdentifierView().addTab(i, true);
 
-                    SwingUtilities.invokeLater(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            tab.paste(value.toArray(new DatabaseObject[value.size()]));
-                        }
-                    });
-                }
-            }
-        });
-
-        JMenuItem x2 = new JMenuItem("Add to new invoice, save and print");
-        x2.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int[] rows = generalListPanel1.getTable().getSelectedRows();
-                if (rows.length == 0) {
-                    return;
-                }
-
-                final Map<Contact, List<Item>> list = new HashMap<Contact, List<Item>>();
-                for (int i = 0; i < rows.length; i++) {
-                    int j = rows[i];
-                    DatabaseObject obj = (DatabaseObject) generalListPanel1.getTable().getModel().getValueAt(generalListPanel1.getTable().convertRowIndexToModel(j), 1);
-                    if (obj instanceof Item) {
-                        try {
-                            Contact dataOwner = ((Item) obj).getContact();
-                            if (!list.containsKey(dataOwner)) {
-                                list.put(dataOwner, new ArrayList<Item>());
-                            }
-                            list.get(dataOwner).add((Item) obj);
-                        } catch (NodataFoundException ex) {
-                            Logger.getLogger(ReceiptLookup.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
-                }
-                for (Map.Entry<Contact, List<Item>> entry : list.entrySet()) {
-                    final Contact key = entry.getKey();
-                    final List<Item> value = entry.getValue();
-                    Item i = Item.createFor(key);
-                    final DataPanel tab = mpv5.YabsViewProxy.instance().getIdentifierView().addTab(i, true);
-
-                    SwingUtilities.invokeLater(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            tab.paste(value.toArray(new DatabaseObject[value.size()]));
-
-                            try {
-                                DatabaseObject dato = tab.getDataOwner();
-                                tab.actionBeforeSave();
-                                if (dato.getPanelData(tab) && dato.save()) {
-                                    try {
-                                        tab.actionAfterSave();
-                                        tab.setDataOwner(dato, true);
-                                        dato.toPdf(false);
-                                    } catch (Exception e) {
-                                        Log.Debug(this, e);
-                                    }
-                                } else {
-                                    tab.showRequiredFields();
-                                }
-                            } catch (ChangeNotApprovedException ex) {
-                                Log.Debug(this, ex.getMessage());
-                            }
-
-                        }
-                    });
-                }
+                Wizard w = new Wizard(true);
+                w.addPanel(new wizard_MassExportPanel(list));
+                w.showWiz();
             }
         });
 
         menu.add(x);
-        menu.add(x2);
-
         menu.show(e.getComponent(), e.getX(), e.getY());
     }
 

@@ -2830,7 +2830,13 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         if (this instanceof Templateable) {
             Templateable me = (Templateable) this;
             if (TemplateHandler.isLoaded(me)) {
-                File xf = new File(User.getSaveDir(this), me.getFormatHandler().toUserString() + (convertToPdf ? ".pdf" : ".odt"));
+                File d = User.getSaveDir(this);
+                d.mkdirs();
+                if(!d.exists()){
+                    Notificator.raiseNotification("Cannot create save dir: " + d);
+                }
+                File xf = new File(d, me.getFormatHandler().toUserString() + (convertToPdf ? ".pdf" : ".odt"));
+                Log.Debug(this, "Export to: " + xf);
                 Waiter x;
                 if (showDialog) {
                     x = new DialogForFile(DialogForFile.FILES_ONLY, xf);
@@ -2842,6 +2848,19 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                 } else {
                     new Job(Export.sourceFile(null, TemplateHandler.loadTemplate(me), this), x).execute();
                 }
+
+                final String fmessage = Messages.PDF + __getCname() + " " + xf;
+                final String fdbid = getDbIdentity();
+                final int fids = __getIDS();
+                final int fgids = __getGroupsids();
+                Runnable runnable = new Runnable() {
+
+                    @Override
+                    public void run() {
+                        QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, mpv5.db.objects.User.getCurrentUser().__getCname(), fdbid, fids, fgids);
+                    }
+                };
+                new Thread(runnable).start();
             } else {
                 YabsViewProxy.instance().addMessage(Messages.NO_TEMPLATE_LOADED + ": " + getClass().getSimpleName() + " (" + mpv5.db.objects.User.getCurrentUser() + ")", Color.YELLOW);
             }
