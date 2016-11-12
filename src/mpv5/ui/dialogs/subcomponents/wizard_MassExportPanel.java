@@ -5,13 +5,13 @@
  */
 package mpv5.ui.dialogs.subcomponents;
 
+import java.awt.Cursor;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.scene.Cursor;
+import java.util.logging.Logger; 
 import javax.swing.SwingUtilities;
 import mpv5.Main;
 import mpv5.db.common.Context;
@@ -176,7 +176,7 @@ public class wizard_MassExportPanel extends javax.swing.JPanel implements Wizard
 
             @Override
             public void run() {
-                setCursor(Cursor.WAIT);
+                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                 for (Map.Entry<Contact, List<Item>> entry : data.entrySet()) {
                     try {
                         final Contact key = entry.getKey();
