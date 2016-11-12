@@ -2833,7 +2833,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                 File d = User.getSaveDir(this);
                 d.mkdirs();
                 if(!d.exists()){
-                    Notificator.raiseNotification("Cannot create save dir: " + d);
+                    Notificator.raiseNotification(Messages.FILE_OPEN_FAILED + " " + d);
+                    return;
                 }
                 File xf = new File(d, me.getFormatHandler().toUserString() + (convertToPdf ? ".pdf" : ".odt"));
                 Log.Debug(this, "Export to: " + xf);

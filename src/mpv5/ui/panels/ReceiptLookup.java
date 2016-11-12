@@ -9,10 +9,7 @@
  * Created on 07.11.2016, 08:56:18
  */
 package mpv5.ui.panels;
-
-import ag.ion.bion.officelayer.internal.application.Messages;
-import com.sun.org.apache.bcel.internal.generic.Select;
-import freemarker.template.utility.Collections12;
+  
 import java.awt.AWTEventMulticaster;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -193,7 +190,7 @@ public class ReceiptLookup extends javax.swing.JPanel {
                 }
 
                 Wizard w = new Wizard(true);
-                w.addPanel(new wizard_MassExportPanel(list));
+                w.addPanel(new wizard_MassExportPanel(w, list));
                 w.showWiz();
             }
         });
