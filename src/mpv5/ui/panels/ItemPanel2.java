@@ -747,7 +747,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.setName("jPanel2"); // NOI18N
-        jPanel2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+        jPanel2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 10, 5));
 
         contactname.set_Label(bundle.getString("ItemPanel2.contactname._Label")); // NOI18N
         contactname.setName("contactname"); // NOI18N
@@ -775,23 +775,21 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 811, Short.MAX_VALUE)
-                    .addComponent(jPanel10, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(jPanel9, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 811, Short.MAX_VALUE))
+                    .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 821, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jToolBar1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -799,9 +797,8 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         jToolBar1.setRollover(true);
         jToolBar1.setName("jToolBar1"); // NOI18N
 
-        toorder.setBackground(new java.awt.Color(255, 255, 255));
         toorder.setText(bundle.getString("ItemPanel2.toorder.text_1")); // NOI18N
-        toorder.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        toorder.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         toorder.setEnabled(false);
         toorder.setFocusable(false);
         toorder.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -817,9 +814,8 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         });
         jToolBar1.add(toorder);
 
-        toinvoice.setBackground(new java.awt.Color(255, 255, 255));
         toinvoice.setText(bundle.getString("ItemPanel2.toinvoice.text")); // NOI18N
-        toinvoice.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        toinvoice.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         toinvoice.setEnabled(false);
         toinvoice.setFocusable(false);
         toinvoice.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -845,9 +841,8 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         jSeparator1.setName("jSeparator1"); // NOI18N
         jToolBar1.add(jSeparator1);
 
-        button_reminders.setBackground(new java.awt.Color(255, 255, 255));
         button_reminders.setText(bundle.getString("ItemPanel2.button_reminders.text")); // NOI18N
-        button_reminders.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        button_reminders.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         button_reminders.setEnabled(false);
         button_reminders.setFocusable(false);
         button_reminders.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -863,9 +858,8 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         });
         jToolBar1.add(button_reminders);
 
-        jButton2.setBackground(new java.awt.Color(255, 255, 255));
         jButton2.setText(bundle.getString("ItemPanel2.jButton2.text")); // NOI18N
-        jButton2.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        jButton2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         jButton2.setFocusable(false);
         jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton2.setMaximumSize(new java.awt.Dimension(333, 20));
@@ -883,10 +877,9 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         jSeparator7.setName("jSeparator7"); // NOI18N
         jToolBar1.add(jSeparator7);
 
-        button_schedule.setBackground(new java.awt.Color(255, 255, 255));
         button_schedule.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/kalarm.png"))); // NOI18N
         button_schedule.setText(bundle.getString("ItemPanel2.button_schedule.text")); // NOI18N
-        button_schedule.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        button_schedule.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         button_schedule.setEnabled(false);
         button_schedule.setMaximumSize(new java.awt.Dimension(333, 20));
         button_schedule.setMinimumSize(new java.awt.Dimension(80, 20));
@@ -904,9 +897,8 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         });
         jToolBar1.add(button_schedule);
 
-        button_preview.setBackground(new java.awt.Color(255, 255, 255));
         button_preview.setText(bundle.getString("ItemPanel2.button_preview.text")); // NOI18N
-        button_preview.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        button_preview.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         button_preview.setEnabled(false);
         button_preview.setFocusable(false);
         button_preview.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -922,9 +914,8 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         });
         jToolBar1.add(button_preview);
 
-        button_deliverynote.setBackground(new java.awt.Color(255, 255, 255));
         button_deliverynote.setText(bundle.getString("ItemPanel2.button_deliverynote.text")); // NOI18N
-        button_deliverynote.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        button_deliverynote.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         button_deliverynote.setEnabled(false);
         button_deliverynote.setFocusable(false);
         button_deliverynote.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -940,9 +931,8 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         });
         jToolBar1.add(button_deliverynote);
 
-        button_orderconf.setBackground(new java.awt.Color(255, 255, 255));
         button_orderconf.setText(bundle.getString("ItemPanel2.button_orderconf.text")); // NOI18N
-        button_orderconf.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        button_orderconf.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         button_orderconf.setEnabled(false);
         button_orderconf.setFocusable(false);
         button_orderconf.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -1128,7 +1118,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                 .addComponent(upItem)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(upItem1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(57, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -1138,7 +1128,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addComponent(itemPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 801, Short.MAX_VALUE))
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 860, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1155,7 +1145,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         rightpaneLayout.setHorizontalGroup(
             rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 835, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 835, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         rightpaneLayout.setVerticalGroup(
@@ -1163,9 +1153,9 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
             .addGroup(rightpaneLayout.createSequentialGroup()
                 .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(3, 3, 3)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE))
+                .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, 205, Short.MAX_VALUE))
         );
 
         jTabbedPane2.addTab(bundle.getString("ItemPanel2.rightpane.TabConstraints.tabTitle"), rightpane); // NOI18N
@@ -1330,13 +1320,13 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         jPanel8Layout.setHorizontalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
-                .addContainerGap(360, Short.MAX_VALUE)
+                .addContainerGap(419, Short.MAX_VALUE)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(addfile, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(removefile, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)))
             .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel8Layout.createSequentialGroup()
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 353, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 412, Short.MAX_VALUE)
                     .addGap(31, 31, 31)))
         );
         jPanel8Layout.setVerticalGroup(
@@ -1345,9 +1335,9 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                 .addComponent(addfile)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(removefile)
-                .addContainerGap(224, Short.MAX_VALUE))
+                .addContainerGap(252, Short.MAX_VALUE))
             .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 308, Short.MAX_VALUE))
         );
 
         jSplitPane1.setRightComponent(jPanel8);
