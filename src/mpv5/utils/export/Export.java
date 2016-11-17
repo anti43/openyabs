@@ -360,6 +360,7 @@ public final class Export extends HashMap<String, Object> implements Waitable {
         ex.putAll(hm1);
         ex.setTemplate(preloadedTemplate.getExFile());
         ex.setTargetFile(f2);
+        Log.Debug(Export.class, "Target file: " +  f2);
         return ex;
     }
 
@@ -481,9 +482,12 @@ public final class Export extends HashMap<String, Object> implements Waitable {
                 if (exceptions == null) {
                     if (object instanceof File) {
                         FileDirectoryHandler.copyFile2((File) object, targetFile);
+                    }else {
+                        Log.Debug(this, "Not a file: " + String.valueOf(object));
                     }
                 } else {
                     Notificator.raiseNotification(exceptions, false);
+                    Log.Debug(exceptions);
                 }
             }
         };
