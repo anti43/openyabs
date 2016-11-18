@@ -556,6 +556,8 @@ public class Main implements Runnable {
         }
 
         try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            
             splash = new SplashScreen(new ImageIcon(Main.class.getResource(mpv5.globals.Constants.SPLASH_IMAGE)));
             splash.init(12);
             Log.Print(Messages.START_MESSAGE);

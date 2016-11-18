@@ -109,16 +109,18 @@ public class SplashScreen extends JDialog {
         setUndecorated(true);
         setResizable(false);
 
-//$2"OptionPane.errorDialog.border.background"));
+        jPanel1.setBackground(javax.swing.UIManager.getDefaults().getColor("OptionPane.errorDialog.border.background"));
         jPanel1.setPreferredSize(new java.awt.Dimension(450, 300));
 
-        progress.setForeground(new java.awt.Color(23, 23, 23));
+        progress.setFont(progress.getFont());
+        progress.setForeground(new java.awt.Color(240, 240, 240));
         progress.setText("Progress");
 
         info.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
         info.setText("Version info");
 
-        jProgressBar1.setBorderPainted(false);
+        jProgressBar1.setForeground(new java.awt.Color(0, 204, 51));
+        jProgressBar1.setIndeterminate(true);
         jProgressBar1.setStringPainted(true);
 
         title.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
@@ -134,7 +136,7 @@ public class SplashScreen extends JDialog {
         jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
         jScrollPane1.setOpaque(false);
 
-//$2java.awt.Color(1, 1, 1));
+        jTextArea1.setBackground(new java.awt.Color(1, 1, 1));
         jTextArea1.setColumns(20);
         jTextArea1.setFont(jTextArea1.getFont().deriveFont(jTextArea1.getFont().getSize()-1f));
         jTextArea1.setForeground(new java.awt.Color(254, 254, 254));
@@ -154,10 +156,10 @@ public class SplashScreen extends JDialog {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(progress, javax.swing.GroupLayout.DEFAULT_SIZE, 426, Short.MAX_VALUE)
+                    .addComponent(progress, javax.swing.GroupLayout.DEFAULT_SIZE, 430, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(info, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 72, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 76, Short.MAX_VALUE)
                         .addComponent(title, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jProgressBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 426, Short.MAX_VALUE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -173,10 +175,9 @@ public class SplashScreen extends JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 11, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 14, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(progress)
-                .addContainerGap())
+                .addComponent(progress, javax.swing.GroupLayout.DEFAULT_SIZE, 22, Short.MAX_VALUE))
         );
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
