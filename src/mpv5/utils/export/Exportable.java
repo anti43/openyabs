@@ -19,11 +19,12 @@ package mpv5.utils.export;
 import java.io.File;
 import java.util.HashMap;
 import mpv5.db.objects.Template;
+import mpv5.logging.Log;
 
 /**
  *This class specifies export specific methods
  */
-public abstract class Exportable extends File implements Runnable {
+public abstract class Exportable extends File {
 
     private File target;
     private HashMap<String, Object> data;
@@ -38,6 +39,7 @@ public abstract class Exportable extends File implements Runnable {
      * @param target
      */
     public void setTarget(File target) {
+        Log.Debug(System.identityHashCode(this), "target: " + target);
         this.target = target;
     }
 
@@ -76,6 +78,14 @@ public abstract class Exportable extends File implements Runnable {
      */
     public Template getTemplate() {
         return template;
+    }
+
+    abstract void run();
+
+    void reset() {
+        data = null;
+        template = null;
+        target = null;
     }
 }
 

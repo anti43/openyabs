@@ -189,7 +189,7 @@ public class ReceiptLookup extends javax.swing.JPanel {
                     }
                 }
 
-                Wizard w = new Wizard(true);
+                Wizard w = new Wizard(false);
                 w.addPanel(new wizard_MassExportPanel(w, list));
                 w.showWiz();
             }

@@ -81,5 +81,7 @@ public interface YabsView{
     public void showOfficeStatus(boolean b, String description);
 
     public void showServerStatus(boolean b);
+
+    public void removeTab(DataPanel tab);
     
 }

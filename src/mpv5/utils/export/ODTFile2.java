@@ -84,24 +84,25 @@ public class ODTFile2 extends Exportable {
         report.addPreprocessor(ODTConstants.STYLES_XML_ENTRY, YabsODTPreprocessor.INSTANCE);
     }
 
-    @Override
+
     public void run() {
         try {
-            Log.Debug(this, "run odt run: " + this);
+            final File target = getTarget();
+            Log.Debug(this, "run odt run: " + this + " to file " + target);
             mpv5.YabsViewProxy.instance().setWaiting(true);
-            if (getTarget().getAbsolutePath().endsWith(".pdf")) {
+            if (target.getAbsolutePath().endsWith(".pdf")) {
                 outtmp = new FileOutputStream(f = FileDirectoryHandler.getTempFile("odt"));
                 fillFields(outtmp);
                 Log.Debug(this, "Replaced Fields of odt file: " + this + " to " + f);
                 document = OdfTextDocument.loadDocument(f);
                 Log.Debug(this, "Loaded odt file: " + f);
-                PdfConverter.getInstance().convert(document, new FileOutputStream(getTarget()), options);
-                Log.Debug(this, "Completed pdf file: " + getTarget());
+                PdfConverter.getInstance().convert(document, new FileOutputStream(target), options);
+                Log.Debug(this, "Completed pdf file: " + target);
+                Log.Debug(this, "Test access pdf file exists: " + target.exists() + " readable: " +  target.canRead());
             } else {
-                fillFields(new FileOutputStream(getTarget()));
-                Log.Debug(this, "Replaced Fields of odt file: " + this + " to " + getTarget());
+                fillFields(new FileOutputStream(target));
+                Log.Debug(this, "Replaced Fields of odt file: " + this + " to " + target);
             }
-
         } catch (IOException ex) {
             Log.Debug(ex);
         } catch (ODFConverterException ex) {

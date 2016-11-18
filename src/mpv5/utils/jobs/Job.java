@@ -123,4 +123,10 @@ public class Job extends SwingWorker<Object, Object> {
             mpv5.YabsViewProxy.instance().addMessage(message);
         }
     }
+
+    public void executeSync() throws Exception { 
+        Log.Debug(this, "executeSync");
+        doInBackground();
+        done();
+    }
 }

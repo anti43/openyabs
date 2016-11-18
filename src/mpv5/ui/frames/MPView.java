@@ -15,6 +15,7 @@ import java.awt.Cursor;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.ScrollPane;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
@@ -555,6 +556,8 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
             return null;
         }
     }
+    
+      
 
     @Override
     public final void reloadFavorites() {
@@ -3412,6 +3415,20 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     @Override
     public void addOrShowTab(DatabaseObject dbo) {
         addTab(dbo);
+    }
+
+    @Override
+    public void removeTab(DataPanel t) {
+        int count = getTabPane().getTabCount();
+        for (int i = 0; i < count; i++) {
+            Component c = getTabPane().getComponent(i);
+            if (c == t) {
+                getTabPane().remove(c);
+            }else if(c instanceof JScrollPane && ((JScrollPane)c).getViewport().getView() == t){
+                getTabPane().remove(c);
+            }
+        }
+        getTabPane().validate();
     }
 
     @Override

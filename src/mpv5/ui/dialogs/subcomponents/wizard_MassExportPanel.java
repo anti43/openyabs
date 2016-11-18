@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
-import java.util.logging.Logger; 
+import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 import mpv5.Main;
 import mpv5.db.common.Context;
@@ -44,29 +44,43 @@ public class wizard_MassExportPanel extends javax.swing.JPanel implements Wizard
      *
      * @param data
      */
-    public wizard_MassExportPanel(WizardMaster master, Map<Contact, List<Item>> data) {
+    public wizard_MassExportPanel(WizardMaster master, final Map<Contact, List<Item>> data) {
         initComponents();
         this.master = master;
         this.data = data;
-
         labeledCombobox1.setSearchEnabled(true);
         labeledCombobox1.setContext(Context.getGroup());
         labeledCombobox1.triggerSearch();
 
-        Set<String> res = new HashSet<String>();
-        for (Map.Entry<Contact, List<Item>> entry : data.entrySet()) {
-            Contact key = entry.getKey();
-            List<Item> value = entry.getValue();
-            for (int i = 0; i < value.size(); i++) {
-                Item get = value.get(i);
-                res.add(User.getSaveDir(get).toString());
+        /*    
+       jTextArea1.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+       Runnable runnable = new Runnable() {
+            public void run() {
+
+                Set<String> res = new HashSet<>();
+                for (Map.Entry<Contact, List<Item>> entry : data.entrySet()) {
+                    Contact key = entry.getKey();
+                    List<Item> value = entry.getValue();
+                    for (int i = 0; i < value.size(); i++) {
+                        Item get = value.get(i);
+                        res.add(User.getSaveDir(get).toString());
+                    }
+                }
+                String t = "";
+                for (String path : res) {
+                    t += path + "\n";
+                }
+                final String tt = t;
+                Runnable runnable1 = new Runnable() {
+                    public void run() {
+                        jTextArea1.setText(tt);
+                        jTextArea1.setCursor(Cursor.getDefaultCursor());
+                    }
+                };
+                SwingUtilities.invokeLater(runnable1);
             }
-        }
-        String t = "";
-        for (String path : res) {
-            t += path + "\n";
-        }
-        jTextArea1.setText(t);
+        };
+        new Thread(runnable).start();*/
     }
 
     /**
@@ -81,10 +95,12 @@ public class wizard_MassExportPanel extends javax.swing.JPanel implements Wizard
         labeledCombobox1 = new mpv5.ui.beans.LabeledCombobox();
         jLabel1 = new javax.swing.JLabel();
         jCheckBox1 = new javax.swing.JCheckBox();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
         jCheckBox2 = new javax.swing.JCheckBox();
         jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jCheckBox3 = new javax.swing.JCheckBox();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTextArea2 = new javax.swing.JTextArea();
 
         setName("Form"); // NOI18N
 
@@ -95,21 +111,29 @@ public class wizard_MassExportPanel extends javax.swing.JPanel implements Wizard
         jLabel1.setText(resourceMap.getString("jLabel1.text")); // NOI18N
         jLabel1.setName("jLabel1"); // NOI18N
 
+        jCheckBox1.setSelected(true);
         jCheckBox1.setText(resourceMap.getString("jCheckBox1.text")); // NOI18N
         jCheckBox1.setName("jCheckBox1"); // NOI18N
 
-        jScrollPane1.setName("jScrollPane1"); // NOI18N
-
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jTextArea1.setName("jTextArea1"); // NOI18N
-        jScrollPane1.setViewportView(jTextArea1);
-
+        jCheckBox2.setSelected(true);
         jCheckBox2.setText(resourceMap.getString("jCheckBox2.text")); // NOI18N
         jCheckBox2.setName("jCheckBox2"); // NOI18N
 
         jLabel2.setText(resourceMap.getString("jLabel2.text")); // NOI18N
         jLabel2.setName("jLabel2"); // NOI18N
+
+        jLabel3.setText(resourceMap.getString("jLabel3.text")); // NOI18N
+        jLabel3.setName("jLabel3"); // NOI18N
+
+        jCheckBox3.setText(resourceMap.getString("jCheckBox3.text")); // NOI18N
+        jCheckBox3.setName("jCheckBox3"); // NOI18N
+
+        jScrollPane2.setName("jScrollPane2"); // NOI18N
+
+        jTextArea2.setColumns(20);
+        jTextArea2.setRows(5);
+        jTextArea2.setName("jTextArea2"); // NOI18N
+        jScrollPane2.setViewportView(jTextArea2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -118,16 +142,25 @@ public class wizard_MassExportPanel extends javax.swing.JPanel implements Wizard
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 559, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jCheckBox1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jCheckBox2, javax.swing.GroupLayout.DEFAULT_SIZE, 323, Short.MAX_VALUE)
-                            .addComponent(labeledCombobox1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jCheckBox3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jCheckBox1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jCheckBox2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 323, Short.MAX_VALUE))
+                        .addGap(331, 339, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jScrollPane2)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(labeledCombobox1, javax.swing.GroupLayout.PREFERRED_SIZE, 323, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 650, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -135,15 +168,19 @@ public class wizard_MassExportPanel extends javax.swing.JPanel implements Wizard
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addGap(17, 17, 17)
-                .addComponent(jLabel2)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(labeledCombobox1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(labeledCombobox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jCheckBox3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBox2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBox1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -152,8 +189,6 @@ public class wizard_MassExportPanel extends javax.swing.JPanel implements Wizard
     public boolean next() {
         try {
             doit();
-            this.master.dispose(); 
-            return true;
         } catch (Exception ex) {
             Logger.getLogger(wizard_MassExportPanel.class.getName()).log(Level.SEVERE, null, ex);
             Popup.error(ex);
@@ -176,8 +211,14 @@ public class wizard_MassExportPanel extends javax.swing.JPanel implements Wizard
 
             @Override
             public void run() {
+
+                int index = 1;
+                master.getProgressbar().setMaximum(data.size());
                 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                // jTextArea1.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+                jTextArea2.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                 for (Map.Entry<Contact, List<Item>> entry : data.entrySet()) {
+
                     try {
                         final Contact key = entry.getKey();
                         final List<Item> value = entry.getValue();
@@ -188,30 +229,43 @@ public class wizard_MassExportPanel extends javax.swing.JPanel implements Wizard
 
                         tab.paste(value.toArray(new DatabaseObject[value.size()]));
 
-                        if (jCheckBox1.isSelected()) {
-                            DatabaseObject dato = tab.getDataOwner();
-                            tab.actionBeforeCreate();
-                            if (dato.getPanelData(tab) && dato.save()) {
-                                tab.actionAfterCreate();
-                                tab.setDataOwner(dato, true);
+                        final DatabaseObject dato = tab.getDataOwner();
+                        tab.actionBeforeCreate();
+                        boolean error = false;
+                        if (dato.getPanelData(tab) && dato.save()) {
+                            tab.actionAfterCreate();
+                            tab.setDataOwner(dato, true);
+                            if (jCheckBox1.isSelected()) {
                                 dato.toPdf(false);
-                            } else {
-                                tab.showRequiredFields();
                             }
+                            if (!jCheckBox3.isSelected()) {
+                                mpv5.YabsViewProxy.instance().getIdentifierView().removeTab(tab);
+                            }
+
+                            jTextArea2.append("Created: " + dato + " ... SUCCESS!\n");
+                        } else {
+                            jTextArea2.append("\nCreated: " + dato + " ... FAILURE\n");
+                            tab.showRequiredFields();
+                            error = true;
                         }
 
-                        if (jCheckBox2.isSelected()) {
+                        if (jCheckBox2.isSelected() && !error) {
                             for (int j = 0; j < value.size(); j++) {
                                 Item get = value.get(j);
                                 get.setIntstatus(Item.STATUS_FINISHED);
                                 get.save();
                             }
                         }
+                        master.getProgressbar().setValue(index++);
                     } catch (Exception ex) {
                         Logger.getLogger(wizard_MassExportPanel.class.getName()).log(Level.SEVERE, null, ex);
                         Popup.error(ex);
                     }
                 }
+                setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                // jTextArea1.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                jTextArea2.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                master.isEnd(true);
             }
         });
     }
@@ -220,10 +274,12 @@ public class wizard_MassExportPanel extends javax.swing.JPanel implements Wizard
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JCheckBox jCheckBox2;
+    private javax.swing.JCheckBox jCheckBox3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTextArea jTextArea2;
     private mpv5.ui.beans.LabeledCombobox labeledCombobox1;
     // End of variables declaration//GEN-END:variables
 }

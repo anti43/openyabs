@@ -375,5 +375,11 @@ public class YabsViewProxy implements YabsView {
         }
     }
     
+     @Override
+    public void removeTab(DataPanel b) {
+        for (int i = 0; i < views.size(); i++) {
+            views.get(i).removeTab(b);
+        }
+    }
     
 }

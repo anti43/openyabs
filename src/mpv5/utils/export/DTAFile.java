@@ -66,7 +66,7 @@ public class DTAFile extends Exportable implements Waitable {
         setData(map);
     }
 
-    @Override
+
     public void run() {
 
         try {
@@ -137,7 +137,7 @@ public class DTAFile extends Exportable implements Waitable {
 
     public Exception waitFor() {
         try {
-            new Thread(this).start();
+            run();
         } catch (Exception e) {
             return e;
         }

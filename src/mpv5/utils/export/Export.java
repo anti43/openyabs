@@ -360,7 +360,7 @@ public final class Export extends HashMap<String, Object> implements Waitable {
         ex.putAll(hm1);
         ex.setTemplate(preloadedTemplate.getExFile());
         ex.setTargetFile(f2);
-        Log.Debug(Export.class, "Target file: " +  f2);
+        Log.Debug(Export.class, "createFile target file: " + f2);
         return ex;
     }
 
@@ -480,9 +480,11 @@ public final class Export extends HashMap<String, Object> implements Waitable {
             @Override
             public void set(Object object, Exception exceptions) throws Exception {
                 if (exceptions == null) {
-                    if (object instanceof File) {
+                    if (object instanceof Export) {
+                        FileDirectoryHandler.copyFile2(((Export) object).getTargetFile(), targetFile);
+                    } else if (object instanceof File) {
                         FileDirectoryHandler.copyFile2((File) object, targetFile);
-                    }else {
+                    } else {
                         Log.Debug(this, "Not a file: " + String.valueOf(object));
                     }
                 } else {
@@ -548,29 +550,26 @@ public final class Export extends HashMap<String, Object> implements Waitable {
         } else if (!this.fromFile.exists()) {
             throw new FileNotFoundException(fromFile.getPath());
         }
-
-        if (toFile != null) {
+        synchronized (fromFile) {
             if (toFile.exists()) {
                 toFile.delete();
                 Log.Debug(this, "File exists, will be replaced: " + toFile);
+            } else {
+                toFile.getParentFile().mkdirs();
             }
 
-            toFile.getParentFile().mkdirs();
             fromFile.setTarget(toFile);
-        }
-        fromFile.setData(this);
-        fromFile.setTemplate(template);
-
-        try {
-            SwingUtilities.invokeAndWait(fromFile);// we need to wait for OO to perform the task
-        } catch (Exception e) {
-            Log.Debug(e);
+            fromFile.setData(this);
+            fromFile.setTemplate(template);
+            fromFile.run();//dont call this on another thread; Exportable is _NOT_ threadsafe
+            fromFile.reset();
         }
     }
 
     @Override
     public Exception waitFor() {
         try {
+            Log.Debug(Export.class, "processData to " + getTargetFile());
             processData(getTargetFile());
         } catch (Exception ex) {
             return ex;

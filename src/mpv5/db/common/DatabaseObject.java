@@ -2844,10 +2844,14 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                 } else {
                     x = Export.wait(xf);
                 }
-                if (convertToPdf) {
-                    new Job(Export.createFile(null, TemplateHandler.loadTemplate(me), this), x).execute();
-                } else {
-                    new Job(Export.sourceFile(null, TemplateHandler.loadTemplate(me), this), x).execute();
+                try {
+                    if (convertToPdf) {
+                        new Job(Export.createFile(null, TemplateHandler.loadTemplate(me), this), x).executeSync();
+                    } else {
+                        new Job(Export.sourceFile(null, TemplateHandler.loadTemplate(me), this), x).executeSync();
+                    }
+                } catch (Exception exception) {
+                    Log.Debug(exception);
                 }
 
                 final String fmessage = Messages.PDF + __getCname() + " " + xf;

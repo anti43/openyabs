@@ -411,23 +411,27 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
     }
 
     private void setTitle() {
-        if (this.getParent() instanceof JViewport || this.getParent() instanceof JTabbedPane) {
-            JTabbedPane jTabbedPane = null;
-            String title1 = cname_;
-            //this->viewport->scrollpane->tabbedpane
-            if (this.getParent().getParent().getParent() instanceof JTabbedPane) {
-                jTabbedPane = (JTabbedPane) this.getParent().getParent().getParent();
-            } else {
-                try {
-                    jTabbedPane = (JTabbedPane) this.getParent();
-                } catch (Exception e) {
-                    //Free floating window
-                    ((JFrame) this.getRootPane().getParent()).setTitle(title1);
+        try {
+            if (this.getParent() instanceof JViewport || this.getParent() instanceof JTabbedPane) {
+                JTabbedPane jTabbedPane = null;
+                String title1 = cname_;
+                //this->viewport->scrollpane->tabbedpane
+                if (this.getParent().getParent().getParent() instanceof JTabbedPane) {
+                    jTabbedPane = (JTabbedPane) this.getParent().getParent().getParent();
+                } else {
+                    try {
+                        jTabbedPane = (JTabbedPane) this.getParent();
+                    } catch (Exception e) {
+                        //Free floating window
+                        ((JFrame) this.getRootPane().getParent()).setTitle(title1);
+                    }
+                }
+                if (jTabbedPane != null) {
+                    jTabbedPane.setTitleAt(jTabbedPane.getSelectedIndex(), title1);
                 }
             }
-            if (jTabbedPane != null) {
-                jTabbedPane.setTitleAt(jTabbedPane.getSelectedIndex(), title1);
-            }
+        } catch (Exception e) {
+           // Log.Debug(e);
         }
     }
 
