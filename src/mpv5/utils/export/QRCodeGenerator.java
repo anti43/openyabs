@@ -20,6 +20,7 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+import mpv5.logging.Log;
 
 /**
  *
@@ -63,11 +64,9 @@ public class QRCodeGenerator {
                 }
             }
             ImageIO.write(image, fileType, myFile);
-        } catch (WriterException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        System.out.println("\n\nYou have successfully created QR Code.");
+        } catch ( Exception e) {
+            Log.Debug(e);
+        } 
+        Log.Debug(this, "\n\nYou have successfully created QR Code.");
     }
 }
