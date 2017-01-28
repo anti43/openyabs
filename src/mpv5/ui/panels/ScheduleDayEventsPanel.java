@@ -24,7 +24,7 @@ import mpv5.db.objects.User;
 import mpv5.globals.Headers;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.ScheduleEvents;
-import mpv5.ui.panels.calendar.ScheduleCalendarDayChooser;
+import mpv5.ui.panels.calendar.ScheduleCalendar;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.tables.TableFormat;
 
@@ -40,10 +40,8 @@ public class ScheduleDayEventsPanel extends JPanel {
     public static ScheduleDayEventsPanel instanceOf() {
         if (icke == null) {
             icke = new ScheduleDayEventsPanel();
-        } else {
-//            icke.refresh(null);
-        }
-        return icke;
+        } 
+         return icke;
     }
 
     /**
@@ -64,33 +62,19 @@ public class ScheduleDayEventsPanel extends JPanel {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        but4 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        jPanel2 = new javax.swing.JPanel();
+        but4 = new javax.swing.JButton();
+        jSeparator1 = new javax.swing.JSeparator();
         but5 = new javax.swing.JButton();
 
         setName("Form"); // NOI18N
-        setLayout(new java.awt.BorderLayout());
+        setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ScheduleDayEventsPanel.jPanel1.border.title_1"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
-
-        but4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/view_right.png"))); // NOI18N
-        but4.setText(bundle.getString("ScheduleDayEventsPanel.but4.text")); // NOI18N
-        but4.setToolTipText(bundle.getString("ScheduleDayEventsPanel.but4.toolTipText")); // NOI18N
-        but4.setContentAreaFilled(false);
-        but4.setFocusable(false);
-        but4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        but4.setName("but4"); // NOI18N
-        but4.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/xclock.png"))); // NOI18N
-        but4.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/view_right.png"))); // NOI18N
-        but4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        but4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                but4ActionPerformed(evt);
-            }
-        });
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
@@ -108,6 +92,29 @@ public class ScheduleDayEventsPanel extends JPanel {
         jTable1.setName("jTable1"); // NOI18N
         jScrollPane1.setViewportView(jTable1);
 
+        jPanel2.setName("jPanel2"); // NOI18N
+        jPanel2.setLayout(new javax.swing.BoxLayout(jPanel2, javax.swing.BoxLayout.LINE_AXIS));
+
+        but4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/view_right.png"))); // NOI18N
+        but4.setText(bundle.getString("ScheduleDayEventsPanel.but4.text")); // NOI18N
+        but4.setToolTipText(bundle.getString("ScheduleDayEventsPanel.but4.toolTipText")); // NOI18N
+        but4.setContentAreaFilled(false);
+        but4.setFocusable(false);
+        but4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        but4.setName("but4"); // NOI18N
+        but4.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/xclock.png"))); // NOI18N
+        but4.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/view_right.png"))); // NOI18N
+        but4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        but4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                but4ActionPerformed(evt);
+            }
+        });
+        jPanel2.add(but4);
+
+        jSeparator1.setName("jSeparator1"); // NOI18N
+        jPanel2.add(jSeparator1);
+
         but5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/edittrash.png"))); // NOI18N
         but5.setText(bundle.getString("ScheduleDayEventsPanel.but5.text")); // NOI18N
         but5.setToolTipText(bundle.getString("ScheduleDayEventsPanel.but5.toolTipText")); // NOI18N
@@ -123,31 +130,25 @@ public class ScheduleDayEventsPanel extends JPanel {
                 but5ActionPerformed(evt);
             }
         });
+        jPanel2.add(but5);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addComponent(but4, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 109, Short.MAX_VALUE)
-                .addComponent(but5, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(19, 19, 19))
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 410, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(but5, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(but4, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(15, 15, 15))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 409, Short.MAX_VALUE)
+                .addGap(3, 3, 3)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0))
         );
 
-        add(jPanel1, java.awt.BorderLayout.LINE_START);
+        add(jPanel1);
     }// </editor-fold>//GEN-END:initComponents
 
     private void but4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but4ActionPerformed
@@ -158,21 +159,21 @@ public class ScheduleDayEventsPanel extends JPanel {
 
     private void but5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but5ActionPerformed
         Schedule d = (Schedule) jTable1.getModel().getValueAt(jTable1.convertRowIndexToModel(jTable1.getSelectedRow()), 0);
-        Log.Debug(this,
-                "deleting the marked entry from Homescreen (and database :-) )");
+        Log.Debug(this, "deleting the marked entry from Homescreen (and database :-) )");
         Calendar cal = Calendar.getInstance();
         cal.setTime(d.__getStartdate());
         Date oldDate = cal.getTime();
-        ScheduleCalendarDayChooser.instanceOf().refreshDayPanels(oldDate, d, Boolean.FALSE);
         d.delete();
-        refresh(ScheduleCalendarDayChooser.instanceOf().getScheduledEvents(d.__getStartdate()));
+        ScheduleCalendar.instanceOf().setDate(oldDate);
 }//GEN-LAST:event_but5ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton but4;
     private javax.swing.JButton but5;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 

@@ -18,16 +18,13 @@ package mpv5.ui.panels.calendar;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.JButton;
 import mpv5.db.objects.Schedule;
 import mpv5.globals.Messages;
-import mpv5.ui.panels.ScheduleDayEventsPanel;
 
-public class ScheduleCalendarButton extends JButton implements ActionListener {
+public class ScheduleCalendarButton extends JButton {
 
     private static final long serialVersionUID = 1L;
     private Date date;
@@ -54,10 +51,9 @@ public class ScheduleCalendarButton extends JButton implements ActionListener {
 
     protected void addScheduledEvent(Schedule schedule) {
         scheduledEvents.add(schedule);
-        this.setFont(this.getFont().deriveFont(Font.BOLD));
-//$2GREEN);
-
         if (scheduledEvents.isEmpty() == false) {
+            this.setFont(this.getFont().deriveFont(Font.BOLD));
+            this.setBackground(Color.blue);
             this.setToolTipText(Messages.DAY_EVENTS.toString());
         }
     }
@@ -66,26 +62,17 @@ public class ScheduleCalendarButton extends JButton implements ActionListener {
         scheduledEvents.remove(schedule);
         if (scheduledEvents.isEmpty() == true) {
             this.setFont(this.getFont().deriveFont(Font.PLAIN));
-//$2LIGHT_GRAY);
-            this.setToolTipText(Messages.DAY_EVENTS.toString());
+            this.setToolTipText("");
         }
     }
 
     protected void clearScheduledEvents() {
         scheduledEvents.clear();
         this.setFont(this.getFont().deriveFont(Font.PLAIN));
-//$2LIGHT_GRAY);
+        this.setToolTipText("");
     }
 
-    public void actionPerformed(ActionEvent e) {
-        JButton button = (JButton) e.getSource();
-        String buttonText = button.getText();
-        int dayInt = new Integer(buttonText).intValue();
-        ScheduleCalendarDayChooser.instanceOf().setDay(dayInt);
-        ScheduleDayEventsPanel.instanceOf().setDayEvents(scheduledEvents);
-    }
-
-    protected boolean hasEvents() {
+    public boolean hasEvents() {
         if (scheduledEvents.isEmpty()) {
             return false;
         } else {

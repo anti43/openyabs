@@ -14,7 +14,7 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
  *
- *  You should have received a copy of the GNU General Public License
+ *  You should have received a copy of the GNU General Public License  
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
@@ -26,6 +26,8 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
@@ -43,9 +45,9 @@ import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 import mpv5.db.objects.Schedule;
 import mpv5.logging.Log;
-import mpv5.ui.panels.ScheduleDayEventsPanel;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.date.vTimeframe;
+import org.apache.commons.lang.time.DateUtils;
 
 /**
  * JDayChooser is a bean for choosing a day.
@@ -54,7 +56,7 @@ import mpv5.utils.date.vTimeframe;
  * @version $LastChangedRevision: 104 $
  * @version $LastChangedDate: 2006-06-04 15:20:45 +0200 (So, 04 Jun 2006) $
  */
-public final class ScheduleCalendarDayChooser extends JPanel implements KeyListener {
+public final class ScheduleCalendarDayChooser extends JPanel implements KeyListener, ActionListener {
 
     private static final long serialVersionUID = 5876398337018781820L;
     protected ScheduleCalendarButton[] days;
@@ -77,7 +79,6 @@ public final class ScheduleCalendarDayChooser extends JPanel implements KeyListe
     protected boolean decorationBackgroundVisible = false;
     protected boolean decorationBordersVisible;
     protected boolean dayBordersVisible;
-    private boolean alwaysFireDayProperty;
     protected Date minSelectableDate;
     protected Date maxSelectableDate;
     protected Date defaultMinSelectableDate;
@@ -152,7 +153,7 @@ public final class ScheduleCalendarDayChooser extends JPanel implements KeyListe
                             super.paint(g);
                         }
                     };
-                    days[index].addActionListener(days[index]);
+                    days[index].addActionListener(this);
                     days[index].addKeyListener(this);
                 }
 
@@ -200,7 +201,7 @@ public final class ScheduleCalendarDayChooser extends JPanel implements KeyListe
     /**
      * Initilizes the locale specific names for the days of the week.
      */
-    protected void init() {
+    private void init() {
 
         oldDayBackgroundColor = Color.WHITE;
         selectedColor = new Color(160, 160, 160);
@@ -210,14 +211,14 @@ public final class ScheduleCalendarDayChooser extends JPanel implements KeyListe
         calendar.setTime(date);
 
         drawDayNames();
-        drawDays(Schedule.getEvents2(new vTimeframe(DateConverter.getStartOfMonth(new Date()), DateConverter.getEndOfMonth(new Date()))));
+        drawDays(null);
     }
 
     /**
      * Draws the day names of the day columnes.
      *
      */
-    protected void drawDayNames() {
+    private void drawDayNames() {
         int firstDayOfWeek = calendar.getFirstDayOfWeek();
         DateFormatSymbols dateFormatSymbols = new DateFormatSymbols(locale);
         dayNames = dateFormatSymbols.getShortWeekdays();
@@ -251,7 +252,7 @@ public final class ScheduleCalendarDayChooser extends JPanel implements KeyListe
     /**
      * Hides and shows the week buttons.
      */
-    protected void drawWeeks() {
+    private void drawWeeks() {
         Calendar tmpCalendar = (Calendar) calendar.clone();
 
         for (int i = 1; i < 7; i++) {
@@ -280,7 +281,7 @@ public final class ScheduleCalendarDayChooser extends JPanel implements KeyListe
      * Hides and shows the day buttons.
      * @param list
      */
-    protected void drawDays(ArrayList<Schedule> list) {
+    private void drawDays(ArrayList<Schedule> list) {
 
         if (list != null) {
             events = list;
@@ -375,7 +376,7 @@ public final class ScheduleCalendarDayChooser extends JPanel implements KeyListe
                     }
                 }
             }
-
+            
             n++;
             tmpCalendar.add(Calendar.DATE, 1);
             time = tmpCalendar.getTime();
@@ -428,7 +429,7 @@ public final class ScheduleCalendarDayChooser extends JPanel implements KeyListe
      *
      * @see #getDay
      */
-    public void setDay(int d) {
+    private void setDay(int d) {
         if (d < 1) {
             d = 1;
         }
@@ -443,10 +444,11 @@ public final class ScheduleCalendarDayChooser extends JPanel implements KeyListe
             d = maxDaysInMonth;
         }
 
-        int oldDay = day;
+        Date oldDate = null;
         day = d;
 
         if (selectedDay != null) {
+            oldDate = selectedDay.getDate();
             selectedDay.setBackground(oldDayBackgroundColor);
             selectedDay.repaint();
         }
@@ -455,16 +457,11 @@ public final class ScheduleCalendarDayChooser extends JPanel implements KeyListe
             if (days[i].getText().equals(Integer.toString(day))) {
                 selectedDay = days[i];
                 selectedDay.setBackground(selectedColor);
-            } else if (days[i].hasEvents()) {
-//$2GREEN);
+                break;
             }
         }
 
-        if (alwaysFireDayProperty) {
-            firePropertyChange("day", 0, day);
-        } else {
-            firePropertyChange("day", oldDay, day);
-        }
+        firePropertyChange("date", oldDate, selectedDay.getDate());
     }
 
     /**
@@ -474,64 +471,17 @@ public final class ScheduleCalendarDayChooser extends JPanel implements KeyListe
      *
      * @see #setDay
      */
-    public int getDay() {
+    private int getDay() {
         return day;
     }
 
     /**
-     * Sets a specific month. This is needed for correct graphical
-     * representation of the days.
-     *
-     * @param month
-     *            the new month
+     * Sets the Date to the chooser
+     * @param tday 
      */
-    public void setMonth(int month) {
-        int maxDays = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-        calendar.set(Calendar.MONTH, month);
-        if (maxDays == day) {
-            day = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-        }
-        Log.Debug(this,
-                "Setting Month to: " + calendar.getDisplayName(
-                month,
-                Calendar.LONG,
-                locale));
-        setDay(day);
-
-        drawDays(
-                Schedule.getEvents2(
-                new vTimeframe(
-                DateConverter.getStartOfMonth(calendar.getTime()),
-                DateConverter.getEndOfMonth(calendar.getTime()))));
-    }
-
-    /**
-     * Sets a specific year. This is needed for correct graphical representation
-     * of the days.
-     *
-     * @param year
-     *            the new year
-     */
-    public void setYear(int year) {
-        calendar.set(Calendar.YEAR, year);
-        drawDays(
-                Schedule.getEvents2(
-                new vTimeframe(
-                DateConverter.getStartOfMonth(calendar.getTime()),
-                DateConverter.getEndOfMonth(calendar.getTime()))));
-
-        ScheduleDayEventsPanel.instanceOf().setDayEvents(null);
-    }
-
-    /**
-     * Sets a specific calendar. This is needed for correct graphical
-     * representation of the days.
-     *
-     * @param calendar
-     *            the new calendar
-     */
-    public void setCalendar(Calendar calendar) {
-        this.calendar = calendar;
+    protected void setDate(Date tday) {
+        calendar.setTime(tday);
+        setDay(calendar.get(Calendar.DAY_OF_MONTH));
         drawDays(
                 Schedule.getEvents2(
                 new vTimeframe(
@@ -566,6 +516,7 @@ public final class ScheduleCalendarDayChooser extends JPanel implements KeyListe
      * @param e
      *            the KeyEvent
      */
+    @Override
     public void keyPressed(KeyEvent e) {
         int offset = (e.getKeyCode() == KeyEvent.VK_UP) ? (-7)
                 : ((e.getKeyCode() == KeyEvent.VK_DOWN) ? (+7)
@@ -585,6 +536,7 @@ public final class ScheduleCalendarDayChooser extends JPanel implements KeyListe
      * @param e
      *            the KeyEvent
      */
+    @Override
     public void keyTyped(KeyEvent e) {
     }
 
@@ -594,6 +546,7 @@ public final class ScheduleCalendarDayChooser extends JPanel implements KeyListe
      * @param e
      *            the KeyEvent
      */
+    @Override
     public void keyReleased(KeyEvent e) {
     }
 
@@ -602,11 +555,9 @@ public final class ScheduleCalendarDayChooser extends JPanel implements KeyListe
         if (initialized) {
 
             for (int x = 0; x < 7; x++) {
-
                 days[x].setContentAreaFilled(false);
                 days[x].setBorder(new LineBorder(Color.white, 1, false));
                 days[x].setBorderPainted(true);
-//$2LIGHT_GRAY);
             }
 
             for (int x = 7; x < 49; x++) {
@@ -617,33 +568,46 @@ public final class ScheduleCalendarDayChooser extends JPanel implements KeyListe
         }
     }
 
-    public void refreshDayPanels(Date nday, Schedule sched, Boolean add) {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        Date oldDate = this.selectedDay.getDate();
+        this.selectedDay = (ScheduleCalendarButton) e.getSource();
+        
+        firePropertyChange("date", oldDate, this.selectedDay.getDate());
+    }
+
+    /**
+     * Updates the Event-Cache for the selected day 
+     * @param nday
+     * @param sched
+     * @param add 
+     */
+    protected void refreshDayEventsDate(Date nday, Schedule sched, Boolean add) {
         Log.Debug(this, "aktualisieren DaySelektor ... geklickt");
-        for (int o = 0; o < days.length; o++) {
-//            Log.Debug(this, "Checking ..." + days[o].getDate() + "\n"
-//                          + "angainst ..." + nday );
-            if (days[o].getDate().equals(nday)) {
-                if (add) {
-                    Log.Debug(this, "aktualisieren DaySelektor ... a");
-                    days[o].addScheduledEvent(sched);
-                } else {
-                    Log.Debug(this, "aktualisieren DaySelektor ... b");
-                    days[o].removeScheduledEvent(sched);
-                }
+        if (this.selectedDay.getDate() != null
+                && DateUtils.isSameDay(nday, this.selectedDay.getDate())) {
+            if (add) {
+                Log.Debug(this, "aktualisieren DaySelektor ... a");
+                this.selectedDay.addScheduledEvent(sched);
+            } else {
+                Log.Debug(this, "aktualisieren DaySelektor ... b");
+                this.selectedDay.removeScheduledEvent(sched);
             }
         }
         Log.Debug(this, "aktualisieren DaySelektor ... fertig");
     }
 
-    public ArrayList<Schedule> getScheduledEvents(Date nday) {
-        for (int o = 0; o < days.length; o++) {
-            if (days[o].getDate().equals(nday)) {
-                return days[o].getScheduledEvents();
-            }
+    /**
+     * returns the events of the selected Day
+     * @return 
+     */
+    protected ArrayList<Schedule> getScheduledEvents() {
+        if (this.selectedDay.getDate() != null) {
+            return this.selectedDay.getScheduledEvents();
         }
         return null;
     }
-    
+
     /**
      * Creates a JFrame with a JDayChooser inside and can be used for testing.
      *

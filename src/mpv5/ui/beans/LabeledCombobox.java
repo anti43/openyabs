@@ -177,7 +177,7 @@ public class LabeledCombobox extends javax.swing.JPanel {
 
     /**
      * If set to true, hitting "Enter" on the text field will trigger a search for the entered value and popup the results if any.
-     * <br/>{@link LabeledCombobox#setContext(Context)} must be called before this can work.
+     * {@link LabeledCombobox#setContext(Context)} must be called before this can work.
      * @param enabled
      */
     public void setSearchEnabled(boolean enabled) {

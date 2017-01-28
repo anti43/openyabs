@@ -31,6 +31,7 @@ import java.util.Locale;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import mpv5.globals.LocalSettings;
+import mpv5.ui.panels.ScheduleDayEventsPanel;
 
 /**
  * JCalendar is a bean for entering a date by choosing the year, month and day.
@@ -58,6 +59,7 @@ public final class ScheduleCalendar extends JPanel implements PropertyChangeList
     protected Date minSelectableDate;
     protected Date maxSelectableDate;
     private static ScheduleCalendar icke;
+    private ScheduleNavigator navigator;
 
     /**
      * The jc instance
@@ -103,33 +105,33 @@ public final class ScheduleCalendar extends JPanel implements PropertyChangeList
 
         monthYearPanel = new JPanel();
         monthYearPanel.setLayout(new BorderLayout());
-
-        monthChooser = new ScheduleMonthChooser(monthSpinner);
+        
         yearChooser = new ScheduleYearChooser();
-        yearChooser.setSize(yearChooser.getWidth(), yearChooser.getHeight() + 20);
+        yearChooser.setSize(yearChooser.getWidth(), yearChooser.getHeight());
+        yearChooser.addPropertyChangeListener(this);
+        
+        monthChooser = new ScheduleMonthChooser(monthSpinner);
         monthChooser.setSize(monthChooser.getWidth(), monthChooser.getHeight() + 20);
-        monthChooser.setYearChooser(yearChooser);
         monthYearPanel.add(monthChooser, BorderLayout.WEST);
         monthYearPanel.add(yearChooser, BorderLayout.CENTER);
         monthYearPanel.setBorder(BorderFactory.createEmptyBorder());
-
+        monthChooser.addPropertyChangeListener(this);
+ 
         dayChooser = ScheduleCalendarDayChooser.instanceOf();
         dayChooser.addPropertyChangeListener(this);
-        monthChooser.setDayChooser(dayChooser);
-        monthChooser.addPropertyChangeListener(this);
-        yearChooser.setDayChooser(dayChooser);
-        yearChooser.addPropertyChangeListener(this);
+        
+        navigator = new ScheduleNavigator(monthChooser, yearChooser);
+        
         add(monthYearPanel, BorderLayout.NORTH);
         add(dayChooser, BorderLayout.CENTER);
-        add(new ScheduleNavigator(monthChooser, yearChooser), BorderLayout.SOUTH);
-
+        add(navigator, BorderLayout.SOUTH);
+        
         // Set the initialized flag before setting the calendar. This will
         // cause the other components to be updated properly.
         if (date != null) {
             calendar.setTime(date);
         }
 
-        setCalendar(calendar);
         yearChooser.setFont(Font.decode(LocalSettings.getProperty(LocalSettings.DEFAULT_FONT)).deriveFont(Font.BOLD, 14));
         monthChooser.setFont(Font.decode(LocalSettings.getProperty(LocalSettings.DEFAULT_FONT)).deriveFont(Font.PLAIN, 14));
     }
@@ -168,73 +170,26 @@ public final class ScheduleCalendar extends JPanel implements PropertyChangeList
      * @param evt
      *            the property change event
      */
+    @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (calendar != null) {
-            Calendar c = (Calendar) calendar.clone();
-
-            if (evt.getPropertyName().equals("day")) {
-                c.set(Calendar.DAY_OF_MONTH, ((Integer) evt.getNewValue()).intValue());
-                setCalendar(c, false);
-            } else if (evt.getPropertyName().equals("month")) {
-                c.set(Calendar.MONTH, ((Integer) evt.getNewValue()).intValue());
-                setCalendar(c, false);
-            } else if (evt.getPropertyName().equals("year")) {
-                c.set(Calendar.YEAR, ((Integer) evt.getNewValue()).intValue());
-                setCalendar(c, false);
-            } else if (evt.getPropertyName().equals("date")) {
-                c.setTime((Date) evt.getNewValue());
-                setCalendar(c, true);
+            switch (evt.getPropertyName()) {
+                case "date":
+                    calendar.setTime((Date) evt.getNewValue());
+                    setDate(calendar.getTime());
+                    break;
+                case "month":
+                    calendar.set(Calendar.MONTH, ((Integer) evt.getNewValue()));
+                    setDate(calendar.getTime());
+                    break;
+                case "year":
+                    calendar.set(Calendar.YEAR, ((Integer) evt.getNewValue()));
+                    setDate(calendar.getTime());
+                    break;
+                default:
+                    break;
             }
         }
-    }
-
-    /**
-     * Sets the calendar property. This is a bound property.
-     *
-     * @param c
-     *            the new calendar
-     * @throws NullPointerException -
-     *             if c is null;
-     * @see #getCalendar
-     */
-    public void setCalendar(Calendar c) {
-        setCalendar(c, true);
-    }
-
-    /**
-     * Sets the calendar attribute of the JCalendar object
-     *
-     * @param c
-     *            the new calendar value
-     * @param update
-     *            the new calendar value
-     * @throws NullPointerException -
-     *             if c is null;
-     */
-    private void setCalendar(Calendar c, boolean update) {
-        if (c == null) {
-            setDate(null);
-        }
-        Calendar oldCalendar = calendar;
-        calendar = c;
-
-        if (update) {
-            // Thanks to Jeff Ulmer for correcting a bug in the sequence :)
-            yearChooser.setYear(c.get(Calendar.YEAR));
-            monthChooser.setMonth(c.get(Calendar.MONTH));
-            dayChooser.setDay(c.get(Calendar.DATE));
-        }
-
-        firePropertyChange("calendar", oldCalendar, calendar);
-    }
-
-    /**
-     * Returns a Date object.
-     *
-     * @return a date object constructed from the calendar property.
-     */
-    public Date getDate() {
-        return new Date(calendar.getTimeInMillis());
     }
 
     /**
@@ -246,17 +201,9 @@ public final class ScheduleCalendar extends JPanel implements PropertyChangeList
      *             if tha date is null
      */
     public void setDate(Date date) {
-        Date oldDate = calendar.getTime();
         calendar.setTime(date);
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-
-        yearChooser.setYear(year);
-        monthChooser.setMonth(month);
-        dayChooser.setCalendar(calendar);
-        dayChooser.setDay(day);
-        
-        firePropertyChange("date", oldDate, date);
+        dayChooser.setDate(calendar.getTime());
+        navigator.setDate(calendar.getTime());
+        ScheduleDayEventsPanel.instanceOf().setDayEvents(dayChooser.getScheduledEvents());
     }
 }

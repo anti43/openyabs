@@ -354,7 +354,8 @@ public enum Messages {
     PLEASE_WAIT("Please wait.."), 
     TYPE_SUBITEM("Subitem"),
     NO_ENTRY("No Entry"), 
-    ENTRIES("entries");
+    ENTRIES("entries"),
+    INSERT_SUBJECT("Please add a Subject");
 
     /**
      * @return the missing

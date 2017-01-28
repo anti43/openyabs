@@ -5,10 +5,8 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JFormattedTextField;
 import javax.swing.JSpinner;
 import javax.swing.JSpinner.DateEditor;
-import javax.swing.text.DefaultFormatter;
 import mpv5.ui.dialogs.MiniCalendarDialog;
 import mpv5.utils.date.DateConverter;
 

@@ -14,7 +14,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*
+ /*
  * ContactPanel.java
  *
  * Created on Nov 20, 2008, 8:17:28 AM
@@ -239,7 +239,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
 //        itemtable.getActionMap().put(inputMap.get(left), new TableTabAction(date3, oldAction, true));
         number.setSearchOnEnterEnabled(true);
         number.setParent(this);
-        number.setSearchField("cname");
+        number.setSearchField("cnumber");
         switch (inttype_) {
             case Item.TYPE_OFFER:
                 number.setContext(Context.getOffer());
@@ -431,7 +431,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                 }
             }
         } catch (Exception e) {
-           // Log.Debug(e);
+            // Log.Debug(e);
         }
     }
 
@@ -470,8 +470,8 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         if (evt.getClickCount() > 1) {
             FileDirectoryHandler.open(QueryHandler.instanceOf().clone(Context.getFiles()).
                     retrieveFile(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).
-                    toString(), new File(FileDirectoryHandler.getTempDir() + dataTable.getModel().
-                    getValueAt(dataTable.getSelectedRow(), 1).toString())));
+                            toString(), new File(FileDirectoryHandler.getTempDir() + dataTable.getModel().
+                                    getValueAt(dataTable.getSelectedRow(), 1).toString())));
         } else if (evt.getClickCount() == 1 && evt.getButton() == MouseEvent.BUTTON3) {
 
             JTable source = (JTable) evt.getSource();
@@ -1655,12 +1655,6 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
             description_ = notes.getText();
             dateadded_ = date1.getDate();
 
-            if (cnumber_ == null) {
-                cname_ = "<not set>";
-            } else {
-                cname_ = cnumber_;
-            }
-
             netvalue_ = FormatNumber.parseDezimal(netvalue.getText());
             taxvalue_ = FormatNumber.parseDezimal(taxvalue.getText());
             discountvalue_ = FormatNumber.parseDezimal(discount.getText());
@@ -1686,7 +1680,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
     @Override
     public void exposeData() {
 
-        number.setText(cname_);
+        number.setText(cnumber_);
         date1.setDate(dateadded_);
         if (User.getCurrentUser().getProperties().getProperty("org.openyabs.itemproperty", "keepmodifiedtransdate")) {
             date2.setDate(datetodo_);
@@ -1762,10 +1756,10 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                 Log.Debug(this, e.getMessage());
             }
             itemtable.setModel(SubItem.toModel(new SubItem[]{
-                        SubItem.getDefaultItem(), SubItem.getDefaultItem(),
-                        SubItem.getDefaultItem(), SubItem.getDefaultItem(),
-                        SubItem.getDefaultItem(), SubItem.getDefaultItem()
-                    }));
+                SubItem.getDefaultItem(), SubItem.getDefaultItem(),
+                SubItem.getDefaultItem(), SubItem.getDefaultItem(),
+                SubItem.getDefaultItem(), SubItem.getDefaultItem()
+            }));
             formatTable();
 //                    shipping.setText(FormatNumber.formatDezimal(0d));
 
@@ -1923,7 +1917,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                             dbo.save();
                         }
                     });
-                    
+
                     omodel = (MPTableModel) itemtable.getModel();
                     omodel.addRow(s.getRowData(omodel.getRowCount() + 1));
                     ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
@@ -2280,11 +2274,11 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         itemtable.getColumnModel().getColumn(SubItem.COLUMNINDEX_REMOVE).setCellEditor(new ButtonEditor(b2));
 
         TablePopUp tpu = new TablePopUp(itemtable, new String[]{
-                    Messages.ACTION_COPY.getValue(),
-                    Messages.ACTION_PASTE.getValue(),
-                    null,
-                    Messages.ACTION_ADD.getValue(),
-                    Messages.ACTION_REMOVE.getValue()},
+            Messages.ACTION_COPY.getValue(),
+            Messages.ACTION_PASTE.getValue(),
+            null,
+            Messages.ACTION_ADD.getValue(),
+            Messages.ACTION_REMOVE.getValue()},
                 new ActionListener[]{new ActionListener() {
 
                 @Override
@@ -2307,11 +2301,11 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                     null,
                     new ActionListener() {
 
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            ((MPTableModel) itemtable.getModel()).addRow(1);
-                        }
-                    }, new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    ((MPTableModel) itemtable.getModel()).addRow(1);
+                }
+            }, new ActionListener() {
 
                 @Override
                 public void actionPerformed(ActionEvent e) {

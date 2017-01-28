@@ -193,7 +193,7 @@ public class MPCombobox extends javax.swing.JPanel {
                         } else if (getContext().equals(Context.getCustomer()) || getContext().equals(Context.getManufacturer()) || getContext().equals(Context.getSupplier())) {
                             data = new DatabaseSearch(getContext(), 200).getValuesFor("ids, cname, prename", "cname", jComboBox1.getSelectedItem().toString(), true);
                         } else {
-                            data = new DatabaseSearch(getContext(), 200).getValuesFor("ids, cname", "cname", jComboBox1.getSelectedItem().toString(), true);
+                            data = new DatabaseSearch(getContext(), 200).getValuesFor(getContext().getSearchFields(), "cname", jComboBox1.getSelectedItem().toString(), true);
                         }
                     } else {
                         data = new DatabaseSearch(getContext(), 200).getValuesFor("ids, cname", "cname", "", true);
@@ -313,7 +313,7 @@ public class MPCombobox extends javax.swing.JPanel {
 
     /**
      * Convenience Method to set a {@link List} of {@link DatabaseObject}s as
-     * the model of the combobox.<br/>
+     * the model of the combobox.
      *
      * @param vector
      */
@@ -353,7 +353,7 @@ public class MPCombobox extends javax.swing.JPanel {
     /**
      * If set to true, hitting "Enter" on the text field will trigger a search
      * for the entered value and popup the results if any.
-     * <br/>{@link LabeledCombobox#setContext(Context)} must be called before
+     * {@link LabeledCombobox#setContext(Context)} must be called before
      * this can work.
      *
      * @param enabled

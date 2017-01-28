@@ -31,7 +31,6 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
@@ -59,8 +58,7 @@ public class ScheduleMonthChooser extends JPanel implements ItemListener,
     private int oldSpinnerValue = 0;
 
     // needed for comparison
-    private ScheduleCalendarDayChooser dayChooser;
-    private ScheduleYearChooser yearChooser;
+//    private ScheduleYearChooser yearChooser;
     private JComboBox comboBox;
     private JSpinner spinner;
     private boolean initialized;
@@ -148,41 +146,30 @@ public class ScheduleMonthChooser extends JPanel implements ItemListener,
      * @param e
      *            the change event.
      */
+    @Override
     public void stateChanged(ChangeEvent e) {
         SpinnerNumberModel model = (SpinnerNumberModel) ((JSpinner) e.getSource()).getModel();
         int value = model.getNumber().intValue();
-        boolean increase = (value > oldSpinnerValue) ? true : false;
+        boolean increase = (value > oldSpinnerValue);
         oldSpinnerValue = value;
 
-        int month = getMonth();
+        int _month = getMonth();
 
         if (increase) {
-            month += 1;
+            _month += 1;
 
-            if (month == 12) {
-                month = 0;
-
-                if (yearChooser != null) {
-                    int year = yearChooser.getYear();
-                    year += 1;
-                    yearChooser.setYear(year);
-                }
+            if (_month == 12) {
+                _month = 0;
             }
         } else {
-            month -= 1;
+            _month -= 1;
 
-            if (month == -1) {
-                month = 11;
-
-                if (yearChooser != null) {
-                    int year = yearChooser.getYear();
-                    year -= 1;
-                    yearChooser.setYear(year);
-                }
+            if (_month == -1) {
+                _month = 11;
             }
         }
 
-        setMonth(month);
+        setMonth(_month);
     }
 
     /**
@@ -191,6 +178,7 @@ public class ScheduleMonthChooser extends JPanel implements ItemListener,
      * @param e
      *            the item event
      */
+    @Override
     public void itemStateChanged(ItemEvent e) {
         if (e.getStateChange() == ItemEvent.SELECTED) {
             int index = comboBox.getSelectedIndex();
@@ -220,10 +208,6 @@ public class ScheduleMonthChooser extends JPanel implements ItemListener,
 
         if (select) {
             comboBox.setSelectedIndex(month);
-        }
-
-        if (dayChooser != null) {
-            dayChooser.setMonth(month);
         }
 
         firePropertyChange("month", oldMonth, month);
@@ -259,33 +243,13 @@ public class ScheduleMonthChooser extends JPanel implements ItemListener,
     }
 
     /**
-     * Convenience method set a day chooser.
-     *
-     * @param dayChooser
-     *            the day chooser
-     */
-    public void setDayChooser(ScheduleCalendarDayChooser dayChooser) {
-        this.dayChooser = dayChooser;
-    }
-
-    /**
-     * Convenience method set a year chooser. If set, the spin for the month
-     * buttons will spin the year as well
-     *
-     * @param yearChooser
-     *            the new yearChooser value
-     */
-    public void setYearChooser(ScheduleYearChooser yearChooser) {
-        this.yearChooser = yearChooser;
-    }
-
-    /**
      * Returns the locale.
      *
      * @return the locale value
      *
      * @see #setLocale
      */
+    @Override
     public Locale getLocale() {
         return locale;
     }
@@ -298,6 +262,7 @@ public class ScheduleMonthChooser extends JPanel implements ItemListener,
      *
      * @see #getLocale
      */
+    @Override
     public void setLocale(Locale l) {
         if (!initialized) {
             super.setLocale(l);
@@ -313,6 +278,7 @@ public class ScheduleMonthChooser extends JPanel implements ItemListener,
      * @param enabled
      *            the new enabled value
      */
+    @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
         comboBox.setEnabled(enabled);
@@ -358,6 +324,7 @@ public class ScheduleMonthChooser extends JPanel implements ItemListener,
      *
      * @param font the desired <code>Font</code> for this component
      */
+    @Override
     public void setFont(Font font) {
         if (comboBox != null) {
             comboBox.setFont(font);
@@ -370,6 +337,7 @@ public class ScheduleMonthChooser extends JPanel implements ItemListener,
      *
      * @see javax.swing.JPanel#updateUI()
      */
+    @Override
     public void updateUI() {
         final JSpinner testSpinner = new JSpinner();
         if (spinner != null) {
@@ -379,18 +347,5 @@ public class ScheduleMonthChooser extends JPanel implements ItemListener,
                 spinner.setBorder(new EmptyBorder(0, 0, 0, 0));
             }
         }
-    }
-
-    /**
-     * Creates a JFrame with a JMonthChooser inside and can be used for testing.
-     *
-     * @param s
-     *            The command line arguments
-     */
-    public static void main(String[] s) {
-        JFrame frame = new JFrame("MonthChooser");
-        frame.getContentPane().add(new ScheduleMonthChooser());
-        frame.pack();
-        frame.setVisible(true);
     }
 }

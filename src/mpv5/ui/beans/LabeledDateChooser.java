@@ -11,8 +11,6 @@
 package mpv5.ui.beans;
 
 import java.util.Date;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 /**
  *

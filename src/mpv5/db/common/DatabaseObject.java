@@ -167,11 +167,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                 return false;
             }
             Entity e = (Entity) o;
-            if (e.hashCode() == hashCode()) {
-                return true;
-            } else {
-                return false;
-            }
+            return e.hashCode() == hashCode();
         }
 
         @Override
@@ -416,9 +412,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                             method.invoke(dbo, new Object[]{d});
                         } else {
                             Context c = ((DatabaseObject) method.getParameterTypes()[0].newInstance()).getContext();
-                            int myId = 0;
                             try {
-                                myId = Integer.valueOf(String.valueOf(argument));
+                                int myId = Integer.valueOf(String.valueOf(argument));
                                 if (myId > 0) {
                                     DatabaseObject d = getObject(c, myId);
                                     method.invoke(dbo, new Object[]{d});
@@ -1768,7 +1763,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     /**
      * Returns objects within the given context which match the criterias in the
-     * given QueryCriteria object<br/>
+     * given QueryCriteria object
      *
      * @param <T>
      * @param criterias If NULL returns ALL

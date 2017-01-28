@@ -109,6 +109,39 @@ public class Schedule extends DatabaseObject {
         }
         return l;
     }
+    
+     /**
+     * reads the Events for Contact (primary) or 
+     * timeframe (if contact is null) 
+     * @param date
+     * @param dao
+     * @return
+     */
+    public static ArrayList<Schedule> getEventsFree(vTimeframe date, Contact dao) {
+        Object[][] data;
+        if (dao != null) {
+            String[] where = {"contactsids", dao.__getIDS().toString()};
+            data = QueryHandler.instanceOf().clone(Context.getSchedule()).select("ids", where);
+        } else {
+            data = QueryHandler.instanceOf().clone(Context.getSchedule()).select("ids", null, "nextdate", date);
+        }
+        ArrayList<Schedule> l = new ArrayList<Schedule>();
+        for (int i = 0; i < data.length; i++) {
+            Object[] objects = data[i];
+            try {
+                Schedule s = (Schedule) DatabaseObject.getObject(Context.getSchedule(), Integer.valueOf(objects[0].toString()));
+                if ((s.__getContactsids() > 0
+                        && dao == null)
+                        || s.__getItemsids() > 0) {
+                    continue;
+                }
+                l.add(s);
+            } catch (NodataFoundException ex) {
+                Log.Debug(ex);
+            }
+        }
+        return l;
+    }
 
     /**
      *
@@ -256,12 +289,28 @@ public class Schedule extends DatabaseObject {
     public static ArrayList<Schedule> getEvents2(Date day) {
         return getEvents2(new vTimeframe(day, new Date(DateConverter.addDay(day).getTime() - 1)));
     }
+
+    /**
+     * Calls the GetEventsFree-Method for a defined day
+     * @param day
+     * @param dao
+     * @return 
+     */
+    public static ArrayList<Schedule> getEventsFree(Date day, Contact dao) {
+        if (dao != null) {
+            return getEvents2(dao);
+        } else if (day != null) {
+            return getEventsFree(new vTimeframe(day, new Date(DateConverter.addDay(day).getTime() - 1)), dao);
+        } else {
+            return new ArrayList<Schedule>();
+        }
+    }
     
     @Override
     public JComponent getView() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
+    
     /**
      * @return the usersids
      */
@@ -280,7 +329,10 @@ public class Schedule extends DatabaseObject {
      * @return the itemsids
      */
     public int __getItemsids() {
-        return itemsids;
+        if (itemsids >= 0)
+            return itemsids;
+        else
+            return (Integer) null;
     }
 
     /**
@@ -290,8 +342,12 @@ public class Schedule extends DatabaseObject {
         this.itemsids = itemsids;
     }
 
-    public int __getContactsids() {
-        return contactsids;
+    public Integer __getContactsids() {
+        if (contactsids >= 0) {
+            return contactsids;
+        } else {
+            return (Integer) null;
+        }
     }
 
     public void setContactsids(int contactsids) {

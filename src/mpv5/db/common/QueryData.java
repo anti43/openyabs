@@ -16,7 +16,6 @@
  */
 package mpv5.db.common;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import mpv5.logging.Log;
@@ -44,7 +43,7 @@ public class QueryData {
     }
 
     /**
-     * Generate a <code>SaveString<code/>
+     * Generate a SaveString
      * @param s
      * @return
      */
@@ -151,7 +150,7 @@ public class QueryData {
     }
 
     /**
-     * Generates a comma separated String represantion of the current values<br/>
+     * Generates a comma separated String represantion of the current values
      * with String values wrapped in single quotes
      * @return
      */

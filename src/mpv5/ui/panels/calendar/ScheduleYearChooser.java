@@ -24,9 +24,6 @@ import com.toedter.components.JSpinField;
 
 import java.util.Calendar;
 
-import javax.swing.JFrame;
-
-
 /**
  * JYearChooser is a bean for choosing a year.
  *
@@ -35,7 +32,6 @@ import javax.swing.JFrame;
  */
 public class ScheduleYearChooser extends JSpinField {
     private static final long serialVersionUID = 2648810220491090064L;
-    protected ScheduleCalendarDayChooser dayChooser;
     protected int oldYear;
     protected int startYear;
     protected int endYear;
@@ -46,7 +42,6 @@ public class ScheduleYearChooser extends JSpinField {
     public ScheduleYearChooser() {
         setName("JYearChooser");
         Calendar calendar = Calendar.getInstance();
-        dayChooser = null;
         setMinimum(calendar.getMinimum(Calendar.YEAR));
         setMaximum(calendar.getMaximum(Calendar.YEAR));
         setValue(calendar.get(Calendar.YEAR));
@@ -62,11 +57,7 @@ public class ScheduleYearChooser extends JSpinField {
     public void setYear(int y) {
         super.setValue(y, true, false);
 
-        if (dayChooser != null) {
-            dayChooser.setYear(value);
-        }
-
-        spinner.setValue(new Integer(value));
+        spinner.setValue(value);
         firePropertyChange("year", oldYear, value);
         oldYear = value;
     }
@@ -88,15 +79,6 @@ public class ScheduleYearChooser extends JSpinField {
      */
     public int getYear() {
         return super.getValue();
-    }
-
-    /**
-     * Convenience method set a day chooser that might be updated directly.
-     *
-     * @param dayChooser the day chooser
-     */
-    public void setDayChooser(ScheduleCalendarDayChooser dayChooser) {
-        this.dayChooser = dayChooser;
     }
 
     /**
@@ -133,17 +115,5 @@ public class ScheduleYearChooser extends JSpinField {
      */
     public void setStartYear(int startYear) {
         setMinimum(startYear);
-    }
-
-    /**
-     * Creates a JFrame with a JYearChooser inside and can be used for testing.
-     *
-     * @param s command line arguments
-     */
-    static public void main(String[] s) {
-        JFrame frame = new JFrame("JYearChooser");
-        frame.getContentPane().add(new ScheduleYearChooser());
-        frame.pack();
-        frame.setVisible(true);
     }
 }

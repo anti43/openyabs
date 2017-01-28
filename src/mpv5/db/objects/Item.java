@@ -51,7 +51,8 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Returns a localized string representation of the given item status
+     * Returns a localized string representation of the
+     * given item status
      *
      * @param status
      * @return
@@ -157,7 +158,8 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     }
 
     /**
-     * Returns a localized string represenation of the given item type
+     * Returns a localized string represenation of the given
+     * item type
      *
      * @param type
      * @return
@@ -237,7 +239,8 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     public static Item createFor(Contact dataOwner) {
         Item i = (Item) DatabaseObject.getObject(Context.getInvoice());
         i.setContactsids(dataOwner.__getIDS());
-        i.setCname(Messages.NEW_BILL.getValue());
+        i.setCnumber(Messages.NEW_BILL.getValue());
+        i.buildCname();
         i.setInttype(Item.TYPE_INVOICE);
         i.setDateadded(new Date());
         i.setGroupsids(dataOwner.__getGroupsids());
@@ -401,7 +404,8 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     }
 
     /**
-     * @param defaultaccountsids the defaultaccountsids to set
+     * @param defaultaccountsids the defaultaccountsids to
+     * set
      */
     public void setAccountsids(int defaultaccountsids) {
         this.accountsids = defaultaccountsids;
@@ -422,7 +426,8 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     }
 
     /**
-     * <li>QUEUED = 0; <li>IN_PROGRESS= 1; <li>PAUSED = 2; <li>FINNISHED= 3;
+     * <li>QUEUED = 0; <li>IN_PROGRESS= 1; <li>PAUSED = 2;
+     * <li>FINNISHED= 3;
      *
      * @return the intstatus
      */
@@ -431,7 +436,8 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     }
 
     /**
-     * <li>QUEUED = 0; <li>IN_PROGRESS= 1; <li>PAUSED = 2; <li>FINNISHED= 3;
+     * <li>QUEUED = 0; <li>IN_PROGRESS= 1; <li>PAUSED = 2;
+     * <li>FINNISHED= 3;
      *
      * @param intstatus the intstatus to set
      */
@@ -440,7 +446,8 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     }
 
     /**
-     * <li>TYPE_INVOICE = 0; <li>TYPE_ORDER = 1; <li>TYPE_OFFER = 2;
+     * <li>TYPE_INVOICE = 0; <li>TYPE_ORDER = 1;
+     * <li>TYPE_OFFER = 2;
      *
      * @return the inttype
      */
@@ -449,7 +456,8 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     }
 
     /**
-     * <li>TYPE_INVOICE = 0; <li>TYPE_ORDER = 1; <li>TYPE_OFFER = 2;
+     * <li>TYPE_INVOICE = 0; <li>TYPE_ORDER = 1;
+     * <li>TYPE_OFFER = 2;
      *
      * @param inttype the inttype to set
      */
@@ -505,14 +513,14 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     public synchronized void ensureUniqueness() {
         Log.Debug(this, "In ensureUniqueness for " + this.getClass());
         setCnumber(getFormatHandler().next());
-        setCname(__getCnumber());
+        buildCname();
         Log.Debug(this, "ensureUniqueness result: " + __getCnumber());
     }
 
     /**
-     * Fetches all related {@link Subitem}s to this {@link Item}
-     * If no subitems are assigned, 
-     * returns an empty default list of default subitems
+     * Fetches all related {@link Subitem}s to this
+     * {@link Item} If no subitems are assigned, returns an
+     * empty default list of default subitems
      *
      * @return
      */
@@ -685,7 +693,6 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
         map.put("datetodo", df.format(__getDatetodo()));
         map.put("description", evaluateAll(__getDescription()));
 
-
         return super.resolveReferences(map);
     }
 
@@ -713,6 +720,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
 
     @Override
     public boolean save(boolean silent) {
+        buildCname();
         boolean saved = super.save(silent);
         if (saved) {
             if (mpv5.db.objects.User.getCurrentUser().getProperty("org.openyabs.property", "autocreatepdf") || GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.autocreatepdf")) {
@@ -724,12 +732,12 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
         }
         return saved;
     }
-    
+
     @Override
     public String toString() {
-        return getCname() + " (" + (FormatNumber.formatLokalCurrency(getGrossAmount()))+ ")";
+        return getCname() + " (" + (FormatNumber.formatLokalCurrency(getGrossAmount())) + ")";
     }
-    
+
     @Override
     public boolean reset() {
         if (ids > 0) {
@@ -744,7 +752,8 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     /**
      * Fetches all properties for this item from the db
      *
-     * @return A (possibly empty) list of {@link ValueProperty}s
+     * @return A (possibly empty) list of
+     * {@link ValueProperty}s
      */
     public List<ValueProperty> getProperties() {
         return ValueProperty.getProperties(this);
@@ -757,7 +766,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
             it1.delete();
         }
         setCnumber(FormatHandler.DELETED_IDENTIFIER + __getCnumber());
-        setCname(__getCnumber());
+        setCname(__getCname());
         save(true);
         return super.delete();
     }
@@ -776,7 +785,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
         }
 
         setCnumber(__getCnumber().replaceFirst(FormatHandler.DELETED_IDENTIFIER, ""));
-        setCname(__getCnumber());
+        setCname(__getCname());
 
         return super.undelete();
     }
@@ -797,8 +806,8 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
 
     /**
      * @return the contact
-     * @throws mpv5.db.common.NodataFoundException
-     * is persisting via contactsids
+     * @throws mpv5.db.common.NodataFoundException is
+     * persisting via contactsids
      */
     @Persistable(false)
     @Relation(true)
@@ -854,5 +863,24 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
 
     public BigDecimal getGrossAmount() {
         return __getTaxvalue().add(__getNetvalue().subtract(__getDiscountvalue()));
+    }
+
+    private void buildCname() {
+        if (cnumber == null) {
+            setCname("<not set>");
+        } else //Get Script for CNAME of items ...
+        if (ValueProperty.hasProperty(this.getContext(), "IntItemLabel")) {
+            try {
+                ValueProperty script = ValueProperty.getProperty(this.getContext(), "IntItemLabel");
+                Object s = script.getValue();
+                    if (s != null) {
+                         setCname(this.evaluateAll(String.valueOf(s)));
+                    }
+            } catch (NodataFoundException ex) {
+                setCname(cnumber);
+            }
+        } else {
+            setCname(cnumber);
+        }
     }
 }
