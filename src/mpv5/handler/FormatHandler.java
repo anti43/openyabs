@@ -18,9 +18,6 @@ package mpv5.handler;
 
 import java.text.MessageFormat;
 import java.text.ParsePosition;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import mpv5.YabsViewProxy;
@@ -61,7 +58,10 @@ public class FormatHandler {
         TYPE_PRODUCTORDER(Constants.TYPE_PRODUCT_ORDER, Messages.TYPE_PRODUCT_ORDER.getValue()),
         TYPE_ORDER_CONFIRMATION(Constants.TYPE_ORDER_CONFIRMATION, Messages.TYPE_CONFIRMATION.getValue()),
         TYPE_CONTRACT(Constants.TYPE_CONTRACT, Messages.TYPE_CONTRACT.getValue()),
-        TYPE_DELIVERY_NOTE(Constants.TYPE_DELIVERY_NOTE, Messages.TYPE_DELIVERY.getValue());
+        TYPE_DELIVERY_NOTE(Constants.TYPE_DELIVERY_NOTE, Messages.TYPE_DELIVERY.getValue()),
+        TYPE_DEPOSIT(Constants.TYPE_DEPOSIT, Messages.TYPE_DEPOSIT.getValue()),
+        TYPE_PART_PAYMENT(Constants.TYPE_PART_PAYMENT, Messages.TYPE_PART_PAYMENT.getValue()),
+        TYPE_CREDIT(Constants.TYPE_CREDIT, Messages.TYPE_CREDIT.getValue());
         int ids;
         String names;
 
@@ -212,16 +212,6 @@ public class FormatHandler {
             return DEFAULT_FORMAT;
         }
     }
-    /**
-     * Contains all formattable Contexts
-     */
-    public static List<Context> FORMATTABLE_CONTEXTS = new ArrayList<Context>(Arrays.asList(new Context[]{
-                Context.getContact(), Context.getCustomer(), Context.getManufacturer(),
-                Context.getSupplier(), Context.getProduct(),
-                Context.getExpense(), Context.getRevenue(), Context.getOffer(),
-                Context.getOrder(), Context.getInvoice(), Context.getCompany(),
-                Context.getActivityList(), Context.getProductOrder()
-            }));
 
     /**
      * Fetches the next number from the database
@@ -234,12 +224,15 @@ public class FormatHandler {
         if (format.startValue() == null) {
             int newN = 0;
             DatabaseObject forThis = source;
-            if (FORMATTABLE_CONTEXTS.contains(forThis.getContext())) {
+            if (Context.FORMATTABLE_CONTEXTS.contains(forThis.getContext())) {
 
                 String query;
                 if (forThis.getContext().equals(Context.getInvoice())
                         || forThis.getContext().equals(Context.getOffer())
-                        || forThis.getContext().equals(Context.getOrder())) {
+                        || forThis.getContext().equals(Context.getOrder())
+                        || forThis.getContext().equals(Context.getCredit())
+                        || forThis.getContext().equals(Context.getDeposit())
+                        || forThis.getContext().equals(Context.getPartPayment())) {
                     query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + " WHERE inttype ="
                             + ((Item) forThis).__getInttype() + " and invisible=0)";
                 } else if (forThis.getContext().equals(Context.getProduct())) {
@@ -301,7 +294,10 @@ public class FormatHandler {
         String cnumber = toString(format, lastNumber + 1);
         if (forThis.getContext().equals(Context.getInvoice())
                 || forThis.getContext().equals(Context.getOffer())
-                || forThis.getContext().equals(Context.getOrder())) {
+                || forThis.getContext().equals(Context.getOrder())
+                || forThis.getContext().equals(Context.getCredit())
+                || forThis.getContext().equals(Context.getDeposit())
+                || forThis.getContext().equals(Context.getPartPayment())) {
             query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + cnumber + "' AND inttype ="
                     + ((Item) forThis).__getInttype();
         } else if (forThis.getContext().equals(Context.getProduct())) {

@@ -349,7 +349,10 @@ public final class Export extends HashMap<String, Object> implements Waitable {
      * @return
      */
     public static Waitable createFile(String aname, Template preloadedTemplate, DatabaseObject dataOwner) {
-        Map<String, Object> hm1 = dataOwner.getFormFields();//new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
+        Map<String, Object> hm1 = null;
+        if (dataOwner != null) {
+            hm1 = dataOwner.getFormFields();
+        }
         File f2;
         if (aname == null) {
             f2 = FileDirectoryHandler.getTempFile("pdf");
@@ -357,7 +360,9 @@ public final class Export extends HashMap<String, Object> implements Waitable {
             f2 = FileDirectoryHandler.getTempFile(aname, "pdf");
         }
         Export ex = new Export(preloadedTemplate);
-        ex.putAll(hm1);
+        if (dataOwner != null) {
+            ex.putAll(hm1);
+        }
         ex.setTemplate(preloadedTemplate.getExFile());
         ex.setTargetFile(f2);
         Log.Debug(Export.class, "createFile target file: " + f2);

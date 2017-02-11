@@ -36,16 +36,20 @@ import mpv5.utils.numberformat.FormatNumber;
  */
 public class Revenue extends DatabaseObject implements Formattable {
 
-    public static int TYPE_REVENUE = 42;
+//    public static int TYPE_REVENUE = 42;
     private String description = "";
     private BigDecimal netvalue = BigDecimal.ZERO;
     private BigDecimal taxpercentvalue = BigDecimal.ZERO;
     private BigDecimal brutvalue = BigDecimal.ZERO;
     private String cnumber;
+    private String cname;
     private int accountsids;
+    private int contactsids;
+    private int refOrderids;
     private FormatHandler formatHandler;
-    private Date dateend = new Date();
-    private boolean ispaid;
+    private Date dateadded;
+    private Date dateend;
+    private int status;
 
     public Revenue() {
         setContext(Context.getRevenue());
@@ -67,8 +71,9 @@ public class Revenue extends DatabaseObject implements Formattable {
 
     @Override
     public String toString() {
-        return __getCname();
+        return cname + " (" + (FormatNumber.formatLokalCurrency(this.brutvalue)) + ")";
     }
+   
 
     @Override
     public JComponent getView() {
@@ -77,7 +82,16 @@ public class Revenue extends DatabaseObject implements Formattable {
 
     @Override
     public mpv5.utils.images.MPIcon getIcon() {
-        return new MPIcon("/mpv5/resources/images/22/1uparrow.png");
+        switch (status) {
+            case Item.STATUS_QUEUED:
+                return new MPIcon("/mpv5/resources/images/22/kontact_mail.png");
+            case Item.STATUS_PAID:
+                return new MPIcon("/mpv5/resources/images/22/ok.png");
+            case Item.STATUS_CANCELLED:
+                return new MPIcon("/mpv5/resources/images/22/file_temporary.png");
+            default:
+                return new MPIcon("/mpv5/resources/images/22/1uparrow.png");
+        }
     }
 
     /**
@@ -146,8 +160,10 @@ public class Revenue extends DatabaseObject implements Formattable {
 
     @Override
     public void ensureUniqueness() {
+        Log.Debug(this, "In ensureUniqueness for " + this.getClass());
         setCnumber(getFormatHandler().next());
-        setCname(__getCnumber());
+        buildCname();
+        Log.Debug(this, "ensureUniqueness result: " + __getCnumber());
     }
 
     /**
@@ -159,8 +175,8 @@ public class Revenue extends DatabaseObject implements Formattable {
         ArrayList<DatabaseObject> data = getObjects(Context.getRevenue());
         Object[][] obj = new Object[data.size()][];
         for (int i = 0; i < data.size(); i++) {
-            Revenue e = (Revenue) data.get(i);
-            obj[i] = e.toArray();
+            Revenue r = (Revenue) data.get(i);
+            obj[i] = r.toArray();
         }
         return obj;
     }
@@ -169,17 +185,33 @@ public class Revenue extends DatabaseObject implements Formattable {
      * Turn this revenue into a table row
      * @return
      */
+    @Override
     public Object[] toArray() {
-        Object[] o = new Object[5];
+        Object[] o = new Object[11];
         o[0] = this;
-        o[1] = description;
+        o[1] = cname;
+        o[2] = description;
         try {
-            o[2] = getObject(Context.getAccounts(), accountsids);
+            o[3] = getObject(Context.getAccounts(), accountsids);
         } catch (NodataFoundException ex) {
             Log.Debug(this, ex.getMessage());
         }
-        o[3] = FormatNumber.formatDezimal(brutvalue);
-        o[4] = FormatNumber.formatPercent(taxpercentvalue);
+        o[4] = FormatNumber.formatDezimal(brutvalue);
+        o[5] = FormatNumber.formatPercent(taxpercentvalue);
+        o[6] = status;
+        o[7] = dateadded;
+        o[8] = dateend;
+        try {
+            o[9] = getObject(Context.getContact(), contactsids);
+        } catch (NodataFoundException ex) {
+            Log.Debug(this, ex.getMessage());
+        }
+        try {
+            o[10] = getObject(Context.getOrder(), refOrderids);
+        } catch (NodataFoundException ex) {
+            Log.Debug(this, ex.getMessage());
+        }
+
         return o;
     }
 
@@ -197,10 +229,11 @@ public class Revenue extends DatabaseObject implements Formattable {
         this.cnumber = cnumber;
     }
 
+    @Override
     public void defineFormatHandler(FormatHandler handler) {
         formatHandler = handler;
     }
-
+    
     /**
      * @return the dateend
      */
@@ -216,16 +249,128 @@ public class Revenue extends DatabaseObject implements Formattable {
     }
 
     /**
-     * @return the ispaid
+     * returns the external Ref. (stored in cname)
+     * @return the external Ref.
      */
-    public boolean __getIspaid() {
-        return ispaid;
+    @Override
+    public String __getCname() {
+        return cname;
     }
 
     /**
-     * @param ispaid the ispaid to set
+     * sets the ext. Ref (stored in cname)
+     * @param cname the external Ref.
      */
-    public void setIspaid(boolean ispaid) {
-        this.ispaid = ispaid;
+    @Override
+    public void setCname(String cname) {
+        this.cname = cname;
+    }
+
+    /**
+     * gets the date for dataset created
+     * @return the creation date
+     */
+    @Override
+    public Date __getDateadded() {
+        return dateadded;
+    }
+
+    /**
+     * sets the date for dataset created
+     * @param dateadded the creation date
+     */
+    @Override
+    public void setDateadded(Date dateadded) {
+        this.dateadded = dateadded;
+    }
+
+    /**
+     *  gets the assigned Contact
+     * @return the ID of the Contact 
+     * or null if no Contact is assigned 
+     * (thats why the database constraints work evertime or never
+     * with this hack it does not check the id if its null)
+     */
+    public Integer __getContactsids() {
+        if (contactsids >= 0) {
+            return contactsids;
+        } else {
+            return (Integer) null;
+        }
+    }
+
+    /**
+     * set the assigned Contact
+     * @param contactsids the ID of the Contact 
+     * Please set -1 for none
+     */
+    public void setContactsids(int contactsids) {
+        this.contactsids = contactsids;
+    }
+
+    /**
+     *  gets the assigned Order
+     * @return the ID of the Order (Item)
+     * or null if no Order is assigned 
+     * (thats why the database constraints work evertime or never
+     * with this hack it does not check the id if its null)
+     */
+    public Integer __getRefOrderids() {
+        if (refOrderids >= 0) {
+            return refOrderids;
+        } else {
+            return (Integer) null;
+        }
+    }
+    
+    /**
+     * set the assigned Order
+     * @param refOrderids the ID of the Order 
+     * Please set -1 for none
+     */
+    public void setRefOrderids(int refOrderids) {
+        this.refOrderids = refOrderids;
+    }
+
+    /**
+     * gets the status 
+     * @return the status 
+     */
+    public int __getStatus() {
+        return status;
+    }
+
+    /**
+     * set the status
+     * @param status the status
+     */
+    public void setStatus(int status) {
+        this.status = status;
+    }
+    
+    /**
+     * build the cname out of the cnumber or 
+     * according to the script IntRevenueLabel
+     */
+    private void buildCname() {
+        if (cnumber == null) {
+            setCname("<not set>");
+        } 
+        else 
+        {
+            if (ValueProperty.hasProperty(this.getContext(), "IntRevenueLabel")) {
+                try {
+                    ValueProperty script = ValueProperty.getProperty(this.getContext(), "IntRevenueLabel");
+                    Object s = script.getValue();
+                    if (s != null) {
+                        setCname(this.evaluateAll(String.valueOf(s)));
+                    }
+                } catch (NodataFoundException ex) {
+                    setCname(cnumber);
+                }
+            } else {
+                setCname(cnumber);
+            }
+        }
     }
 }

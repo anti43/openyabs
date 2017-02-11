@@ -97,7 +97,6 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
     /**
      * Creates new form ContactPanel
      *
-     * @param type
      */
     public ProductOrderPanel() {
         initComponents();
@@ -1065,7 +1064,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
     }//GEN-LAST:event_toorderActionPerformed
 
     private void toinvoiceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toinvoiceActionPerformed
-        toInvoice();
+        toInvoice(Item.TYPE_INVOICE);
     }//GEN-LAST:event_toinvoiceActionPerformed
 
     private void toofferActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toofferActionPerformed
@@ -1934,10 +1933,24 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
         YabsViewProxy.instance().addTab(i2);
     }
 
-    private void toInvoice() {
-
-        Item i2 = (Item) dataOwner.clone(Context.getInvoice());
-        i2.setInttype(Item.TYPE_INVOICE);
+    private void toInvoice(int itemType) {
+        Item i2;
+        switch (itemType) {
+            case Item.TYPE_INVOICE:
+                i2 = (Item) dataOwner.clone(Context.getInvoice());
+                i2.setInttype(Item.TYPE_INVOICE);
+                break;
+            case Item.TYPE_DEPOSIT:
+                i2 = (Item) dataOwner.clone(Context.getInvoice());
+                i2.setInttype(Item.TYPE_INVOICE);
+                break;
+            case Item.TYPE_PART_PAYMENT:
+                i2 = (Item) dataOwner.clone(Context.getInvoice());
+                i2.setInttype(Item.TYPE_INVOICE);
+                break;
+            default:
+                return;
+        }
         i2.setIDS(-1);
         i2.setCname(null);
         i2.setCnumber(null);

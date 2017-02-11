@@ -62,6 +62,7 @@ public class ControlPanel_Schedule extends javax.swing.JPanel implements Control
         labeledCombobox2.setEditable(true);
         labeledCombobox2.triggerSearch();
 
+        bill_warn.setLabelWidth(300);
         initTable();
         setData();
         loadPropertys();
@@ -99,35 +100,47 @@ public class ControlPanel_Schedule extends javax.swing.JPanel implements Control
             }
         };
         jPanel4 = new javax.swing.JPanel();
-        offer = new javax.swing.JCheckBox();
-        orders = new javax.swing.JCheckBox();
-        confi = new javax.swing.JCheckBox();
-        deliv = new javax.swing.JCheckBox();
-        bills = new javax.swing.JCheckBox();
-        offer1 = new javax.swing.JCheckBox();
-        orders1 = new javax.swing.JCheckBox();
-        confi1 = new javax.swing.JCheckBox();
-        deliv1 = new javax.swing.JCheckBox();
-        bills1 = new javax.swing.JCheckBox();
+        use_offers = new javax.swing.JCheckBox();
+        hide_offers = new javax.swing.JCheckBox();
+        use_orders = new javax.swing.JCheckBox();
+        hide_orders = new javax.swing.JCheckBox();
+        use_confi = new javax.swing.JCheckBox();
+        hide_confi = new javax.swing.JCheckBox();
+        use_deliv = new javax.swing.JCheckBox();
+        hide_deliv = new javax.swing.JCheckBox();
+        use_bills = new javax.swing.JCheckBox();
+        hide_bills = new javax.swing.JCheckBox();
+        use_part = new javax.swing.JCheckBox();
+        hide_part = new javax.swing.JCheckBox();
+        use_deposit = new javax.swing.JCheckBox();
+        hide_deposit = new javax.swing.JCheckBox();
+        use_rev = new javax.swing.JCheckBox();
+        hide_rev = new javax.swing.JCheckBox();
         jPanel8 = new javax.swing.JPanel();
-        bill_warn = new mpv5.ui.beans.LabeledTextField();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        bill_alert = new mpv5.ui.beans.LabeledTextField();
-        order_alert = new mpv5.ui.beans.LabeledTextField();
-        order_warn = new mpv5.ui.beans.LabeledTextField();
-        offer_alert = new mpv5.ui.beans.LabeledTextField();
+        jPanel5 = new javax.swing.JPanel();
         offer_warn = new mpv5.ui.beans.LabeledTextField();
-        deliv_alert = new mpv5.ui.beans.LabeledTextField();
-        deliv_warn = new mpv5.ui.beans.LabeledTextField();
-        confi_alert = new mpv5.ui.beans.LabeledTextField();
+        order_warn = new mpv5.ui.beans.LabeledTextField();
         confi_warn = new mpv5.ui.beans.LabeledTextField();
+        deliv_warn = new mpv5.ui.beans.LabeledTextField();
+        bill_warn = new mpv5.ui.beans.LabeledTextField();
+        part_warn = new mpv5.ui.beans.LabeledTextField();
+        deposit_warn = new mpv5.ui.beans.LabeledTextField();
+        rev_warn = new mpv5.ui.beans.LabeledTextField();
+        jPanel7 = new javax.swing.JPanel();
+        offer_alert = new mpv5.ui.beans.LabeledTextField();
+        order_alert = new mpv5.ui.beans.LabeledTextField();
+        confi_alert = new mpv5.ui.beans.LabeledTextField();
+        deliv_alert = new mpv5.ui.beans.LabeledTextField();
+        bill_alert = new mpv5.ui.beans.LabeledTextField();
+        part_alert = new mpv5.ui.beans.LabeledTextField();
+        deposit_alert = new mpv5.ui.beans.LabeledTextField();
+        rev_alert = new mpv5.ui.beans.LabeledTextField();
         jPanel6 = new javax.swing.JPanel();
-        jButton2 = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
+        apply = new javax.swing.JButton();
+        save = new javax.swing.JButton();
+        advanced = new javax.swing.JButton();
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();; // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("RemindPanel.border.title"))); // NOI18N
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Schedule.jPanel1.border.title"))); // NOI18N
@@ -150,11 +163,10 @@ public class ControlPanel_Schedule extends javax.swing.JPanel implements Control
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 117, Short.MAX_VALUE)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(labeledCombobox2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(labeledTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 321, Short.MAX_VALUE))
-                .addGap(306, 306, 306))
+                    .addComponent(labeledTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -163,10 +175,11 @@ public class ControlPanel_Schedule extends javax.swing.JPanel implements Control
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(labeledCombobox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(labeledTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(labeledTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-//$2java.awt.Color(255, 255, 255));
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.setName("jPanel2"); // NOI18N
 
         add.setText(bundle.getString("ControlPanel_Schedule.add.text")); // NOI18N
@@ -236,219 +249,294 @@ public class ControlPanel_Schedule extends javax.swing.JPanel implements Control
         jPanel4.setName("jPanel4"); // NOI18N
         jPanel4.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        offer.setText(bundle.getString("ControlPanel_Schedule.offer.text")); // NOI18N
-        offer.setEnabled(false);
-        offer.setName("offer"); // NOI18N
-        jPanel4.add(offer, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 30, -1, -1));
-
-        orders.setText(bundle.getString("ControlPanel_Schedule.orders.text")); // NOI18N
-        orders.setEnabled(false);
-        orders.setName("orders"); // NOI18N
-        jPanel4.add(orders, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 50, -1, -1));
-
-        confi.setText(bundle.getString("ControlPanel_Schedule.confi.text")); // NOI18N
-        confi.setEnabled(false);
-        confi.setName("confi"); // NOI18N
-        jPanel4.add(confi, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 70, -1, -1));
-
-        deliv.setText(bundle.getString("ControlPanel_Schedule.deliv.text")); // NOI18N
-        deliv.setEnabled(false);
-        deliv.setName("deliv"); // NOI18N
-        jPanel4.add(deliv, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 90, -1, 30));
-
-        bills.setText(bundle.getString("ControlPanel_Schedule.bills.text")); // NOI18N
-        bills.setEnabled(false);
-        bills.setName("bills"); // NOI18N
-        jPanel4.add(bills, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 110, -1, 30));
-
-        offer1.setText(bundle.getString("ControlPanel_Schedule.offer1.text")); // NOI18N
-        offer1.setName("offer1"); // NOI18N
-        offer1.addActionListener(new java.awt.event.ActionListener() {
+        use_offers.setText(bundle.getString("ControlPanel_Schedule.use_offers.text")); // NOI18N
+        use_offers.setName("use_offers"); // NOI18N
+        use_offers.setPreferredSize(new java.awt.Dimension(260, 20));
+        use_offers.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                offer1ActionPerformed(evt);
+                use_offersActionPerformed(evt);
             }
         });
-        jPanel4.add(offer1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 30, -1, -1));
+        jPanel4.add(use_offers, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 30, -1, -1));
 
-        orders1.setText(bundle.getString("ControlPanel_Schedule.orders1.text")); // NOI18N
-        orders1.setName("orders1"); // NOI18N
-        orders1.addActionListener(new java.awt.event.ActionListener() {
+        hide_offers.setText(bundle.getString("ControlPanel_Schedule.hide_offers.text")); // NOI18N
+        hide_offers.setEnabled(false);
+        hide_offers.setName("hide_offers"); // NOI18N
+        hide_offers.setPreferredSize(new java.awt.Dimension(350, 20));
+        jPanel4.add(hide_offers, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 30, -1, -1));
+
+        use_orders.setText(bundle.getString("ControlPanel_Schedule.use_orders.text")); // NOI18N
+        use_orders.setName("use_orders"); // NOI18N
+        use_orders.setPreferredSize(new java.awt.Dimension(260, 20));
+        use_orders.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                orders1ActionPerformed(evt);
+                use_ordersActionPerformed(evt);
             }
         });
-        jPanel4.add(orders1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, -1, -1));
+        jPanel4.add(use_orders, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 50, -1, -1));
 
-        confi1.setText(bundle.getString("ControlPanel_Schedule.confi1.text")); // NOI18N
-        confi1.setName("confi1"); // NOI18N
-        confi1.addActionListener(new java.awt.event.ActionListener() {
+        hide_orders.setText(bundle.getString("ControlPanel_Schedule.hide_orders.text")); // NOI18N
+        hide_orders.setEnabled(false);
+        hide_orders.setName("hide_orders"); // NOI18N
+        hide_orders.setPreferredSize(new java.awt.Dimension(350, 20));
+        jPanel4.add(hide_orders, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 50, -1, -1));
+
+        use_confi.setText(bundle.getString("ControlPanel_Schedule.use_confi.text")); // NOI18N
+        use_confi.setName("use_confi"); // NOI18N
+        use_confi.setPreferredSize(new java.awt.Dimension(260, 20));
+        use_confi.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                confi1ActionPerformed(evt);
+                use_confiActionPerformed(evt);
             }
         });
-        jPanel4.add(confi1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 70, -1, -1));
+        jPanel4.add(use_confi, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 70, -1, -1));
 
-        deliv1.setText(bundle.getString("ControlPanel_Schedule.deliv1.text")); // NOI18N
-        deliv1.setName("deliv1"); // NOI18N
-        deliv1.addActionListener(new java.awt.event.ActionListener() {
+        hide_confi.setText(bundle.getString("ControlPanel_Schedule.hide_confi.text")); // NOI18N
+        hide_confi.setEnabled(false);
+        hide_confi.setName("hide_confi"); // NOI18N
+        hide_confi.setPreferredSize(new java.awt.Dimension(350, 20));
+        jPanel4.add(hide_confi, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 70, -1, -1));
+
+        use_deliv.setText(bundle.getString("ControlPanel_Schedule.use_deliv.text")); // NOI18N
+        use_deliv.setName("use_deliv"); // NOI18N
+        use_deliv.setPreferredSize(new java.awt.Dimension(260, 20));
+        use_deliv.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                deliv1ActionPerformed(evt);
+                use_delivActionPerformed(evt);
             }
         });
-        jPanel4.add(deliv1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 90, -1, 30));
+        jPanel4.add(use_deliv, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 90, -1, -1));
 
-        bills1.setText(bundle.getString("ControlPanel_Schedule.bills1.text")); // NOI18N
-        bills1.setName("bills1"); // NOI18N
-        bills1.addActionListener(new java.awt.event.ActionListener() {
+        hide_deliv.setText(bundle.getString("ControlPanel_Schedule.hide_deliv.text")); // NOI18N
+        hide_deliv.setEnabled(false);
+        hide_deliv.setName("hide_deliv"); // NOI18N
+        hide_deliv.setPreferredSize(new java.awt.Dimension(350, 20));
+        jPanel4.add(hide_deliv, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 90, -1, -1));
+
+        use_bills.setText(bundle.getString("ControlPanel_Schedule.bills.text")); // NOI18N
+        use_bills.setName("bills"); // NOI18N
+        use_bills.setPreferredSize(new java.awt.Dimension(260, 20));
+        use_bills.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bills1ActionPerformed(evt);
+                use_billsActionPerformed(evt);
             }
         });
-        jPanel4.add(bills1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 110, -1, 30));
+        jPanel4.add(use_bills, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 110, -1, -1));
+
+        hide_bills.setText(bundle.getString("ControlPanel_Schedule.hide_bills.text")); // NOI18N
+        hide_bills.setEnabled(false);
+        hide_bills.setName("hide_bills"); // NOI18N
+        hide_bills.setPreferredSize(new java.awt.Dimension(350, 20));
+        jPanel4.add(hide_bills, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 110, -1, -1));
+
+        use_part.setText(bundle.getString("ControlPanel_Schedule.use_part.text")); // NOI18N
+        use_part.setName("use_part"); // NOI18N
+        use_part.setPreferredSize(new java.awt.Dimension(260, 20));
+        use_part.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                use_partActionPerformed(evt);
+            }
+        });
+        jPanel4.add(use_part, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 130, -1, -1));
+
+        hide_part.setText(bundle.getString("ControlPanel_Schedule.hide_part.text")); // NOI18N
+        hide_part.setEnabled(false);
+        hide_part.setName("hide_part"); // NOI18N
+        hide_part.setPreferredSize(new java.awt.Dimension(350, 20));
+        jPanel4.add(hide_part, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 130, -1, -1));
+
+        use_deposit.setText(bundle.getString("ControlPanel_Schedule.use_deposit.text")); // NOI18N
+        use_deposit.setName("use_deposit"); // NOI18N
+        use_deposit.setPreferredSize(new java.awt.Dimension(260, 20));
+        use_deposit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                use_depositActionPerformed(evt);
+            }
+        });
+        jPanel4.add(use_deposit, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 150, -1, -1));
+
+        hide_deposit.setText(bundle.getString("ControlPanel_Schedule.hide_deposit.text")); // NOI18N
+        hide_deposit.setEnabled(false);
+        hide_deposit.setName("hide_deposit"); // NOI18N
+        hide_deposit.setPreferredSize(new java.awt.Dimension(350, 20));
+        jPanel4.add(hide_deposit, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 150, -1, -1));
+
+        use_rev.setText(bundle.getString("ControlPanel_Schedule.use_rev.text")); // NOI18N
+        use_rev.setName("use_rev"); // NOI18N
+        use_rev.setPreferredSize(new java.awt.Dimension(260, 20));
+        use_rev.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                use_revActionPerformed(evt);
+            }
+        });
+        jPanel4.add(use_rev, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 170, -1, -1));
+
+        hide_rev.setText(bundle.getString("ControlPanel_Schedule.hide_rev.text")); // NOI18N
+        hide_rev.setEnabled(false);
+        hide_rev.setName("hide_rev"); // NOI18N
+        hide_rev.setPreferredSize(new java.awt.Dimension(350, 20));
+        jPanel4.add(hide_rev, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 170, -1, -1));
 
         jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Schedule.jPanel8.border.title"))); // NOI18N
         jPanel8.setName("jPanel8"); // NOI18N
 
-        bill_warn.set_Label(bundle.getString("ControlPanel_Schedule.bill_warn._Label")); // NOI18N
-        bill_warn.set_Text(bundle.getString("ControlPanel_Schedule.bill_warn._Text")); // NOI18N
-        bill_warn.setName("bill_warn"); // NOI18N
-
-        jLabel2.setText(bundle.getString("ControlPanel_Schedule.jLabel2.text")); // NOI18N
-        jLabel2.setName("jLabel2"); // NOI18N
-
-        jLabel3.setText(bundle.getString("ControlPanel_Schedule.jLabel3.text")); // NOI18N
-        jLabel3.setName("jLabel3"); // NOI18N
-
-        bill_alert.set_Label(bundle.getString("ControlPanel_Schedule.bill_alert._Label")); // NOI18N
-        bill_alert.set_Text(bundle.getString("ControlPanel_Schedule.bill_alert._Text")); // NOI18N
-        bill_alert.setName("bill_alert"); // NOI18N
-
-        order_alert.set_Label(bundle.getString("ControlPanel_Schedule.order_alert._Label")); // NOI18N
-        order_alert.set_Text(bundle.getString("ControlPanel_Schedule.order_alert._Text")); // NOI18N
-        order_alert.setName("order_alert"); // NOI18N
-
-        order_warn.set_Label(bundle.getString("ControlPanel_Schedule.order_warn._Label")); // NOI18N
-        order_warn.set_Text(bundle.getString("ControlPanel_Schedule.order_warn._Text")); // NOI18N
-        order_warn.setName("order_warn"); // NOI18N
-
-        offer_alert.set_Label(bundle.getString("ControlPanel_Schedule.offer_alert._Label")); // NOI18N
-        offer_alert.set_Text(bundle.getString("ControlPanel_Schedule.offer_alert._Text")); // NOI18N
-        offer_alert.setName("offer_alert"); // NOI18N
+        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Schedule.jPanel5.border.title"))); // NOI18N
+        jPanel5.setMaximumSize(new java.awt.Dimension(400, 32767));
+        jPanel5.setMinimumSize(new java.awt.Dimension(400, 49));
+        jPanel5.setName("jPanel5"); // NOI18N
+        jPanel5.setPreferredSize(new java.awt.Dimension(400, 240));
 
         offer_warn.set_Label(bundle.getString("ControlPanel_Schedule.offer_warn._Label")); // NOI18N
         offer_warn.set_Text(bundle.getString("ControlPanel_Schedule.offer_warn._Text")); // NOI18N
         offer_warn.setName("offer_warn"); // NOI18N
+        offer_warn.setPreferredSize(new java.awt.Dimension(175, 20));
+        jPanel5.add(offer_warn);
 
-        deliv_alert.set_Label(bundle.getString("ControlPanel_Schedule.deliv_alert._Label")); // NOI18N
-        deliv_alert.set_Text(bundle.getString("ControlPanel_Schedule.deliv_alert._Text")); // NOI18N
-        deliv_alert.setName("deliv_alert"); // NOI18N
-
-        deliv_warn.set_Label(bundle.getString("ControlPanel_Schedule.deliv_warn._Label")); // NOI18N
-        deliv_warn.set_Text(bundle.getString("ControlPanel_Schedule.deliv_warn._Text")); // NOI18N
-        deliv_warn.setName("deliv_warn"); // NOI18N
-
-        confi_alert.set_Label(bundle.getString("ControlPanel_Schedule.confi_alert._Label")); // NOI18N
-        confi_alert.set_Text(bundle.getString("ControlPanel_Schedule.confi_alert._Text")); // NOI18N
-        confi_alert.setName("confi_alert"); // NOI18N
+        order_warn.set_Label(bundle.getString("ControlPanel_Schedule.order_warn._Label")); // NOI18N
+        order_warn.set_Text(bundle.getString("ControlPanel_Schedule.order_warn._Text")); // NOI18N
+        order_warn.setName("order_warn"); // NOI18N
+        order_warn.setPreferredSize(new java.awt.Dimension(175, 20));
+        jPanel5.add(order_warn);
 
         confi_warn.set_Label(bundle.getString("ControlPanel_Schedule.confi_warn._Label")); // NOI18N
         confi_warn.set_Text(bundle.getString("ControlPanel_Schedule.confi_warn._Text")); // NOI18N
         confi_warn.setName("confi_warn"); // NOI18N
+        confi_warn.setPreferredSize(new java.awt.Dimension(175, 20));
+        jPanel5.add(confi_warn);
+
+        deliv_warn.set_Label(bundle.getString("ControlPanel_Schedule.deliv_warn._Label")); // NOI18N
+        deliv_warn.set_Text(bundle.getString("ControlPanel_Schedule.deliv_warn._Text")); // NOI18N
+        deliv_warn.setName("deliv_warn"); // NOI18N
+        deliv_warn.setPreferredSize(new java.awt.Dimension(175, 20));
+        jPanel5.add(deliv_warn);
+
+        bill_warn.set_Label(bundle.getString("ControlPanel_Schedule.bill_warn._Label")); // NOI18N
+        bill_warn.set_Text(bundle.getString("ControlPanel_Schedule.bill_warn._Text")); // NOI18N
+        bill_warn.setName("bill_warn"); // NOI18N
+        bill_warn.setPreferredSize(new java.awt.Dimension(175, 20));
+        jPanel5.add(bill_warn);
+
+        part_warn.set_Label(bundle.getString("ControlPanel_Schedule.part_warn._Label")); // NOI18N
+        part_warn.set_Text(bundle.getString("ControlPanel_Schedule.part_warn._Text")); // NOI18N
+        part_warn.setName("part_warn"); // NOI18N
+        part_warn.setPreferredSize(new java.awt.Dimension(175, 20));
+        jPanel5.add(part_warn);
+
+        deposit_warn.set_Label(bundle.getString("ControlPanel_Schedule.deposit_warn._Label")); // NOI18N
+        deposit_warn.set_Text(bundle.getString("ControlPanel_Schedule.deposit_warn._Text")); // NOI18N
+        deposit_warn.setName("deposit_warn"); // NOI18N
+        deposit_warn.setPreferredSize(new java.awt.Dimension(175, 20));
+        jPanel5.add(deposit_warn);
+
+        rev_warn.set_Label(bundle.getString("ControlPanel_Schedule.rev_warn._Label")); // NOI18N
+        rev_warn.set_Text(bundle.getString("ControlPanel_Schedule.rev_warn._Text")); // NOI18N
+        rev_warn.setName("rev_warn"); // NOI18N
+        rev_warn.setPreferredSize(new java.awt.Dimension(175, 20));
+        jPanel5.add(rev_warn);
+
+        jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Schedule.jPanel7.border.title"))); // NOI18N
+        jPanel7.setMaximumSize(new java.awt.Dimension(400, 32767));
+        jPanel7.setMinimumSize(new java.awt.Dimension(400, 49));
+        jPanel7.setName("jPanel7"); // NOI18N
+        jPanel7.setPreferredSize(new java.awt.Dimension(400, 240));
+
+        offer_alert.set_Label(bundle.getString("ControlPanel_Schedule.offer_alert._Label")); // NOI18N
+        offer_alert.set_Text(bundle.getString("ControlPanel_Schedule.offer_alert._Text")); // NOI18N
+        offer_alert.setName("offer_alert"); // NOI18N
+        offer_alert.setPreferredSize(new java.awt.Dimension(175, 20));
+        jPanel7.add(offer_alert);
+
+        order_alert.set_Label(bundle.getString("ControlPanel_Schedule.order_alert._Label")); // NOI18N
+        order_alert.set_Text(bundle.getString("ControlPanel_Schedule.order_alert._Text")); // NOI18N
+        order_alert.setName("order_alert"); // NOI18N
+        order_alert.setPreferredSize(new java.awt.Dimension(175, 20));
+        jPanel7.add(order_alert);
+
+        confi_alert.set_Label(bundle.getString("ControlPanel_Schedule.confi_alert._Label")); // NOI18N
+        confi_alert.set_Text(bundle.getString("ControlPanel_Schedule.confi_alert._Text")); // NOI18N
+        confi_alert.setName("confi_alert"); // NOI18N
+        confi_alert.setPreferredSize(new java.awt.Dimension(175, 20));
+        jPanel7.add(confi_alert);
+
+        deliv_alert.set_Label(bundle.getString("ControlPanel_Schedule.deliv_alert._Label")); // NOI18N
+        deliv_alert.set_Text(bundle.getString("ControlPanel_Schedule.deliv_alert._Text")); // NOI18N
+        deliv_alert.setName("deliv_alert"); // NOI18N
+        deliv_alert.setPreferredSize(new java.awt.Dimension(175, 20));
+        jPanel7.add(deliv_alert);
+
+        bill_alert.set_Label(bundle.getString("ControlPanel_Schedule.bill_alert._Label")); // NOI18N
+        bill_alert.set_Text(bundle.getString("ControlPanel_Schedule.bill_alert._Text")); // NOI18N
+        bill_alert.setName("bill_alert"); // NOI18N
+        bill_alert.setPreferredSize(new java.awt.Dimension(175, 20));
+        jPanel7.add(bill_alert);
+
+        part_alert.set_Label(bundle.getString("ControlPanel_Schedule.part_alert._Label")); // NOI18N
+        part_alert.set_Text(bundle.getString("ControlPanel_Schedule.part_alert._Text")); // NOI18N
+        part_alert.setName("part_alert"); // NOI18N
+        part_alert.setPreferredSize(new java.awt.Dimension(175, 20));
+        jPanel7.add(part_alert);
+
+        deposit_alert.set_Label(bundle.getString("ControlPanel_Schedule.deposit_alert._Label")); // NOI18N
+        deposit_alert.set_Text(bundle.getString("ControlPanel_Schedule.deposit_alert._Text")); // NOI18N
+        deposit_alert.setName("deposit_alert"); // NOI18N
+        deposit_alert.setPreferredSize(new java.awt.Dimension(175, 20));
+        jPanel7.add(deposit_alert);
+
+        rev_alert.set_Label(bundle.getString("ControlPanel_Schedule.rev_alert._Label")); // NOI18N
+        rev_alert.set_Text(bundle.getString("ControlPanel_Schedule.rev_alert._Text")); // NOI18N
+        rev_alert.setName("rev_alert"); // NOI18N
+        rev_alert.setPreferredSize(new java.awt.Dimension(175, 20));
+        jPanel7.add(rev_alert);
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
         jPanel8Layout.setHorizontalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel8Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 423, Short.MAX_VALUE)
-                    .addGroup(jPanel8Layout.createSequentialGroup()
-                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel8Layout.createSequentialGroup()
-                                .addComponent(order_warn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(order_alert, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel8Layout.createSequentialGroup()
-                                .addComponent(offer_warn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(offer_alert, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel8Layout.createSequentialGroup()
-                                .addComponent(deliv_warn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(deliv_alert, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel8Layout.createSequentialGroup()
-                                .addComponent(confi_warn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(confi_alert, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel8Layout.createSequentialGroup()
-                                .addComponent(bill_warn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(10, 10, 10)
-                                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(bill_alert, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(0, 0, 0))
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel8Layout.createSequentialGroup()
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel3))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(bill_warn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(bill_alert, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(order_warn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(order_alert, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(offer_warn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(offer_alert, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(deliv_warn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(deliv_alert, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(confi_warn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(confi_alert, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jPanel7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 131, Short.MAX_VALUE)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
-//$2java.awt.Color(255, 255, 255));
+        jPanel6.setBackground(new java.awt.Color(255, 255, 255));
         jPanel6.setName("jPanel6"); // NOI18N
         jPanel6.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
 
-        jButton2.setText(bundle.getString("ControlPanel_Schedule.jButton2.text")); // NOI18N
-        jButton2.setName("jButton2"); // NOI18N
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        apply.setText(bundle.getString("ControlPanel_Schedule.apply.text")); // NOI18N
+        apply.setName("apply"); // NOI18N
+        apply.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                applyActionPerformed(evt);
             }
         });
-        jPanel6.add(jButton2);
+        jPanel6.add(apply);
 
-        jButton1.setText(bundle.getString("ControlPanel_Schedule.jButton1.text")); // NOI18N
-        jButton1.setName("jButton1"); // NOI18N
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        save.setText(bundle.getString("ControlPanel_Schedule.save.text")); // NOI18N
+        save.setName("save"); // NOI18N
+        save.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                saveActionPerformed(evt);
             }
         });
-        jPanel6.add(jButton1);
+        jPanel6.add(save);
 
-        jButton5.setText(bundle.getString("ControlPanel_Schedule.jButton5.text")); // NOI18N
-        jButton5.setName("jButton5"); // NOI18N
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
+        advanced.setText(bundle.getString("ControlPanel_Schedule.advanced.text")); // NOI18N
+        advanced.setName("advanced"); // NOI18N
+        advanced.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
+                advancedActionPerformed(evt);
             }
         });
-        jPanel6.add(jButton5);
+        jPanel6.add(advanced);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -459,30 +547,31 @@ public class ControlPanel_Schedule extends javax.swing.JPanel implements Control
                     .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel8, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 455, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel8, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(5, 5, 5)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(1, 1, 1)
-                        .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 507, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 454, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -521,117 +610,126 @@ public class ControlPanel_Schedule extends javax.swing.JPanel implements Control
         setData();
     }//GEN-LAST:event_copy1ActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void applyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_applyActionPerformed
         setPropertys();
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_applyActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
         setPropertys();
         mpv5.db.objects.User.getCurrentUser().saveProperties();
         Popup.notice(Messages.RESTART_REQUIRED);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_saveActionPerformed
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+    private void advancedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_advancedActionPerformed
         ControlPanel_AdvancedUserProperties c = new ControlPanel_AdvancedUserProperties();
         MPControlPanel.instanceOf().openDetails(c);
-    }//GEN-LAST:event_jButton5ActionPerformed
+    }//GEN-LAST:event_advancedActionPerformed
 
-    private void offer1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_offer1ActionPerformed
-        if (offer1.isSelected() == true) {
-            offer.setEnabled(true);
-        } else {
-            offer.setEnabled(false);
-        }
-    }//GEN-LAST:event_offer1ActionPerformed
+    private void use_offersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_use_offersActionPerformed
+        hide_offers.setEnabled(use_offers.isSelected());
+    }//GEN-LAST:event_use_offersActionPerformed
 
-    private void orders1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_orders1ActionPerformed
-        if (orders1.isSelected() == true) {
-            orders.setEnabled(true);
-        } else {
-            orders.setEnabled(false);
-        }
-    }//GEN-LAST:event_orders1ActionPerformed
+    private void use_ordersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_use_ordersActionPerformed
+        hide_orders.setEnabled(use_orders.isSelected());
+    }//GEN-LAST:event_use_ordersActionPerformed
 
-    private void confi1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confi1ActionPerformed
-        if (confi1.isSelected() == true) {
-            confi.setEnabled(true);
-        } else {
-            confi.setEnabled(false);
-        }
-    }//GEN-LAST:event_confi1ActionPerformed
+    private void use_confiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_use_confiActionPerformed
+        hide_confi.setEnabled(use_confi.isSelected());
+    }//GEN-LAST:event_use_confiActionPerformed
 
-    private void deliv1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deliv1ActionPerformed
-        if (deliv1.isSelected() == true) {
-            deliv.setEnabled(true);
-        } else {
-            deliv.setEnabled(false);
-        }
-    }//GEN-LAST:event_deliv1ActionPerformed
+    private void use_delivActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_use_delivActionPerformed
+        hide_deliv.setEnabled(use_deliv.isSelected());
+    }//GEN-LAST:event_use_delivActionPerformed
 
-    private void bills1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bills1ActionPerformed
-        if (bills1.isSelected() == true) {
-            bills.setEnabled(true);
-        } else {
-            bills.setEnabled(false);
-        }
-    }//GEN-LAST:event_bills1ActionPerformed
+    private void use_billsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_use_billsActionPerformed
+        hide_bills.setEnabled(use_bills.isSelected());
+    }//GEN-LAST:event_use_billsActionPerformed
+
+    private void use_partActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_use_partActionPerformed
+        hide_part.setEnabled(use_part.isSelected());
+    }//GEN-LAST:event_use_partActionPerformed
+
+    private void use_depositActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_use_depositActionPerformed
+        hide_deposit.setEnabled(use_deposit.isSelected());
+    }//GEN-LAST:event_use_depositActionPerformed
+
+    private void use_revActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_use_revActionPerformed
+                hide_rev.setEnabled(use_rev.isSelected());
+    }//GEN-LAST:event_use_revActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton add;
+    private javax.swing.JButton advanced;
+    private javax.swing.JButton apply;
     private mpv5.ui.beans.LabeledTextField bill_alert;
     private mpv5.ui.beans.LabeledTextField bill_warn;
-    private javax.swing.JCheckBox bills;
-    private javax.swing.JCheckBox bills1;
-    private javax.swing.JCheckBox confi;
-    private javax.swing.JCheckBox confi1;
     private mpv5.ui.beans.LabeledTextField confi_alert;
     private mpv5.ui.beans.LabeledTextField confi_warn;
     private javax.swing.JButton copy;
     private javax.swing.JButton copy1;
-    private javax.swing.JCheckBox deliv;
-    private javax.swing.JCheckBox deliv1;
     private mpv5.ui.beans.LabeledTextField deliv_alert;
     private mpv5.ui.beans.LabeledTextField deliv_warn;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton5;
+    private mpv5.ui.beans.LabeledTextField deposit_alert;
+    private mpv5.ui.beans.LabeledTextField deposit_warn;
+    private javax.swing.JCheckBox hide_bills;
+    private javax.swing.JCheckBox hide_confi;
+    private javax.swing.JCheckBox hide_deliv;
+    private javax.swing.JCheckBox hide_deposit;
+    private javax.swing.JCheckBox hide_offers;
+    private javax.swing.JCheckBox hide_orders;
+    private javax.swing.JCheckBox hide_part;
+    private javax.swing.JCheckBox hide_rev;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
     private mpv5.ui.beans.LabeledCombobox labeledCombobox2;
     private mpv5.ui.beans.LabeledTextField labeledTextField2;
-    private javax.swing.JCheckBox offer;
-    private javax.swing.JCheckBox offer1;
     private mpv5.ui.beans.LabeledTextField offer_alert;
     private mpv5.ui.beans.LabeledTextField offer_warn;
     private mpv5.ui.beans.LabeledTextField order_alert;
     private mpv5.ui.beans.LabeledTextField order_warn;
-    private javax.swing.JCheckBox orders;
-    private javax.swing.JCheckBox orders1;
+    private mpv5.ui.beans.LabeledTextField part_alert;
+    private mpv5.ui.beans.LabeledTextField part_warn;
     private javax.swing.JButton remove;
+    private mpv5.ui.beans.LabeledTextField rev_alert;
+    private mpv5.ui.beans.LabeledTextField rev_warn;
+    private javax.swing.JButton save;
+    private javax.swing.JCheckBox use_bills;
+    private javax.swing.JCheckBox use_confi;
+    private javax.swing.JCheckBox use_deliv;
+    private javax.swing.JCheckBox use_deposit;
+    private javax.swing.JCheckBox use_offers;
+    private javax.swing.JCheckBox use_orders;
+    private javax.swing.JCheckBox use_part;
+    private javax.swing.JCheckBox use_rev;
     // End of variables declaration//GEN-END:variables
 
+    @Override
     public Component getAndRemoveActionPanel() {
         this.remove(jPanel2);
         validate();
         return jPanel2;
     }
 
+    @Override
     public void setValues(PropertyStore values) {
         oldvalues = values;
     }
 
+    @Override
     public String getUname() {
         return "StageTypes";
     }
 
+    @Override
     public void reset() {
         setValues(oldvalues);
     }
@@ -679,32 +777,50 @@ public class ControlPanel_Schedule extends javax.swing.JPanel implements Control
         mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("deliver.alert.days", deliv_alert.getText());
         mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("confirmation.warn.days", confi_warn.getText());
         mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("confirmation.alert.days", confi_alert.getText());
-
-        mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "hideunpaidbills", bills.isSelected());
-        mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "hideunattentedorders", orders.isSelected());
-        mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "hideunacceptedoffers", offer.isSelected());
-        mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "hideunattenteddeliverys", deliv.isSelected());
-        mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "hideunattentedconfirmations", confi.isSelected());
+        mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("partpayment.warn.days", part_warn.getText());
+        mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("partpayment.alert.days", part_alert.getText());
+        mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("deposit.warn.days", deposit_warn.getText());
+        mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("deposit.alert.days", deposit_alert.getText());
+        mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("revenue.warn.days", rev_warn.getText());
+        mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("revenue.alert.days", rev_alert.getText());
         
-        mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "usebills", bills1.isSelected());
-        mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "useorders", orders1.isSelected());
-        mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "useoffers", offer1.isSelected());
-        mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "usedeliverys", deliv1.isSelected());
-        mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "confirmations", confi1.isSelected());
+        mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "hideunpaidbills", hide_bills.isSelected());
+        mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "hideunattentedorders", hide_orders.isSelected());
+        mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "hideunacceptedoffers", hide_offers.isSelected());
+        mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "hideunattenteddeliverys", hide_deliv.isSelected());
+        mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "hideunattentedconfirmations", hide_confi.isSelected());
+        mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "hideunattentedrevenues", hide_rev.isSelected());
+        mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "hideunattentedpartpayments", hide_part.isSelected());
+        mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "hideunattenteddeposits", hide_deposit.isSelected());
+        
+        mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "usebills", use_bills.isSelected());
+        mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "useorders", use_orders.isSelected());
+        mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "useoffers", use_offers.isSelected());
+        mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "usedeliverys", use_deliv.isSelected());
+        mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "useconfirmations", use_confi.isSelected());
+        mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "userevenues", use_rev.isSelected());
+        mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "usepartpayment", use_part.isSelected());
+        mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "usedeposit", use_deposit.isSelected());
     }
 
     private void loadPropertys() {
-        bills.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hideunpaidbills"));
-        orders.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hideunattentedorders"));
-        offer.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hideunacceptedoffers"));
-        deliv.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hideunattenteddeliverys"));
-        confi.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hideunattentedconfirmations"));
-
-        bills1.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "usebills"));
-        orders1.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "useorders"));
-        offer1.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "useoffers"));
-        deliv1.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "usedeliverys"));
-        confi1.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "useconfirmations"));
+        hide_bills.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hideunpaidbills"));
+        hide_orders.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hideunattentedorders"));
+        hide_offers.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hideunacceptedoffers"));
+        hide_deliv.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hideunattenteddeliverys"));
+        hide_confi.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hideunattentedconfirmations"));
+        hide_part.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hideunattentedpartpayments"));
+        hide_deposit.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hideunattenteddeposits"));
+        hide_rev.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hideunattentedrevenues"));
+        
+        use_bills.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "usebills"));
+        use_orders.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "useorders"));
+        use_offers.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "useoffers"));
+        use_deliv.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "usedeliverys"));
+        use_confi.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "useconfirmations"));
+        use_part.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "usepartpayment"));
+        use_deposit.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "usedeposit"));
+        use_rev.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "userevenues"));
 
         if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("bills.warn.days")) {
             bill_warn.setText(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("bills.warn.days"));
@@ -765,5 +881,49 @@ public class ControlPanel_Schedule extends javax.swing.JPanel implements Control
         } else {
             confi_alert.setText("30");
         }
+        
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("partpayment.warn.days")) {
+           part_warn.setText(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("partpayment.warn.days"));
+        } else {
+            part_warn.setText("14");
+        }
+
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("partpayment.alert.days")) {
+            part_alert.setText(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("partpayment.alert.days"));
+        } else {
+            part_alert.setText("30");
+        }
+
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("deposit.warn.days")) {
+            deposit_warn.setText(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("deposit.warn.days"));
+        } else {
+            deposit_warn.setText("14");
+        }
+
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("deposit.alert.days")) {
+            deposit_alert.setText(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("deposit.alert.days"));
+        } else {
+            deposit_alert.setText("30");
+        }
+
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("revenue.warn.days")) {
+            rev_warn.setText(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("revenue.warn.days"));
+        } else {
+            rev_warn.setText("14");
+        }
+
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("revenue.alert.days")) {
+            rev_alert.setText(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("revenue.alert.days"));
+        } else {
+            rev_alert.setText("30");
+        }                                          
+        hide_offers.setEnabled(use_offers.isSelected());
+        hide_orders.setEnabled(use_orders.isSelected());
+        hide_confi.setEnabled(use_confi.isSelected());
+        hide_deliv.setEnabled(use_deliv.isSelected());
+        hide_bills.setEnabled(use_bills.isSelected());
+        hide_part.setEnabled(use_part.isSelected());
+        hide_deposit.setEnabled(use_deposit.isSelected());
+        hide_rev.setEnabled(use_rev.isSelected());
     }
 }

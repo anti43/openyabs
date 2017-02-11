@@ -620,6 +620,15 @@ public final class ProductOrderSubItem extends DatabaseObject implements Trigger
             case Constants.TYPE_INVOICE:
                 ip = new ItemPanel2(Context.getInvoice(), dos.getInttype());
                 break;
+            case Constants.TYPE_CREDIT:
+                ip = new ItemPanel2(Context.getCredit(), dos.getInttype());
+                break;
+            case Constants.TYPE_PART_PAYMENT:
+                ip = new ItemPanel2(Context.getPartPayment(), dos.getInttype());
+                break;
+            case Constants.TYPE_DEPOSIT:
+                ip = new ItemPanel2(Context.getDeposit(), dos.getInttype());
+                break;
         }
         return ip;
     }

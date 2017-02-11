@@ -10,13 +10,11 @@
  */
 package mpv5.ui.panels;
   
-import java.awt.AWTEventMulticaster;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -34,9 +32,7 @@ import mpv5.db.common.QueryParameter;
 import mpv5.db.objects.Contact;
 import mpv5.db.objects.Item;
 import mpv5.handler.MPEnum;
-import mpv5.logging.Log;
 import mpv5.ui.dialogs.Wizard;
-import mpv5.ui.dialogs.Wizardable;
 import mpv5.ui.dialogs.subcomponents.wizard_MassExportPanel;
 import mpv5.utils.models.MPComboBoxModelItem;
 
@@ -45,6 +41,8 @@ import mpv5.utils.models.MPComboBoxModelItem;
  * @author andreas
  */
 public class ReceiptLookup extends javax.swing.JPanel {
+
+    private static final long serialVersionUID = -8991791754204962670L;
 
     /**
      * Creates new form ReceiptLookup
@@ -60,13 +58,17 @@ public class ReceiptLookup extends javax.swing.JPanel {
             new Object[]{Context.getOffer(), Item.getTypeString(Item.TYPE_OFFER)},
             new Object[]{Context.getOrder(), Item.getTypeString(Item.TYPE_ORDER)},
             new Object[]{Context.getDelivery(), Item.getTypeString(Item.TYPE_DELIVERY_NOTE)},
-            new Object[]{Context.getConfirmation(), Item.getTypeString(Item.TYPE_ORDER_CONFIRMATION)},};
+            new Object[]{Context.getConfirmation(), Item.getTypeString(Item.TYPE_ORDER_CONFIRMATION)},
+            new Object[]{Context.getOrder(), Item.getTypeString(Item.TYPE_DEPOSIT)},
+            new Object[]{Context.getDelivery(), Item.getTypeString(Item.TYPE_PART_PAYMENT)},
+            new Object[]{Context.getConfirmation(), Item.getTypeString(Item.TYPE_CREDIT)}};
         type.setModel(typeModel);
         type.setSearchEnabled(false);
         type.setSearchOnEnterEnabled(false);
 
         type.getComboBox().addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 //search.setText("");
                 int index = type.getComboBox().getSelectedIndex();
@@ -109,6 +111,7 @@ public class ReceiptLookup extends javax.swing.JPanel {
         status.setSearchOnEnterEnabled(false);
         status.getComboBox().addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 //search.setText("");
                 generalListPanel1.setData((Context) type.getSelectedItem().getIdObject(), getStatusQuery());

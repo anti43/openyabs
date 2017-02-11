@@ -179,12 +179,18 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
                 return Messages.TYPE_CONFIRMATION.toString();
             case (TYPE_DELIVERY_NOTE):
                 return Messages.TYPE_DELIVERY.toString();
+            case (TYPE_DEPOSIT):
+                return Messages.TYPE_DEPOSIT.toString();
+            case (TYPE_PART_PAYMENT):
+                return Messages.TYPE_PART_PAYMENT.toString();
+            case (TYPE_CREDIT):
+                return Messages.TYPE_CREDIT.toString();
         }
         return "";
     }
 
     public static MPEnum[] getItemEnum() {
-        MPEnum[] en = new MPEnum[4];
+        MPEnum[] en = new MPEnum[7];
         en[0] = new MPEnum() {
 
             @Override
@@ -233,6 +239,43 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
                 return getTypeString(TYPE_ORDER);
             }
         };
+                en[4] = new MPEnum() {
+
+            @Override
+            public Integer getId() {
+                return TYPE_DEPOSIT;
+            }
+
+            @Override
+            public String getName() {
+                return getTypeString(TYPE_DEPOSIT);
+            }
+        };
+        en[5] = new MPEnum() {
+
+            @Override
+            public Integer getId() {
+                return TYPE_PART_PAYMENT;
+            }
+
+            @Override
+            public String getName() {
+                return getTypeString(TYPE_PART_PAYMENT);
+            }
+        };
+        en[6] = new MPEnum() {
+
+            @Override
+            public Integer getId() {
+                return TYPE_CREDIT;
+            }
+
+            @Override
+            public String getName() {
+                return getTypeString(TYPE_CREDIT);
+            }
+        };
+        
         return en;
     }
 
@@ -247,6 +290,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
         return i;
     }
     private int contactsids;
+    private int reforderids;
     private int accountsids;
     private BigDecimal netvalue = BigDecimal.ZERO;
     private BigDecimal taxvalue = BigDecimal.ZERO;
@@ -392,6 +436,12 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
                 return new ItemPanel2(Context.getOrder(), __getInttype());
             case Item.TYPE_OFFER:
                 return new ItemPanel2(Context.getOffer(), __getInttype());
+            case Item.TYPE_DEPOSIT:
+                return new ItemPanel2(Context.getDeposit(), __getInttype());
+            case Item.TYPE_PART_PAYMENT:
+                return new ItemPanel2(Context.getPartPayment(), __getInttype());
+            case Item.TYPE_CREDIT:
+                return new ItemPanel2(Context.getCredit(), __getInttype());
         }
         return p;
     }
@@ -447,7 +497,8 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
 
     /**
      * <li>TYPE_INVOICE = 0; <li>TYPE_ORDER = 1;
-     * <li>TYPE_OFFER = 2;
+     * <li>TYPE_OFFER = 2; <li>TYPE_DEPOSIT = 22; 
+     * <li>TYPE_PART_PAYMENT = 21; <li>TYPE_CREDIT = 20; 
      *
      * @return the inttype
      */
@@ -457,7 +508,8 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
 
     /**
      * <li>TYPE_INVOICE = 0; <li>TYPE_ORDER = 1;
-     * <li>TYPE_OFFER = 2;
+     * <li>TYPE_OFFER = 2; <li>TYPE_DEPOSIT = 22; 
+     * <li>TYPE_PART_PAYMENT = 21; <li>TYPE_CREDIT = 20; 
      *
      * @param inttype the inttype to set
      */
@@ -498,6 +550,26 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
         }
     }
 
+    public Integer __getRefOrderIDS() {
+        if (reforderids > 0) {
+            return reforderids;
+        } else {
+            return (Integer) null;
+        }
+    }
+
+    public void setReforderids(int reforderids) {
+        this.reforderids = reforderids;
+    }
+
+    public BigDecimal __getDiscountgrosvalue() {
+        return discountgrosvalue;
+    }
+
+    public void setDiscountgrosvalue(BigDecimal discountgrosvalue) {
+        this.discountgrosvalue = discountgrosvalue;
+    }
+    
     /**
      * @return the formatHandler
      */
@@ -855,6 +927,9 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
             case Item.TYPE_INVOICE:
             case Item.TYPE_ORDER:
             case Item.TYPE_OFFER:
+            case Item.TYPE_PART_PAYMENT:
+            case Item.TYPE_CREDIT:
+            case Item.TYPE_DEPOSIT:
                 return true;
             default:
                 return false;
@@ -868,19 +943,22 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     private void buildCname() {
         if (cnumber == null) {
             setCname("<not set>");
-        } else //Get Script for CNAME of items ...
-        if (ValueProperty.hasProperty(this.getContext(), "IntItemLabel")) {
-            try {
-                ValueProperty script = ValueProperty.getProperty(this.getContext(), "IntItemLabel");
-                Object s = script.getValue();
+        } 
+        else 
+        {
+            if (ValueProperty.hasProperty(this.getContext(), "IntItemLabel")) {
+                try {
+                    ValueProperty script = ValueProperty.getProperty(this.getContext(), "IntItemLabel");
+                    Object s = script.getValue();
                     if (s != null) {
-                         setCname(this.evaluateAll(String.valueOf(s)));
+                        setCname(this.evaluateAll(String.valueOf(s)));
                     }
-            } catch (NodataFoundException ex) {
+                } catch (NodataFoundException ex) {
+                    setCname(cnumber);
+                }
+            } else {
                 setCname(cnumber);
             }
-        } else {
-            setCname(cnumber);
         }
     }
 }

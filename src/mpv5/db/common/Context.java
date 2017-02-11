@@ -237,13 +237,89 @@ public class Context implements Serializable, Comparable<Context> {
             + IDENTITY_ITEMS + "." + "netvalue,"
             + IDENTITY_ITEMS + "." + "taxvalue, "
             + IDENTITY_ITEMS + "." + "datetodo";
-    public static String DETAILS_JOURNAL = Context.IDENTITY_ITEMS + "." + "IDS," + Context.IDENTITY_CONTACTS + "." + "cname," + Context.IDENTITY_CONTACTS + "." + "prename," + Context.IDENTITY_CONTACTS + "." + "street," + Context.IDENTITY_CONTACTS + "." + "city," + Context.IDENTITY_CONTACTS + "." + "country," + Context.IDENTITY_ITEMS + "." + "{date}," + Context.IDENTITY_GROUPS + "." + "CNAME," + Context.IDENTITY_ACCOUNTS + "." + "cname," + Context.IDENTITY_ITEMS + "." + "CNAME," + Context.IDENTITY_ITEMS + "." + "inttype," + Context.IDENTITY_ITEMS + "." + "intstatus,(" + Context.IDENTITY_ITEMS + "." + "netvalue-" + Context.IDENTITY_ITEMS + "." + "discountvalue)," + Context.IDENTITY_ITEMS + "." + "taxvalue, (" + Context.IDENTITY_ITEMS + "." + "netvalue +" + Context.IDENTITY_ITEMS + "." + "taxvalue -" + Context.IDENTITY_ITEMS + "." + "discountvalue)," + Context.IDENTITY_ITEMS + "." + "discountvalue, 0";
-    public static String DETAILS_JOURNAL2 = Context.IDENTITY_REVENUE + "." + "IDS," + Context.IDENTITY_GROUPS + "." + "reserve2," + Context.IDENTITY_GROUPS + "." + "reserve2," + Context.IDENTITY_GROUPS + "." + "reserve2," + Context.IDENTITY_GROUPS + "." + "reserve2," + Context.IDENTITY_GROUPS + "." + "reserve2," + Context.IDENTITY_REVENUE + "." + "dateadded," + Context.IDENTITY_GROUPS + "." + "CNAME," + Context.IDENTITY_ACCOUNTS + "." + "cname," + Context.IDENTITY_REVENUE + "." + "CNAME," + Context.IDENTITY_REVENUE + "." + "ids," + Context.IDENTITY_REVENUE + "." + "ispaid," + Context.IDENTITY_REVENUE + "." + "netvalue, (" + Context.IDENTITY_REVENUE + "." + "brutvalue-" + Context.IDENTITY_REVENUE + "." + "netvalue)," + Context.IDENTITY_REVENUE + "." + "brutvalue, 0 ,0";
-    public static String DETAILS_JOURNAL3 = Context.IDENTITY_EXPENSE + "." + "IDS," + Context.IDENTITY_GROUPS + "." + "reserve2," + Context.IDENTITY_GROUPS + "." + "reserve2," + Context.IDENTITY_GROUPS + "." + "reserve2," + Context.IDENTITY_GROUPS + "." + "reserve2," + Context.IDENTITY_GROUPS + "." + "reserve2," + Context.IDENTITY_EXPENSE + "." + "{date}," + Context.IDENTITY_GROUPS + "." + "CNAME," + Context.IDENTITY_ACCOUNTS + "." + "cname," + Context.IDENTITY_EXPENSE + "." + "CNAME," + Context.IDENTITY_EXPENSE + "." + "ids," + Context.IDENTITY_EXPENSE + "." + "ispaid," + Context.IDENTITY_EXPENSE + "." + "netvalue, (" + Context.IDENTITY_EXPENSE + "." + "brutvalue-" + Context.IDENTITY_EXPENSE + "." + "netvalue)," + Context.IDENTITY_EXPENSE + "." + "brutvalue, 0, " + Context.IDENTITY_EXPENSE + ".description";
-    public static String DETAILS_HISTORY = getHistory().getDbIdentity() + ".ids, " + getHistory().getDbIdentity() + ".cname, " + getHistory().getDbIdentity() + ".username, " + Context.getGroup().getDbIdentity() + ".cname," + Context.getHistory().getDbIdentity() + ".dateadded";
-    public static String DETAILS_FILES_TO_CONTACTS = Context.getFiles().getDbIdentity() + ".cname," + getFilesToContacts().getDbIdentity() + ".cname, " + Context.getFiles().getDbIdentity() + ".dateadded," + Context.getFilesToContacts().getDbIdentity() + ".description," + Context.getFilesToContacts().getDbIdentity() + ".intsize," + Context.getFilesToContacts().getDbIdentity() + ".mimetype";
-    public static String DETAILS_FILES_TO_ITEMS = Context.getFiles().getDbIdentity() + ".cname," + getFilesToItems().getDbIdentity() + ".cname, " + Context.getFiles().getDbIdentity() + ".dateadded," + Context.getFilesToItems().getDbIdentity() + ".description," + Context.getFilesToItems().getDbIdentity() + ".intsize," + Context.getFilesToItems().getDbIdentity() + ".mimetype";
-    public static String DETAILS_FILES_TO_PRODUCTS = Context.getFiles().getDbIdentity() + ".cname," + getFilesToProducts().getDbIdentity() + ".cname, " + Context.getFiles().getDbIdentity() + ".dateadded," + Context.getFilesToProducts().getDbIdentity() + ".description," + Context.getFilesToProducts().getDbIdentity() + ".intsize," + Context.getFilesToProducts().getDbIdentity() + ".mimetype";
+    public static String DETAILS_JOURNAL 
+            = Context.IDENTITY_ITEMS + "." + "IDS," 
+            + Context.IDENTITY_CONTACTS + "." + "cname," 
+            + Context.IDENTITY_CONTACTS + "." + "prename," 
+            + Context.IDENTITY_CONTACTS + "." + "street," 
+            + Context.IDENTITY_CONTACTS + "." + "city," 
+            + Context.IDENTITY_CONTACTS + "." + "country," 
+            + Context.IDENTITY_ITEMS + "." + "{date}," 
+            + Context.IDENTITY_GROUPS + "." + "CNAME," 
+            + Context.IDENTITY_ACCOUNTS + "." + "cname," 
+            + Context.IDENTITY_ITEMS + "." + "CNAME," 
+            + Context.IDENTITY_ITEMS + "." + "inttype," 
+            + Context.IDENTITY_ITEMS + "." + "intstatus,(" 
+                + Context.IDENTITY_ITEMS + "." + "netvalue-" 
+                + Context.IDENTITY_ITEMS + "." + "discountvalue)," 
+            + Context.IDENTITY_ITEMS + "." + "taxvalue, (" 
+                + Context.IDENTITY_ITEMS + "." + "netvalue +" 
+                + Context.IDENTITY_ITEMS + "." + "taxvalue -" 
+                + Context.IDENTITY_ITEMS + "." + "discountvalue)," 
+            + Context.IDENTITY_ITEMS + "." + "discountvalue, 0";
+    public static String DETAILS_JOURNAL2 
+            = Context.IDENTITY_REVENUE + "." + "IDS," 
+            + Context.IDENTITY_CONTACTS + "." + "cname," 
+            + Context.IDENTITY_CONTACTS + "." + "prename," 
+            + Context.IDENTITY_CONTACTS + "." + "street," 
+            + Context.IDENTITY_CONTACTS + "." + "city," 
+            + Context.IDENTITY_CONTACTS + "." + "country," 
+//            + Context.IDENTITY_GROUPS + "." + "reserve2," 
+//            + Context.IDENTITY_GROUPS + "." + "reserve2," 
+//            + Context.IDENTITY_GROUPS + "." + "reserve2," 
+//            + Context.IDENTITY_GROUPS + "." + "reserve2," 
+//            + Context.IDENTITY_GROUPS + "." + "reserve2," 
+            + Context.IDENTITY_REVENUE + "." + "dateadded," 
+            + Context.IDENTITY_GROUPS + "." + "CNAME," 
+            + Context.IDENTITY_ACCOUNTS + "." + "cname," 
+            + Context.IDENTITY_REVENUE + "." + "CNAME," 
+            + Context.IDENTITY_REVENUE + "." + "ids," 
+            + Context.IDENTITY_REVENUE + "." + "status," 
+            + Context.IDENTITY_REVENUE + "." + "netvalue, (" + Context.IDENTITY_REVENUE + "." + "brutvalue-" + Context.IDENTITY_REVENUE + "." + "netvalue)," 
+            + Context.IDENTITY_REVENUE + "." + "brutvalue, 0 ,0";
+    public static String DETAILS_JOURNAL3 
+            = Context.IDENTITY_EXPENSE + "." + "IDS," 
+            + Context.IDENTITY_GROUPS + "." + "reserve2," 
+            + Context.IDENTITY_GROUPS + "." + "reserve2," 
+            + Context.IDENTITY_GROUPS + "." + "reserve2," 
+            + Context.IDENTITY_GROUPS + "." + "reserve2," 
+            + Context.IDENTITY_GROUPS + "." + "reserve2," 
+            + Context.IDENTITY_EXPENSE + "." + "{date}," 
+            + Context.IDENTITY_GROUPS + "." + "CNAME," 
+            + Context.IDENTITY_ACCOUNTS + "." + "cname," 
+            + Context.IDENTITY_EXPENSE + "." + "CNAME," 
+            + Context.IDENTITY_EXPENSE + "." + "ids," 
+            + Context.IDENTITY_EXPENSE + "." + "ispaid," 
+            + Context.IDENTITY_EXPENSE + "." + "netvalue, (" + Context.IDENTITY_EXPENSE + "." + "brutvalue-" + Context.IDENTITY_EXPENSE + "." + "netvalue)," 
+            + Context.IDENTITY_EXPENSE + "." + "brutvalue, 0, " 
+            + Context.IDENTITY_EXPENSE + ".description";
+    public static String DETAILS_HISTORY 
+            = getHistory().getDbIdentity() + ".ids, " 
+            + getHistory().getDbIdentity() + ".cname, " 
+            + getHistory().getDbIdentity() + ".username, " 
+            + Context.getGroup().getDbIdentity() + ".cname," 
+            + Context.getHistory().getDbIdentity() + ".dateadded";
+    public static String DETAILS_FILES_TO_CONTACTS 
+            = Context.getFiles().getDbIdentity() + ".cname," 
+            + getFilesToContacts().getDbIdentity() + ".cname, " 
+            + Context.getFiles().getDbIdentity() + ".dateadded," 
+            + Context.getFilesToContacts().getDbIdentity() + ".description," 
+            + Context.getFilesToContacts().getDbIdentity() + ".intsize," 
+            + Context.getFilesToContacts().getDbIdentity() + ".mimetype";
+    public static String DETAILS_FILES_TO_ITEMS 
+            = Context.getFiles().getDbIdentity() + ".cname," 
+            + getFilesToItems().getDbIdentity() + ".cname, " 
+            + Context.getFiles().getDbIdentity() + ".dateadded," 
+            + Context.getFilesToItems().getDbIdentity() + ".description," 
+            + Context.getFilesToItems().getDbIdentity() + ".intsize," 
+            + Context.getFilesToItems().getDbIdentity() + ".mimetype";
+    public static String DETAILS_FILES_TO_PRODUCTS 
+            = Context.getFiles().getDbIdentity() + ".cname," 
+            + getFilesToProducts().getDbIdentity() + ".cname, " 
+            + Context.getFiles().getDbIdentity() + ".dateadded," 
+            + Context.getFilesToProducts().getDbIdentity() + ".description," 
+            + Context.getFilesToProducts().getDbIdentity() + ".intsize," 
+            + Context.getFilesToProducts().getDbIdentity() + ".mimetype";
     public static String DETAILS_MASSPRINT
             = Context.IDENTITY_MASSPRINT + "." + "IDS,"
             + Context.IDENTITY_MASSPRINT + "." + "cname,"
@@ -278,6 +354,9 @@ public class Context implements Serializable, Comparable<Context> {
     public static ArrayList<Context> getTemplateableContexts() {
         ArrayList<Context> list = new ArrayList<>();
         list.add(getInvoice());
+        list.add(getDeposit());
+        list.add(getPartPayment());
+        list.add(getCredit());
         list.add(getOrder());
         list.add(getOffer());
         list.add(getProduct());
@@ -296,6 +375,9 @@ public class Context implements Serializable, Comparable<Context> {
         list.add(getSupplier());
         list.add(getAddress());
         list.add(getInvoice());
+        list.add(getDeposit());
+        list.add(getPartPayment());
+        list.add(getCredit());
         list.add(getOrder());
         list.add(getOffer());
         list.add(getSchedule());
@@ -330,6 +412,9 @@ public class Context implements Serializable, Comparable<Context> {
         list.add(getSupplier());
         list.add(getAddress());
         list.add(getInvoice());
+        list.add(getDeposit());
+        list.add(getPartPayment());
+        list.add(getCredit());
         list.add(getOrder());
         list.add(getOffer()); 
         list.add(getCountries());
@@ -397,6 +482,9 @@ public class Context implements Serializable, Comparable<Context> {
         list.add(getManufacturer());
         list.add(getSupplier());
         list.add(getInvoice());
+        list.add(getDeposit());
+        list.add(getPartPayment());
+        list.add(getCredit());
         list.add(getOrder());
         list.add(getOffer());
         list.add(getSchedule());
@@ -437,6 +525,9 @@ public class Context implements Serializable, Comparable<Context> {
         list.add(getManufacturer());
         list.add(getSupplier());
         list.add(getInvoice());
+        list.add(getDeposit());
+        list.add(getPartPayment());
+        list.add(getCredit());
         list.add(getOrder());
         list.add(getOffer());
         list.add(getSubItem());
@@ -470,6 +561,9 @@ public class Context implements Serializable, Comparable<Context> {
         ArrayList<Context> list = new ArrayList<>();
         list.add(getSubItem());
         list.add(getInvoice());
+        list.add(getDeposit());
+        list.add(getPartPayment());
+        list.add(getCredit());
         list.add(getOrder());
         list.add(getOffer());
         list.add(getSchedule());
@@ -491,6 +585,9 @@ public class Context implements Serializable, Comparable<Context> {
         ArrayList<Context> list = new ArrayList<>();
 //        list.add(getUser());
         list.add(getInvoice());
+        list.add(getDeposit());
+        list.add(getPartPayment());
+        list.add(getCredit());
         list.add(getOrder());
         list.add(getOffer());
         list.add(getSchedule());
@@ -513,6 +610,9 @@ public class Context implements Serializable, Comparable<Context> {
     public static ArrayList<Context> getImportableContexts() {
         ArrayList<Context> list = new ArrayList<>();
         list.add(getInvoice());
+        list.add(getDeposit());
+        list.add(getPartPayment());
+        list.add(getCredit());
         list.add(getOrder());
         list.add(getOffer());
         list.add(getMessage());
@@ -546,6 +646,9 @@ public class Context implements Serializable, Comparable<Context> {
         getUser(),
         getAddress(),
         getInvoice(),
+        getDeposit(),
+        getPartPayment(),
+        getCredit(),
         getOrder(),
         getOffer(),
         getSubItem(),
@@ -585,6 +688,29 @@ public class Context implements Serializable, Comparable<Context> {
         getConversation(),
         getFonts()
     }));
+
+    /**
+     * Contains all formattable Contexts
+     */
+    public static ArrayList<Context> FORMATTABLE_CONTEXTS = new ArrayList<Context>(Arrays.asList(new Context[]{
+        getContact(),
+        getCustomer(),
+        getManufacturer(),
+        getSupplier(), 
+        getProduct(),
+        getExpense(), 
+        getRevenue(), 
+        getOffer(),
+        getOrder(), 
+        getInvoice(), 
+        getDeposit(),
+        getPartPayment(),
+        getCredit(),
+        getCompany(),
+        getActivityList(), 
+        getProductOrder()
+    }));
+
 //    private String[] searchHeaders;
     private volatile ArrayList<String[]> references = new ArrayList<>();
     private boolean exclusiveConditionsAvailable = false;
@@ -1866,6 +1992,43 @@ public class Context implements Serializable, Comparable<Context> {
 
         return c;
     }
+    
+    public static final Context getCredit() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_ITEMS);
+        c.setSearchFields(DEFAULT_ITEM_SEARCH);
+        c.setIdentityClass(IDENTITY_ITEMS_CLASS);
+        c.setItemType(Item.TYPE_CREDIT);
+        c.setId(60);
+
+        return c;
+    }
+
+    public static final Context getPartPayment() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_ITEMS);
+        c.setSearchFields(DEFAULT_ITEM_SEARCH);
+        c.setIdentityClass(IDENTITY_ITEMS_CLASS);
+        c.setItemType(Item.TYPE_PART_PAYMENT);
+        c.setId(61);
+
+        return c;
+    }
+
+    public static final Context getDeposit() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_ITEMS);
+        c.setSearchFields(DEFAULT_ITEM_SEARCH);
+        c.setIdentityClass(IDENTITY_ITEMS_CLASS);
+        c.setItemType(Item.TYPE_DEPOSIT);
+        c.setId(62);
+
+        return c;
+    }
+
 
     /////////////////////////////////////////////////////////////////////////////////////////////////
     /**

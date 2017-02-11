@@ -599,6 +599,21 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
             for (int i = 0; i < it.size(); i++) {
                 it.get(i).delete();
             }
+            it.clear();
+            it = getReferencedObjects(this, Context.getDeposit(), getObject(Context.getDeposit()));
+            for (int i = 0; i < it.size(); i++) {
+                it.get(i).delete();
+            }
+            it.clear();
+            it = getReferencedObjects(this, Context.getPartPayment(), getObject(Context.getPartPayment()));
+            for (int i = 0; i < it.size(); i++) {
+                it.get(i).delete();
+            }
+            it.clear();
+            it = getReferencedObjects(this, Context.getCredit(), getObject(Context.getCredit()));
+            for (int i = 0; i < it.size(); i++) {
+                it.get(i).delete();
+            }
         } catch (Exception e) {
         }
 
@@ -619,6 +634,21 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
             }
             it.clear();
             it = getReferencedObjects(this, Context.getInvoice(), getObject(Context.getInvoice()), true);
+            for (int i = 0; i < it.size(); i++) {
+                it.get(i).undelete();
+            }
+            it.clear();
+            it = getReferencedObjects(this, Context.getDeposit(), getObject(Context.getDeposit()), true);
+            for (int i = 0; i < it.size(); i++) {
+                it.get(i).undelete();
+            }
+            it.clear();
+            it = getReferencedObjects(this, Context.getPartPayment(), getObject(Context.getPartPayment()), true);
+            for (int i = 0; i < it.size(); i++) {
+                it.get(i).undelete();
+            }
+            it.clear();
+            it = getReferencedObjects(this, Context.getCredit(), getObject(Context.getCredit()), true);
             for (int i = 0; i < it.size(); i++) {
                 it.get(i).undelete();
             }

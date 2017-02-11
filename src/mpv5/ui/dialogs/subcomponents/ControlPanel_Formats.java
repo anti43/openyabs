@@ -540,7 +540,15 @@ public final class ControlPanel_Formats extends javax.swing.JPanel implements Co
             case Constants.TYPE_INVOICE:
                 b = (Item) DatabaseObject.getObject(Context.getInvoice());
                 break;
-
+            case Constants.TYPE_DEPOSIT:
+                b = (Item) DatabaseObject.getObject(Context.getDeposit());
+                break;
+            case Constants.TYPE_PART_PAYMENT:
+                b = (Item) DatabaseObject.getObject(Context.getPartPayment());
+                break;
+            case Constants.TYPE_CREDIT:
+                b = (Item) DatabaseObject.getObject(Context.getCredit());
+                break;
             default:
                 b = (Item) DatabaseObject.getObject(Context.getInvoice());
                 break;

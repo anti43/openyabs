@@ -2878,7 +2878,10 @@ public class QueryHandler implements Cloneable {
                 tc = Context.getFilesToContacts();
             } else if (dataOwner.getContext().equals(Context.getInvoice())
                     || dataOwner.getContext().equals(Context.getOrder())
-                    || dataOwner.getContext().equals(Context.getOffer())) {
+                    || dataOwner.getContext().equals(Context.getOffer())
+                    || dataOwner.getContext().equals(Context.getPartPayment())
+                    || dataOwner.getContext().equals(Context.getDeposit())
+                    || dataOwner.getContext().equals(Context.getCredit())) {
                 tc = Context.getFilesToItems();
             } else if (dataOwner.getContext().equals(Context.getProduct())) {
                 tc = Context.getFilesToProducts();

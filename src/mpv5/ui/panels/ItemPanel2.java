@@ -34,6 +34,7 @@ import java.awt.event.MouseListener;
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -41,6 +42,8 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
@@ -87,6 +90,7 @@ import mpv5.utils.export.Export;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.jobs.Job;
 import mpv5.utils.models.MPComboBoxModelItem;
+import mpv5.utils.models.MPComboboxModel;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.numberformat.FormatNumber;
 import mpv5.utils.renderer.ButtonEditor;
@@ -100,6 +104,7 @@ import mpv5.utils.renderer.TextAreaCellEditor;
 import mpv5.utils.renderer.TextAreaCellRenderer;
 import mpv5.utils.tables.DynamicTableCalculator;
 import mpv5.utils.tables.TableFormat;
+import mpv5.utils.text.TypeConversion;
 import mpv5.utils.ui.TextFieldUtils;
 
 /**
@@ -143,7 +148,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
             this.type.setText(Item.getTypeString(type));
         } else {
             this.type.setText("");
-        }
+        } 
 
         refreshSync();
 
@@ -250,6 +255,12 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
             case Item.TYPE_INVOICE:
                 number.setContext(Context.getInvoice());
                 break;
+            case Item.TYPE_PART_PAYMENT:
+                number.setContext(Context.getPartPayment());
+                break;
+            case Item.TYPE_DEPOSIT:
+                number.setContext(Context.getDeposit());
+                break;
             default:
                 number.setContext(Context.getInvoice());
                 break;
@@ -262,7 +273,9 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (dato.__getInttype() == Item.TYPE_INVOICE
+                if ((dato.__getInttype() == Item.TYPE_INVOICE ||
+                     dato.__getInttype() == Item.TYPE_DEPOSIT||
+                     dato.__getInttype() == Item.TYPE_PART_PAYMENT )
                         && !loading
                         && dataOwner.isExisting()
                         && Integer.valueOf(status.getSelectedItem().getId()) == Item.STATUS_PAID
@@ -317,11 +330,65 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         ((MPTable) proptable).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) proptable, this));
         jSplitPane1.setDividerLocation((User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty.itempanel.divider1.dividerLocation", 150)));
 //        jSplitPane2.setDividerLocation((User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty.itempanel.divider2.dividerLocation", -1)));
-
+        toinvoice.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                toInvoice(Item.TYPE_INVOICE);
+            }
+        });
+        toinvoice.add(Messages.CREATE_DEPOSIT.toString(), new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                toInvoice(Item.TYPE_DEPOSIT);
+            }
+        });
+        toinvoice.add(Messages.CREATE_PART_PAYMENT.toString(), new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                toInvoice(Item.TYPE_PART_PAYMENT);
+            }
+        });
     }
 
     private void setContactData(Contact dbo) {
         contactcity.setText(dbo.__getStreet() + ", " + dbo.__getCity() + ", " + dbo.__getCountry() + " (" + dbo.__getCNumber() + ")");
+        if (inttype_ == Item.TYPE_INVOICE ||
+            inttype_ == Item.TYPE_PART_PAYMENT ||
+            inttype_ == Item.TYPE_DEPOSIT ) {
+            Context i = Context.getOrder();
+            String s = Context.DEFAULT_ITEM_SEARCH + ", inttype";
+            Object[][] data = new DatabaseSearch(i).getValuesFor(s, "contactsids", dbo.__getIDS());
+            Log.Debug(this, "gefundene Items: " + data.length);
+            MPComboBoxModelItem[] items = new MPComboBoxModelItem[data.length];
+            Locale l = Locale.getDefault();
+            if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("item.date.locale")) {
+                try {
+                    l = TypeConversion.stringToLocale(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("item.date.locale"));
+                } catch (Exception e) {
+                }
+                if (l == null) {
+                    Log.Debug(this, "Error while using item.date.locale");
+                }
+            }
+            DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM, l);
+            for (int a = 0; a < data.length; a++) {
+                items[a] = new MPComboBoxModelItem(data[a][0], (String) data[a][1] + "(" + df.format((Date) data[a][2]) + ")");
+            }
+            if (dataOwner.__getRefOrderIDS() != null && dataOwner.__getRefOrderIDS() > 0) {
+                try {
+                    Item owner = (Item) DatabaseObject.getObject(Context.getOrder(), reforderids_, true);
+                    refOrder.setModel(owner);
+                } catch (NodataFoundException ex) {
+                    Log.Debug(ex);
+                }
+            } else {
+            refOrder.setModel(new MPComboboxModel(items));
+            refOrder.setEditable(true);
+            refOrder.setSelectedIndex(-1);
+            }
+        } else {
+            refOrder.setVisible(false);
+        }
     }
 
     private void setEnddate(Contact dbo) {
@@ -367,6 +434,8 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                 button_schedule.setEnabled(inttype_ == Item.TYPE_INVOICE);
                 toorder.setEnabled(inttype_ != Item.TYPE_ORDER && inttype_ != Item.TYPE_INVOICE);
                 toinvoice.setEnabled(inttype_ != Item.TYPE_INVOICE);
+                tocredit.setEnabled(inttype_ == Item.TYPE_INVOICE);
+                toinvoice.hidePopUP(inttype_ == Item.TYPE_DEPOSIT || inttype_ == Item.TYPE_PART_PAYMENT);
                 type.setText(Item.getTypeString(inttype_));
                 //            typelabel.setIcon(dataOwner.getIcon());
                 this.exposeData();
@@ -514,6 +583,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
     private void initComponents() {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
+        accountselect1 = new mpv5.ui.beans.LabeledCombobox();
         leftpane = new javax.swing.JPanel();
         jTabbedPane2 = new javax.swing.JTabbedPane();
         rightpane = new javax.swing.JPanel();
@@ -521,11 +591,16 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         jPanel9 = new javax.swing.JPanel();
         type = new javax.swing.JLabel();
         addedby = new javax.swing.JLabel();
+        staus_icon = new javax.swing.JLabel();
+        jPanel12 = new javax.swing.JPanel();
         number = new mpv5.ui.beans.LabeledTextField();
         jButton1 = new javax.swing.JButton();
-        staus_icon = new javax.swing.JLabel();
+        name = new mpv5.ui.beans.LabeledTextField();
+        filler4 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(15, 0), new java.awt.Dimension(32767, 0));
+        refOrder = new mpv5.ui.beans.LabeledCombobox();
         jPanel10 = new javax.swing.JPanel();
         status = new mpv5.ui.beans.LabeledCombobox();
+        filler3 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(70, 0), new java.awt.Dimension(32767, 0));
         jLabel4 = new javax.swing.JLabel();
         groupnameselect = new mpv5.ui.beans.MPCombobox();
         button_order2 = new javax.swing.JButton();
@@ -536,7 +611,8 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         jButton3 = new javax.swing.JButton();
         jToolBar1 = new javax.swing.JToolBar();
         toorder = new javax.swing.JButton();
-        toinvoice = new javax.swing.JButton();
+        toinvoice = new mpv5.ui.beans.DropDownButton();
+        tocredit = new javax.swing.JButton();
         jSeparator4 = new javax.swing.JToolBar.Separator();
         typelabel = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JToolBar.Separator();
@@ -638,6 +714,11 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         toolbarpane = new javax.swing.JPanel();
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        accountselect1.set_Label(bundle.getString("ItemPanel2.accountselect1._Label")); // NOI18N
+        accountselect1.setName("accountselect1"); // NOI18N
+        accountselect1.setPreferredSize(new java.awt.Dimension(250, 20));
+        accountselect1.setSearchOnEnterEnabled(false);
+
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ItemPanel2.border.title_1"))); // NOI18N
         setName("ItemPanel"); // NOI18N
         setPreferredSize(new java.awt.Dimension(500, 300));
@@ -659,6 +740,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
 
         jPanel9.setName("jPanel9"); // NOI18N
         jPanel9.setOpaque(false);
+        jPanel9.setPreferredSize(new java.awt.Dimension(1024, 30));
         jPanel9.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 10, 5));
 
         type.setBackground(new java.awt.Color(255, 255, 255));
@@ -680,12 +762,22 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         addedby.setPreferredSize(new java.awt.Dimension(200, 20));
         jPanel9.add(addedby);
 
+        staus_icon.setMaximumSize(new java.awt.Dimension(50, 33));
+        staus_icon.setMinimumSize(new java.awt.Dimension(20, 20));
+        staus_icon.setName("staus_icon"); // NOI18N
+        staus_icon.setPreferredSize(new java.awt.Dimension(20, 20));
+        jPanel9.add(staus_icon);
+
+        jPanel12.setName("jPanel12"); // NOI18N
+        jPanel12.setOpaque(false);
+        jPanel12.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 10, 5));
+
         number.set_Label(bundle.getString("ItemPanel2.number._Label")); // NOI18N
         number.setFocusable(false);
         number.setFont(number.getFont());
         number.setName("number"); // NOI18N
         number.setPreferredSize(new java.awt.Dimension(250, 20));
-        jPanel9.add(number);
+        jPanel12.add(number);
 
         jButton1.setText(bundle.getString("ItemPanel2.jButton1.text")); // NOI18N
         jButton1.setMaximumSize(new java.awt.Dimension(20, 20));
@@ -697,13 +789,25 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                 jButton1ActionPerformed(evt);
             }
         });
-        jPanel9.add(jButton1);
+        jPanel12.add(jButton1);
 
-        staus_icon.setMaximumSize(new java.awt.Dimension(50, 33));
-        staus_icon.setMinimumSize(new java.awt.Dimension(20, 20));
-        staus_icon.setName("staus_icon"); // NOI18N
-        staus_icon.setPreferredSize(new java.awt.Dimension(20, 20));
-        jPanel9.add(staus_icon);
+        name.set_Label(bundle.getString("ItemPanel2.name._Label")); // NOI18N
+        name.setFocusable(false);
+        name.setFont(name.getFont());
+        name.setLabelWidth(120);
+        name.setMinimumSize(new java.awt.Dimension(250, 18));
+        name.setName("name"); // NOI18N
+        name.setPreferredSize(new java.awt.Dimension(300, 20));
+        jPanel12.add(name);
+
+        filler4.setName("filler4"); // NOI18N
+        jPanel12.add(filler4);
+
+        refOrder.set_Label(bundle.getString("ItemPanel2.refOrder._Label")); // NOI18N
+        refOrder.setName("refOrder"); // NOI18N
+        refOrder.setPreferredSize(new java.awt.Dimension(250, 20));
+        refOrder.setSearchOnEnterEnabled(false);
+        jPanel12.add(refOrder);
 
         jPanel10.setName("jPanel10"); // NOI18N
         jPanel10.setOpaque(false);
@@ -715,6 +819,9 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         status.setName("status"); // NOI18N
         status.setPreferredSize(new java.awt.Dimension(250, 20));
         jPanel10.add(status);
+
+        filler3.setName("filler3"); // NOI18N
+        jPanel10.add(filler3);
 
         jLabel4.setFont(jLabel4.getFont());
         jLabel4.setText(bundle.getString("ItemPanel2.jLabel4.text")); // NOI18N
@@ -779,21 +886,25 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 821, Short.MAX_VALUE))
+                .addGap(5, 5, 5)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(5, 5, 5)
                 .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(5, 5, 5)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         jToolBar1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -818,22 +929,28 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         });
         jToolBar1.add(toorder);
 
-        toinvoice.setText(bundle.getString("ItemPanel2.toinvoice.text")); // NOI18N
-        toinvoice.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        toinvoice.set_Label(bundle.getString("ItemPanel2.toinvoice._Label")); // NOI18N
         toinvoice.setEnabled(false);
-        toinvoice.setFocusable(false);
-        toinvoice.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        toinvoice.setMaximumSize(new java.awt.Dimension(333, 20));
-        toinvoice.setMinimumSize(new java.awt.Dimension(80, 20));
-        toinvoice.setName(bundle.getString("ItemPanel.toinvoice.name")); // NOI18N
-        toinvoice.setPreferredSize(new java.awt.Dimension(120, 20));
-        toinvoice.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        toinvoice.addActionListener(new java.awt.event.ActionListener() {
+        toinvoice.setMaximumSize(new java.awt.Dimension(150, 20));
+        toinvoice.setName("toinvoice"); // NOI18N
+        jToolBar1.add(toinvoice);
+
+        tocredit.setText(bundle.getString("ItemPanel2.tocredit.text")); // NOI18N
+        tocredit.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        tocredit.setEnabled(false);
+        tocredit.setFocusable(false);
+        tocredit.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        tocredit.setMaximumSize(new java.awt.Dimension(333, 20));
+        tocredit.setMinimumSize(new java.awt.Dimension(80, 20));
+        tocredit.setName("tocredit"); // NOI18N
+        tocredit.setPreferredSize(new java.awt.Dimension(120, 20));
+        tocredit.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        tocredit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                toinvoiceActionPerformed(evt);
+                tocreditActionPerformed(evt);
             }
         });
-        jToolBar1.add(toinvoice);
+        jToolBar1.add(tocredit);
 
         jSeparator4.setName("jSeparator4"); // NOI18N
         jToolBar1.add(jSeparator4);
@@ -1122,7 +1239,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                 .addComponent(upItem)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(upItem1)
-                .addContainerGap(57, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -1132,7 +1249,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addComponent(itemPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 860, Short.MAX_VALUE))
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 955, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1148,18 +1265,21 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         rightpane.setLayout(rightpaneLayout);
         rightpaneLayout.setHorizontalGroup(
             rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 835, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, rightpaneLayout.createSequentialGroup()
+                .addGroup(rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addGap(0, 0, 0))
         );
         rightpaneLayout.setVerticalGroup(
             rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(rightpaneLayout.createSequentialGroup()
                 .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(3, 3, 3)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, 205, Short.MAX_VALUE))
+                .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, 152, Short.MAX_VALUE))
         );
 
         jTabbedPane2.addTab(bundle.getString("ItemPanel2.rightpane.TabConstraints.tabTitle"), rightpane); // NOI18N
@@ -1324,13 +1444,13 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         jPanel8Layout.setHorizontalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
-                .addContainerGap(419, Short.MAX_VALUE)
+                .addContainerGap(506, Short.MAX_VALUE)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(addfile, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(removefile, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)))
             .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel8Layout.createSequentialGroup()
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 412, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 499, Short.MAX_VALUE)
                     .addGap(31, 31, 31)))
         );
         jPanel8Layout.setVerticalGroup(
@@ -1339,9 +1459,9 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                 .addComponent(addfile)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(removefile)
-                .addContainerGap(252, Short.MAX_VALUE))
+                .addContainerGap(239, Short.MAX_VALUE))
             .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 308, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE))
         );
 
         jSplitPane1.setRightComponent(jPanel8);
@@ -1358,17 +1478,6 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         toolbarpane.setLayout(new java.awt.BorderLayout());
         add(toolbarpane, java.awt.BorderLayout.NORTH);
     }// </editor-fold>//GEN-END:initComponents
-
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-
-        if (dataOwner.isExisting()) {
-            try {
-                mpv5.YabsViewProxy.instance().getIdentifierView().addTab(DatabaseObject.getObject(Context.getContact(), dataOwner.__getContactsids()));
-            } catch (NodataFoundException ex) {
-                Log.Debug(ex);
-            }
-        }
-}//GEN-LAST:event_jButton2ActionPerformed
 
     private void button_order2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_order2ActionPerformed
         BigPopup.showPopup(this, new ControlPanel_Groups(), null);
@@ -1403,33 +1512,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
             }
         }
     }//GEN-LAST:event_itemtableMouseClicked
-
-    private void button_previewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_previewActionPerformed
-        preview();
-    }//GEN-LAST:event_button_previewActionPerformed
-
-    private void button_scheduleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_scheduleActionPerformed
-    }//GEN-LAST:event_button_scheduleActionPerformed
-
-    private void button_scheduleMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_button_scheduleMouseClicked
-
-//        JCalendar.instanceOf(300, evt.getLocationOnScreen());
-        if (dataOwner != null && dataOwner.isExisting()) {
-            ScheduleDayEvent.instanceOf().setItem(dataOwner);
-        }
-    }//GEN-LAST:event_button_scheduleMouseClicked
-
-    private void button_remindersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_remindersActionPerformed
-        if (dataOwner != null && dataOwner.isExisting()) {
-            BigPopup.showPopup(mpv5.YabsViewProxy.instance().getIdentifierFrame().getRootPane(), new RemindPanel(dataOwner), Messages.REMINDER.toString(), false);
-        }
-    }//GEN-LAST:event_button_remindersActionPerformed
     MPTableModel omodel = null;
-    private void button_deliverynoteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_deliverynoteActionPerformed
-
-        delivery();
-    }//GEN-LAST:event_button_deliverynoteActionPerformed
-
     private void addItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addItemActionPerformed
         ((MPTableModel) itemtable.getModel()).addRow(1);
     }//GEN-LAST:event_addItemActionPerformed
@@ -1488,19 +1571,6 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         }
     }//GEN-LAST:event_jButton3ActionPerformed
 
-    private void button_orderconfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_orderconfActionPerformed
-
-        confirmation();
-    }//GEN-LAST:event_button_orderconfActionPerformed
-
-    private void toorderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toorderActionPerformed
-        toOrder();
-    }//GEN-LAST:event_toorderActionPerformed
-
-    private void toinvoiceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toinvoiceActionPerformed
-        toInvoice();
-    }//GEN-LAST:event_toinvoiceActionPerformed
-
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         if (MPSecurityManager.checkAdminAccess()) {
             JDialog d = new JDialog(YabsViewProxy.instance().getIdentifierFrame(), true);
@@ -1518,8 +1588,59 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
             User.getCurrentUser().setProperty("org.openyabs.uiproperty.itempanel.divider1.dividerLocation", evt.getNewValue().toString());
         }
     }//GEN-LAST:event_jSplitPane1PropertyChange
+
+    private void button_orderconfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_orderconfActionPerformed
+        confirmation();
+    }//GEN-LAST:event_button_orderconfActionPerformed
+
+    private void button_deliverynoteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_deliverynoteActionPerformed
+        delivery();
+    }//GEN-LAST:event_button_deliverynoteActionPerformed
+
+    private void button_previewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_previewActionPerformed
+        preview();
+    }//GEN-LAST:event_button_previewActionPerformed
+
+    private void button_scheduleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_scheduleActionPerformed
+
+    }//GEN-LAST:event_button_scheduleActionPerformed
+
+    private void button_scheduleMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_button_scheduleMouseClicked
+
+        //        JCalendar.instanceOf(300, evt.getLocationOnScreen());
+        if (dataOwner != null && dataOwner.isExisting()) {
+            ScheduleDayEvent.instanceOf().setItem(dataOwner);
+        }
+    }//GEN-LAST:event_button_scheduleMouseClicked
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+
+        if (dataOwner.isExisting()) {
+            try {
+                mpv5.YabsViewProxy.instance().getIdentifierView().addTab(DatabaseObject.getObject(Context.getContact(), dataOwner.__getContactsids()));
+            } catch (NodataFoundException ex) {
+                Log.Debug(ex);
+            }
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void button_remindersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_remindersActionPerformed
+        if (dataOwner != null && dataOwner.isExisting()) {
+            BigPopup.showPopup(mpv5.YabsViewProxy.instance().getIdentifierFrame().getRootPane(), new RemindPanel(dataOwner), Messages.REMINDER.toString(), false);
+        }
+    }//GEN-LAST:event_button_remindersActionPerformed
+
+    private void toorderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toorderActionPerformed
+        toOrder();
+    }//GEN-LAST:event_toorderActionPerformed
+
+    private void tocreditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tocreditActionPerformed
+        toInvoice(Item.TYPE_CREDIT);
+    }//GEN-LAST:event_tocreditActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private mpv5.ui.beans.LabeledCombobox accountselect;
+    private mpv5.ui.beans.LabeledCombobox accountselect1;
     private javax.swing.JButton addItem;
     private javax.swing.JLabel addedby;
     private javax.swing.JButton addfile;
@@ -1539,6 +1660,8 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
     private mpv5.ui.beans.LabeledDateChooser date3;
     private javax.swing.JButton delItem;
     private javax.swing.JLabel discount;
+    private javax.swing.Box.Filler filler3;
+    private javax.swing.Box.Filler filler4;
     private mpv5.ui.beans.MPCombobox groupnameselect;
     private javax.swing.JPanel itemPanel;
     private javax.swing.JTable itemtable;
@@ -1556,6 +1679,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
+    private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -1585,17 +1709,20 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
     private javax.swing.JToolBar jToolBar2;
     private mpv5.ui.beans.LabeledCombobox labeledCombobox1;
     private javax.swing.JPanel leftpane;
+    private mpv5.ui.beans.LabeledTextField name;
     private javax.swing.JLabel netvalue;
     private javax.swing.JTextPane notes;
     private mpv5.ui.beans.LabeledTextField number;
     private javax.swing.JPanel panel2;
     private javax.swing.JTable proptable;
+    private mpv5.ui.beans.LabeledCombobox refOrder;
     private javax.swing.JButton removefile;
     private javax.swing.JPanel rightpane;
     private mpv5.ui.beans.LabeledCombobox status;
     private javax.swing.JLabel staus_icon;
     private javax.swing.JLabel taxvalue;
-    private javax.swing.JButton toinvoice;
+    private javax.swing.JButton tocredit;
+    private mpv5.ui.beans.DropDownButton toinvoice;
     private javax.swing.JPanel toolbarpane;
     private javax.swing.JButton toorder;
     private javax.swing.JLabel type;
@@ -1622,6 +1749,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
     public Date dateend_;
     public int intreminders_;
     public int intstatus_;
+    public Integer reforderids_;
     public int inttype_;
 
     @Override
@@ -1669,6 +1797,12 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
             dateend_ = date3.getDate();
             intstatus_ = Integer.valueOf(status.getSelectedItem().getId());
 
+            try {
+                reforderids_ = Integer.valueOf(refOrder.getSelectedItem().getId());
+            } catch (Exception e) {
+                reforderids_ = -1;
+            }
+
         } else {
             showRequiredFields();
             return false;
@@ -1681,6 +1815,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
     public void exposeData() {
 
         number.setText(cnumber_);
+        name.setText(cname_);
         date1.setDate(dateadded_);
         if (User.getCurrentUser().getProperties().getProperty("org.openyabs.itemproperty", "keepmodifiedtransdate")) {
             date2.setDate(datetodo_);
@@ -1698,7 +1833,10 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         button_reminders.setToolTipText(Messages.REMINDERS + String.valueOf(intreminders_));
         //  discountpercent.setValue(discountvalue_);
         List<Integer> skip = new ArrayList<>();
-        if (inttype_ == Item.TYPE_INVOICE) {
+        if (inttype_ == Item.TYPE_INVOICE ||
+            inttype_ == Item.TYPE_DEPOSIT ||
+            inttype_ == Item.TYPE_PART_PAYMENT ||
+            inttype_ == Item.TYPE_CREDIT ) {
             skip.add(Item.STATUS_PAUSED);
         } else {
             skip.add(Item.STATUS_PAID);
@@ -1744,7 +1882,9 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
             }
 
             List<Integer> skip = new ArrayList<>();
-            if (inttype_ == Item.TYPE_INVOICE) {
+            if (inttype_ == Item.TYPE_INVOICE ||
+                inttype_ == Item.TYPE_DEPOSIT ||
+                inttype_ == Item.TYPE_PART_PAYMENT ) {
                 skip.add(Item.STATUS_PAUSED);
             } else {
                 skip.add(Item.STATUS_PAID);
@@ -2485,18 +2625,34 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         Popup.notice(i2 + Messages.INSERTED.getValue());
     }
 
-    private void toInvoice() {
+    private void toInvoice(int itemType) {
         dataOwner.getPanelData(this);
         dataOwner.setIntstatus(Item.STATUS_FINISHED);
         dataOwner.save();
         ArrayList<ActivityList> data;
         Object[] row;
-
-        Item i2 = (Item) dataOwner.clone(Context.getInvoice());
-        i2.setInttype(Item.TYPE_INVOICE);
+        Item i2;
+        switch (itemType) {
+            case Item.TYPE_INVOICE:
+                i2 = (Item) dataOwner.clone(Context.getInvoice());
+                break;
+            case Item.TYPE_PART_PAYMENT:
+                i2 = (Item) dataOwner.clone(Context.getPartPayment());
+                break;
+            case Item.TYPE_DEPOSIT:
+                i2 = (Item) dataOwner.clone(Context.getDeposit());
+                break;
+            case Item.TYPE_CREDIT:
+                i2 = (Item) dataOwner.clone(Context.getCredit());
+                break;
+            default:
+                return;
+        }
+        i2.setIntstatus(Item.STATUS_QUEUED);
+        i2.setInttype(itemType);
         i2.setIDS(-1);
         i2.defineFormatHandler(new FormatHandler(i2));
-        i2.save();
+        boolean test = i2.save();
         if (itemtable.getCellEditor() != null) {
             try {
                 itemtable.getCellEditor().stopCellEditing();
@@ -2517,7 +2673,55 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         } catch (NodataFoundException ex) {
             Log.Debug(this, ex.getMessage());
         }
-        SubItem.saveModel(i2, (MPTableModel) itemtable.getModel(), true, true);
+        if (itemType == Item.TYPE_INVOICE
+                && (dataOwner.__getInttype() == Item.TYPE_DEPOSIT
+                || dataOwner.__getInttype() == Item.TYPE_PART_PAYMENT)) {
+            SubItem.saveModelMinus(i2, (MPTableModel) itemtable.getModel(), true, true , dataOwner);
+        } else {
+            SubItem.saveModel(i2, (MPTableModel) itemtable.getModel(), true, true);
+        }
+
+        
+        if (itemType == Item.TYPE_INVOICE && dataOwner.__getRefOrderIDS() != null) {
+            ArrayList<Item> data2 = null;
+            int orderIDS = 0;
+            if (dataOwner.__getInttype() == Item.TYPE_PART_PAYMENT
+                    || dataOwner.__getInttype() == Item.TYPE_DEPOSIT) {
+                orderIDS = dataOwner.__getRefOrderIDS();
+            } else if (dataOwner.__getInttype() == Item.TYPE_ORDER) {
+                orderIDS = dataOwner.__getIDS();
+            }
+            ArrayList<Item> d1 = null;
+            try {
+                d1 = DatabaseObject.getObjects(Context.getDeposit(), new QueryCriteria("reforderids", orderIDS));
+            } catch (NodataFoundException ex) {
+                Log.Debug(this, ex.getMessage());
+            }
+            ArrayList<Item> d2 = null;
+            try {
+                d2 = DatabaseObject.getObjects(Context.getPartPayment(), new QueryCriteria("reforderids", orderIDS));
+            } catch (NodataFoundException ex) {
+                Log.Debug(this, ex.getMessage());
+            }
+
+            if (d1 != null && d2 != null) {
+                data2 = ArrayUtilities.merge(d1, d2);
+            } else if (d1 != null) {
+                data2 = d1;
+            } else if (d2 != null) {
+                data2 = d2;
+            }
+            if (data2 != null && data2.size() > 1 && Popup.Y_N_dialog(Messages.PartPayment_Existing.toString())) {
+                MPTableModel model = (MPTableModel) itemtable.getModel();
+                Iterator<Item> it = data2.iterator();
+                while (it.hasNext()) {
+                    Item i = it.next();
+                    if (Objects.equals(i.__getIDS(), dataOwner.__getIDS()))
+                        continue;
+                    SubItem.saveModelMinus(i2, SubItem.toModel(i.getSubitems()), true, true, i);
+                }
+            }
+        }
         setDataOwner(i2, true);
         Popup.notice(i2 + Messages.INSERTED.getValue());
     }

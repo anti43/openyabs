@@ -40,7 +40,7 @@ public interface Constants {
      * The minimal Database Version which is compatible with
      * this release
      */
-    public static final Double DATABASE_VERSION = 1.1981;
+    public static final Double DATABASE_VERSION = 1.1983;
     /**
      * The max Database Version which is compatible with
      * this release
@@ -132,5 +132,7 @@ public interface Constants {
     public static final int TYPE_SUPPLIER = 17;
     public static final int TYPE_EXPENSE = 18;
     public static final int TYPE_REVENUE = 19;
-
+    public static final int TYPE_CREDIT = 20;
+    public static final int TYPE_PART_PAYMENT = 21;
+    public static final int TYPE_DEPOSIT = 22;
 }

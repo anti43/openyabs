@@ -36,7 +36,7 @@ import mpv5.utils.numberformat.FormatNumber;
  */
 public class Expense extends DatabaseObject implements Formattable {
 
-    public static int TYPE_EXPENSE = 43;
+//    public static int TYPE_EXPENSE = 43;
     private static final long serialVersionUID = 8281304380840607334L;
     private String description = "";
     private BigDecimal netvalue;
@@ -137,6 +137,7 @@ public class Expense extends DatabaseObject implements Formattable {
         this.accountsids = accountsids;
     }
 
+    @Override
     public FormatHandler getFormatHandler() {
         if (formatHandler == null) {
             formatHandler = new FormatHandler(this);
@@ -202,6 +203,7 @@ public class Expense extends DatabaseObject implements Formattable {
     }
 
 
+    @Override
     public void defineFormatHandler(FormatHandler handler) {
         formatHandler = handler;
     }

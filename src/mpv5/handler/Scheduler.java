@@ -8,12 +8,14 @@ import java.util.Iterator;
 import java.util.List;
 import mpv5.YabsApplication;
 import mpv5.db.common.Context;
+import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria2;
 import mpv5.db.common.QueryHandler;
 import mpv5.db.common.QueryParameter;
 import mpv5.db.common.ReturnValue;
 import mpv5.db.objects.Item;
+import mpv5.db.objects.Revenue;
 import mpv5.db.objects.Schedule;
 import mpv5.db.objects.User;
 import mpv5.globals.Messages;
@@ -47,13 +49,13 @@ public class Scheduler extends Thread {
     }
 
     public void checkForCreateBillEvents(vTimeframe DateFrame) {
-        HashMap<Color, List<Schedule>> map;
+        HashMap<Color, List<? extends DatabaseObject>> map;
         map = getScheduledBills(DateFrame);
         Iterator<Color> it = map.keySet().
                 iterator();
         while (it.hasNext()) {
             Color c = it.next();
-            List<Schedule> data = map.get(c);
+            List<? extends DatabaseObject> data = map.get(c);
             if (!data.isEmpty()) {
                 homescreen.show(map, homescreen.getNextEvents());
                 break;
@@ -62,13 +64,13 @@ public class Scheduler extends Thread {
     }
 
     public void checkForOverdueEvents() {
-        HashMap<Color, List<Item>> map;
+        HashMap<Color, List<? extends DatabaseObject>> map;
         map = getOverdueEvents();
         Iterator<Color> it = map.keySet().
                 iterator();
         while (it.hasNext()) {
             Color c = it.next();
-            List<Item> data = map.get(c);
+            List<? extends DatabaseObject> data = map.get(c);
             if (!data.isEmpty()) {
                 homescreen.show(map, homescreen.getOverdue());
                 break;
@@ -76,7 +78,7 @@ public class Scheduler extends Thread {
         }
     }
 
-    public static HashMap<Color, List<Schedule>> getScheduledBills(vTimeframe DateFrame) {
+    public static HashMap<Color, List<? extends DatabaseObject>> getScheduledBills(vTimeframe DateFrame) {
         ArrayList<Schedule> data;
         if (DateFrame == null) {
             data = Schedule.getEvents(new vTimeframe(DateConverter.getStartOfMonth(new Date()), DateConverter.getEndOfMonth(new Date())));
@@ -86,7 +88,6 @@ public class Scheduler extends Thread {
         List<Schedule> warnings = new ArrayList<Schedule>();
         List<Schedule> alerts = new ArrayList<Schedule>();
         List<Schedule> waitings = new ArrayList<Schedule>();
-
 
         for (int i = 0; i < data.size(); i++) {
             Schedule sched = data.get(i);
@@ -101,64 +102,92 @@ public class Scheduler extends Thread {
             }
         }
 
-        HashMap<Color, List<Schedule>> map = new HashMap<Color, List<Schedule>>();
+        HashMap<Color, List<? extends DatabaseObject>> map = new HashMap<Color, List<? extends DatabaseObject>>();
         map.put(Color.red, alerts);
         map.put(Color.yellow, warnings);
         map.put(Color.green, waitings);
         return map;
     }
 
-    public static HashMap<Color, List<Item>> getOverdueEvents() {
-        List<Item> warnings = new ArrayList<Item>();
-        List<Item> alerts = new ArrayList<Item>();
-        List<Item> waitings = new ArrayList<Item>();
+    public static HashMap<Color, List<? extends DatabaseObject>> getOverdueEvents() {
+        List<DatabaseObject> warnings = new ArrayList<>();
+        List<DatabaseObject> alerts = new ArrayList<>();
+        List<DatabaseObject> waitings = new ArrayList<>();
         int b = 0;
         Context c = Context.getInvoice();
         String ItemType = "bills";
         String prop = "";
         String use = "";
         try {
-            while (b < 5) {
+            while (b < 8) {
                 QueryCriteria2 opens = new QueryCriteria2();
                 switch (b) {
                     case 0:
+                        c = Context.getInvoice();
                         ItemType = "bills";
                         prop = "hideunpaidbills";
                         opens.or(
-                                new QueryParameter(Context.getInvoice(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS),
-                                new QueryParameter(Context.getInvoice(), "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
+                                new QueryParameter(c, "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS),
+                                new QueryParameter(c, "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
                         use = "usebills";
                         break;
                     case 1:
+                        c = Context.getOrder();
                         ItemType = "order";
                         prop = "hideunattentedorders";
-                        opens.and(new QueryParameter(Context.getOrder(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
+                        opens.and(new QueryParameter(c, "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
                         use = "useorders";
                         break;
                     case 2:
+                        c = Context.getOffer();
                         ItemType = "offer";
                         prop = "hideunacceptedoffers";
-                        opens.and(new QueryParameter(Context.getOffer(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
+                        opens.and(new QueryParameter(c, "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
                         use = "useoffers";
                         break;
                     case 3:
+                        c = Context.getDelivery();
                         ItemType = "delivery";
                         prop = "hideunattenteddeliverys";
                         opens.or(
-                                new QueryParameter(Context.getDelivery(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS),
-                                new QueryParameter(Context.getDelivery(), "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
+                                new QueryParameter(c, "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS),
+                                new QueryParameter(c, "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
                         use = "usedeliverys";
                         break;
                     case 4:
+                        c = Context.getConfirmation();
                         ItemType = "confirmation";
                         prop = "hideunattentedconfirmations";
-                        opens.and(new QueryParameter(Context.getConfirmation(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
+                        opens.and(new QueryParameter(c, "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
                         use = "useconfirmations";
+                        break;
+                    case 5:
+                        c = Context.getCredit();
+                        ItemType = "credit";
+                        prop = "hideunattendedcredits";
+                        opens.and(new QueryParameter(c, "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
+                        use = "usecredit";
+                        break;
+                    case 6:
+                        c = Context.getPartPayment();
+                        ItemType = "partial payment";
+                        prop = "hideunattentedpartpayments";
+                        opens.and(new QueryParameter(c, "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
+                        use = "usepartpayment";
+                        break;
+                    case 7:
+                        c = Context.getDeposit();
+                        ItemType = "deposit";
+                        prop = "hideunattenteddeposits";
+                        opens.and(new QueryParameter(c, "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
+                        use = "usedeposit";
                         break;
                 }
                 if (!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", prop)
                         && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", use)) {
-                    opens.and(new QueryParameter(Context.getInvoice(), "inttype", b, QueryParameter.EQUALS));
+                    if (b < 5) {
+                        opens.and(new QueryParameter(c, "inttype", b, QueryParameter.EQUALS));
+                    }
                     opens.setOrder("dateadded", true);
                     try {
                         ReturnValue data = QueryHandler.instanceOf().clone(c).select("IDS", opens);
@@ -169,7 +198,7 @@ public class Scheduler extends Thread {
                                 int id = Integer.valueOf(d[i][0].toString());
                                 try {
                                     Item it = (Item) Item.getObject(
-                                            Context.getInvoice(),
+                                            c,
                                             id);
                                     waitings.add(it);
                                 } catch (NodataFoundException ex) {
@@ -192,42 +221,68 @@ public class Scheduler extends Thread {
         }
         b = 0;
         try {
-            while (b < 5) {
+            while (b < 8) {
                 QueryCriteria2 opens = new QueryCriteria2();
                 switch (b) {
                     case 0:
+                        c = Context.getInvoice();
                         ItemType = "bills";
                         prop = "hideunpaidbills";
                         opens.or(
-                                new QueryParameter(Context.getInvoice(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS),
-                                new QueryParameter(Context.getInvoice(), "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
+                                new QueryParameter(c, "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS),
+                                new QueryParameter(c, "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
                         use = "usebills";
                         break;
                     case 1:
+                        c = Context.getOrder();
                         ItemType = "order";
                         prop = "hideunattentedorders";
-                        opens.and(new QueryParameter(Context.getOrder(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
+                        opens.and(new QueryParameter(c, "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
                         use = "useorders";
                         break;
                     case 2:
+                        c = Context.getOffer();
                         ItemType = "offer";
                         prop = "hideunacceptedoffers";
-                        opens.and(new QueryParameter(Context.getOffer(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
+                        opens.and(new QueryParameter(c, "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
                         use = "useoffers";
                         break;
                     case 3:
+                        c = Context.getDelivery();
                         ItemType = "delivery";
                         prop = "hideunattenteddeliverys";
                         opens.or(
-                                new QueryParameter(Context.getDelivery(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS),
-                                new QueryParameter(Context.getDelivery(), "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
+                                new QueryParameter(c, "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS),
+                                new QueryParameter(c, "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
                         use = "usedeliverys";
                         break;
                     case 4:
+                        c = Context.getConfirmation();
                         ItemType = "confirmation";
                         prop = "hideunattentedconfirmations";
-                        opens.and(new QueryParameter(Context.getConfirmation(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
+                        opens.and(new QueryParameter(c, "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
                         use = "useconfirmations";
+                        break;
+                    case 5:
+                        c = Context.getCredit();
+                        ItemType = "credit";
+                        prop = "hideunattendedcredits";
+                        opens.and(new QueryParameter(c, "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
+                        use = "usecredit";
+                        break;
+                    case 6:
+                        c = Context.getPartPayment();
+                        ItemType = "partial payments";
+                        prop = "hideunattentedpartpayments";
+                        opens.and(new QueryParameter(c, "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
+                        use = "usepartpayment";
+                        break;
+                    case 7:
+                        c = Context.getDeposit();
+                        ItemType = "deposit";
+                        prop = "hideunattenteddeposits";
+                        opens.and(new QueryParameter(c, "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
+                        use = "usedeposit";
                         break;
                 }
                 if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty(ItemType + ".warn.days")
@@ -236,7 +291,9 @@ public class Scheduler extends Thread {
                     Integer warn = Integer.valueOf(mpv5.db.objects.User.getCurrentUser().
                             getProperties().
                             getProperty(ItemType + ".warn.days"));
-                    opens.and(new QueryParameter(Context.getInvoice(), "inttype", b, QueryParameter.EQUALS));
+                    if (b < 5) {
+                    opens.and(new QueryParameter(c, "inttype", b, QueryParameter.EQUALS));
+                    }
                     opens.setOrder("dateadded", true);
                     try {
                         ReturnValue data = QueryHandler.instanceOf().clone(c).select("IDS", opens,
@@ -248,7 +305,7 @@ public class Scheduler extends Thread {
                                 int id = Integer.valueOf(d[i][0].toString());
                                 try {
                                     Item it = (Item) Item.getObject(
-                                            Context.getInvoice(),
+                                            c,
                                             id);
                                     warnings.add(it);
                                 } catch (NodataFoundException ex) {
@@ -271,45 +328,70 @@ public class Scheduler extends Thread {
         }
         b = 0;
         try {
-            while (b < 5) {
+            while (b < 8) {
                 QueryCriteria2 opens = new QueryCriteria2();
                 switch (b) {
                     case 0:
+                        c = Context.getInvoice();
                         ItemType = "bills";
                         opens.or(
-                                new QueryParameter(Context.getInvoice(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS),
-                                new QueryParameter(Context.getInvoice(), "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
+                                new QueryParameter(c, "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS),
+                                new QueryParameter(c, "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
                         use = "usebills";
                         break;
                     case 1:
+                        c = Context.getOrder();
                         ItemType = "order";
-                        opens.and(new QueryParameter(Context.getOrder(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
+                        opens.and(new QueryParameter(c, "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
                         use = "useorders";
                         break;
                     case 2:
+                        c = Context.getOffer();
                         ItemType = "offer";
-                        opens.and(new QueryParameter(Context.getOffer(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
+                        opens.and(new QueryParameter(c, "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
                         use = "useoffers";
                         break;
                     case 3:
+                        c = Context.getDelivery();
                         ItemType = "delivery";
                         opens.or(
-                                new QueryParameter(Context.getDelivery(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS),
-                                new QueryParameter(Context.getDelivery(), "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
+                                new QueryParameter(c, "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS),
+                                new QueryParameter(c, "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
                         use = "usedeliverys";
                         break;
                     case 4:
+                        c = Context.getConfirmation();
                         ItemType = "confirmation";
-                        opens.and(new QueryParameter(Context.getConfirmation(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
+                        opens.and(new QueryParameter(c, "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
                         use = "useconfirmations";
                         break;
+                    case 5:
+                        c = Context.getCredit();
+                        ItemType = "credit";
+                        opens.and(new QueryParameter(c, "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
+                        use = "usecredit";
+                        break;
+                    case 6:
+                        c = Context.getPartPayment();
+                        ItemType = "partpayment";
+                        opens.and(new QueryParameter(c, "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
+                        use = "usepartpayment";
+                        break;
+                    case 7:
+                        c = Context.getDeposit();
+                        ItemType = "deposit";
+                        opens.and(new QueryParameter(c, "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
+                        use = "usedeposit";
+                        break;
                 }
-                if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty(ItemType + ".alert.days") 
-                         && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", use)) {
+                if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty(ItemType + ".alert.days")
+                        && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", use)) {
                     Integer alert = Integer.valueOf(mpv5.db.objects.User.getCurrentUser().
                             getProperties().
                             getProperty(ItemType + ".alert.days"));
-                    opens.and(new QueryParameter(Context.getInvoice(), "inttype", b, QueryParameter.EQUALS));
+                    if (b < 5) {
+                    opens.and(new QueryParameter(c, "inttype", b, QueryParameter.EQUALS));
+                    }
                     opens.setOrder("dateadded", true);
                     try {
                         ReturnValue data = QueryHandler.instanceOf().clone(c).select("IDS", opens,
@@ -320,7 +402,7 @@ public class Scheduler extends Thread {
                             for (int i = 0; i < d.length; i++) {
                                 int id = Integer.valueOf(d[i][0].toString());
                                 try {
-                                    Item it = (Item) Item.getObject(Context.getInvoice(),
+                                    Item it = (Item) Item.getObject(c,
                                             id);
                                     alerts.add(it);
                                 } catch (NodataFoundException ex) {
@@ -340,7 +422,107 @@ public class Scheduler extends Thread {
         } catch (Exception numberFormatException) {
             Log.Debug(numberFormatException);
         }
-        for (Item i : alerts) {//Remove dupes
+                
+// add revenues that are pending ...
+        
+        c = Context.getRevenue();
+        QueryCriteria2 opens = new QueryCriteria2();
+        opens.or(new QueryParameter(c, "status", Item.STATUS_QUEUED, QueryParameter.EQUALS));
+        ItemType = "revenues";
+
+        if (!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hideunattentedrevenues")
+                && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "userevenues")) {
+           opens.setOrder("dateadded", true);
+            try {
+                ReturnValue data = QueryHandler.instanceOf().clone(c).select("IDS", opens);
+
+                if (data.hasData()) {
+                    Object[][] d = data.getData();
+                    for (int i = 0; i < d.length; i++) {
+                        int id = Integer.valueOf(d[i][0].toString());
+                        try {
+                            Revenue it = (Revenue) Revenue.getObject(
+                                    c,
+                                    id);
+                            waitings.add(it);
+                        } catch (NodataFoundException ex) {
+                            Log.Debug(Scheduler.class,
+                                    ex.getMessage());
+                        }
+                    }
+                }
+            } catch (NodataFoundException ex) {
+                Log.Debug(Scheduler.class, ex.getLocalizedMessage());
+            }
+        } else {
+            Log.Debug(Scheduler.class,
+                    "Don't show " + ItemType + " befor alert!");
+        }
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("revenue.warn.days")
+                && !mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hideunattentedrevenues")
+                && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "userevenues")) {
+            Integer warn = Integer.valueOf(mpv5.db.objects.User.getCurrentUser().
+                    getProperties().
+                    getProperty("revenue.warn.days"));
+            opens.setOrder("dateadded", true);
+            try {
+                ReturnValue data = QueryHandler.instanceOf().clone(c).select("IDS", opens,
+                        new vTimeframe(new Date(0), DateConverter.addDays(new Date(), warn * -1)), "dateadded");
+
+                if (data.hasData()) {
+                    Object[][] d = data.getData();
+                    for (int i = 0; i < d.length; i++) {
+                        int id = Integer.valueOf(d[i][0].toString());
+                        try {
+                            Revenue it = (Revenue) Revenue.getObject(
+                                    c,
+                                    id);
+                            warnings.add(it);
+                        } catch (NodataFoundException ex) {
+                            Log.Debug(Scheduler.class,
+                                    ex.getMessage());
+                        }
+                    }
+                }
+            } catch (NodataFoundException ex) {
+                Log.Debug(Scheduler.class, ex.getLocalizedMessage());
+            }
+        } else {
+            Log.Debug(Scheduler.class,
+                    "No warn treshold for " + ItemType + " defined.");
+        }
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("revenue.alert.days")
+                && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "userevenues")) {
+            Integer alert = Integer.valueOf(mpv5.db.objects.User.getCurrentUser().
+                    getProperties().
+                    getProperty("revenue.alert.days"));
+            opens.setOrder("dateadded", true);
+            try {
+                ReturnValue data = QueryHandler.instanceOf().clone(c).select("IDS", opens,
+                        new vTimeframe(new Date(0), DateConverter.addDays(new Date(), alert * -1)), "dateadded");
+
+                if (data.hasData()) {
+                    Object[][] d = data.getData();
+                    for (int i = 0; i < d.length; i++) {
+                        int id = Integer.valueOf(d[i][0].toString());
+                        try {
+                            Revenue it = (Revenue) Revenue.getObject(c,
+                                    id);
+                            alerts.add(it);
+                        } catch (NodataFoundException ex) {
+                            Log.Debug(ex);
+                        }
+                    }
+                }
+            } catch (NodataFoundException ex) {
+                Log.Debug(Scheduler.class, ex.getLocalizedMessage());
+            }
+        } else {
+            Log.Debug(Scheduler.class,
+                    "No alert treshold for " + ItemType + " defined.");
+        }
+        
+        for (DatabaseObject i : alerts) {//Remove dupes
             if (warnings.contains(i)) {
                 warnings.remove(i);
             }
@@ -349,16 +531,17 @@ public class Scheduler extends Thread {
             }
         }
 
-        for (Item i : warnings) {//Remove dupes
+        for (DatabaseObject i : warnings) {//Remove dupes
             if (waitings.contains(i)) {
                 waitings.remove(i);
             }
         }
 
-        HashMap<Color, List<Item>> map = new HashMap<Color, List<Item>>();
+        HashMap<Color, List<? extends DatabaseObject>> map = new HashMap<Color, List<? extends DatabaseObject>>();
         map.put(Color.red, alerts);
         map.put(Color.yellow, warnings);
         map.put(Color.green, waitings);
+
         return map;
     }
 }

@@ -40,6 +40,7 @@ import mpv5.globals.Headers;
 import mpv5.handler.VariablesHandler;
 import mpv5.logging.Log;
 import mpv5.ui.panels.ItemPanel2;
+import mpv5.utils.date.DateConverter;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.numberformat.FormatNumber;
@@ -129,6 +130,78 @@ public final class SubItem extends DatabaseObject implements Triggerable {
 
    }
 
+   public static LinkedList<SubItem> saveModelMinus(Item dataOwner, MPTableModel model, boolean deleteRemovedSubitems, boolean cloneSubitems, Item item) {
+      List<Object[]> rowsl = model.getValidRows(new int[]{4});
+      LinkedList<SubItem> items = new LinkedList<SubItem>();
+      Log.Debug(SubItem.class, "Rows found: " + rowsl.size());
+      for (int i = 0; i < rowsl.size(); i++) {
+         Object[] row = rowsl.get(i);
+         for (int j = 0; j < row.length; j++) {
+            if (row[j] == null) {
+               row[j] = "";
+            }
+         }
+         SubItem it = new SubItem();
+         it.setOrdernr(i);
+         Log.Print(Arrays.asList(row));
+         try {
+            if (!cloneSubitems && row[0] != null && Integer.valueOf(row[0].toString()) > 0) {
+               it.setIDS(Integer.valueOf(row[0].toString()));
+            } else {
+               it.setIDS(-1);
+            }
+         } catch (Exception e) {
+            Log.Debug(SubItem.class, e.getMessage());
+         }
+         it.setCname(row[14].toString());
+         it.setItemsids(dataOwner.__getIDS());
+         it.setCountvalue(FormatNumber.getBigDecimal(row[1]));
+         it.setDatedelivery(dataOwner.__getDatetodo());
+         it.setDescription(Item.getTypeString(item.__getInttype()) + ":" + DateConverter.getDefDateString(item.__getDateend()));
+         it.setExternalvalue(FormatNumber.getBigDecimal(row[5]).negate());
+         it.setInternalvalue(FormatNumber.getBigDecimal(row[5]).negate());//not supported yet
+         it.setMeasure(String.valueOf(row[3]));
+
+         if (row[10] instanceof Product) {
+            try {
+               it.setOriginalproductsids(((Product) row[10]).__getIDS());
+            } catch (Exception e) {
+               Log.Debug(e);
+            }
+         } else {
+         }
+         it.setLinkurl(String.valueOf(row[12 + 1]));
+         it.setQuantityvalue(FormatNumber.getBigDecimal(row[2]));
+         it.setTaxpercentvalue(FormatNumber.getBigDecimal(row[6]));
+         if (row[15].toString().trim().length() > 0) {//maybe not set at all from prodctorders
+            it.setDiscount(FormatNumber.getBigDecimal(row[15]));
+         }
+         calculate(it);
+
+         if (!it.isExisting()) {
+            it.setDateadded(new Date());
+            it.setGroupsids(dataOwner.__getGroupsids());
+         }
+         it.save(true);
+         items.add(it.getOrdernr(), it);
+      }
+
+      if (deleteRemovedSubitems) {
+         for (int i = 0; i < deletionQueue.size(); i++) {
+            try {
+               int myid = deletionQueue.get(i);
+               if (myid > 0) {
+                  QueryHandler.delete(SubItem.getObject(Context.getSubItem(), myid));
+               }
+            } catch (NodataFoundException ex) {
+               Log.Debug(ex);
+            }
+         }
+      }
+      deletionQueue.clear();
+      return items;
+
+   }
    /**
     * Save the model of SubItems
     *
@@ -617,6 +690,15 @@ public final class SubItem extends DatabaseObject implements Triggerable {
                   break;
               case Constants.TYPE_INVOICE:
                   ip = new ItemPanel2(Context.getInvoice(), dos.__getInttype());
+                  break;
+              case Constants.TYPE_CREDIT:
+                  ip = new ItemPanel2(Context.getCredit(), dos.__getInttype());
+                  break;
+              case Constants.TYPE_PART_PAYMENT:
+                  ip = new ItemPanel2(Context.getPartPayment(), dos.__getInttype());
+                  break;
+              case Constants.TYPE_DEPOSIT:
+                  ip = new ItemPanel2(Context.getDeposit(), dos.__getInttype());
                   break;
           }
           return ip;

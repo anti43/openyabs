@@ -500,6 +500,15 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
                 case Constants.TYPE_INVOICE:
                     t = Search2.showSearchFor(Context.getInvoice());
                     break;
+                case Constants.TYPE_DEPOSIT:
+                    t = Search2.showSearchFor(Context.getDeposit());
+                    break;
+                case Constants.TYPE_PART_PAYMENT:
+                    t = Search2.showSearchFor(Context.getPartPayment());
+                    break;
+                case Constants.TYPE_CREDIT:
+                    t = Search2.showSearchFor(Context.getCredit());
+                    break;
             }
             if (t != null) {
                 List<String[]> vars = VariablesHandler.resolveVarsFor(t);
@@ -947,6 +956,15 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
                     break;
                 case Constants.TYPE_INVOICE:
                      t = Search2.showSearchFor(Context.getInvoice());
+                     break;
+                case Constants.TYPE_DEPOSIT:
+                    t = Search2.showSearchFor(Context.getDeposit());
+                    break;
+                case Constants.TYPE_PART_PAYMENT:
+                    t = Search2.showSearchFor(Context.getPartPayment());
+                    break;
+                case Constants.TYPE_CREDIT:
+                     t = Search2.showSearchFor(Context.getCredit());
                      break;
             }
 

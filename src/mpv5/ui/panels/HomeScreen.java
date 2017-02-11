@@ -40,6 +40,7 @@ import mpv5.db.common.NodataFoundException;
 import mpv5.db.objects.Group;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.Reminder;
+import mpv5.db.objects.Revenue;
 import mpv5.db.objects.Schedule;
 import mpv5.db.objects.SubItem;
 import mpv5.db.objects.User;
@@ -58,8 +59,7 @@ import mpv5.utils.numberformat.FormatNumber;
 import mpv5.utils.renderer.TableCellRendererForDatabaseObjects;
 import mpv5.utils.tables.TableFormat;
 
-public class HomeScreen
-        extends javax.swing.JPanel {
+public class HomeScreen extends javax.swing.JPanel {
 
     private static final long serialVersionUID = 8043431014500289718L;
     private List<DatabaseObject> odata;
@@ -146,16 +146,16 @@ public class HomeScreen
         return overdue;
     }
 
-    public <T extends DatabaseObject> void show(HashMap<Color, List<T>> map, JTable table) {
+    public <T extends DatabaseObject> void show(HashMap<Color, List<? extends DatabaseObject>> map, JTable table) {
 
         Iterator<Color> it = map.keySet().
                 iterator();
         List<DatabaseObject> ndata = new ArrayList<DatabaseObject>();
         while (it.hasNext()) {
             Color c = it.next();
-            List<T> data = map.get(c);
+            List<? extends DatabaseObject> data = map.get(c);
             for (int i = 0; i < data.size(); i++) {
-                T databaseObject = data.get(i);
+                DatabaseObject databaseObject = data.get(i);
                 databaseObject.defineColor(c);
                 ndata.add(databaseObject);
             }
@@ -172,16 +172,16 @@ public class HomeScreen
 //        timeframeChooser2.setTime(new vTimeframe(DateConverter.getStartOfMonth(new Date()), DateConverter.getEndOfMonth(new Date())));
 
         if (table.equals(overdue)) {
-            setData(ndata, table, false);
+            setData(ndata, table);
             odata = ndata;
         } else {
-            setData(ndata, table, true);
+            setData(ndata, table);
             xdata = ndata;
         }
         validate();
     }
 
-    public <T extends DatabaseObject> void setData(List<T> list, JTable table, Boolean isDBObj) {
+    public <T extends DatabaseObject> void setData(List<T> list, JTable table) {
         Object[][] data;
         int type;
         orderSum = new BigDecimal(0);
@@ -192,8 +192,8 @@ public class HomeScreen
             data = new Object[list.size()][7];
 
             for (int i = 0; i < list.size(); i++) {
-                if (isDBObj == false) {
-                    DatabaseObject databaseObject = list.get(i);
+                DatabaseObject databaseObject = list.get(i);
+                if (databaseObject instanceof Item) {
                     data[i][0] = databaseObject;
                     data[i][1] = User.getUsername(databaseObject.__getIntaddedby());
                     data[i][2] = databaseObject.__getDateadded();
@@ -211,6 +211,8 @@ public class HomeScreen
                     //  <li>TYPE_OFFER = 2;
                     switch (type) {
                         case Item.TYPE_INVOICE:
+                        case Item.TYPE_PART_PAYMENT:
+                        case Item.TYPE_DEPOSIT:
                             billsSum = billsSum.add(value);
                             break;
                         case Item.TYPE_OFFER:
@@ -225,8 +227,8 @@ public class HomeScreen
                     data[i][5] = FormatNumber.formatLokalCurrency(value);
                     data[i][6] = databaseObject.getIcon();
                     ((ImageIcon) data[i][6]).setDescription(Item.getStatusString(((Item) databaseObject).__getIntstatus()));
-                } else {
-                    Schedule sched = (Schedule) list.get(i);
+                } else if (databaseObject instanceof Schedule) {
+                    Schedule sched = (Schedule) databaseObject;
                     data[i][0] = sched;
                     data[i][1] = User.getUsername(sched.__getIntaddedby());
                     data[i][2] = sched.__getNextdate();
@@ -235,6 +237,23 @@ public class HomeScreen
                     data[i][5] = 0;
                     data[i][6] = sched.getIcon();
                     ((ImageIcon) data[i][6]).setDescription(Messages.NEW_BILL.toString());
+                } else if (databaseObject instanceof Revenue) {
+                    Revenue rev = (Revenue) databaseObject;
+                    data[i][0] = rev;
+                    data[i][1] = User.getUsername(rev.__getIntaddedby());
+                    data[i][2] = rev.__getDateadded();
+                    try {
+                        data[i][3] = DatabaseObject.getObject(Context.getGroup(),
+                                rev.__getGroupsids());
+                    } catch (NodataFoundException ex) {
+                        data[i][3] = "N/A";
+                    }
+                    data[i][4] = Messages.TYPE_REVENUE.toString();
+                    BigDecimal value = rev.__getBrutvalue();
+                    billsSum = billsSum.add(value);
+                    data[i][5] = FormatNumber.formatLokalCurrency(value);
+                    data[i][6] = rev.getIcon();
+                    ((ImageIcon) data[i][6]).setDescription(Item.getStatusString(rev.__getStatus()));
                 }
             }
         } else {
@@ -252,11 +271,9 @@ public class HomeScreen
                 });
         table.setModel(m);
 
-        if (isDBObj == false) {
-            orders.setText(FormatNumber.formatLokalCurrency(orderSum));
-            offers.setText(FormatNumber.formatLokalCurrency(offerSum));
-            bills.setText(FormatNumber.formatLokalCurrency(billsSum));
-        }
+        orders.setText(FormatNumber.formatLokalCurrency(orderSum));
+        offers.setText(FormatNumber.formatLokalCurrency(offerSum));
+        bills.setText(FormatNumber.formatLokalCurrency(billsSum));
     }
 
     /**
@@ -265,7 +282,7 @@ public class HomeScreen
      */
     @SuppressWarnings("unchecked")
     public void filterByTimeframe(vTimeframe g) {
-        HashMap<Color, List<Item>> map = Scheduler.getOverdueEvents();
+        HashMap<Color, List<? extends DatabaseObject>> map = Scheduler.getOverdueEvents();
         this.show(map, this.getOverdue());
     }
 
@@ -275,13 +292,13 @@ public class HomeScreen
      */
     @SuppressWarnings("unchecked")
     public void filterByTimeframe2(vTimeframe g) {
-        HashMap<Color, List<Schedule>> map = Scheduler.getScheduledBills(g);
+        HashMap<Color, List<? extends DatabaseObject>> map = Scheduler.getScheduledBills(g);
         this.show(map, this.getNextEvents());
     }
 
     @SuppressWarnings("unchecked")
     public void filterByItemType(Integer Type) {
-        setData(odata, overdue, false);
+        setData(odata, overdue);
         if (Type >= 0) {
             Object[][] data = ((MPTableModel) overdue.getModel()).getData();
             List<DatabaseObject> list = new ArrayList<DatabaseObject>();
@@ -291,7 +308,7 @@ public class HomeScreen
                     list.add(d);
                 }
             }
-            setData(list, overdue, false);
+            setData(list, overdue);
         }
     }
 
@@ -301,11 +318,10 @@ public class HomeScreen
      */
     @SuppressWarnings({"unchecked"})
     public void filterByGroup(Group g) {
-        setData(odata, overdue, false);
+        setData(odata, overdue);
         Object[][] data = ((MPTableModel) overdue.getModel()).getData();
         List<DatabaseObject> list = new ArrayList<DatabaseObject>();
-        if (g.__getIDS().
-                intValue() != 1) {
+        if (g.__getIDS() != 1) {
             for (int i = 0; i < data.length; i++) {
                 DatabaseObject d = (DatabaseObject) data[i][0];
                 if (d.__getGroupsids() == g.__getIDS()) {
@@ -318,12 +334,12 @@ public class HomeScreen
                 list.add(d);
             }
         }
-        setData(list, overdue, false);
+        setData(list, overdue);
     }
 
     @SuppressWarnings("unchecked")
     public void filterByItemType2(Integer Type) {
-        setData(xdata, nextEvents, false);
+        setData(xdata, nextEvents);
         if (Type >= 0) {
             Object[][] data = ((MPTableModel) nextEvents.getModel()).getData();
             List<DatabaseObject> list = new ArrayList<DatabaseObject>();
@@ -333,7 +349,7 @@ public class HomeScreen
                     list.add(d);
                 }
             }
-            setData(list, nextEvents, false);
+            setData(list, nextEvents);
         }
     }
 
@@ -343,11 +359,10 @@ public class HomeScreen
      */
     @SuppressWarnings({"unchecked"})
     public void filterByGroup2(Group g) {
-        setData(xdata, nextEvents, false);
+        setData(xdata, nextEvents);
         Object[][] data = ((MPTableModel) nextEvents.getModel()).getData();
         List<DatabaseObject> list = new ArrayList<DatabaseObject>();
-        if (g.__getIDS().
-                intValue() != 1) {
+        if (g.__getIDS() != 1) {
             for (int i = 0; i < data.length; i++) {
                 DatabaseObject d = (DatabaseObject) data[i][0];
                 if (d.__getGroupsids() == g.__getIDS()) {
@@ -360,7 +375,7 @@ public class HomeScreen
                 list.add(d);
             }
         }
-        setData(list, nextEvents, false);
+        setData(list, nextEvents);
     }
 
     /** This method is called from within the constructor to
@@ -777,7 +792,9 @@ public class HomeScreen
                 if (dbo.getColor().equals(Color.RED)
                         && (dbo instanceof Item)) {
                     itm = (Item) dbo;
-                    if (itm.__getInttype() == Item.TYPE_INVOICE) {
+                    if (itm.__getInttype() == Item.TYPE_INVOICE ||
+                           itm.__getInttype() == Item.TYPE_DEPOSIT ||
+                            itm.__getInttype() == Item.TYPE_PART_PAYMENT) {
                         if (Popup.Y_N_dialog(Messages.CREATE_REMINDER.toString())) {
                             rem = new Reminder();
                             rem.setCname(Messages.REMINDER.toString() + "@" + dbo.__getCname());
@@ -834,24 +851,24 @@ private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private void but6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but6ActionPerformed
         odata = xdata = null;
         refresh();
-        HashMap<Color, List<Schedule>> map1 = Scheduler.getScheduledBills(null);
+        HashMap<Color, List<? extends DatabaseObject>> map1 = Scheduler.getScheduledBills(null);
         Iterator<Color> it1 = map1.keySet().
                 iterator();
         while (it1.hasNext()) {
             Color c = it1.next();
-            List<Schedule> data = map1.get(c);
+            List<? extends DatabaseObject> data = map1.get(c);
             if (!data.isEmpty()) {
                 this.show(map1, this.getNextEvents());
                 break;
             }
         }
 
-        HashMap<Color, List<Item>> map2 = Scheduler.getOverdueEvents();
+        HashMap<Color, List<? extends DatabaseObject>> map2 = Scheduler.getOverdueEvents();
         Iterator<Color> it2 = map2.keySet().
                 iterator();
         while (it2.hasNext()) {
             Color c = it2.next();
-            List<Item> data = map2.get(c);
+            List<? extends DatabaseObject> data = map2.get(c);
             if (!data.isEmpty()) {
                 this.show(map2, this.getOverdue());
                 break;
@@ -955,12 +972,12 @@ private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         timeframeChooser1.setTime(new vTimeframe(DateConverter.getStartOfMonth(new Date()), DateConverter.getEndOfMonth(new Date())));
         labeledCombobox1.getComboBox().setSelectedIndex(-1);
         labeledCombobox2.getComboBox().setSelectedIndex(-1);
-        setData(odata, overdue, false);
+        setData(odata, overdue);
         // Zyklische Objekte zurücksetzen ...
         timeframeChooser2.setTime(new vTimeframe(DateConverter.getStartOfMonth(new Date()), DateConverter.getEndOfMonth(new Date())));
         labeledCombobox3.getComboBox().setSelectedIndex(-1);
         labeledCombobox4.getComboBox().setSelectedIndex(-1);
-        setData(xdata, nextEvents, true);
+        setData(xdata, nextEvents);
         // Navigation rechts aktualisieren ...
         sc.setDate(new Date());
     }

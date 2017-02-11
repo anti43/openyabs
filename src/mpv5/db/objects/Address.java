@@ -232,8 +232,6 @@ public class Address extends DatabaseObject {
 
     @Override
     public java.util.Map<String, Object> resolveReferences(java.util.Map<String, Object> map) {
-        
-
         try {
             if (map.containsKey("inttype")) {
                 // [0 = billing adress, 1 = delivery adress, 2 = both, 3 = undefined]

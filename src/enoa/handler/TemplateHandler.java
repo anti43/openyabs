@@ -204,7 +204,7 @@ public class TemplateHandler {
      * @return
      */
     public static MPEnum[] getTypes() {
-        MPEnum[] types = new MPEnum[15];
+        MPEnum[] types = new MPEnum[18];
         types[0] = new MPEnum() {
             @Override
             public Integer getId() {
@@ -340,7 +340,7 @@ public class TemplateHandler {
         types[11] = new MPEnum() {
             @Override
             public Integer getId() {
-                return TYPE_CONTACT;
+                return TYPE_CONTRACT;
             }
 
             @Override
@@ -382,6 +382,42 @@ public class TemplateHandler {
             @Override
             public String getName() {
                 return Messages.TYPE_ACTIVITY.toString();
+            }
+        };
+        
+        types[15] = new MPEnum() {
+            @Override
+            public Integer getId() {
+                return TYPE_CREDIT;
+            }
+
+            @Override
+            public String getName() {
+                return Messages.TYPE_CREDIT.toString();
+            }
+        };
+
+        types[16] = new MPEnum() {
+            @Override
+            public Integer getId() {
+                return TYPE_PART_PAYMENT;
+            }
+
+            @Override
+            public String getName() {
+                return Messages.TYPE_PART_PAYMENT.toString();
+            }
+        };
+
+        types[17] = new MPEnum() {
+            @Override
+            public Integer getId() {
+                return TYPE_DEPOSIT;
+            }
+
+            @Override
+            public String getName() {
+                return Messages.TYPE_DEPOSIT.toString();
             }
         };
         return types;

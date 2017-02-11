@@ -623,7 +623,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                 Log.Debug(ex);
             }
         }
-        return obj;
+         return obj;
     }
 
     /**

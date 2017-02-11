@@ -489,7 +489,7 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
     }//GEN-LAST:event_upItem1ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        toInvoice();
+        toInvoice(Item.TYPE_INVOICE);
     }//GEN-LAST:event_jButton4ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -519,6 +519,7 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
     private javax.swing.JButton upItem1;
     // End of variables declaration//GEN-END:variables
 
+    @Override
     public void refresh() {
         Runnable runnable = new Runnable() {
 
@@ -538,6 +539,7 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         SwingUtilities.invokeLater(runnable);
     }
 
+    @Override
     public boolean collectData() {
         cname_ = Project.getText();
         if (cname_.length() > 0) {
@@ -571,10 +573,12 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         return true;
     }
 
+    @Override
     public DatabaseObject getDataOwner() {
         return dataOwner;
     }
 
+    @Override
     public void setDataOwner(DatabaseObject object, boolean populateData) {
         dataOwner = (ActivityList) object;
         if (populateData) {
@@ -605,6 +609,7 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         }
     }
 
+    @Override
     public void exposeData() {
         Project.setText(cname_);
 
@@ -653,6 +658,7 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         }
     }
 
+    @Override
     public void paste(DatabaseObject... dbos) {
         for (DatabaseObject dbo : dbos) {
             if (dbo.getContext().equals(Context.getProduct())) {
@@ -670,6 +676,7 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         }
     }
 
+    @Override
     public void showRequiredFields() {
         if (HEADER_FAILD) {
             TextFieldUtils.blink(Project,
@@ -680,6 +687,7 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         }
     }
 
+    @Override
     public void showSearchBar(boolean show) {
         SearchBarPane.removeAll();
 
@@ -696,11 +704,13 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         validate();
     }
 
+    @Override
     public void actionAfterSave() {
         saveActivityListSubItems();
         omodel = (MPTableModel) itemtable.getModel();
     }
 
+    @Override
     public void actionAfterCreate() {
         ArrayUtilities.replaceColumn(itemtable, 0, null);
         saveActivityListSubItems();
@@ -708,16 +718,20 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         this.dataOwner.setIsBilled(false);
     }
 
+    @Override
     public void actionBeforeCreate() {
     }
 
+    @Override
     public void actionBeforeSave() throws ChangeNotApprovedException {
     }
 
+    @Override
     public void mail() {
         Popup.notice(Messages.NOT_YET_IMPLEMENTED.toString());
     }
 
+    @Override
     public void print() {
         if (dataOwner != null && dataOwner.isExisting()) {
             if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.templateType())) {
@@ -782,19 +796,21 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         itemMultiplier.addLabel(total, 8);
     }
 
+    @Override
     public void pdf() {
         if (dataOwner != null && dataOwner.isExisting()) {
             dataOwner.toPdf(true);
         }
     }
 
+    @Override
     public void odt() {
         if (dataOwner != null && dataOwner.isExisting()) {
             dataOwner.toOdt(true);
         }
     }
 
-    private void toInvoice() {
+    private void toInvoice(int itemType) {
         this.isbilled_ = true;
         itemtable.setEnabled(!isbilled_);
         jLabel5.setVisible(isbilled_);
@@ -804,9 +820,23 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         dataOwner.save();
         ArrayList<ActivityList> data;
         Object[] row;
-
-        Item i2 = (Item) dataOwner.clone(Context.getInvoice());
-        i2.setInttype(Item.TYPE_INVOICE);
+        Item i2;
+        switch (itemType) {
+            case Item.TYPE_INVOICE:
+                i2 = (Item) dataOwner.clone(Context.getInvoice());
+                i2.setInttype(Item.TYPE_INVOICE);
+                break;
+            case Item.TYPE_DEPOSIT:
+                i2 = (Item) dataOwner.clone(Context.getCredit());
+                i2.setInttype(Item.TYPE_DEPOSIT);
+                break;
+            case Item.TYPE_PART_PAYMENT:
+                i2 = (Item) dataOwner.clone(Context.getPartPayment());
+                i2.setInttype(Item.TYPE_PART_PAYMENT);
+                break;
+            default:
+                return;
+        }
         i2.setIDS(-1);
         i2.defineFormatHandler(new FormatHandler(i2));
         i2.save();
@@ -847,6 +877,7 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
     private void preloadTemplate() {
         Runnable runnable = new Runnable() {
 
+            @Override
             public void run() {
                 TemplateHandler.loadTemplate(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.templateType());
             }

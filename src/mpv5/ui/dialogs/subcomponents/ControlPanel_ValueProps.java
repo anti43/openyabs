@@ -342,6 +342,9 @@ public class ControlPanel_ValueProps extends javax.swing.JPanel implements Contr
                 def.addElement(new ContextWrap(Messages.TYPE_INVOICE.getValue(), Context.getInvoice()));
                 def.addElement(new ContextWrap(Messages.TYPE_ORDER.getValue(), Context.getOrder()));
                 def.addElement(new ContextWrap(Messages.TYPE_OFFER.getValue(), Context.getOffer()));
+                def.addElement(new ContextWrap(Messages.TYPE_DEPOSIT.getValue(), Context.getDeposit()));
+                def.addElement(new ContextWrap(Messages.TYPE_PART_PAYMENT.getValue(), Context.getPartPayment()));
+                def.addElement(new ContextWrap(Messages.TYPE_CREDIT.getValue(), Context.getCredit()));
 //            def.addElement(new ContextWrap(Messages.TYPE_SUBITEM.getValue(), Context.getSubItem()));
                 def.addElement(new ContextWrap(Messages.TYPE_PRODUCT.getValue(), Context.getProduct()));
                 def.addElement(new ContextWrap(Messages.TYPE_PRODUCT_ORDER.getValue(), Context.getProductOrder()));
@@ -350,7 +353,7 @@ public class ControlPanel_ValueProps extends javax.swing.JPanel implements Contr
                 def.addElement(new ContextWrap(Messages.TYPE_CUSTOMER.getValue(), Context.getCustomer()));
                 def.addElement(new ContextWrap(Messages.TYPE_REMINDER.getValue(), Context.getReminder()));
                 def.addElement(new ContextWrap(Messages.TYPE_CONVERSATION.getValue(), Context.getConversation()));
-                def.addElement(new ContextWrap(Messages.TYPE_MASSPRINT.getValue(), Context.getInvoice()));
+                def.addElement(new ContextWrap(Messages.TYPE_MASSPRINT.getValue(), Context.getMassprint()));
 
                 jList1.setModel(def);
 

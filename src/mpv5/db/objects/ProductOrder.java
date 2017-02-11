@@ -245,6 +245,15 @@ public class ProductOrder extends DatabaseObject implements Formattable, Templat
             case Constants.TYPE_INVOICE:
                 p = new ItemPanel2(Context.getInvoice(), getInttype());
                 break;
+            case Constants.TYPE_CREDIT:
+                p = new ItemPanel2(Context.getCredit(), getInttype());
+                break;
+            case Constants.TYPE_PART_PAYMENT:
+                p = new ItemPanel2(Context.getPartPayment(), getInttype());
+                break;
+            case Constants.TYPE_DEPOSIT:
+                p = new ItemPanel2(Context.getDeposit(), getInttype());
+                break;
         }
         return p;
     }
@@ -284,7 +293,9 @@ public class ProductOrder extends DatabaseObject implements Formattable, Templat
     }
 
     /**
-     * <li>TYPE_INVOICE = 0; <li>TYPE_ORDER = 1; <li>TYPE_OFFER = 2;
+     * <li>TYPE_INVOICE = 0; <li>TYPE_ORDER = 1;
+     * <li>TYPE_OFFER = 2; <li>TYPE_DEPOSIT = 22; 
+     * <li>TYPE_PART_PAYMENT = 21; <li>TYPE_CREDIT = 20; 
      *
      * @return the inttype
      */
@@ -294,7 +305,9 @@ public class ProductOrder extends DatabaseObject implements Formattable, Templat
     }
 
     /**
-     * <li>TYPE_INVOICE = 0; <li>TYPE_ORDER = 1; <li>TYPE_OFFER = 2;
+     * <li>TYPE_INVOICE = 0; <li>TYPE_ORDER = 1;
+     * <li>TYPE_OFFER = 2; <li>TYPE_DEPOSIT = 22; 
+     * <li>TYPE_PART_PAYMENT = 21; <li>TYPE_CREDIT = 20; 
      *
      * @param inttype the inttype to set
      */

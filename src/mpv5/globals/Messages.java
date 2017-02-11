@@ -66,6 +66,11 @@ public enum Messages {
     NEW_OFFER("New Offer"),
     NEW_ORDER("New Order"),
     NEW_BILL("New Invoice"),
+    NEW_DEPOSIT("New Deposit"),
+    NEW_PART_PAYMENT("New Partial Payment"),
+    NEW_CREDIT("New Credit"),
+    CREATE_DEPOSIT("Create Deposit"),
+    CREATE_PART_PAYMENT("Create Partial Payment"),
     NEW_VALUE("New Value"),
     NEW_PRODUCT("New Product"),
     NEW_SERVICE("New Service"),
@@ -316,6 +321,7 @@ public enum Messages {
     NOT_YET_IMPLEMENTED("This Function is actualy not implemented!"),
     TYPE_ACTIVITY("Activity Confirmation"),
     ActivityList_Existing("There's an Activity List Existing. Add this to the Invoice?"),
+    PartPayment_Existing("There are Partial Payments / Deposits Existing. Add this to the Invoice?"),
     ActivityList_toSubItem("See attached Acitivy Confirmation for Project: "),
     CHECK_TPLUPDATE("Checking Templates to update from Filechange ..."),
     MASSPRINT_FILTER("Filter Entries by:"),
@@ -355,7 +361,10 @@ public enum Messages {
     TYPE_SUBITEM("Subitem"),
     NO_ENTRY("No Entry"), 
     ENTRIES("entries"),
-    INSERT_SUBJECT("Please add a Subject");
+    INSERT_SUBJECT("Please add a Subject"),
+    TYPE_CREDIT("Credit"),
+    TYPE_PART_PAYMENT("Partial Payment"),
+    TYPE_DEPOSIT("Deposit");
 
     /**
      * @return the missing

@@ -18,7 +18,6 @@ package mpv5.db.objects;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 import javax.swing.JComponent;
@@ -29,8 +28,6 @@ import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria;
 import mpv5.globals.Headers;
 import mpv5.logging.Log;
-import mpv5.ui.frames.MPView;
-import mpv5.ui.panels.ItemPanel;
 import mpv5.ui.panels.ProductListsPanel;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.numberformat.FormatNumber;
@@ -40,6 +37,8 @@ import mpv5.utils.numberformat.FormatNumber;
  *  
  */
 public class ProductlistSubItem extends DatabaseObject {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * Save the model of SubItems

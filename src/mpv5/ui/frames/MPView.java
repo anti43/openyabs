@@ -15,7 +15,6 @@ import java.awt.Cursor;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Image;
-import java.awt.ScrollPane;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
@@ -211,7 +210,8 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     }
 
     /**
-     * Returns the currently selected tab on the main tab pane
+     * Returns the currently selected tab on the main tab
+     * pane
      *
      * @return
      */
@@ -238,9 +238,10 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     }
 
     /**
-     * Shows a file save dialog with the selcted file f. If the file's parent
-     * directory is not the current directory, changes the current directory to
-     * be the file's parent directory.
+     * Shows a file save dialog with the selcted file f. If
+     * the file's parent directory is not the current
+     * directory, changes the current directory to be the
+     * file's parent directory.
      *
      * @param f
      */
@@ -251,14 +252,16 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     }
 
     /**
-     * Initialize and show the secondary JFrame. This method is intended for
-     * showing "secondary" windows, like message dialogs, about boxes, and so
-     * on.
+     * Initialize and show the secondary JFrame. This method
+     * is intended for showing "secondary" windows, like
+     * message dialogs, about boxes, and so on.
      *
-     * Unlike the mainFrame, dismissing a secondary window will not exit the
-     * application. Session state is only automatically saved if the specified
-     * JFrame has a name, and then only for component descendants that are
-     * named. Throws an IllegalArgumentException if c is null
+     * Unlike the mainFrame, dismissing a secondary window
+     * will not exit the application. Session state is only
+     * automatically saved if the specified JFrame has a
+     * name, and then only for component descendants that
+     * are named. Throws an IllegalArgumentException if c is
+     * null
      *
      * @param c
      */
@@ -271,7 +274,8 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     private static YabsPluginLoader pluginLoader;
 
     /**
-     * Let the view notify the user about an unexpected error
+     * Let the view notify the user about an unexpected
+     * error
      */
     public static void showError() {
         if (Main.INSTANTIATED) {
@@ -508,8 +512,8 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     }
 
     /**
-     * Returns the curently selected tab or null if this is not a
-     * {@link DataPanel}
+     * Returns the curently selected tab or null if this is
+     * not a {@link DataPanel}
      *
      * @return
      */
@@ -533,8 +537,8 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     }
 
     /**
-     * Returns the tab at the specified position, or NULL if the tab is not
-     * existing OR not a {@link DataPanel}
+     * Returns the tab at the specified position, or NULL if
+     * the tab is not existing OR not a {@link DataPanel}
      *
      * @param position
      * @return
@@ -556,8 +560,6 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
             return null;
         }
     }
-    
-      
 
     @Override
     public final void reloadFavorites() {
@@ -625,6 +627,36 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
             @Override
             public void componentResized(ComponentEvent event) {
                 setNaviPanelSize();
+            }
+        });
+
+        //build bigdrop Button
+        ActionListener l = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                addTab(new ItemPanel2(Context.getInvoice(), Item.TYPE_INVOICE), Messages.NEW_BILL);
+            }
+        };
+        ddb1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/folder_blue.png")));
+        ddb1.setLabel(Item.getTypeString(Item.TYPE_INVOICE));
+        ddb1.addActionListener(l);
+        
+        ddb1.add(
+                new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/folder_blue.png")),
+                Item.getTypeString(Item.TYPE_DEPOSIT),
+                new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                addTab(new ItemPanel2(Context.getDeposit(), Item.TYPE_DEPOSIT), Messages.NEW_DEPOSIT);
+            }
+        });
+        ddb1.add(
+                new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/folder_blue.png")),
+                Item.getTypeString(Item.TYPE_PART_PAYMENT),
+                new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                addTab(new ItemPanel2(Context.getPartPayment(), Item.TYPE_PART_PAYMENT), Messages.NEW_PART_PAYMENT);
             }
         });
 
@@ -697,7 +729,8 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     }
 
     /**
-     * Add a tab to the main tab pane, automatically determines the needed View
+     * Add a tab to the main tab pane, automatically
+     * determines the needed View
      *
      * @param item
      * @param tabTitle
@@ -810,7 +843,8 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     }
 
     /**
-     * Add a tab to the main tab pane, automatically determines the needed View
+     * Add a tab to the main tab pane, automatically
+     * determines the needed View
      *
      * @param item
      * @return
@@ -888,8 +922,9 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     }
 
     /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
+     * This method is called from within the constructor to
+     * initialize the form. WARNING: Do NOT modify this
+     * code. The content of this method is always
      * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
@@ -906,10 +941,12 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         jButton18 = new javax.swing.JButton();
         parent_nav_accounting = new javax.swing.JPanel();
         nav_accounting = new javax.swing.JPanel();
-        jButton8 = new javax.swing.JButton();
-        jButton11 = new javax.swing.JButton();
-        jButton21 = new javax.swing.JButton();
         jButton10 = new javax.swing.JButton();
+        jButton11 = new javax.swing.JButton();
+        ddb1 = new mpv5.ui.beans.BigDropDownButton(
+        );
+        jButton21 = new javax.swing.JButton();
+        jButton30 = new javax.swing.JButton();
         jButton15 = new javax.swing.JButton();
         jButton16 = new javax.swing.JButton();
         jButton17 = new javax.swing.JButton();
@@ -1043,7 +1080,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
 
         parent_nav_contacts.setName("parent_nav_contacts"); // NOI18N
         parent_nav_contacts.setPreferredSize(new java.awt.Dimension(110, 400));
-        parent_nav_contacts.setLayout(new java.awt.FlowLayout(1, 0, 0));
+        parent_nav_contacts.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 0, 0));
 
         nav_contacts.setName("nav_contacts"); // NOI18N
         nav_contacts.setLayout(new java.awt.GridLayout(0, 1, 2, 5));
@@ -1104,29 +1141,31 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
 
         nav_outlookbar.addTab(bundle.getString("MPView.parent_nav_contacts.TabConstraints.tabTitle_1"), parent_nav_contacts); // NOI18N
 
+        parent_nav_accounting.setAutoscrolls(true);
         parent_nav_accounting.setName("parent_nav_accounting"); // NOI18N
         parent_nav_accounting.setPreferredSize(new java.awt.Dimension(110, 400));
-        parent_nav_accounting.setLayout(new java.awt.FlowLayout(1, 0, 0));
+        parent_nav_accounting.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 0, 0));
 
+        nav_accounting.setAutoscrolls(true);
         nav_accounting.setName("nav_accounting"); // NOI18N
         nav_accounting.setLayout(new java.awt.GridLayout(0, 1, 2, 5));
 
-        jButton8.setFont(jButton8.getFont().deriveFont(jButton8.getFont().getSize()-1f));
-        jButton8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/folder_blue.png"))); // NOI18N
-        jButton8.setText(bundle.getString("MPView.jButton8.text")); // NOI18N
-        jButton8.setToolTipText(bundle.getString("MPView.jButton8.toolTipText")); // NOI18N
-        jButton8.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton8.setMaximumSize(new java.awt.Dimension(250, 60));
-        jButton8.setMinimumSize(new java.awt.Dimension(80, 50));
-        jButton8.setName("jButton8"); // NOI18N
-        jButton8.setPreferredSize(new java.awt.Dimension(110, 57));
-        jButton8.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton8.addActionListener(new java.awt.event.ActionListener() {
+        jButton10.setFont(jButton10.getFont().deriveFont(jButton10.getFont().getSize()-1f));
+        jButton10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/folder_grey.png"))); // NOI18N
+        jButton10.setText(bundle.getString("MPView.jButton10.text")); // NOI18N
+        jButton10.setToolTipText(bundle.getString("MPView.jButton10.toolTipText")); // NOI18N
+        jButton10.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton10.setMaximumSize(new java.awt.Dimension(250, 60));
+        jButton10.setMinimumSize(new java.awt.Dimension(80, 50));
+        jButton10.setName("jButton10"); // NOI18N
+        jButton10.setPreferredSize(new java.awt.Dimension(110, 57));
+        jButton10.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton10.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton8ActionPerformed(evt);
+                jButton10ActionPerformed(evt);
             }
         });
-        nav_accounting.add(jButton8);
+        nav_accounting.add(jButton10);
 
         jButton11.setFont(jButton11.getFont().deriveFont(jButton11.getFont().getSize()-1f));
         jButton11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/folder_green.png"))); // NOI18N
@@ -1145,8 +1184,11 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         });
         nav_accounting.add(jButton11);
 
+        ddb1.setName("ddb1"); // NOI18N
+        nav_accounting.add(ddb1);
+
         jButton21.setFont(jButton21.getFont().deriveFont(jButton21.getFont().getSize()-1f));
-        jButton21.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/folder_documents.png"))); // NOI18N
+        jButton21.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/kdisknav.png"))); // NOI18N
         jButton21.setText(bundle.getString("MPView.jButton21.text")); // NOI18N
         jButton21.setToolTipText(bundle.getString("MPView.jButton21.toolTipText")); // NOI18N
         jButton21.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -1162,22 +1204,22 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         });
         nav_accounting.add(jButton21);
 
-        jButton10.setFont(jButton10.getFont().deriveFont(jButton10.getFont().getSize()-1f));
-        jButton10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/folder_grey.png"))); // NOI18N
-        jButton10.setText(bundle.getString("MPView.jButton10.text")); // NOI18N
-        jButton10.setToolTipText(bundle.getString("MPView.jButton10.toolTipText")); // NOI18N
-        jButton10.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton10.setMaximumSize(new java.awt.Dimension(250, 60));
-        jButton10.setMinimumSize(new java.awt.Dimension(80, 50));
-        jButton10.setName("jButton10"); // NOI18N
-        jButton10.setPreferredSize(new java.awt.Dimension(110, 57));
-        jButton10.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton10.addActionListener(new java.awt.event.ActionListener() {
+        jButton30.setFont(jButton30.getFont().deriveFont(jButton30.getFont().getSize()-1f));
+        jButton30.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/folder_locked.png"))); // NOI18N
+        jButton30.setText(bundle.getString("MPView.jButton30.text")); // NOI18N
+        jButton30.setToolTipText(bundle.getString("MPView.jButton30.toolTipText")); // NOI18N
+        jButton30.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton30.setMaximumSize(new java.awt.Dimension(250, 60));
+        jButton30.setMinimumSize(new java.awt.Dimension(80, 50));
+        jButton30.setName("jButton30"); // NOI18N
+        jButton30.setPreferredSize(new java.awt.Dimension(110, 57));
+        jButton30.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton30.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton10ActionPerformed(evt);
+                jButton30ActionPerformed(evt);
             }
         });
-        nav_accounting.add(jButton10);
+        nav_accounting.add(jButton30);
 
         jButton15.setFont(jButton15.getFont().deriveFont(jButton15.getFont().getSize()-1f));
         jButton15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/folder_red.png"))); // NOI18N
@@ -1253,7 +1295,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
 
         parent_nav_products.setName("parent_nav_products"); // NOI18N
         parent_nav_products.setPreferredSize(new java.awt.Dimension(110, 400));
-        parent_nav_products.setLayout(new java.awt.FlowLayout(1, 0, 0));
+        parent_nav_products.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 0, 0));
 
         nav_products.setName("nav_products"); // NOI18N
         nav_products.setLayout(new java.awt.GridLayout(0, 1, 2, 5));
@@ -1366,7 +1408,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
 
         parent_nav_extras.setName("parent_nav_extras"); // NOI18N
         parent_nav_extras.setPreferredSize(new java.awt.Dimension(110, 400));
-        parent_nav_extras.setLayout(new java.awt.FlowLayout(1, 0, 0));
+        parent_nav_extras.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 0, 0));
 
         nav_extras.setName("nav_extras"); // NOI18N
         nav_extras.setLayout(new java.awt.GridLayout(0, 1, 2, 5));
@@ -1447,7 +1489,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
             .addGroup(mainPanelLayout.createSequentialGroup()
                 .addComponent(naviPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tabpanePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 678, Short.MAX_VALUE))
+                .addComponent(tabpanePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 661, Short.MAX_VALUE))
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -2080,12 +2122,11 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
 
         menuBar.add(helpmenu);
 
-        statusPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder(0));
+        statusPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
         statusPanel.setName("statusPanel"); // NOI18N
         statusPanel.setPreferredSize(new java.awt.Dimension(800, 20));
         statusPanel.setLayout(new javax.swing.BoxLayout(statusPanel, javax.swing.BoxLayout.LINE_AXIS));
 
-        statusMessageLabel.setFont(new java.awt.Font("Dialog", 0, 11));
         statusMessageLabel.setText(bundle.getString("MPView.statusMessageLabel.text")); // NOI18N
         statusMessageLabel.setMaximumSize(new java.awt.Dimension(1000, 25));
         statusMessageLabel.setMinimumSize(new java.awt.Dimension(300, 14));
@@ -2096,7 +2137,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         pluginIcons.setMinimumSize(new java.awt.Dimension(1, 1));
         pluginIcons.setName("pluginIcons"); // NOI18N
         pluginIcons.setPreferredSize(new java.awt.Dimension(10, 15));
-        pluginIcons.setLayout(new java.awt.FlowLayout(1, 5, 0));
+        pluginIcons.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 0));
         statusPanel.add(pluginIcons);
 
         separator.setMaximumSize(new java.awt.Dimension(10, 32767));
@@ -2140,7 +2181,6 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
 
         statusPanel.add(separator1);
 
-        xhistory.setFont(new java.awt.Font("Dialog", 0, 11));
         xhistory.setMaximumRowCount(30);
         xhistory.setAutoscrolls(true);
         xhistory.setEditor(null);
@@ -2157,7 +2197,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         serverlabel.setMinimumSize(new java.awt.Dimension(20, 10));
         serverlabel.setName("serverlabel"); // NOI18N
         serverlabel.setPreferredSize(new java.awt.Dimension(20, 18));
-        serverlabel.setLayout(new java.awt.FlowLayout(1, 5, 0));
+        serverlabel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 0));
         statusPanel.add(serverlabel);
 
         errorlabel.setText(bundle.getString("MPView.errorlabel.text")); // NOI18N
@@ -2173,7 +2213,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         officelabel.setMinimumSize(new java.awt.Dimension(20, 10));
         officelabel.setName("officelabel"); // NOI18N
         officelabel.setPreferredSize(new java.awt.Dimension(20, 18));
-        officelabel.setLayout(new java.awt.FlowLayout(1, 5, 0));
+        officelabel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 0));
         statusPanel.add(officelabel);
 
         mainToolbar.setFloatable(false);
@@ -2491,10 +2531,6 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
         addOrShowTab(TrashPanel.instanceOf(), Messages.TRASHBIN.toString());
     }//GEN-LAST:event_jButton7ActionPerformed
-
-    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-        addTab(new ItemPanel2(Context.getInvoice(), Item.TYPE_INVOICE), Messages.NEW_BILL);
-    }//GEN-LAST:event_jButton8ActionPerformed
     private MPServer mpserver;
     private void jMenuItem24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem24ActionPerformed
         MPServer.runServer();
@@ -2830,12 +2866,17 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     addOrShowTab(new ReceiptLookup(), Messages.OVERVIEW);
 }//GEN-LAST:event_jButton23ActionPerformed
 
+    private void jButton30ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton30ActionPerformed
+        addTab(new ItemPanel2(Context.getCredit(), Item.TYPE_CREDIT), Messages.NEW_CREDIT);
+    }//GEN-LAST:event_jButton30ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton calculatorButton;
     public javax.swing.JMenu clipboardMenu;
     private javax.swing.JButton closeButton;
     private javax.swing.JButton closeButton1;
     private javax.swing.JButton closeButton2;
+    private mpv5.ui.beans.BigDropDownButton ddb1;
     private javax.swing.JMenu editMenu;
     private javax.swing.JLabel errorlabel;
     private javax.swing.JMenu favouritesMenu;
@@ -2856,10 +2897,10 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     private javax.swing.JButton jButton21;
     private javax.swing.JButton jButton22;
     private javax.swing.JButton jButton23;
+    private javax.swing.JButton jButton30;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
-    private javax.swing.JButton jButton8;
     private javax.swing.JButton jButton9;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu10;
@@ -3323,8 +3364,8 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     /**
      * Add a Button to the navigation panel
      *
-     * @param TARGET The target navigation section, which can be one of the
-     * following:<li>NAV_CONTACTS
+     * @param TARGET The target navigation section, which
+     * can be one of the following:<li>NAV_CONTACTS
      * <li>NAV_PRODUCTS <li>NAV_ACCOUNTING
      * <li>NAV_EXTRAS
      *
@@ -3424,7 +3465,7 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
             Component c = getTabPane().getComponent(i);
             if (c == t) {
                 getTabPane().remove(c);
-            }else if(c instanceof JScrollPane && ((JScrollPane)c).getViewport().getView() == t){
+            } else if (c instanceof JScrollPane && ((JScrollPane) c).getViewport().getView() == t) {
                 getTabPane().remove(c);
             }
         }
@@ -3516,6 +3557,8 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                     for (JToolBar t : getToolBars()) {
                         if (t.getName() == null ? tb == null : t.getName().equals(tb)) {
                             t.add(new AbstractAction(act) {
+                                private static final long serialVersionUID = 1L;
+
                                 @Override
                                 public void actionPerformed(ActionEvent e) {
                                     try {

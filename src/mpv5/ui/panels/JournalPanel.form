@@ -739,7 +739,10 @@
                                           <Component id="volumeNetto" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                      <Component id="revenueNetto" min="-2" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="revenueNetto" min="-2" max="-2" attributes="0"/>
+                                          <Component id="revenueTax" alignment="1" min="-2" max="-2" attributes="0"/>
+                                      </Group>
                                   </Group>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
@@ -763,8 +766,11 @@
                                           <Component id="volumeNetto" alignment="2" min="-2" max="-2" attributes="0"/>
                                           <Component id="revenueNetto" alignment="2" min="-2" max="-2" attributes="0"/>
                                       </Group>
-                                      <EmptySpace pref="9" max="32767" attributes="0"/>
-                                      <Component id="taxVolume" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="32767" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" attributes="0">
+                                          <Component id="taxVolume" alignment="1" min="-2" max="-2" attributes="0"/>
+                                          <Component id="revenueTax" alignment="1" min="-2" max="-2" attributes="0"/>
+                                      </Group>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="1" attributes="0">
                                           <Component id="volumeDiscount" min="-2" max="-2" attributes="0"/>
@@ -832,6 +838,14 @@
                           <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="JournalPanel.volumeDiscount._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
                         <Property name="name" type="java.lang.String" value="volumeDiscount" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="mpv5.ui.beans.LabeledTextField" name="revenueTax">
+                      <Properties>
+                        <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="JournalPanel.revenueTax._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                        </Property>
+                        <Property name="name" type="java.lang.String" value="revenueTax" noResource="true"/>
                       </Properties>
                     </Component>
                   </SubComponents>

@@ -84,6 +84,15 @@ public class ScheduleEvents extends javax.swing.JFrame {
                         case Item.TYPE_INVOICE:
                             ItemBox.setContext(Context.getInvoice());
                             break;
+                         case Item.TYPE_DEPOSIT:
+                            ItemBox.setContext(Context.getDeposit());
+                            break;
+                        case Item.TYPE_PART_PAYMENT:
+                            ItemBox.setContext(Context.getPartPayment());
+                            break;
+                        case Item.TYPE_CREDIT:
+                            ItemBox.setContext(Context.getCredit());
+                            break;
                         default:
                             ItemBox.setContext(Context.getInvoice());
                     }
