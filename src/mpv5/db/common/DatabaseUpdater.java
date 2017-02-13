@@ -63,7 +63,8 @@ public class DatabaseUpdater {
             "ALTER TABLE contacts ADD COLUMN bankname VARCHAR(250) DEFAULT NULL",
             "ALTER TABLE contacts ADD COLUMN bankcurrency VARCHAR(250) DEFAULT NULL",
             "ALTER TABLE contacts ADD COLUMN bankcountry VARCHAR(250) DEFAULT NULL",});
-        UPDATES_DERBY.put(1.181, new String[]{ //                    "DROP TABLE valueproperties"
+        UPDATES_DERBY.put(1.181, new String[]{ 
+//                    "DROP TABLE valueproperties"
         });
         UPDATES_DERBY.put(1.182, new String[]{
             //                    "ALTER TABLE items DROP COLUMN discountvalue",
@@ -207,7 +208,7 @@ public class DatabaseUpdater {
             "update products set inttype = 6 where inttype = 1"
         });
         UPDATES_DERBY.put(1.197, new String[]{
-            "CREATE TABLE productorders (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), cname VARCHAR(250) NOT NULL, cnumber VARCHAR(250) NOT NULL, description VARCHAR(2500) DEFAULT NULL, groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1, contactsids BIGINT REFERENCES contacts(ids)  ON DELETE CASCADE, netvalue DOUBLE DEFAULT 0,taxvalue DOUBLE DEFAULT 0, discountvalue DOUBLE DEFAULT 0, shippingvalue DOUBLE DEFAULT 0, datetodo DATE DEFAULT NULL, dateend DATE DEFAULT NULL, intreminders INTEGER DEFAULT 0, inttype SMALLINT DEFAULT 0, dateadded DATE NOT NULL,intaddedby BIGINT DEFAULT 0,invisible SMALLINT DEFAULT 0,intstatus SMALLINT DEFAULT 0, hierarchypath VARCHAR(500) DEFAULT NULL, reserve1 VARCHAR(500) DEFAULT NULL, reserve2 VARCHAR(500) DEFAULT NULL, PRIMARY KEY  (ids))",
+            "CREATE TABLE productorders (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), cname VARCHAR(250) NOT NULL, cnumber VARCHAR(250) NOT NULL, description VARCHAR(2500) DEFAULT NULL, groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1, contactsids BIGINT REFERENCES cocontactsntacts(ids)  ON DELETE CASCADE, netvalue DOUBLE DEFAULT 0,taxvalue DOUBLE DEFAULT 0, discountvalue DOUBLE DEFAULT 0, shippingvalue DOUBLE DEFAULT 0, datetodo DATE DEFAULT NULL, dateend DATE DEFAULT NULL, intreminders INTEGER DEFAULT 0, inttype SMALLINT DEFAULT 0, dateadded DATE NOT NULL,intaddedby BIGINT DEFAULT 0,invisible SMALLINT DEFAULT 0,intstatus SMALLINT DEFAULT 0, hierarchypath VARCHAR(500) DEFAULT NULL, reserve1 VARCHAR(500) DEFAULT NULL, reserve2 VARCHAR(500) DEFAULT NULL, PRIMARY KEY  (ids))",
             "CREATE TABLE productordersubitems (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), cname VARCHAR(5000) DEFAULT NULL, productordersids BIGINT REFERENCES productorders(ids)  ON DELETE CASCADE, groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1,originalproductsids BIGINT DEFAULT NULL, countvalue DOUBLE DEFAULT 0 NOT NULL, quantityvalue DOUBLE DEFAULT 0 NOT NULL, measure VARCHAR(250) NOT NULL, linkurl VARCHAR(1000) DEFAULT NULL,description VARCHAR(1000) DEFAULT NULL, internalvalue DOUBLE DEFAULT 0, totalnetvalue DOUBLE DEFAULT 0, totalbrutvalue DOUBLE DEFAULT 0, externalvalue DOUBLE DEFAULT 0, taxpercentvalue DOUBLE DEFAULT 0 NOT NULL,datedelivery DATE DEFAULT NULL, dateadded DATE NOT NULL,intaddedby BIGINT DEFAULT 0,invisible SMALLINT DEFAULT 0,reserve1 VARCHAR(500) DEFAULT NULL,reserve2 VARCHAR(500) DEFAULT NULL,PRIMARY KEY  (ids))"
         });
         UPDATES_DERBY.put(1.1971, new String[]{
@@ -278,6 +279,26 @@ public class DatabaseUpdater {
             "CREATE INDEX index07 ON expenses(ids)",
             "CREATE INDEX index08 ON revenues(ids)",
         });
+        UPDATES_DERBY.put(1.1982, new String[]{
+            "DROP TRIGGER revenues_indexer1",
+            "DROP TRIGGER revenues_indexer2",
+            "DROP TRIGGER revenues_indexer3",
+            "DROP TRIGGER revenues_indexer4",
+            "DROP TRIGGER revenues_trash1",
+            "DROP TRIGGER revenues_trash2",
+            "RENAME COLUMN revenues.isPaid TO status",
+            "CREATE TRIGGER revenues_indexer1 AFTER INSERT ON revenues REFERENCING NEW AS newdata FOR EACH ROW INSERT INTO searchindex  (groupsids, dbidentity, rowid, text) VALUES (newdata.groupsids,'revenues',newdata.ids,newdata.cname||' '||newdata.dateadded)",
+            "CREATE TRIGGER revenues_indexer2 AFTER UPDATE ON revenues REFERENCING NEW AS newdata FOR EACH ROW DELETE FROM searchindex WHERE dbidentity = 'revenues' AND  rowid = newdata.ids",
+            "CREATE TRIGGER revenues_indexer3 AFTER UPDATE ON revenues REFERENCING NEW AS newdata FOR EACH ROW INSERT INTO searchindex  (groupsids, dbidentity, rowid, text) VALUES (newdata.groupsids,'revenues',newdata.ids,newdata.cname||' '||newdata.dateadded)",
+            "CREATE TRIGGER revenues_indexer4 AFTER DELETE ON revenues REFERENCING OLD AS newdata FOR EACH ROW DELETE FROM searchindex WHERE dbidentity = 'revenues' AND  rowid = newdata.ids",
+            "CREATE TRIGGER revenues_trash2 AFTER DELETE ON revenues REFERENCING OLD AS newdata FOR EACH ROW DELETE FROM trashbin WHERE cname = 'revenues' AND  rowid = newdata.ids",
+            "CREATE TRIGGER revenues_trash1 AFTER UPDATE ON revenues REFERENCING NEW AS newdata FOR EACH ROW INSERT INTO trashbin (deleteme, cname, rowid, description) VALUES (newdata.invisible,'revenues',newdata.ids,newdata.cname)",
+            "ALTER TABLE revenues ADD COLUMN contactsids BIGINT REFERENCES contacts(ids) ON DELETE CASCADE",
+            "ALTER TABLE revenues ADD COLUMN reforderids BIGINT REFERENCES items(ids) ON DELETE CASCADE"
+        });
+        UPDATES_DERBY.put(1.1983, new String[]{
+            "ALTER TABLE items ADD COLUMN reforderids BIGINT REFERENCES items(ids) ON DELETE CASCADE"
+        });
         ////////////////////////////////////////////////////////////////////////////////////////////
         // mysql updates
         UPDATES_MYSQL.put(1.11, new String[]{
@@ -311,15 +332,16 @@ public class DatabaseUpdater {
             + "ON DELETE CASCADE "
         });
         UPDATES_MYSQL.put(1.16, new String[]{
-            "ALTER TABLE products ADD COLUMN productlistsids BIGINT(20) UNSIGNED DEFAULT 0",});
-
+            "ALTER TABLE products ADD COLUMN productlistsids BIGINT(20) UNSIGNED DEFAULT 0"
+        });
         UPDATES_MYSQL.put(1.17, new String[]{
             "ALTER TABLE contacts ADD COLUMN bankaccount VARCHAR(250) DEFAULT NULL",
             "ALTER TABLE contacts ADD COLUMN bankid VARCHAR(250) DEFAULT NULL",
             "ALTER TABLE contacts ADD COLUMN bankname VARCHAR(250) DEFAULT NULL",
             "ALTER TABLE contacts ADD COLUMN bankcurrency VARCHAR(250) DEFAULT NULL",
             "ALTER TABLE contacts ADD COLUMN bankcountry VARCHAR(250) DEFAULT NULL",});
-        UPDATES_MYSQL.put(1.181, new String[]{ //                    "ALTER TABLE valueproperties DROP INDEX IF EXISTS values_index0",
+        UPDATES_MYSQL.put(1.181, new String[]{ 
+        //                    "ALTER TABLE valueproperties DROP INDEX IF EXISTS values_index0",
         //                    "DROP TABLE IF EXISTS valueproperties"
         });
         UPDATES_MYSQL.put(1.182, new String[]{
@@ -358,8 +380,8 @@ public class DatabaseUpdater {
             "ALTER TABLE valueproperties ADD COLUMN value LONGBLOB DEFAULT NULL"
         });
         UPDATES_MYSQL.put(1.1843, new String[]{
-            "ALTER TABLE contacts DROP KEY CONST3",});
-
+            "ALTER TABLE contacts DROP KEY CONST3",
+        });
         UPDATES_MYSQL.put(1.185, new String[]{
             "CREATE TABLE productprices ("
             + "ids BIGINT(20) UNSIGNED NOT NULL PRIMARY KEY auto_increment, "
@@ -577,6 +599,14 @@ public class DatabaseUpdater {
         });
         UPDATES_MYSQL.put(1.1981, new String[]{ 
             //nop
+        });
+        UPDATES_MYSQL.put(1.1982, new String[]{
+            "RENAME COLUMN revenues.isPaid TO status",
+            "ALTER TABLE revenues ADD COLUMN contactsids BIGINT REFERENCES contacts(ids) ON DELETE CASCADE",
+            "ALTER TABLE revenues ADD COLUMN reforderids BIGINT REFERENCES items(ids) ON DELETE CASCADE"
+        });
+        UPDATES_MYSQL.put(1.1983, new String[]{
+            "ALTER TABLE items ADD COLUMN reforderids BIGINT REFERENCES items(ids) ON DELETE CASCADE"
         });
     }
 

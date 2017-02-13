@@ -27,6 +27,7 @@ public enum Headers {
     ACTIVITY(new String[]{"Internal ID", "Nr", "Date", "Count", "Measure", "Text", "Netto Price", "Tax Rate", "Total Price", "Product", "Name", "object"}),
     ACTIVITY_DEFAULT(new String[]{"Internal ID", "Project", "Net Value"}),
     EXPENSE(new String[]{"Number", "Description", "Account", "Value", "Tax Rate", "Paid", "Date", "Pay-Date"}),
+    REVENUE(new String[]{"Number", "ext.Ref", "Description", "Account", "Value", "Tax Rate", "Status", "Date", "Pay-Date", "Contact", "refOrder"}),
     LIBRARIEST(new String[]{"File", "Description", "License", "Author"}), 
     MASSPRINT(new String[]{"Object", "Name", "Item-Type", "Date Added"});
 
@@ -58,8 +59,8 @@ public enum Headers {
      * Print out the values and their keys
      */
     public void printValues(){
-         for (int k = 0; k < this.values().length; k++) {
-            Headers data = this.values()[k];
+         for (int k = 0; k < Headers.values().length; k++) {
+            Headers data = Headers.values()[k];
             for (int i = 0; i < data.getValue().length; i++) {
                 Log.Print(data.name() + "." + i + "=" + data.getValue()[i]);
             }
