@@ -72,7 +72,7 @@ public class ScheduleDayEventsPanel extends JPanel {
         setName("Form"); // NOI18N
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle =  mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ScheduleDayEventsPanel.jPanel1.border.title_1"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 
