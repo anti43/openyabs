@@ -54,7 +54,7 @@ public class ScheduleNavigator extends javax.swing.JPanel {
         setName("Form"); // NOI18N
 
         forward.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/22/next.png"))); // NOI18N
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle =  mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         forward.setToolTipText(bundle.getString("ScheduleNavigator.forward.toolTipText")); // NOI18N
         forward.setName("forward"); // NOI18N
         forward.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/22/history.png"))); // NOI18N

@@ -255,7 +255,7 @@ public class ScheduleEvents extends javax.swing.JFrame {
         subject_label = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle =  mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         setTitle(bundle.getString("ScheduleEvents.title")); // NOI18N
         setAlwaysOnTop(true);
         setName("Form"); // NOI18N

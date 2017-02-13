@@ -713,7 +713,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         addfile = new javax.swing.JButton();
         toolbarpane = new javax.swing.JPanel();
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle =  mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         accountselect1.set_Label(bundle.getString("ItemPanel2.accountselect1._Label")); // NOI18N
         accountselect1.setName("accountselect1"); // NOI18N
         accountselect1.setPreferredSize(new java.awt.Dimension(250, 20));
