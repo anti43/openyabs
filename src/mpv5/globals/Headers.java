@@ -27,7 +27,7 @@ public enum Headers {
     ACTIVITY(new String[]{"Internal ID", "Nr", "Date", "Count", "Measure", "Text", "Netto Price", "Tax Rate", "Total Price", "Product", "Name", "object"}),
     ACTIVITY_DEFAULT(new String[]{"Internal ID", "Project", "Net Value"}),
     EXPENSE(new String[]{"Number", "Description", "Account", "Value", "Tax Rate", "Paid", "Date", "Pay-Date"}),
-    REVENUE(new String[]{"Number", "Description", "Account", "Value", "Tax Rate", "Paid", "Date", "Pay-Date"}),
+    REVENUE(new String[]{"Number", "ext.Ref", "Description", "Account", "Value", "Tax Rate", "Status", "Date", "Pay-Date", "Contact", "Ref. Order"}),
     LIBRARIEST(new String[]{"File", "Description", "License", "Author"}), 
     MASSPRINT(new String[]{"Object", "Name", "Item-Type", "Date Added"});
 
