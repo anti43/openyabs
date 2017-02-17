@@ -299,6 +299,9 @@ public class DatabaseUpdater {
         UPDATES_DERBY.put(1.1983, new String[]{
             "ALTER TABLE items ADD COLUMN reforderids BIGINT REFERENCES items(ids) ON DELETE CASCADE"
         });
+        UPDATES_DERBY.put(1.1984, new String[]{
+           //nope
+        });
         ////////////////////////////////////////////////////////////////////////////////////////////
         // mysql updates
         UPDATES_MYSQL.put(1.11, new String[]{
@@ -608,6 +611,12 @@ public class DatabaseUpdater {
         UPDATES_MYSQL.put(1.1983, new String[]{
             "ALTER TABLE items ADD COLUMN reforderids BIGINT REFERENCES items(ids) ON DELETE CASCADE"
         });
+        UPDATES_MYSQL.put(1.1984, new String[]{
+            "ALTER TABLE revenues CHANGE ispaid status SMALLINT(6) NOT NULL DEFAULT '0'",
+            "ALTER TABLE revenues ADD COLUMN contactsids BIGINT REFERENCES contacts(ids) ON DELETE CASCADE",
+            "ALTER TABLE revenues ADD COLUMN reforderids BIGINT REFERENCES items(ids) ON DELETE CASCADE",
+            "ALTER TABLE items ADD COLUMN reforderids BIGINT REFERENCES items(ids) ON DELETE CASCADE"
+        });
     }
 
     /**
@@ -615,6 +624,7 @@ public class DatabaseUpdater {
      * available version
      *
      * @param version
+     * @throws java.lang.Exception
      */
     public void updateFrom(double version) throws Exception {
         Log.Debug(DatabaseUpdater.class, "Updating database from " + version);
@@ -624,7 +634,7 @@ public class DatabaseUpdater {
         if (ConnectionTypeHandler.getDriverType() == ConnectionTypeHandler.DERBY) {
             for (Iterator<Double> keys = UPDATES_DERBY.keySet().iterator(); keys.hasNext();) {
                 Double vers = keys.next();
-                if (vers.doubleValue() > version) {
+                if (vers > version) {
                     String[] val = UPDATES_DERBY.get(vers);
                     try {
                         DatabaseConnection.instanceOf().runQueries(val);
@@ -640,7 +650,7 @@ public class DatabaseUpdater {
         } else {
             for (Iterator<Double> keys = UPDATES_MYSQL.keySet().iterator(); keys.hasNext();) {
                 Double vers = keys.next();
-                if (vers.doubleValue() > version) {
+                if (vers > version) {
                     String[] val = UPDATES_MYSQL.get(vers);
                     try {
                         DatabaseConnection.instanceOf().runQueries(val);

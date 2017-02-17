@@ -612,7 +612,7 @@ public class Main implements Runnable {
     public static boolean osIsSolaris = false;
 
     private static void getOS() {
-        String os = System.getProperty("os.name").toLowerCase();
+        String os = System.getProperties().getProperty("os.name").toLowerCase();
         osIsMacOsX = "mac os x".equals(os);
         osIsWindows = os != null && os.contains("windows");
         osIsLinux = os != null && os.contains("linux");

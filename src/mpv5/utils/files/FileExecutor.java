@@ -9,10 +9,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import mpv5.Main;
 import mpv5.db.objects.User;
 import mpv5.globals.LocalSettings;
@@ -43,7 +39,8 @@ public class FileExecutor {
      * Runs a command,non- blocking, in the yabs home directory, with sudo if
      * root password is available and os is unix
      *
-     * @param command
+     * @param commandArgs
+     * @param processHolder
      */
     public static synchronized void run(String[] commandArgs, List<Process> processHolder) {
         runAlternate(commandArgs, processHolder);
@@ -53,7 +50,7 @@ public class FileExecutor {
      * Runs a command,non- blocking, in the yabs home directory, with sudo if
      * root password is available and os is unix
      *
-     * @param command
+     * @param commandArgs
      */
     public static synchronized void run(String[] commandArgs) {
         runAlternate(commandArgs, new ArrayList<Process>());
