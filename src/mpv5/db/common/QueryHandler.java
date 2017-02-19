@@ -249,10 +249,11 @@ public class QueryHandler implements Cloneable {
 
     protected void setLimit(int limit) {
         //Log.Debug(new RuntimeException("Setting row limit for this connection ('" + table + "') to: " + limit));
-        if (limit > this.limit || limit < this.limit) {
+        /*if (limit > this.limit || limit < this.limit) {
             Log.Debug(QueryHandler.class, "Setting row limit for this connection ('" + table + "') to: " + limit);
             this.limit = limit;
-        }
+        }*/
+        Log.Debug(QueryHandler.class, "Setting row limit is not supported anymore due to sideeffects in the application");
     }
 
     /**
