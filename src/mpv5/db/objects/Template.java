@@ -17,6 +17,7 @@
 package mpv5.db.objects;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JComponent;
@@ -55,6 +56,7 @@ public class Template extends DatabaseObject {
     private boolean isupdateenabled = false;
     private String pathtofile = "";
     private long lastmodified = 0;
+    
     /**
      * Represents the default column order
      */
@@ -176,6 +178,7 @@ public class Template extends DatabaseObject {
     public void setPathtofile(String pathtofile) {
         this.pathtofile = pathtofile;
     }
+    
     MPIcon icon;
 
     @Override
@@ -280,5 +283,39 @@ public class Template extends DatabaseObject {
      */
     public HashMap<String, Object> getData() {
         return data;
+    }
+
+    private String contextName = "";
+
+    public String getContextName() {
+        return contextName;
+    }
+
+    public void setContextName(String contextName) {
+        this.contextName = contextName;
+    }
+    
+    public HashMap<String, Object> getTablesAsMap() {
+        HashMap<String, Object> map = new HashMap<String, Object>();
+
+        for (Map.Entry<String, TableModel> entry : tables.entrySet()) {
+            ArrayList<String[]> list = new ArrayList<String[]>();
+            String key = entry.getKey();
+            TableModel model = entry.getValue();
+            Log.Debug(this, "Table: " + key);
+            for (int j = 0; j < model.getRowCount(); j++) {
+                String[] strings = new String[model.getColumnCount()];
+                for (int k = 0; k < strings.length; k++) {
+                    if (model.getValueAt(j, k) != null) {
+                        strings[k] = String.valueOf(model.getValueAt(j, k));
+                    }
+                }
+                list.add(strings);
+            }
+            
+            map.put(contextName + "." + key, list);
+        }
+
+        return map;
     }
 }

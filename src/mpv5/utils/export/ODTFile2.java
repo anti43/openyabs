@@ -18,6 +18,9 @@ package mpv5.utils.export;
 
 import com.lowagie.text.FontFactory;
 import enoa.handler.TableHandler;
+import fr.opensagres.odfdom.converter.core.ODFConverterException;
+import fr.opensagres.odfdom.converter.pdf.PdfConverter;
+import fr.opensagres.odfdom.converter.pdf.PdfOptions;
 import fr.opensagres.xdocreport.core.XDocReportException;
 import fr.opensagres.xdocreport.document.IXDocReport;
 import fr.opensagres.xdocreport.document.odt.ODTConstants;
@@ -43,9 +46,9 @@ import mpv5.logging.Log;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.xdocreport.YabsFontFactoryImpl;
 import mpv5.utils.xdocreport.YabsODTPreprocessor;
-import org.odftoolkit.odfdom.converter.core.ODFConverterException;
-import org.odftoolkit.odfdom.converter.pdf.PdfConverter;
-import org.odftoolkit.odfdom.converter.pdf.PdfOptions;
+//import org.odftoolkit.odfdom.converter.core.ODFConverterException;
+//import org.odftoolkit.odfdom.converter.pdf.PdfConverter;
+//import org.odftoolkit.odfdom.converter.pdf.PdfOptions;
 import org.odftoolkit.odfdom.doc.OdfTextDocument;
 
 /**
@@ -74,7 +77,7 @@ public class ODTFile2 extends Exportable {
         }
         if (GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.cachefonts", false)) {
             FontFactory.setFontImp(YabsFontFactoryImpl.instance);
-        }
+    }
         ITextFontRegistry reg = ITextFontRegistry.getRegistry();
         options = PdfOptions.create();
         options.fontProvider(reg);
@@ -85,8 +88,9 @@ public class ODTFile2 extends Exportable {
     }
 
 
+    @Override
     public void run() {
-        try {
+                try {
             final File target = getTarget();
             Log.Debug(this, "run odt run: " + this + " to file " + target);
             mpv5.YabsViewProxy.instance().setWaiting(true);
@@ -121,6 +125,7 @@ public class ODTFile2 extends Exportable {
 
             HashMap<String, Object> d = getData();
             d.putAll(getTemplate().getData());
+            d.putAll(getTemplate().getTablesAsMap());
 
             IContext context = report.createContext();
             if (Log.isDebugging()) {
@@ -132,11 +137,12 @@ public class ODTFile2 extends Exportable {
 
             String table = null;
             for (String k : d.keySet()) {
-                if (k.contains(TableHandler.KEY_TABLE + "1")) {
+                if (k.endsWith(TableHandler.KEY_TABLE + "1")) {
                     table = k;
                     break;
                 }
             }
+            
             if (table != null) {
                 String fmt = this.getTemplate().__getFormat();
                 String[] cols = fmt.split(",");

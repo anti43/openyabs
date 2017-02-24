@@ -38,7 +38,7 @@ public class Scheduler extends Thread {
     @Override
     @SuppressWarnings("empty-statement")
     public void run() {
-        checkForOverdueEvents();
+        checkForOverdueEvents(null);
         checkForCreateBillEvents(null);
         while (YabsApplication.getApplication().isReady() == false);
         if (User.getCurrentUser().getProperties().getProperty(homescreen, "disable", false)) {
@@ -63,9 +63,9 @@ public class Scheduler extends Thread {
         }
     }
 
-    public void checkForOverdueEvents() {
+    public void checkForOverdueEvents(vTimeframe DateFrame) {
         HashMap<Color, List<? extends DatabaseObject>> map;
-        map = getOverdueEvents();
+        map = getOverdueEvents(DateFrame);
         Iterator<Color> it = map.keySet().
                 iterator();
         while (it.hasNext()) {
@@ -109,7 +109,7 @@ public class Scheduler extends Thread {
         return map;
     }
 
-    public static HashMap<Color, List<? extends DatabaseObject>> getOverdueEvents() {
+    public static HashMap<Color, List<? extends DatabaseObject>> getOverdueEvents(vTimeframe DateFrame) {
         List<DatabaseObject> warnings = new ArrayList<>();
         List<DatabaseObject> alerts = new ArrayList<>();
         List<DatabaseObject> waitings = new ArrayList<>();
@@ -200,7 +200,13 @@ public class Scheduler extends Thread {
                                     Item it = (Item) Item.getObject(
                                             c,
                                             id);
-                                    waitings.add(it);
+                                    if (DateFrame != null) {
+                                        if (DateFrame.contains(it.__getDateadded())) {
+                                            waitings.add(it);
+                                        }
+                                    } else {
+                                        waitings.add(it);
+                                    }
                                 } catch (NodataFoundException ex) {
                                     Log.Debug(Scheduler.class,
                                             ex.getMessage());
@@ -307,7 +313,13 @@ public class Scheduler extends Thread {
                                     Item it = (Item) Item.getObject(
                                             c,
                                             id);
-                                    warnings.add(it);
+                                    if (DateFrame != null) {
+                                        if (DateFrame.contains(it.__getDateadded())) {
+                                            warnings.add(it);
+                                        }
+                                    } else {
+                                        warnings.add(it);
+                                    }
                                 } catch (NodataFoundException ex) {
                                     Log.Debug(Scheduler.class,
                                             ex.getMessage());
@@ -404,7 +416,13 @@ public class Scheduler extends Thread {
                                 try {
                                     Item it = (Item) Item.getObject(c,
                                             id);
-                                    alerts.add(it);
+                                    if (DateFrame != null) {
+                                        if (DateFrame.contains(it.__getDateadded())) {
+                                            alerts.add(it);
+                                        }
+                                    } else {
+                                        alerts.add(it);
+                                    }
                                 } catch (NodataFoundException ex) {
                                     Log.Debug(ex);
                                 }
@@ -444,7 +462,13 @@ public class Scheduler extends Thread {
                             Revenue it = (Revenue) Revenue.getObject(
                                     c,
                                     id);
-                            waitings.add(it);
+                            if (DateFrame != null) {
+                                if (DateFrame.contains(it.__getDateadded())) {
+                                    waitings.add(it);
+                                }
+                            } else {
+                                waitings.add(it);
+                            }
                         } catch (NodataFoundException ex) {
                             Log.Debug(Scheduler.class,
                                     ex.getMessage());
@@ -477,7 +501,13 @@ public class Scheduler extends Thread {
                             Revenue it = (Revenue) Revenue.getObject(
                                     c,
                                     id);
-                            warnings.add(it);
+                            if (DateFrame != null) {
+                                if (DateFrame.contains(it.__getDateadded())) {
+                                    warnings.add(it);
+                                }
+                            } else {
+                                warnings.add(it);
+                            }
                         } catch (NodataFoundException ex) {
                             Log.Debug(Scheduler.class,
                                     ex.getMessage());
@@ -508,7 +538,13 @@ public class Scheduler extends Thread {
                         try {
                             Revenue it = (Revenue) Revenue.getObject(c,
                                     id);
-                            alerts.add(it);
+                            if (DateFrame != null) {
+                                if (DateFrame.contains(it.__getDateadded())) {
+                                    alerts.add(it);
+                                }
+                            } else {
+                                alerts.add(it);
+                            }
                         } catch (NodataFoundException ex) {
                             Log.Debug(ex);
                         }

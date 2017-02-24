@@ -269,7 +269,7 @@ public class Context implements Serializable, Comparable<Context> {
 //            + Context.IDENTITY_GROUPS + "." + "reserve2," 
 //            + Context.IDENTITY_GROUPS + "." + "reserve2," 
 //            + Context.IDENTITY_GROUPS + "." + "reserve2," 
-            + Context.IDENTITY_REVENUE + "." + "dateadded," 
+            + Context.IDENTITY_REVENUE + "." + "{date}," 
             + Context.IDENTITY_GROUPS + "." + "CNAME," 
             + Context.IDENTITY_ACCOUNTS + "." + "cname," 
             + Context.IDENTITY_REVENUE + "." + "CNAME," 

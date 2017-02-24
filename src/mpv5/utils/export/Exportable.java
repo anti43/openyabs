@@ -26,6 +26,8 @@ import mpv5.logging.Log;
  */
 public abstract class Exportable extends File {
 
+    private static final long serialVersionUID = 9214263835002096207L;
+
     private File target;
     private HashMap<String, Object> data;
     private Template template;

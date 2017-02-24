@@ -282,7 +282,7 @@ public class HomeScreen extends javax.swing.JPanel {
      */
     @SuppressWarnings("unchecked")
     public void filterByTimeframe(vTimeframe g) {
-        HashMap<Color, List<? extends DatabaseObject>> map = Scheduler.getOverdueEvents();
+        HashMap<Color, List<? extends DatabaseObject>> map = Scheduler.getOverdueEvents(g);
         this.show(map, this.getOverdue());
     }
 
@@ -748,7 +748,7 @@ public class HomeScreen extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        filterByTimeframe(timeframeChooser1.getTime());
+         filterByTimeframe(timeframeChooser1.getTime());
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -863,7 +863,7 @@ private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             }
         }
 
-        HashMap<Color, List<? extends DatabaseObject>> map2 = Scheduler.getOverdueEvents();
+        HashMap<Color, List<? extends DatabaseObject>> map2 = Scheduler.getOverdueEvents(null);
         Iterator<Color> it2 = map2.keySet().
                 iterator();
         while (it2.hasNext()) {

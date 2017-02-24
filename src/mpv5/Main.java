@@ -1176,6 +1176,8 @@ public class Main implements Runnable {
                                 Log.Debug(Main.class, "Checking: " + libs[i]);
                                 File lib = new File(libs[i]);
                                 failed = !lib.canRead();
+                                if (failed)
+                                     Log.Debug(Main.class, "Missing: " + libs[i]);
                             }
                             if (failed == true) {
                                 Popup.notice(Messages.MISSING_LIBS.toString());

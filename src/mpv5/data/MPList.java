@@ -16,7 +16,6 @@
  */
 package mpv5.data;
 
-import com.lowagie.text.ListItem;
 import java.awt.Color;
 import java.awt.Component;
 import java.util.Vector;

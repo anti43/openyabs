@@ -18,6 +18,7 @@
  */
 package mpv5.utils.files;
 
+import fr.opensagres.xdocreport.utils.StringEscapeUtils;
 import java.awt.Color;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -276,7 +277,7 @@ public class TableHtmlWriter {
             for (int l = 0; l < getModel()[k].length; l++) {
                 out.write("<TD WIDTH=*><P>");
                 if (getModel()[k][l] != null && !String.valueOf(getModel()[k][l]).equals("null")) {
-                    out.write(String.valueOf(getModel()[k][l]).replaceAll("<html>|<pre>|&nbsp;", "") + "&nbsp;");
+                    out.write(StringEscapeUtils.escapeHtml(String.valueOf(getModel()[k][l])).replaceAll("<html>|<pre>|&nbsp;", "") + "&nbsp;");
                 }
                 out.write("</P></TD>\n");
             }

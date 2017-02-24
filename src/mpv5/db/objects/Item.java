@@ -807,7 +807,16 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
 
     @Override
     public String toString() {
-        return getCname() + " (" + (FormatNumber.formatLokalCurrency(getGrossAmount())) + ")";
+        try {
+            if (getCname().equals(cnumber))
+            return ((Contact) getObject(Context.getContact(), contactsids)).__getCname() 
+                    + "-" + getCname() 
+                    + " (" + (FormatNumber.formatLokalCurrency(getGrossAmount())) + ")";
+            else 
+                return getCname();
+        } catch (NodataFoundException ex) {
+            return getCname() + " (" + (FormatNumber.formatLokalCurrency(getGrossAmount())) + ")";
+        }
     }
 
     @Override

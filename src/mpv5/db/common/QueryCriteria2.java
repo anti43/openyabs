@@ -16,11 +16,9 @@
  */
 package mpv5.db.common;
 
-import com.lowagie.text.Anchor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import mpv5.logging.Log;
 import mpv5.utils.arrays.ArrayUtilities;
 
 /**
