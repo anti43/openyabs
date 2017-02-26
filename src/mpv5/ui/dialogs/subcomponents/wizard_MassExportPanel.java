@@ -6,27 +6,20 @@
 package mpv5.ui.dialogs.subcomponents;
 
 import java.awt.Cursor;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
-import mpv5.Main;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
-import mpv5.db.common.QueryHandler;
 import mpv5.db.objects.Contact;
 import mpv5.db.objects.Group;
 import mpv5.db.objects.Item;
-import mpv5.db.objects.User;
-import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.dialogs.WizardMaster;
 import mpv5.ui.dialogs.Wizardable;
-import mpv5.ui.panels.ChangeNotApprovedException;
 import mpv5.ui.panels.DataPanel;
 
 /**
@@ -35,6 +28,8 @@ import mpv5.ui.panels.DataPanel;
  */
 public class wizard_MassExportPanel extends javax.swing.JPanel implements Wizardable {
 
+    private static final long serialVersionUID = 335532489811876847L;
+
     private final WizardMaster master;
 
     private final Map<Contact, List<Item>> data;
@@ -42,6 +37,7 @@ public class wizard_MassExportPanel extends javax.swing.JPanel implements Wizard
     /**
      * Creates new form wizard_MassExportPanel
      *
+     * @param master
      * @param data
      */
     public wizard_MassExportPanel(WizardMaster master, final Map<Contact, List<Item>> data) {
@@ -104,28 +100,28 @@ public class wizard_MassExportPanel extends javax.swing.JPanel implements Wizard
 
         setName("Form"); // NOI18N
 
-        org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(mpv5.YabsApplication.class).getContext().getResourceMap(wizard_MassExportPanel.class);
-        labeledCombobox1.set_Label(resourceMap.getString("labeledCombobox1._Label")); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        labeledCombobox1.set_Label(bundle.getString("wizard_MassExportPanel.labeledCombobox1._Label")); // NOI18N
         labeledCombobox1.setName("labeledCombobox1"); // NOI18N
 
-        jLabel1.setText(resourceMap.getString("jLabel1.text")); // NOI18N
+        jLabel1.setText(bundle.getString("wizard_MassExportPanel.jLabel1.text")); // NOI18N
         jLabel1.setName("jLabel1"); // NOI18N
 
         jCheckBox1.setSelected(true);
-        jCheckBox1.setText(resourceMap.getString("jCheckBox1.text")); // NOI18N
+        jCheckBox1.setText(bundle.getString("wizard_MassExportPanel.jCheckBox1.text")); // NOI18N
         jCheckBox1.setName("jCheckBox1"); // NOI18N
 
         jCheckBox2.setSelected(true);
-        jCheckBox2.setText(resourceMap.getString("jCheckBox2.text")); // NOI18N
+        jCheckBox2.setText(bundle.getString("wizard_MassExportPanel.jCheckBox2.text")); // NOI18N
         jCheckBox2.setName("jCheckBox2"); // NOI18N
 
-        jLabel2.setText(resourceMap.getString("jLabel2.text")); // NOI18N
+        jLabel2.setText(bundle.getString("wizard_MassExportPanel.jLabel2.text")); // NOI18N
         jLabel2.setName("jLabel2"); // NOI18N
 
-        jLabel3.setText(resourceMap.getString("jLabel3.text")); // NOI18N
+        jLabel3.setText(bundle.getString("wizard_MassExportPanel.jLabel3.text")); // NOI18N
         jLabel3.setName("jLabel3"); // NOI18N
 
-        jCheckBox3.setText(resourceMap.getString("jCheckBox3.text")); // NOI18N
+        jCheckBox3.setText(bundle.getString("wizard_MassExportPanel.jCheckBox3.text")); // NOI18N
         jCheckBox3.setName("jCheckBox3"); // NOI18N
 
         jScrollPane2.setName("jScrollPane2"); // NOI18N

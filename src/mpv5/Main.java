@@ -43,6 +43,7 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
+import java.util.ResourceBundle;
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -827,7 +828,7 @@ public class Main implements Runnable {
             }
             
             if (cl.hasOption(checkResources)) {
-                LanguageManager.checkBundle();
+                LanguageManager.checkBundle(null, true);
             }
         }
 

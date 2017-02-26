@@ -275,8 +275,10 @@ public enum Messages {
     CHECK_LIBS("Checking for needed libs"),
     MISSING_FILE("Missing File: "),
     MISSING_LIBS("Missing needed lib(s)! Programm may crash!"),
+    MISSING_KEYS("Missing Keys for Translation! Programm may not Translate Correctly!"),
     LANG_EMPTY("Language is Empty! Please select a Language!"),
     LANG_USED("Language is in use and can't be deleted!"),
+    LANG_EXPORTED("Language is succesfull exported!"),
     TAXES_NOT_EQUAL("You can not use different tax values within the same invoice."),
     ADDRESS_TYPE_BOTH("Invoicing and delivery address"),
     ADDRESS_TYPE_INVOICE("Invoicing address"),
@@ -364,7 +366,9 @@ public enum Messages {
     INSERT_SUBJECT("Please add a Subject"),
     TYPE_CREDIT("Credit"),
     TYPE_PART_PAYMENT("Partial Payment"),
-    TYPE_DEPOSIT("Deposit");
+    TYPE_DEPOSIT("Deposit"), 
+    LANG_NOT_EXPORTED("Language could not be exported:"), 
+    ADD_MISSING_KEYS("Please add Missing keys to ");
 
     /**
      * @return the missing
