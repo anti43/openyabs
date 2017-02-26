@@ -256,7 +256,7 @@ public class Context implements Serializable, Comparable<Context> {
                 + Context.IDENTITY_ITEMS + "." + "netvalue +" 
                 + Context.IDENTITY_ITEMS + "." + "taxvalue -" 
                 + Context.IDENTITY_ITEMS + "." + "discountvalue)," 
-            + Context.IDENTITY_ITEMS + "." + "discountvalue, 0";
+            + Context.IDENTITY_ITEMS + "." + "discountvalue, ''";
     public static String DETAILS_JOURNAL2 
             = Context.IDENTITY_REVENUE + "." + "IDS," 
             + Context.IDENTITY_CONTACTS + "." + "cname," 
@@ -276,7 +276,8 @@ public class Context implements Serializable, Comparable<Context> {
             + Context.IDENTITY_REVENUE + "." + "ids," 
             + Context.IDENTITY_REVENUE + "." + "status," 
             + Context.IDENTITY_REVENUE + "." + "netvalue, (" + Context.IDENTITY_REVENUE + "." + "brutvalue-" + Context.IDENTITY_REVENUE + "." + "netvalue)," 
-            + Context.IDENTITY_REVENUE + "." + "brutvalue, 0 ,0";
+            + Context.IDENTITY_REVENUE + "." + "brutvalue, 0 ,"
+            + Context.IDENTITY_REVENUE + "." + "description";
     public static String DETAILS_JOURNAL3 
             = Context.IDENTITY_EXPENSE + "." + "IDS," 
             + Context.IDENTITY_GROUPS + "." + "reserve2," 
