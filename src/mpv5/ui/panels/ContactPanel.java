@@ -486,7 +486,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jButton6 = new javax.swing.JButton();
         toolbarpane = new javax.swing.JPanel();
 
-        java.util.ResourceBundle bundle =  mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ContactPanel.border.title"))); // NOI18N
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());
@@ -835,9 +835,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         button_bill.setToolTipText(bundle.getString("ContactPanel.button_bill.toolTipText")); // NOI18N
         button_bill.set_Label(bundle.getString("ContactPanel.button_bill._Label")); // NOI18N
         button_bill.setMaximumSize(new java.awt.Dimension(120, 20));
-        button_bill.setMinimumSize(new java.awt.Dimension(120, 20));
         button_bill.setName("button_bill"); // NOI18N
-        button_bill.setPreferredSize(new java.awt.Dimension(120, 20));
         jToolBar1.add(button_bill);
 
         button_credit.setText(bundle.getString("ContactPanel.button_credit.text")); // NOI18N
@@ -934,10 +932,10 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         mainphone.setMinimumSize(new java.awt.Dimension(120, 21));
         mainphone.setName("phone"); // NOI18N
 
-        workphone.set_Label(bundle.getString("ContactPanel.[120, 21]._Label")); // NOI18N
+        workphone.set_Label(bundle.getString("ContactPanel.work._Label")); // NOI18N
         workphone.setMaximumSize(new java.awt.Dimension(120, 21));
         workphone.setMinimumSize(new java.awt.Dimension(120, 21));
-        workphone.setName("[120, 21]"); // NOI18N
+        workphone.setName("work"); // NOI18N
         workphone.setPreferredSize(new java.awt.Dimension(180, 23));
 
         mailaddress.set_Label(bundle.getString("ContactPanel.mailer._Label")); // NOI18N

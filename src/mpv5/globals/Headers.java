@@ -51,9 +51,27 @@ public enum Headers {
         return header;
     }
 
+    public String[] getKeys() {
+      String[] keys = new String[header.length];
+      
+            for (int i = 0; i < header.length; i++) {
+                try {
+                    keys[i] = this.name() + "." + i;
+                } catch (Exception e) {
+                    Log.Debug(this, e.getMessage());
+                }
+            }
+        
+        return keys;
+    }
+    
     public void setValue(String[] header) {
         this.header = header;
     }
+    
+    public String getValue(int col) {
+        return this.header[col];
+    }    
 
     /**
      * Print out the values and their keys

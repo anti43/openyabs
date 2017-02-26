@@ -676,6 +676,7 @@ public class Main implements Runnable {
         org.apache.commons.cli2.Option windowlog = obuilder.withShortName("windowlog").withDescription("enables logging to the MP Log Console").create();
         org.apache.commons.cli2.Option consolelog = obuilder.withShortName("consolelog").withDescription("enables logging to STDOUT").create();
         org.apache.commons.cli2.Option printtest = obuilder.withShortName("printtest").withDescription("test PDF printing").create();
+        org.apache.commons.cli2.Option checkResources = obuilder.withShortName("checkRes").withDescription("checks the base resource file").create();
         org.apache.commons.cli2.Option params = obuilder.withShortName("params").withDescription("optional parameters \"param1:value1;param2:value2..\"").withArgument(option).create();
 
         org.apache.commons.cli2.Group options = gbuilder.withName("options").
@@ -699,6 +700,7 @@ public class Main implements Runnable {
                 withOption(forceinstall).
                 withOption(ignoreLibs).
                 withOption(ignoreTpls).
+                withOption(checkResources).
                 create();
 
         org.apache.commons.cli2.util.HelpFormatter hf = new org.apache.commons.cli2.util.HelpFormatter();
@@ -822,6 +824,10 @@ public class Main implements Runnable {
                     Log.Debug(ex);
                     System.exit(0);
                 }
+            }
+            
+            if (cl.hasOption(checkResources)) {
+                LanguageManager.checkBundle();
             }
         }
 

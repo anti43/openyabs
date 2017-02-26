@@ -32,15 +32,14 @@ import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.SwingUtilities;
 import mpv5.Main;
-import mpv5.YabsViewProxy;
 import mpv5.db.common.*;
 import mpv5.db.objects.User;
+import mpv5.globals.Headers;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Notificator;
 import mpv5.ui.dialogs.Popup;
-import mpv5.ui.frames.MPView;
 
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
@@ -609,4 +608,32 @@ public class LanguageManager {
          }
       }
    }
+   
+    public static void checkBundle() {
+        try {
+            ArrayList<String> missing = new ArrayList<String>();
+            ResourceBundle bundle = LanguageManager.getBundle("buildin_en");
+            Headers[] h = Headers.values();
+            for (int j = 0; j < h.length; j++) {
+                String[] k = h[j].getKeys();
+                for (int u = 0; u < k.length; u++) {
+                    if (!bundle.containsKey(k[u])) {
+                        missing.add(k[u] + "=" + h[j].getValue(u));
+                    }
+                }
+            }
+
+            Messages[] m = Messages.values();
+            for (int j = 0; j < m.length; j++) {
+                if (!bundle.containsKey(m[j].name()) && !"START_MESSAGE".equals(m[j].name())) {
+                    missing.add(m[j].name() + "=" + m[j].rawMessage());
+                }
+            }
+
+            if (!missing.isEmpty())
+            Popup.notice(missing, "huch");
+        } catch (Exception ex) {
+            Log.Debug(LanguageManager.class, ex.getLocalizedMessage());
+        }
+    }
 }

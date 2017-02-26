@@ -1029,7 +1029,7 @@
                     <Component class="mpv5.ui.beans.LabeledTextField" name="workphone">
                       <Properties>
                         <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.[120, 21]._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.work._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
                         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[120, 21]"/>
@@ -1037,7 +1037,7 @@
                         <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[120, 21]"/>
                         </Property>
-                        <Property name="name" type="java.lang.String" value="[120, 21]" noResource="true"/>
+                        <Property name="name" type="java.lang.String" value="work" noResource="true"/>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[180, 23]"/>
                         </Property>

@@ -96,14 +96,14 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
      */
     public JournalPanel() {
         initComponents();
-        setName("journalpanel");
+        setName("journalpanel"); //NOI18N
         new ExcelAdapter(jTable1);
         setPopup();
         jPanel5.setEnabled(false);
         jTabbedPane1.removeTabAt(0);
         jLabel3.setEnabled(false);
         jLabel4.setEnabled(false);
-        jLabel4.setText("");
+        jLabel4.setText(""); //NOI18N
         jTabbedPane1.setSelectedComponent(jPanel4);
         validate();
         timeframeChooser1.setTime(new vTimeframe(DateConverter.getDate(DateConverter.getYear()), new Date()));
@@ -250,7 +250,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
 
         setName("Form"); // NOI18N
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("JournalPanel.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 
@@ -943,17 +943,17 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                     Object[][] d5 = new Object[0][0];
                     
                     if (!includechildgroups.isSelected()) {
-                        if (forGroup != null && !forGroup.__getCname().equals("")) {
-                            itemsParams.and(new QueryParameter(Context.getInvoice(), forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
+                        if (forGroup != null && !forGroup.__getCname().equals("")) { //NOI18N
+                            itemsParams.and(new QueryParameter(Context.getInvoice(), forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS)); //NOI18N
                         }
-                    } else if (forGroup != null && !forGroup.__getCname().equals("")) {
+                    } else if (forGroup != null && !forGroup.__getCname().equals("")) { //NOI18N
                         List<Group> gs = forGroup.getChildGroups();
                         QueryParameter[] params = new QueryParameter[gs.size()];
-                        QueryParameter param1 = (new QueryParameter(Context.getInvoice(), forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
+                        QueryParameter param1 = (new QueryParameter(Context.getInvoice(), forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS)); //NOI18N
                         if (gs.size() >= 1) {
                             for (int i = 0; i < gs.size(); i++) {
                                 Group group = gs.get(i);
-                                params[i] = (new QueryParameter(Context.getInvoice(), group.getDbIdentity() + "ids", group.__getIDS(), QueryParameter.EQUALS));
+                                params[i] = (new QueryParameter(Context.getInvoice(), group.getDbIdentity() + "ids", group.__getIDS(), QueryParameter.EQUALS)); //NOI18N
                             }
                             //System.err.println(params);
                             itemsParams.or(param1, params);
@@ -962,14 +962,14 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                         }
                     }
                     
-                    if (forUser != null && !forUser.__getCname().equals("")) {
-                        itemsParams.and(new QueryParameter(Context.getInvoice(), "intaddedby", forUser.__getIDS(), QueryParameter.EQUALS));
+                    if (forUser != null && !forUser.__getCname().equals("")) { //NOI18N
+                        itemsParams.and(new QueryParameter(Context.getInvoice(), "intaddedby", forUser.__getIDS(), QueryParameter.EQUALS)); //NOI18N
                     }
                     
                     ArrayList<QueryParameter> l = new ArrayList<QueryParameter>();
                     
                     for (int i = 0; i < jList1.getSelectedValues().length; i++) {
-                        l.add(new QueryParameter(Context.getInvoice(), "accountsids", ((Account) jList1.getSelectedValues()[i]).__getIDS(), QueryParameter.EQUALS));
+                        l.add(new QueryParameter(Context.getInvoice(), "accountsids", ((Account) jList1.getSelectedValues()[i]).__getIDS(), QueryParameter.EQUALS)); //NOI18N
                     }
                     if (l.size() > 1) {
                         itemsParams.or(l);
@@ -978,37 +978,37 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                     }
                     
                     if (dataOwner != null) {
-                        itemsParams.and(new QueryParameter(dataOwner.getContext(), "ids", dataOwner.__getIDS(), QueryParameter.EQUALS));
+                        itemsParams.and(new QueryParameter(dataOwner.getContext(), "ids", dataOwner.__getIDS(), QueryParameter.EQUALS)); //NOI18N
                     }
                     
                     boolean additional = true;
                     if (statusc.getComboBox().getSelectedItem().equals(Messages.STATUS_PAID)) {
-                        itemsParams.and(new QueryParameter(Context.getInvoice(), "intstatus", Item.STATUS_PAID, QueryParameter.EQUALS));
+                        itemsParams.and(new QueryParameter(Context.getInvoice(), "intstatus", Item.STATUS_PAID, QueryParameter.EQUALS)); //NOI18N
                     } else if (statusc.getComboBox().getSelectedItem().equals(Messages.STATUS_UNPAID)) {
 //                        additional = false;
                         itemsParams.or(
-                                new QueryParameter(Context.getInvoice(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS),
-                                new QueryParameter(Context.getInvoice(), "intstatus", Item.STATUS_PAUSED, QueryParameter.EQUALS),
-                                new QueryParameter(Context.getInvoice(), "intstatus", Item.STATUS_IN_PROGRESS, QueryParameter.EQUALS),
-                                new QueryParameter(Context.getInvoice(), "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
+                                new QueryParameter(Context.getInvoice(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS), //NOI18N
+                                new QueryParameter(Context.getInvoice(), "intstatus", Item.STATUS_PAUSED, QueryParameter.EQUALS), //NOI18N
+                                new QueryParameter(Context.getInvoice(), "intstatus", Item.STATUS_IN_PROGRESS, QueryParameter.EQUALS), //NOI18N
+                                new QueryParameter(Context.getInvoice(), "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS)); //NOI18N
                     } else if (statusc.getComboBox().getSelectedItem().equals(Messages.STATUS_CANCELLED)) {
 //                        additional = false;
-                        itemsParams.and(new QueryParameter(Context.getInvoice(), "intstatus", Item.STATUS_CANCELLED, QueryParameter.EQUALS));
+                        itemsParams.and(new QueryParameter(Context.getInvoice(), "intstatus", Item.STATUS_CANCELLED, QueryParameter.EQUALS)); //NOI18N
                     }
                     
                     try {
                         Context c = Context.getInvoice();
-                        itemsParams.setOrder("accountsids", true);
+                        itemsParams.setOrder("accountsids", true); //NOI18N
                         c.addReference(Context.getGroup());
                         c.addReference(Context.getAccounts());
                         c.addReference(Context.getContact());
                         
                         try {
-                            String datecriterium = "dateadded";
+                            String datecriterium = "dateadded"; //NOI18N
                             if (bydateend.isSelected()) {
-                                datecriterium = "dateend";
+                                datecriterium = "dateend"; //NOI18N
                             }
-                            d = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL.replace("{date}", datecriterium), itemsParams, timeframeChooser1.getTime(), datecriterium).getData();
+                            d = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL.replace("{date}", datecriterium), itemsParams, timeframeChooser1.getTime(), datecriterium).getData(); //NOI18N
                         } catch (NodataFoundException nodataFoundException) {
                             d = new Object[0][17];
                         }
@@ -1028,17 +1028,17 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                     }
                     try {
                         Context c = Context.getDeposit();
-                        itemsParams.setOrder("accountsids", true);
+                        itemsParams.setOrder("accountsids", true); //NOI18N
                         c.addReference(Context.getGroup());
                         c.addReference(Context.getAccounts());
                         c.addReference(Context.getContact());
                         
                         try {
-                            String datecriterium = "dateadded";
+                            String datecriterium = "dateadded"; //NOI18N
                             if (bydateend.isSelected()) {
-                                datecriterium = "dateend";
+                                datecriterium = "dateend"; //NOI18N
                             }
-                            d3 = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL.replace("{date}", datecriterium), itemsParams, timeframeChooser1.getTime(), datecriterium).getData();
+                            d3 = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL.replace("{date}", datecriterium), itemsParams, timeframeChooser1.getTime(), datecriterium).getData(); //NOI18N
                         } catch (NodataFoundException nodataFoundException) {
                             d3 = new Object[0][17];
                         }
@@ -1058,17 +1058,17 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                     }
                     try {
                         Context c = Context.getPartPayment();
-                        itemsParams.setOrder("accountsids", true);
+                        itemsParams.setOrder("accountsids", true); //NOI18N
                         c.addReference(Context.getGroup());
                         c.addReference(Context.getAccounts());
                         c.addReference(Context.getContact());
                         
                         try {
-                            String datecriterium = "dateadded";
+                            String datecriterium = "dateadded"; //NOI18N
                             if (bydateend.isSelected()) {
-                                datecriterium = "dateend";
+                                datecriterium = "dateend"; //NOI18N
                             }
-                            d4 = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL.replace("{date}", datecriterium), itemsParams, timeframeChooser1.getTime(), datecriterium).getData();
+                            d4 = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL.replace("{date}", datecriterium), itemsParams, timeframeChooser1.getTime(), datecriterium).getData(); //NOI18N
                         } catch (NodataFoundException nodataFoundException) {
                             d4 = new Object[0][17];
                         }
@@ -1088,17 +1088,17 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                     }
                     try {
                         Context c = Context.getCredit();
-                        itemsParams.setOrder("accountsids", true);
+                        itemsParams.setOrder("accountsids", true); //NOI18N
                         c.addReference(Context.getGroup());
                         c.addReference(Context.getAccounts());
                         c.addReference(Context.getContact());
                         
                         try {
-                            String datecriterium = "dateadded";
+                            String datecriterium = "dateadded"; //NOI18N
                             if (bydateend.isSelected()) {
-                                datecriterium = "dateend";
+                                datecriterium = "dateend"; //NOI18N
                             }
-                            d5 = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL.replace("{date}", datecriterium), itemsParams, timeframeChooser1.getTime(), datecriterium).getData();
+                            d5 = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL.replace("{date}", datecriterium), itemsParams, timeframeChooser1.getTime(), datecriterium).getData(); //NOI18N
                         } catch (NodataFoundException nodataFoundException) {
                             d5 = new Object[0][17];
                         }
@@ -1121,35 +1121,35 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                     if (dataOwner == null && additional) {
                         try {
                             Context c = Context.getExpense();
-                            itemsParams.setOrder("dateadded", true);
+                            itemsParams.setOrder("dateadded", true); //NOI18N
                             c.addReference(Context.getGroup());
                             c.addReference(Context.getAccounts());
                             QueryCriteria2 expensesParams = new QueryCriteria2();
                             ArrayList<QueryParameter> l1 = new ArrayList<QueryParameter>();
                             for (int i = 0; i < jList1.getSelectedValues().length; i++) {
-                                l1.add(new QueryParameter(Context.getExpense(), "accountsids", ((Account) jList1.getSelectedValues()[i]).__getIDS(), QueryParameter.EQUALS));
+                                l1.add(new QueryParameter(Context.getExpense(), "accountsids", ((Account) jList1.getSelectedValues()[i]).__getIDS(), QueryParameter.EQUALS)); //NOI18N
                             }
                             if (l1.size() > 1) {
                                 expensesParams.or(l1);
                             } else {
                                 expensesParams.and(l1.toArray(new QueryParameter[0]));
                             }
-                            if (forUser != null && !forUser.__getCname().equals("")) {
-                                expensesParams.and(new QueryParameter(c, "intaddedby", forUser.__getIDS(), QueryParameter.EQUALS));
+                            if (forUser != null && !forUser.__getCname().equals("")) { //NOI18N
+                                expensesParams.and(new QueryParameter(c, "intaddedby", forUser.__getIDS(), QueryParameter.EQUALS)); //NOI18N
                             }
                             if (!includechildgroups.isSelected()) {
-                                if (forGroup != null && !forGroup.__getCname().equals("")) {
-                                    expensesParams.and(new QueryParameter(c, forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
+                                if (forGroup != null && !forGroup.__getCname().equals("")) { //NOI18N
+                                    expensesParams.and(new QueryParameter(c, forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS)); //NOI18N
                                 }
                                 
                             } else if (forGroup != null) {
                                 List<Group> gs = forGroup.getChildGroups();
                                 QueryParameter[] params = new QueryParameter[gs.size()];
-                                QueryParameter params1 = (new QueryParameter(c, forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
+                                QueryParameter params1 = (new QueryParameter(c, forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS)); //NOI18N
                                 if (gs.size() >= 1) {
                                     for (int i = 0; i < gs.size(); i++) {
                                         Group group = gs.get(i);
-                                        params[i] = (new QueryParameter(c, group.getDbIdentity() + "ids", group.__getIDS(), QueryParameter.EQUALS));
+                                        params[i] = (new QueryParameter(c, group.getDbIdentity() + "ids", group.__getIDS(), QueryParameter.EQUALS)); //NOI18N
                                     }
                                     itemsParams.or(params1, params);
                                 } else {
@@ -1157,17 +1157,17 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                                 }
                             }
                             if (statusc.getComboBox().getSelectedItem().equals(Messages.STATUS_PAID)) {
-                                expensesParams.and(new QueryParameter(c, "ispaid", true, QueryParameter.EQUALS));
+                                expensesParams.and(new QueryParameter(c, "ispaid", true, QueryParameter.EQUALS)); //NOI18N
                             } else if (statusc.getComboBox().getSelectedItem().equals(Messages.STATUS_UNPAID)) {
-                                expensesParams.and(new QueryParameter(c, "ispaid", false, QueryParameter.EQUALS));
+                                expensesParams.and(new QueryParameter(c, "ispaid", false, QueryParameter.EQUALS)); //NOI18N
                             }
                             
                             try {
-                                String datecriterium = "dateadded";
+                                String datecriterium = "dateadded"; //NOI18N
                                 if (bydateend.isSelected()) {
-                                    datecriterium = "dateend";
+                                    datecriterium = "dateend"; //NOI18N
                                 }
-                                d1 = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL3.replace("{date}", datecriterium), expensesParams, timeframeChooser1.getTime(), datecriterium).getData();
+                                d1 = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL3.replace("{date}", datecriterium), expensesParams, timeframeChooser1.getTime(), datecriterium).getData(); //NOI18N
                             } catch (NodataFoundException nodataFoundException) {
                                 d1 = new Object[0][17];
                             }
@@ -1200,35 +1200,35 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                         
                         try {
                             Context c = Context.getRevenue();
-                            itemsParams.setOrder("dateadded", true);
+                            itemsParams.setOrder("dateadded", true); //NOI18N
                             c.addReference(Context.getGroup());
                             c.addReference(Context.getAccounts());
                             c.addReference(Context.getContact());
                             QueryCriteria2 revenuesParams = new QueryCriteria2();
                             ArrayList<QueryParameter> l2 = new ArrayList<QueryParameter>();
                             for (int i = 0; i < jList1.getSelectedValues().length; i++) {
-                                l2.add(new QueryParameter(Context.getRevenue(), "accountsids", ((Account) jList1.getSelectedValues()[i]).__getIDS(), QueryParameter.EQUALS));
+                                l2.add(new QueryParameter(Context.getRevenue(), "accountsids", ((Account) jList1.getSelectedValues()[i]).__getIDS(), QueryParameter.EQUALS)); //NOI18N
                             }
                             if (l2.size() > 1) {
                                 revenuesParams.or(l2);
                             } else {
                                 revenuesParams.and(l2.toArray(new QueryParameter[0]));
                             }
-                            if (forUser != null && !forUser.__getCname().equals("")) {
-                                revenuesParams.and(new QueryParameter(c, "intaddedby", forUser.__getIDS(), QueryParameter.EQUALS));
+                            if (forUser != null && !forUser.__getCname().equals("")) { //NOI18N
+                                revenuesParams.and(new QueryParameter(c, "intaddedby", forUser.__getIDS(), QueryParameter.EQUALS)); //NOI18N
                             }
                             if (!includechildgroups.isSelected()) {
-                                if (forGroup != null && !forGroup.__getCname().equals("")) {
-                                    revenuesParams.and(new QueryParameter(c, forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
+                                if (forGroup != null && !forGroup.__getCname().equals("")) { //NOI18N
+                                    revenuesParams.and(new QueryParameter(c, forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS)); //NOI18N
                                 }
                             } else if (forGroup != null) {
                                 List<Group> gs = forGroup.getChildGroups();
                                 QueryParameter[] params = new QueryParameter[gs.size()];
-                                QueryParameter params1 = (new QueryParameter(c, forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
+                                QueryParameter params1 = (new QueryParameter(c, forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS)); //NOI18N
                                 if (gs.size() >= 1) {
                                     for (int i = 0; i < gs.size(); i++) {
                                         Group group = gs.get(i);
-                                        params[i] = (new QueryParameter(c, group.getDbIdentity() + "ids", group.__getIDS(), QueryParameter.EQUALS));
+                                        params[i] = (new QueryParameter(c, group.getDbIdentity() + "ids", group.__getIDS(), QueryParameter.EQUALS)); //NOI18N
                                     }
                                     revenuesParams.or(params1, params);
                                 } else {
@@ -1236,16 +1236,16 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                                 }
                             }
                             if (statusc.getComboBox().getSelectedItem().equals(Messages.STATUS_PAID)) {
-                                revenuesParams.and(new QueryParameter(c, "status", Item.STATUS_PAID, QueryParameter.EQUALS));
+                                revenuesParams.and(new QueryParameter(c, "status", Item.STATUS_PAID, QueryParameter.EQUALS)); //NOI18N
                             } else if (statusc.getComboBox().getSelectedItem().equals(Messages.STATUS_UNPAID)) {
-                                revenuesParams.and(new QueryParameter(Context.getExpense(), "status", Item.STATUS_PAID, QueryParameter.NOTEQUAL));
+                                revenuesParams.and(new QueryParameter(Context.getExpense(), "status", Item.STATUS_PAID, QueryParameter.NOTEQUAL)); //NOI18N
                             }
                             try {
-                                 String datecriterium = "dateadded";
+                                 String datecriterium = "dateadded"; //NOI18N
                             if (bydateend.isSelected()) {
-                                datecriterium = "dateend";
+                                datecriterium = "dateend"; //NOI18N
                             }
-                                d2 = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL2.replace("{date}", datecriterium), revenuesParams, timeframeChooser1.getTime(), datecriterium).getData();
+                                d2 = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL2.replace("{date}", datecriterium), revenuesParams, timeframeChooser1.getTime(), datecriterium).getData(); //NOI18N
                             } catch (NodataFoundException nodataFoundException) {
                                 d2 = new Object[0][17];
                             }
@@ -1271,7 +1271,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                     jTable1.setModel(new MPTableModel(d, Headers.JOURNAL.getValue(),
                             new Class[]{DatabaseObject.class, String.class, String.class, String.class, String.class, String.class, Date.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class}));
                     //TableFormat.stripColumn(jTable1, 0);
-                    count.setText("" + d.length);
+                    count.setText("" + d.length); //NOI18N
                 } catch (Exception e) {
                     Log.Debug(this, e);
                     Popup.error(e);
@@ -1303,7 +1303,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    if (Popup.Y_N_dialog(Messages.REALLY_DELETE2 + " (" + jTable1.getSelectedRowCount() + ")")) {
+                    if (Popup.Y_N_dialog(Messages.REALLY_DELETE2 + " (" + jTable1.getSelectedRowCount() + ")")) { //NOI18N
                         int[] rows = jTable1.getSelectedRows();
                         for (int i = 0; i < rows.length; i++) {
                             try {
@@ -1353,7 +1353,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    if (Popup.Y_N_dialog(Messages.REALLY_CHANGE2 + " (" + jTable1.getSelectedRowCount() + ")")) {
+                    if (Popup.Y_N_dialog(Messages.REALLY_CHANGE2 + " (" + jTable1.getSelectedRowCount() + ")")) { //NOI18N
                         int[] rows = jTable1.getSelectedRows();
                         for (int i = 0; i < rows.length; i++) {
                             try {
@@ -1417,32 +1417,32 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             pr = new PreviewPanel();
             pr.setDataOwner(dataOwner);
             TreeMap<String, Object> map = new TreeMap<String, Object>();
-            map.put("journal.netvalue", volumeNetto.getText());
-            map.put("journal.taxvalue", taxVolume.getText());
-            map.put("journal.grosvalue", volumeBrutto.getText());
-            map.put("journal.revenuevalue", revenueNetto.getText());
-            map.put("journal.revenuetax", revenueTax.getText());
-            map.put("journal.revenuegrosvalue", revenueBrut.getText());
-            map.put("journal.expensevalue", expNetto.getText());
-            map.put("journal.expensetax", expTax.getText());
-            map.put("journal.expensegrosvalue", expBrut.getText());
-            map.put("journal.profitvalue", profitNetto.getText());            
-            map.put("journal.profittax", profitTax.getText());            
-            map.put("journal.discountvalue", volumeDiscount.getText());
-            map.put("journal.datenow", DateConverter.getDefDateString(new Date()));
-            map.put("journal.datefrom", DateConverter.getDefDateString(timeframeChooser1.getTime().getStart()));
-            map.put("journal.dateto", DateConverter.getDefDateString(timeframeChooser1.getTime().getEnd()));
+            map.put("journal.netvalue", volumeNetto.getText()); //NOI18N
+            map.put("journal.taxvalue", taxVolume.getText()); //NOI18N
+            map.put("journal.grosvalue", volumeBrutto.getText()); //NOI18N
+            map.put("journal.revenuevalue", revenueNetto.getText()); //NOI18N
+            map.put("journal.revenuetax", revenueTax.getText()); //NOI18N
+            map.put("journal.revenuegrosvalue", revenueBrut.getText()); //NOI18N
+            map.put("journal.expensevalue", expNetto.getText()); //NOI18N
+            map.put("journal.expensetax", expTax.getText()); //NOI18N
+            map.put("journal.expensegrosvalue", expBrut.getText()); //NOI18N
+            map.put("journal.profitvalue", profitNetto.getText());             //NOI18N
+            map.put("journal.profittax", profitTax.getText());             //NOI18N
+            map.put("journal.discountvalue", volumeDiscount.getText()); //NOI18N
+            map.put("journal.datenow", DateConverter.getDefDateString(new Date())); //NOI18N
+            map.put("journal.datefrom", DateConverter.getDefDateString(timeframeChooser1.getTime().getStart())); //NOI18N
+            map.put("journal.dateto", DateConverter.getDefDateString(timeframeChooser1.getTime().getEnd())); //NOI18N
             if (groups.getSelectedItem().isValid()) {
                 try {
                     Group g = (Group) Group.getObject(Context.getGroup(), Integer.valueOf(groups.getSelectedItem().getId()));
-                    map.put("journal.group", g.__getCname());
-                    map.put("journal.childgroups", String.valueOf(g.getChildGroups()));
+                    map.put("journal.group", g.__getCname()); //NOI18N
+                    map.put("journal.childgroups", String.valueOf(g.getChildGroups())); //NOI18N
                 } catch (Exception nodataFoundException) {
                 }
             }
             try {
-                map.put("journal.user", users.getSelectedValue());
-                map.put("journal.accounts", Arrays.asList(jList1.getSelectedValues()).toString());
+                map.put("journal.user", users.getSelectedValue()); //NOI18N
+                map.put("journal.accounts", Arrays.asList(jList1.getSelectedValues()).toString()); //NOI18N
             } catch (Exception e) {
                 Log.Debug(e);
                 throw e;
@@ -1468,13 +1468,13 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             
             journalOrContactTemplate.setContextName(Messages.TYPE_JOURNAL.toString());
             journalOrContactTemplate.injectTable(TableHandler.KEY_TABLE + 1, new MPTableModel(d));
-            if (GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.journalasodt")) {
+            if (GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.journalasodt")) { //NOI18N
                 new Job(Export.createFile(journalOrContactTemplate, dataOwner), pr).execute();
             } else {
                 new Job(Export.sourceFile(journalOrContactTemplate, dataOwner), pr).execute();
             }
         } else {
-            Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
+            Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")"); //NOI18N
         }
     }
     
@@ -1521,7 +1521,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             
             DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY);
             DTAFile dta = new DTAFile(map);
-            Job job = new Job(dta, d, "DTAUS " + Messages.SAVED);
+            Job job = new Job(dta, d, "DTAUS " + Messages.SAVED); //NOI18N
             job.execute();
             
         }
@@ -1550,7 +1550,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                     final Templateable item = items.get(i);
                     if (TemplateHandler.loadTemplate(item) == null) {
                         Popup.warn(Messages.NO_TEMPLATE_DEFINDED + "\n" + TemplateHandler.getName(item.templateType())
-                                + "\n" + Messages.IN_GROUP + " " + DatabaseObject.getObject(Context.getGroup(), ((DatabaseObject) item).__getGroupsids()));
+                                + "\n" + Messages.IN_GROUP + " " + DatabaseObject.getObject(Context.getGroup(), ((DatabaseObject) item).__getGroupsids())); //NOI18N //NOI18N
                     } else {
                         files.add(Export.createFile(item.getFormatHandler().toUserString(), TemplateHandler.loadTemplate(item), ((DatabaseObject) item)));
                     }
@@ -1561,7 +1561,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             
             if (!files.isEmpty()) {
                 DialogForFile d = new DialogForFile(DialogForFile.DIRECTORIES_ONLY);
-                Job job = new Job(files, d, files.size() + " PDF " + Messages.SAVED);
+                Job job = new Job(files, d, files.size() + " PDF " + Messages.SAVED); //NOI18N
                 job.execute();
             }
         }
@@ -1593,7 +1593,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                     final Templateable item = items.get(i);
                     if (TemplateHandler.loadTemplate(item) == null) {
                         Popup.warn(Messages.NO_TEMPLATE_DEFINDED + "\n" + TemplateHandler.getName(item.templateType())
-                                + "\n" + Messages.IN_GROUP + " " + DatabaseObject.getObject(Context.getGroup(), ((DatabaseObject) item).__getGroupsids()));
+                                + "\n" + Messages.IN_GROUP + " " + DatabaseObject.getObject(Context.getGroup(), ((DatabaseObject) item).__getGroupsids())); //NOI18N //NOI18N
                     } else {
                         files.add(Export.sourceFile(item.getFormatHandler().toUserString(), TemplateHandler.loadTemplate(item), ((DatabaseObject) item)));
                     }
@@ -1605,7 +1605,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             if (!files.isEmpty()) {
                 DialogForFile d = new DialogForFile(DialogForFile.DIRECTORIES_ONLY);
                 
-                Job job = new Job(files, d, files.size() + " ODT " + Messages.SAVED);
+                Job job = new Job(files, d, files.size() + " ODT " + Messages.SAVED); //NOI18N
                 job.execute();
             }
         }
@@ -1614,15 +1614,15 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
     private void filter() {
         if (filterinvoice.isSelected()) {
             QueryCriteria2 p = new QueryCriteria2();
-            p.and(new QueryParameter(Context.getInvoice(), "intstatus", Item.STATUS_PAID, QueryParameter.NOTEQUAL));
+            p.and(new QueryParameter(Context.getInvoice(), "intstatus", Item.STATUS_PAID, QueryParameter.NOTEQUAL)); //NOI18N
             jTree1.setModel(new MPTreeModel(dataOwner, Context.getInvoice(), p));
         } else if (filteroffers.isSelected()) {
             QueryCriteria2 p = new QueryCriteria2();
-            p.and(new QueryParameter(Context.getOffer(), "intstatus", Item.STATUS_FINISHED, QueryParameter.NOTEQUAL));
+            p.and(new QueryParameter(Context.getOffer(), "intstatus", Item.STATUS_FINISHED, QueryParameter.NOTEQUAL)); //NOI18N
             jTree1.setModel(new MPTreeModel(dataOwner, Context.getOffer(), p));
         } else if (filterorders.isSelected()) {
             QueryCriteria2 p = new QueryCriteria2();
-            p.and(new QueryParameter(Context.getOrder(), "intstatus", Item.STATUS_FINISHED, QueryParameter.NOTEQUAL));
+            p.and(new QueryParameter(Context.getOrder(), "intstatus", Item.STATUS_FINISHED, QueryParameter.NOTEQUAL)); //NOI18N
             jTree1.setModel(new MPTreeModel(dataOwner, Context.getOrder(), p));
         } else if (filternone.isSelected()) {
             jTree1.setModel(new MPTreeModel(dataOwner, null, null));

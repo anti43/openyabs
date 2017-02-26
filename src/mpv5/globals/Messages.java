@@ -411,4 +411,8 @@ public enum Messages {
     public String getValue() {
         return toString();
     }
+    
+    public String rawMessage() {
+        return this.message;
+    } 
 }
