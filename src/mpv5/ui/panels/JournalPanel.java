@@ -1450,7 +1450,8 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             
             journalOrContactTemplate.injectData(map);
             MPTableModel xx = (MPTableModel) jTable1.getModel();
-            Object[][] xxd = xx.getData();
+            xx.setOwner(jTable1);
+            Object[][] xxd = xx.getDataLikeDisplayed();
             Object[][] d = new Object[xxd.length][];
             for (int i = 0; i < xxd.length; i++) {
                 Object[] objects = xxd[i];

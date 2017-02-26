@@ -732,6 +732,27 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
         }
         return k;
     }
+    
+    /**
+     * Returns the data as array
+     *
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public Object[][] getDataLikeDisplayed() {
+        JTable tab = this.getOwner();
+        if (tab == null) {
+            return this.getData();
+        } else {
+            Object[][] k = new Object[getRowCount()][getColumnCount()];
+            for (int i = 0; i < k.length; i++) {
+                for (int j = 0; j < k[i].length; j++) {
+                    k[i][j] = getValueAt(tab.convertRowIndexToModel(i), tab.convertColumnIndexToModel(j));
+                }
+            }
+            return k;
+        }
+    }
 
     /**
      * Returns the last valid row in a table whereas "valid" is defined as "all
