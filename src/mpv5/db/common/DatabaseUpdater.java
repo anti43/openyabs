@@ -294,7 +294,8 @@ public class DatabaseUpdater {
             "CREATE TRIGGER revenues_trash2 AFTER DELETE ON revenues REFERENCING OLD AS newdata FOR EACH ROW DELETE FROM trashbin WHERE cname = 'revenues' AND  rowid = newdata.ids",
             "CREATE TRIGGER revenues_trash1 AFTER UPDATE ON revenues REFERENCING NEW AS newdata FOR EACH ROW INSERT INTO trashbin (deleteme, cname, rowid, description) VALUES (newdata.invisible,'revenues',newdata.ids,newdata.cname)",
             "ALTER TABLE revenues ADD COLUMN contactsids BIGINT REFERENCES contacts(ids) ON DELETE CASCADE",
-            "ALTER TABLE revenues ADD COLUMN reforderids BIGINT REFERENCES items(ids) ON DELETE CASCADE"
+            "ALTER TABLE revenues ADD COLUMN reforderids BIGINT REFERENCES items(ids) ON DELETE CASCADE",
+            "UPDATE revenues SET status = 4 where status = 1"
         });
         UPDATES_DERBY.put(1.1983, new String[]{
             "ALTER TABLE items ADD COLUMN reforderids BIGINT REFERENCES items(ids) ON DELETE CASCADE"
@@ -615,7 +616,8 @@ public class DatabaseUpdater {
             "ALTER TABLE revenues CHANGE ispaid status SMALLINT(6) NOT NULL DEFAULT '0'",
             "ALTER TABLE revenues ADD COLUMN contactsids BIGINT REFERENCES contacts(ids) ON DELETE CASCADE",
             "ALTER TABLE revenues ADD COLUMN reforderids BIGINT REFERENCES items(ids) ON DELETE CASCADE",
-            "ALTER TABLE items ADD COLUMN reforderids BIGINT REFERENCES items(ids) ON DELETE CASCADE"
+            "ALTER TABLE items ADD COLUMN reforderids BIGINT REFERENCES items(ids) ON DELETE CASCADE",
+            "UPDATE revenues SET status = 4 where status = 1"
         });
     }
 

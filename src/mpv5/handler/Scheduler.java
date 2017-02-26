@@ -445,7 +445,7 @@ public class Scheduler extends Thread {
         
         c = Context.getRevenue();
         QueryCriteria2 opens = new QueryCriteria2();
-        opens.or(new QueryParameter(c, "status", Item.STATUS_QUEUED, QueryParameter.EQUALS));
+        opens.and(new QueryParameter(c, "status", Item.STATUS_QUEUED, QueryParameter.EQUALS));
         ItemType = "revenues";
 
         if (!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hideunattentedrevenues")
