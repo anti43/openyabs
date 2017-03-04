@@ -1,6 +1,7 @@
 package mpv5.ui.dialogs.subcomponents;
 
 import java.awt.Component;
+import javax.mail.MessagingException;
 import javax.swing.JCheckBox;
 import javax.swing.SwingUtilities;
 import mpv5.data.PropertyStore;
@@ -9,6 +10,7 @@ import mpv5.db.objects.User;
 import mpv5.globals.GlobalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
+import mpv5.mail.SimpleMail;
 import mpv5.ui.beans.LightMPComboBox;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.Notificator;
@@ -86,6 +88,9 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         smtps = new javax.swing.JCheckBox();
         jButton4 = new javax.swing.JButton();
         smtpport = new mpv5.ui.beans.LabeledTextField();
+        TestButton = new javax.swing.JButton();
+        smtpssl = new javax.swing.JCheckBox();
+        testadress = new mpv5.ui.beans.LabeledTextField();
         jPanel4 = new javax.swing.JPanel();
         saveformat = new mpv5.ui.beans.LabeledTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -123,11 +128,11 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         jButton1 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
 
-        //\$2java.awt.Color(255, 255, 255));
+        setBackground(new java.awt.Color(255, 255, 255));
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());
 
-//$2java.awt.Color(255, 255, 255));
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Userproperties.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
@@ -326,6 +331,20 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         smtpport.set_Label(bundle.getString("ControlPanel_Userproperties.smtpport._Label")); // NOI18N
         smtpport.setName("smtpport"); // NOI18N
 
+        TestButton.setText(bundle.getString("ControlPanel_Userproperties.TestButton.text")); // NOI18N
+        TestButton.setName("TestButton"); // NOI18N
+        TestButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TestButtonActionPerformed(evt);
+            }
+        });
+
+        smtpssl.setText(bundle.getString("ControlPanel_Userproperties.smtpssl.text")); // NOI18N
+        smtpssl.setName("smtpssl"); // NOI18N
+
+        testadress.set_Label(bundle.getString("ControlPanel_Userproperties.testadress._Label")); // NOI18N
+        testadress.setName("testadress"); // NOI18N
+
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
         jPanel9Layout.setHorizontalGroup(
@@ -336,39 +355,51 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
                     .addGroup(jPanel9Layout.createSequentialGroup()
                         .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(jPanel9Layout.createSequentialGroup()
-                                .addComponent(smtptls, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE)
+                                .addComponent(smtptls, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(smtps, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(smtphost, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(smtps, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(smtpssl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(smtphost, javax.swing.GroupLayout.DEFAULT_SIZE, 344, Short.MAX_VALUE)
                             .addComponent(smtpport, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(jPanel9Layout.createSequentialGroup()
                                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(smtppw, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(smtpuser, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jButton4))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(4, 4, 4)
+                                .addComponent(smtppw))
+                            .addComponent(smtpuser, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(testadress, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel9Layout.createSequentialGroup()
+                        .addComponent(jButton4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(TestButton)))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel9Layout.createSequentialGroup()
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(smtpuser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(smtphost, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(smtpport, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(smtppw, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel9Layout.createSequentialGroup()
+                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(smtpuser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(smtphost, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(smtpport, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(smtppw, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(smtptls)
+                            .addComponent(smtps)
+                            .addComponent(smtpssl)))
+                    .addComponent(testadress, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(smtptls)
-                    .addComponent(smtps))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton4)
+                    .addComponent(jButton4)
+                    .addComponent(TestButton))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -464,8 +495,8 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
                     .addComponent(dtabankcountry, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE))
+                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2))
                 .addContainerGap())
         );
 
@@ -597,7 +628,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
             .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, 685, Short.MAX_VALUE))
+                .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, 699, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -620,16 +651,16 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
                 .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(166, Short.MAX_VALUE))
+                .addGap(0, 0, 0))
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
                     .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 1072, Short.MAX_VALUE)))
+                    .addGap(0, 869, Short.MAX_VALUE)))
         );
 
         add(jPanel1, java.awt.BorderLayout.CENTER);
 
-//$2java.awt.Color(255, 255, 255));
+        jPanel6.setBackground(new java.awt.Color(255, 255, 255));
         jPanel6.setName("jPanel6"); // NOI18N
         jPanel6.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
 
@@ -664,9 +695,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-
         setSettings();
-
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -693,6 +722,30 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
 
     }//GEN-LAST:event_calcEnddateXActionPerformed
 
+    private void TestButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TestButtonActionPerformed
+//        if (this.testadress.getText().isEmpty()) {
+//            Popup.error(this, Messages.NO_MAIL_DEFINED);
+//            return;
+//        }
+        try {
+            new SimpleMail(
+                    this.smtphost.getText(),
+                    this.smtpport.getText(),
+                    this.smtpuser.getText(), 
+                    this.smtppw.getText(), 
+                    this.smtptls.isSelected(),
+                    this.smtpssl.isSelected(),
+                    this.smtps.isSelected(),
+                    User.getCurrentUser().__getMail(), 
+                    this.testadress.getText(), 
+                    "Mail-Test", 
+                    "Mail from YABS"
+            );
+        } catch (MessagingException ex) {
+           Log.Debug(this, ex.getLocalizedMessage());
+        }
+    }//GEN-LAST:event_TestButtonActionPerformed
+
     @Override
     public void setValues(PropertyStore values) {
         oldvalues = values;
@@ -708,6 +761,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         setValues(oldvalues);
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton TestButton;
     private javax.swing.JCheckBox calcEnddateX;
     private javax.swing.JCheckBox cname;
     private javax.swing.JCheckBox cnumber;
@@ -768,10 +822,12 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
     private mpv5.ui.beans.LabeledTextField smtpport;
     private javax.swing.JPasswordField smtppw;
     private javax.swing.JCheckBox smtps;
+    private javax.swing.JCheckBox smtpssl;
     private javax.swing.JCheckBox smtptls;
     private mpv5.ui.beans.LabeledTextField smtpuser;
     private javax.swing.JCheckBox supresscurrencysymbols;
     private javax.swing.JCheckBox tabs;
+    private mpv5.ui.beans.LabeledTextField testadress;
     private javax.swing.JCheckBox transdateX;
     private javax.swing.JCheckBox unpaidbills;
     private javax.swing.JCheckBox views;
@@ -820,6 +876,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
             mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("smtp.host.user", smtpuser.getText());
             mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("smtp.host.password", new String(smtppw.getPassword()));
             mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("smtp.host.usetls", Boolean.toString(smtptls.isSelected()));
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("smtp.host.usessl", Boolean.toString(smtpssl.isSelected()));
             mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("smtp.host.usesmpts", Boolean.toString(smtps.isSelected()));
 
             mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("dtabankaccount", dtabankaccount.getText());
@@ -939,10 +996,16 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("smtp.host.usetls")) {
             smtptls.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("smtp.host.usetls", false));
         }
+        
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("smtp.host.usessl")) {
+            smtpssl.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("smtp.host.usessl", false));
+        }
 
         if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("smtp.host.usesmpts")) {
             smtps.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("smtp.host.usesmpts", false));
         }
+        
+        testadress.setText(User.getCurrentUser().__getMail());
         
         nocount.setSelected(GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.hidecountfortext"));
         resolv.setSelected(GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.productsresolved"));
@@ -952,6 +1015,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         try {
             Runnable runnable = new Runnable() {
 
+                @Override
                 public void run() {
                     try {
                         deftax.setSelectedItem(Integer.valueOf(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(deftax.getName())));

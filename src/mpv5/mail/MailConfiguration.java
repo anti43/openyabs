@@ -13,6 +13,7 @@ public class MailConfiguration {
     private String senderAddress;
     private boolean useTls;
     private boolean useSmtps;
+    private Boolean useSSL;
 
     /**
      * @return the smtpHost
@@ -110,5 +111,19 @@ public class MailConfiguration {
      */
     public void setSmtpPort(String smtpPort) {
         this.smtpPort = smtpPort;
+    }
+
+    /**
+     * @param useSSL the useSSL to set
+     */
+    public void setUseSSL(Boolean useSSL) {
+        this.useSSL = useSSL;
+    }
+    
+    /**
+     * @return the useSSL
+     */
+    public boolean isUseSSL() {
+        return useSSL;
     }
 }

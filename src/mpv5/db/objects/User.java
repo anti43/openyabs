@@ -715,6 +715,7 @@ public class User extends DatabaseObject {
             mailConfiguration.setUsername(getProperties().getProperty("smtp.host.user"));
             mailConfiguration.setPassword(getProperties().getProperty("smtp.host.password"));
             mailConfiguration.setUseTls(Boolean.valueOf(getProperties().getProperty("smtp.host.usetls")));
+            mailConfiguration.setUseSSL(Boolean.valueOf(getProperties().getProperty("smtp.host.usessl")));
             mailConfiguration.setUseSmtps(Boolean.valueOf(getProperties().getProperty("smtp.host.usesmpts")));
         } else {
             Log.Debug(this, "Mail configuration not set.");

@@ -65,6 +65,7 @@ public class SimpleMail implements Waiter {
     private List<String> bcc = new ArrayList<String>();
     private List<String> rec = new ArrayList<String>();
     private boolean useTls;
+    private boolean useSSL;
     private boolean useSmtps;
     private File attachment;
     private String ccAddress;
@@ -72,23 +73,31 @@ public class SimpleMail implements Waiter {
     /**
      *
      * @param smtpHost
+     * @param smtpPort
      * @param username
      * @param password
+     * @param useTls
+     * @param useSSL
+     * @param useSmtps
      * @param senderAddress
      * @param recipientsAddress
      * @param subject
      * @param text
      * @throws MessagingException
      */
-    public SimpleMail(String smtpHost, String smtpPort, String username, String password, String senderAddress, String recipientsAddress, String subject, String text) throws MessagingException {
+    public SimpleMail(String smtpHost, String smtpPort, String username, String password, boolean useTls,boolean useSSL,boolean useSmtps, String senderAddress, String recipientsAddress, String subject, String text) throws MessagingException {
         this.smtpHost = smtpHost;
         this.smtpPort = smtpPort;
         this.username = username;
         this.password = password;
+        this.useTls   = useTls;
+        this.useSSL   = useSSL;
+        this.useSmtps = useSmtps;
         this.senderAddress = senderAddress;
         this.recipientsAddress = recipientsAddress;
         this.subject = subject;
         this.text = text;
+        this.sendMail();
     }
 
     public SimpleMail() {
@@ -166,6 +175,7 @@ public class SimpleMail implements Waiter {
             setSmtpPort(c.getSmtpPort());
             setUsername(c.getUsername());
             setUseTls(c.isUseTls());
+            setUseSSL(c.isUseSSL());
             setUseSmtps(c.isUseSmtps());
         } else {
             throw new UnsupportedOperationException("MailConfig cannot be null!");
@@ -317,6 +327,20 @@ public class SimpleMail implements Waiter {
     }
 
     /**
+     * @return the useSSL
+     */
+    public boolean isUseSSL() {
+        return useSSL;
+    }
+
+    /**
+     * @param useSSL the useSSL to set
+     */
+    public void setUseSSL(boolean useSSL) {
+        this.useSSL = useSSL;
+    }
+
+    /**
      * @return the useSmtps
      */
     public boolean isUseSmtps() {
@@ -335,10 +359,19 @@ public class SimpleMail implements Waiter {
         mpv5.YabsViewProxy.instance().getProgressbar().setIndeterminate(true);
         MailAuthenticator auth = new MailAuthenticator(username, password);
 
-        Properties properties = null;
-        Session session = null;
+        Properties properties;
+        Session session;
         properties = new Properties();
+        properties.put("mail.smtp.localhost", smtpHost);
         properties.put("mail.smtp.host", smtpHost);
+
+        if (useSSL) {
+            properties.put("mail.smtp.ssl.enable", true);
+            properties.put("mail.smtp.starttls.enable", "true");
+//            properties.put("mail.smtp.auth.mechanisms", "XOAUTH2");
+//            properties.put(OAuth2SaslClientFactory.OAUTH_TOKEN_PROP, oauthToken);
+        }
+        
         properties.put("mail.smtp.port", (smtpPort!=null&&smtpPort.length()>1?smtpPort:"25"));
         if (username != null) {
             properties.put("mail.smtp.auth", "true");
@@ -347,8 +380,9 @@ public class SimpleMail implements Waiter {
             properties.put("mail.smtp.starttls.enable", "true");
         }
 
-        session = Session.getDefaultInstance(properties, auth);
-
+        session = Session.getInstance(properties, auth);
+        if (Log.getLoglevel() == Log.LOGLEVEL_DEBUG)
+            session.setDebug(true);
         // Define message
         MimeMessage message = new MimeMessage(session);
         message.setFrom(new InternetAddress(senderAddress));
