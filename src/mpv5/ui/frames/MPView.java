@@ -1045,13 +1045,13 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         statusPanel = new javax.swing.JPanel();
         statusMessageLabel =   new FadeOnChangeLabel();
         pluginIcons = new javax.swing.JPanel();
+        officelabel = new javax.swing.JPanel();
+        serverlabel = new javax.swing.JPanel();
         separator = new javax.swing.JPanel();
         progressBar = new javax.swing.JProgressBar();
         separator1 = new javax.swing.JPanel();
         xhistory = new javax.swing.JComboBox();
-        serverlabel = new javax.swing.JPanel();
         errorlabel = new javax.swing.JLabel();
-        officelabel = new javax.swing.JPanel();
         mainToolbar = new javax.swing.JToolBar();
         closeButton1 = new javax.swing.JButton();
         closeButton2 = new javax.swing.JButton();
@@ -1087,7 +1087,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
 
         jButton5.setFont(jButton5.getFont().deriveFont(jButton5.getFont().getSize()-1f));
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/agt_family.png"))); // NOI18N
-        java.util.ResourceBundle bundle =  mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jButton5.setText(bundle.getString("MPView.jButton5.text_1")); // NOI18N
         jButton5.setToolTipText(bundle.getString("MPView.jButton5.toolTipText_1")); // NOI18N
         jButton5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -1478,7 +1478,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         naviPanelLayout.setVerticalGroup(
             naviPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(naviPanelLayout.createSequentialGroup()
-                .addComponent(nav_outlookbar, javax.swing.GroupLayout.DEFAULT_SIZE, 523, Short.MAX_VALUE)
+                .addComponent(nav_outlookbar, javax.swing.GroupLayout.DEFAULT_SIZE, 497, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -1494,7 +1494,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(naviPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(tabpanePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 538, Short.MAX_VALUE)
+            .addComponent(tabpanePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 512, Short.MAX_VALUE)
         );
 
         menuBar.setName("menuBar"); // NOI18N
@@ -2123,8 +2123,10 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         menuBar.add(helpmenu);
 
         statusPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        statusPanel.setMaximumSize(new java.awt.Dimension(1914, 50));
+        statusPanel.setMinimumSize(new java.awt.Dimension(457, 25));
         statusPanel.setName("statusPanel"); // NOI18N
-        statusPanel.setPreferredSize(new java.awt.Dimension(800, 20));
+        statusPanel.setPreferredSize(new java.awt.Dimension(800, 25));
         statusPanel.setLayout(new javax.swing.BoxLayout(statusPanel, javax.swing.BoxLayout.LINE_AXIS));
 
         statusMessageLabel.setText(bundle.getString("MPView.statusMessageLabel.text")); // NOI18N
@@ -2140,6 +2142,20 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         pluginIcons.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 0));
         statusPanel.add(pluginIcons);
 
+        officelabel.setMaximumSize(new java.awt.Dimension(20, 100));
+        officelabel.setMinimumSize(new java.awt.Dimension(20, 10));
+        officelabel.setName("officelabel"); // NOI18N
+        officelabel.setPreferredSize(new java.awt.Dimension(20, 18));
+        officelabel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 0));
+        statusPanel.add(officelabel);
+
+        serverlabel.setMaximumSize(new java.awt.Dimension(20, 100));
+        serverlabel.setMinimumSize(new java.awt.Dimension(20, 10));
+        serverlabel.setName("serverlabel"); // NOI18N
+        serverlabel.setPreferredSize(new java.awt.Dimension(20, 18));
+        serverlabel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 0));
+        statusPanel.add(serverlabel);
+
         separator.setMaximumSize(new java.awt.Dimension(10, 32767));
         separator.setMinimumSize(new java.awt.Dimension(1, 1));
         separator.setName("separator"); // NOI18N
@@ -2153,7 +2169,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         );
         separatorLayout.setVerticalGroup(
             separatorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 16, Short.MAX_VALUE)
+            .addGap(0, 21, Short.MAX_VALUE)
         );
 
         statusPanel.add(separator);
@@ -2176,29 +2192,22 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         );
         separator1Layout.setVerticalGroup(
             separator1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 16, Short.MAX_VALUE)
+            .addGap(0, 21, Short.MAX_VALUE)
         );
 
         statusPanel.add(separator1);
 
-        xhistory.setMaximumRowCount(30);
+        xhistory.setMaximumRowCount(100);
         xhistory.setAutoscrolls(true);
         xhistory.setEditor(null);
         xhistory.setFocusable(false);
         xhistory.setMaximumSize(new java.awt.Dimension(500, 32767));
-        xhistory.setMinimumSize(new java.awt.Dimension(100, 14));
+        xhistory.setMinimumSize(new java.awt.Dimension(100, 15));
         xhistory.setName("xhistory"); // NOI18N
-        xhistory.setPreferredSize(new java.awt.Dimension(300, 23));
+        xhistory.setPreferredSize(new java.awt.Dimension(300, 25));
         xhistory.setRequestFocusEnabled(false);
         xhistory.setVerifyInputWhenFocusTarget(false);
         statusPanel.add(xhistory);
-
-        serverlabel.setMaximumSize(new java.awt.Dimension(20, 100));
-        serverlabel.setMinimumSize(new java.awt.Dimension(20, 10));
-        serverlabel.setName("serverlabel"); // NOI18N
-        serverlabel.setPreferredSize(new java.awt.Dimension(20, 18));
-        serverlabel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 0));
-        statusPanel.add(serverlabel);
 
         errorlabel.setText(bundle.getString("MPView.errorlabel.text")); // NOI18N
         errorlabel.setName("errorlabel"); // NOI18N
@@ -2208,13 +2217,6 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
             }
         });
         statusPanel.add(errorlabel);
-
-        officelabel.setMaximumSize(new java.awt.Dimension(20, 100));
-        officelabel.setMinimumSize(new java.awt.Dimension(20, 10));
-        officelabel.setName("officelabel"); // NOI18N
-        officelabel.setPreferredSize(new java.awt.Dimension(20, 18));
-        officelabel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 0));
-        statusPanel.add(officelabel);
 
         mainToolbar.setFloatable(false);
         mainToolbar.setRollover(true);

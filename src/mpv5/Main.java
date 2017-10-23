@@ -1183,11 +1183,12 @@ public class Main implements Runnable {
                                 Log.Debug(Main.class, "Checking: " + libs[i]);
                                 File lib = new File(libs[i]);
                                 failed = !lib.canRead();
-                                if (failed)
-                                     Log.Debug(Main.class, "Missing: " + libs[i]);
+                                if (failed){
+                                    Notificator.raiseNotification("Missing: " + libs[i], false);
+                                }
                             }
                             if (failed == true) {
-                                Popup.notice(Messages.MISSING_LIBS.toString());
+                                Notificator.raiseNotification(Messages.MISSING_LIBS.toString(), false);
                                 //YabsApplication.getInstance().exit();
                             }
                         }
