@@ -71,7 +71,7 @@ public final class PropertyStore {
     if (value == null) {
       value = "";
     }
-    Log.Debug(this, "Adding or replacing property: " + name + " = " + value);
+    //Log.Debug(this, "Adding or replacing property: " + name + " = " + value);
     list.put(name, value);
     setChanged(true);
   }

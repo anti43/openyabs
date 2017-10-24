@@ -23,9 +23,6 @@
     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
       <Dimension value="[120, 20]"/>
     </Property>
-    <Property name="size" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-      <Dimension value="[120, 20]"/>
-    </Property>
   </Properties>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
@@ -42,12 +39,12 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="jToolBar1" alignment="0" min="-2" max="-2" attributes="0"/>
+          <Component id="jToolBar1" alignment="0" pref="134" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="jToolBar1" min="-2" max="-2" attributes="0"/>
+          <Component id="jToolBar1" alignment="0" pref="30" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
   </Layout>

@@ -4,3 +4,5 @@
 /Cache/
 *.log
 /install.log
+/out/
+/.idea/

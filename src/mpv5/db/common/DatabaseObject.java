@@ -2069,9 +2069,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                         if (select.getData()[i][j] != null) {
                             invoke(m, select.getData()[i][j], dbo, "DatabaseObject");
                         }
-                    } else {
-                        Log.Debug(DatabaseObject.class, "Not found: " + name);
-                    }
+                    } 
                 }
             }
 

@@ -16,6 +16,7 @@
  */
 package mpv5;
 
+import com.bulenkov.darcula.DarculaLaf;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -47,6 +48,7 @@ import java.util.ResourceBundle;
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.plaf.basic.BasicLookAndFeel;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseConnection;
 import mpv5.db.common.DatabaseObject;
@@ -875,6 +877,9 @@ public class Main implements Runnable {
                         return;
                     }
                     UIManager.setLookAndFeel(lafname);
+                    
+//                    BasicLookAndFeel darcula = new DarculaLaf();
+//                    UIManager.setLookAndFeel(darcula);
                 } else {
                     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                 }

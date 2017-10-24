@@ -8,9 +8,6 @@
     </Component>
   </NonVisualComponents>
   <Properties>
-    <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-      <Color blue="cc" green="cc" red="cc" type="rgb"/>
-    </Property>
     <Property name="name" type="java.lang.String" value="Address#" noResource="true"/>
   </Properties>
   <AuxValues>
@@ -44,9 +41,6 @@
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="cc" green="cc" red="cc" type="rgb"/>
         </Property>
-        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-          <Border info="null"/>
-        </Property>
         <Property name="name" type="java.lang.String" value="jPanel2" noResource="true"/>
       </Properties>
 
@@ -54,9 +48,6 @@
       <SubComponents>
         <Container class="javax.swing.JPanel" name="mainaddress">
           <Properties>
-            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="cc" green="cc" red="cc" type="rgb"/>
-            </Property>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
                 <EmptyBorder/>
@@ -80,7 +71,7 @@
                               <Component id="badress" min="-2" pref="200" max="-2" attributes="2"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="dadress" min="-2" pref="227" max="-2" attributes="2"/>
-                              <EmptySpace max="32767" attributes="0"/>
+                              <EmptySpace pref="215" max="32767" attributes="0"/>
                               <Component id="jButton2" min="-2" pref="107" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jButton1" min="-2" pref="107" max="-2" attributes="0"/>
@@ -240,9 +231,6 @@
             </Component>
             <Component class="javax.swing.JRadioButton" name="male">
               <Properties>
-                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="cc" green="cc" red="cc" type="rgb"/>
-                </Property>
                 <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
                   <ComponentRef name="buttonGroup2"/>
                 </Property>
@@ -260,9 +248,6 @@
             </Component>
             <Component class="javax.swing.JRadioButton" name="female">
               <Properties>
-                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="cc" green="cc" red="cc" type="rgb"/>
-                </Property>
                 <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
                   <ComponentRef name="buttonGroup2"/>
                 </Property>
@@ -385,9 +370,6 @@
             </Component>
             <Component class="javax.swing.JCheckBox" name="badress">
               <Properties>
-                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="cc" green="cc" red="cc" type="rgb"/>
-                </Property>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
                   <FontInfo relative="true">
                     <Font component="badress" property="font" relativeSize="true" size="0"/>
@@ -401,9 +383,6 @@
             </Component>
             <Component class="javax.swing.JCheckBox" name="dadress">
               <Properties>
-                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="cc" green="cc" red="cc" type="rgb"/>
-                </Property>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
                   <FontInfo relative="true">
                     <Font component="dadress" property="font" relativeSize="true" size="0"/>

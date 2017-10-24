@@ -117,6 +117,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         jButton4 = new javax.swing.JButton();
         actions = new javax.swing.JPanel();
 
+        setForeground(java.awt.SystemColor.activeCaption);
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());
 
@@ -124,8 +125,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         jScrollPane1.setName("jScrollPane1"); // NOI18N
         jScrollPane1.setPreferredSize(new java.awt.Dimension(343, 303));
 
-//$2java.awt.Color(255, 255, 255));
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         buttons.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("MPControlPanel.buttons.border.title"))); // NOI18N
         buttons.setAutoscrolls(true);
         buttons.setMaximumSize(new java.awt.Dimension(32767, 400));
@@ -617,7 +617,6 @@ public class MPControlPanel extends javax.swing.JPanel {
 
         add(jScrollPane1, java.awt.BorderLayout.NORTH);
 
-//$2java.awt.Color(255, 255, 255));
         details.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("MPControlPanel.details.border.title"))); // NOI18N
         details.setMinimumSize(new java.awt.Dimension(300, 400));
         details.setName("details"); // NOI18N

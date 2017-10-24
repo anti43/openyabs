@@ -620,7 +620,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         reloadFavorites();
         identifierView = this;
         filedialog = new DialogForFile(DialogForFile.FILES_ONLY);
-        jMenuItem24.setEnabled(!LocalSettings.getBooleanProperty(LocalSettings.OFFICE_REMOTE));
+//        jMenuItem24.setEnabled(!LocalSettings.getBooleanProperty(LocalSettings.OFFICE_REMOTE));
 
         nav_outlookbar.setAnimated(navBarAnimated);
         getFrame().addComponentListener(new ComponentAdapter() {
@@ -994,10 +994,6 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         jMenuItem28 = new javax.swing.JMenuItem();
         jMenuItem29 = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JSeparator();
-        jMenu3 = new javax.swing.JMenu();
-        jMenuItem18 = new javax.swing.JMenuItem();
-        jMenuItem37 = new javax.swing.JMenuItem();
-        jMenuItem46 = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
         jSeparator9 = new javax.swing.JPopupMenu.Separator();
         jMenuItem12 = new javax.swing.JMenuItem();
@@ -1023,16 +1019,18 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         jMenuItem3 = new javax.swing.JMenuItem();
         jMenuItem23 = new javax.swing.JMenuItem();
         jMenuItem31 = new javax.swing.JMenuItem();
-        jMenuItem24 = new javax.swing.JMenuItem();
-        jMenuItem47 = new javax.swing.JMenuItem();
+        jMenu3 = new javax.swing.JMenu();
+        jMenuItem18 = new javax.swing.JMenuItem();
+        jMenuItem37 = new javax.swing.JMenuItem();
+        jMenuItem46 = new javax.swing.JMenuItem();
         jSeparator6 = new javax.swing.JSeparator();
         jMenuItem43 = new javax.swing.JMenuItem();
         jMenuItem45 = new javax.swing.JMenuItem();
         jMenuItem48 = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem42 = new javax.swing.JMenuItem();
-        jMenuItem44 = new javax.swing.JMenuItem();
         jMenuItem50 = new javax.swing.JMenuItem();
+        jMenuItem44 = new javax.swing.JMenuItem();
         favouritesMenu = new javax.swing.JMenu();
         clipboardMenu = new javax.swing.JMenu();
         jMenu6 = new javax.swing.JMenu();
@@ -1087,7 +1085,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
 
         jButton5.setFont(jButton5.getFont().deriveFont(jButton5.getFont().getSize()-1f));
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/agt_family.png"))); // NOI18N
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jButton5.setText(bundle.getString("MPView.jButton5.text_1")); // NOI18N
         jButton5.setToolTipText(bundle.getString("MPView.jButton5.toolTipText_1")); // NOI18N
         jButton5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -1478,7 +1476,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         naviPanelLayout.setVerticalGroup(
             naviPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(naviPanelLayout.createSequentialGroup()
-                .addComponent(nav_outlookbar, javax.swing.GroupLayout.DEFAULT_SIZE, 497, Short.MAX_VALUE)
+                .addComponent(nav_outlookbar, javax.swing.GroupLayout.PREFERRED_SIZE, 497, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -1715,45 +1713,6 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         jSeparator1.setName("jSeparator1"); // NOI18N
         fileMenu.add(jSeparator1);
 
-        jMenu3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/22/exec.png"))); // NOI18N
-        jMenu3.setText(bundle.getString("MPView.jMenu3.text")); // NOI18N
-        jMenu3.setName("jMenu3"); // NOI18N
-
-        jMenuItem18.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F9, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItem18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/fileexport.png"))); // NOI18N
-        jMenuItem18.setText(bundle.getString("MPView.jMenuItem18.text")); // NOI18N
-        jMenuItem18.setName("jMenuItem18"); // NOI18N
-        jMenuItem18.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                actionExportToDerby(evt);
-            }
-        });
-        jMenu3.add(jMenuItem18);
-
-        jMenuItem37.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F10, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItem37.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/cal.png"))); // NOI18N
-        jMenuItem37.setText(bundle.getString("MPView.jMenuItem37.text")); // NOI18N
-        jMenuItem37.setName("jMenuItem37"); // NOI18N
-        jMenuItem37.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                actionMigrateToMySQL(evt);
-            }
-        });
-        jMenu3.add(jMenuItem37);
-
-        jMenuItem46.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F11, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItem46.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/editpaste.png"))); // NOI18N
-        jMenuItem46.setText(bundle.getString("MPView.jMenuItem46.text_1")); // NOI18N
-        jMenuItem46.setName("jMenuItem46"); // NOI18N
-        jMenuItem46.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                actionImport(evt);
-            }
-        });
-        jMenu3.add(jMenuItem46);
-
-        fileMenu.add(jMenu3);
-
         jMenuItem2.setText(bundle.getString("MPView.jMenuItem2.text")); // NOI18N
         jMenuItem2.setName("jMenuItem2"); // NOI18N
         jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
@@ -1956,25 +1915,44 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         });
         toolsMenu.add(jMenuItem31);
 
-        jMenuItem24.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/kwikdisk.png"))); // NOI18N
-        jMenuItem24.setText(bundle.getString("MPView.jMenuItem24.text")); // NOI18N
-        jMenuItem24.setName("jMenuItem24"); // NOI18N
-        jMenuItem24.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem24ActionPerformed(evt);
-            }
-        });
-        toolsMenu.add(jMenuItem24);
+        jMenu3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/22/exec.png"))); // NOI18N
+        jMenu3.setText(bundle.getString("MPView.jMenu3.text")); // NOI18N
+        jMenu3.setName("jMenu3"); // NOI18N
 
-        jMenuItem47.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/info.png"))); // NOI18N
-        jMenuItem47.setText(bundle.getString("MPView.jMenuItem47.text")); // NOI18N
-        jMenuItem47.setName("jMenuItem47"); // NOI18N
-        jMenuItem47.addActionListener(new java.awt.event.ActionListener() {
+        jMenuItem18.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F9, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/fileexport.png"))); // NOI18N
+        jMenuItem18.setText(bundle.getString("MPView.jMenuItem18.text")); // NOI18N
+        jMenuItem18.setName("jMenuItem18"); // NOI18N
+        jMenuItem18.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem47ActionPerformed(evt);
+                actionExportToDerby(evt);
             }
         });
-        toolsMenu.add(jMenuItem47);
+        jMenu3.add(jMenuItem18);
+
+        jMenuItem37.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F10, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem37.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/cal.png"))); // NOI18N
+        jMenuItem37.setText(bundle.getString("MPView.jMenuItem37.text")); // NOI18N
+        jMenuItem37.setName("jMenuItem37"); // NOI18N
+        jMenuItem37.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                actionMigrateToMySQL(evt);
+            }
+        });
+        jMenu3.add(jMenuItem37);
+
+        jMenuItem46.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F11, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem46.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/editpaste.png"))); // NOI18N
+        jMenuItem46.setText(bundle.getString("MPView.jMenuItem46.text_1")); // NOI18N
+        jMenuItem46.setName("jMenuItem46"); // NOI18N
+        jMenuItem46.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                actionImport(evt);
+            }
+        });
+        jMenu3.add(jMenuItem46);
+
+        toolsMenu.add(jMenu3);
 
         jSeparator6.setName("jSeparator6"); // NOI18N
         toolsMenu.add(jSeparator6);
@@ -2022,15 +2000,6 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         });
         jMenu1.add(jMenuItem42);
 
-        jMenuItem44.setText(bundle.getString("MPView.jMenuItem44.text")); // NOI18N
-        jMenuItem44.setName("jMenuItem44"); // NOI18N
-        jMenuItem44.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem44ActionPerformed(evt);
-            }
-        });
-        jMenu1.add(jMenuItem44);
-
         jMenuItem50.setText(bundle.getString("MPView.jMenuItem50.text")); // NOI18N
         jMenuItem50.setName("jMenuItem50"); // NOI18N
         jMenuItem50.addActionListener(new java.awt.event.ActionListener() {
@@ -2039,6 +2008,15 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
             }
         });
         jMenu1.add(jMenuItem50);
+
+        jMenuItem44.setText(bundle.getString("MPView.jMenuItem44.text")); // NOI18N
+        jMenuItem44.setName("jMenuItem44"); // NOI18N
+        jMenuItem44.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem44ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem44);
 
         menuBar.add(jMenu1);
 
@@ -2534,11 +2512,6 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         addOrShowTab(TrashPanel.instanceOf(), Messages.TRASHBIN.toString());
     }//GEN-LAST:event_jButton7ActionPerformed
     private MPServer mpserver;
-    private void jMenuItem24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem24ActionPerformed
-        MPServer.runServer();
-        jMenuItem24.setEnabled(false);
-    }//GEN-LAST:event_jMenuItem24ActionPerformed
-
     private void jMenuItem25ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem25ActionPerformed
         LocalSettings.setProperty(LocalSettings.SCROLL_ALWAYS, String.valueOf(!isTabPaneScrolled()));
         LocalSettings.save();
@@ -2811,29 +2784,6 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         w.showWiz();
     }//GEN-LAST:event_jMenuItem29ActionPerformed
 
-    private void jMenuItem47ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem47ActionPerformed
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    NoaConnection.killConnection();
-                    try {
-                        if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_LOCALSERVER)) {
-                            Log.Debug(Main.class, "Starting OpenOffice as background service..");
-                            NoaConnectionLocalServer.startOOServerIfNotRunning(LocalSettings.getProperty(LocalSettings.OFFICE_HOME), LocalSettings.getIntegerProperty(LocalSettings.OFFICE_PORT));
-                        }
-                    } catch (Exception e) {
-                        Log.Debug(this, e.getMessage());
-                    }
-                    NoaConnection.getConnection();
-                } catch (Exception ex) {
-                    Logger.getLogger(MPView.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        };
-        new Thread(runnable).start();
-    }//GEN-LAST:event_jMenuItem47ActionPerformed
-
     private void jMenuItem48ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem48ActionPerformed
 
         addOrShowTab(Stockmanager.instanceOf(), Messages.STOCK_MANAGER);
@@ -2933,7 +2883,6 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     private javax.swing.JMenuItem jMenuItem21;
     private javax.swing.JMenuItem jMenuItem22;
     private javax.swing.JMenuItem jMenuItem23;
-    private javax.swing.JMenuItem jMenuItem24;
     private javax.swing.JMenuItem jMenuItem25;
     private javax.swing.JMenuItem jMenuItem26;
     private javax.swing.JMenuItem jMenuItem27;
@@ -2958,7 +2907,6 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     private javax.swing.JMenuItem jMenuItem44;
     private javax.swing.JMenuItem jMenuItem45;
     private javax.swing.JMenuItem jMenuItem46;
-    private javax.swing.JMenuItem jMenuItem47;
     private javax.swing.JMenuItem jMenuItem48;
     private javax.swing.JMenuItem jMenuItem49;
     private javax.swing.JMenuItem jMenuItem5;
@@ -3063,53 +3011,53 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
      *
      * @param running
      */
-    @Override
-    public void showServerStatus(boolean running) {
-        if (running) {
-            getServerlabel().setMaximumSize(new Dimension(18, 18));
-            getServerlabel().setPreferredSize(new Dimension(18, 18));
-            getServerlabel().setMinimumSize(new Dimension(18, 18));
-            getServerlabel().setSize(18, 18);
-            final JLabel plab = new JLabel();
-            plab.setIcon(new MPIcon("/mpv5/resources/images/16/kwikdisk.png"));
-            plab.setEnabled(true);
-            plab.setToolTipText("<html><b>MP Server " + Messages.LOADED + "</b><br/>Port: " + LocalSettings.getProperty(LocalSettings.SERVER_PORT) + "</html>");
-            plab.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseReleased(MouseEvent e) {
-                    if (e.getButton() == MouseEvent.BUTTON2 || e.getButton() == MouseEvent.BUTTON3) {
-                        JLabel source = (JLabel) e.getSource();
-                        final JPopupMenu m = new JPopupMenu();
-                        JMenuItem n = new JMenuItem(Messages.UNLOAD.getValue());
-                        n.addActionListener(new ActionListener() {
-                            @Override
-                            public void actionPerformed(ActionEvent e) {
-                                MPServer.stopServer();
-                                showServerStatus(false);
-                                jMenuItem24.setEnabled(true);
-                                plab.setToolTipText("<html><b>MP Server</b>");
-                                MouseListener[] ml = plab.getMouseListeners();
-                                for (int i = 0; i < ml.length; i++) {
-                                    MouseListener mouseListener = ml[i];
-                                    plab.removeMouseListener(mouseListener);
-                                }
-                            }
-                        });
-                        m.add(n);
-                        m.show(plab, e.getX(), e.getY());
-                    }
-                }
-            });
-            getServerlabel().add(plab);
-        } else {
-            getServerlabel().setMaximumSize(new Dimension(0, 0));
-            getServerlabel().setPreferredSize(new Dimension(0, 0));
-            getServerlabel().setMinimumSize(new Dimension(0, 0));
-            getServerlabel().setSize(0, 0);
-
-        }
-        getFrame().validate();
-    }
+//    @Override
+//    public void showServerStatus(boolean running) {
+//        if (running) {
+//            getServerlabel().setMaximumSize(new Dimension(18, 18));
+//            getServerlabel().setPreferredSize(new Dimension(18, 18));
+//            getServerlabel().setMinimumSize(new Dimension(18, 18));
+//            getServerlabel().setSize(18, 18);
+//            final JLabel plab = new JLabel();
+//            plab.setIcon(new MPIcon("/mpv5/resources/images/16/kwikdisk.png"));
+//            plab.setEnabled(true);
+//            plab.setToolTipText("<html><b>MP Server " + Messages.LOADED + "</b><br/>Port: " + LocalSettings.getProperty(LocalSettings.SERVER_PORT) + "</html>");
+//            plab.addMouseListener(new MouseAdapter() {
+//                @Override
+//                public void mouseReleased(MouseEvent e) {
+//                    if (e.getButton() == MouseEvent.BUTTON2 || e.getButton() == MouseEvent.BUTTON3) {
+//                        JLabel source = (JLabel) e.getSource();
+//                        final JPopupMenu m = new JPopupMenu();
+//                        JMenuItem n = new JMenuItem(Messages.UNLOAD.getValue());
+//                        n.addActionListener(new ActionListener() {
+//                            @Override
+//                            public void actionPerformed(ActionEvent e) {
+//                                MPServer.stopServer();
+//                                showServerStatus(false);
+//                                jMenuItem24.setEnabled(true);
+//                                plab.setToolTipText("<html><b>MP Server</b>");
+//                                MouseListener[] ml = plab.getMouseListeners();
+//                                for (int i = 0; i < ml.length; i++) {
+//                                    MouseListener mouseListener = ml[i];
+//                                    plab.removeMouseListener(mouseListener);
+//                                }
+//                            }
+//                        });
+//                        m.add(n);
+//                        m.show(plab, e.getX(), e.getY());
+//                    }
+//                }
+//            });
+//            getServerlabel().add(plab);
+//        } else {
+//            getServerlabel().setMaximumSize(new Dimension(0, 0));
+//            getServerlabel().setPreferredSize(new Dimension(0, 0));
+//            getServerlabel().setMinimumSize(new Dimension(0, 0));
+//            getServerlabel().setSize(0, 0);
+//
+//        }
+//        getFrame().validate();
+//    }
 
     /**
      * Triggers the MP Server notification to the view
@@ -3596,6 +3544,11 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
             return (YabsApplication) getApplication();
         }
         throw new RuntimeException("Not a YabsApplication: " + getApplication());
+    }
+
+    @Override
+    public void showServerStatus(boolean b) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

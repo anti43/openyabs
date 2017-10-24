@@ -14,10 +14,10 @@ import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import javax.swing.table.TableModel;
+
 import mpv5.logging.Log;
 
 /**
- *
  * This class provides useful number format methods
  */
 public class FormatNumber {
@@ -65,6 +65,8 @@ public class FormatNumber {
      */
     public static String formatDezimal(Number number) {
 //        Log.Print(number);
+        if (number == null) return "";
+
         java.text.DecimalFormat n = (DecimalFormat) getDefaultDecimalFormat();
         n.setMaximumFractionDigits(2);
         return n.format(round(number));
@@ -82,7 +84,7 @@ public class FormatNumber {
 
     /**
      * Rounds a number up to two fraction digits
-     * {@link BigDecimal.ROUND_HALF_UP}
+     * {BigDecimal.ROUND_HALF_UP}
      *
      * @param number
      * @return
@@ -201,24 +203,24 @@ public class FormatNumber {
     }
 
     public static BigDecimal getBigDecimal(Object val) {
-        if (val == null||String.valueOf(val).length()==0) {
+        if (val == null || String.valueOf(val).length() == 0) {
             return null;
-        } 
+        }
         //Log.Debug(val.getClass(), val);
         if (val instanceof BigDecimal) {
             return (BigDecimal) val;
-        }else if (val instanceof Integer ) {
-            return BigDecimal.valueOf((Integer)val);
-        }else if ( val instanceof Long) {
-            return BigDecimal.valueOf((Long)val);
-        }else if (val instanceof Float ) {
-            return BigDecimal.valueOf((Float)val);
-        }else if ( val instanceof Double) {
-            return BigDecimal.valueOf((Double)val);
-        }else{
+        } else if (val instanceof Integer) {
+            return BigDecimal.valueOf((Integer) val);
+        } else if (val instanceof Long) {
+            return BigDecimal.valueOf((Long) val);
+        } else if (val instanceof Float) {
+            return BigDecimal.valueOf((Float) val);
+        } else if (val instanceof Double) {
+            return BigDecimal.valueOf((Double) val);
+        } else {
             Log.Debug(FormatNumber.class, "Consider using BigDecimal as value, to prevent preciscion loss");
         }
-        
+
         return new BigDecimal(val.toString());
     }
 

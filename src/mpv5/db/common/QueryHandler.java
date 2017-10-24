@@ -247,15 +247,6 @@ public class QueryHandler implements Cloneable {
         }
     }
 
-    protected void setLimit(int limit) {
-        //Log.Debug(new RuntimeException("Setting row limit for this connection ('" + table + "') to: " + limit));
-        /*if (limit > this.limit || limit < this.limit) {
-            Log.Debug(QueryHandler.class, "Setting row limit for this connection ('" + table + "') to: " + limit);
-            this.limit = limit;
-        }*/
-        Log.Debug(QueryHandler.class, "Setting row limit is not supported anymore due to sideeffects in the application");
-    }
-
     /**
      * Builds a select query which selects all fields from all rows where the
      * fields match the given value.
@@ -1692,9 +1683,7 @@ public class QueryHandler implements Cloneable {
      */
     @SuppressWarnings("unchecked")
     public Object[][] select(String what, String[] where, String order, int limit) {
-        if (limit > 0) {
-            setLimit(limit);
-        }
+
         String query;
         if (where != null && where[0] != null && where[1] != null) {
             query = "SELECT " + what + " FROM " + table + " " + context.getReferences() + " WHERE " + table + "." + where[0] + " = " + where[2] + where[1] + where[2] + " AND " + context.getConditions(false).substring(6, context.getConditions(false).length()) + (order != null ? " ORDER BY " + order : "");
@@ -2017,7 +2006,6 @@ public class QueryHandler implements Cloneable {
         }
         try {
             theClone = (QueryHandler) this.clone();
-            theClone.setLimit(0);
             theClone.setTable(tablename);
             theClone.runInBackground = false;
         } catch (CloneNotSupportedException ex) {
@@ -2055,7 +2043,6 @@ public class QueryHandler implements Cloneable {
         try {
             theClone = (QueryHandler) this.clone();
             theClone.setTable(context.getDbIdentity());
-            theClone.setLimit(0);
             theClone.runInBackground = false;
         } catch (CloneNotSupportedException ex) {
             mpv5.logging.Log.Debug(ex);//Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
@@ -2075,7 +2062,6 @@ public class QueryHandler implements Cloneable {
         try {
             theClone = (QueryHandler) this.clone();
             theClone.setTable(context.getDbIdentity());
-            theClone.setLimit(limit);
             theClone.runInBackground = false;
         } catch (CloneNotSupportedException ex) {
             mpv5.logging.Log.Debug(ex);//Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
@@ -2096,7 +2082,6 @@ public class QueryHandler implements Cloneable {
         try {
             theClone = (QueryHandler) this.clone();
             theClone.setTable(context.getDbIdentity());
-            theClone.setLimit(limit);
             theClone.runInBackground = inBackground;
         } catch (CloneNotSupportedException ex) {
             mpv5.logging.Log.Debug(ex);//Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);

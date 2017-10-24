@@ -47,7 +47,7 @@ public class Tax extends DatabaseObject {
         try {
             return ((Tax) getObject(Context.getTaxes(), taxid)).__getTaxvalue();
         } catch (NodataFoundException ex) {
-            Log.Debug(ex);
+            //Log.Debug(ex);
             return BigDecimal.ZERO;
         }
     }

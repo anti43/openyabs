@@ -486,7 +486,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jButton6 = new javax.swing.JButton();
         toolbarpane = new javax.swing.JPanel();
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ContactPanel.border.title"))); // NOI18N
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());
@@ -643,7 +643,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                                 .addComponent(taxnumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(99, 99, 99)
                         .addComponent(payterm, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(34, Short.MAX_VALUE))
+                .addContainerGap(42, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -658,7 +658,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(groupnameselect, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(companyselect, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(number, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(taxnumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -780,33 +780,33 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jPanel9.setLayout(jPanel9Layout);
         jPanel9Layout.setHorizontalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 990, Short.MAX_VALUE)
-            .addComponent(jToolBar3, javax.swing.GroupLayout.DEFAULT_SIZE, 990, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 994, Short.MAX_VALUE)
+            .addComponent(jToolBar3, javax.swing.GroupLayout.DEFAULT_SIZE, 994, Short.MAX_VALUE)
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addComponent(jToolBar3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 188, Short.MAX_VALUE))
         );
 
-        jToolBar1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jToolBar1.setFloatable(false);
         jToolBar1.setRollover(true);
         jToolBar1.setMaximumSize(new java.awt.Dimension(2222, 28));
         jToolBar1.setName("jToolBar1"); // NOI18N
-        jToolBar1.setPreferredSize(new java.awt.Dimension(824, 28));
+        jToolBar1.setPreferredSize(new java.awt.Dimension(0, 40));
 
+        button_offer.setFont(button_offer.getFont());
         button_offer.setText(bundle.getString("ContactPanel.button_offer.text")); // NOI18N
         button_offer.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         button_offer.setFocusable(false);
         button_offer.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         button_offer.setIconTextGap(5);
-        button_offer.setMaximumSize(new java.awt.Dimension(333, 20));
-        button_offer.setMinimumSize(new java.awt.Dimension(80, 20));
+        button_offer.setMaximumSize(new java.awt.Dimension(250, 30));
+        button_offer.setMinimumSize(new java.awt.Dimension(50, 30));
         button_offer.setName("button_offer"); // NOI18N
-        button_offer.setPreferredSize(new java.awt.Dimension(120, 20));
+        button_offer.setPreferredSize(new java.awt.Dimension(150, 30));
         button_offer.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         button_offer.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -815,15 +815,16 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         });
         jToolBar1.add(button_offer);
 
+        button_order.setFont(button_order.getFont());
         button_order.setText(bundle.getString("ContactPanel.button_order.text")); // NOI18N
         button_order.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         button_order.setFocusable(false);
         button_order.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         button_order.setIconTextGap(5);
-        button_order.setMaximumSize(new java.awt.Dimension(333, 20));
-        button_order.setMinimumSize(new java.awt.Dimension(80, 20));
+        button_order.setMaximumSize(new java.awt.Dimension(250, 30));
+        button_order.setMinimumSize(new java.awt.Dimension(50, 30));
         button_order.setName("button_order"); // NOI18N
-        button_order.setPreferredSize(new java.awt.Dimension(120, 20));
+        button_order.setPreferredSize(new java.awt.Dimension(150, 30));
         button_order.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         button_order.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -834,19 +835,22 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
         button_bill.setToolTipText(bundle.getString("ContactPanel.button_bill.toolTipText")); // NOI18N
         button_bill.set_Label(bundle.getString("ContactPanel.button_bill._Label")); // NOI18N
-        button_bill.setMaximumSize(new java.awt.Dimension(120, 20));
+        button_bill.setMaximumSize(new java.awt.Dimension(250, 30));
+        button_bill.setMinimumSize(new java.awt.Dimension(50, 30));
         button_bill.setName("button_bill"); // NOI18N
+        button_bill.setPreferredSize(new java.awt.Dimension(150, 30));
         jToolBar1.add(button_bill);
 
+        button_credit.setFont(button_credit.getFont());
         button_credit.setText(bundle.getString("ContactPanel.button_credit.text")); // NOI18N
         button_credit.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         button_credit.setFocusable(false);
         button_credit.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         button_credit.setIconTextGap(5);
-        button_credit.setMaximumSize(new java.awt.Dimension(333, 20));
-        button_credit.setMinimumSize(new java.awt.Dimension(80, 20));
+        button_credit.setMaximumSize(new java.awt.Dimension(250, 30));
+        button_credit.setMinimumSize(new java.awt.Dimension(50, 30));
         button_credit.setName("button_credit"); // NOI18N
-        button_credit.setPreferredSize(new java.awt.Dimension(120, 20));
+        button_credit.setPreferredSize(new java.awt.Dimension(150, 30));
         button_credit.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         button_credit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -858,15 +862,16 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jSeparator1.setName("jSeparator1"); // NOI18N
         jToolBar1.add(jSeparator1);
 
+        button_product.setFont(button_product.getFont());
         button_product.setText(bundle.getString("ContactPanel.button_product.text")); // NOI18N
         button_product.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         button_product.setFocusable(false);
         button_product.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         button_product.setIconTextGap(5);
-        button_product.setMaximumSize(new java.awt.Dimension(333, 20));
-        button_product.setMinimumSize(new java.awt.Dimension(80, 20));
+        button_product.setMaximumSize(new java.awt.Dimension(250, 30));
+        button_product.setMinimumSize(new java.awt.Dimension(50, 30));
         button_product.setName("button_product"); // NOI18N
-        button_product.setPreferredSize(new java.awt.Dimension(120, 20));
+        button_product.setPreferredSize(new java.awt.Dimension(150, 30));
         button_product.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         button_product.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -878,15 +883,16 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jSeparator2.setName("jSeparator2"); // NOI18N
         jToolBar1.add(jSeparator2);
 
+        jButton2.setFont(jButton2.getFont());
         jButton2.setText(bundle.getString("ContactPanel.jButton2.text")); // NOI18N
         jButton2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         jButton2.setFocusable(false);
         jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton2.setIconTextGap(5);
-        jButton2.setMaximumSize(new java.awt.Dimension(333, 20));
-        jButton2.setMinimumSize(new java.awt.Dimension(80, 20));
+        jButton2.setMaximumSize(new java.awt.Dimension(250, 30));
+        jButton2.setMinimumSize(new java.awt.Dimension(50, 30));
         jButton2.setName("jButton2"); // NOI18N
-        jButton2.setPreferredSize(new java.awt.Dimension(120, 20));
+        jButton2.setPreferredSize(new java.awt.Dimension(150, 30));
         jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -895,15 +901,16 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         });
         jToolBar1.add(jButton2);
 
+        jButton3.setFont(jButton3.getFont());
         jButton3.setText(bundle.getString("ContactPanel.jButton3.text")); // NOI18N
         jButton3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         jButton3.setFocusable(false);
         jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton3.setIconTextGap(5);
-        jButton3.setMaximumSize(new java.awt.Dimension(333, 20));
-        jButton3.setMinimumSize(new java.awt.Dimension(80, 20));
+        jButton3.setMaximumSize(new java.awt.Dimension(250, 30));
+        jButton3.setMinimumSize(new java.awt.Dimension(50, 30));
         jButton3.setName("jButton3"); // NOI18N
-        jButton3.setPreferredSize(new java.awt.Dimension(120, 20));
+        jButton3.setPreferredSize(new java.awt.Dimension(150, 30));
         jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -915,8 +922,10 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jSeparator3.setName("jSeparator3"); // NOI18N
         jToolBar1.add(jSeparator3);
 
-        prinitingComboBox1.setMaximumSize(new java.awt.Dimension(200, 20));
+        prinitingComboBox1.setMaximumSize(new java.awt.Dimension(250, 30));
+        prinitingComboBox1.setMinimumSize(new java.awt.Dimension(50, 30));
         prinitingComboBox1.setName("prinitingComboBox1"); // NOI18N
+        prinitingComboBox1.setPreferredSize(new java.awt.Dimension(150, 30));
         jToolBar1.add(prinitingComboBox1);
 
         jScrollPane4.setName("jScrollPane4"); // NOI18N
@@ -1001,7 +1010,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                         .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(295, Short.MAX_VALUE))
+                .addContainerGap(303, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1143,7 +1152,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                         .addComponent(city, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(cname, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(button_order1, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(64, Short.MAX_VALUE))
+                .addContainerGap(58, Short.MAX_VALUE))
         );
         mainaddressLayout.setVerticalGroup(
             mainaddressLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1235,7 +1244,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                     .addComponent(bankcountry, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(bankname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(bankcurrency, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(98, Short.MAX_VALUE))
+                .addContainerGap(104, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab(bundle.getString("ContactPanel.jPanel5.TabConstraints.tabTitle"), jPanel5); // NOI18N
@@ -1255,11 +1264,11 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 981, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 987, Short.MAX_VALUE)
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 163, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 164, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab(bundle.getString("ContactPanel.jPanel4.TabConstraints.tabTitle"), jPanel4); // NOI18N
@@ -1316,11 +1325,11 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             propPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(propPanelLayout.createSequentialGroup()
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, 539, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(446, Short.MAX_VALUE))
+                .addContainerGap(452, Short.MAX_VALUE))
         );
         propPanelLayout.setVerticalGroup(
             propPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE)
+            .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab(bundle.getString("ContactPanel.propPanel.TabConstraints.tabTitle"), propPanel); // NOI18N
@@ -1376,8 +1385,8 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                 .addComponent(addfile1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(removefile1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(773, Short.MAX_VALUE))
-            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 985, Short.MAX_VALUE)
+                .addContainerGap(779, Short.MAX_VALUE))
+            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 991, Short.MAX_VALUE)
         );
         filetabLayout.setVerticalGroup(
             filetabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1387,7 +1396,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                     .addComponent(removefile1)
                     .addComponent(addfile1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE))
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab(bundle.getString("ContactPanel.filetab.TabConstraints.tabTitle"), filetab); // NOI18N
@@ -1400,10 +1409,10 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         rightpane.setLayout(rightpaneLayout);
         rightpaneLayout.setHorizontalGroup(
             rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 994, Short.MAX_VALUE)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 998, Short.MAX_VALUE)
             .addGroup(rightpaneLayout.createSequentialGroup()
                 .addGap(2, 2, 2)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 992, Short.MAX_VALUE))
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 996, Short.MAX_VALUE))
             .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
@@ -1412,7 +1421,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             .addGroup(rightpaneLayout.createSequentialGroup()
                 .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(4, 4, 4)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
