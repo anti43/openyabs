@@ -53,11 +53,11 @@ public class DropDownButton extends JPanel {
         jToolBar1.setAlignmentX(0.0F);
         jToolBar1.setPreferredSize(new java.awt.Dimension(120, 20));
 
+        jButton2.setFont(jButton2.getFont());
         jButton2.setText("jButton2");
         jButton2.setBorder(null);
         jButton2.setBorderPainted(false);
         jButton2.setFocusable(false);
-        jButton2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton2.setIconTextGap(0);
         jButton2.setMargin(new java.awt.Insets(0, 0, 0, 0));
@@ -85,11 +85,11 @@ public class DropDownButton extends JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 134, Short.MAX_VALUE)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
