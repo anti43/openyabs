@@ -92,7 +92,7 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
         mainaddress.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         mainaddress.setName("mainaddress"); // NOI18N
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         title.set_Label(bundle.getString("AddressPanel.title._Label")); // NOI18N
         title.setMaximumSize(new java.awt.Dimension(120, 21));
         title.setMinimumSize(new java.awt.Dimension(120, 24));
