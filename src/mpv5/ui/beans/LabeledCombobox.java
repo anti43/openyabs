@@ -35,10 +35,12 @@ public class LabeledCombobox extends javax.swing.JPanel {
     private static final long serialVersionUID = 1L;
     private String _text;
     private String _label;
+    private boolean _invisible;
 
     /** Creates new form LabeledTextField */
     public LabeledCombobox() {
         initComponents();
+        setVisible(!_invisible);
     }
 
     public JComboBox getComboBox() {
@@ -213,7 +215,6 @@ public class LabeledCombobox extends javax.swing.JPanel {
         add(jLabel1);
 
         mPCombobox1.setBorder(null);
-        mPCombobox1.setMinimumSize(new java.awt.Dimension(33, 18));
         add(mPCombobox1);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -360,5 +361,19 @@ public class LabeledCombobox extends javax.swing.JPanel {
 
     public void setNullSelection() {
        mPCombobox1.setSelectedIndex(-1);
+    }
+
+    /**
+     * @return the _invisible
+     */
+    public boolean isInvisible() {
+        return _invisible;
+    }
+
+    /**
+     * @param _invisible the _invisible to set
+     */
+    public void setInvisible(boolean _invisible) {
+        this._invisible = _invisible;
     }
 }

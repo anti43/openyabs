@@ -41,10 +41,13 @@ public final class LabeledTextField extends javax.swing.JPanel {
     private boolean searchOnEnterEnabled;
     private Object displayingObject;
     private int labelWidth=100;
+    private boolean _invisible;
 
+   
     /** Creates new form LabeledTextField */
     public LabeledTextField() {
         initComponents();
+        setVisible(!_invisible);
     }
     
      /** Creates new form LabeledTextField
@@ -409,5 +412,19 @@ public final class LabeledTextField extends javax.swing.JPanel {
      */
     public int getLabelWidth() {
         return labelWidth;
+    }
+    
+        /**
+     * @return the _invisible
+     */
+    public boolean isInvisible() {
+        return _invisible;
+    }
+
+    /**
+     * @param _invisible the _invisible to set
+     */
+    public void setInvisible(boolean _invisible) {
+        this._invisible = _invisible;
     }
 }

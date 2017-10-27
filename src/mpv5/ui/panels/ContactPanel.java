@@ -493,7 +493,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         prinitingComboBox1 = new mpv5.ui.beans.PrinitingComboBox();
         toolbarpane = new javax.swing.JPanel();
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ContactPanel.border.title"))); // NOI18N
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());
@@ -519,7 +519,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         number.setEnabled(false);
         number.setFocusable(false);
         number.setFont(number.getFont());
-        number.setMaximumSize(new java.awt.Dimension(150, 23));
+        number.setMaximumSize(new java.awt.Dimension(350, 23));
         number.setMinimumSize(new java.awt.Dimension(150, 23));
         number.setName("number"); // NOI18N
         number.setPreferredSize(new java.awt.Dimension(300, 23));
@@ -585,20 +585,20 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jToolBar2.add(manufacturer);
 
         groupnameselect.set_Label(bundle.getString("ContactPanel.groupnameselect._Label")); // NOI18N
-        groupnameselect.setMaximumSize(new java.awt.Dimension(150, 23));
+        groupnameselect.setMaximumSize(new java.awt.Dimension(350, 23));
         groupnameselect.setMinimumSize(new java.awt.Dimension(150, 23));
         groupnameselect.setName("groupnameselect"); // NOI18N
         groupnameselect.setPreferredSize(new java.awt.Dimension(300, 23));
 
         taxnumber.set_Label(bundle.getString("ContactPanel.taxnumber._Label")); // NOI18N
         taxnumber.setFont(taxnumber.getFont().deriveFont(taxnumber.getFont().getStyle() | java.awt.Font.BOLD));
-        taxnumber.setMaximumSize(new java.awt.Dimension(150, 23));
+        taxnumber.setMaximumSize(new java.awt.Dimension(350, 23));
         taxnumber.setMinimumSize(new java.awt.Dimension(150, 23));
         taxnumber.setName("taxnumber"); // NOI18N
         taxnumber.setPreferredSize(new java.awt.Dimension(300, 23));
 
         companyselect.set_Label(bundle.getString("ContactPanel.companyselect._Label")); // NOI18N
-        companyselect.setMaximumSize(new java.awt.Dimension(150, 23));
+        companyselect.setMaximumSize(new java.awt.Dimension(350, 23));
         companyselect.setMinimumSize(new java.awt.Dimension(150, 23));
         companyselect.setName("companyselect"); // NOI18N
         companyselect.setPreferredSize(new java.awt.Dimension(300, 23));
@@ -606,7 +606,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         payterm.set_Label(bundle.getString("ContactPanel.payterm._Label")); // NOI18N
         payterm.set_ValueClass(Integer.class);
         payterm.setFont(payterm.getFont().deriveFont(payterm.getFont().getStyle() | java.awt.Font.BOLD));
-        payterm.setMaximumSize(new java.awt.Dimension(150, 23));
+        payterm.setMaximumSize(new java.awt.Dimension(350, 23));
         payterm.setMinimumSize(new java.awt.Dimension(150, 23));
         payterm.setName("payterm"); // NOI18N
         payterm.setPreferredSize(new java.awt.Dimension(300, 23));
