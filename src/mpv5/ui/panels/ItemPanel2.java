@@ -583,7 +583,6 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
     private void initComponents() {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
-        accountselect1 = new mpv5.ui.beans.LabeledCombobox();
         leftpane = new javax.swing.JPanel();
         jTabbedPane2 = new javax.swing.JTabbedPane();
         rightpane = new javax.swing.JPanel();
@@ -594,8 +593,12 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         staus_icon = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         contactname = new mpv5.ui.beans.LabeledCombobox();
-        contactcity = new javax.swing.JTextField();
         jButton3 = new javax.swing.JButton();
+        prename = new mpv5.ui.beans.LabeledTextField();
+        cname = new mpv5.ui.beans.LabeledTextField();
+        street = new mpv5.ui.beans.LabeledTextField();
+        zip = new mpv5.ui.beans.LabeledTextField();
+        city = new mpv5.ui.beans.LabeledTextField();
         jPanel12 = new javax.swing.JPanel();
         number = new mpv5.ui.beans.LabeledTextField();
         button_order2 = new javax.swing.JButton();
@@ -605,6 +608,11 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         name = new mpv5.ui.beans.LabeledTextField();
         status = new mpv5.ui.beans.LabeledCombobox();
         accountselect = new mpv5.ui.beans.LabeledCombobox();
+        jButton4 = new javax.swing.JButton();
+        jPanel5 = new javax.swing.JPanel();
+        date1 = new mpv5.ui.beans.LabeledDateChooser();
+        date2 = new mpv5.ui.beans.LabeledDateChooser();
+        date3 = new mpv5.ui.beans.LabeledDateChooser();
         jToolBar1 = new javax.swing.JToolBar();
         toorder = new javax.swing.JButton();
         toinvoice = new mpv5.ui.beans.DropDownButton();
@@ -649,11 +657,6 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         upItem = new javax.swing.JButton();
         upItem1 = new javax.swing.JButton();
         panel2 = new javax.swing.JPanel();
-        jPanel5 = new javax.swing.JPanel();
-        date1 = new mpv5.ui.beans.LabeledDateChooser();
-        date2 = new mpv5.ui.beans.LabeledDateChooser();
-        date3 = new mpv5.ui.beans.LabeledDateChooser();
-        checkb_pront_oc = new UserCheckbox("orderconfirmationalways");
         jPanel7 = new javax.swing.JPanel();
         jSplitPane1 = new javax.swing.JSplitPane();
         jTabbedPane1 = new javax.swing.JTabbedPane();
@@ -707,14 +710,11 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         ;
         removefile = new javax.swing.JButton();
         addfile = new javax.swing.JButton();
+        jPanel10 = new javax.swing.JPanel();
+        checkb_pront_oc = new UserCheckbox("orderconfirmationalways");
         toolbarpane = new javax.swing.JPanel();
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
-        accountselect1.set_Label(bundle.getString("ItemPanel2.accountselect1._Label")); // NOI18N
-        accountselect1.setName("accountselect1"); // NOI18N
-        accountselect1.setPreferredSize(new java.awt.Dimension(250, 20));
-        accountselect1.setSearchOnEnterEnabled(false);
-
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ItemPanel2.border.title_1"))); // NOI18N
         setName("ItemPanel"); // NOI18N
         setPreferredSize(new java.awt.Dimension(500, 300));
@@ -749,7 +749,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         addedby.setMaximumSize(new java.awt.Dimension(250, 23));
         addedby.setMinimumSize(new java.awt.Dimension(150, 23));
         addedby.setName("addedby"); // NOI18N
-        addedby.setPreferredSize(new java.awt.Dimension(200, 23));
+        addedby.setPreferredSize(new java.awt.Dimension(200, 30));
 
         staus_icon.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         staus_icon.setMaximumSize(new java.awt.Dimension(50, 50));
@@ -762,20 +762,21 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         jPanel9Layout.setHorizontalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel9Layout.createSequentialGroup()
-                .addComponent(staus_icon, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(staus_icon, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(type, javax.swing.GroupLayout.PREFERRED_SIZE, 511, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(type, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(addedby, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel9Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel9Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(type, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(staus_icon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(type, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(staus_icon, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(addedby, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -786,12 +787,6 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         contactname.setMinimumSize(new java.awt.Dimension(150, 23));
         contactname.setName("contactname"); // NOI18N
         contactname.setPreferredSize(new java.awt.Dimension(300, 23));
-
-        contactcity.setEditable(false);
-        contactcity.setText(bundle.getString("ItemPanel2.contactcity.text")); // NOI18N
-        contactcity.setMinimumSize(new java.awt.Dimension(14, 23));
-        contactcity.setName("contactcity"); // NOI18N
-        contactcity.setPreferredSize(new java.awt.Dimension(415, 23));
 
         jButton3.setFont(jButton3.getFont().deriveFont(jButton3.getFont().getStyle() & ~java.awt.Font.BOLD));
         jButton3.setText(bundle.getString("ItemPanel2.jButton3.text")); // NOI18N
@@ -805,17 +800,56 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
             }
         });
 
+        prename.set_Label(bundle.getString("ItemPanel2.prename._Label")); // NOI18N
+        prename.setMaximumSize(new java.awt.Dimension(120, 24));
+        prename.setMinimumSize(new java.awt.Dimension(120, 21));
+        prename.setName("prename"); // NOI18N
+        prename.setPreferredSize(new java.awt.Dimension(120, 24));
+
+        cname.set_Label(bundle.getString("ItemPanel2.cname._Label")); // NOI18N
+        cname.setMaximumSize(new java.awt.Dimension(120, 24));
+        cname.setMinimumSize(new java.awt.Dimension(120, 21));
+        cname.setName("cname"); // NOI18N
+        cname.setPreferredSize(new java.awt.Dimension(120, 24));
+
+        street.set_Label(bundle.getString("ItemPanel2.street._Label")); // NOI18N
+        street.setMaximumSize(new java.awt.Dimension(120, 24));
+        street.setMinimumSize(new java.awt.Dimension(120, 21));
+        street.setName("street"); // NOI18N
+        street.setPreferredSize(new java.awt.Dimension(120, 24));
+
+        zip.set_Label(bundle.getString("ItemPanel2.zip._Label")); // NOI18N
+        zip.setMaximumSize(new java.awt.Dimension(120, 24));
+        zip.setMinimumSize(new java.awt.Dimension(120, 21));
+        zip.setName("zip"); // NOI18N
+        zip.setPreferredSize(new java.awt.Dimension(120, 24));
+
+        city.set_Label(bundle.getString("ItemPanel2.city._Label")); // NOI18N
+        city.setMaximumSize(new java.awt.Dimension(120, 24));
+        city.setMinimumSize(new java.awt.Dimension(120, 21));
+        city.setName("city"); // NOI18N
+        city.setPreferredSize(new java.awt.Dimension(120, 24));
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(contactname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(contactcity, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(contactname, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(prename, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(cname, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(zip, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(city, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(street, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -824,9 +858,18 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
-                    .addComponent(contactname, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(contactcity, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(11, Short.MAX_VALUE))
+                    .addComponent(contactname, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(prename, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(street, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(zip, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(city, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel12.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -897,49 +940,92 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         accountselect.setPreferredSize(new java.awt.Dimension(300, 23));
         accountselect.setSearchOnEnterEnabled(false);
 
+        jButton4.setFont(jButton4.getFont().deriveFont(jButton4.getFont().getStyle() & ~java.awt.Font.BOLD));
+        jButton4.setText(bundle.getString("ItemPanel2.jButton4.text")); // NOI18N
+        jButton4.setMaximumSize(new java.awt.Dimension(250, 23));
+        jButton4.setMinimumSize(new java.awt.Dimension(50, 23));
+        jButton4.setName("jButton4"); // NOI18N
+        jButton4.setPreferredSize(new java.awt.Dimension(100, 23));
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
+        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ItemPanel2.jPanel5.border.title"))); // NOI18N
+        jPanel5.setMinimumSize(new java.awt.Dimension(250, 60));
+        jPanel5.setName("jPanel5"); // NOI18N
+        jPanel5.setPreferredSize(new java.awt.Dimension(892, 75));
+        jPanel5.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 10, 0));
+
+        date1.set_Label(bundle.getString("ItemPanel2.date1._Label")); // NOI18N
+        date1.setName("date1"); // NOI18N
+        date1.setPreferredSize(new java.awt.Dimension(280, 20));
+        jPanel5.add(date1);
+
+        date2.set_Label(bundle.getString("ItemPanel2.date2._Label")); // NOI18N
+        date2.setName("date2"); // NOI18N
+        date2.setPreferredSize(new java.awt.Dimension(280, 20));
+        jPanel5.add(date2);
+
+        date3.set_Label(bundle.getString("ItemPanel2.date3._Label")); // NOI18N
+        date3.setName("date3"); // NOI18N
+        date3.setPreferredSize(new java.awt.Dimension(280, 20));
+        jPanel5.add(date3);
+
         javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
         jPanel12.setLayout(jPanel12Layout);
         jPanel12Layout.setHorizontalGroup(
             jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel12Layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(6, 6, 6)
                 .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(accountselect, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel12Layout.createSequentialGroup()
+                        .addComponent(number, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(32, 32, 32)
+                        .addComponent(refOrder, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel12Layout.createSequentialGroup()
                         .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel12Layout.createSequentialGroup()
-                                .addComponent(number, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(status, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(accountselect, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(jPanel12Layout.createSequentialGroup()
                                 .addComponent(groupnameselect, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(button_order2, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(31, 31, 31)
-                        .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(status, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(refOrder, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(name, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 431, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(name, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         jPanel12Layout.setVerticalGroup(
             jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(name, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel12Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jButton1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(status, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(number, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(number, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
+                    .addComponent(refOrder, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE))
                 .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(groupnameselect, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(button_order2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(refOrder, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(accountselect, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(7, Short.MAX_VALUE))
+                    .addGroup(jPanel12Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
+                        .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(groupnameselect, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(button_order2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(accountselect, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(status, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
+                    .addGroup(jPanel12Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -948,21 +1034,24 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel9, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 953, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel12, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, 1540, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(5, 5, 5)
-                .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(10, Short.MAX_VALUE))
         );
 
         jToolBar1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -1320,12 +1409,12 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addComponent(itemPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 899, Short.MAX_VALUE))
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 1486, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-            .addComponent(itemPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(itemPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE)
         );
 
         jPanel6.add(jPanel4, java.awt.BorderLayout.CENTER);
@@ -1336,9 +1425,9 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         rightpane.setLayout(rightpaneLayout);
         rightpaneLayout.setHorizontalGroup(
             rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 959, Short.MAX_VALUE)
-            .addComponent(jToolBar1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+            .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 1546, Short.MAX_VALUE)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         rightpaneLayout.setVerticalGroup(
             rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1354,41 +1443,6 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
 
         panel2.setName("panel2"); // NOI18N
         panel2.setLayout(new java.awt.BorderLayout());
-
-        jPanel5.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ItemPanel2.jPanel5.border.title"))); // NOI18N
-        jPanel5.setMinimumSize(new java.awt.Dimension(250, 60));
-        jPanel5.setName("jPanel5"); // NOI18N
-        jPanel5.setPreferredSize(new java.awt.Dimension(892, 75));
-        jPanel5.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 10, 0));
-
-        date1.set_Label(bundle.getString("ItemPanel2.date1._Label")); // NOI18N
-        date1.setName("date1"); // NOI18N
-        date1.setPreferredSize(new java.awt.Dimension(280, 20));
-        jPanel5.add(date1);
-
-        date2.set_Label(bundle.getString("ItemPanel2.date2._Label")); // NOI18N
-        date2.setName("date2"); // NOI18N
-        date2.setPreferredSize(new java.awt.Dimension(280, 20));
-        jPanel5.add(date2);
-
-        date3.set_Label(bundle.getString("ItemPanel2.date3._Label")); // NOI18N
-        date3.setName("date3"); // NOI18N
-        date3.setPreferredSize(new java.awt.Dimension(280, 20));
-        jPanel5.add(date3);
-
-        checkb_pront_oc.setBackground(new java.awt.Color(255, 255, 255));
-        checkb_pront_oc.setText(bundle.getString("ItemPanel2.checkb_pront_oc.text")); // NOI18N
-        checkb_pront_oc.setFocusable(false);
-        checkb_pront_oc.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        checkb_pront_oc.setMaximumSize(new java.awt.Dimension(333, 20));
-        checkb_pront_oc.setMinimumSize(new java.awt.Dimension(80, 20));
-        checkb_pront_oc.setName("checkb_pront_oc"); // NOI18N
-        checkb_pront_oc.setPreferredSize(new java.awt.Dimension(120, 20));
-        checkb_pront_oc.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jPanel5.add(checkb_pront_oc);
-
-        panel2.add(jPanel5, java.awt.BorderLayout.PAGE_START);
 
         jPanel7.setName("jPanel7"); // NOI18N
         jPanel7.setLayout(new java.awt.BorderLayout());
@@ -1412,7 +1466,6 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         jScrollPane1.setBorder(null);
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
-        notes.setBackground(new java.awt.Color(254, 254, 254));
         notes.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         notes.setToolTipText(bundle.getString("ItemPanel2.notes.toolTipText")); // NOI18N
         notes.setName("notes"); // NOI18N
@@ -1512,13 +1565,13 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         jPanel8Layout.setHorizontalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
-                .addContainerGap(479, Short.MAX_VALUE)
+                .addContainerGap(1121, Short.MAX_VALUE)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(addfile, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(removefile, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)))
             .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel8Layout.createSequentialGroup()
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 472, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 1114, Short.MAX_VALUE)
                     .addGap(31, 31, 31)))
         );
         jPanel8Layout.setVerticalGroup(
@@ -1527,9 +1580,9 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                 .addComponent(addfile)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(removefile)
-                .addContainerGap(422, Short.MAX_VALUE))
+                .addContainerGap(404, Short.MAX_VALUE))
             .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 492, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 474, Short.MAX_VALUE))
         );
 
         jSplitPane1.setRightComponent(jPanel8);
@@ -1537,6 +1590,36 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         jPanel7.add(jSplitPane1, java.awt.BorderLayout.CENTER);
 
         panel2.add(jPanel7, java.awt.BorderLayout.CENTER);
+
+        jPanel10.setName("jPanel10"); // NOI18N
+
+        checkb_pront_oc.setText(bundle.getString("ItemPanel2.checkb_pront_oc.text")); // NOI18N
+        checkb_pront_oc.setFocusable(false);
+        checkb_pront_oc.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        checkb_pront_oc.setMaximumSize(new java.awt.Dimension(333, 20));
+        checkb_pront_oc.setMinimumSize(new java.awt.Dimension(80, 20));
+        checkb_pront_oc.setName("checkb_pront_oc"); // NOI18N
+        checkb_pront_oc.setPreferredSize(new java.awt.Dimension(120, 20));
+        checkb_pront_oc.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+
+        javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
+        jPanel10.setLayout(jPanel10Layout);
+        jPanel10Layout.setHorizontalGroup(
+            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel10Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(checkb_pront_oc, javax.swing.GroupLayout.PREFERRED_SIZE, 323, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(1227, Short.MAX_VALUE))
+        );
+        jPanel10Layout.setVerticalGroup(
+            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel10Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(checkb_pront_oc, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(59, Short.MAX_VALUE))
+        );
+
+        panel2.add(jPanel10, java.awt.BorderLayout.PAGE_START);
 
         jTabbedPane2.addTab(bundle.getString("ItemPanel2.panel2.TabConstraints.tabTitle"), panel2); // NOI18N
 
@@ -1706,9 +1789,12 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         toInvoice(Item.TYPE_CREDIT);
     }//GEN-LAST:event_tocreditActionPerformed
 
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton4ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private mpv5.ui.beans.LabeledCombobox accountselect;
-    private mpv5.ui.beans.LabeledCombobox accountselect1;
     private javax.swing.JButton addItem;
     private javax.swing.JLabel addedby;
     private javax.swing.JButton addfile;
@@ -1720,7 +1806,8 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
     private javax.swing.JButton button_reminders;
     private javax.swing.JButton button_schedule;
     private javax.swing.JCheckBox checkb_pront_oc;
-    private javax.swing.JTextField contactcity;
+    private mpv5.ui.beans.LabeledTextField city;
+    private mpv5.ui.beans.LabeledTextField cname;
     private mpv5.ui.beans.LabeledCombobox contactname;
     private javax.swing.JTable dataTable;
     private mpv5.ui.beans.LabeledDateChooser date1;
@@ -1734,6 +1821,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -1742,6 +1830,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel2;
@@ -1778,12 +1867,14 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
     private javax.swing.JTextPane notes;
     private mpv5.ui.beans.LabeledTextField number;
     private javax.swing.JPanel panel2;
+    private mpv5.ui.beans.LabeledTextField prename;
     private javax.swing.JTable proptable;
     private mpv5.ui.beans.LabeledCombobox refOrder;
     private javax.swing.JButton removefile;
     private javax.swing.JPanel rightpane;
     private mpv5.ui.beans.LabeledCombobox status;
     private javax.swing.JLabel staus_icon;
+    private mpv5.ui.beans.LabeledTextField street;
     private javax.swing.JLabel taxvalue;
     private javax.swing.JButton tocredit;
     private mpv5.ui.beans.DropDownButton toinvoice;
@@ -1794,6 +1885,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
     private javax.swing.JButton upItem;
     private javax.swing.JButton upItem1;
     private javax.swing.JLabel value;
+    private mpv5.ui.beans.LabeledTextField zip;
     // End of variables declaration//GEN-END:variables
     public String cname_;
     public String cnumber_;
