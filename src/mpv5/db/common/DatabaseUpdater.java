@@ -208,7 +208,7 @@ public class DatabaseUpdater {
             "update products set inttype = 6 where inttype = 1"
         });
         UPDATES_DERBY.put(1.197, new String[]{
-            "CREATE TABLE productorders (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), cname VARCHAR(250) NOT NULL, cnumber VARCHAR(250) NOT NULL, description VARCHAR(2500) DEFAULT NULL, groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1, contactsids BIGINT REFERENCES cocontactsntacts(ids)  ON DELETE CASCADE, netvalue DOUBLE DEFAULT 0,taxvalue DOUBLE DEFAULT 0, discountvalue DOUBLE DEFAULT 0, shippingvalue DOUBLE DEFAULT 0, datetodo DATE DEFAULT NULL, dateend DATE DEFAULT NULL, intreminders INTEGER DEFAULT 0, inttype SMALLINT DEFAULT 0, dateadded DATE NOT NULL,intaddedby BIGINT DEFAULT 0,invisible SMALLINT DEFAULT 0,intstatus SMALLINT DEFAULT 0, hierarchypath VARCHAR(500) DEFAULT NULL, reserve1 VARCHAR(500) DEFAULT NULL, reserve2 VARCHAR(500) DEFAULT NULL, PRIMARY KEY  (ids))",
+            "CREATE TABLE productorders (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), cname VARCHAR(250) NOT NULL, cnumber VARCHAR(250) NOT NULL, description VARCHAR(2500) DEFAULT NULL, groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1, contactsids BIGINT REFERENCES contacts(ids)  ON DELETE CASCADE, netvalue DOUBLE DEFAULT 0,taxvalue DOUBLE DEFAULT 0, discountvalue DOUBLE DEFAULT 0, shippingvalue DOUBLE DEFAULT 0, datetodo DATE DEFAULT NULL, dateend DATE DEFAULT NULL, intreminders INTEGER DEFAULT 0, inttype SMALLINT DEFAULT 0, dateadded DATE NOT NULL,intaddedby BIGINT DEFAULT 0,invisible SMALLINT DEFAULT 0,intstatus SMALLINT DEFAULT 0, hierarchypath VARCHAR(500) DEFAULT NULL, reserve1 VARCHAR(500) DEFAULT NULL, reserve2 VARCHAR(500) DEFAULT NULL, PRIMARY KEY  (ids))",
             "CREATE TABLE productordersubitems (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), cname VARCHAR(5000) DEFAULT NULL, productordersids BIGINT REFERENCES productorders(ids)  ON DELETE CASCADE, groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1,originalproductsids BIGINT DEFAULT NULL, countvalue DOUBLE DEFAULT 0 NOT NULL, quantityvalue DOUBLE DEFAULT 0 NOT NULL, measure VARCHAR(250) NOT NULL, linkurl VARCHAR(1000) DEFAULT NULL,description VARCHAR(1000) DEFAULT NULL, internalvalue DOUBLE DEFAULT 0, totalnetvalue DOUBLE DEFAULT 0, totalbrutvalue DOUBLE DEFAULT 0, externalvalue DOUBLE DEFAULT 0, taxpercentvalue DOUBLE DEFAULT 0 NOT NULL,datedelivery DATE DEFAULT NULL, dateadded DATE NOT NULL,intaddedby BIGINT DEFAULT 0,invisible SMALLINT DEFAULT 0,reserve1 VARCHAR(500) DEFAULT NULL,reserve2 VARCHAR(500) DEFAULT NULL,PRIMARY KEY  (ids))"
         });
         UPDATES_DERBY.put(1.1971, new String[]{
@@ -218,7 +218,7 @@ public class DatabaseUpdater {
             "update formatstousers set inttype = 2 where inttype = 200"
         });
         UPDATES_DERBY.put(1.1972, new String[]{
-            "RENAME COLUMN productordersubitems.productorderids TO productordersids"
+            //"RENAME COLUMN productordersubitems.productorderids TO productordersids"
         });
         UPDATES_DERBY.put(1.1973, new String[]{
             "ALTER TABLE productordersubitems ADD COLUMN inttype SMALLINT DEFAULT 0 NOT NULL",
