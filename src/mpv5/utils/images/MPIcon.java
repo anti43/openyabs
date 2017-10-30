@@ -43,6 +43,7 @@ public class MPIcon extends ImageIcon {
     private static final long serialVersionUID = 1L;
     public static String DIRECTORY_DEFAULT_ICONS = "/mpv5/resources/images/22/mimetypes/";
     public static Icon ICON_ENABLED = new javax.swing.ImageIcon(MPIcon.class.getResource("/mpv5/resources/images/16/yes.png"));
+    public static Icon ICON_DISABLED = new javax.swing.ImageIcon(MPIcon.class.getResource("/mpv5/resources/images/16/remove.png"));
 
 
     /**

@@ -164,7 +164,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             switch (itemType) {
                 case Item.TYPE_INVOICE:
                     i = (Item) DatabaseObject.getObject(Context.getInvoice());
-                    i.setCname(Messages.NEW_BILL.getValue());
+                    i.setCname(Messages.NEW_INVOICE.getValue());
                     break;
                 case Item.TYPE_PART_PAYMENT:
                     i = (Item) DatabaseObject.getObject(Context.getPartPayment());
@@ -493,7 +493,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         prinitingComboBox1 = new mpv5.ui.beans.PrinitingComboBox();
         toolbarpane = new javax.swing.JPanel();
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ContactPanel.border.title"))); // NOI18N
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());

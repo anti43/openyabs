@@ -65,7 +65,7 @@ public enum Messages {
     NEW_MANUFACTURER("New Manufacturer"),
     NEW_OFFER("New Offer"),
     NEW_ORDER("New Order"),
-    NEW_BILL("New Invoice"),
+    NEW_INVOICE("New Invoice"),
     NEW_DEPOSIT("New Deposit"),
     NEW_PART_PAYMENT("New Partial Payment"),
     NEW_CREDIT("New Credit"),

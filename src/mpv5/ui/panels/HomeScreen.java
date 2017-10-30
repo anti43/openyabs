@@ -236,7 +236,7 @@ public class HomeScreen extends javax.swing.JPanel {
                     data[i][4] = Item.getTypeString(0);
                     data[i][5] = 0;
                     data[i][6] = sched.getIcon();
-                    ((ImageIcon) data[i][6]).setDescription(Messages.NEW_BILL.toString());
+                    ((ImageIcon) data[i][6]).setDescription(Messages.NEW_INVOICE.toString());
                 } else if (databaseObject instanceof Revenue) {
                     Revenue rev = (Revenue) databaseObject;
                     data[i][0] = rev;

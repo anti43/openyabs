@@ -4,6 +4,7 @@
 package mpv5.ui.frames;
 
 import com.l2fprod.common.swing.JOutlookBar;
+import com.l2fprod.common.swing.plaf.OutlookBarUI;
 import enoa.connection.NoaConnection;
 import enoa.connection.NoaConnectionLocalServer;
 import groovy.lang.Binding;
@@ -210,8 +211,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     }
 
     /**
-     * Returns the currently selected tab on the main tab
-     * pane
+     * Returns the currently selected tab on the main tab pane
      *
      * @return
      */
@@ -238,10 +238,9 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     }
 
     /**
-     * Shows a file save dialog with the selcted file f. If
-     * the file's parent directory is not the current
-     * directory, changes the current directory to be the
-     * file's parent directory.
+     * Shows a file save dialog with the selcted file f. If the file's parent
+     * directory is not the current directory, changes the current directory to
+     * be the file's parent directory.
      *
      * @param f
      */
@@ -252,16 +251,14 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     }
 
     /**
-     * Initialize and show the secondary JFrame. This method
-     * is intended for showing "secondary" windows, like
-     * message dialogs, about boxes, and so on.
+     * Initialize and show the secondary JFrame. This method is intended for
+     * showing "secondary" windows, like message dialogs, about boxes, and so
+     * on.
      *
-     * Unlike the mainFrame, dismissing a secondary window
-     * will not exit the application. Session state is only
-     * automatically saved if the specified JFrame has a
-     * name, and then only for component descendants that
-     * are named. Throws an IllegalArgumentException if c is
-     * null
+     * Unlike the mainFrame, dismissing a secondary window will not exit the
+     * application. Session state is only automatically saved if the specified
+     * JFrame has a name, and then only for component descendants that are
+     * named. Throws an IllegalArgumentException if c is null
      *
      * @param c
      */
@@ -274,8 +271,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     private static YabsPluginLoader pluginLoader;
 
     /**
-     * Let the view notify the user about an unexpected
-     * error
+     * Let the view notify the user about an unexpected error
      */
     public static void showError() {
         if (Main.INSTANTIATED) {
@@ -512,8 +508,8 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     }
 
     /**
-     * Returns the curently selected tab or null if this is
-     * not a {@link DataPanel}
+     * Returns the curently selected tab or null if this is not a
+     * {@link DataPanel}
      *
      * @return
      */
@@ -537,8 +533,8 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     }
 
     /**
-     * Returns the tab at the specified position, or NULL if
-     * the tab is not existing OR not a {@link DataPanel}
+     * Returns the tab at the specified position, or NULL if the tab is not
+     * existing OR not a {@link DataPanel}
      *
      * @param position
      * @return
@@ -593,6 +589,8 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
 
         initComponents();
 
+        initNav();
+
         try {
             Image icon = Toolkit.getDefaultToolkit().getImage(this.getFrame().getClass().getResource(Constants.ICON));
             this.getFrame().setIconImage(icon);
@@ -634,13 +632,13 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         ActionListener l = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                addTab(new ItemPanel2(Context.getInvoice(), Item.TYPE_INVOICE), Messages.NEW_BILL);
+                addTab(new ItemPanel2(Context.getInvoice(), Item.TYPE_INVOICE), Messages.NEW_INVOICE);
             }
         };
         ddb1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/folder_blue.png")));
         ddb1.setLabel(Item.getTypeString(Item.TYPE_INVOICE));
         ddb1.addActionListener(l);
-        
+
         ddb1.add(
                 new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/folder_blue.png")),
                 Item.getTypeString(Item.TYPE_DEPOSIT),
@@ -729,8 +727,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     }
 
     /**
-     * Add a tab to the main tab pane, automatically
-     * determines the needed View
+     * Add a tab to the main tab pane, automatically determines the needed View
      *
      * @param item
      * @param tabTitle
@@ -843,8 +840,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     }
 
     /**
-     * Add a tab to the main tab pane, automatically
-     * determines the needed View
+     * Add a tab to the main tab pane, automatically determines the needed View
      *
      * @param item
      * @return
@@ -922,9 +918,8 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     }
 
     /**
-     * This method is called from within the constructor to
-     * initialize the form. WARNING: Do NOT modify this
-     * code. The content of this method is always
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
      * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
@@ -934,6 +929,12 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         mainPanel = new javax.swing.JPanel();
         naviPanel = new javax.swing.JPanel();
         nav_outlookbar = new com.l2fprod.common.swing.JOutlookBar();
+        parent_nav_simple = new javax.swing.JPanel();
+        nav_simple_inner = new javax.swing.JPanel();
+        scustomers = new javax.swing.JButton();
+        sinvoices = new javax.swing.JButton();
+        sproducts = new javax.swing.JButton();
+        sjournal = new javax.swing.JButton();
         parent_nav_contacts = new javax.swing.JPanel();
         nav_contacts = new javax.swing.JPanel();
         jButton5 = new javax.swing.JButton();
@@ -1015,6 +1016,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         jMenuItem35 = new javax.swing.JMenuItem();
         jMenuItem36 = new javax.swing.JMenuItem();
         jMenuItem49 = new javax.swing.JMenuItem();
+        simplenav = new javax.swing.JMenuItem();
         toolsMenu = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
         jMenuItem23 = new javax.swing.JMenuItem();
@@ -1076,6 +1078,86 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         nav_outlookbar.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         nav_outlookbar.setName("nav_outlookbar"); // NOI18N
 
+        parent_nav_simple.setName("parent_nav_simple"); // NOI18N
+        parent_nav_simple.setPreferredSize(new java.awt.Dimension(110, 400));
+        parent_nav_simple.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 0, 0));
+
+        nav_simple_inner.setName("nav_simple_inner"); // NOI18N
+        nav_simple_inner.setLayout(new java.awt.GridLayout(0, 1, 2, 5));
+
+        scustomers.setFont(scustomers.getFont().deriveFont(scustomers.getFont().getSize()-1f));
+        scustomers.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/agt_family.png"))); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        scustomers.setText(bundle.getString("MPView.scustomers.text")); // NOI18N
+        scustomers.setToolTipText(bundle.getString("MPView.scustomers.toolTipText")); // NOI18N
+        scustomers.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        scustomers.setMaximumSize(new java.awt.Dimension(250, 60));
+        scustomers.setMinimumSize(new java.awt.Dimension(80, 50));
+        scustomers.setName("scustomers"); // NOI18N
+        scustomers.setPreferredSize(new java.awt.Dimension(110, 57));
+        scustomers.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        scustomers.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                scustomersActionPerformed(evt);
+            }
+        });
+        nav_simple_inner.add(scustomers);
+
+        sinvoices.setFont(sinvoices.getFont().deriveFont(sinvoices.getFont().getSize()-1f));
+        sinvoices.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/abiword.png"))); // NOI18N
+        sinvoices.setText(bundle.getString("MPView.sinvoices.text_1")); // NOI18N
+        sinvoices.setToolTipText(bundle.getString("MPView.sinvoices.toolTipText_1")); // NOI18N
+        sinvoices.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        sinvoices.setMaximumSize(new java.awt.Dimension(250, 60));
+        sinvoices.setMinimumSize(new java.awt.Dimension(80, 50));
+        sinvoices.setName("sinvoices"); // NOI18N
+        sinvoices.setPreferredSize(new java.awt.Dimension(110, 57));
+        sinvoices.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        sinvoices.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sinvoicesActionPerformed(evt);
+            }
+        });
+        nav_simple_inner.add(sinvoices);
+
+        sproducts.setFont(sproducts.getFont().deriveFont(sproducts.getFont().getSize()-1f));
+        sproducts.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/warehause.png"))); // NOI18N
+        sproducts.setText(bundle.getString("MPView.sproducts.text_1")); // NOI18N
+        sproducts.setToolTipText(bundle.getString("MPView.sproducts.toolTipText_1")); // NOI18N
+        sproducts.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        sproducts.setMaximumSize(new java.awt.Dimension(250, 60));
+        sproducts.setMinimumSize(new java.awt.Dimension(80, 50));
+        sproducts.setName("sproducts"); // NOI18N
+        sproducts.setPreferredSize(new java.awt.Dimension(110, 57));
+        sproducts.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        sproducts.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sproductsActionPerformed(evt);
+            }
+        });
+        nav_simple_inner.add(sproducts);
+
+        sjournal.setFont(sjournal.getFont().deriveFont(sjournal.getFont().getSize()-1f));
+        sjournal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/reload.png"))); // NOI18N
+        sjournal.setText(bundle.getString("MPView.sjournal.text_1")); // NOI18N
+        sjournal.setToolTipText(bundle.getString("MPView.sjournal.toolTipText_1")); // NOI18N
+        sjournal.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        sjournal.setMaximumSize(new java.awt.Dimension(250, 60));
+        sjournal.setMinimumSize(new java.awt.Dimension(80, 50));
+        sjournal.setName("sjournal"); // NOI18N
+        sjournal.setPreferredSize(new java.awt.Dimension(110, 57));
+        sjournal.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        sjournal.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sjournalActionPerformed(evt);
+            }
+        });
+        nav_simple_inner.add(sjournal);
+
+        parent_nav_simple.add(nav_simple_inner);
+
+        nav_outlookbar.addTab(bundle.getString("MPView.parent_nav_simple.TabConstraints.tabTitle"), parent_nav_simple); // NOI18N
+
         parent_nav_contacts.setName("parent_nav_contacts"); // NOI18N
         parent_nav_contacts.setPreferredSize(new java.awt.Dimension(110, 400));
         parent_nav_contacts.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 0, 0));
@@ -1085,7 +1167,6 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
 
         jButton5.setFont(jButton5.getFont().deriveFont(jButton5.getFont().getSize()-1f));
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/agt_family.png"))); // NOI18N
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         jButton5.setText(bundle.getString("MPView.jButton5.text_1")); // NOI18N
         jButton5.setToolTipText(bundle.getString("MPView.jButton5.toolTipText_1")); // NOI18N
         jButton5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -1879,6 +1960,15 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
             }
         });
         viewMenu.add(jMenuItem49);
+
+        simplenav.setText(bundle.getString("MPView.simplenav.text")); // NOI18N
+        simplenav.setName("simplenav"); // NOI18N
+        simplenav.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                simplenavActionPerformed(evt);
+            }
+        });
+        viewMenu.add(simplenav);
 
         menuBar.add(viewMenu);
 
@@ -2822,6 +2912,36 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         addTab(new ItemPanel2(Context.getCredit(), Item.TYPE_CREDIT), Messages.NEW_CREDIT);
     }//GEN-LAST:event_jButton30ActionPerformed
 
+    private void scustomersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_scustomersActionPerformed
+
+        DatabaseObject d = DatabaseObject.getObject(Context.getCustomer());
+        ((mpv5.db.objects.Contact) d).setisCustomer(true);
+
+        ContactsList t = getClisttab(Context.getCustomer());
+        t.showType((Contact) d);
+        addOrShowTab(t, Messages.CONTACTS_LIST.toString());
+    }//GEN-LAST:event_scustomersActionPerformed
+
+    private void sjournalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sjournalActionPerformed
+        addOrShowTab(JournalPanel.instanceOf(), Messages.OVERVIEW);
+    }//GEN-LAST:event_sjournalActionPerformed
+
+    private void sproductsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sproductsActionPerformed
+        addTab(new ProductPanel(Context.getProduct(), Product.TYPE_PRODUCT), Messages.NEW_PRODUCT);
+    }//GEN-LAST:event_sproductsActionPerformed
+
+    private void sinvoicesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sinvoicesActionPerformed
+        addTab(new ItemPanel2(Context.getInvoice(), Item.TYPE_INVOICE), Messages.NEW_INVOICE);
+    }//GEN-LAST:event_sinvoicesActionPerformed
+
+    private void simplenavActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_simplenavActionPerformed
+
+        boolean oldval = GlobalSettings.getBooleanProperty("navigation.simplified");
+        GlobalSettings.setProperty("navigation.simplified", String.valueOf(!oldval));
+
+        initNav();
+    }//GEN-LAST:event_simplenavActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton calculatorButton;
     public javax.swing.JMenu clipboardMenu;
@@ -2933,17 +3053,24 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     private javax.swing.JPanel nav_extras;
     private com.l2fprod.common.swing.JOutlookBar nav_outlookbar;
     private javax.swing.JPanel nav_products;
+    private javax.swing.JPanel nav_simple_inner;
     private javax.swing.JPanel naviPanel;
     private javax.swing.JPanel officelabel;
     private javax.swing.JPanel parent_nav_accounting;
     private javax.swing.JPanel parent_nav_contacts;
     private javax.swing.JPanel parent_nav_extras;
     private javax.swing.JPanel parent_nav_products;
+    private javax.swing.JPanel parent_nav_simple;
     public javax.swing.JPanel pluginIcons;
     private javax.swing.JProgressBar progressBar;
+    private javax.swing.JButton scustomers;
     private javax.swing.JPanel separator;
     private javax.swing.JPanel separator1;
     private javax.swing.JPanel serverlabel;
+    private javax.swing.JMenuItem simplenav;
+    private javax.swing.JButton sinvoices;
+    private javax.swing.JButton sjournal;
+    private javax.swing.JButton sproducts;
     private javax.swing.JLabel statusMessageLabel;
     private javax.swing.JPanel statusPanel;
     public static final javax.swing.JPanel tabpanePanel = new javax.swing.JPanel();
@@ -3058,7 +3185,6 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 //        }
 //        getFrame().validate();
 //    }
-
     /**
      * Triggers the MP Server notification to the view
      *
@@ -3314,8 +3440,8 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     /**
      * Add a Button to the navigation panel
      *
-     * @param TARGET The target navigation section, which
-     * can be one of the following:<li>NAV_CONTACTS
+     * @param TARGET The target navigation section, which can be one of the
+     * following:<li>NAV_CONTACTS
      * <li>NAV_PRODUCTS <li>NAV_ACCOUNTING
      * <li>NAV_EXTRAS
      *
@@ -3549,6 +3675,31 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     @Override
     public void showServerStatus(boolean b) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private void initNav() {
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N            
+        nav_outlookbar.remove(parent_nav_accounting);
+        nav_outlookbar.remove(parent_nav_products);
+        nav_outlookbar.remove(parent_nav_contacts);
+        nav_outlookbar.remove(parent_nav_extras);
+        nav_outlookbar.remove(parent_nav_simple);
+
+        if (GlobalSettings.getBooleanProperty("navigation.simplified", false)) {
+
+            nav_outlookbar.addTab(bundle.getString("MPView.parent_nav_simple.TabConstraints.tabTitle"), parent_nav_simple); // NOI18N
+            nav_outlookbar.addTab(bundle.getString("MPView.parent_nav_extras.TabConstraints.tabTitle"), parent_nav_extras); // NOI18N
+
+            simplenav.setIcon(MPIcon.ICON_ENABLED);
+        } else {
+
+            nav_outlookbar.addTab(bundle.getString("MPView.parent_nav_contacts.TabConstraints.tabTitle_1"), parent_nav_contacts); // NOI18N 
+            nav_outlookbar.addTab(bundle.getString("MPView.parent_nav_accounting.TabConstraints.tabTitle_1"), parent_nav_accounting); // NOI18N
+            nav_outlookbar.addTab(bundle.getString("MPView.parent_nav_products.TabConstraints.tabTitle_1"), parent_nav_products); // NOI18N
+            nav_outlookbar.addTab(bundle.getString("MPView.parent_nav_extras.TabConstraints.tabTitle"), parent_nav_extras); // NOI18N
+
+            simplenav.setIcon(MPIcon.ICON_DISABLED);
+        }
     }
 
 }

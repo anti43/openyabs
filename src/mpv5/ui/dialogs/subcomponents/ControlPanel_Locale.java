@@ -257,15 +257,15 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 439, Short.MAX_VALUE)
                     .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(langName, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
                                 .addComponent(labeledTextChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 266, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton3)))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(jButton3))
+                            .addComponent(langName, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 112, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -350,7 +350,7 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
                     .addComponent(languages, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(Delete)
                     .addComponent(export))
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         add(jPanel3);
@@ -434,7 +434,9 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
 
         if (QueryHandler.instanceOf().clone(Context.getLanguage()).checkUniqueness("longname", new JTextField[]{langName.getTextField()})) {
             if (!langName.hasText()) {
-                langName.setText(new File(labeledTextChooser1.get_Text(false)).getName());
+                String fn = new File(labeledTextChooser1.get_Text(false)).getName();
+                int end = fn.indexOf(".");
+                langName.setText(fn.substring(0, end > 0 ? end : fn.length()));
             }
             Runnable runnable = new Runnable() {
 
@@ -442,13 +444,19 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
                 public void run() {
                     try {
                         mpv5.YabsViewProxy.instance().setWaiting(true);
+                        jButton3.setEnabled(false);
                         LanguageManager.importLanguage(langName.get_Text(), new File(labeledTextChooser1.get_Text(true)));
-                        setLanguageSelection();
+                        User.getCurrentUser().setLanguage(langName.getText());
+                        setLanguageSelection(); 
+                        setSettings();
+                        mpv5.db.objects.User.getCurrentUser().save();
+
+                        Popup.notice(Messages.RESTART_REQUIRED);
                     } catch (Exception e) {
                         Log.Debug(e);
+                        jButton3.setEnabled(true);
                     } finally {
                         cleanup();
-
                         mpv5.YabsViewProxy.instance().setWaiting(false);
                     }
                 }
@@ -474,7 +482,7 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
                 int rows = QueryHandler.instanceOf().
                         clone(Context.getUser()).
                         selectCount("LANGUAGE=",
-                        "'" + languagestring + "'");
+                                "'" + languagestring + "'");
                 if (rows != 0) {
                     Popup.notice(Messages.LANG_USED.toString());
                 } else {
@@ -495,18 +503,19 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
     private void exportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportActionPerformed
         File f;
         String key;
-        
+
         if (languages.getSelectedIndex() == -1) {
             Popup.warn(Messages.LANG_EMPTY.toString());
         } else {
             try {
                 String lang_long = ((MPComboBoxModelItem) languages.getSelectedItem()).toString();
                 String lang = ((MPComboBoxModelItem) languages.getSelectedItem()).getId();
-              
+
                 f = FileDirectoryHandler.getTempFile(lang_long + "_" + Constants.VERSION, "yabs");
-                
-                if (LanguageManager.exportLanguage(lang, f))
+
+                if (LanguageManager.exportLanguage(lang, f)) {
                     Popup.notice(Messages.LANG_EXPORTED.toString());
+                }
 
             } catch (Exception ex) {
                 Log.Debug(this, ex.getLocalizedMessage());
@@ -634,13 +643,8 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
     }
 
     private void cleanup() {
-        try {
-            for (File f : new File(FileDirectoryHandler.getTempDir2()).listFiles()) {
-                if (f.getName().endsWith(".properties")) {
-                    f.deleteOnExit();
-                }
-            }
-        } catch (Exception ex) {
+        for (File f : new File(FileDirectoryHandler.getTempDir2()).listFiles()) {
+            f.deleteOnExit();
         }
     }
 }

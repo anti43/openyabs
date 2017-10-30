@@ -396,13 +396,13 @@ public final class LabeledTextField extends javax.swing.JPanel {
      * @param value
      * @return
      */
-    public String getText(boolean nonNull, String value) {
+    public String getText(boolean nonNull, Object value) {
         String text = getText();
         if (text == null || text.length() == 0) {
             text = Popup.Enter_Value(Messages.ENTER_VALUE, value);
         }
         if (text == null || text.length() == 0) {
-            text = value;
+            text = String.valueOf(value);
         }
         return text;
     }

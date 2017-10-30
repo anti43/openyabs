@@ -282,7 +282,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     public static Item createFor(Contact dataOwner) {
         Item i = (Item) DatabaseObject.getObject(Context.getInvoice());
         i.setContactsids(dataOwner.__getIDS());
-        i.setCnumber(Messages.NEW_BILL.getValue());
+        i.setCnumber(Messages.NEW_INVOICE.getValue());
         i.buildCname();
         i.setInttype(Item.TYPE_INVOICE);
         i.setDateadded(new Date());
