@@ -98,8 +98,7 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
                   Log.Debug(this, "Running DB install queries...");
                   if (conn.runQueries(new DatabaseInstallation().getStructure())
                         & conn.runQueries(new DatabaseInstallation().getInitialData())) {
-                  
-                     Main.importCountries();
+        
                      master.setMessage(Messages.CONNECTION_VERIFIED.toString());
                   } else {
                      LocalSettings.removeInstance(forConnId);

@@ -196,6 +196,8 @@ public class wizard_FirstSettings2 extends javax.swing.JPanel implements Wizarda
     // End of variables declaration//GEN-END:variables
 
    public boolean next() {
+      
+       
       setSettings();
       User.getCurrentUser().saveProperties();
       return true;

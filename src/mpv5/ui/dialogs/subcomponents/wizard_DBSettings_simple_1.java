@@ -111,7 +111,6 @@ public class wizard_DBSettings_simple_1 extends javax.swing.JPanel implements Wi
                         if (conn.runQueries(new DatabaseInstallation().getStructure())
                                 && conn.runQueries(new DatabaseInstallation().getInitialData())) {
 
-                            Main.importCountries(); 
                             master.setMessage(Messages.CONNECTION_VERIFIED.toString());
                         } else {
                             master.setMessage(Messages.CREATING_DATABASE_FAILED.toString());

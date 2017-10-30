@@ -116,15 +116,16 @@ public class SplashScreen extends JDialog {
         progress.setForeground(new java.awt.Color(240, 240, 240));
         progress.setText("Progress");
 
-        info.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        info.setFont(info.getFont().deriveFont(info.getFont().getStyle() | java.awt.Font.BOLD));
+        info.setForeground(new java.awt.Color(255, 255, 255));
         info.setText("Version info");
 
         jProgressBar1.setForeground(new java.awt.Color(0, 204, 51));
         jProgressBar1.setIndeterminate(true);
         jProgressBar1.setStringPainted(true);
 
-        title.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
-        title.setForeground(new java.awt.Color(131, 1, 1));
+        title.setFont(title.getFont().deriveFont(title.getFont().getStyle() | java.awt.Font.BOLD));
+        title.setForeground(new java.awt.Color(255, 255, 255));
         title.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         title.setText("Title");
 

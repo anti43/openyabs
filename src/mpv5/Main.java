@@ -96,8 +96,7 @@ public class Main implements Runnable {
     public static SplashScreen splash;
     private static boolean removeplugs = false;
     /**
-     * Is true if the application is running, false if in
-     * editor
+     * Is true if the application is running, false if in editor
      */
     public static boolean INSTANTIATED = false;
     private static Integer FORCE_INSTALLER;
@@ -106,8 +105,8 @@ public class Main implements Runnable {
     public static int SINGLE_PORT = 65531;
 
     /**
-     * Use this method to (re) cache data from the database
-     * to avoid unnecessary db queries
+     * Use this method to (re) cache data from the database to avoid unnecessary
+     * db queries
      */
     public static void cache() {
         Runnable runnable = new Runnable() {
@@ -161,151 +160,6 @@ public class Main implements Runnable {
         }
     }
 
-    public static void readImports() {
-        ArrayList<DatabaseObject> users;
-        User onlyUser = null;
-        try {
-            users = User.getObjects(Context.getUser());
-            if (users.size() > 0) {
-                onlyUser = (User) users.get(0);
-            }
-        } catch (NodataFoundException ex) {
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        splash.nextStep(Messages.IMPORT_LANGUAGES.toString());
-        File ilang = new File(Constants.LANGUAGES_DIR);
-        try {
-            Log.Debug(Main.class, "Checking: " + ilang.getPath());
-            if (ilang.isDirectory() && ilang.canRead()) {
-                File[] languages = FileDirectoryHandler.getFilesOfDirectory(ilang);
-                for (int i = 0; i < languages.length; i++) {
-                    File file = languages[i];
-                    if (QueryHandler.instanceOf().clone(Context.getLanguage()).checkUniqueness("longname", file.getName())) {
-                        try {
-                            Log.Debug(Main.class, "Importing: " + file.getPath());
-                            String lang = LanguageManager.importLanguage(file.getName(), file);
-                            if (lang != null) {
-                                if (onlyUser != null) {
-                                    User u = onlyUser;
-                                    u.setLanguage(lang);
-                                    u.save();
-                                }
-                            }
-                        } catch (Exception exception) {
-                            Log.Debug(exception);
-                        }
-                    }
-                    file.deleteOnExit();
-                }
-            }
-        } catch (Exception e) {
-            Log.Debug(e);
-            Popup.error(e);
-        }
-
-        splash.nextStep(Messages.IMPORT_TEMPLATES.toString());
-        File itemp = new File(Constants.TEMPLATES_DIR);
-        boolean templateImported = false;
-        try {
-            Log.Debug(Main.class, "Checking: " + itemp.getPath());
-
-            if (itemp.isDirectory() && itemp.canRead()) {
-                File[] templates = FileDirectoryHandler.getFilesOfDirectory(itemp);
-                for (int i = 0; i < templates.length; i++) {
-                    final File file = templates[i];
-                    Log.Debug(Main.class, "Importing: " + file.getPath());
-                    if (TemplateHandler.importTemplateAndAssign(file, new FutureCallback<Template>() {
-
-                        @Override
-                        public void call(Template t) {
-                            Log.Debug(this, "Template callback");
-                            t.setGroupsids(1);
-                            t.setCname(file.getName());
-                            t.setMimetype(String.valueOf(Constants.TYPE_INVOICE));
-                            t.setFormat("1,2,4,5,7,9");
-                            t.setDescription("Wizard insert");
-                            t.save(true);
-
-                            User object = User.getCurrentUser();
-                            QueryData c = new QueryData();
-                            c.add("usersids", object.__getIDS());
-                            c.add("templatesids", t.__getIDS());
-                            c.add("groupsids", 1);
-                            c.add("cname", t.__getIDS() + "@" + object.__getIDS() + "@" + 1);
-                            QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).insert(c, null);
-                        }
-                    })) {
-                        templateImported = true;
-                    }
-                    file.deleteOnExit();
-                }
-                if (templateImported) {
-                    Notificator.raiseNotification(Messages.IMPORT_TEMPLATES_DONE, false);
-                }
-            }
-        } catch (Exception e) {
-            Log.Debug(e);
-            Popup.error(e);
-        }
-
-        splash.nextStep(Messages.IMPORT_PLUGINS.toString());
-        File iplug = new File(Constants.PLUGINS_DIR);
-        try {
-            Log.Debug(Main.class, "Checking: " + iplug.getPath());
-            if (iplug.isDirectory() && iplug.canRead()) {
-                File[] plugins = FileDirectoryHandler.getFilesOfDirectory(iplug);
-                for (int i = 0; i < plugins.length; i++) {
-                    File file = plugins[i];
-                    Log.Debug(Main.class, "Importing: " + file.getPath());
-                    YabsPluginLoader.importPlugin(file.getName(), file);
-                    file.deleteOnExit();
-                }
-            }
-        } catch (Exception e) {
-            Log.Debug(e);
-            Popup.error(e);
-        }
-
-    }
-
-    public static void assignOneTemplate() {
-        try {
-            QueryHandler xc = QueryHandler.instanceOf().clone(Context.getTemplatesToUsers(), 1);
-            if (xc.getCount() > 0) {
-                return;
-            }
-            QueryHandler xx = QueryHandler.instanceOf().clone(Context.getTemplate(), 1);
-            ReturnValue data = xx.freeSelect("ids,cname");
-            if (data.hasData()) {
-                int id = Integer.valueOf(data.getData()[0][0].toString());
-                Template t = (Template) DatabaseObject.getObject(Context.getTemplate(), id);
-
-                t.setGroupsids(1);
-                t.setCname(data.getData()[0][1].toString());
-                t.setMimetype(String.valueOf(Constants.TYPE_INVOICE));
-                t.setFormat("1,2,4,5,6");
-                t.setDescription("Wizard insert");
-                t.save(true);
-
-                User object = User.getCurrentUser();
-                QueryData c = new QueryData();
-                c.add("usersids", object.__getIDS());
-                c.add("templatesids", t.__getIDS());
-                c.add("groupsids", 1);
-                c.add("cname", t.__getIDS() + "@" + object.__getIDS() + "@" + 1);
-                QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).insert(c, null);
-            } else {
-                Popup.notice("Please restart the aplication or assign a template manually in the Templatemanager");
-            }
-            TemplateHandler.clearCache();
-
-        } catch (Exception ex) {
-            Log.Debug(ex);
-            Popup.error(ex);
-        }
-    }
-
     private static void runStartScripts() {
         if (User.PROPERTIES_OVERRIDE.hasProperty("startupcommand")) {
             try {
@@ -345,13 +199,11 @@ public class Main implements Runnable {
         SwingUtilities.invokeLater(runnable);
     }
     /**
-     * Indicates whether this is the first start of the
-     * application
+     * Indicates whether this is the first start of the application
      */
     public static boolean firstStart;
     /**
-     * Sometimes it is nice to have a good goodbye message
-     * at hand ;-)
+     * Sometimes it is nice to have a good goodbye message at hand ;-)
      *
      *
      * <b>"So Long, and Thanks for All the Fish."</b>
@@ -378,25 +230,8 @@ public class Main implements Runnable {
      */
     public static Class<MPView> VIEW_CLASS;
 
-    public static void importCountries() {
-        try {
-            File f = new File(Main.class.getResource("/mpv5/resources/extra/").toURI());
-            Log.Debug(Main.class, "Importing coutries from: " + f.getCanonicalPath());
-            File[] langfiles = f.listFiles();
-            for (int i = 0; i < langfiles.length; i++) {
-                File file = langfiles[i];
-                if (file.getName().endsWith("countries.xml")) {
-                    LanguageManager.importCountries(file);
-                }
-            }
-        } catch (Exception uRISyntaxException) {
-            Log.Debug(Main.class, uRISyntaxException.getMessage());
-        }
-    }
-
     /**
-     * At startup create and show the main frame of the
-     * application.
+     * At startup create and show the main frame of the application.
      */
     public void startup() {
 
@@ -419,7 +254,6 @@ public class Main implements Runnable {
 
                 readGlobalSettings();
                 Log.Debug(this, "Loading Yabs... ");
-                readImports();
 
                 Main.splash.nextStep(Messages.INIT_LOGIN.toString());
                 try {
@@ -560,7 +394,7 @@ public class Main implements Runnable {
 
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            
+
             splash = new SplashScreen(new ImageIcon(Main.class.getResource(mpv5.globals.Constants.SPLASH_IMAGE)));
             splash.init(12);
             Log.Print(Messages.START_MESSAGE);
@@ -625,15 +459,15 @@ public class Main implements Runnable {
     /**
      * Set the dirs
      *
-     * @param rootDir The root dir or null, defaults to:
-     * USER_HOME + File.separator + ".yabs"
+     * @param rootDir The root dir or null, defaults to: USER_HOME +
+     * File.separator + ".yabs"
      */
     public static void setEnv(String rootDir) {
-        
+
         if (osIsMacOsX) {
             System.setProperty("apple.laf.useScreenMenuBar", "true");
         }
-        
+
         if (osIsWindows) {
             USER_HOME = System.getenv("USERPROFILE");
         } else {
@@ -828,7 +662,7 @@ public class Main implements Runnable {
                     System.exit(0);
                 }
             }
-            
+
             if (cl.hasOption(checkResources)) {
                 LanguageManager.checkBundle(null, true);
             }
@@ -869,7 +703,7 @@ public class Main implements Runnable {
     public static void setLaF(final String lafname) {
         if (!Main.nolf && !HEADLESS) {
             try {
-                if (lafname != null) {
+                if (lafname != null && lafname.trim().length() > 0) {
                     try {
                         Class.forName(lafname);
                     } catch (ClassNotFoundException ex) {
@@ -877,7 +711,7 @@ public class Main implements Runnable {
                         return;
                     }
                     UIManager.setLookAndFeel(lafname);
-                    
+
 //                    BasicLookAndFeel darcula = new DarculaLaf();
 //                    UIManager.setLookAndFeel(darcula);
                 } else {
@@ -1188,7 +1022,7 @@ public class Main implements Runnable {
                                 Log.Debug(Main.class, "Checking: " + libs[i]);
                                 File lib = new File(libs[i]);
                                 failed = !lib.canRead();
-                                if (failed){
+                                if (failed) {
                                     Notificator.raiseNotification("Missing: " + libs[i], false);
                                 }
                             }
@@ -1283,7 +1117,7 @@ public class Main implements Runnable {
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     private void requestToggleFullScreen(Window window) {
-        if (!Main.osIsMacOsX || !User.getCurrentUser().getProperties().getProperty("org.openyabs.macproperty","fullscreen")){
+        if (!Main.osIsMacOsX || !User.getCurrentUser().getProperties().getProperty("org.openyabs.macproperty", "fullscreen")) {
             return;
         }
         try {
