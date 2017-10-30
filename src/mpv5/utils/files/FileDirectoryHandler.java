@@ -219,6 +219,20 @@ public abstract class FileDirectoryHandler {
 
         return outp.toURI();
     }
+    
+    
+    public static void copyFile(InputStream in, File outFile) throws Exception { 
+        FileOutputStream out = new FileOutputStream(outFile);
+ 
+        // Copy the bits from instream to outstream
+        byte[] buf = new byte[1024];
+        int len;
+        while ((len = in.read(buf)) > 0) {
+            out.write(buf, 0, len);
+        }
+        in.close();
+        out.close();
+    }
 
     /**
      * Requests that the file or directory denoted by this abstract pathname be
@@ -699,4 +713,5 @@ public abstract class FileDirectoryHandler {
             }
         }
     }
+
 }

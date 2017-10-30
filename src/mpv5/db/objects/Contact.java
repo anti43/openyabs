@@ -4,10 +4,14 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.Formattable;
+import mpv5.db.common.NodataFoundException;
+import mpv5.db.common.QueryHandler;
 import mpv5.db.common.Templateable;
 import mpv5.globals.Constants;
 import mpv5.globals.Messages;
@@ -23,37 +27,38 @@ import mpv5.utils.images.MPIcon;
  */
 public class Contact extends DatabaseObject implements Formattable, Templateable {
 
-   private static final long serialVersionUID = 1L;
-   private String cnumber = "";
-   private String taxnumber = "";
-   private String title = "";
-   private String prename = "";
-   private String street = "";
-   private String zip = "";
-   private String city = "";
-   private String mainphone = "";
-   private String workphone = "";
-   private String fax = "";
-   private String mobilephone = "";
-   private String mailaddress = "";
-   private String website = "";
-   private String notes = "";
-   private String company = "";
-   private String department = "";
-   private String bankaccount = "";
-   private String bankid = "";
-   private String bankname = "";
-   private String bankcurrency = "";
-   private String bankcountry = "";
-   private int payterm = 0;
-   private boolean ismale = true;
-   private boolean isenabled = true;
-   private boolean iscompany = false;
-   private boolean iscustomer = false;
-   private boolean ismanufacturer = false;
-   private boolean issupplier = false;
-   private String country = "";
-   private FormatHandler formatHandler;
+    private static final long serialVersionUID = 1L;
+
+    private String cnumber = "";
+    private String taxnumber = "";
+    private String title = "";
+    private String prename = "";
+    private String street = "";
+    private String zip = "";
+    private String city = "";
+    private String mainphone = "";
+    private String workphone = "";
+    private String fax = "";
+    private String mobilephone = "";
+    private String mailaddress = "";
+    private String website = "";
+    private String notes = "";
+    private String company = "";
+    private String department = "";
+    private String bankaccount = "";
+    private String bankid = "";
+    private String bankname = "";
+    private String bankcurrency = "";
+    private String bankcountry = "";
+    private int payterm = 0;
+    private boolean ismale = true;
+    private boolean isenabled = true;
+    private boolean iscompany = false;
+    private boolean iscustomer = false;
+    private boolean ismanufacturer = false;
+    private boolean issupplier = false;
+    private String country = "";
+    private FormatHandler formatHandler;
 //   public final static int TYPE_CONTACT = 0;
 //   public final static int TYPE_CUSTOMER = 1;
 //   public final static int TYPE_SUPPLIER = 2;
@@ -72,7 +77,6 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
 //        }
 //        return Messages.TYPE_CONTACT.getValue();
 //    }
-
     public Contact() {
         setContext(Context.getContact());
     }
@@ -399,9 +403,9 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
         this.country = country;
     }
 
-   /**
-    * @return the payterm
-    */
+    /**
+     * @return the payterm
+     */
     public int __getPayterm() {
         return payterm;
     }
@@ -413,11 +417,11 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
         this.payterm = payterm;
     }
 
-   @Override
-   public JComponent getView() {
-      ContactPanel x = new ContactPanel(getContext());
-      return (JComponent) x;
-   }
+    @Override
+    public JComponent getView() {
+        ContactPanel x = new ContactPanel(getContext());
+        return (JComponent) x;
+    }
 
     @Override
     public MPIcon getIcon() {
@@ -498,7 +502,7 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
         return super.resolveReferences(map);
     }
 
-   @Override
+    @Override
     public void defineFormatHandler(FormatHandler handler) {
         formatHandler = handler;
     }
@@ -748,5 +752,14 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
         def.setZip(zip);
         def.setContactsids(ids);
         return def;
+    }
+
+    public static Contact findByCname(String cn) {
+        try {
+            return (Contact) DatabaseObject.getObject(Context.getContact(), cn);
+        } catch (NodataFoundException ex) {
+            Logger.getLogger(Contact.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
     }
 }
