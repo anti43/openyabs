@@ -350,11 +350,9 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         jPanel2.setPreferredSize(new java.awt.Dimension(734, 200));
         jPanel2.setRequestFocusEnabled(false);
 
-        jPanel7.setBackground(new java.awt.Color(255, 255, 255));
         jPanel7.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel7.setName("jPanel7"); // NOI18N
 
-        bydateend.setBackground(new java.awt.Color(255, 255, 255));
         bydateend.setFont(bydateend.getFont());
         bydateend.setText(bundle.getString("JournalPanel.bydateend.text")); // NOI18N
         bydateend.setName("bydateend"); // NOI18N
@@ -375,7 +373,6 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         statusc.setFont(statusc.getFont());
         statusc.setName("statusc"); // NOI18N
 
-        includechildgroups.setBackground(new java.awt.Color(255, 255, 255));
         includechildgroups.setFont(includechildgroups.getFont());
         includechildgroups.setSelected(true);
         includechildgroups.setText(bundle.getString("JournalPanel.includechildgroups.text")); // NOI18N
@@ -394,7 +391,6 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         jLabel6.setName("jLabel6"); // NOI18N
         jLabel6.setPreferredSize(new java.awt.Dimension(150, 21));
 
-        expbydateend.setBackground(new java.awt.Color(255, 255, 255));
         expbydateend.setFont(expbydateend.getFont());
         expbydateend.setText(bundle.getString("JournalPanel.expbydateend.text")); // NOI18N
         expbydateend.setName("expbydateend"); // NOI18N
@@ -446,7 +442,6 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel8.setBackground(new java.awt.Color(255, 255, 255));
         jPanel8.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel8.setName("jPanel8"); // NOI18N
 

@@ -79,7 +79,7 @@ import mpv5.globals.Messages;
 import mpv5.handler.Scheduler;
 import mpv5.logging.Log;
 import mpv5.pluginhandling.YabsPluginLoader;
-import mpv5.server.MPServer;
+ 
 import mpv5.ui.dialogs.About;
 import mpv5.ui.dialogs.BigPopup;
 import mpv5.ui.dialogs.DialogForFile;
@@ -608,12 +608,9 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         staterrorlabel = errorlabel;
         history = xhistory;
         history.setRenderer(new ComboBoxRendererForTooltip());
-        if (tabPaneScrolled) {
+       
             tabpanePanel.add(new JScrollPane(getTabPane()), BorderLayout.CENTER);
-            jMenuItem25.setIcon(MPIcon.ICON_ENABLED);
-        } else {
-            tabpanePanel.add(tabPane, BorderLayout.CENTER);
-        }
+      
         favMenu = favouritesMenu;
         reloadFavorites();
         identifierView = this;
@@ -1009,7 +1006,6 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         jMenu2 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem39 = new javax.swing.JMenuItem();
-        jMenuItem25 = new javax.swing.JMenuItem();
         jMenuItem19 = new javax.swing.JMenuItem();
         jMenuItem4 = new javax.swing.JMenuItem();
         jMenu15 = new javax.swing.JMenu();
@@ -1897,15 +1893,6 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
 
         viewMenu.add(jMenu2);
 
-        jMenuItem25.setText(bundle.getString("MPView.jMenuItem25.text")); // NOI18N
-        jMenuItem25.setName("jMenuItem25"); // NOI18N
-        jMenuItem25.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem25ActionPerformed(evt);
-            }
-        });
-        viewMenu.add(jMenuItem25);
-
         jMenuItem19.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, 0));
         jMenuItem19.setText(bundle.getString("MPView.jMenuItem19.text")); // NOI18N
         jMenuItem19.setName("jMenuItem19"); // NOI18N
@@ -2601,12 +2588,6 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
         addOrShowTab(TrashPanel.instanceOf(), Messages.TRASHBIN.toString());
     }//GEN-LAST:event_jButton7ActionPerformed
-    private MPServer mpserver;
-    private void jMenuItem25ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem25ActionPerformed
-        LocalSettings.setProperty(LocalSettings.SCROLL_ALWAYS, String.valueOf(!isTabPaneScrolled()));
-        LocalSettings.save();
-        Popup.notice(Messages.RESTART_REQUIRED);
-    }//GEN-LAST:event_jMenuItem25ActionPerformed
 
     private void jMenuItem26ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem26ActionPerformed
         XMLWriter.export(Context.getInvoice());
@@ -3003,7 +2984,6 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     private javax.swing.JMenuItem jMenuItem21;
     private javax.swing.JMenuItem jMenuItem22;
     private javax.swing.JMenuItem jMenuItem23;
-    private javax.swing.JMenuItem jMenuItem25;
     private javax.swing.JMenuItem jMenuItem26;
     private javax.swing.JMenuItem jMenuItem27;
     private javax.swing.JMenuItem jMenuItem28;
@@ -3288,12 +3268,7 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         return xhistory;
     }
 
-    /**
-     * @return the mpserver
-     */
-    public MPServer getMpserver() {
-        return mpserver;
-    }
+  
 
     /**
      * @return the calculatorButton

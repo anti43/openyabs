@@ -737,7 +737,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                         .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(265, Short.MAX_VALUE))
+                .addContainerGap(194, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -880,7 +880,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                             .addComponent(city, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(cname, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addComponent(button_order1, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         mainaddressLayout.setVerticalGroup(
             mainaddressLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -904,7 +904,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                     .addComponent(city, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(button_order1)
-                .addContainerGap(65, Short.MAX_VALUE))
+                .addContainerGap(52, Short.MAX_VALUE))
         );
 
         addresspanel.addTab(bundle.getString("ContactPanel.mainaddress.TabConstraints.tabTitle"), mainaddress); // NOI18N
@@ -972,7 +972,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                     .addComponent(bankcountry, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(bankname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(bankcurrency, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(157, Short.MAX_VALUE))
+                .addContainerGap(144, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab(bundle.getString("ContactPanel.jPanel5.TabConstraints.tabTitle"), jPanel5); // NOI18N
@@ -992,11 +992,11 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 949, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 878, Short.MAX_VALUE)
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 204, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab(bundle.getString("ContactPanel.jPanel4.TabConstraints.tabTitle"), jPanel4); // NOI18N
@@ -1051,11 +1051,11 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         propPanel.setLayout(propPanelLayout);
         propPanelLayout.setHorizontalGroup(
             propPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 953, Short.MAX_VALUE)
+            .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 882, Short.MAX_VALUE)
         );
         propPanelLayout.setVerticalGroup(
             propPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 221, Short.MAX_VALUE)
+            .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab(bundle.getString("ContactPanel.propPanel.TabConstraints.tabTitle"), propPanel); // NOI18N
@@ -1111,8 +1111,8 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                 .addComponent(addfile1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(removefile1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(741, Short.MAX_VALUE))
-            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 953, Short.MAX_VALUE)
+                .addContainerGap(670, Short.MAX_VALUE))
+            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 882, Short.MAX_VALUE)
         );
         filetabLayout.setVerticalGroup(
             filetabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1122,10 +1122,12 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                     .addComponent(removefile1)
                     .addComponent(addfile1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 183, Short.MAX_VALUE))
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab(bundle.getString("ContactPanel.filetab.TabConstraints.tabTitle"), filetab); // NOI18N
+
+        jTabbedPane1.setSelectedIndex(1);
 
         jScrollPane4.setViewportView(jTabbedPane1);
 
@@ -1133,7 +1135,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.TRAILING)
+            .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 699, Short.MAX_VALUE)
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1295,7 +1297,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jPanel9Layout.setHorizontalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane2)
-            .addComponent(jToolBar3, javax.swing.GroupLayout.DEFAULT_SIZE, 1305, Short.MAX_VALUE)
+            .addComponent(jToolBar3, javax.swing.GroupLayout.DEFAULT_SIZE, 1045, Short.MAX_VALUE)
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1320,7 +1322,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         button_offer.setMaximumSize(new java.awt.Dimension(250, 30));
         button_offer.setMinimumSize(new java.awt.Dimension(50, 30));
         button_offer.setName("button_offer"); // NOI18N
-        button_offer.setPreferredSize(new java.awt.Dimension(150, 30));
+        button_offer.setPreferredSize(new java.awt.Dimension(100, 30));
         button_offer.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         button_offer.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1338,7 +1340,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         button_order.setMaximumSize(new java.awt.Dimension(250, 30));
         button_order.setMinimumSize(new java.awt.Dimension(50, 30));
         button_order.setName("button_order"); // NOI18N
-        button_order.setPreferredSize(new java.awt.Dimension(150, 30));
+        button_order.setPreferredSize(new java.awt.Dimension(100, 30));
         button_order.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         button_order.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1352,7 +1354,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         button_bill.setMaximumSize(new java.awt.Dimension(250, 30));
         button_bill.setMinimumSize(new java.awt.Dimension(50, 30));
         button_bill.setName("button_bill"); // NOI18N
-        button_bill.setPreferredSize(new java.awt.Dimension(150, 30));
+        button_bill.setPreferredSize(new java.awt.Dimension(100, 30));
         jToolBar1.add(button_bill);
 
         button_credit.setFont(button_credit.getFont());
@@ -1364,7 +1366,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         button_credit.setMaximumSize(new java.awt.Dimension(250, 30));
         button_credit.setMinimumSize(new java.awt.Dimension(50, 30));
         button_credit.setName("button_credit"); // NOI18N
-        button_credit.setPreferredSize(new java.awt.Dimension(150, 30));
+        button_credit.setPreferredSize(new java.awt.Dimension(100, 30));
         button_credit.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         button_credit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1387,7 +1389,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         button_product.setMaximumSize(new java.awt.Dimension(250, 30));
         button_product.setMinimumSize(new java.awt.Dimension(50, 30));
         button_product.setName("button_product"); // NOI18N
-        button_product.setPreferredSize(new java.awt.Dimension(150, 30));
+        button_product.setPreferredSize(new java.awt.Dimension(100, 30));
         button_product.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         button_product.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1410,7 +1412,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jButton2.setMaximumSize(new java.awt.Dimension(250, 30));
         jButton2.setMinimumSize(new java.awt.Dimension(50, 30));
         jButton2.setName("jButton2"); // NOI18N
-        jButton2.setPreferredSize(new java.awt.Dimension(150, 30));
+        jButton2.setPreferredSize(new java.awt.Dimension(100, 30));
         jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1428,7 +1430,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jButton3.setMaximumSize(new java.awt.Dimension(250, 30));
         jButton3.setMinimumSize(new java.awt.Dimension(50, 30));
         jButton3.setName("jButton3"); // NOI18N
-        jButton3.setPreferredSize(new java.awt.Dimension(150, 30));
+        jButton3.setPreferredSize(new java.awt.Dimension(100, 30));
         jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

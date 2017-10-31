@@ -320,9 +320,6 @@
                   <SubComponents>
                     <Container class="javax.swing.JPanel" name="jPanel7">
                       <Properties>
-                        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="ff" green="ff" red="ff" type="rgb"/>
-                        </Property>
                         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                           <Border info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
                             <EtchetBorder/>
@@ -385,9 +382,6 @@
                       <SubComponents>
                         <Component class="javax.swing.JCheckBox" name="bydateend">
                           <Properties>
-                            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                              <Color blue="ff" green="ff" red="ff" type="rgb"/>
-                            </Property>
                             <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
                               <FontInfo relative="true">
                                 <Font component="bydateend" property="font" relativeSize="true" size="0"/>
@@ -440,9 +434,6 @@
                         </Component>
                         <Component class="javax.swing.JCheckBox" name="includechildgroups">
                           <Properties>
-                            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                              <Color blue="ff" green="ff" red="ff" type="rgb"/>
-                            </Property>
                             <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
                               <FontInfo relative="true">
                                 <Font component="includechildgroups" property="font" relativeSize="true" size="0"/>
@@ -499,9 +490,6 @@
                         </Component>
                         <Component class="javax.swing.JCheckBox" name="expbydateend">
                           <Properties>
-                            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                              <Color blue="ff" green="ff" red="ff" type="rgb"/>
-                            </Property>
                             <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
                               <FontInfo relative="true">
                                 <Font component="expbydateend" property="font" relativeSize="true" size="0"/>
@@ -520,9 +508,6 @@
                     </Container>
                     <Container class="javax.swing.JPanel" name="jPanel8">
                       <Properties>
-                        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="ff" green="ff" red="ff" type="rgb"/>
-                        </Property>
                         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                           <Border info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
                             <EtchetBorder/>

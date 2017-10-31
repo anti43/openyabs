@@ -52,8 +52,7 @@ public class LocalSettings {
      * single, multi
      */
     public static final String DBTYPE = "dbtype";
-    public static final String SERVER_PORT = "serverport";
-    public static final String SCROLL_ALWAYS = "scrollpane";
+    public static final String SERVER_PORT = "serverport"; 
     public static final String CACHE_SIZE = "cachesize";
     public static final String LAST_USER = "lastuser";
     public static final String LAST_USER_PW = "lastuserpw";

@@ -87,8 +87,10 @@ public class DateChooser extends javax.swing.JPanel {
         jSpinner1 = new javax.swing.JSpinner();
         jButton1 = new javax.swing.JButton();
 
+        setMinimumSize(new java.awt.Dimension(41, 23));
         setName("Form"); // NOI18N
         setOpaque(false);
+        setPreferredSize(new java.awt.Dimension(118, 30));
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
 
         jSpinner1.setFont(jSpinner1.getFont());
@@ -102,11 +104,11 @@ public class DateChooser extends javax.swing.JPanel {
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/cal.png"))); // NOI18N
         java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         jButton1.setToolTipText(bundle.getString("DateChooser.jButton1.toolTipText")); // NOI18N
-        jButton1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(204, 204, 204), 1, true));
+        jButton1.setBorder(null);
         jButton1.setContentAreaFilled(false);
-        jButton1.setMaximumSize(new java.awt.Dimension(20, 333));
-        jButton1.setMinimumSize(new java.awt.Dimension(18, 18));
+        jButton1.setMaximumSize(new java.awt.Dimension(30, 333));
         jButton1.setName("jButton1"); // NOI18N
+        jButton1.setPreferredSize(new java.awt.Dimension(30, 30));
         jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jButton1MouseClicked(evt);

@@ -443,7 +443,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         addfile = new javax.swing.JButton();
         toolbarpane = new javax.swing.JPanel();
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();  // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ProductPanel.border.title_1"))); // NOI18N
         setName("Form"); // NOI18N
 
@@ -610,7 +610,6 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
 
         jTabbedPane1.setName("jTabbedPane1"); // NOI18N
 
-//$2java.awt.Color(204, 204, 204));
         jPanel4.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel4.setFocusCycleRoot(true);
         jPanel4.setName("jPanel4"); // NOI18N
@@ -748,13 +747,13 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         jPanel3.setName("jPanel3"); // NOI18N
         jPanel3.setLayout(new java.awt.BorderLayout());
 
-//$2java.awt.Color(255, 255, 255));
+        supplierpanel.setBackground(new java.awt.Color(255, 255, 255));
         supplierpanel.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ProductPanel.supplierpanel.border.title"))); // NOI18N
         supplierpanel.setName("supplierpanel"); // NOI18N
         supplierpanel.setLayout(new javax.swing.BoxLayout(supplierpanel, javax.swing.BoxLayout.PAGE_AXIS));
         jPanel3.add(supplierpanel, java.awt.BorderLayout.CENTER);
 
-//$2java.awt.Color(255, 255, 255));
+        jPanel9.setBackground(new java.awt.Color(255, 255, 255));
         jPanel9.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ProductPanel.jPanel9.border.title"))); // NOI18N
         jPanel9.setName("jPanel9"); // NOI18N
 
@@ -766,7 +765,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         threshold.set_ValueClass(java.math.BigDecimal.class);
         threshold.setName("threshold"); // NOI18N
 
-//$2java.awt.Color(255, 255, 255));
+        inventoryDisabled.setBackground(new java.awt.Color(255, 255, 255));
         inventoryDisabled.setText(bundle.getString("ProductPanel.inventoryDisabled.text")); // NOI18N
         inventoryDisabled.setName("inventoryDisabled"); // NOI18N
         inventoryDisabled.addItemListener(new java.awt.event.ItemListener() {
@@ -947,7 +946,6 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                 .addGroup(rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(rightpaneLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(addfile)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(removefile)
