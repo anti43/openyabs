@@ -170,7 +170,8 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                                 Contact dbo = (Contact) DatabaseObject.getObject(Context.getContact(), Integer.valueOf(item.getId()));
                                 setContactData(dbo);
                                 setEnddate(dbo);
-                            } catch (NodataFoundException ex) {
+                            } catch (Exception ex) {
+                                Log.Debug(this, ex.getMessage());
                             }
                         }
                     };
