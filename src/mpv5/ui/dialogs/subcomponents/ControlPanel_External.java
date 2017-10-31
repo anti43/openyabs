@@ -49,25 +49,24 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
         labeledTextField1 = new mpv5.ui.beans.LabeledTextField();
         labeledTextField2 = new mpv5.ui.beans.LabeledTextField();
         jLabel3 = new javax.swing.JLabel();
-        jCheckBox1 = new javax.swing.JCheckBox();
         jButton5 = new javax.swing.JButton();
         jCheckBox2 = new javax.swing.JCheckBox();
-        jButton6 = new javax.swing.JButton();
         auto = new javax.swing.JCheckBox();
         alternate = new javax.swing.JCheckBox();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         labeledTextField3 = new mpv5.ui.beans.LabeledTextField();
         jPanel1 = new javax.swing.JPanel();
-        jButton4 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
 
-        //\$2java.awt.Color(255, 255, 255));
+        setBackground(new java.awt.Color(255, 255, 255));
         setName("Form"); // NOI18N
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.Y_AXIS));
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_External.jPanel2.border.title"))); // NOI18N
         jPanel2.setName("jPanel2"); // NOI18N
 
@@ -94,9 +93,6 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
         jLabel3.setText(bundle.getString("ControlPanel_External.jLabel3.text")); // NOI18N
         jLabel3.setName("jLabel3"); // NOI18N
 
-        jCheckBox1.setText(bundle.getString("ControlPanel_External.jCheckBox1.text")); // NOI18N
-        jCheckBox1.setName("jCheckBox1"); // NOI18N
-
         jButton5.setText(bundle.getString("ControlPanel_External.jButton5.text")); // NOI18N
         jButton5.setName(bundle.getString("ControlPanel_External.jButton5.name")); // NOI18N
         jButton5.addActionListener(new java.awt.event.ActionListener() {
@@ -107,14 +103,6 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
 
         jCheckBox2.setText(bundle.getString("ControlPanel_External.jCheckBox2.text")); // NOI18N
         jCheckBox2.setName("jCheckBox2"); // NOI18N
-
-        jButton6.setText(bundle.getString("ControlPanel_External.jButton6.text")); // NOI18N
-        jButton6.setName("jButton6"); // NOI18N
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
-            }
-        });
 
         auto.setText(bundle.getString("ControlPanel_External.auto.text")); // NOI18N
         auto.setName("auto"); // NOI18N
@@ -129,6 +117,7 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
             }
         });
 
+        alternate.setSelected(true);
         alternate.setText(bundle.getString("ControlPanel_External.alternate.text")); // NOI18N
         alternate.setName("alternate"); // NOI18N
         alternate.addItemListener(new java.awt.event.ItemListener() {
@@ -136,6 +125,12 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
                 alternateItemStateChanged(evt);
             }
         });
+
+        jLabel4.setText(bundle.getString("ControlPanel_External.jLabel4.text")); // NOI18N
+        jLabel4.setName("jLabel4"); // NOI18N
+
+        jLabel5.setText(bundle.getString("ControlPanel_External.jLabel5.text")); // NOI18N
+        jLabel5.setName("jLabel5"); // NOI18N
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -145,34 +140,38 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jCheckBox3, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(labeledTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 271, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(labeledTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jCheckBox3, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(labeledTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 407, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(labeledTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(labeledTextChooser2, javax.swing.GroupLayout.DEFAULT_SIZE, 565, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton5))
+                            .addComponent(jCheckBox2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 668, Short.MAX_VALUE)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addGap(0, 648, Short.MAX_VALUE))
+                            .addComponent(auto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap())
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(labeledTextChooser2, javax.swing.GroupLayout.DEFAULT_SIZE, 404, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton5))
-                    .addComponent(jCheckBox1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 532, Short.MAX_VALUE)
-                    .addComponent(jCheckBox2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 532, Short.MAX_VALUE)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(auto, javax.swing.GroupLayout.DEFAULT_SIZE, 348, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel3)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel4))
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(alternate, javax.swing.GroupLayout.DEFAULT_SIZE, 532, Short.MAX_VALUE))
-                .addContainerGap())
+                    .addComponent(alternate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(4, 4, 4)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(labeledTextChooser2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(3, 3, 3)
+                    .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(labeledTextChooser2, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE))
+                .addGap(7, 7, 7)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
@@ -180,16 +179,16 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
                     .addComponent(labeledTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(labeledTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jCheckBox1)
+                .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jCheckBox2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(auto)
-                    .addComponent(jButton6))
+                .addComponent(auto)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(alternate)
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addContainerGap(77, Short.MAX_VALUE))
         );
 
         add(jPanel2);
@@ -207,30 +206,20 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(labeledTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(245, Short.MAX_VALUE))
+                .addContainerGap(381, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(labeledTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(67, Short.MAX_VALUE))
         );
 
         add(jPanel3);
 
-//$2java.awt.Color(255, 255, 255));
         jPanel1.setName("jPanel1"); // NOI18N
         jPanel1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
-
-        jButton4.setText(bundle.getString("ControlPanel_External.jButton4.text")); // NOI18N
-        jButton4.setName("jButton4"); // NOI18N
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
-            }
-        });
-        jPanel1.add(jButton4);
 
         jButton1.setText(bundle.getString("ControlPanel_External.jButton1.text")); // NOI18N
         jButton1.setName("jButton1"); // NOI18N
@@ -285,55 +274,6 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
         labeledTextChooser2.setEnabled(!jCheckBox3.isSelected());
 }//GEN-LAST:event_jCheckBox3ItemStateChanged
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        NoaConnection.clearConnection();
-        Runnable runnable2 = new Runnable() {
-            @Override
-            public void run() {
-                //Caching the old values
-                String host = LocalSettings.getProperty(LocalSettings.OFFICE_HOST);
-                String Port = LocalSettings.getProperty(LocalSettings.OFFICE_PORT);
-                String Remote = LocalSettings.getProperty(LocalSettings.OFFICE_REMOTE);
-                String home = LocalSettings.getProperty(LocalSettings.OFFICE_HOME);
-                String use = LocalSettings.getProperty(LocalSettings.OFFICE_USE);
-
-                //Setting Values to test ...
-                LocalSettings.setProperty(LocalSettings.OFFICE_HOST, labeledTextField1.getText());
-                LocalSettings.setProperty(LocalSettings.OFFICE_PORT, jCheckBox3.isSelected() ? labeledTextField2.getText() : "0");
-                LocalSettings.setProperty(LocalSettings.OFFICE_REMOTE, Boolean.toString(jCheckBox3.isSelected()));
-                LocalSettings.setProperty(LocalSettings.OFFICE_USE, "true");
-                LocalSettings.setProperty(LocalSettings.OFFICE_HOME, labeledTextChooser2.get_Text(false));
-                checkOS();
-                mpv5.YabsViewProxy.instance().setWaiting(true);
-                try {
-                    NoaConnection.getConnection().getDesktopService().getFramesCount();
-                    Popup.notice(Messages.OO_DONE_LOADING);
-                    try {
-//                   NoaConnection.getConnection().getDesktopService().terminate();
-                        setSettings();
-                        LocalSettings.save();
-//                   Popup.notice(Messages.RESTART_REQUIRED);
-                    } catch (Exception ex) {
-                        Log.Debug(ex);
-                    }
-                } catch (Exception e) {
-                    Popup.notice(Messages.ERROR_OCCURED);
-                    //Restore old Values ....
-                    LocalSettings.setProperty(LocalSettings.OFFICE_HOST, host);
-                    LocalSettings.setProperty(LocalSettings.OFFICE_PORT, Port);
-                    LocalSettings.setProperty(LocalSettings.OFFICE_REMOTE, Remote);
-                    LocalSettings.setProperty(LocalSettings.OFFICE_HOME, home);
-                    LocalSettings.setProperty(LocalSettings.OFFICE_USE, use);
-                } finally {
-                    mpv5.YabsViewProxy.instance().setWaiting(false);
-                }
-            }
-        };
-        final Thread startServerThread = new Thread(runnable2);
-        startServerThread.start();
-
-    }//GEN-LAST:event_jButton4ActionPerformed
-
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
 
         Runnable runnable = new Runnable() {
@@ -356,18 +296,6 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
         SwingUtilities.invokeLater(runnable);
     }//GEN-LAST:event_jButton5ActionPerformed
 
-   private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-       labeledTextChooser2.set_Text("");
-       jCheckBox3.setSelected(false);
-       alternate.setSelected(true);
-       jCheckBox1.setSelected(false);
-       jCheckBox2.setSelected(false);
-       labeledTextField1.setText("");
-       labeledTextField2.setText("0");
-       auto.setSelected(false);
-       jButton1ActionPerformed(evt);
-   }//GEN-LAST:event_jButton6ActionPerformed
-
    private void autoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_autoItemStateChanged
        LocalSettings.setProperty(LocalSettings.OFFICE_AUTOSTART, String.valueOf(auto.isSelected()));
        LocalSettings.save();
@@ -379,7 +307,6 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
 
     private void alternateItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_alternateItemStateChanged
         if (alternate.isSelected()) {
-            jCheckBox1.setSelected(true);
             jCheckBox2.setSelected(false);
             auto.setSelected(false);
         }
@@ -390,7 +317,6 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
         try {
             labeledTextChooser2.set_Text(LocalSettings.getProperty(LocalSettings.OFFICE_HOME));
             jCheckBox3.setSelected(LocalSettings.getBooleanProperty(LocalSettings.OFFICE_REMOTE));
-            jCheckBox1.setSelected(!LocalSettings.getBooleanProperty(LocalSettings.OFFICE_USE));
             alternate.setSelected(LocalSettings.getBooleanProperty(LocalSettings.OFFICE_ALT));
             jCheckBox2.setSelected(LocalSettings.getBooleanProperty(LocalSettings.OFFICE_LOCALSERVER));
             labeledTextField1.setText(LocalSettings.getProperty(LocalSettings.OFFICE_HOST));
@@ -415,13 +341,12 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JCheckBox jCheckBox2;
     private javax.swing.JCheckBox jCheckBox3;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -444,7 +369,7 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
 
         LocalSettings.setProperty(LocalSettings.OFFICE_HOME, labeledTextChooser2.get_Text(false));
         LocalSettings.setProperty(LocalSettings.OFFICE_LOCALSERVER, Boolean.toString(jCheckBox2.isSelected()));
-        LocalSettings.setProperty(LocalSettings.OFFICE_USE, Boolean.toString(!jCheckBox1.isSelected()));
+        LocalSettings.setProperty(LocalSettings.OFFICE_USE, Boolean.toString(!alternate.isSelected()));
         LocalSettings.setProperty(LocalSettings.OFFICE_ALT, Boolean.toString(alternate.isSelected()));
         LocalSettings.setProperty(LocalSettings.OFFICE_REMOTE, Boolean.toString(jCheckBox3.isSelected()));
         LocalSettings.setProperty(LocalSettings.OFFICE_HOST, labeledTextField1.getText());
