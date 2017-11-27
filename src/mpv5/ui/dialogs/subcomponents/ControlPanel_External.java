@@ -286,7 +286,9 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
                     if (appInfo == null) {
                         appInfo = applicationAssistant.getLatestLocalOpenOfficeOrgApplication();
                     }
-                    labeledTextChooser2.setText(appInfo.getHome());
+                    if (appInfo != null) {
+                        labeledTextChooser2.setText(appInfo.getHome());
+                    }
                     YabsViewProxy.instance().setWaiting(false);
                 } catch (OfficeApplicationException ex) {
                     Log.Debug(ex);
