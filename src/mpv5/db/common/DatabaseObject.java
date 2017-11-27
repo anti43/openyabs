@@ -2679,7 +2679,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         if (!cachedFormFieldsByKey.containsKey(key)) {
             cachedFormFieldsByKey.put(key, new FormFieldsHandler(this).getFormattedFormFields(key));
         }
-        Log.Debug(this, ".........." + key + ":>\n\n" + cachedFormFieldsByKey);
+        //Log.Debug(this, ".........." + key + ":>\n\n" + cachedFormFieldsByKey);
         return cachedFormFieldsByKey.get(key);
     }
 

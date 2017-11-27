@@ -751,6 +751,7 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
         def.setTitle(title);
         def.setZip(zip);
         def.setContactsids(ids);
+        Log.Debug(this, "returning default address");
         return def;
     }
 

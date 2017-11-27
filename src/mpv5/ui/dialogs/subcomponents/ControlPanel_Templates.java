@@ -93,7 +93,6 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
 
         jPanel6 = new javax.swing.JPanel();
         jButton6 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
         jButton10 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JSeparator();
@@ -125,7 +124,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
         jScrollPane4 = new javax.swing.JScrollPane();
         templates = new javax.swing.JTable();
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Templates.border.title"))); // NOI18N
         setName("Form"); // NOI18N
         setPreferredSize(new java.awt.Dimension(495, 183));
@@ -142,15 +141,6 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
             }
         });
         jPanel6.add(jButton6);
-
-        jButton5.setText(bundle.getString("ControlPanel_Templates.jButton5.text")); // NOI18N
-        jButton5.setName("jButton5"); // NOI18N
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
-            }
-        });
-        jPanel6.add(jButton5);
 
         jButton10.setText(bundle.getString("ControlPanel_Templates.jButton10.text")); // NOI18N
         jButton10.setName("jButton10"); // NOI18N
@@ -519,10 +509,6 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
         }
 }//GEN-LAST:event_jButton6ActionPerformed
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        test();
-}//GEN-LAST:event_jButton5ActionPerformed
-
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         DialogForFile di = new DialogForFile(DialogForFile.FILES_ONLY);
         di.setFileFilter(DialogForFile.TEMPLATE_FILES);
@@ -691,7 +677,6 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
