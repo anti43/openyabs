@@ -632,10 +632,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
 
         if (dataOwner != null && dataOwner.isExisting()) {
             try {
-//                LOAPanel lp = new LOAPanel();
-//                File f = dataOwner.getFile();
-//                YabsViewProxy.instance().addOrShowTab(lp, dataOwner.__getCname());
-//                lp.loadODT(f);
+ 
                 updateService.setSelected(false);
                 updateService.setSelected(true);
                 if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.OPEN)) {

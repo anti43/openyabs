@@ -244,7 +244,7 @@ public class NoaConnection {
      * @throws InvalidArgumentException
      */
     private synchronized boolean createLocalConnection(String OOOPath) throws OfficeApplicationException, NOAException, InvalidArgumentException {
-
+    
         Log.Debug(this, "Office connection attempt with " + String.valueOf(OOOPath));
         if (OOOPath != null && !OOOPath.equals("null")) {
             HashMap<String, String> configuration = new HashMap<String, String>();
