@@ -731,10 +731,13 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
             return;
         }
 
-        if (mpv5.db.objects.User.getCurrentUser().__getMail() == null) {
-            Popup.error(this, Messages.NO_MAIL_DEFINED);
-            return;
+        if (mpv5.db.objects.User.getCurrentUser().__getMail() == null || 
+                mpv5.db.objects.User.getCurrentUser().__getMail().trim().length()==0) {
+            mpv5.db.objects.User.getCurrentUser().setMail(this.testadress.getText());
+            mpv5.db.objects.User.getCurrentUser().save(true);
+            mpv5.db.objects.User.getCurrentUser().reset();
         }
+        
         try {
             new SimpleMail(
                     this.smtphost.getText(),

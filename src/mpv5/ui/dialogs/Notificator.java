@@ -30,6 +30,9 @@ public class Notificator {
             @Override
             public void run() {
                 Popup.notice(message);
+                if(message instanceof Throwable){
+                    Log.Debug((Throwable)message);
+                }
             }
         };
         SwingUtilities.invokeLater(runnable);

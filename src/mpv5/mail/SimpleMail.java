@@ -125,13 +125,13 @@ public class SimpleMail implements Waiter {
                     try {
                         sendSmptmail();
                     } catch (MessagingException ex) {
-                        Log.Debug(ex);
+                        Notificator.raiseNotification(new RuntimeException("SMTP From: " + senderAddress + " to: " + recipientsAddress , ex), true); 
                     }
                 } else {
                     try {
                         sendSmptsMail();
                     } catch (Exception ex) {
-                        Notificator.raiseNotification(new RuntimeException("From: " + senderAddress + " to: " + recipientsAddress , ex), true);
+                        Notificator.raiseNotification(new RuntimeException("SMTPS From: " + senderAddress + " to: " + recipientsAddress , ex), true);
                     }  
                 }
 
