@@ -1,6 +1,7 @@
 package mpv5.ui.dialogs.subcomponents;
 
 import java.awt.Component;
+import java.util.regex.Pattern;
 import javax.mail.MessagingException;
 import javax.swing.JCheckBox;
 import javax.swing.SwingUtilities;
@@ -9,6 +10,7 @@ import mpv5.db.common.Context;
 import mpv5.db.objects.User;
 import mpv5.globals.GlobalSettings;
 import mpv5.globals.Messages;
+import mpv5.handler.VariablesHandler;
 import mpv5.logging.Log;
 import mpv5.mail.SimpleMail;
 import mpv5.ui.beans.LightMPComboBox;
@@ -16,10 +18,12 @@ import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.Notificator;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.panels.MPControlPanel;
+import mpv5.utils.jobs.Job;
+import mpv5.utils.jobs.Waiter;
 
 /**
  *
- * 
+ *
  */
 public class ControlPanel_Userproperties extends javax.swing.JPanel implements ControlApplet {
 
@@ -45,11 +49,10 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         shiptax.triggerSearch();
 
 //        savedir.setFilter(DialogForFile.DIRECTORIES);
-
         loadSettings();
         try {
             groupl.setText(User.getCurrentUser().getGroup().__getCname());
-        } catch ( Exception ex) {
+        } catch (Exception ex) {
             Log.Debug(ex);
         }
     }
@@ -723,26 +726,31 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
     }//GEN-LAST:event_calcEnddateXActionPerformed
 
     private void TestButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TestButtonActionPerformed
-//        if (this.testadress.getText().isEmpty()) {
-//            Popup.error(this, Messages.NO_MAIL_DEFINED);
-//            return;
-//        }
+        if (this.testadress.getText().isEmpty()) {
+            Popup.error(this, Messages.NO_MAIL_DEFINED);
+            return;
+        }
+
+        if (mpv5.db.objects.User.getCurrentUser().__getMail() == null) {
+            Popup.error(this, Messages.NO_MAIL_DEFINED);
+            return;
+        }
         try {
             new SimpleMail(
                     this.smtphost.getText(),
                     this.smtpport.getText(),
-                    this.smtpuser.getText(), 
-                    this.smtppw.getText(), 
+                    this.smtpuser.getText(),
+                    this.smtppw.getText(),
                     this.smtptls.isSelected(),
                     this.smtpssl.isSelected(),
                     this.smtps.isSelected(),
-                    User.getCurrentUser().__getMail(), 
-                    this.testadress.getText(), 
-                    "Mail-Test", 
+                    User.getCurrentUser().__getMail(),
+                    this.testadress.getText(),
+                    "Mail-Test",
                     "Mail from YABS"
             );
         } catch (MessagingException ex) {
-           Log.Debug(this, ex.getLocalizedMessage());
+            Log.Debug(this, ex.getLocalizedMessage());
         }
     }//GEN-LAST:event_TestButtonActionPerformed
 
@@ -864,7 +872,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
             mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.itemproperty", "keepmodifiedtransdate", transdateX.isSelected());
             mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.itemproperty", "keepmodifiedenddate", enddateX.isSelected());
             mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.itemproperty", "calcenddate", calcEnddateX.isSelected());
-            
+
             if (deftax.getSelectedItem() != null) {
                 mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(deftax.getName(), deftax.getSelectedItem().getId());
             }
@@ -931,7 +939,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         transdateX.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.itemproperty", "keepmodifiedtransdate"));
         enddateX.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.itemproperty", "keepmodifiedenddate"));
         calcEnddateX.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.itemproperty", "calcenddate"));
-        
+
         Component[] t = productstobillsproperties.getComponents();
         for (int i = 0; i < t.length; i++) {
             Component component = t[i];
@@ -964,7 +972,6 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
 //        } else {
 //            savedir.set_Text("");
 //        }
-
         if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty(defcount.getName())) {
             defcount.setText(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(defcount.getName()));
         } else {
@@ -980,7 +987,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("smtp.host")) {
             smtphost.setText(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("smtp.host"));
         }
-        
+
         if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("smtp.port")) {
             smtpport.setText(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("smtp.port"));
         }
@@ -996,7 +1003,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("smtp.host.usetls")) {
             smtptls.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("smtp.host.usetls", false));
         }
-        
+
         if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("smtp.host.usessl")) {
             smtpssl.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("smtp.host.usessl", false));
         }
@@ -1004,9 +1011,9 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("smtp.host.usesmpts")) {
             smtps.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("smtp.host.usesmpts", false));
         }
-        
+
         testadress.setText(User.getCurrentUser().__getMail());
-        
+
         nocount.setSelected(GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.hidecountfortext"));
         resolv.setSelected(GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.productsresolved"));
         noblank.setSelected(GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.blankunusedfields.disable"));

@@ -130,11 +130,9 @@ public class SimpleMail implements Waiter {
                 } else {
                     try {
                         sendSmptsMail();
-                    } catch (NoSuchProviderException ex) {
-                        Log.Debug(ex);
-                    } catch (MessagingException ex) {
-                        Log.Debug(ex);
-                    }
+                    } catch (Exception ex) {
+                        Notificator.raiseNotification(new RuntimeException("From: " + senderAddress + " to: " + recipientsAddress , ex), true);
+                    }  
                 }
 
             }
@@ -395,9 +393,10 @@ public class SimpleMail implements Waiter {
 
         // create the message part
         MimeBodyPart messageBodyPart = new MimeBodyPart();
-
+        messageBodyPart.setContent( text, "text/html; charset=utf-8" );
         //fill message
-        messageBodyPart.setText(text);
+        //messageBodyPart.setText(text);
+        
         Multipart multipart = new MimeMultipart();
         multipart.addBodyPart(messageBodyPart);
 
@@ -489,9 +488,11 @@ public class SimpleMail implements Waiter {
         MimeBodyPart messageBodyPart = new MimeBodyPart();
 
         //fill message
-        messageBodyPart.setText(text);
+        messageBodyPart.setContent( text, "text/html; charset=utf-8" );
+        //messageBodyPart.setText(text);
         Multipart multipart = new MimeMultipart();
         multipart.addBodyPart(messageBodyPart);
+        
 
         if (attachment != null) {
             // Part two is attachment

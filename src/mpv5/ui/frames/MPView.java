@@ -79,7 +79,7 @@ import mpv5.globals.Messages;
 import mpv5.handler.Scheduler;
 import mpv5.logging.Log;
 import mpv5.pluginhandling.YabsPluginLoader;
- 
+
 import mpv5.ui.dialogs.About;
 import mpv5.ui.dialogs.BigPopup;
 import mpv5.ui.dialogs.DialogForFile;
@@ -155,7 +155,6 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     private static DialogForFile filedialog;
     public static SingleFrameApplication identifierApplication;
     private static boolean navBarAnimated = true;
-    private static boolean tabPaneScrolled = false;
     private static JLabel staterrorlabel = new JLabel();
     private static MPList currentList = new MPList();
     private static ListView clistview = new ListView(currentList);
@@ -226,15 +225,6 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
      */
     public static void setNavBarAnimated(boolean animated) {
         navBarAnimated = animated;
-    }
-
-    /**
-     * Change the main tabPane behavior
-     *
-     * @param scroll
-     */
-    public static void setTabPaneScrolled(boolean scroll) {
-        tabPaneScrolled = scroll;
     }
 
     /**
@@ -377,13 +367,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         return navBarAnimated;
     }
 
-    /**
-     * @return the tabPaneScrolled
-     */
-    public static boolean isTabPaneScrolled() {
-        return tabPaneScrolled;
-    }
-
+  
     /**
      * @return the staterrorlabel
      */
@@ -608,9 +592,8 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         staterrorlabel = errorlabel;
         history = xhistory;
         history.setRenderer(new ComboBoxRendererForTooltip());
-       
-            tabpanePanel.add(new JScrollPane(getTabPane()), BorderLayout.CENTER);
-      
+        tabpanePanel.add(new JScrollPane(getTabPane()), BorderLayout.CENTER);
+
         favMenu = favouritesMenu;
         reloadFavorites();
         identifierView = this;
@@ -3267,8 +3250,6 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     public javax.swing.JComboBox getXhistory() {
         return xhistory;
     }
-
-  
 
     /**
      * @return the calculatorButton
