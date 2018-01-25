@@ -50,6 +50,7 @@ public class wizard_FirstSettings1 extends javax.swing.JPanel implements Wizarda
         //w.addPanel(new wizard_FirstSettings4(w, dir));
         w.addPanel(new wizard_FirstSettings5(w));
         w.showWizAsChild();
+        
     }
     private WizardMaster master;
     private PropertyStore nactions;
@@ -158,6 +159,7 @@ public class wizard_FirstSettings1 extends javax.swing.JPanel implements Wizarda
     }
 
     public void load() {
+        jCheckBox1.setSelected(true);
     }
 
     private void setModels() {
