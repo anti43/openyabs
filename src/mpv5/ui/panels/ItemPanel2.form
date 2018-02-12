@@ -13,9 +13,12 @@
         </TitledBorder>
       </Border>
     </Property>
+    <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+      <Dimension value="[800, 500]"/>
+    </Property>
     <Property name="name" type="java.lang.String" value="ItemPanel" noResource="true"/>
     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-      <Dimension value="[500, 300]"/>
+      <Dimension value="[1400, 500]"/>
     </Property>
   </Properties>
   <AuxValues>
@@ -29,7 +32,7 @@
     <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
-    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,2,-93,0,0,5,87"/>
+    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,2,97,0,0,5,115"/>
   </AuxValues>
 
   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
@@ -83,7 +86,7 @@
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="jPanel11" alignment="0" max="32767" attributes="0"/>
-                  <Component id="jPanel1" alignment="0" pref="1345" max="32767" attributes="1"/>
+                  <Component id="jPanel1" alignment="0" pref="1366" max="32767" attributes="1"/>
                   <Component id="jToolBar1" alignment="1" max="32767" attributes="1"/>
               </Group>
             </DimensionLayout>
@@ -113,7 +116,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                              <Component id="jPanel9" alignment="0" pref="1333" max="32767" attributes="0"/>
+                              <Component id="jPanel9" alignment="0" pref="1339" max="32767" attributes="0"/>
                               <Group type="102" alignment="0" attributes="0">
                                   <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
@@ -498,7 +501,7 @@
                           <Group type="102" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="refOrder" alignment="0" pref="35" max="32767" attributes="0"/>
+                                  <Component id="refOrder" alignment="0" max="32767" attributes="0"/>
                                   <Component id="number" alignment="0" max="32767" attributes="0"/>
                                   <Component id="jButton1" alignment="0" max="32767" attributes="0"/>
                                   <Component id="jButton4" alignment="1" max="32767" attributes="0"/>
@@ -546,11 +549,6 @@
                     </Component>
                     <Component class="javax.swing.JButton" name="button_order2">
                       <Properties>
-                        <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
-                          <FontInfo relative="true">
-                            <Font bold="true" component="button_order2" property="font" relativeSize="true" size="0"/>
-                          </FontInfo>
-                        </Property>
                         <Property name="label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                           <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ItemPanel2.button_order2.label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
@@ -1241,14 +1239,14 @@
                               <Group type="102" alignment="0" attributes="0">
                                   <Component id="itemPanel" min="-2" pref="50" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jScrollPane3" pref="1285" max="32767" attributes="0"/>
+                                  <Component id="jScrollPane3" pref="1306" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>
                         <DimensionLayout dim="1">
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="jScrollPane3" pref="0" max="32767" attributes="0"/>
-                              <Component id="itemPanel" alignment="1" pref="303" max="32767" attributes="0"/>
+                              <Component id="itemPanel" alignment="1" pref="235" max="32767" attributes="0"/>
                           </Group>
                         </DimensionLayout>
                       </Layout>
@@ -1594,7 +1592,7 @@
                         <DimensionLayout dim="0">
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="1" attributes="0">
-                                  <EmptySpace pref="920" max="32767" attributes="0"/>
+                                  <EmptySpace pref="948" max="32767" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="addfile" alignment="0" min="-2" pref="24" max="-2" attributes="0"/>
                                       <Component id="removefile" alignment="0" min="-2" pref="24" max="-2" attributes="0"/>
@@ -1602,7 +1600,7 @@
                               </Group>
                               <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
                                   <Group type="102" alignment="0" attributes="0">
-                                      <Component id="jScrollPane2" pref="913" max="32767" attributes="0"/>
+                                      <Component id="jScrollPane2" pref="941" max="32767" attributes="0"/>
                                       <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
@@ -1614,10 +1612,10 @@
                                   <Component id="addfile" min="-2" max="-2" attributes="1"/>
                                   <EmptySpace min="-2" max="-2" attributes="0"/>
                                   <Component id="removefile" min="-2" max="-2" attributes="1"/>
-                                  <EmptySpace pref="456" max="32767" attributes="0"/>
+                                  <EmptySpace pref="400" max="32767" attributes="0"/>
                               </Group>
                               <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
-                                  <Component id="jScrollPane2" alignment="1" pref="526" max="32767" attributes="0"/>
+                                  <Component id="jScrollPane2" alignment="1" pref="456" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>
@@ -1709,7 +1707,7 @@
                               <Component id="date2" min="-2" pref="290" max="-2" attributes="0"/>
                               <Component id="checkb_pront_oc" alignment="0" min="-2" pref="323" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="1026" max="32767" attributes="0"/>
+                          <EmptySpace pref="1045" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>

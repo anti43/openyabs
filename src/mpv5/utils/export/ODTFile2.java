@@ -37,12 +37,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import mpv5.globals.GlobalSettings;
 import mpv5.logging.Log;
+import mpv5.ui.dialogs.Notificator;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.xdocreport.YabsFontFactoryImpl;
 import mpv5.utils.xdocreport.YabsODTPreprocessor;
@@ -77,7 +79,7 @@ public class ODTFile2 extends Exportable {
         }
         if (GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.cachefonts", false)) {
             FontFactory.setFontImp(YabsFontFactoryImpl.instance);
-    }
+        }
         ITextFontRegistry reg = ITextFontRegistry.getRegistry();
         options = PdfOptions.create();
         options.fontProvider(reg);
@@ -87,10 +89,9 @@ public class ODTFile2 extends Exportable {
         report.addPreprocessor(ODTConstants.STYLES_XML_ENTRY, YabsODTPreprocessor.INSTANCE);
     }
 
-
     @Override
     public void run() {
-                try {
+        try {
             final File target = getTarget();
             Log.Debug(this, "run odt run: " + this + " to file " + target);
             mpv5.YabsViewProxy.instance().setWaiting(true);
@@ -102,7 +103,7 @@ public class ODTFile2 extends Exportable {
                 Log.Debug(this, "Loaded odt file: " + f);
                 PdfConverter.getInstance().convert(document, new FileOutputStream(target), options);
                 Log.Debug(this, "Completed pdf file: " + target);
-                Log.Debug(this, "Test access pdf file exists: " + target.exists() + " readable: " +  target.canRead());
+                Log.Debug(this, "Test access pdf file exists: " + target.exists() + " readable: " + target.canRead());
             } else {
                 fillFields(new FileOutputStream(target));
                 Log.Debug(this, "Replaced Fields of odt file: " + this + " to " + target);
@@ -142,24 +143,34 @@ public class ODTFile2 extends Exportable {
                     break;
                 }
             }
-            
+
             if (table != null) {
                 String fmt = this.getTemplate().__getFormat();
                 String[] cols = fmt.split(",");
                 Object tablel = d.get(table);
+                int ix = 0;
                 if (tablel instanceof List) {
                     List list = (List) tablel;
                     List<Map<String, String>> positions = new ArrayList<Map<String, String>>();
                     for (Object s : list) {
+                        ix++;
+                        String[] tableData = (String[]) s;
+                        Log.Debug(this, "Table row " + ix + ": " + Arrays.asList(tableData));
                         int i = 0;
                         Map<String, String> xtable = new HashMap<String, String>();
                         for (String s1 : cols) {
                             int col = Integer.parseInt(s1) - 1;
-                            String colname = "C" + i++;
-                            xtable.put(colname, ((String[])s)[col]);
-                            if (addMeta) {
-                                metadata.addFieldAsList(TableHandler.KEY_TABLE + "1." + colname);
+
+                            if (tableData.length > col) {
+                                String colname = "C" + i++;
+                                xtable.put(colname, tableData[col]);
+                                if (addMeta) {
+                                    metadata.addFieldAsList(TableHandler.KEY_TABLE + "1." + colname);
+                                }
+                            } else {
+                                Notificator.raiseNotification("Invalid column definition in " + this.getTemplate().getCname() + ": " + col + ">" + (tableData.length - 1) + ")", false);
                             }
+
                         }
 //                    for (String s2 : s) {
 //                        String colname = "C" + i++;
@@ -171,6 +182,8 @@ public class ODTFile2 extends Exportable {
                         addMeta = false;
                     }
                     context.put(TableHandler.KEY_TABLE + "1", positions);
+                } else {
+                    Log.Debug(new Exception(String.valueOf(tablel.getClass())));
                 }
             }
             report.setFieldsMetadata(metadata);
