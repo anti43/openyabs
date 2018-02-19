@@ -124,7 +124,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
         jScrollPane4 = new javax.swing.JScrollPane();
         templates = new javax.swing.JTable();
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Templates.border.title"))); // NOI18N
         setName("Form"); // NOI18N
         setPreferredSize(new java.awt.Dimension(495, 183));

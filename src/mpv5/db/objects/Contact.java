@@ -20,6 +20,7 @@ import mpv5.i18n.LanguageManager;
 import mpv5.logging.Log;
 import mpv5.ui.panels.ContactPanel;
 import mpv5.utils.images.MPIcon;
+import mpv5.utils.text.RandomText;
 
 /**
  *
@@ -762,5 +763,35 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
             Logger.getLogger(Contact.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
+    }
+
+    /**
+     * Safely import a database object from external sources (xml, csv etc)<br/>
+     * Override this for ensuring the existance of DObject specific mandatory
+     * values.
+     *
+     * @return
+     */
+    @Override
+    public boolean saveImport() {
+        Log.Debug(this, "Starting import..");
+        Log.Debug(this, "Setting IDS to -1");
+        ids = -1;
+        Log.Debug(this, "Setting intaddedby to " + mpv5.db.objects.User.getCurrentUser().__getIDS());
+        setIntaddedby(mpv5.db.objects.User.getCurrentUser().__getIDS());
+
+        if (__getGroupsids() <= 0 || !DatabaseObject.exists(Context.getGroup(), __getGroupsids())) {
+            Log.Debug(this, "Setting groups to users group.");
+            setGroupsids(mpv5.db.objects.User.getCurrentUser().__getGroupsids());
+        }
+
+        if (__getCname() == null || __getCname().trim().length() < 1) {
+            setCname("Import name missing");
+        }
+        if (__getCNumber() == null) {
+            setCNumber(RandomText.getText());
+        }
+
+        return save();
     }
 }

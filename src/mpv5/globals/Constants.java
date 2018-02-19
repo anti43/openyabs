@@ -30,7 +30,7 @@ public interface Constants {
      *
      * Full Version number
      */
-    public static final String VERSION = "Yabs-1.2.7.3";//ATTENTION: when changing this, add language and template file to resources/etra folder for the new version!
+    public static final String VERSION = "Yabs-1.2.7.4";//ATTENTION: when changing this, add language and template file to resources/etra folder for the new version!
 
     /**
      * The original database version of this release
@@ -59,7 +59,7 @@ public interface Constants {
      *
      * Alias
      */
-    public static final String TITLE = "Yabs - Pumpkin";
+    public static final String TITLE = "Yabs";
     /**
      *
      * Name of the main JAR
@@ -87,7 +87,7 @@ public interface Constants {
     public static String ICON_NAME_LIN = "yabs.desktop";
     public static String ICON_NAME_WIN = "YaBS.url";
     public static String XML_ROOT = "mpv5";
-    public static String SPLASH_IMAGE = "/mpv5/resources/images/background_m.png";
+    public static String SPLASH_IMAGE = "/mpv5/resources/images/background_f.png";
     public static String ABOUT_IMAGE = "/mpv5/resources/images/about1.png";
     public static String ICON = "/mpv5/resources/images/icon.png";
     public static String WEBSITE = "http://openyabs.org";

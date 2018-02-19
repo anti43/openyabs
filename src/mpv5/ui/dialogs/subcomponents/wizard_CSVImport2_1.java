@@ -443,7 +443,7 @@ public class wizard_CSVImport2_1 extends javax.swing.JPanel implements Wizardabl
                     Object[] keys = ((DefaultListModel) jList1.getModel()).toArray();
                     count = 0;
 
-                    for (int i = 0; i < data.length; i++) {
+                    for (int i = 1; i < data.length; i++) {
                         Object[] line = data[i];
                         DatabaseObject c = DatabaseObject.getObject(t);
                         for (int j = 0; j < keys.length; j++) {
@@ -504,23 +504,20 @@ public class wizard_CSVImport2_1 extends javax.swing.JPanel implements Wizardabl
                                     } else if (key.toString().equals("GROUP")) {
                                         try {
                                             Group p = (Group) DatabaseObject.getObject(Context.getGroup(), line[j].toString());
-                                            if (p != null) {
-                                                ((Product) c).setGroupsids(p.__getIDS());
-                                            } else {
-                                                Group con = new Group();
-                                                con.setCname(line[j].toString());
-                                                con.setGroupsids(1);
-                                                con.saveImport();
-                                                ((Product) c).setGroupsids(con.__getIDS());
-                                            }
+                                            c.setGroupsids(p.__getIDS());
                                         } catch (NodataFoundException nodataFoundException) {
+                                            Group con = new Group();
+                                            con.setCname(line[j].toString());
+                                            con.setGroupsids(1);
+                                            con.saveImport();
+                                            c.setGroupsids(con.__getIDS());
                                         }
                                     } else {
-//                                        try {
-                                        c.parse(key.toString(), line[j]);
-//                                        } catch (Exception exception) {
-//                                            Log.Debug(me, key + ": " + line[j]);
-//                                        }
+                                        try {
+                                            c.parse(key.toString(), line[j]);
+                                        } catch (Exception exception) {
+                                            Log.Debug(this, key + ": " + line[j] + " ->" + exception.getMessage());
+                                        }
                                     }
                                 } catch (IndexOutOfBoundsException ex) {
 //                                Log.Debug(ex);
@@ -550,7 +547,7 @@ public class wizard_CSVImport2_1 extends javax.swing.JPanel implements Wizardabl
 
     private void setContactFields() {
         DefaultListModel m = new DefaultListModel();
-        List<Method> p = new ArrayList<Method> (new Contact().setVars().values());
+        List<Method> p = new ArrayList<Method>(new Contact().setVars().values());
 
         for (int i = 0; i < p.size(); i++) {
             Method method = p.get(i);
@@ -570,7 +567,7 @@ public class wizard_CSVImport2_1 extends javax.swing.JPanel implements Wizardabl
     private void setProductFields() {
 
         DefaultListModel m = new DefaultListModel();
-        List<Method> p = new ArrayList<Method> (new Product().setVars().values());
+        List<Method> p = new ArrayList<Method>(new Product().setVars().values());
 
         for (int i = 0; i < p.size(); i++) {
             Method method = p.get(i);

@@ -27,7 +27,7 @@ import mpv5.utils.images.MPIcon;
 
 /**
  *
- *  
+ *
  */
 public class Address extends DatabaseObject {
 
@@ -250,5 +250,25 @@ public class Address extends DatabaseObject {
             Log.Debug(n);
         }
         return super.resolveReferences(map);
+    }
+
+    public String getDisplayName() {
+        if (__getCname() == null || __getCname().length() == 0) {
+            return "";
+        }
+
+        if (prename == null || prename.length() == 0) {
+            return __getCname();
+        }
+
+        if (city == null || city.length() == 0) {
+            return getCname() + ", " + prename;
+        }
+
+        if (company == null || company.length() == 0) {
+            return getCname() + ", " + prename + " (" + city + ")";
+        }
+
+        return getCname() + ", " + prename + " (" + city + ") " + company;
     }
 }
