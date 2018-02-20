@@ -70,7 +70,6 @@ public class Wizard extends javax.swing.JDialog implements WizardMaster {
         content.add(contentlist.get(level), BorderLayout.CENTER);
         pack();
         setLocationRelativeTo(mpv5.YabsViewProxy.instance().getIdentifierFrame());
-        setAlwaysOnTop(!standalone);
         setVisible(true);
         requestFocus();
     }
