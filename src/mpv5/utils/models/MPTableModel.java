@@ -52,7 +52,6 @@ import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.numberformat.FormatNumber;
 import mpv5.utils.renderer.TableCellEditorForDezimal;
 import mpv5.utils.tables.DynamicTableCalculator;
-import mpv5.utils.tables.TableCalculator;
 
 /**
  *

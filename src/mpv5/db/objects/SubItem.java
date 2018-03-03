@@ -43,7 +43,6 @@ import mpv5.ui.panels.ItemPanel2;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
-import mpv5.utils.numberformat.FormatNumber;
 import static mpv5.utils.numberformat.FormatNumber.*;
 /**
  *

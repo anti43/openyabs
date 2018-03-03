@@ -209,19 +209,19 @@ public class ActivityList extends DatabaseObject implements Formattable, Templat
         return super.resolveReferences(map);
     }
 
-    public Object[] getDataForInvoice() {
-        //"Internal ID", "ID", "Count", "Measure", "Description", "Netto Price", "Tax Value", "Total Price
-        Object[] data = new Object[8];
-        String defunit = "";
-        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("defunit")) {
-            defunit = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("defunit");
-        }
-        data[2] = new BigDecimal("1.0");
-        data[3] = defunit;
-        data[4] = Messages.ActivityList_toSubItem.toString() + this.__getCname();
-        data[5] = this.__getTotalamount();
-        data[6] = new BigDecimal("0.0");
-        data[7] = this.__getTotalamount();
+    public SubItem getDataForInvoice() {
+        SubItem s = SubItem.getDefaultItem();
+        s.setQuantityvalue(BigDecimal.ONE);
+        s.setDescription(Messages.ActivityList_toSubItem.toString() + this.__getCname());
+        s.setExternalvalue(this.__getTotalamount());
+        return s;
+    }
+
+    public List<ActivityListSubItem> getPositions() throws NodataFoundException {
+        
+        List<ActivityListSubItem> data = DatabaseObject.getReferencedObjects(this, Context.getActivityListItems(), new ActivityListSubItem());
+        Collections.sort(data, ActivityListSubItem.ORDER_COMPARATOR);
+
         return data;
     }
 }

@@ -108,14 +108,17 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
         
         value.getTextField().addKeyListener(new KeyListener() {
             
+            @Override
             public void keyTyped(KeyEvent e) {
                 calculate();
             }
             
+            @Override
             public void keyPressed(KeyEvent ek) {
                 calculate();
             }
             
+            @Override
             public void keyReleased(KeyEvent e) {
                 calculate();
             }
@@ -123,6 +126,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
         
         taxrate.getComboBox().addActionListener(new ActionListener() {
             
+            @Override
             public void actionPerformed(ActionEvent e) {
                 getTaxRate();
             }
@@ -659,6 +663,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
     public void actionAfterSave() {
         Runnable runnable = new Runnable() {
             
+            @Override
             public void run() {
                 try {
                     
@@ -676,6 +681,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
     public void actionAfterCreate() {
         Runnable runnable = new Runnable() {
             
+            @Override
             public void run() {
                 try {
                     
@@ -689,15 +695,19 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
         SwingUtilities.invokeLater(runnable);
     }
     
+    @Override
     public void actionBeforeCreate() {
     }
     
+    @Override
     public void actionBeforeSave() {
     }
     
+    @Override
     public void mail() {
     }
     
+    @Override
     public void print() {
         mpv5.utils.export.Export.print(this);
     }

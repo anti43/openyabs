@@ -36,7 +36,9 @@ public class ActivityTextAreaDialog extends javax.swing.JDialog implements KeyLi
     private JTable parentTable;
     private mpv5.db.objects.Product product;
 
-    /** Creates new form ItemTextAreaDialog */
+    /** Creates new form ItemTextAreaDialog
+     * @param parent
+     * @param modal */
     public ActivityTextAreaDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         setResizable(false);
@@ -139,9 +141,11 @@ public class ActivityTextAreaDialog extends javax.swing.JDialog implements KeyLi
     public javax.swing.JTextArea textArea;
     // End of variables declaration//GEN-END:variables
 
+    @Override
     public void keyTyped(KeyEvent e) {
     }
     
+    @Override
     public void keyPressed(KeyEvent e) {
         if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_ENTER) {
             ActionListener[] listeners = okButton.getActionListeners();
@@ -159,6 +163,7 @@ public class ActivityTextAreaDialog extends javax.swing.JDialog implements KeyLi
         }
     }
     
+    @Override
     public void keyReleased(KeyEvent e) {
     }
     
@@ -175,8 +180,8 @@ public class ActivityTextAreaDialog extends javax.swing.JDialog implements KeyLi
     private synchronized void setRow() {
         MPTableModel m = (MPTableModel) getParentTable().getModel();
         int row = getParentTable().getSelectedRow();
-        ActivityListSubItem p = null;
-        if (m.getValueAt(row, 11) != null && m.getValueAt(row, 11).equals(product.__getIDS())) {
+        ActivityListSubItem p;
+        if (m.getValueAt(row, 9) != null && m.getValueAt(row, 9).equals(product.__getIDS())) {
             Log.Debug(this, m.getValueAt(getParentTable().getSelectedRow(), 11));
             p = (ActivityListSubItem) m.getValueAt(getParentTable().getSelectedRow(), 11);
             p.updateRowFromModel(m, row);
