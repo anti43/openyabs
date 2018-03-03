@@ -7,11 +7,21 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableCellRenderer;
@@ -28,10 +38,12 @@ import mpv5.db.objects.Item;
 import mpv5.db.objects.Product;
 import mpv5.db.objects.SubItem;
 import mpv5.db.objects.User;
+import mpv5.globals.Headers;
 import mpv5.globals.Messages;
 import mpv5.handler.FormatHandler;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
+import mpv5.ui.dialogs.TableView;
 import mpv5.ui.dialogs.subcomponents.ActivityTextAreaDialog;
 import mpv5.ui.misc.TextFieldUtils;
 import mpv5.ui.toolbars.DataPanelTB;
@@ -39,6 +51,7 @@ import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.export.Export;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
+import mpv5.utils.renderer.ProgressCellRender;
 import mpv5.utils.renderer.TableCellEditorForDate;
 import mpv5.utils.renderer.TableCellRendererForDezimal;
 import mpv5.utils.renderer.TextAreaCellEditor;
@@ -189,13 +202,14 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         total = new javax.swing.JTextField();
         jButton4 = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
+        jButton5 = new javax.swing.JButton();
         toolbarpanetbp = new javax.swing.JPanel();
         SearchBarPane = new javax.swing.JPanel();
 
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ActivityConfirmationPanel.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 
@@ -261,7 +275,7 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 7, Short.MAX_VALUE))
+                        .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -358,7 +372,7 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
                 .addComponent(upItem)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(upItem1)
-                .addContainerGap(66, Short.MAX_VALUE))
+                .addContainerGap(107, Short.MAX_VALUE))
         );
 
         jLabel1.setText(bundle.getString("ActivityConfirmationPanel.jLabel1.text")); // NOI18N
@@ -378,6 +392,14 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         jLabel5.setText(bundle.getString("ActivityConfirmationPanel.jLabel5.text")); // NOI18N
         jLabel5.setName("jLabel5"); // NOI18N
 
+        jButton5.setText(bundle.getString("ActivityConfirmationPanel.jButton5.text")); // NOI18N
+        jButton5.setName("jButton5"); // NOI18N
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -388,9 +410,11 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
                 .addComponent(jScrollPane4))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 86, Short.MAX_VALUE)
-                .addComponent(jLabel5)
-                .addGap(192, 192, 192)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 100, Short.MAX_VALUE)
+                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 100, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(total, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -411,7 +435,8 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
                     .addComponent(jLabel1)
                     .addComponent(total, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton4)
-                    .addComponent(jLabel5)))
+                    .addComponent(jLabel5)
+                    .addComponent(jButton5)))
         );
 
         add(jPanel1, java.awt.BorderLayout.CENTER);
@@ -490,6 +515,126 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         toInvoice(Item.TYPE_INVOICE);
     }//GEN-LAST:event_jButton4ActionPerformed
 
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        if (this.orderids_ > 0) {
+            TableView tv = new TableView();
+            JTable table = tv.getTable();
+
+            HashMap<Product, RowData> pm = new HashMap<Product, RowData>();
+
+            try {
+                DatabaseObject dob = DatabaseObject.getObject(Context.getOrder(), this.orderids_);
+                List<SubItem> data = DatabaseObject.getReferencedObjects(dob, Context.getSubItem(), new SubItem(), false);
+                Collections.sort(data, SubItem.ORDER_COMPARATOR);
+
+                int i = 0;
+                Iterator<SubItem> it = data.iterator();
+                while (it.hasNext()) {
+                    SubItem s = it.next();
+
+                    Product p = (Product) DatabaseObject.getObject(Context.getProduct(), s.__getOriginalproductsids());
+
+                    RowData r;
+                    if (pm.containsKey(p)) {
+                        r = pm.get(p);
+                    } else {
+                        r = new RowData(p);
+                        pm.put(p, r);
+                    }
+
+                    r.setOrdered(s.__getQuantityvalue());
+                    r.setMeasuere(s.__getMeasure());
+                    r.setDescription(s.__getDescription());
+                    r.calcStatus();
+
+                }
+                ArrayList<ActivityList> data2 = DatabaseObject.getObjects(Context.getActivityList(), new QueryCriteria("orderids", dataOwner.__getOrderids()));
+                Iterator<ActivityList> it2 = data2.iterator();
+                while (it2.hasNext()) {
+                    List<ActivityListSubItem> als = it2.next().getPositions();
+                    Collections.sort(als, ActivityListSubItem.ORDER_COMPARATOR);
+
+                    Iterator<ActivityListSubItem> it3 = als.iterator();
+                    while (it3.hasNext()) {
+                        ActivityListSubItem ai = it3.next();
+                        Product p = (Product) DatabaseObject.getObject(Context.getProduct(), ai.__getProductsids());
+
+                        RowData r;
+                        if (pm.containsKey(p)) {
+                            r = pm.get(p);
+                        } else {
+                            r = new RowData(p);
+                            r.setOrdered(BigDecimal.ZERO);
+                            r.setMeasuere(ai.__getMeasure());
+                            r.setDescription(ai.__getDescription());
+                            pm.put(p, r);
+                        }
+
+                        r.setUsed(ai.__getQuantityvalue());
+                        r.calcStatus();
+                    }
+                }
+
+                Object[][] d = new Object[pm.size()][6];
+
+                for (Map.Entry<Product, RowData> entry : pm.entrySet()) {
+                    d[i++] = entry.getValue().toArray();
+                }
+
+                table.setModel(new MPTableModel(d, Headers.ITEM_COMPARE.getValue(),
+                        new Class[]{String.class, String.class, String.class, String.class, String.class, Object.class}));
+
+                TableFormat.resizeCols(table, new Integer[]{75, 75, 75, 300, 75, 200}, new Boolean[]{true, true, true, true, true, true});
+                class ColorRenderer extends JLabel implements TableCellRenderer {
+
+                    private static final long serialVersionUID = -3009391069720793167L;
+
+                    public ColorRenderer() {
+                        this.setOpaque(true);
+                        this.setHorizontalAlignment(JLabel.CENTER);
+                    }
+
+                    @Override
+                    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                            boolean hasFocus, int row, int col) {
+                        try {
+                            if (table.getValueAt(row, 0).equals(BigDecimal.ZERO) && col == 4) {
+                                this.setText("---");
+                            } else {
+                                this.setText(value.toString());
+                            }
+                        } catch (Exception e) {
+                        }
+
+                        if ((float) table.getValueAt(row, 5) > 1 || table.getValueAt(row, 0).equals(BigDecimal.ZERO)) {
+                            this.setBackground(Color.RED);
+                        } else {
+                            this.setBackground(Color.WHITE);
+                        }
+
+                        return this;
+                    }
+                }
+                table.getColumnModel().getColumn(0).setCellRenderer(new ColorRenderer());
+                table.getColumnModel().getColumn(1).setCellRenderer(new ColorRenderer());
+                table.getColumnModel().getColumn(2).setCellRenderer(new ColorRenderer());
+                table.getColumnModel().getColumn(4).setCellRenderer(new ColorRenderer());
+
+                TextAreaCellRenderer.setMAXLINES(10);
+                TextAreaCellRenderer tacr = new TextAreaCellRenderer(table);
+                tacr.setRendererTo(3);
+
+                table.getColumnModel().getColumn(5).setCellRenderer(new ProgressCellRender());
+                table.setRowHeight(100);
+
+                tv.setVisible(true);
+
+            } catch (NodataFoundException ex) {
+                Logger.getLogger(ActivityConfirmationPanel.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_jButton5ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private mpv5.ui.beans.LabeledTextField Project;
     private javax.swing.JPanel SearchBarPane;
@@ -501,6 +646,7 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -546,11 +692,21 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
                 groupsids_ = group_.__getGroupsids();
                 contactsids_ = Integer.parseInt(contact.getSelectedItem().getId());
                 orderids_ = Integer.parseInt(order.getSelectedItem().getId());
-                totalamount_ = new BigDecimal(total.getText().replace(",", "."));
+                DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.getDefault());
+                symbols.setGroupingSeparator('.');
+                symbols.setDecimalSeparator(',');
+                String pattern = "#,##0.0#";
+                DecimalFormat decimalFormat = new DecimalFormat(pattern, symbols);
+                decimalFormat.setParseBigDecimal(true);
+                totalamount_ = (BigDecimal) decimalFormat.parse(total.getText());
                 cnumber_ = number.getText();
                 HEADER_FAILD = false;
             } catch (NumberFormatException exception) {
                 Log.Debug(exception);
+                HEADER_FAILD = true;
+                return false;
+            } catch (ParseException ex) {
+                Log.Debug(ex);
                 HEADER_FAILD = true;
                 return false;
             }
@@ -560,14 +716,6 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
             return false;
         }
 
-//        List<Object[]> rowsl = ((MPTableModel) itemtable.getModel()).getValidRows(new int[]{5});
-//        for (int i = 0; i < rowsl.size(); i++) {
-//            Object[] row = rowsl.get(i);
-//            if (row[2] == null) {
-//                Popup.error(this, Messages.ACTIVITY_EMPTY_DATE.toString());
-//                return false;
-//            }
-//        }
         return true;
     }
 
@@ -634,9 +782,7 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
             jLabel5.setVisible(isbilled_);
             jButton4.setEnabled(!isbilled_);
             if (isbilled_) {
-//$2lightGray);
             } else {
-//$2white);
             }
             jLabel2.setText(ct.__getCompany());
             String name_txt;
@@ -809,15 +955,7 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
     }
 
     private void toInvoice(int itemType) {
-        this.isbilled_ = true;
-        itemtable.setEnabled(!isbilled_);
-        jLabel5.setVisible(isbilled_);
-        jButton4.setEnabled(!isbilled_);
-//$2lightGray);
-        dataOwner.setIsBilled(true);
         dataOwner.save();
-        ArrayList<ActivityList> data;
-        Object[] row;
         Item i2;
         switch (itemType) {
             case Item.TYPE_INVOICE:
@@ -837,6 +975,7 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         }
         i2.setIDS(-1);
         i2.defineFormatHandler(new FormatHandler(i2));
+        i2.setAccountsids(1);
         i2.save();
         if (itemtable.getCellEditor() != null) {
             try {
@@ -844,23 +983,37 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
             } catch (Exception e) {
             }
         }
+        int i = 0;
         try {
-            data = DatabaseObject.getObjects(Context.getActivityList(), new QueryCriteria("orderids", dataOwner.__getIDS()));
+            ArrayList<ActivityList> data = DatabaseObject.getObjects(Context.getActivityList(), new QueryCriteria("orderids", dataOwner.__getOrderids()));
             if (Popup.Y_N_dialog(Messages.ActivityList_Existing.toString())) {
-                MPTableModel model = (MPTableModel) itemtable.getModel();
                 Iterator<ActivityList> it = data.iterator();
                 while (it.hasNext()) {
-                    row = it.next().getDataForInvoice();
-                    row[1] = model.getRowCount();
-                    model.insertRow(model.getRowCount(), row);
+                    SubItem s = it.next().getDataForInvoice();
+                    s.setOrdernr(i++);
+                    s.setItemsids(i2.__getIDS());
+                    s.save(true);
                 }
             }
         } catch (NodataFoundException ex) {
             Log.Debug(this, ex.getMessage());
         }
-        SubItem.saveModel(i2, (MPTableModel) itemtable.getModel(), true, true);
-        setDataOwner(i2, true);
-        Popup.notice(i2 + Messages.INSERTED.getValue());
+        MPTableModel m = (MPTableModel) itemtable.getModel();
+        SubItem s = dataOwner.getDataForInvoice();
+        s.setOrdernr(i++);
+        s.setItemsids(i2.__getIDS());
+        s.save(true);
+
+        this.isbilled_ = true;
+        itemtable.setEnabled(!isbilled_);
+        jLabel5.setVisible(isbilled_);
+        jButton4.setEnabled(!isbilled_);
+        dataOwner.setIsBilled(true);
+        dataOwner.save();
+
+        mpv5.YabsViewProxy.instance().
+                getIdentifierView().
+                addTab(i2);
     }
 
     private void addModel() {
@@ -881,5 +1034,57 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
             }
         };
         new Thread(runnable).start();
+    }
+    
+    private class RowData {
+
+        private Product p;
+        private BigDecimal ordered;
+        private BigDecimal used;
+        private String measuere;
+        private String description;
+        private float percent;
+        private float status;
+
+        private RowData(Product p) {
+            this.p = p;
+            this.ordered = BigDecimal.ZERO;
+            this.used = BigDecimal.ZERO;
+            this.description = p.__getDescription();
+        }
+
+        private void setOrdered(BigDecimal ordered) {
+            this.ordered = this.ordered.add(ordered);
+        }
+
+        private void setUsed(BigDecimal used) {
+            this.used = this.used.add(used);
+        }
+
+        private void setMeasuere(String measuere) {
+            this.measuere = measuere;
+        }
+
+        private void calcStatus() {
+            if (!this.ordered.equals(BigDecimal.ZERO)) {
+                this.status = this.used.divide(this.ordered).floatValue();
+            }
+            this.percent = Math.round(((Float) this.status) * 100f);
+        }
+
+        private Object[] toArray() {
+            Object[] d = new Object[6];
+            d[0] = this.ordered;
+            d[1] = this.used;
+            d[2] = this.measuere;
+            d[3] = this.description;
+            d[4] = this.percent;
+            d[5] = this.status;
+            return d;
+        }
+        
+        private void setDescription(String d) {
+            this.description = d;
+        }
     }
 }

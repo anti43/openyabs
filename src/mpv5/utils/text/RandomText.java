@@ -18,11 +18,8 @@
 package mpv5.utils.text;
 
 //~--- JDK imports ------------------------------------------------------------
-import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * A random text generator

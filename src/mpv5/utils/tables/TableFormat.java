@@ -18,12 +18,6 @@
 package mpv5.utils.tables;
 
 //~--- non-JDK imports --------------------------------------------------------
-import com.l2fprod.common.swing.renderer.ColorCellRenderer;
-import java.util.Enumeration;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
-
-import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.DatabaseObject.Entity;
 
 import mpv5.globals.LocalSettings;
@@ -38,15 +32,12 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 
-import javax.swing.BorderFactory;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.TableColumnModelEvent;
 import javax.swing.event.TableColumnModelListener;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
@@ -58,8 +49,8 @@ import javax.swing.table.TableCellRenderer;
 public class TableFormat {
 
    /**
-    * Changes table values from text to class values,<br/>
-    * currently supported classes:<br/>
+    * Changes table values from text to class values,
+    * currently supported classes:
     * - <code>Boolean.class</code>: "1" and "true" will be true, false otherwise
     *
     * @param values The original values
@@ -147,7 +138,9 @@ public class TableFormat {
    /**
     * Stops the tables' cell editor
     *
-    * @param jTable1
+     * @param table
+     * @param row
+     * @param col
     */
    public static void startEditing(JTable table, int row, int col) {
       // Enable the ability to select a single cell
@@ -213,6 +206,7 @@ public class TableFormat {
 
    public static DefaultTableModel getUneditableTable(String[][] data, String[] header) {
       return new javax.swing.table.DefaultTableModel(data, header) {
+          private static final long serialVersionUID = 4873036854682614078L;
 
          boolean[] canEdits = new boolean[]{
             false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
@@ -263,7 +257,7 @@ public class TableFormat {
    /**
     * Hide columns with a specific column class
     *
-    * @param jTable1
+    * @param table
     * @param aClass
     */
    public static void stripColumn(JTable table, Class<Entity> aClass) {
@@ -331,6 +325,8 @@ public class TableFormat {
    public static void changeBackground(final JTable table, final int column, final Color color) {
       class ColorRenderer extends JLabel implements TableCellRenderer {
 
+           private static final long serialVersionUID = -3009391069720793167L;
+
          public ColorRenderer() {
             this.setOpaque(true);
             this.setHorizontalAlignment(JLabel.CENTER);
@@ -344,7 +340,11 @@ public class TableFormat {
             } catch (Exception e) {
             }
 
-            this.setBackground(color);
+             if (isSelected) {
+                 this.setBackground(Color.RED);
+             } else {
+                 this.setBackground(color);
+             }
 
             return this;
          }
@@ -362,6 +362,8 @@ public class TableFormat {
     */
    public static void changeBackground(final JTable table, final int col, final int row, final Color color) {
       class ColorRenderer extends JLabel implements TableCellRenderer {
+
+           private static final long serialVersionUID = -3009391069720793167L;
 
          public ColorRenderer() {
             this.setOpaque(true);
@@ -404,26 +406,31 @@ public class TableFormat {
             this.table = target;
          }
 
+         @Override
          public void columnAdded(TableColumnModelEvent e) {
             table.getTableHeader().setPreferredSize(new Dimension(table.getColumnModel().getTotalColumnWidth(),
                     15));
          }
 
+         @Override
          public void columnRemoved(TableColumnModelEvent e) {
             table.getTableHeader().setPreferredSize(new Dimension(table.getColumnModel().getTotalColumnWidth(),
                     15));
          }
 
+         @Override
          public void columnMoved(TableColumnModelEvent e) {
             table.getTableHeader().setPreferredSize(new Dimension(table.getColumnModel().getTotalColumnWidth(),
                     15));
          }
 
+         @Override
          public void columnMarginChanged(ChangeEvent e) {
             table.getTableHeader().setPreferredSize(new Dimension(table.getColumnModel().getTotalColumnWidth(),
                     15));
          }
 
+         @Override
          public void columnSelectionChanged(ListSelectionEvent e) {
          }
       }

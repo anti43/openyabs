@@ -533,20 +533,21 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
 
     @Override
     public mpv5.utils.images.MPIcon getIcon() {
-        if (__getIntstatus() == STATUS_QUEUED) {
-            return new MPIcon("/mpv5/resources/images/22/kontact_mail.png");
-        } else if (__getIntstatus() == STATUS_IN_PROGRESS) {
-            return new MPIcon("/mpv5/resources/images/22/run.png");
-        } else if (__getIntstatus() == STATUS_PAUSED) {
-            return new MPIcon("/mpv5/resources/images/22/kalarm.png");
-        } else if (__getIntstatus() == STATUS_FINISHED) {
-            return new MPIcon("/mpv5/resources/images/22/knewstuff.png");
-        } else if (__getIntstatus() == STATUS_PAID) {
-            return new MPIcon("/mpv5/resources/images/22/ok.png");
-        } else if (__getIntstatus() == STATUS_CANCELLED) {
-            return new MPIcon("/mpv5/resources/images/22/file_temporary.png");
-        } else {
-            return new MPIcon("/mpv5/resources/images/22/kontact_mail.png");
+        switch (__getIntstatus()) {
+            case STATUS_QUEUED:
+                return new MPIcon("/mpv5/resources/images/22/kontact_mail.png");
+            case STATUS_IN_PROGRESS:
+                return new MPIcon("/mpv5/resources/images/22/run.png");
+            case STATUS_PAUSED:
+                return new MPIcon("/mpv5/resources/images/22/kalarm.png");
+            case STATUS_FINISHED:
+                return new MPIcon("/mpv5/resources/images/22/knewstuff.png");
+            case STATUS_PAID:
+                return new MPIcon("/mpv5/resources/images/22/ok.png");
+            case STATUS_CANCELLED:
+                return new MPIcon("/mpv5/resources/images/22/file_temporary.png");
+            default:
+                return new MPIcon("/mpv5/resources/images/22/kontact_mail.png");
         }
     }
 

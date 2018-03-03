@@ -248,7 +248,7 @@ dpkg -i paketname.deb
                     app.setToolkit("swing");
                 }
                 
-                var appversion = new String(project.getProperty("application.version"));
+                var appversion = new String(project.getProperty("application.implementation.version"));
                 if(defined(appversion)) {
                     app.setVersion(appversion);
                 } else {
@@ -371,7 +371,7 @@ dpkg -i paketname.deb
                 var bdlArg = deploy.createBundleArgument();
                 bdlArg.setArg("mac.dmg.simple");
                 bdlArg.setValue("true");                
-                
+
                 //deploy.perform();                
             ]]>
         </script>
@@ -512,7 +512,7 @@ dpkg -i paketname.deb
                     app.setToolkit("swing");
                 }
                 
-                var appversion = new String(project.getProperty("application.version"));
+                var appversion = new String(project.getProperty("application.implementation.version"));
                 if(defined(appversion)) {
                     app.setVersion(appversion);
                 } else {

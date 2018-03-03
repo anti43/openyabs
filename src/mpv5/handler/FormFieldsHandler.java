@@ -16,15 +16,12 @@
  */
 package mpv5.handler;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.Vector;
-import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.objects.Group;
 import mpv5.db.objects.User;
@@ -73,7 +70,7 @@ public class FormFieldsHandler {
     }
 
     /**
-     * Creates a hash map view to all the object's form fields and their values, including their referenced objects resolved to keys and values.<br/>
+     * Creates a hash map view to all the object's form fields and their values, including their referenced objects resolved to keys and values.
      * This method is safe to never return null values.
      * @param identifier or NULL
      * @return A HashMap<key,value/>
@@ -86,7 +83,7 @@ public class FormFieldsHandler {
             String key = it.next();
             Object o = map.get(key);
         
-            String skey = null;
+            String skey;
             if (identifier == null) {
                 skey = obj.getType() + "." + key;
             } else {

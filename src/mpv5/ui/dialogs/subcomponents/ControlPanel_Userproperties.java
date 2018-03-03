@@ -1,7 +1,6 @@
 package mpv5.ui.dialogs.subcomponents;
 
 import java.awt.Component;
-import java.util.regex.Pattern;
 import javax.mail.MessagingException;
 import javax.swing.JCheckBox;
 import javax.swing.SwingUtilities;
@@ -10,7 +9,6 @@ import mpv5.db.common.Context;
 import mpv5.db.objects.User;
 import mpv5.globals.GlobalSettings;
 import mpv5.globals.Messages;
-import mpv5.handler.VariablesHandler;
 import mpv5.logging.Log;
 import mpv5.mail.SimpleMail;
 import mpv5.ui.beans.LightMPComboBox;
@@ -18,8 +16,6 @@ import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.Notificator;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.panels.MPControlPanel;
-import mpv5.utils.jobs.Job;
-import mpv5.utils.jobs.Waiter;
 
 /**
  *

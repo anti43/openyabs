@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextPane;
@@ -650,7 +649,7 @@ public class ConversationPanel
         RTFEditorKit kit = (RTFEditorKit) RTF_Text.getEditorKit();
         MutableAttributeSet attr = kit.getInputAttributes();
         boolean bold =
-                (StyleConstants.isBold(attr)) ? false : true;
+                !(StyleConstants.isBold(attr));
         btn.setSelected(bold);
         SimpleAttributeSet sas = new SimpleAttributeSet();
         StyleConstants.setBold(sas,
@@ -664,7 +663,7 @@ public class ConversationPanel
         RTFEditorKit kit = (RTFEditorKit) RTF_Text.getEditorKit();
         MutableAttributeSet attr = kit.getInputAttributes();
         boolean italic =
-                (StyleConstants.isItalic(attr)) ? false : true;
+                !(StyleConstants.isItalic(attr));
         btn.setSelected(italic);
         SimpleAttributeSet sas = new SimpleAttributeSet();
         StyleConstants.setItalic(sas,
@@ -678,7 +677,7 @@ public class ConversationPanel
         RTFEditorKit kit = (RTFEditorKit) RTF_Text.getEditorKit();
         MutableAttributeSet attr = kit.getInputAttributes();
         boolean under =
-                (StyleConstants.isUnderline(attr)) ? false : true;
+                !(StyleConstants.isUnderline(attr));
         btn.setSelected(under);
         SimpleAttributeSet sas = new SimpleAttributeSet();
         StyleConstants.setUnderline(sas,
@@ -695,7 +694,7 @@ public class ConversationPanel
             Boolean isBold = null;
             Boolean isItalic = null;
             Boolean isUnderline = null;
-            Boolean tmp = null;
+            Boolean tmp;
             String fontFamily = null;
             int fontSize = 8;
 
@@ -826,15 +825,16 @@ public class ConversationPanel
      *  Give the DatabaseObject back
      * @return The DatabaseObject
      */
+    @Override
     public DatabaseObject getDataOwner() {
         return dataOwner;
     }
 
     /**
      * Sets the DatabaseObject
-     * @param DatabaseObject
      * @param populate 
      */
+    @Override
     public void setDataOwner(DatabaseObject object,
             boolean populate) {
         dataOwner = (Conversation) object;
@@ -901,6 +901,7 @@ public class ConversationPanel
      * Pastestub of the Copy&Paste-function 
      * @param arg0 
      */
+    @Override
     public void paste(DatabaseObject... arg0) {
         mpv5.YabsViewProxy.instance().
                 addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString(), Color.RED);
@@ -909,6 +910,7 @@ public class ConversationPanel
     /**
      * Checks the fullfillment of all requierements
      */
+    @Override
     public void showRequiredFields() {
         TextFieldUtils.blink(contactid,
                 Color.RED);
@@ -924,6 +926,7 @@ public class ConversationPanel
      * enables / disables the Searchbar
      * @param show 
      */
+    @Override
     public void showSearchBar(boolean show) {
 
         SearchBarPane.removeAll();
@@ -945,12 +948,14 @@ public class ConversationPanel
     /**
      * empty Function
      */
+    @Override
     public void actionAfterSave() {
     }
 
     /**
      * empty Function
      */
+    @Override
     public void actionAfterCreate() {
         sp.refresh();
     }
@@ -958,6 +963,7 @@ public class ConversationPanel
     /**
      * empty Function
      */
+    @Override
     public void actionBeforeCreate() {
     }
 
@@ -965,6 +971,7 @@ public class ConversationPanel
      * Do an action bevor the System saves
      * @throws ChangeNotApprovedException 
      */
+    @Override
     public void actionBeforeSave() throws ChangeNotApprovedException {
         if (dataOwner.isExisting()) {
             if (!mpv5.db.objects.User.getCurrentUser().
@@ -982,6 +989,7 @@ public class ConversationPanel
     /**
      * Sends the DataObject as Mail 
      */
+    @Override
     public void mail() {
 //        if (dataOwner != null && dataOwner.isExisting()) {
 //            if (TemplateHandler.isLoaded(dataOwner.templateGroupIds(), dataOwner.__getInttype())) {
@@ -1003,6 +1011,7 @@ public class ConversationPanel
     /**
      * prints the DataObject
      */
+    @Override
     public void print() {
         if (dataOwner != null && dataOwner.isExisting()) {
             if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()),
@@ -1022,6 +1031,7 @@ public class ConversationPanel
     /**
      * Sends the DataObject as PDF
      */
+    @Override
     public void pdf() {
         if (dataOwner != null && dataOwner.isExisting()) {
             dataOwner.toPdf(true);
@@ -1033,6 +1043,7 @@ public class ConversationPanel
     /**
      * Sends the DataObject as odt 
      */
+    @Override
     public void odt() {
         if (dataOwner != null && dataOwner.isExisting()) {
             dataOwner.toOdt(true);
@@ -1044,6 +1055,7 @@ public class ConversationPanel
     /**
      * Collects the Data from the Userscreen 
      */
+    @Override
     public boolean collectData() {
         if (contactname.getSelectedItem() == null) {
             showRequiredFields();
@@ -1082,6 +1094,7 @@ public class ConversationPanel
     /**
      * Puts the Data to the Userscreen
      */
+    @Override
     public void exposeData() {
         cname.setText(cname_);
         fillContactFields();
@@ -1110,7 +1123,7 @@ public class ConversationPanel
             Log.Debug(this,
                     ex.toString());
         }
-        String str = null;
+        String str;
 
         str = out.toString();
         str = str.replaceAll("[\r\n]+",
@@ -1121,7 +1134,7 @@ public class ConversationPanel
     }
 
     private void deserialize(String in) {
-        ByteArrayInputStream stream = null;
+        ByteArrayInputStream stream;
         in = in.replaceAll("`",
                 "'");
 
@@ -1175,6 +1188,7 @@ public class ConversationPanel
     /**
      * empty
      */
+    @Override
     public void refresh() {
     }
 
@@ -1206,6 +1220,7 @@ public class ConversationPanel
     
     private void preloadTemplates() {
         Runnable runnable = new Runnable() {
+            @Override
             public void run() {
                 try {
                     TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.templateType());

@@ -11,7 +11,6 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.Formattable;
 import mpv5.db.common.NodataFoundException;
-import mpv5.db.common.QueryHandler;
 import mpv5.db.common.Templateable;
 import mpv5.globals.Constants;
 import mpv5.globals.Messages;
@@ -766,7 +765,7 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
     }
 
     /**
-     * Safely import a database object from external sources (xml, csv etc)<br/>
+     * Safely import a database object from external sources (xml, csv etc)
      * Override this for ensuring the existance of DObject specific mandatory
      * values.
      *

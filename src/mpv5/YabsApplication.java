@@ -9,31 +9,35 @@ import org.jdesktop.application.FrameView;
 import org.jdesktop.application.SingleFrameApplication;
 
 /**
- * The main class of the application.
- * Just a wrapper class to encapsulate SingleFrameApplication from yabs.Main.
+ * The main class of the application. Just a wrapper class
+ * to encapsulate SingleFrameApplication from yabs.Main.
  *
- * Replacing classes must do the same callbacks to main as this class.
+ * Replacing classes must do the same callbacks to main as
+ * this class.
  */
 public class YabsApplication extends SingleFrameApplication {
 
     private final mpv5.Main main = new Main();
 
     /**
-     * At startup create and show the main frame of the application.
+     * At startup create and show the main frame of the
+     * application.
      */
     @Override
     protected void startup() {
         main.startup();
     }
-    
-    public FrameView getView(){
-       return getMainView();
+
+    public FrameView getView() {
+        return getMainView();
     }
 
     /**
-     * This method is to initialize the specified window by injecting resources.
-     * Windows shown in our application come fully initialized from the GUI
-     * builder, so this additional configuration is not needed.
+     * This method is to initialize the specified window by
+     * injecting resources. Windows shown in our application
+     * come fully initialized from the GUI builder, so this
+     * additional configuration is not needed.
+     *
      * @param root
      */
 //    @Override
@@ -48,7 +52,9 @@ public class YabsApplication extends SingleFrameApplication {
 //        });
 //    }
     /**
-     * A convenient static getter for the application instance.
+     * A convenient static getter for the application
+     * instance.
+     *
      * @return the instance of Main
      */
     public static Application getApplication() {

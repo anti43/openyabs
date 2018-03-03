@@ -5,14 +5,11 @@ import java.awt.Component;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Map;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComponent;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
-import javax.swing.table.DefaultTableModel;
 import mpv5.data.PropertyStore;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -27,12 +24,10 @@ import mpv5.logging.Log;
 import mpv5.i18n.LanguageManager;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.Popup;
-import mpv5.ui.frames.MPView;
 import mpv5.ui.panels.DataPanel;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.db.objects.User;
 
-import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
@@ -525,13 +520,16 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         }
     }//GEN-LAST:event_jButton4ActionPerformed
 
+    @Override
     public void setValues(PropertyStore values) {
     }
 
+    @Override
     public String getUname() {
         return UNAME;
     }
 
+    @Override
     public void reset() {
         DatabaseObject dato = dataOwner;
 
@@ -601,6 +599,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
     public int compsids_;
     public java.util.Date dateadded_ = new java.util.Date();
 
+    @Override
     public boolean collectData() {
         if (cname.getText().length() == 0) {
             return false;
@@ -668,6 +667,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         return true;
     }
 
+    @Override
     public void exposeData() {
 
         try {
@@ -702,10 +702,12 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         }
     }
 
+    @Override
     public DatabaseObject getDataOwner() {
         return dataOwner;
     }
 
+    @Override
     public void setDataOwner(DatabaseObject object, boolean p) {
         dataOwner = (User) object;
         if (p) {
@@ -714,6 +716,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         }
     }
 
+    @Override
     public void refresh() {
 
         try {
@@ -753,6 +756,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         jTable1.setRowSelectionInterval(0, 0);
     }
 
+    @Override
     public void paste(DatabaseObject... dbos) {
         for (DatabaseObject dbo : dbos) {
             if (dbo.getDbIdentity().equals(Context.getUser().getDbIdentity())) {
@@ -763,14 +767,17 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         }
     }
 
+    @Override
     public void showRequiredFields() {
         TextFieldUtils.blinkerRed(fullname);
     }
 
+    @Override
     public void showSearchBar(boolean show) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
     public Component getAndRemoveActionPanel() {
         if (MPSecurityManager.checkAdminAccess()) {
             this.remove(jPanel6);
@@ -788,16 +795,20 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
     public void actionAfterCreate() {
     }
 
+    @Override
     public void actionBeforeCreate() {
     }
 
+    @Override
     public void actionBeforeSave() {
     }
 
+    @Override
     public void mail() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
     public void print() {
         mpv5.utils.export.Export.print(this);
     }
