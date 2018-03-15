@@ -125,7 +125,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         jScrollPane1.setName("jScrollPane1"); // NOI18N
         jScrollPane1.setPreferredSize(new java.awt.Dimension(343, 303));
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         buttons.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("MPControlPanel.buttons.border.title"))); // NOI18N
         buttons.setAutoscrolls(true);
         buttons.setMaximumSize(new java.awt.Dimension(32767, 400));
@@ -133,7 +133,6 @@ public class MPControlPanel extends javax.swing.JPanel {
         buttons.setName("buttons"); // NOI18N
         buttons.setPreferredSize(new java.awt.Dimension(500, 250));
 
-        jButton16.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton16.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/preferences_plugin.png"))); // NOI18N
         jButton16.setText(bundle.getString("MPControlPanel.jButton16.text")); // NOI18N
         jButton16.setToolTipText(bundle.getString("MPControlPanel.jButton16.toolTipText")); // NOI18N
@@ -141,10 +140,10 @@ public class MPControlPanel extends javax.swing.JPanel {
         jButton16.setContentAreaFilled(false);
         jButton16.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton16.setIconTextGap(1);
-        jButton16.setMaximumSize(new java.awt.Dimension(90, 90));
+        jButton16.setMaximumSize(new java.awt.Dimension(150, 150));
         jButton16.setMinimumSize(new java.awt.Dimension(90, 80));
         jButton16.setName("jButton16"); // NOI18N
-        jButton16.setPreferredSize(new java.awt.Dimension(80, 70));
+        jButton16.setPreferredSize(new java.awt.Dimension(100, 100));
         jButton16.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton16.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -153,7 +152,6 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton16);
 
-        jButton1.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/internet.png"))); // NOI18N
         jButton1.setText(bundle.getString("MPControlPanel.jButton1.text")); // NOI18N
         jButton1.setToolTipText(bundle.getString("MPControlPanel.jButton1.toolTipText")); // NOI18N
@@ -161,10 +159,10 @@ public class MPControlPanel extends javax.swing.JPanel {
         jButton1.setContentAreaFilled(false);
         jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton1.setIconTextGap(1);
-        jButton1.setMaximumSize(new java.awt.Dimension(90, 90));
+        jButton1.setMaximumSize(new java.awt.Dimension(150, 150));
         jButton1.setMinimumSize(new java.awt.Dimension(90, 80));
         jButton1.setName("jButton1"); // NOI18N
-        jButton1.setPreferredSize(new java.awt.Dimension(80, 70));
+        jButton1.setPreferredSize(new java.awt.Dimension(100, 100));
         jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -173,7 +171,6 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton1);
 
-        jButton15.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/advancedsettings.png"))); // NOI18N
         jButton15.setText(bundle.getString("MPControlPanel.jButton15.text")); // NOI18N
         jButton15.setToolTipText(bundle.getString("MPControlPanel.jButton15.toolTipText")); // NOI18N
@@ -181,10 +178,10 @@ public class MPControlPanel extends javax.swing.JPanel {
         jButton15.setContentAreaFilled(false);
         jButton15.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton15.setIconTextGap(1);
-        jButton15.setMaximumSize(new java.awt.Dimension(90, 90));
+        jButton15.setMaximumSize(new java.awt.Dimension(150, 150));
         jButton15.setMinimumSize(new java.awt.Dimension(90, 80));
         jButton15.setName("jButton15"); // NOI18N
-        jButton15.setPreferredSize(new java.awt.Dimension(80, 70));
+        jButton15.setPreferredSize(new java.awt.Dimension(100, 100));
         jButton15.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton15.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -193,7 +190,6 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton15);
 
-        jButton7.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/openofficeorg-20.png"))); // NOI18N
         jButton7.setText(bundle.getString("MPControlPanel.jButton7.text")); // NOI18N
         jButton7.setToolTipText(bundle.getString("MPControlPanel.jButton7.toolTipText")); // NOI18N
@@ -201,10 +197,10 @@ public class MPControlPanel extends javax.swing.JPanel {
         jButton7.setContentAreaFilled(false);
         jButton7.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton7.setIconTextGap(1);
-        jButton7.setMaximumSize(new java.awt.Dimension(90, 90));
+        jButton7.setMaximumSize(new java.awt.Dimension(150, 150));
         jButton7.setMinimumSize(new java.awt.Dimension(90, 80));
         jButton7.setName("jButton7"); // NOI18N
-        jButton7.setPreferredSize(new java.awt.Dimension(80, 70));
+        jButton7.setPreferredSize(new java.awt.Dimension(100, 100));
         jButton7.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton7.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -213,7 +209,6 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton7);
 
-        jButton20.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/advancedsettings.png"))); // NOI18N
         jButton20.setText(bundle.getString("MPControlPanel.jButton20.text")); // NOI18N
         jButton20.setToolTipText(bundle.getString("MPControlPanel.jButton20.toolTipText")); // NOI18N
@@ -221,10 +216,10 @@ public class MPControlPanel extends javax.swing.JPanel {
         jButton20.setContentAreaFilled(false);
         jButton20.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton20.setIconTextGap(1);
-        jButton20.setMaximumSize(new java.awt.Dimension(90, 90));
+        jButton20.setMaximumSize(new java.awt.Dimension(150, 150));
         jButton20.setMinimumSize(new java.awt.Dimension(90, 80));
         jButton20.setName("jButton20"); // NOI18N
-        jButton20.setPreferredSize(new java.awt.Dimension(80, 70));
+        jButton20.setPreferredSize(new java.awt.Dimension(100, 100));
         jButton20.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton20.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -233,7 +228,6 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton20);
 
-        jButton21.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton21.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/advancedsettings.png"))); // NOI18N
         jButton21.setText(bundle.getString("MPControlPanel.jButton21.text")); // NOI18N
         jButton21.setToolTipText(bundle.getString("MPControlPanel.jButton21.toolTipText")); // NOI18N
@@ -241,10 +235,10 @@ public class MPControlPanel extends javax.swing.JPanel {
         jButton21.setContentAreaFilled(false);
         jButton21.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton21.setIconTextGap(1);
-        jButton21.setMaximumSize(new java.awt.Dimension(90, 90));
+        jButton21.setMaximumSize(new java.awt.Dimension(150, 150));
         jButton21.setMinimumSize(new java.awt.Dimension(90, 80));
         jButton21.setName("jButton21"); // NOI18N
-        jButton21.setPreferredSize(new java.awt.Dimension(80, 70));
+        jButton21.setPreferredSize(new java.awt.Dimension(100, 100));
         jButton21.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton21.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -253,7 +247,6 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton21);
 
-        jButton10.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/flag.png"))); // NOI18N
         jButton10.setText(bundle.getString("MPControlPanel.jButton10.text")); // NOI18N
         jButton10.setToolTipText(bundle.getString("MPControlPanel.jButton10.toolTipText")); // NOI18N
@@ -261,10 +254,10 @@ public class MPControlPanel extends javax.swing.JPanel {
         jButton10.setContentAreaFilled(false);
         jButton10.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton10.setIconTextGap(1);
-        jButton10.setMaximumSize(new java.awt.Dimension(90, 90));
+        jButton10.setMaximumSize(new java.awt.Dimension(150, 150));
         jButton10.setMinimumSize(new java.awt.Dimension(90, 80));
         jButton10.setName("jButton10"); // NOI18N
-        jButton10.setPreferredSize(new java.awt.Dimension(80, 70));
+        jButton10.setPreferredSize(new java.awt.Dimension(100, 100));
         jButton10.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton10.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -273,7 +266,6 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton10);
 
-        jButton12.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/gkrellm2.png"))); // NOI18N
         jButton12.setText(bundle.getString("MPControlPanel.jButton12.text")); // NOI18N
         jButton12.setToolTipText(bundle.getString("MPControlPanel.jButton12.toolTipText")); // NOI18N
@@ -281,10 +273,10 @@ public class MPControlPanel extends javax.swing.JPanel {
         jButton12.setContentAreaFilled(false);
         jButton12.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton12.setIconTextGap(1);
-        jButton12.setMaximumSize(new java.awt.Dimension(90, 90));
+        jButton12.setMaximumSize(new java.awt.Dimension(150, 150));
         jButton12.setMinimumSize(new java.awt.Dimension(90, 80));
         jButton12.setName("jButton12"); // NOI18N
-        jButton12.setPreferredSize(new java.awt.Dimension(80, 70));
+        jButton12.setPreferredSize(new java.awt.Dimension(100, 100));
         jButton12.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton12.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -293,7 +285,6 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton12);
 
-        jButton2.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/locale.png"))); // NOI18N
         jButton2.setText(bundle.getString("MPControlPanel.jButton2.text")); // NOI18N
         jButton2.setToolTipText(bundle.getString("MPControlPanel.jButton2.toolTipText")); // NOI18N
@@ -301,10 +292,10 @@ public class MPControlPanel extends javax.swing.JPanel {
         jButton2.setContentAreaFilled(false);
         jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton2.setIconTextGap(1);
-        jButton2.setMaximumSize(new java.awt.Dimension(90, 90));
+        jButton2.setMaximumSize(new java.awt.Dimension(150, 150));
         jButton2.setMinimumSize(new java.awt.Dimension(90, 80));
         jButton2.setName("jButton2"); // NOI18N
-        jButton2.setPreferredSize(new java.awt.Dimension(80, 70));
+        jButton2.setPreferredSize(new java.awt.Dimension(100, 100));
         jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -313,7 +304,6 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton2);
 
-        jButton5.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/babelfish.png"))); // NOI18N
         jButton5.setText(bundle.getString("MPControlPanel.jButton5.text")); // NOI18N
         jButton5.setToolTipText(bundle.getString("MPControlPanel.jButton5.toolTipText")); // NOI18N
@@ -321,10 +311,10 @@ public class MPControlPanel extends javax.swing.JPanel {
         jButton5.setContentAreaFilled(false);
         jButton5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton5.setIconTextGap(1);
-        jButton5.setMaximumSize(new java.awt.Dimension(90, 90));
+        jButton5.setMaximumSize(new java.awt.Dimension(150, 150));
         jButton5.setMinimumSize(new java.awt.Dimension(90, 80));
         jButton5.setName("jButton5"); // NOI18N
-        jButton5.setPreferredSize(new java.awt.Dimension(80, 70));
+        jButton5.setPreferredSize(new java.awt.Dimension(100, 100));
         jButton5.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -333,7 +323,6 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton5);
 
-        jButton6.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/evolution-contacts.png"))); // NOI18N
         jButton6.setText(bundle.getString("MPControlPanel.jButton6.text")); // NOI18N
         jButton6.setToolTipText(bundle.getString("MPControlPanel.jButton6.toolTipText")); // NOI18N
@@ -341,10 +330,10 @@ public class MPControlPanel extends javax.swing.JPanel {
         jButton6.setContentAreaFilled(false);
         jButton6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton6.setIconTextGap(1);
-        jButton6.setMaximumSize(new java.awt.Dimension(90, 90));
+        jButton6.setMaximumSize(new java.awt.Dimension(150, 150));
         jButton6.setMinimumSize(new java.awt.Dimension(90, 80));
         jButton6.setName("jButton6"); // NOI18N
-        jButton6.setPreferredSize(new java.awt.Dimension(80, 70));
+        jButton6.setPreferredSize(new java.awt.Dimension(100, 100));
         jButton6.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -353,7 +342,6 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton6);
 
-        jButton8.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/draw-eraser.png"))); // NOI18N
         jButton8.setText(bundle.getString("MPControlPanel.jButton8.text")); // NOI18N
         jButton8.setToolTipText(bundle.getString("MPControlPanel.jButton8.toolTipText")); // NOI18N
@@ -361,10 +349,10 @@ public class MPControlPanel extends javax.swing.JPanel {
         jButton8.setContentAreaFilled(false);
         jButton8.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton8.setIconTextGap(1);
-        jButton8.setMaximumSize(new java.awt.Dimension(90, 90));
+        jButton8.setMaximumSize(new java.awt.Dimension(150, 150));
         jButton8.setMinimumSize(new java.awt.Dimension(90, 80));
         jButton8.setName("jButton8"); // NOI18N
-        jButton8.setPreferredSize(new java.awt.Dimension(80, 70));
+        jButton8.setPreferredSize(new java.awt.Dimension(100, 100));
         jButton8.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton8.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -373,7 +361,6 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton8);
 
-        jButton9.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/fonts.png"))); // NOI18N
         jButton9.setText(bundle.getString("MPControlPanel.jButton9.text")); // NOI18N
         jButton9.setToolTipText(bundle.getString("MPControlPanel.jButton9.toolTipText")); // NOI18N
@@ -381,10 +368,10 @@ public class MPControlPanel extends javax.swing.JPanel {
         jButton9.setContentAreaFilled(false);
         jButton9.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton9.setIconTextGap(1);
-        jButton9.setMaximumSize(new java.awt.Dimension(90, 90));
+        jButton9.setMaximumSize(new java.awt.Dimension(150, 150));
         jButton9.setMinimumSize(new java.awt.Dimension(90, 80));
         jButton9.setName("jButton9"); // NOI18N
-        jButton9.setPreferredSize(new java.awt.Dimension(80, 70));
+        jButton9.setPreferredSize(new java.awt.Dimension(100, 100));
         jButton9.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton9.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -393,7 +380,6 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton9);
 
-        jButton17.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/preferences_system_session_services.png"))); // NOI18N
         jButton17.setText(bundle.getString("MPControlPanel.jButton17.text")); // NOI18N
         jButton17.setToolTipText(bundle.getString("MPControlPanel.jButton17.toolTipText")); // NOI18N
@@ -401,10 +387,10 @@ public class MPControlPanel extends javax.swing.JPanel {
         jButton17.setContentAreaFilled(false);
         jButton17.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton17.setIconTextGap(1);
-        jButton17.setMaximumSize(new java.awt.Dimension(90, 90));
+        jButton17.setMaximumSize(new java.awt.Dimension(150, 150));
         jButton17.setMinimumSize(new java.awt.Dimension(90, 80));
         jButton17.setName("jButton17"); // NOI18N
-        jButton17.setPreferredSize(new java.awt.Dimension(80, 70));
+        jButton17.setPreferredSize(new java.awt.Dimension(100, 100));
         jButton17.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton17.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -413,7 +399,6 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton17);
 
-        jButton13.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/blockdevice.png"))); // NOI18N
         jButton13.setText(bundle.getString("MPControlPanel.jButton13.text")); // NOI18N
         jButton13.setToolTipText(bundle.getString("MPControlPanel.jButton13.toolTipText")); // NOI18N
@@ -421,10 +406,10 @@ public class MPControlPanel extends javax.swing.JPanel {
         jButton13.setContentAreaFilled(false);
         jButton13.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton13.setIconTextGap(1);
-        jButton13.setMaximumSize(new java.awt.Dimension(90, 90));
+        jButton13.setMaximumSize(new java.awt.Dimension(150, 150));
         jButton13.setMinimumSize(new java.awt.Dimension(90, 80));
         jButton13.setName("jButton13"); // NOI18N
-        jButton13.setPreferredSize(new java.awt.Dimension(80, 70));
+        jButton13.setPreferredSize(new java.awt.Dimension(100, 100));
         jButton13.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton13.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -433,7 +418,6 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton13);
 
-        jButton14.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/konsole.png"))); // NOI18N
         jButton14.setText(bundle.getString("MPControlPanel.jButton14.text")); // NOI18N
         jButton14.setToolTipText(bundle.getString("MPControlPanel.jButton14.toolTipText")); // NOI18N
@@ -441,10 +425,10 @@ public class MPControlPanel extends javax.swing.JPanel {
         jButton14.setContentAreaFilled(false);
         jButton14.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton14.setIconTextGap(1);
-        jButton14.setMaximumSize(new java.awt.Dimension(90, 90));
+        jButton14.setMaximumSize(new java.awt.Dimension(150, 150));
         jButton14.setMinimumSize(new java.awt.Dimension(90, 80));
         jButton14.setName("jButton14"); // NOI18N
-        jButton14.setPreferredSize(new java.awt.Dimension(80, 70));
+        jButton14.setPreferredSize(new java.awt.Dimension(100, 100));
         jButton14.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton14.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -453,7 +437,6 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton14);
 
-        jButton11.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/usb.png"))); // NOI18N
         jButton11.setText(bundle.getString("MPControlPanel.jButton11.text")); // NOI18N
         jButton11.setToolTipText(bundle.getString("MPControlPanel.jButton11.toolTipText")); // NOI18N
@@ -461,10 +444,10 @@ public class MPControlPanel extends javax.swing.JPanel {
         jButton11.setContentAreaFilled(false);
         jButton11.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton11.setIconTextGap(1);
-        jButton11.setMaximumSize(new java.awt.Dimension(90, 90));
+        jButton11.setMaximumSize(new java.awt.Dimension(150, 150));
         jButton11.setMinimumSize(new java.awt.Dimension(90, 80));
         jButton11.setName("jButton11"); // NOI18N
-        jButton11.setPreferredSize(new java.awt.Dimension(80, 70));
+        jButton11.setPreferredSize(new java.awt.Dimension(100, 100));
         jButton11.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton11.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -473,7 +456,6 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton11);
 
-        jButton19.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton19.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/krfb.png"))); // NOI18N
         jButton19.setText(bundle.getString("MPControlPanel.jButton19.text")); // NOI18N
         jButton19.setToolTipText(bundle.getString("MPControlPanel.jButton19.toolTipText")); // NOI18N
@@ -481,10 +463,10 @@ public class MPControlPanel extends javax.swing.JPanel {
         jButton19.setContentAreaFilled(false);
         jButton19.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton19.setIconTextGap(1);
-        jButton19.setMaximumSize(new java.awt.Dimension(90, 90));
+        jButton19.setMaximumSize(new java.awt.Dimension(150, 150));
         jButton19.setMinimumSize(new java.awt.Dimension(90, 80));
         jButton19.setName("jButton19"); // NOI18N
-        jButton19.setPreferredSize(new java.awt.Dimension(80, 70));
+        jButton19.setPreferredSize(new java.awt.Dimension(100, 100));
         jButton19.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton19.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -493,7 +475,6 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton19);
 
-        jButton18.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/kxconfig.png"))); // NOI18N
         jButton18.setText(bundle.getString("MPControlPanel.jButton18.text")); // NOI18N
         jButton18.setToolTipText(bundle.getString("MPControlPanel.jButton18.toolTipText")); // NOI18N
@@ -501,10 +482,10 @@ public class MPControlPanel extends javax.swing.JPanel {
         jButton18.setContentAreaFilled(false);
         jButton18.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton18.setIconTextGap(1);
-        jButton18.setMaximumSize(new java.awt.Dimension(90, 90));
+        jButton18.setMaximumSize(new java.awt.Dimension(150, 150));
         jButton18.setMinimumSize(new java.awt.Dimension(90, 80));
         jButton18.setName("jButton18"); // NOI18N
-        jButton18.setPreferredSize(new java.awt.Dimension(80, 70));
+        jButton18.setPreferredSize(new java.awt.Dimension(100, 100));
         jButton18.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton18.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -513,7 +494,6 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton18);
 
-        jButton22.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton22.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/style.png"))); // NOI18N
         jButton22.setText(bundle.getString("MPControlPanel.jButton22.text")); // NOI18N
         jButton22.setToolTipText(bundle.getString("MPControlPanel.jButton22.toolTipText")); // NOI18N
@@ -521,10 +501,10 @@ public class MPControlPanel extends javax.swing.JPanel {
         jButton22.setContentAreaFilled(false);
         jButton22.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton22.setIconTextGap(1);
-        jButton22.setMaximumSize(new java.awt.Dimension(90, 90));
+        jButton22.setMaximumSize(new java.awt.Dimension(150, 150));
         jButton22.setMinimumSize(new java.awt.Dimension(90, 80));
         jButton22.setName("jButton22"); // NOI18N
-        jButton22.setPreferredSize(new java.awt.Dimension(80, 70));
+        jButton22.setPreferredSize(new java.awt.Dimension(100, 100));
         jButton22.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton22.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -533,7 +513,6 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton22);
 
-        jButton23.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton23.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/advancedsettings.png"))); // NOI18N
         jButton23.setText(bundle.getString("MPControlPanel.jButton23.text")); // NOI18N
         jButton23.setToolTipText(bundle.getString("MPControlPanel.jButton23.toolTipText")); // NOI18N
@@ -541,10 +520,10 @@ public class MPControlPanel extends javax.swing.JPanel {
         jButton23.setContentAreaFilled(false);
         jButton23.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton23.setIconTextGap(1);
-        jButton23.setMaximumSize(new java.awt.Dimension(90, 90));
+        jButton23.setMaximumSize(new java.awt.Dimension(150, 150));
         jButton23.setMinimumSize(new java.awt.Dimension(90, 80));
         jButton23.setName("jButton23"); // NOI18N
-        jButton23.setPreferredSize(new java.awt.Dimension(80, 70));
+        jButton23.setPreferredSize(new java.awt.Dimension(100, 100));
         jButton23.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton23.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -553,7 +532,6 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton23);
 
-        jButton24.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton24.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/konsole.png"))); // NOI18N
         jButton24.setText(bundle.getString("MPControlPanel.jButton24.text")); // NOI18N
         jButton24.setToolTipText(bundle.getString("MPControlPanel.jButton24.toolTipText")); // NOI18N
@@ -561,10 +539,10 @@ public class MPControlPanel extends javax.swing.JPanel {
         jButton24.setContentAreaFilled(false);
         jButton24.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton24.setIconTextGap(1);
-        jButton24.setMaximumSize(new java.awt.Dimension(90, 90));
+        jButton24.setMaximumSize(new java.awt.Dimension(150, 150));
         jButton24.setMinimumSize(new java.awt.Dimension(90, 80));
         jButton24.setName("jButton24"); // NOI18N
-        jButton24.setPreferredSize(new java.awt.Dimension(80, 70));
+        jButton24.setPreferredSize(new java.awt.Dimension(100, 100));
         jButton24.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton24.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -573,7 +551,6 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton24);
 
-        jButton25.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton25.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/advancedsettings.png"))); // NOI18N
         jButton25.setText(bundle.getString("MPControlPanel.jButton25.text")); // NOI18N
         jButton25.setToolTipText(bundle.getString("MPControlPanel.jButton25.toolTipText")); // NOI18N
@@ -581,10 +558,10 @@ public class MPControlPanel extends javax.swing.JPanel {
         jButton25.setContentAreaFilled(false);
         jButton25.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton25.setIconTextGap(1);
-        jButton25.setMaximumSize(new java.awt.Dimension(90, 90));
+        jButton25.setMaximumSize(new java.awt.Dimension(150, 150));
         jButton25.setMinimumSize(new java.awt.Dimension(90, 80));
         jButton25.setName("jButton25"); // NOI18N
-        jButton25.setPreferredSize(new java.awt.Dimension(80, 70));
+        jButton25.setPreferredSize(new java.awt.Dimension(100, 100));
         jButton25.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton25.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -593,7 +570,6 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton25);
 
-        jButton26.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton26.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/konsole.png"))); // NOI18N
         jButton26.setText(bundle.getString("MPControlPanel.jButton26.text")); // NOI18N
         jButton26.setToolTipText(bundle.getString("MPControlPanel.jButton26.toolTipText")); // NOI18N
@@ -601,10 +577,10 @@ public class MPControlPanel extends javax.swing.JPanel {
         jButton26.setContentAreaFilled(false);
         jButton26.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton26.setIconTextGap(1);
-        jButton26.setMaximumSize(new java.awt.Dimension(90, 90));
+        jButton26.setMaximumSize(new java.awt.Dimension(150, 150));
         jButton26.setMinimumSize(new java.awt.Dimension(90, 80));
         jButton26.setName(bundle.getString("MPControlPanel.jButton26.name")); // NOI18N
-        jButton26.setPreferredSize(new java.awt.Dimension(80, 70));
+        jButton26.setPreferredSize(new java.awt.Dimension(100, 100));
         jButton26.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton26.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

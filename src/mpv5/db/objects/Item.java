@@ -23,6 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -51,8 +52,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Returns a localized string representation of the
-     * given item status
+     * Returns a localized string representation of the given item status
      *
      * @param status
      * @return
@@ -158,8 +158,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     }
 
     /**
-     * Returns a localized string represenation of the given
-     * item type
+     * Returns a localized string represenation of the given item type
      *
      * @param type
      * @return
@@ -239,7 +238,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
                 return getTypeString(TYPE_ORDER);
             }
         };
-                en[4] = new MPEnum() {
+        en[4] = new MPEnum() {
 
             @Override
             public Integer getId() {
@@ -275,7 +274,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
                 return getTypeString(TYPE_CREDIT);
             }
         };
-        
+
         return en;
     }
 
@@ -454,8 +453,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     }
 
     /**
-     * @param defaultaccountsids the defaultaccountsids to
-     * set
+     * @param defaultaccountsids the defaultaccountsids to set
      */
     public void setAccountsids(int defaultaccountsids) {
         this.accountsids = defaultaccountsids;
@@ -497,8 +495,8 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
 
     /**
      * <li>TYPE_INVOICE = 0; <li>TYPE_ORDER = 1;
-     * <li>TYPE_OFFER = 2; <li>TYPE_DEPOSIT = 22; 
-     * <li>TYPE_PART_PAYMENT = 21; <li>TYPE_CREDIT = 20; 
+     * <li>TYPE_OFFER = 2; <li>TYPE_DEPOSIT = 22;
+     * <li>TYPE_PART_PAYMENT = 21; <li>TYPE_CREDIT = 20;
      *
      * @return the inttype
      */
@@ -508,8 +506,8 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
 
     /**
      * <li>TYPE_INVOICE = 0; <li>TYPE_ORDER = 1;
-     * <li>TYPE_OFFER = 2; <li>TYPE_DEPOSIT = 22; 
-     * <li>TYPE_PART_PAYMENT = 21; <li>TYPE_CREDIT = 20; 
+     * <li>TYPE_OFFER = 2; <li>TYPE_DEPOSIT = 22;
+     * <li>TYPE_PART_PAYMENT = 21; <li>TYPE_CREDIT = 20;
      *
      * @param inttype the inttype to set
      */
@@ -569,7 +567,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     public void setDiscountgrosvalue(BigDecimal discountgrosvalue) {
         this.discountgrosvalue = discountgrosvalue;
     }
-    
+
     /**
      * @return the formatHandler
      */
@@ -590,9 +588,8 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     }
 
     /**
-     * Fetches all related {@link Subitem}s to this
-     * {@link Item} If no subitems are assigned, returns an
-     * empty default list of default subitems
+     * Fetches all related {@link Subitem}s to this {@link Item} If no subitems
+     * are assigned, returns an empty default list of default subitems
      *
      * @return
      */
@@ -741,6 +738,27 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
 
         map.put("discountgrosvaluef", FormatNumber.formatLokalCurrency(__getDiscountGrosvalue()));
 
+        Map<Integer, BigDecimal> taxGroups = new HashMap<Integer, BigDecimal>();
+        for (SubItem s : getSubitems()) {
+            Integer taxPercentValue = s.__getTaxpercentvalue().intValue();
+            if (!taxGroups.containsKey(taxPercentValue)) {
+                taxGroups.put(taxPercentValue, BigDecimal.ZERO);
+            }
+            taxGroups.put(taxPercentValue, taxGroups.get(taxPercentValue).add(s.getTotalTaxValue()));
+        }
+
+        int index = 0;
+        String taxGroupsText = "";
+        for (Map.Entry<Integer, BigDecimal> taxGroup : taxGroups.entrySet()) {
+            index++;
+            map.put("taxgroupvalue" + index, FormatNumber.formatDezimal(taxGroup.getValue()));
+            map.put("taxgroup" + index, taxGroup.getKey());
+
+            taxGroupsText += taxGroup.getKey() + "%\t" + FormatNumber.formatLokalCurrency(taxGroup.getValue()) + "\n";
+        }
+
+        map.put("taxgroups", taxGroupsText);
+
         Locale l = Locale.getDefault();
         if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("item.date.locale")) {
             try {
@@ -808,12 +826,13 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     @Override
     public String toString() {
         try {
-            if (getCname().equals(cnumber))
-            return ((Contact) getObject(Context.getContact(), contactsids)).__getCname() 
-                    + "-" + getCname() 
-                    + " (" + (FormatNumber.formatLokalCurrency(getGrossAmount())) + ")";
-            else 
+            if (getCname().equals(cnumber)) {
+                return ((Contact) getObject(Context.getContact(), contactsids)).__getCname()
+                        + "-" + getCname()
+                        + " (" + (FormatNumber.formatLokalCurrency(getGrossAmount())) + ")";
+            } else {
                 return getCname();
+            }
         } catch (NodataFoundException ex) {
             return getCname() + " (" + (FormatNumber.formatLokalCurrency(getGrossAmount())) + ")";
         }
@@ -833,8 +852,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     /**
      * Fetches all properties for this item from the db
      *
-     * @return A (possibly empty) list of
-     * {@link ValueProperty}s
+     * @return A (possibly empty) list of {@link ValueProperty}s
      */
     public List<ValueProperty> getProperties() {
         return ValueProperty.getProperties(this);
@@ -887,8 +905,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
 
     /**
      * @return the contact
-     * @throws mpv5.db.common.NodataFoundException is
-     * persisting via contactsids
+     * @throws mpv5.db.common.NodataFoundException is persisting via contactsids
      */
     @Persistable(false)
     @Relation(true)
@@ -952,9 +969,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     private void buildCname() {
         if (cnumber == null) {
             setCname("<not set>");
-        } 
-        else 
-        {
+        } else {
             if (ValueProperty.hasProperty(this.getContext(), "IntItemLabel")) {
                 try {
                     ValueProperty script = ValueProperty.getProperty(this.getContext(), "IntItemLabel");
