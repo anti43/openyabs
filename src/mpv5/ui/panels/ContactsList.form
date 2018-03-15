@@ -51,7 +51,7 @@
                       <Component id="jPanel3" alignment="0" max="32767" attributes="1"/>
                       <Component id="jPanel2" alignment="0" max="32767" attributes="1"/>
                   </Group>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace pref="183" max="32767" attributes="0"/>
               </Group>
               <Group type="102" attributes="0">
                   <Component id="prinitingComboBox1" min="-2" max="-2" attributes="0"/>
@@ -63,14 +63,14 @@
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
-                  <Component id="jPanel3" min="-2" pref="33" max="-2" attributes="0"/>
+                  <Component id="jPanel3" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jPanel2" min="-2" max="-2" attributes="3"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jScrollPane1" pref="27" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" pref="221" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
-                      <Component id="prinitingComboBox1" alignment="2" min="-2" pref="17" max="-2" attributes="0"/>
+                      <Component id="prinitingComboBox1" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="count" alignment="0" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -123,27 +123,42 @@
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
-                      <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jLabel3" min="-2" pref="100" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jTextField1" min="-2" pref="287" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jButton3" min="-2" pref="100" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jButton2" min="-2" pref="100" max="-2" attributes="0"/>
+                      <Component id="jButton2" max="32767" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                   </Group>
-                  <Component id="jToolBar2" min="-2" max="-2" attributes="1"/>
+                  <Group type="102" attributes="0">
+                      <Component id="jToolBar2" min="-2" max="-2" attributes="1"/>
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                  </Group>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <Component id="jToolBar2" min="-2" pref="25" max="-2" attributes="1"/>
-                      <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="2" attributes="0">
-                          <Component id="jButton2" alignment="2" min="-2" max="-2" attributes="0"/>
-                          <Component id="jButton3" alignment="2" min="-2" max="-2" attributes="0"/>
-                          <Component id="jTextField1" alignment="2" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel3" alignment="2" min="-2" pref="25" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" attributes="0">
+                              <EmptySpace max="32767" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="jButton3" min="-2" pref="30" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                      <Component id="jLabel3" alignment="1" max="32767" attributes="0"/>
+                                      <Component id="jTextField1" alignment="1" max="32767" attributes="0"/>
+                                  </Group>
+                              </Group>
+                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="0" attributes="0">
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="jButton2" min="-2" pref="30" max="-2" attributes="0"/>
+                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          </Group>
                       </Group>
                   </Group>
               </Group>
@@ -168,7 +183,7 @@
                 </Property>
                 <Property name="name" type="java.lang.String" value="jLabel3" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[100, 14]"/>
+                  <Dimension value="[100, 30]"/>
                 </Property>
               </Properties>
             </Component>
@@ -183,6 +198,9 @@
                   <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactsList.jTextField1.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="jTextField1" noResource="true"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[200, 30]"/>
+                </Property>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextField1ActionPerformed"/>
@@ -194,6 +212,9 @@
                   <FontInfo relative="true">
                     <Font component="jButton2" property="font" relativeSize="true" size="0"/>
                   </FontInfo>
+                </Property>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/mpv5/resources/images/22/mail_find.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                   <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactsList.jButton2.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
@@ -215,6 +236,9 @@
                   <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactsList.jButton3.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="jButton3" noResource="true"/>
+                <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="null"/>
+                </Property>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton3ActionPerformed"/>
@@ -469,7 +493,7 @@
                 <Property name="contentAreaFilled" type="boolean" value="false"/>
                 <Property name="name" type="java.lang.String" value="jButton5" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[120, 23]"/>
+                  <Dimension value="[120, 30]"/>
                 </Property>
               </Properties>
               <Events>
@@ -496,7 +520,7 @@
                 <Property name="contentAreaFilled" type="boolean" value="false"/>
                 <Property name="name" type="java.lang.String" value="jButton1" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[120, 23]"/>
+                  <Dimension value="[120, 30]"/>
                 </Property>
               </Properties>
               <Events>
@@ -523,7 +547,7 @@
                 <Property name="contentAreaFilled" type="boolean" value="false"/>
                 <Property name="name" type="java.lang.String" value="jButton4" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[120, 23]"/>
+                  <Dimension value="[120, 30]"/>
                 </Property>
               </Properties>
               <Events>
