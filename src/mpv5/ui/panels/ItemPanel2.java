@@ -2855,6 +2855,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
     }
 
     private void delivery() {
+        tb.save();
         PreviewPanel pr;
         if (dataOwner != null && dataOwner.isExisting()) {
             if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), Constants.TYPE_DELIVERY_NOTE)) {
@@ -2868,6 +2869,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
     }
 
     private void confirmation() {
+        tb.save();
         PreviewPanel pr;
         if (dataOwner != null && dataOwner.isExisting()) {
             if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), Constants.TYPE_ORDER_CONFIRMATION)) {
@@ -2884,6 +2886,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
     @Override
     public void mail() {
 
+        tb.save();
         if (dataOwner != null && dataOwner.isExisting()) {
             if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
 
@@ -2903,6 +2906,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
 
     @Override
     public void print() {
+        tb.save();
         if (dataOwner != null && dataOwner.isExisting()) {
             if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
                 if (checkb_pront_oc.isSelected() && checkb_pront_oc.isEnabled()) {
@@ -2920,8 +2924,9 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
     }
 
     private void preview() {
+        tb.save();
         PreviewPanel pr;
-        if (dataOwner != null && dataOwner.isExisting()) {
+        if (dataOwner != null) {
             if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
                 pr = new PreviewPanel();
                 pr.setDataOwner(dataOwner);
@@ -2954,6 +2959,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
 
     @Override
     public void pdf() {
+        tb.save();
         if (dataOwner != null && dataOwner.isExisting()) {
             dataOwner.toPdf(true);
         }
@@ -2961,6 +2967,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
 
     @Override
     public void odt() {
+        tb.save();
         if (dataOwner != null && dataOwner.isExisting()) {
             dataOwner.toOdt(true);
         }
