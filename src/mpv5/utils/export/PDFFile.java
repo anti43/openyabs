@@ -37,7 +37,7 @@ import mpv5.utils.images.MPIcon;
 
 /**
  *
- *  
+ *
  */
 public class PDFFile extends Exportable {
 
@@ -48,9 +48,7 @@ public class PDFFile extends Exportable {
         super(pathToFile);
     }
 
-  
     public void run() {
-
 
         Log.Debug(this, "All fields:");
         for (Iterator<String> it = getData().keySet().iterator(); it.hasNext();) {
@@ -103,11 +101,17 @@ public class PDFFile extends Exportable {
                         if (getTemplate() != null) {
                             strings = refactorRow(getTemplate(), strings);
                         }
-                        for (int j = 0; j < strings.length; j++) {
-                            String cellValue = strings[j];
-                            String fieldname = "col" + j + "row" + i;
-                            Log.Debug(this, "Filling Field: " + fieldname + " [" + getData().get(cellValue) + "]");
-                            acroFields.setField(fieldname, cellValue);
+                        for (int j = 0; j < strings.length + 10; j++) {
+                            if (j < strings.length) {
+                                String cellValue = strings[j];
+                                String fieldname = "col" + j + "row" + i;
+                                Log.Debug(this, "Filling Field: " + fieldname + " [" + getData().get(cellValue) + "]");
+                                acroFields.setField(fieldname, cellValue);
+                            } else {
+                                String cellValue = "";
+                                String fieldname = "col" + j + "row" + i;
+                                acroFields.setField(fieldname, cellValue);
+                            }
                         }
                     }
                 }
