@@ -378,7 +378,9 @@ public final class Export extends HashMap<String, Object> implements Waitable {
      * @return
      */
     public static Waitable sourceFile(String aname, Template preloadedTemplate, DatabaseObject dataOwner) {
-        Map<String, Object> hm1 = dataOwner.getFormFields();//new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
+        Map<String, Object> hm1 = dataOwner == null ? 
+                new FormFieldsHandler(null).getFormattedFormFields(null) : 
+                dataOwner.getFormFields();
         File f2;
         if (aname == null) {
             f2 = FileDirectoryHandler.getTempFile("odt");

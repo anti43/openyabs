@@ -318,6 +318,9 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
                  if (jCheckBox1.isSelected()) {
                      LocalSettings.setProperty("lastuser", mpv5.db.objects.User.getCurrentUser().__getIDS().toString());
+                     if(mPCombobox1.getModel().getSize()==1){
+                           LocalSettings.setProperty("lastuserpw", MD5HashGenerator.getInstance().hashData(jPasswordField1.getPassword()));
+                     }
                  } else {
                      LocalSettings.setProperty("lastuser", "INSTANCE");
                  }
