@@ -30,6 +30,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -150,17 +151,31 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
     }
 
     public JournalPanel(Contact dataOwner) {
-        initComponents();
-        setPopup();
-        jLabel4.setText(dataOwner.__getCname());
-        timeframeChooser1.setTime(new vTimeframe(DateConverter.getDate(DateConverter.getYear()), new Date()));
-        prinitingComboBox1.init(jTable1);
-
         this.dataOwner = dataOwner;
+        initComponents();
+        setName("journalpanel"); //NOI18N
+        jLabel4.setText(dataOwner.__getCname());
+         
+        new ExcelAdapter(jTable1);
+        setPopup();
+        validate();
+        
+        timeframeChooser1.setTime(new vTimeframe(DateConverter.getDate(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)-10)), new Date()));
+        bydateend.setSelected(User.getCurrentUser().getProperties().getProperty(this, bydateend, Boolean.FALSE));
+        expbydateend.setSelected(User.getCurrentUser().getProperties().getProperty(this, expbydateend, Boolean.FALSE));
         groups.setSearchEnabled(true);
         groups.setContext(Context.getGroup());
         groups.triggerSearch();
+        users.setSearchEnabled(true);
+        users.setContext(Context.getUser());
+        users.setModel();
 
+        MPComboBoxModelItem[] items = new MPComboBoxModelItem[3];
+        items[0] = new MPComboBoxModelItem(Context.getInvoice(), Messages.TYPE_INVOICE.toString());
+        items[1] = new MPComboBoxModelItem(Context.getOrder(), Messages.TYPE_ORDER.toString());
+        items[2] = new MPComboBoxModelItem(Context.getOffer(), Messages.TYPE_OFFER.toString());
+        types.setModel(new MPComboboxModel(items));
+       
         try {
             DefaultListModel al = new DefaultListModel();
             ArrayList<DatabaseObject> accounts = DatabaseObject.getObjects(Context.getAccounts());
@@ -173,9 +188,13 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             Log.Debug(this, nodataFoundException.getMessage());
         }
 
-        statusc.getComboBox().setModel(new DefaultComboBoxModel(new Object[]{Messages.ALL, Messages.STATUS_PAID, Messages.STATUS_UNPAID}));
-
+        statusc.getComboBox().setModel(new DefaultComboBoxModel(new Object[]{Messages.ALL, Messages.STATUS_PAID, Messages.STATUS_UNPAID, Messages.STATUS_CANCELLED}));
+        prinitingComboBox1.init(jTable1);
         refresh(null, null);
+        jButton4.setEnabled(false);
+        loadTemplate();
+        ((MPTable) jTable1).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) jTable1, this));
+ 
 
         jTree1.setCellRenderer(MPTreeModel.getRenderer());
         jTree1.setModel(new MPTreeModel(dataOwner, null, null));
