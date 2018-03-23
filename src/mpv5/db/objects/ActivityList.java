@@ -61,7 +61,7 @@ public class ActivityList extends DatabaseObject implements Formattable, Templat
 
     @Override
     public JComponent getView() {
-        return ActivityConfirmationPanel.instanceOf();
+        return new ActivityConfirmationPanel();
     }
 
     @Override

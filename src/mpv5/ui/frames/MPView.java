@@ -4,9 +4,7 @@
 package mpv5.ui.frames;
 
 import com.l2fprod.common.swing.JOutlookBar;
-import com.l2fprod.common.swing.plaf.OutlookBarUI;
 import enoa.connection.NoaConnection;
-import enoa.connection.NoaConnectionLocalServer;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import java.awt.BorderLayout;
@@ -33,8 +31,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -2797,7 +2793,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     }//GEN-LAST:event_jMenuItem45ActionPerformed
 
     private void jButton21ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton21ActionPerformed
-        addOrShowTab(ActivityConfirmationPanel.instanceOf(), Messages.ACTIVITYCONFIRMATION.toString());
+        addOrShowTab(new ActivityConfirmationPanel(), Messages.ACTIVITYCONFIRMATION.toString());
     }//GEN-LAST:event_jButton21ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed

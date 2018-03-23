@@ -7,6 +7,7 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
@@ -21,8 +22,11 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableCellRenderer;
 import mpv5.db.common.Context;
@@ -70,18 +74,6 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
     private MPTableModel omodel = null;
     Thread t = null;
 
-    /**
-     * Singleton
-     *
-     * @return
-     */
-    public static ActivityConfirmationPanel instanceOf() {
-        if (me == null) {
-            me = new ActivityConfirmationPanel();
-        }
-        return me;
-    }
-
     // Variablen ...
     public int contactsids_;
     public int orderids_;
@@ -101,7 +93,7 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
     /**
      * Creates new form ListPanel
      */
-    private ActivityConfirmationPanel() {
+    public ActivityConfirmationPanel() {
         initComponents();
         setName("ActivityConfirmation");
         dataOwner = new ActivityList();
@@ -124,26 +116,24 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
                         public void run() {
                             try {
                                 Log.Debug(this, "Kontakt Zeile :" + item.getId() + " ausgewählt.");
-                                if (!dataOwner.isExisting()) {
-                                    Contact ct = (Contact) DatabaseObject.getObject(Context.getContact(), Integer.valueOf(item.getId()));
-                                    List data = DatabaseObject.getReferencedObjects(ct,
-                                            Context.getOrder());
-                                    order.setModel(data);
-                                    order.getModel().addElement(new MPComboBoxModelItem(0, Messages.NO_ENTRY.getValue()));
-                                    jLabel2.setText(ct.__getCompany());
-                                    String name_txt;
-                                    if (ct.__getisMale()) {
-                                        name_txt = "Herr "
-                                                + ct.__getTitle()
-                                                + ct.__getCname();
-                                    } else {
-                                        name_txt = "Frau "
-                                                + ct.__getTitle()
-                                                + ct.__getCname();
-                                    }
-                                    jLabel3.setText(name_txt);
-                                    jLabel4.setText(ct.__getMainphone());
+
+                                Contact ct = (Contact) DatabaseObject.getObject(Context.getContact(), Integer.valueOf(item.getId()));
+                                List data = DatabaseObject.getReferencedObjects(ct,
+                                        Context.getOrder());
+                                order.setModel(data);
+                                order.getModel().addElement(new MPComboBoxModelItem(0, Messages.NO_ENTRY.getValue()));
+                                
+                                String name_txt;
+                                if (ct.__getisMale()) {
+                                    name_txt = "Herr "
+                                            + ct.__getTitle()
+                                            + ct.__getCname();
+                                } else {
+                                    name_txt = "Frau "
+                                            + ct.__getTitle()
+                                            + ct.__getCname();
                                 }
+                                text.setText(ct.__getCompany() + " " + name_txt + " " + ct.__getMainphone());
                             } catch (NodataFoundException ex) {
                                 Log.Debug(this, ex);
                             }
@@ -153,7 +143,7 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
                 }
             }
         });
-        refresh();
+        refreshSync();
         preloadTemplate();
         number.set_ValueClass(Integer.class);
     }
@@ -176,9 +166,7 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         jButton3 = new javax.swing.JButton();
         Project = new mpv5.ui.beans.LabeledTextField();
         number = new mpv5.ui.beans.LabeledTextField();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
+        text = new javax.swing.JLabel();
         jScrollPane4 = new javax.swing.JScrollPane();
         itemtable = new JTable() {
             private static final long serialVersionUID = 1L;
@@ -197,7 +185,7 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         addItem = new javax.swing.JButton();
         delItem = new javax.swing.JButton();
         upItem = new javax.swing.JButton();
-        upItem1 = new javax.swing.JButton();
+        downItem = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         total = new javax.swing.JTextField();
         jButton4 = new javax.swing.JButton();
@@ -218,12 +206,18 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
 
         contact.set_Label(bundle.getString("ActivityConfirmationPanel.contact._Label")); // NOI18N
         contact.setName("contact"); // NOI18N
+        contact.setPreferredSize(new java.awt.Dimension(200, 22));
 
         order.set_Label(bundle.getString("ActivityConfirmationPanel.order._Label")); // NOI18N
+        order.setEditable(false);
+        order.setMinimumSize(new java.awt.Dimension(75, 18));
         order.setName("order"); // NOI18N
+        order.setPreferredSize(new java.awt.Dimension(200, 22));
 
         jButton2.setText(bundle.getString("ActivityConfirmationPanel.jButton2.text")); // NOI18N
+        jButton2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         jButton2.setName("jButton2"); // NOI18N
+        jButton2.setPreferredSize(new java.awt.Dimension(200, 22));
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -231,7 +225,9 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         });
 
         jButton3.setText(bundle.getString("ActivityConfirmationPanel.jButton3.text")); // NOI18N
+        jButton3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         jButton3.setName("jButton3"); // NOI18N
+        jButton3.setPreferredSize(new java.awt.Dimension(200, 22));
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
@@ -240,19 +236,16 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
 
         Project.set_Label(bundle.getString("ActivityConfirmationPanel.Project._Label")); // NOI18N
         Project.setName("Project"); // NOI18N
+        Project.setPreferredSize(new java.awt.Dimension(200, 22));
 
         number.set_Label(bundle.getString("ActivityConfirmationPanel.number._Label")); // NOI18N
         number.setFocusable(false);
         number.setFont(number.getFont());
         number.setName("number"); // NOI18N
+        number.setPreferredSize(new java.awt.Dimension(200, 22));
 
-        jLabel2.setName("jLabel2"); // NOI18N
-        jLabel2.setPreferredSize(new java.awt.Dimension(0, 16));
-
-        jLabel3.setName("jLabel3"); // NOI18N
-
-        jLabel4.setName("jLabel4"); // NOI18N
-        jLabel4.setPreferredSize(new java.awt.Dimension(45, 20));
+        text.setName("text"); // NOI18N
+        text.setPreferredSize(new java.awt.Dimension(200, 22));
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -261,43 +254,43 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(number, javax.swing.GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE)
-                    .addComponent(contact, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(12, 12, 12)
-                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(order, javax.swing.GroupLayout.DEFAULT_SIZE, 366, Short.MAX_VALUE)
-                    .addComponent(Project, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(29, 29, 29)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(number, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(contact, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(Project, javax.swing.GroupLayout.PREFERRED_SIZE, 522, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(order, javax.swing.GroupLayout.PREFERRED_SIZE, 344, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 103, Short.MAX_VALUE))
+                    .addComponent(text, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+            .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(number, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(Project, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 16, Short.MAX_VALUE)))
+                        .addComponent(number, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(contact, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jButton3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(order, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(order, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(contact, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(Project, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(text, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jScrollPane4.setName("jScrollPane4"); // NOI18N
@@ -312,7 +305,11 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
             }
         ));
         itemtable.setCellSelectionEnabled(true);
+        itemtable.setGridColor(new java.awt.Color(204, 204, 204));
         itemtable.setName("itemtable"); // NOI18N
+        itemtable.setSelectionForeground(new java.awt.Color(0, 0, 0));
+        itemtable.setShowGrid(true);
+        itemtable.setShowVerticalLines(false);
         itemtable.setSurrendersFocusOnKeystroke(true);
         jScrollPane4.setViewportView(itemtable);
 
@@ -320,7 +317,9 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         itemPanel.setOpaque(false);
 
         addItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/add.png"))); // NOI18N
+        addItem.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         addItem.setName("addItem"); // NOI18N
+        addItem.setPreferredSize(new java.awt.Dimension(24, 24));
         addItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addItemActionPerformed(evt);
@@ -328,7 +327,9 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         });
 
         delItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/remove.png"))); // NOI18N
+        delItem.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         delItem.setName("delItem"); // NOI18N
+        delItem.setPreferredSize(new java.awt.Dimension(24, 24));
         delItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 delItemActionPerformed(evt);
@@ -336,20 +337,22 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         });
 
         upItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/arrow-up.png"))); // NOI18N
-        upItem.setEnabled(false);
+        upItem.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         upItem.setName("upItem"); // NOI18N
+        upItem.setPreferredSize(new java.awt.Dimension(24, 24));
         upItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 upItemActionPerformed(evt);
             }
         });
 
-        upItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/arrow-down.png"))); // NOI18N
-        upItem1.setEnabled(false);
-        upItem1.setName("upItem1"); // NOI18N
-        upItem1.addActionListener(new java.awt.event.ActionListener() {
+        downItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/arrow-down.png"))); // NOI18N
+        downItem.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        downItem.setName("downItem"); // NOI18N
+        downItem.setPreferredSize(new java.awt.Dimension(24, 24));
+        downItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                upItem1ActionPerformed(evt);
+                downItemActionPerformed(evt);
             }
         });
 
@@ -357,22 +360,22 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         itemPanel.setLayout(itemPanelLayout);
         itemPanelLayout.setHorizontalGroup(
             itemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(addItem, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(delItem, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(upItem, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(upItem1, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(addItem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(delItem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(upItem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(downItem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         itemPanelLayout.setVerticalGroup(
             itemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(itemPanelLayout.createSequentialGroup()
-                .addComponent(addItem)
+                .addComponent(addItem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(delItem)
+                .addComponent(delItem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(upItem)
+                .addComponent(upItem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(upItem1)
-                .addContainerGap(107, Short.MAX_VALUE))
+                .addComponent(downItem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(145, Short.MAX_VALUE))
         );
 
         jLabel1.setText(bundle.getString("ActivityConfirmationPanel.jLabel1.text")); // NOI18N
@@ -382,7 +385,9 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         total.setName("total"); // NOI18N
 
         jButton4.setText(bundle.getString("ActivityConfirmationPanel.jButton4.text")); // NOI18N
+        jButton4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         jButton4.setName("jButton4"); // NOI18N
+        jButton4.setPreferredSize(new java.awt.Dimension(78, 24));
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton4ActionPerformed(evt);
@@ -393,7 +398,9 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         jLabel5.setName("jLabel5"); // NOI18N
 
         jButton5.setText(bundle.getString("ActivityConfirmationPanel.jButton5.text")); // NOI18N
+        jButton5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         jButton5.setName("jButton5"); // NOI18N
+        jButton5.setPreferredSize(new java.awt.Dimension(110, 24));
         jButton5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton5ActionPerformed(evt);
@@ -412,9 +419,9 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
                 .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 100, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 212, Short.MAX_VALUE)
                 .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 100, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 211, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(total, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -434,10 +441,12 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(total, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton4)
+                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5)
-                    .addComponent(jButton5)))
+                    .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
+
+        jButton5.getAccessibleContext().setAccessibleName(bundle.getString("ActivityConfirmationPanel.jButton5.AccessibleContext.accessibleName")); // NOI18N
 
         add(jPanel1, java.awt.BorderLayout.CENTER);
 
@@ -450,34 +459,6 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         SearchBarPane.setLayout(new java.awt.BorderLayout());
         add(SearchBarPane, java.awt.BorderLayout.WEST);
     }// </editor-fold>//GEN-END:initComponents
-
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        try {
-            int cid = Integer.valueOf(order.getSelectedItem().getId());
-            Item i = (Item) DatabaseObject.getObject(Context.getOrder(), cid);
-            ItemPanel2 ip = new ItemPanel2(Context.getOrder());
-            mpv5.YabsViewProxy.instance().getIdentifierView().addOrShowTab(ip, Messages.TYPE_ORDER.toString());
-            ip.setDataOwner(i, true);
-        } catch (NumberFormatException e) {
-            Log.Debug(this, e);
-        } catch (NodataFoundException e) {
-            Log.Debug(this, e);
-        }
-    }//GEN-LAST:event_jButton2ActionPerformed
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        try {
-            int cid = Integer.valueOf(contact.getSelectedItem().getId());
-            Contact c = (Contact) DatabaseObject.getObject(Context.getContact(), cid);
-            ContactPanel cp = new ContactPanel(Context.getContact());
-            mpv5.YabsViewProxy.instance().getIdentifierView().addOrShowTab(cp, Messages.TYPE_CONTACT.toString());
-            cp.setDataOwner(c, true);
-        } catch (NumberFormatException e) {
-            Log.Debug(this, e);
-        } catch (NodataFoundException e) {
-            Log.Debug(this, e);
-        }
-    }//GEN-LAST:event_jButton3ActionPerformed
 
     private void addItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addItemActionPerformed
         ((MPTableModel) itemtable.getModel()).addRow(1);
@@ -502,14 +483,14 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         itemtable.changeSelection(index - 1, itemtable.getSelectedColumn(), false, false);
     }//GEN-LAST:event_upItemActionPerformed
 
-    private void upItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_upItem1ActionPerformed
+    private void downItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_downItemActionPerformed
         int index = itemtable.getSelectedRow();
         if (index < 0 || index >= itemtable.getRowCount() - 1) {
             return;
         }
         ((MPTableModel) itemtable.getModel()).moveRow(index, index, index + 1);
         itemtable.changeSelection(index + 1, itemtable.getSelectedColumn(), false, false);
-    }//GEN-LAST:event_upItem1ActionPerformed
+    }//GEN-LAST:event_downItemActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         toInvoice(Item.TYPE_INVOICE);
@@ -531,47 +512,119 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
                 Iterator<SubItem> it = data.iterator();
                 while (it.hasNext()) {
                     SubItem s = it.next();
-
-                    Product p = (Product) DatabaseObject.getObject(Context.getProduct(), s.__getOriginalproductsids());
-
-                    RowData r;
-                    if (pm.containsKey(p)) {
-                        r = pm.get(p);
-                    } else {
-                        r = new RowData(p);
-                        pm.put(p, r);
-                    }
-
-                    r.setOrdered(s.__getQuantityvalue());
-                    r.setMeasuere(s.__getMeasure());
-                    r.setDescription(s.__getDescription());
-                    r.calcStatus();
-
-                }
-                ArrayList<ActivityList> data2 = DatabaseObject.getObjects(Context.getActivityList(), new QueryCriteria("orderids", dataOwner.__getOrderids()));
-                Iterator<ActivityList> it2 = data2.iterator();
-                while (it2.hasNext()) {
-                    List<ActivityListSubItem> als = it2.next().getPositions();
-                    Collections.sort(als, ActivityListSubItem.ORDER_COMPARATOR);
-
-                    Iterator<ActivityListSubItem> it3 = als.iterator();
-                    while (it3.hasNext()) {
-                        ActivityListSubItem ai = it3.next();
-                        Product p = (Product) DatabaseObject.getObject(Context.getProduct(), ai.__getProductsids());
+                    try {
+                        Product p = (Product) DatabaseObject.getObject(Context.getProduct(), s.__getOriginalproductsids());
 
                         RowData r;
                         if (pm.containsKey(p)) {
                             r = pm.get(p);
                         } else {
                             r = new RowData(p);
-                            r.setOrdered(BigDecimal.ZERO);
-                            r.setMeasuere(ai.__getMeasure());
-                            r.setDescription(ai.__getDescription());
                             pm.put(p, r);
                         }
 
-                        r.setUsed(ai.__getQuantityvalue());
+                        r.setOrdered(s.__getQuantityvalue());
+                        r.setMeasuere(s.__getMeasure());
+                        r.setDescription(s.__getDescription());
                         r.calcStatus();
+                    } catch (NodataFoundException ex) {
+                        Log.Debug(ex);
+                    }
+                }
+                 try {
+                    ArrayList<Item> data2 = DatabaseObject.getObjects(Context.getInvoice(), new QueryCriteria("reforderids", this.orderids_));
+                    Iterator<Item> it2 = data2.iterator();
+                    while (it2.hasNext()) {
+                        SubItem[] sl = it2.next().getSubitems();
+
+                        for (int u = 0; u < sl.length; u++) {
+                            SubItem si = sl[u];
+                            try {
+                                Product p = (Product) DatabaseObject.getObject(Context.getProduct(), si.__getOriginalproductsids());
+
+                                RowData r;
+                                if (pm.containsKey(p)) {
+                                    r = pm.get(p);
+                                } else {
+                                    r = new RowData(p);
+                                    r.setOrdered(BigDecimal.ZERO);
+                                    r.setMeasuere(si.__getMeasure());
+                                    r.setDescription(si.__getDescription());
+                                    pm.put(p, r);
+                                }
+
+                                r.setUsed(si.__getQuantityvalue());
+                                r.calcStatus();
+                            } catch (NodataFoundException ex) {
+                                Log.Debug(ex);
+                            }
+                        }
+                    }
+                } catch (NodataFoundException ex) {
+                    Log.Debug(ex);
+                }
+
+                try {
+                    ArrayList<Item> data3 = DatabaseObject.getObjects(Context.getPartPayment(), new QueryCriteria("reforderids", this.orderids_));
+                    Iterator<Item> it3 = data3.iterator();
+                    while (it3.hasNext()) {
+                        SubItem[] sl = it3.next().getSubitems();
+
+                        for (int u = 0; u < sl.length; u++) {
+                            SubItem si = sl[u];
+                            try {
+                                Product p = (Product) DatabaseObject.getObject(Context.getProduct(), si.__getOriginalproductsids());
+
+                                RowData r;
+                                if (pm.containsKey(p)) {
+                                    r = pm.get(p);
+                                } else {
+                                    r = new RowData(p);
+                                    r.setOrdered(BigDecimal.ZERO);
+                                    r.setMeasuere(si.__getMeasure());
+                                    r.setDescription(si.__getDescription());
+                                    pm.put(p, r);
+                                }
+
+                                r.setUsed(si.__getQuantityvalue());
+                                r.calcStatus();
+                            } catch (NodataFoundException ex) {
+                                Log.Debug(ex);
+                            }
+                        }
+                    }
+                } catch (NodataFoundException ex) {
+                    Log.Debug(ex);
+                }
+                
+                ArrayList<ActivityList> data4 = DatabaseObject.getObjects(Context.getActivityList(), new QueryCriteria("orderids", dataOwner.__getOrderids()));
+                Iterator<ActivityList> it4 = data4.iterator();
+                while (it4.hasNext()) {
+                    List<ActivityListSubItem> als = it4.next().getPositions();
+                    Collections.sort(als, ActivityListSubItem.ORDER_COMPARATOR);
+
+                    Iterator<ActivityListSubItem> it5 = als.iterator();
+                    while (it5.hasNext()) {
+                        ActivityListSubItem ai = it5.next();
+                        try {
+                            Product p = (Product) DatabaseObject.getObject(Context.getProduct(), ai.__getProductsids());
+
+                            RowData r;
+                            if (pm.containsKey(p)) {
+                                r = pm.get(p);
+                            } else {
+                                r = new RowData(p);
+                                r.setOrdered(BigDecimal.ZERO);
+                                r.setMeasuere(ai.__getMeasure());
+                                r.setDescription(ai.__getDescription());
+                                pm.put(p, r);
+                            }
+
+                            r.setUsed(ai.__getQuantityvalue());
+                            r.calcStatus();
+                        } catch (NodataFoundException ex) {
+                            Log.Debug(ex);
+                        }
                     }
                 }
 
@@ -583,8 +636,8 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
 
                 table.setModel(new MPTableModel(d, Headers.ITEM_COMPARE.getValue(),
                         new Class[]{String.class, String.class, String.class, String.class, String.class, Object.class}));
-
-                TableFormat.resizeCols(table, new Integer[]{75, 75, 75, 300, 75, 200}, new Boolean[]{true, true, true, true, true, true});
+                TableFormat.stripColumn(itemtable, 6);
+                TableFormat.resizeCols(table, new Integer[]{75, 75, 75, 300, 75, 200}, new Boolean[]{false, false, false, false, false, false});
                 class ColorRenderer extends JLabel implements TableCellRenderer {
 
                     private static final long serialVersionUID = -3009391069720793167L;
@@ -635,12 +688,41 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         }
     }//GEN-LAST:event_jButton5ActionPerformed
 
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        try {
+            int cid = Integer.valueOf(contact.getSelectedItem().getId());
+            Contact c = (Contact) DatabaseObject.getObject(Context.getContact(), cid);
+            ContactPanel cp = new ContactPanel(Context.getContact());
+            mpv5.YabsViewProxy.instance().getIdentifierView().addOrShowTab(cp, Messages.TYPE_CONTACT.toString());
+            cp.setDataOwner(c, true);
+        } catch (NumberFormatException e) {
+            Log.Debug(this, e);
+        } catch (NodataFoundException e) {
+            Log.Debug(this, e);
+        }
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        try {
+            int cid = Integer.valueOf(order.getSelectedItem().getId());
+            Item i = (Item) DatabaseObject.getObject(Context.getOrder(), cid);
+            ItemPanel2 ip = new ItemPanel2(Context.getOrder());
+            mpv5.YabsViewProxy.instance().getIdentifierView().addOrShowTab(ip, Messages.TYPE_ORDER.toString());
+            ip.setDataOwner(i, true);
+        } catch (NumberFormatException e) {
+            Log.Debug(this, e);
+        } catch (NodataFoundException e) {
+            Log.Debug(this, e);
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private mpv5.ui.beans.LabeledTextField Project;
     private javax.swing.JPanel SearchBarPane;
     private javax.swing.JButton addItem;
     private mpv5.ui.beans.LabeledCombobox contact;
     private javax.swing.JButton delItem;
+    private javax.swing.JButton downItem;
     private javax.swing.JPanel itemPanel;
     private javax.swing.JTable itemtable;
     private javax.swing.JButton jButton2;
@@ -648,39 +730,51 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane4;
     private mpv5.ui.beans.LabeledTextField number;
     private mpv5.ui.beans.LabeledCombobox order;
+    private javax.swing.JLabel text;
     private javax.swing.JPanel toolbarpanetbp;
     private javax.swing.JTextField total;
     private javax.swing.JButton upItem;
-    private javax.swing.JButton upItem1;
     // End of variables declaration//GEN-END:variables
 
     @Override
-    public void refresh() {
+    public final void refresh() {
+
         Runnable runnable = new Runnable() {
 
             @Override
             public void run() {
-                try {
-                    contact.setSelectedIndex(0);
-                    addModel();
-                    formatTable();
-
-                } catch (Exception e) {
-                    Log.Debug(this, e);
-                }
+                refreshSync();
             }
         };
 
         SwingUtilities.invokeLater(runnable);
+
+    }
+
+    private void refreshSync() {
+        try {
+            sp.refresh();
+            addModel();
+            formatTable();
+            if (dataOwner.isExisting()) {
+                setDataOwner(dataOwner, true);
+            } else {
+                number.setText("");
+                Project.setText("");
+                contact.setSelectedIndex(0);
+                order.setSelectedIndex(0);
+                total.setText("");
+            }
+
+        } catch (Exception e) {
+            Log.Debug(this, e);
+        }
     }
 
     @Override
@@ -731,6 +825,7 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
             dataOwner.setPanelData(this);
             this.exposeData();
 
+            this.setTitle();
             tb.setFavourite(Favourite.isFavourite(object));
             tb.setEditable(!object.isReadOnly());
             try {
@@ -781,22 +876,17 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
             itemtable.setEnabled(!isbilled_);
             jLabel5.setVisible(isbilled_);
             jButton4.setEnabled(!isbilled_);
-            if (isbilled_) {
-            } else {
-            }
-            jLabel2.setText(ct.__getCompany());
             String name_txt;
             if (ct.__getisMale()) {
-                name_txt = "Herr "
+                name_txt =  Messages.CONTACT_TYPE_MALE.toString()
                         + ct.__getTitle()
                         + ct.__getCname();
             } else {
-                name_txt = "Frau "
+                name_txt =  Messages.CONTACT_TYPE_FEMALE.toString()
                         + ct.__getTitle()
                         + ct.__getCname();
             }
-            jLabel3.setText(name_txt);
-            jLabel4.setText(ct.__getMainphone());
+            text.setText(ct.__getCompany() + " " + name_txt + " " + ct.__getMainphone());
         } catch (NodataFoundException ex) {
             Log.Debug(this, ex.getMessage());
         }
@@ -817,6 +907,31 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
             } else {
                 mpv5.YabsViewProxy.instance().addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString(), Color.RED);
             }
+        }
+    }
+
+    private void setTitle() {
+        try {
+            if (this.getParent() instanceof JViewport || this.getParent() instanceof JTabbedPane) {
+                JTabbedPane jTabbedPane = null;
+                String title1 = cname_;
+                //this->viewport->scrollpane->tabbedpane
+                if (this.getParent().getParent().getParent() instanceof JTabbedPane) {
+                    jTabbedPane = (JTabbedPane) this.getParent().getParent().getParent();
+                } else {
+                    try {
+                        jTabbedPane = (JTabbedPane) this.getParent();
+                    } catch (Exception e) {
+                        //Free floating window
+                        ((JFrame) this.getRootPane().getParent()).setTitle(title1);
+                    }
+                }
+                if (jTabbedPane != null) {
+                    jTabbedPane.setTitleAt(jTabbedPane.getSelectedIndex(), title1);
+                }
+            }
+        } catch (Exception e) {
+            Log.Debug(e);
         }
     }
 
@@ -850,16 +965,20 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
 
     @Override
     public void actionAfterSave() {
+        sp.refresh();
         saveActivityListSubItems();
         omodel = (MPTableModel) itemtable.getModel();
+        setTitle();
     }
 
     @Override
     public void actionAfterCreate() {
+        sp.refresh();
         ArrayUtilities.replaceColumn(itemtable, 0, null);
         saveActivityListSubItems();
         omodel = (MPTableModel) itemtable.getModel();
         this.dataOwner.setIsBilled(false);
+        setTitle();
     }
 
     @Override
@@ -1035,7 +1154,7 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         };
         new Thread(runnable).start();
     }
-    
+
     private class RowData {
 
         private Product p;
@@ -1067,7 +1186,7 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
 
         private void calcStatus() {
             if (!this.ordered.equals(BigDecimal.ZERO)) {
-                this.status = this.used.divide(this.ordered).floatValue();
+                this.status = this.used.divide(this.ordered, 2, RoundingMode.HALF_UP).floatValue();
             }
             this.percent = Math.round(((Float) this.status) * 100f);
         }
@@ -1082,7 +1201,7 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
             d[5] = this.status;
             return d;
         }
-        
+
         private void setDescription(String d) {
             this.description = d;
         }
