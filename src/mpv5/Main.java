@@ -16,7 +16,12 @@
  */
 package mpv5;
 
-import com.bulenkov.darcula.DarculaLaf;
+import com.apple.eawt.AboutHandler;
+import com.apple.eawt.AppEvent.AboutEvent;
+import com.apple.eawt.AppEvent.QuitEvent;
+import com.apple.eawt.Application;
+import com.apple.eawt.QuitHandler;
+import com.apple.eawt.QuitResponse;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,7 +32,6 @@ import org.jdesktop.application.SingleFrameApplication;
 import com.l2fprod.common.swing.plaf.LookAndFeelAddons;
 import enoa.connection.NoaConnection;
 import enoa.connection.NoaConnectionLocalServer;
-import enoa.handler.FutureCallback;
 import enoa.handler.TemplateHandler;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -44,16 +48,13 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
-import java.util.ResourceBundle;
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.plaf.basic.BasicLookAndFeel;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseConnection;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.DatabaseObjectLock;
-import mpv5.db.common.QueryData;
 import mpv5.db.common.QueryHandler;
 import mpv5.db.objects.Template;
 import mpv5.globals.Constants;
@@ -71,6 +72,7 @@ import mpv5.handler.Scheduler;
 import mpv5.i18n.LanguageManager;
 import mpv5.pluginhandling.UserPlugin;
 import mpv5.server.MPServer;
+import mpv5.ui.dialogs.About;
 import mpv5.ui.dialogs.LoginToInstanceScreen;
 import mpv5.ui.dialogs.Notificator;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Fonts;
@@ -393,15 +395,15 @@ public class Main implements Runnable {
         }
 
         try {
+            getOS();
+            setEnv(null);
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
             splash = new SplashScreen(new ImageIcon(Main.class.getResource(mpv5.globals.Constants.SPLASH_IMAGE)));
             splash.init(12);
             Log.Print(Messages.START_MESSAGE);
             splash.nextStep(Messages.INIT.toString());
-
-            getOS();
-            setEnv(null);
+            
             parseArgs(args);
             runStartScripts();
             readLocalSettings();
@@ -466,6 +468,28 @@ public class Main implements Runnable {
 
         if (osIsMacOsX) {
             System.setProperty("apple.laf.useScreenMenuBar", "true");
+            System.setProperty("com.apple.mrj.application.apple.menu.about.name", Constants.TITLE);
+            System.setProperty("com.apple.mrj.application.growbox.intrudes", "false");
+            System.setProperty("apple.awt.application.name", Constants.TITLE);
+            Application app = Application.getApplication();
+
+            app.setAboutHandler(new AboutHandler() {
+                @Override
+                public void handleAbout(AboutEvent ae) {
+                    new About(new ImageIcon(About.class.getResource(mpv5.globals.Constants.ABOUT_IMAGE)));
+                }
+            });
+
+//	app.setPreferencesHandler(new PreferencesHandler() {
+//                @Override
+//		public void handlePreferences(PreferencesEvent pe) {}
+//	});
+            app.setQuitHandler(new QuitHandler() {
+                @Override
+                public void handleQuitRequestWith(QuitEvent event, QuitResponse response) {
+                    ((YabsApplication) YabsApplication.getInstance()).shutdown();
+                }
+            });
         }
 
         if (osIsWindows) {
