@@ -243,6 +243,7 @@ dpkg -i paketname.deb
                 var app = deploy.createApplication();
                 app.setProject(project);
                 var title = new String(project.getProperty("application.title"));
+                var build = new String(project.getProperty("application.implementation.name"));
                 var mainclass = new String(project.getProperty("main.class"));
                 if(isTrue(fx_ant_api_1_2)) {
                     app.setToolkit("swing");
@@ -254,7 +255,7 @@ dpkg -i paketname.deb
                 } else {
                     app.setVersion("1.0");
                 }
-                app.setName(title + " (incl. JRE)");
+                app.setName(title + "-" + build + " (incl. JRE)");
                 app.setMainClass(mainclass);
 
                 // fx:resources
@@ -506,6 +507,7 @@ dpkg -i paketname.deb
                 var app = deploy.createApplication();
                 app.setProject(project);
                 var title = new String(project.getProperty("application.title"));
+                var build = new String(project.getProperty("application.implementation.name"));
                 var mainclass;
                 mainclass = new String(project.getProperty("main.class"));
                 if(isTrue(fx_ant_api_1_2)) {
@@ -519,7 +521,7 @@ dpkg -i paketname.deb
                     app.setVersion("1.0");
                 }
                 //var appname = new String(project.getProperty("application.name"));
-                app.setName(title);
+                app.setName(title + "-" + build);
                 app.setMainClass(mainclass);
 
                 // fx:resources

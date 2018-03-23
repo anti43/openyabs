@@ -16,8 +16,6 @@
  */
 package mpv5.db.objects;
 
-import java.util.HashMap;
-
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -30,6 +28,8 @@ import mpv5.utils.images.MPIcon;
  *
  */
 public class Address extends DatabaseObject {
+
+    private static final long serialVersionUID = 9171590645272392699L;
 
     private String taxnumber = "";
     private String title = "";
@@ -235,12 +235,18 @@ public class Address extends DatabaseObject {
         try {
             if (map.containsKey("inttype")) {
                 // [0 = billing adress, 1 = delivery adress, 2 = both, 3 = undefined]
-                if (__getInttype() == TYPE_ALL) {
-                    map.put("type", Messages.ADDRESS_TYPE_BOTH);
-                } else if (__getInttype() == TYPE_DELIVERY) {
-                    map.put("type", Messages.ADDRESS_TYPE_DELIVERY);
-                } else if (__getInttype() == TYPE_INVOICE) {
-                    map.put("type", Messages.ADDRESS_TYPE_INVOICE);
+                switch (__getInttype()) {
+                    case TYPE_ALL:
+                        map.put("type", Messages.ADDRESS_TYPE_BOTH);
+                        break;
+                    case TYPE_DELIVERY:
+                        map.put("type", Messages.ADDRESS_TYPE_DELIVERY);
+                        break;
+                    case TYPE_INVOICE:
+                        map.put("type", Messages.ADDRESS_TYPE_INVOICE);
+                        break;
+                    default:
+                        break;
                 }
 
                 map.remove("inttype");
@@ -248,6 +254,32 @@ public class Address extends DatabaseObject {
         } catch (Exception n) {
             //already resolved?
             Log.Debug(n);
+        }
+        try {
+            if (map.containsKey("ismale")) {
+                if (Boolean.valueOf(map.get("ismale").toString())) {
+                    map.put("gender", Messages.CONTACT_TYPE_MALE.toString());
+                    map.put("intro", Messages.CONTACT_INTRO_MALE.toString());
+                } else {
+                    map.put("gender", Messages.CONTACT_TYPE_FEMALE.toString());
+                    map.put("intro", Messages.CONTACT_INTRO_FEMALE.toString());
+                }
+
+            }
+        } catch (Exception numberFormatException) {
+            //already resolved?
+        }
+
+        if (!map.containsKey("fullname")) {
+            try {
+                if (prename != null && prename.length() > 0) {
+                    map.put("fullname", prename + " " + getCname());
+                } else {
+                    map.put("fullname", getCname());
+                }
+            } catch (Exception numberFormatException) {
+                //already resolved?
+            }
         }
         return super.resolveReferences(map);
     }

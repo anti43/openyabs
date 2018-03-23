@@ -14,6 +14,7 @@ public enum Headers {
     ITEM_DEFAULT(new String[]{"Internal ID", "ID", "Date", "Net Value"}),
     ITEM_DETAIL(new String[]{"Internal ID", "ID", "Date", "Value"}),
     ITEM_COMPARE(new String[]{"Ordered", "Used", "Measure", "Description","%", "Status"}),
+    ITEM_REFERENCE(new String[]{"Name", "Type"}),
     FILE_REFERENCES(new String[]{"Internal ID", "Filename", "Date", "Description", "Size", "Type"}),
     HISTORY(new String[]{"Internal ID", "Description", "User", "Group", "Date"}),
     IMPORT(new String[]{"Internal ID", "Import", "Type", "Name", "Data"}),

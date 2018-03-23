@@ -206,15 +206,16 @@ public class LabeledCombobox extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         mPCombobox1 = new mpv5.ui.beans.MPCombobox();
 
+        setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         setOpaque(false);
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
 
+        jLabel1.setLabelFor(mPCombobox1);
         jLabel1.setText("text");
+        jLabel1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel1.setMaximumSize(new java.awt.Dimension(333, 333));
         jLabel1.setPreferredSize(new java.awt.Dimension(100, 18));
         add(jLabel1);
-
-        mPCombobox1.setBorder(null);
         add(mPCombobox1);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -386,12 +386,10 @@ public class MPCombobox extends javax.swing.JPanel {
 
         jComboBox1 = new javax.swing.JComboBox();
 
-        setBorder(null);
         setOpaque(false);
         setLayout(new java.awt.BorderLayout());
 
         jComboBox1.setAutoscrolls(true);
-        jComboBox1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(138, 138, 138), 1, true));
         jComboBox1.setMinimumSize(new java.awt.Dimension(33, 18));
         jComboBox1.setPreferredSize(new java.awt.Dimension(100, 20));
         jComboBox1.addMouseListener(new java.awt.event.MouseAdapter() {

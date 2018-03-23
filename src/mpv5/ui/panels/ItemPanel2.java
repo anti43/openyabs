@@ -25,10 +25,12 @@ import enoa.handler.TemplateHandler;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
@@ -46,8 +48,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
@@ -444,6 +444,8 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                 inttype_ = dataOwner.__getInttype();
                 button_reminders.setEnabled(inttype_ == Item.TYPE_INVOICE);
                 button_schedule.setEnabled(inttype_ == Item.TYPE_INVOICE);
+                button_references.setEnabled(inttype_ == Item.TYPE_ORDER);
+                button_compare.setEnabled(inttype_ == Item.TYPE_INVOICE);
                 toorder.setEnabled(inttype_ != Item.TYPE_ORDER && inttype_ != Item.TYPE_INVOICE);
                 toinvoice.setEnabled(inttype_ != Item.TYPE_INVOICE);
                 tocredit.setEnabled(inttype_ == Item.TYPE_INVOICE);
@@ -620,9 +622,10 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         name = new mpv5.ui.beans.LabeledTextField();
         status = new mpv5.ui.beans.LabeledCombobox();
         accountselect = new mpv5.ui.beans.LabeledCombobox();
-        jButton4 = new javax.swing.JButton();
         date1 = new mpv5.ui.beans.LabeledDateChooser();
-        jButton5 = new javax.swing.JButton();
+        button_compare = new javax.swing.JButton();
+        button_references = new javax.swing.JButton();
+        refOrderShow = new javax.swing.JButton();
         jToolBar1 = new javax.swing.JToolBar();
         toorder = new javax.swing.JButton();
         toinvoice = new mpv5.ui.beans.DropDownButton();
@@ -886,6 +889,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         );
 
         jPanel12.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel12.setEnabled(false);
         jPanel12.setName("jPanel12"); // NOI18N
         jPanel12.setOpaque(false);
 
@@ -920,6 +924,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         refOrder.setSearchOnEnterEnabled(false);
 
         jButton1.setText(bundle.getString("ItemPanel2.jButton1.text")); // NOI18N
+        jButton1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         jButton1.setMaximumSize(new java.awt.Dimension(23, 23));
         jButton1.setMinimumSize(new java.awt.Dimension(23, 23));
         jButton1.setName(bundle.getString("ItemPanel.jButton1.name")); // NOI18N
@@ -952,31 +957,45 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         accountselect.setPreferredSize(new java.awt.Dimension(300, 23));
         accountselect.setSearchOnEnterEnabled(false);
 
-        jButton4.setFont(jButton4.getFont().deriveFont(jButton4.getFont().getStyle() & ~java.awt.Font.BOLD));
-        jButton4.setText(bundle.getString("ItemPanel2.jButton4.text")); // NOI18N
-        jButton4.setMaximumSize(new java.awt.Dimension(250, 23));
-        jButton4.setMinimumSize(new java.awt.Dimension(50, 23));
-        jButton4.setName("jButton4"); // NOI18N
-        jButton4.setPreferredSize(new java.awt.Dimension(100, 23));
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
-            }
-        });
-
         date1.set_Label(bundle.getString("ItemPanel2.date1._Label")); // NOI18N
         date1.setName("date1"); // NOI18N
         date1.setPreferredSize(new java.awt.Dimension(280, 20));
 
-        jButton5.setFont(jButton5.getFont().deriveFont(jButton5.getFont().getStyle() & ~java.awt.Font.BOLD));
-        jButton5.setText(bundle.getString("ItemPanel2.jButton5.text")); // NOI18N
-        jButton5.setMaximumSize(new java.awt.Dimension(250, 23));
-        jButton5.setMinimumSize(new java.awt.Dimension(50, 23));
-        jButton5.setName("jButton5"); // NOI18N
-        jButton5.setPreferredSize(new java.awt.Dimension(100, 23));
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
+        button_compare.setFont(button_compare.getFont().deriveFont(button_compare.getFont().getStyle() & ~java.awt.Font.BOLD));
+        button_compare.setText(bundle.getString("ItemPanel2.button_compare.text")); // NOI18N
+        button_compare.setEnabled(false);
+        button_compare.setMaximumSize(new java.awt.Dimension(250, 23));
+        button_compare.setMinimumSize(new java.awt.Dimension(50, 23));
+        button_compare.setName("button_compare"); // NOI18N
+        button_compare.setPreferredSize(new java.awt.Dimension(100, 23));
+        button_compare.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
+                button_compareActionPerformed(evt);
+            }
+        });
+
+        button_references.setFont(button_references.getFont().deriveFont(button_references.getFont().getStyle() & ~java.awt.Font.BOLD));
+        button_references.setText(bundle.getString("ItemPanel2.button_references.text")); // NOI18N
+        button_references.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        button_references.setEnabled(false);
+        button_references.setMaximumSize(new java.awt.Dimension(250, 23));
+        button_references.setMinimumSize(new java.awt.Dimension(50, 23));
+        button_references.setName("button_references"); // NOI18N
+        button_references.setPreferredSize(new java.awt.Dimension(100, 23));
+        button_references.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_referencesActionPerformed(evt);
+            }
+        });
+
+        refOrderShow.setText(bundle.getString("ItemPanel2.refOrderShow.text")); // NOI18N
+        refOrderShow.setMaximumSize(new java.awt.Dimension(23, 23));
+        refOrderShow.setMinimumSize(new java.awt.Dimension(23, 23));
+        refOrderShow.setName("refOrderShow"); // NOI18N
+        refOrderShow.setPreferredSize(new java.awt.Dimension(23, 23));
+        refOrderShow.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refOrderShowActionPerformed(evt);
             }
         });
 
@@ -985,35 +1004,34 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         jPanel12Layout.setHorizontalGroup(
             jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel12Layout.createSequentialGroup()
+                .addGap(6, 6, 6)
                 .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel12Layout.createSequentialGroup()
-                        .addGap(6, 6, 6)
+                        .addComponent(groupnameselect, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(button_order2, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(status, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(accountselect, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel12Layout.createSequentialGroup()
                         .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel12Layout.createSequentialGroup()
-                                .addComponent(groupnameselect, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(number, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(button_order2, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel12Layout.createSequentialGroup()
+                                .addComponent(refOrder, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(refOrderShow, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(date1, javax.swing.GroupLayout.PREFERRED_SIZE, 406, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel12Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel12Layout.createSequentialGroup()
-                                        .addComponent(number, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addComponent(status, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(accountselect, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                                .addGap(32, 32, 32)
-                                .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addGroup(jPanel12Layout.createSequentialGroup()
-                                        .addComponent(refOrder, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(date1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE))
-                    .addGroup(jPanel12Layout.createSequentialGroup()
-                        .addGap(471, 471, 471)
-                        .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(18, 18, 18)))
+                                    .addComponent(button_compare, javax.swing.GroupLayout.PREFERRED_SIZE, 352, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(button_references, javax.swing.GroupLayout.PREFERRED_SIZE, 352, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(36, 36, 36)))))
+                .addGap(18, 18, Short.MAX_VALUE)
                 .addComponent(name, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         jPanel12Layout.setVerticalGroup(
@@ -1022,12 +1040,16 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
             .addGroup(jPanel12Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(refOrder, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(number, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(number, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(button_references, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(5, 5, 5)
-                .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(refOrder, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(refOrderShow, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(button_compare, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(groupnameselect, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1041,7 +1063,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                 .addContainerGap())
         );
 
-        jButton5.getAccessibleContext().setAccessibleName(bundle.getString("ItemPanel2.jButton5.AccessibleContext.accessibleName")); // NOI18N
+        button_compare.getAccessibleContext().setAccessibleName(bundle.getString("ItemPanel2.button_compare.AccessibleContext.accessibleName")); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -1053,7 +1075,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, 802, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -1423,7 +1445,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addComponent(itemPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 1312, Short.MAX_VALUE))
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 1310, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1440,7 +1462,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         rightpaneLayout.setHorizontalGroup(
             rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 1372, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 1370, Short.MAX_VALUE)
             .addComponent(jToolBar1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         rightpaneLayout.setVerticalGroup(
@@ -1818,16 +1840,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         toInvoice(Item.TYPE_CREDIT);
     }//GEN-LAST:event_tocreditActionPerformed
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        try {
-            Item owner = (Item) DatabaseObject.getObject(Context.getOrder(), reforderids_, true);
-            YabsViewProxy.instance().addOrShowTab(owner);
-        } catch (NodataFoundException ex) {
-            Log.Debug(ex);
-        }
-    }//GEN-LAST:event_jButton4ActionPerformed
-
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+    private void button_compareActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_compareActionPerformed
         if (this.reforderids_ != null && this.reforderids_ > 0) {
             TableView tv = new TableView();
             JTable table = tv.getTable();
@@ -1843,22 +1856,24 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                 Iterator<SubItem> it = data.iterator();
                 while (it.hasNext()) {
                     SubItem s = it.next();
+                    try {
+                        Product p = (Product) DatabaseObject.getObject(Context.getProduct(), s.__getOriginalproductsids());
 
-                    Product p = (Product) DatabaseObject.getObject(Context.getProduct(), s.__getOriginalproductsids());
+                        RowData r;
+                        if (pm.containsKey(p)) {
+                            r = pm.get(p);
+                        } else {
+                            r = new RowData(p);
+                            pm.put(p, r);
+                        }
 
-                    RowData r;
-                    if (pm.containsKey(p)) {
-                        r = pm.get(p);
-                    } else {
-                        r = new RowData(p);
-                        pm.put(p, r);
+                        r.setOrdered(s.__getQuantityvalue());
+                        r.setMeasuere(s.__getMeasure());
+                        r.setDescription(s.__getDescription());
+                        r.calcStatus();
+                    } catch (NodataFoundException ex) {
+                        Log.Debug(ex);
                     }
-
-                    r.setOrdered(s.__getQuantityvalue());
-                    r.setMeasuere(s.__getMeasure());
-                    r.setDescription(s.__getDescription());
-                    r.calcStatus();
-
                 }
 
                 try {
@@ -1869,25 +1884,29 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
 
                         for (int u = 0; u < sl.length; u++) {
                             SubItem si = sl[u];
-                            Product p = (Product) DatabaseObject.getObject(Context.getProduct(), si.__getOriginalproductsids());
+                            try {
+                                Product p = (Product) DatabaseObject.getObject(Context.getProduct(), si.__getOriginalproductsids());
 
-                            RowData r;
-                            if (pm.containsKey(p)) {
-                                r = pm.get(p);
-                            } else {
-                                r = new RowData(p);
-                                r.setOrdered(BigDecimal.ZERO);
-                                r.setMeasuere(si.__getMeasure());
-                                r.setDescription(si.__getDescription());
-                                pm.put(p, r);
+                                RowData r;
+                                if (pm.containsKey(p)) {
+                                    r = pm.get(p);
+                                } else {
+                                    r = new RowData(p);
+                                    r.setOrdered(BigDecimal.ZERO);
+                                    r.setMeasuere(si.__getMeasure());
+                                    r.setDescription(si.__getDescription());
+                                    pm.put(p, r);
+                                }
+
+                                r.setUsed(si.__getQuantityvalue());
+                                r.calcStatus();
+                            } catch (NodataFoundException ex) {
+                                Log.Debug(ex);
                             }
-
-                            r.setUsed(si.__getQuantityvalue());
-                            r.calcStatus();
                         }
                     }
                 } catch (NodataFoundException ex) {
-                    Logger.getLogger(ActivityConfirmationPanel.class.getName()).log(Level.SEVERE, null, ex);
+                    Log.Debug(ex);
                 }
 
                 try {
@@ -1898,54 +1917,62 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
 
                         for (int u = 0; u < sl.length; u++) {
                             SubItem si = sl[u];
-                            Product p = (Product) DatabaseObject.getObject(Context.getProduct(), si.__getOriginalproductsids());
+                            try {
+                                Product p = (Product) DatabaseObject.getObject(Context.getProduct(), si.__getOriginalproductsids());
 
-                            RowData r;
-                            if (pm.containsKey(p)) {
-                                r = pm.get(p);
-                            } else {
-                                r = new RowData(p);
-                                r.setOrdered(BigDecimal.ZERO);
-                                r.setMeasuere(si.__getMeasure());
-                                r.setDescription(si.__getDescription());
-                                pm.put(p, r);
+                                RowData r;
+                                if (pm.containsKey(p)) {
+                                    r = pm.get(p);
+                                } else {
+                                    r = new RowData(p);
+                                    r.setOrdered(BigDecimal.ZERO);
+                                    r.setMeasuere(si.__getMeasure());
+                                    r.setDescription(si.__getDescription());
+                                    pm.put(p, r);
+                                }
+
+                                r.setUsed(si.__getQuantityvalue());
+                                r.calcStatus();
+                            } catch (NodataFoundException ex) {
+                                Log.Debug(ex);
                             }
-
-                            r.setUsed(si.__getQuantityvalue());
-                            r.calcStatus();
                         }
                     }
                 } catch (NodataFoundException ex) {
-                    Logger.getLogger(ActivityConfirmationPanel.class.getName()).log(Level.SEVERE, null, ex);
+                    Log.Debug(ex);
                 }
-
+                
                 try {
-                    ArrayList<Item> data4 = DatabaseObject.getObjects(Context.getDeposit(), new QueryCriteria("reforderids", dataOwner.__getRefOrderIDS()));
-                    Iterator<Item> it4 = data4.iterator();
-                    while (it4.hasNext()) {
-                        SubItem[] sl = it4.next().getSubitems();
+                    ArrayList<Item> data5 = DatabaseObject.getObjects(Context.getActivityList(), new QueryCriteria("orderids", dataOwner.__getRefOrderIDS()));
+                    Iterator<Item> it5 = data5.iterator();
+                    while (it5.hasNext()) {
+                        SubItem[] sl = it5.next().getSubitems();
 
                         for (int u = 0; u < sl.length; u++) {
                             SubItem si = sl[u];
-                            Product p = (Product) DatabaseObject.getObject(Context.getProduct(), si.__getOriginalproductsids());
+                            try {
+                                Product p = (Product) DatabaseObject.getObject(Context.getProduct(), si.__getOriginalproductsids());
 
-                            RowData r;
-                            if (pm.containsKey(p)) {
-                                r = pm.get(p);
-                            } else {
-                                r = new RowData(p);
-                                r.setOrdered(BigDecimal.ZERO);
-                                r.setMeasuere(si.__getMeasure());
-                                r.setDescription(si.__getDescription());
-                                pm.put(p, r);
+                                RowData r;
+                                if (pm.containsKey(p)) {
+                                    r = pm.get(p);
+                                } else {
+                                    r = new RowData(p);
+                                    r.setOrdered(BigDecimal.ZERO);
+                                    r.setMeasuere(si.__getMeasure());
+                                    r.setDescription(si.__getDescription());
+                                    pm.put(p, r);
+                                }
+
+                                r.setUsed(si.__getQuantityvalue());
+                                r.calcStatus();
+                            } catch (NodataFoundException ex) {
+                                Log.Debug(ex);
                             }
-
-                            r.setUsed(si.__getQuantityvalue());
-                            r.calcStatus();
                         }
                     }
                 } catch (NodataFoundException ex) {
-                    Logger.getLogger(ActivityConfirmationPanel.class.getName()).log(Level.SEVERE, null, ex);
+                    Log.Debug(ex);
                 }
 
                 Object[][] d = new Object[pm.size()][6];
@@ -1957,7 +1984,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                 table.setModel(new MPTableModel(d, Headers.ITEM_COMPARE.getValue(),
                         new Class[]{String.class, String.class, String.class, String.class, String.class, Object.class}));
 
-                TableFormat.resizeCols(table, new Integer[]{75, 75, 75, 300, 75, 200}, new Boolean[]{true, true, true, true, true, true});
+                TableFormat.resizeCols(table, new Integer[]{75, 75, 75, 300, 75, 200}, new Boolean[]{false, false, false, false, false, false});
                 class ColorRenderer extends JLabel implements TableCellRenderer {
 
                     private static final long serialVersionUID = -3009391069720793167L;
@@ -2003,10 +2030,81 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                 tv.setVisible(true);
 
             } catch (NodataFoundException ex) {
-                Logger.getLogger(ItemPanel2.class.getName()).log(Level.SEVERE, null, ex);
+                Log.Debug(ex);
             }
         }
-    }//GEN-LAST:event_jButton5ActionPerformed
+    }//GEN-LAST:event_button_compareActionPerformed
+
+    private void button_referencesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_referencesActionPerformed
+        if (dataOwner.__getIDS()!= null) {
+            TableView tv = new TableView();
+            JTable table = tv.getTable();
+            ArrayList<DatabaseObject> pm = new ArrayList<DatabaseObject>();
+            try {
+                ArrayList<Item> data2 = DatabaseObject.getObjects(Context.getInvoice(), new QueryCriteria("reforderids", dataOwner.__getIDS()));
+                pm.addAll(data2);
+            } catch (NodataFoundException ex) {
+                Log.Debug(ex);
+            }
+
+            try {
+                ArrayList<Item> data3 = DatabaseObject.getObjects(Context.getPartPayment(), new QueryCriteria("reforderids", dataOwner.__getIDS()));
+                pm.addAll(data3);
+            } catch (NodataFoundException ex) {
+                Log.Debug(ex);
+            }
+
+            try {
+                ArrayList<Item> data4 = DatabaseObject.getObjects(Context.getDeposit(), new QueryCriteria("reforderids", dataOwner.__getIDS()));
+                pm.addAll(data4);
+            } catch (NodataFoundException ex) {
+                Log.Debug(ex);
+            }
+
+            try {
+                ArrayList<Item> data5 = DatabaseObject.getObjects(Context.getActivityList(), new QueryCriteria("orderids", dataOwner.__getIDS()));
+                pm.addAll(data5);
+            } catch (NodataFoundException ex) {
+                Log.Debug(ex);
+            }
+
+            Object[][] d = new Object[pm.size()][2];
+            int i = 0;
+            for (DatabaseObject entry : pm) {
+
+                d[i][0] = entry;
+                d[i++][1] = entry.getType();
+            }
+
+            table.setModel(new MPTableModel(d, Headers.ITEM_REFERENCE.getValue(),
+                    new Class[]{String.class,String.class, DatabaseObject.class}));
+
+            TableFormat.resizeCols(table, new Integer[]{75,75}, new Boolean[]{false,false});
+
+            table.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mousePressed(MouseEvent mouseEvent) {
+                    JTable table = (JTable) mouseEvent.getSource();
+                    Point point = mouseEvent.getPoint();
+                    int row = table.rowAtPoint(point);
+                    if (mouseEvent.getClickCount() == 2) {
+                        YabsViewProxy.instance().addOrShowTab((DatabaseObject) table.getValueAt(row, 0));
+                    }
+                }
+            });
+
+            tv.setVisible(true);
+        }
+    }//GEN-LAST:event_button_referencesActionPerformed
+
+    private void refOrderShowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refOrderShowActionPerformed
+        try {
+            Item owner = (Item) DatabaseObject.getObject(Context.getOrder(), reforderids_, true);
+            YabsViewProxy.instance().addOrShowTab(owner);
+        } catch (NodataFoundException ex) {
+            Log.Debug(ex);
+        }
+    }//GEN-LAST:event_refOrderShowActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private mpv5.ui.beans.LabeledCombobox accountselect;
@@ -2014,10 +2112,12 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
     private javax.swing.JLabel addedby;
     private javax.swing.JButton addfile;
     private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JButton button_compare;
     private javax.swing.JButton button_deliverynote;
     private javax.swing.JButton button_order2;
     private javax.swing.JButton button_orderconf;
     private javax.swing.JButton button_preview;
+    private javax.swing.JButton button_references;
     private javax.swing.JButton button_reminders;
     private javax.swing.JButton button_schedule;
     private javax.swing.JCheckBox checkb_pront_oc;
@@ -2036,8 +2136,6 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -2085,6 +2183,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
     private mpv5.ui.beans.LabeledTextField prename;
     private javax.swing.JTable proptable;
     private mpv5.ui.beans.LabeledCombobox refOrder;
+    private javax.swing.JButton refOrderShow;
     private javax.swing.JButton removefile;
     private javax.swing.JPanel rightpane;
     private mpv5.ui.beans.LabeledCombobox status;
@@ -2263,6 +2362,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
 
     private void refreshSync() {
         try {
+            hideRefOrder();
 
             groupnameselect.setModel(MPComboBoxModelItem.toModel(DatabaseObject.getObject(Context.getGroup(), mpv5.db.objects.User.getCurrentUser().__getGroupsids())));
             groupnameselect.setSelectedIndex(0);
@@ -2303,6 +2403,15 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         if (dataOwner.isExisting()) {
             setDataOwner(dataOwner, true);
         }
+    }
+
+    private void hideRefOrder() {
+        refOrderShow.setVisible(inttype_ == Item.TYPE_INVOICE);
+        button_references.setVisible(inttype_ == Item.TYPE_ORDER);
+        button_compare.setVisible(inttype_ == Item.TYPE_INVOICE);
+        refOrder.setVisible(inttype_ == Item.TYPE_INVOICE
+                || inttype_ == Item.TYPE_PART_PAYMENT
+                || inttype_ == Item.TYPE_DEPOSIT);
     }
 
     @Override
@@ -2639,7 +2748,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                 try {
                     dbo = (Contact) DatabaseObject.getObject(Context.getContact(), Integer.valueOf(item.getId()));
                 } catch (NodataFoundException ex) {
-                    Logger.getLogger(ItemPanel2.class.getName()).log(Level.SEVERE, null, ex);
+                    Log.Debug(ex);
                 }
             }
 
@@ -3184,7 +3293,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
 
         private void calcStatus() {
             if (!this.ordered.equals(BigDecimal.ZERO)) {
-                this.status = this.used.divide(this.ordered).floatValue();
+                this.status = this.used.divide(this.ordered, 2, RoundingMode.HALF_UP).floatValue();
             }
             this.percent = Math.round(((Float) this.status) * 100f);
         }
