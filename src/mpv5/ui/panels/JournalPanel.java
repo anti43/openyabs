@@ -26,8 +26,11 @@ import enoa.handler.TemplateHandler;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -74,6 +77,8 @@ import mpv5.utils.models.MPTreeModel;
 import mpv5.utils.tables.ExcelAdapter;
 import mpv5.utils.text.TypeConversion;
 import mpv5.ui.misc.TableViewPersistenceHandler;
+import mpv5.utils.models.MPComboBoxModelItem;
+import mpv5.utils.models.MPComboboxModel;
 import mpv5.utils.numberformat.FormatNumber;
 
 /**
@@ -81,15 +86,16 @@ import mpv5.utils.numberformat.FormatNumber;
  * FIXME unpaid??
  */
 public class JournalPanel extends javax.swing.JPanel implements ListPanel {
-    
+
     private static final long serialVersionUID = 1L;
     private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
-    
+
     public static JComponent instanceOf() {
         return new JournalPanel();
     }
     private Contact dataOwner;
     private Template journalOrContactTemplate;
+    private Context contextInUse = Context.getInvoice();
 
     /**
      * Creates new form HistoryPanel
@@ -115,7 +121,14 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         users.setSearchEnabled(true);
         users.setContext(Context.getUser());
         users.setModel();
-        
+
+        MPComboBoxModelItem[] items = new MPComboBoxModelItem[3];
+        items[0] = new MPComboBoxModelItem(Context.getInvoice(), Messages.TYPE_INVOICE.toString());
+        items[1] = new MPComboBoxModelItem(Context.getOrder(), Messages.TYPE_ORDER.toString());
+        items[2] = new MPComboBoxModelItem(Context.getOffer(), Messages.TYPE_OFFER.toString());
+        types.setModel(new MPComboboxModel(items));
+       
+
         try {
             DefaultListModel al = new DefaultListModel();
             ArrayList<DatabaseObject> accounts = DatabaseObject.getObjects(Context.getAccounts());
@@ -127,28 +140,42 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         } catch (NodataFoundException nodataFoundException) {
             Log.Debug(this, nodataFoundException.getMessage());
         }
-        
+
         statusc.getComboBox().setModel(new DefaultComboBoxModel(new Object[]{Messages.ALL, Messages.STATUS_PAID, Messages.STATUS_UNPAID, Messages.STATUS_CANCELLED}));
         prinitingComboBox1.init(jTable1);
         refresh(null, null);
         jButton4.setEnabled(false);
         loadTemplate();
         ((MPTable) jTable1).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) jTable1, this));
-        
+
     }
-    
+
     public JournalPanel(Contact dataOwner) {
-        initComponents();
-        setPopup();
-        jLabel4.setText(dataOwner.__getCname());
-        timeframeChooser1.setTime(new vTimeframe(DateConverter.getDate(DateConverter.getYear()), new Date()));
-        prinitingComboBox1.init(jTable1);
-        
         this.dataOwner = dataOwner;
+        initComponents();
+        setName("journalpanel"); //NOI18N
+        jLabel4.setText(dataOwner.__getCname());
+         
+        new ExcelAdapter(jTable1);
+        setPopup();
+        validate();
+        
+        timeframeChooser1.setTime(new vTimeframe(DateConverter.getDate(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)-10)), new Date()));
+        bydateend.setSelected(User.getCurrentUser().getProperties().getProperty(this, bydateend, Boolean.FALSE));
+        expbydateend.setSelected(User.getCurrentUser().getProperties().getProperty(this, expbydateend, Boolean.FALSE));
         groups.setSearchEnabled(true);
         groups.setContext(Context.getGroup());
         groups.triggerSearch();
-        
+        users.setSearchEnabled(true);
+        users.setContext(Context.getUser());
+        users.setModel();
+
+        MPComboBoxModelItem[] items = new MPComboBoxModelItem[3];
+        items[0] = new MPComboBoxModelItem(Context.getInvoice(), Messages.TYPE_INVOICE.toString());
+        items[1] = new MPComboBoxModelItem(Context.getOrder(), Messages.TYPE_ORDER.toString());
+        items[2] = new MPComboBoxModelItem(Context.getOffer(), Messages.TYPE_OFFER.toString());
+        types.setModel(new MPComboboxModel(items));
+       
         try {
             DefaultListModel al = new DefaultListModel();
             ArrayList<DatabaseObject> accounts = DatabaseObject.getObjects(Context.getAccounts());
@@ -160,11 +187,15 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         } catch (NodataFoundException nodataFoundException) {
             Log.Debug(this, nodataFoundException.getMessage());
         }
-        
-        statusc.getComboBox().setModel(new DefaultComboBoxModel(new Object[]{Messages.ALL, Messages.STATUS_PAID, Messages.STATUS_UNPAID}));
-        
+
+        statusc.getComboBox().setModel(new DefaultComboBoxModel(new Object[]{Messages.ALL, Messages.STATUS_PAID, Messages.STATUS_UNPAID, Messages.STATUS_CANCELLED}));
+        prinitingComboBox1.init(jTable1);
         refresh(null, null);
-        
+        jButton4.setEnabled(false);
+        loadTemplate();
+        ((MPTable) jTable1).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) jTable1, this));
+ 
+
         jTree1.setCellRenderer(MPTreeModel.getRenderer());
         jTree1.setModel(new MPTreeModel(dataOwner, null, null));
         jTree1.addMouseListener(MPTreeModel.getDefaultTreeListener(jTree1, dataOwner));
@@ -172,13 +203,12 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
 //        TreeFormat.expandTree(jTree1);
         loadTemplate();
         ((MPTable) jTable1).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) jTable1, this));
-        
+
     }
 
     /**
-     * This method is called from within the constructor to
-     * initialize the form. WARNING: Do NOT modify this
-     * code. The content of this method is always
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
      * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
@@ -222,6 +252,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         users = new mpv5.ui.beans.MPCombobox();
         jLabel6 = new javax.swing.JLabel();
         expbydateend = new javax.swing.JCheckBox();
+        types = new mpv5.ui.beans.MPCombobox();
         jPanel8 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
@@ -400,6 +431,9 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             }
         });
 
+        types.setFont(types.getFont());
+        types.setName("types"); // NOI18N
+
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
@@ -414,7 +448,8 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(groups, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE)
                     .addComponent(users, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE)
-                    .addComponent(statusc, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE))
+                    .addComponent(statusc, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE)
+                    .addComponent(types, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(expbydateend, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -439,7 +474,8 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                     .addComponent(bydateend)
                     .addComponent(statusc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(types, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         jPanel8.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -527,32 +563,31 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(100, 100, 100)
-                        .addComponent(count, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(count, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jPanel6, 0, 0, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(count, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(11, 11, 11)
-                .addComponent(count, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGap(0, 0, 0))
         );
 
         jPanel4.add(jPanel2, java.awt.BorderLayout.NORTH);
@@ -614,20 +649,17 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(prinitingComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(volumeNetto, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(taxVolume, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(profitNetto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(profitTax, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(volumeBrutto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(12, 12, 12)
-                        .addComponent(volumeDiscount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 91, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(taxVolume, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(volumeNetto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(volumeBrutto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(12, 12, 12)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(profitNetto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(profitTax, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(volumeDiscount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -693,7 +725,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 394, Short.MAX_VALUE)
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 525, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -795,6 +827,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
     private mpv5.ui.beans.MPCombobox statusc;
     private mpv5.ui.beans.LabeledTextField taxVolume;
     private mpv5.ui.beans.TimeframeChooser timeframeChooser1;
+    private mpv5.ui.beans.MPCombobox types;
     private mpv5.ui.beans.MPCombobox users;
     private mpv5.ui.beans.LabeledTextField volumeBrutto;
     private mpv5.ui.beans.LabeledTextField volumeDiscount;
@@ -803,7 +836,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
 
     private Object[][] parse(Object[][] data) {
         //#entity date group account number type status value
-        double profitnet =0d;
+        double profitnet = 0d;
         double revenuenet = 0d;
         double volumenet = 0d;
         double expensenet = 0d;
@@ -815,7 +848,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         double revenuebrut = 0d;
         double expensebrut = 0d;
         double discountvolume = 0d;
-        
+
         Object[][] d = new Object[data.length][18];
         try {
             for (int i = 0; i < d.length; i++) {
@@ -829,7 +862,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                 d[i][6] = DateConverter.getDate(data[i][6].toString());
                 d[i][8] = data[i][8];
                 d[i][9] = data[i][9];
-                
+
                 int type = Integer.valueOf(data[i][10].toString());
                 switch (type) {
                     case Constants.TYPE_REVENUE:
@@ -842,22 +875,22 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                         d[i][10] = Item.getTypeString(type);
                         break;
                 }
-                
+
                 double netVolume = Double.valueOf(data[i][12].toString());
                 double taxVal = Double.valueOf(data[i][13].toString());
                 double brutVolume = Double.valueOf(data[i][14].toString());
                 double discountVolume = Double.valueOf(data[i][15].toString());
                 d[i][11] = Item.getStatusString(Integer.valueOf(data[i][11].toString()));
-                
+
                 if (null != Integer.valueOf(data[i][11].toString())) {
                     switch (Integer.valueOf(data[i][11].toString())) {
                         case Item.STATUS_PAID:
                             if (Integer.valueOf(data[i][10].toString()) == Item.TYPE_CREDIT) {
                                 profitnet -= netVolume;
                                 profittax -= taxVal;
-                                expensenet -= (-1* netVolume);
-                                expensetax -= (-1* taxVal);
-                                expensebrut -= (-1* brutVolume);                             
+                                expensenet -= (-1 * netVolume);
+                                expensetax -= (-1 * taxVal);
+                                expensebrut -= (-1 * brutVolume);
                                 d[i][15] = FormatNumber.formatLokalCurrency(-1 * netVolume);
                             } else {
                                 profitnet += netVolume;
@@ -872,18 +905,18 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                             d[i][15] = FormatNumber.formatLokalCurrency(-1 * netVolume);
                             profitnet -= netVolume;
                             profittax -= taxVal;
-                            expensenet -= (-1* netVolume);
-                            expensetax -= (-1* taxVal);
-                            expensebrut -= (-1* brutVolume);
+                            expensenet -= (-1 * netVolume);
+                            expensetax -= (-1 * taxVal);
+                            expensebrut -= (-1 * brutVolume);
                             d[i][11] = Item.getStatusString(Item.STATUS_PAID);
                             break;
                         case 2000:
                             d[i][15] = FormatNumber.formatLokalCurrency(-1 * netVolume);
                             profitnet -= netVolume;
                             profittax -= taxVal;
-                            expensenet -= (-1* netVolume);
-                            expensetax -= (-1* taxVal);
-                            expensebrut -= (1* brutVolume);
+                            expensenet -= (-1 * netVolume);
+                            expensetax -= (-1 * taxVal);
+                            expensebrut -= (1 * brutVolume);
                             d[i][11] = Item.getStatusString(Item.STATUS_IN_PROGRESS);
                             break;
                         default:
@@ -905,7 +938,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             Log.Debug(numberFormatException);
             Log.Debug(this, Arrays.asList(data[0]));
         }
-        
+
         volumeNetto.setText(FormatNumber.formatDezimal(volumenet));
         profitNetto.setText(FormatNumber.formatDezimal(profitnet));
         revenueNetto.setText(FormatNumber.formatDezimal(revenuenet));
@@ -918,15 +951,17 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         revenueTax.setText(FormatNumber.formatDezimal(revenuetax));
         expTax.setText(FormatNumber.formatDezimal(expensetax));
         volumeDiscount.setText(FormatNumber.formatDezimal(discountvolume));
-        
+
         return d;
     }
-    
+
     private void refresh(final Group forGroup, final User forUser) {
         Runnable runnable = new Runnable() {
-            
+
             @Override
             public void run() {
+
+                contextInUse = (Context) types.getSelectedItemId();
                 
                 try {
                     QueryCriteria2 itemsParams = new QueryCriteria2();
@@ -936,19 +971,19 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                     Object[][] d3 = new Object[0][0];
                     Object[][] d4 = new Object[0][0];
                     Object[][] d5 = new Object[0][0];
-                    
+
                     if (!includechildgroups.isSelected()) {
                         if (forGroup != null && !forGroup.__getCname().equals("")) { //NOI18N
-                            itemsParams.and(new QueryParameter(Context.getInvoice(), forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS)); //NOI18N
+                            itemsParams.and(new QueryParameter(contextInUse, forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS)); //NOI18N
                         }
                     } else if (forGroup != null && !forGroup.__getCname().equals("")) { //NOI18N
                         List<Group> gs = forGroup.getChildGroups();
                         QueryParameter[] params = new QueryParameter[gs.size()];
-                        QueryParameter param1 = (new QueryParameter(Context.getInvoice(), forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS)); //NOI18N
+                        QueryParameter param1 = (new QueryParameter(contextInUse, forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS)); //NOI18N
                         if (gs.size() >= 1) {
                             for (int i = 0; i < gs.size(); i++) {
                                 Group group = gs.get(i);
-                                params[i] = (new QueryParameter(Context.getInvoice(), group.getDbIdentity() + "ids", group.__getIDS(), QueryParameter.EQUALS)); //NOI18N
+                                params[i] = (new QueryParameter(contextInUse, group.getDbIdentity() + "ids", group.__getIDS(), QueryParameter.EQUALS)); //NOI18N
                             }
                             //System.err.println(params);
                             itemsParams.or(param1, params);
@@ -956,48 +991,48 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                             itemsParams.and(param1);
                         }
                     }
-                    
+
                     if (forUser != null && !forUser.__getCname().equals("")) { //NOI18N
-                        itemsParams.and(new QueryParameter(Context.getInvoice(), "intaddedby", forUser.__getIDS(), QueryParameter.EQUALS)); //NOI18N
+                        itemsParams.and(new QueryParameter(contextInUse, "intaddedby", forUser.__getIDS(), QueryParameter.EQUALS)); //NOI18N
                     }
-                    
+
                     ArrayList<QueryParameter> l = new ArrayList<QueryParameter>();
-                    
+
                     for (int i = 0; i < jList1.getSelectedValues().length; i++) {
-                        l.add(new QueryParameter(Context.getInvoice(), "accountsids", ((Account) jList1.getSelectedValues()[i]).__getIDS(), QueryParameter.EQUALS)); //NOI18N
+                        l.add(new QueryParameter(contextInUse, "accountsids", ((Account) jList1.getSelectedValues()[i]).__getIDS(), QueryParameter.EQUALS)); //NOI18N
                     }
                     if (l.size() > 1) {
                         itemsParams.or(l);
                     } else {
                         itemsParams.and(l.toArray(new QueryParameter[0]));
                     }
-                    
+
                     if (dataOwner != null) {
                         itemsParams.and(new QueryParameter(dataOwner.getContext(), "ids", dataOwner.__getIDS(), QueryParameter.EQUALS)); //NOI18N
                     }
-                    
+
                     boolean additional = true;
                     if (statusc.getComboBox().getSelectedItem().equals(Messages.STATUS_PAID)) {
-                        itemsParams.and(new QueryParameter(Context.getInvoice(), "intstatus", Item.STATUS_PAID, QueryParameter.EQUALS)); //NOI18N
+                        itemsParams.and(new QueryParameter(contextInUse, "intstatus", Item.STATUS_PAID, QueryParameter.EQUALS)); //NOI18N
                     } else if (statusc.getComboBox().getSelectedItem().equals(Messages.STATUS_UNPAID)) {
 //                        additional = false;
                         itemsParams.or(
-                                new QueryParameter(Context.getInvoice(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS), //NOI18N
-                                new QueryParameter(Context.getInvoice(), "intstatus", Item.STATUS_PAUSED, QueryParameter.EQUALS), //NOI18N
-                                new QueryParameter(Context.getInvoice(), "intstatus", Item.STATUS_IN_PROGRESS, QueryParameter.EQUALS), //NOI18N
-                                new QueryParameter(Context.getInvoice(), "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS)); //NOI18N
+                                new QueryParameter(contextInUse, "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS), //NOI18N
+                                new QueryParameter(contextInUse, "intstatus", Item.STATUS_PAUSED, QueryParameter.EQUALS), //NOI18N
+                                new QueryParameter(contextInUse, "intstatus", Item.STATUS_IN_PROGRESS, QueryParameter.EQUALS), //NOI18N
+                                new QueryParameter(contextInUse, "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS)); //NOI18N
                     } else if (statusc.getComboBox().getSelectedItem().equals(Messages.STATUS_CANCELLED)) {
 //                        additional = false;
-                        itemsParams.and(new QueryParameter(Context.getInvoice(), "intstatus", Item.STATUS_CANCELLED, QueryParameter.EQUALS)); //NOI18N
+                        itemsParams.and(new QueryParameter(contextInUse, "intstatus", Item.STATUS_CANCELLED, QueryParameter.EQUALS)); //NOI18N
                     }
-                    
+
                     try {
-                        Context c = Context.getInvoice();
+                        Context c = contextInUse;
                         itemsParams.setOrder("accountsids", true); //NOI18N
                         c.addReference(Context.getGroup());
                         c.addReference(Context.getAccounts());
                         c.addReference(Context.getContact());
-                        
+
                         try {
                             String datecriterium = "dateadded"; //NOI18N
                             if (bydateend.isSelected()) {
@@ -1007,12 +1042,12 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                         } catch (NodataFoundException nodataFoundException) {
                             d = new Object[0][17];
                         }
-                        
+
                         DatabaseObject[] es = new DatabaseObject[d.length];
                         for (int i = 0; i < d.length; i++) {
-                            es[i] = DatabaseObject.getObject(Context.getInvoice(), Integer.valueOf(d[i][0].toString()));
+                            es[i] = DatabaseObject.getObject(contextInUse, Integer.valueOf(d[i][0].toString()));
                         }
-                        
+
                         d = ArrayUtilities.replaceColumn(d, 0, es);
                         if (!additional) {
                             d = ArrayUtilities.removeRows(d, 11, Item.STATUS_PAID);
@@ -1027,7 +1062,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                         c.addReference(Context.getGroup());
                         c.addReference(Context.getAccounts());
                         c.addReference(Context.getContact());
-                        
+
                         try {
                             String datecriterium = "dateadded"; //NOI18N
                             if (bydateend.isSelected()) {
@@ -1037,12 +1072,12 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                         } catch (NodataFoundException nodataFoundException) {
                             d3 = new Object[0][17];
                         }
-                        
+
                         DatabaseObject[] es = new DatabaseObject[d3.length];
                         for (int i = 0; i < d3.length; i++) {
-                            es[i] = DatabaseObject.getObject(Context.getInvoice(), Integer.valueOf(d3[i][0].toString()));
+                            es[i] = DatabaseObject.getObject(contextInUse, Integer.valueOf(d3[i][0].toString()));
                         }
-                        
+
                         d3 = ArrayUtilities.replaceColumn(d3, 0, es);
                         if (!additional) {
                             d3 = ArrayUtilities.removeRows(d3, 11, Item.STATUS_PAID);
@@ -1057,7 +1092,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                         c.addReference(Context.getGroup());
                         c.addReference(Context.getAccounts());
                         c.addReference(Context.getContact());
-                        
+
                         try {
                             String datecriterium = "dateadded"; //NOI18N
                             if (bydateend.isSelected()) {
@@ -1067,12 +1102,12 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                         } catch (NodataFoundException nodataFoundException) {
                             d4 = new Object[0][17];
                         }
-                        
+
                         DatabaseObject[] es = new DatabaseObject[d4.length];
                         for (int i = 0; i < d4.length; i++) {
-                            es[i] = DatabaseObject.getObject(Context.getInvoice(), Integer.valueOf(d4[i][0].toString()));
+                            es[i] = DatabaseObject.getObject(contextInUse, Integer.valueOf(d4[i][0].toString()));
                         }
-                        
+
                         d4 = ArrayUtilities.replaceColumn(d4, 0, es);
                         if (!additional) {
                             d4 = ArrayUtilities.removeRows(d4, 11, Item.STATUS_PAID);
@@ -1087,7 +1122,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                         c.addReference(Context.getGroup());
                         c.addReference(Context.getAccounts());
                         c.addReference(Context.getContact());
-                        
+
                         try {
                             String datecriterium = "dateadded"; //NOI18N
                             if (bydateend.isSelected()) {
@@ -1097,12 +1132,12 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                         } catch (NodataFoundException nodataFoundException) {
                             d5 = new Object[0][17];
                         }
-                        
+
                         DatabaseObject[] es = new DatabaseObject[d5.length];
                         for (int i = 0; i < d5.length; i++) {
-                            es[i] = DatabaseObject.getObject(Context.getInvoice(), Integer.valueOf(d5[i][0].toString()));
+                            es[i] = DatabaseObject.getObject(contextInUse, Integer.valueOf(d5[i][0].toString()));
                         }
-                        
+
                         d5 = ArrayUtilities.replaceColumn(d5, 0, es);
                         if (!additional) {
                             d5 = ArrayUtilities.removeRows(d5, 11, Item.STATUS_PAID);
@@ -1112,7 +1147,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                         throw ex;
                     }
                     d = ArrayUtilities.merge(ArrayUtilities.merge(ArrayUtilities.merge(d, d3), d4), d5);
-                    
+
                     if (dataOwner == null && additional) {
                         try {
                             Context c = Context.getExpense();
@@ -1136,7 +1171,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                                 if (forGroup != null && !forGroup.__getCname().equals("")) { //NOI18N
                                     expensesParams.and(new QueryParameter(c, forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS)); //NOI18N
                                 }
-                                
+
                             } else if (forGroup != null) {
                                 List<Group> gs = forGroup.getChildGroups();
                                 QueryParameter[] params = new QueryParameter[gs.size()];
@@ -1156,7 +1191,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                             } else if (statusc.getComboBox().getSelectedItem().equals(Messages.STATUS_UNPAID)) {
                                 expensesParams.and(new QueryParameter(c, "ispaid", false, QueryParameter.EQUALS)); //NOI18N
                             }
-                            
+
                             try {
                                 String datecriterium = "dateadded"; //NOI18N
                                 if (bydateend.isSelected()) {
@@ -1174,25 +1209,25 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
 //                            }
                             for (int i = 0; i < d1.length; i++) {
                                 d1[i][10] = Constants.TYPE_EXPENSE;
-                                
+
                                 if (TypeConversion.stringToBoolean(String.valueOf(d1[i][11]))) {
                                     d1[i][11] = 1000;
                                 } else {
                                     d1[i][11] = 2000;
                                 }
                             }
-                            
+
                             DatabaseObject[] es = new DatabaseObject[d1.length];
                             for (int i = 0; i < d1.length; i++) {
                                 es[i] = DatabaseObject.getObject(Context.getExpense(), Integer.valueOf(d1[i][0].toString()));
                             }
                             d1 = ArrayUtilities.replaceColumn(d1, 0, es);
-                            
+
                         } catch (Exception ex) {
                             Log.Debug(this, ex);
                             throw ex;
                         }
-                        
+
                         try {
                             Context c = Context.getRevenue();
                             itemsParams.setOrder("dateadded", true); //NOI18N
@@ -1236,10 +1271,10 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                                 revenuesParams.and(new QueryParameter(Context.getExpense(), "status", Item.STATUS_PAID, QueryParameter.NOTEQUAL)); //NOI18N
                             }
                             try {
-                                 String datecriterium = "dateadded"; //NOI18N
-                            if (bydateend.isSelected()) {
-                                datecriterium = "dateend"; //NOI18N
-                            }
+                                String datecriterium = "dateadded"; //NOI18N
+                                if (bydateend.isSelected()) {
+                                    datecriterium = "dateend"; //NOI18N
+                                }
                                 d2 = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL2.replace("{date}", datecriterium), revenuesParams, timeframeChooser1.getTime(), datecriterium).getData(); //NOI18N
                             } catch (NodataFoundException nodataFoundException) {
                                 d2 = new Object[0][17];
@@ -1248,18 +1283,18 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                                 d2[i][10] = Constants.TYPE_REVENUE;
 //                                d2[i][11] = Item.getStatusString(status) //not anymore ...
                             }
-                            
+
                             DatabaseObject[] es = new DatabaseObject[d2.length];
                             for (int i = 0; i < d2.length; i++) {
                                 es[i] = DatabaseObject.getObject(Context.getRevenue(), Integer.valueOf(d2[i][0].toString()));
                             }
                             d2 = ArrayUtilities.replaceColumn(d2, 0, es);
-                            
+
                         } catch (Exception ex) {
                             Log.Debug(this, ex);
                             throw ex;
                         }
-                        
+
                         d = ArrayUtilities.merge(ArrayUtilities.merge(d, d1), d2);
                     }
                     d = parse(d);
@@ -1275,17 +1310,17 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         };
         SwingUtilities.invokeLater(runnable);
     }
-    
+
     @Override
     public void refresh() {
         refresh(null, null);
     }
-    
+
     @Override
     public void flush() {
         jTable1.setModel(new DefaultTableModel());
     }
-    
+
     private void setPopup() {
         TablePopUp tablePopUp = new TablePopUp(jTable1,
                 new String[]{Messages.DELETE.toString(),
@@ -1295,7 +1330,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                     Messages.ODT_CREATE.getValue(),
                     null, Messages.SET_STATUS_PAID.getValue(),},
                 new ActionListener[]{new ActionListener() {
-                
+
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     if (Popup.Y_N_dialog(Messages.REALLY_DELETE2 + " (" + jTable1.getSelectedRowCount() + ")")) { //NOI18N
@@ -1315,7 +1350,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                     }
                 }
             }, null, new ActionListener() {
-                
+
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     setData();
@@ -1323,21 +1358,21 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             },
                     null,
                     new ActionListener() {
-                
+
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     dta();
                 }
             },
                     new ActionListener() {
-                
+
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     pdf();
                 }
             },
                     new ActionListener() {
-                
+
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     odt();
@@ -1345,7 +1380,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             },
                     null,
                     new ActionListener() {
-                
+
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     if (Popup.Y_N_dialog(Messages.REALLY_CHANGE2 + " (" + jTable1.getSelectedRowCount() + ")")) { //NOI18N
@@ -1378,14 +1413,14 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                 }
             }
                 });
-        
+
     }
-    
+
     private void setData() {
         try {
             Group g = null;
             User u = null;
-            
+
             if (groups.getSelectedItem().isValid()) {
                 try {
                     g = ((Group) Group.getObject(Context.getGroup(), Integer.valueOf(groups.getSelectedItem().getId())));
@@ -1405,7 +1440,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             refresh(null, null);
         }
     }
-    
+
     private void preview() {
         PreviewPanel pr;
         if (journalOrContactTemplate != null) {
@@ -1442,7 +1477,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                 Log.Debug(e);
                 throw e;
             }
-            
+
             journalOrContactTemplate.injectData(map);
             MPTableModel xx = (MPTableModel) jTable1.getModel();
             xx.setOwner(jTable1);
@@ -1461,7 +1496,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                 }
                 d[i] = nd;
             }
-            
+
             journalOrContactTemplate.setContextName(Messages.TYPE_JOURNAL.toString());
             journalOrContactTemplate.injectTable(TableHandler.KEY_TABLE + 1, new MPTableModel(d));
             if (GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.journalasodt")) { //NOI18N
@@ -1473,10 +1508,10 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")"); //NOI18N
         }
     }
-    
+
     private void loadTemplate() {
         Runnable runnable = new Runnable() {
-            
+
             @Override
             public void run() {
                 if (dataOwner != null) {
@@ -1490,56 +1525,56 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         };
         new Thread(runnable).start();
     }
-    
+
     private void dta() {
         if (jTable1.getSelectedRowCount() < 1) {
             Popup.notice(Messages.SELECT_AN_INVOICE);
-            
+
         } else {
             ArrayList<Item> items = new ArrayList<Item>();
             for (int i = 0; i < jTable1.getSelectedRows().length; i++) {
-                
+
                 int index = jTable1.convertRowIndexToModel(jTable1.getSelectedRows()[i]);
                 DatabaseObject obj = (DatabaseObject) jTable1.getModel().getValueAt(index, 0);
-                if (obj.getContext().equals(Context.getInvoice())) {
+                if (obj.getContext().equals(contextInUse)) {
                     Item item = (Item) obj;
                     if (item.__getIntstatus() != Item.STATUS_PAID) {
                         items.add(item);
                     }
                 }
             }
-            
+
             HashMap<String, Object> map = new HashMap<String, Object>();
             for (int i = 0; i < items.size(); i++) {
                 Item item = items.get(i);
                 map.put(item.__getCnumber(), item);
             }
-            
+
             DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY);
             DTAFile dta = new DTAFile(map);
             Job job = new Job(dta, d, "DTAUS " + Messages.SAVED); //NOI18N
             job.execute();
-            
+
         }
     }
-    
+
     private void pdf() {
         if (jTable1.getSelectedRowCount() < 1) {
             Popup.notice(Messages.SELECT_AN_INVOICE);
-            
+
         } else {
             ArrayList<Templateable> items = new ArrayList<Templateable>();
             for (int i = 0; i < jTable1.getSelectedRows().length; i++) {
-                
+
                 int index = jTable1.convertRowIndexToModel(jTable1.getSelectedRows()[i]);
                 DatabaseObject obj = (DatabaseObject) jTable1.getModel().getValueAt(index, 0);
                 if (obj instanceof Templateable) {
                     Templateable item = (Templateable) obj;
                     items.add(item);
                 }
-                
+
             }
-            
+
             List<Waitable> files = new ArrayList<Waitable>();
             for (int i = 0; i < items.size(); i++) {
                 try {
@@ -1554,7 +1589,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                     Log.Debug(nodataFoundException);
                 }
             }
-            
+
             if (!files.isEmpty()) {
                 DialogForFile d = new DialogForFile(DialogForFile.DIRECTORIES_ONLY);
                 Job job = new Job(files, d, files.size() + " PDF " + Messages.SAVED); //NOI18N
@@ -1562,11 +1597,11 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             }
         }
     }
-    
+
     private void odt() {
         if (jTable1.getSelectedRowCount() < 1) {
             Popup.notice(Messages.SELECT_AN_INVOICE);
-            
+
         } else {
             ArrayList<Templateable> items = new ArrayList<Templateable>();
             for (int i = 0; i < jTable1.getSelectedRows().length; i++) {
@@ -1582,7 +1617,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                     throw ex;
                 }
             }
-            
+
             List<Waitable> files = new ArrayList<Waitable>();
             for (int i = 0; i < items.size(); i++) {
                 try {
@@ -1597,21 +1632,21 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                     Log.Debug(nodataFoundException);
                 }
             }
-            
+
             if (!files.isEmpty()) {
                 DialogForFile d = new DialogForFile(DialogForFile.DIRECTORIES_ONLY);
-                
+
                 Job job = new Job(files, d, files.size() + " ODT " + Messages.SAVED); //NOI18N
                 job.execute();
             }
         }
     }
-    
+
     private void filter() {
         if (filterinvoice.isSelected()) {
             QueryCriteria2 p = new QueryCriteria2();
-            p.and(new QueryParameter(Context.getInvoice(), "intstatus", Item.STATUS_PAID, QueryParameter.NOTEQUAL)); //NOI18N
-            jTree1.setModel(new MPTreeModel(dataOwner, Context.getInvoice(), p));
+            p.and(new QueryParameter(contextInUse, "intstatus", Item.STATUS_PAID, QueryParameter.NOTEQUAL)); //NOI18N
+            jTree1.setModel(new MPTreeModel(dataOwner, contextInUse, p));
         } else if (filteroffers.isSelected()) {
             QueryCriteria2 p = new QueryCriteria2();
             p.and(new QueryParameter(Context.getOffer(), "intstatus", Item.STATUS_FINISHED, QueryParameter.NOTEQUAL)); //NOI18N

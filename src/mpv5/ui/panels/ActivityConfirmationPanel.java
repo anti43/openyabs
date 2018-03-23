@@ -166,7 +166,9 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         jButton3 = new javax.swing.JButton();
         Project = new mpv5.ui.beans.LabeledTextField();
         number = new mpv5.ui.beans.LabeledTextField();
+        jLabel2 = new javax.swing.JLabel();
         text = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
         jScrollPane4 = new javax.swing.JScrollPane();
         itemtable = new JTable() {
             private static final long serialVersionUID = 1L;
@@ -188,9 +190,9 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         downItem = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         total = new javax.swing.JTextField();
-        jButton4 = new javax.swing.JButton();
+        button_invoice = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
-        jButton5 = new javax.swing.JButton();
+        button_compare = new javax.swing.JButton();
         toolbarpanetbp = new javax.swing.JPanel();
         SearchBarPane = new javax.swing.JPanel();
 
@@ -206,18 +208,14 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
 
         contact.set_Label(bundle.getString("ActivityConfirmationPanel.contact._Label")); // NOI18N
         contact.setName("contact"); // NOI18N
-        contact.setPreferredSize(new java.awt.Dimension(200, 22));
+        contact.setPreferredSize(new java.awt.Dimension(100, 24));
 
         order.set_Label(bundle.getString("ActivityConfirmationPanel.order._Label")); // NOI18N
-        order.setEditable(false);
-        order.setMinimumSize(new java.awt.Dimension(75, 18));
         order.setName("order"); // NOI18N
-        order.setPreferredSize(new java.awt.Dimension(200, 22));
+        order.setPreferredSize(new java.awt.Dimension(100, 24));
 
         jButton2.setText(bundle.getString("ActivityConfirmationPanel.jButton2.text")); // NOI18N
-        jButton2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         jButton2.setName("jButton2"); // NOI18N
-        jButton2.setPreferredSize(new java.awt.Dimension(200, 22));
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -225,9 +223,8 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         });
 
         jButton3.setText(bundle.getString("ActivityConfirmationPanel.jButton3.text")); // NOI18N
-        jButton3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         jButton3.setName("jButton3"); // NOI18N
-        jButton3.setPreferredSize(new java.awt.Dimension(200, 22));
+        jButton3.setPreferredSize(new java.awt.Dimension(100, 24));
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
@@ -236,16 +233,22 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
 
         Project.set_Label(bundle.getString("ActivityConfirmationPanel.Project._Label")); // NOI18N
         Project.setName("Project"); // NOI18N
-        Project.setPreferredSize(new java.awt.Dimension(200, 22));
+        Project.setPreferredSize(new java.awt.Dimension(100, 24));
 
         number.set_Label(bundle.getString("ActivityConfirmationPanel.number._Label")); // NOI18N
         number.setFocusable(false);
         number.setFont(number.getFont());
         number.setName("number"); // NOI18N
-        number.setPreferredSize(new java.awt.Dimension(200, 22));
+        number.setPreferredSize(new java.awt.Dimension(100, 24));
+
+        jLabel2.setName("jLabel2"); // NOI18N
+        jLabel2.setPreferredSize(new java.awt.Dimension(0, 16));
 
         text.setName("text"); // NOI18N
-        text.setPreferredSize(new java.awt.Dimension(200, 22));
+        text.setPreferredSize(new java.awt.Dimension(100, 24));
+
+        jLabel4.setName("jLabel4"); // NOI18N
+        jLabel4.setPreferredSize(new java.awt.Dimension(45, 20));
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -255,47 +258,56 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(number, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(number, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(contact, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(Project, javax.swing.GroupLayout.PREFERRED_SIZE, 522, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(Project, javax.swing.GroupLayout.PREFERRED_SIZE, 516, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(order, javax.swing.GroupLayout.PREFERRED_SIZE, 344, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 103, Short.MAX_VALUE))
+                        .addComponent(order, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(text, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(1, 1, 1)
+                        .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 13, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(order, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(15, 15, 15))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(number, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(contact, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jButton3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(order, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(Project, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(text, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(number, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(contact, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(Project, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(8, 8, 8)
+                        .addComponent(text, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jScrollPane4.setName("jScrollPane4"); // NOI18N
 
         itemtable.setAutoCreateRowSorter(true);
+        itemtable.setBackground(new java.awt.Color(255, 255, 255));
         itemtable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -307,7 +319,6 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         itemtable.setCellSelectionEnabled(true);
         itemtable.setGridColor(new java.awt.Color(204, 204, 204));
         itemtable.setName("itemtable"); // NOI18N
-        itemtable.setSelectionForeground(new java.awt.Color(0, 0, 0));
         itemtable.setShowGrid(true);
         itemtable.setShowVerticalLines(false);
         itemtable.setSurrendersFocusOnKeystroke(true);
@@ -375,7 +386,7 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
                 .addComponent(upItem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(downItem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(145, Short.MAX_VALUE))
+                .addContainerGap(123, Short.MAX_VALUE))
         );
 
         jLabel1.setText(bundle.getString("ActivityConfirmationPanel.jLabel1.text")); // NOI18N
@@ -384,26 +395,26 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         total.setText(bundle.getString("ActivityConfirmationPanel.total.text")); // NOI18N
         total.setName("total"); // NOI18N
 
-        jButton4.setText(bundle.getString("ActivityConfirmationPanel.jButton4.text")); // NOI18N
-        jButton4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        jButton4.setName("jButton4"); // NOI18N
-        jButton4.setPreferredSize(new java.awt.Dimension(78, 24));
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
+        button_invoice.setText(bundle.getString("ActivityConfirmationPanel.button_invoice.text")); // NOI18N
+        button_invoice.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        button_invoice.setName("button_invoice"); // NOI18N
+        button_invoice.setPreferredSize(new java.awt.Dimension(78, 24));
+        button_invoice.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                button_invoiceActionPerformed(evt);
             }
         });
 
         jLabel5.setText(bundle.getString("ActivityConfirmationPanel.jLabel5.text")); // NOI18N
         jLabel5.setName("jLabel5"); // NOI18N
 
-        jButton5.setText(bundle.getString("ActivityConfirmationPanel.jButton5.text")); // NOI18N
-        jButton5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
-        jButton5.setName("jButton5"); // NOI18N
-        jButton5.setPreferredSize(new java.awt.Dimension(110, 24));
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
+        button_compare.setText(bundle.getString("ActivityConfirmationPanel.button_compare.text_1")); // NOI18N
+        button_compare.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        button_compare.setName("button_compare"); // NOI18N
+        button_compare.setPreferredSize(new java.awt.Dimension(78, 24));
+        button_compare.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
+                button_compareActionPerformed(evt);
             }
         });
 
@@ -416,12 +427,12 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane4))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 212, Short.MAX_VALUE)
-                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 211, Short.MAX_VALUE)
+                .addComponent(button_invoice, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(button_compare, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel5)
+                .addGap(192, 192, 192)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(total, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -441,12 +452,10 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(total, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(button_invoice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5)
-                    .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(button_compare, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
-
-        jButton5.getAccessibleContext().setAccessibleName(bundle.getString("ActivityConfirmationPanel.jButton5.AccessibleContext.accessibleName")); // NOI18N
 
         add(jPanel1, java.awt.BorderLayout.CENTER);
 
@@ -492,11 +501,11 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         itemtable.changeSelection(index + 1, itemtable.getSelectedColumn(), false, false);
     }//GEN-LAST:event_downItemActionPerformed
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+    private void button_invoiceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_invoiceActionPerformed
         toInvoice(Item.TYPE_INVOICE);
-    }//GEN-LAST:event_jButton4ActionPerformed
+    }//GEN-LAST:event_button_invoiceActionPerformed
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+    private void button_compareActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_compareActionPerformed
         if (this.orderids_ > 0) {
             TableView tv = new TableView();
             JTable table = tv.getTable();
@@ -686,7 +695,7 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
                 Logger.getLogger(ActivityConfirmationPanel.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-    }//GEN-LAST:event_jButton5ActionPerformed
+    }//GEN-LAST:event_button_compareActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         try {
@@ -720,6 +729,8 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
     private mpv5.ui.beans.LabeledTextField Project;
     private javax.swing.JPanel SearchBarPane;
     private javax.swing.JButton addItem;
+    private javax.swing.JButton button_compare;
+    private javax.swing.JButton button_invoice;
     private mpv5.ui.beans.LabeledCombobox contact;
     private javax.swing.JButton delItem;
     private javax.swing.JButton downItem;
@@ -727,9 +738,9 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
     private javax.swing.JTable itemtable;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
@@ -875,7 +886,7 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
             number.setText(cnumber_);
             itemtable.setEnabled(!isbilled_);
             jLabel5.setVisible(isbilled_);
-            jButton4.setEnabled(!isbilled_);
+            button_invoice.setEnabled(!isbilled_);
             String name_txt;
             if (ct.__getisMale()) {
                 name_txt =  Messages.CONTACT_TYPE_MALE.toString()
@@ -1126,7 +1137,7 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         this.isbilled_ = true;
         itemtable.setEnabled(!isbilled_);
         jLabel5.setVisible(isbilled_);
-        jButton4.setEnabled(!isbilled_);
+        button_invoice.setEnabled(!isbilled_);
         dataOwner.setIsBilled(true);
         dataOwner.save();
 

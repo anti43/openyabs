@@ -17,6 +17,7 @@
 package mpv5.utils.export;
 
 import com.lowagie.text.FontFactory;
+import com.sun.star.table.XTable;
 import enoa.handler.TableHandler;
 import fr.opensagres.odfdom.converter.core.ODFConverterException;
 import fr.opensagres.odfdom.converter.pdf.PdfConverter;
@@ -170,14 +171,15 @@ public class ODTFile2 extends Exportable {
                             } else {
                                 Notificator.raiseNotification("Invalid column definition in " + this.getTemplate().getCname() + ": " + col + ">" + (tableData.length - 1) + ")", false);
                             }
-
                         }
-//                    for (String s2 : s) {
-//                        String colname = "C" + i++;
-//                        xtable.put(colname, s2);
-//                        if (addMeta)
-//                            metadata.addFieldAsList(TableHandler.KEY_TABLE + "1." + colname);
-//                    }
+                        for (int j = i; j < i + 10; j++) {
+                            String colname = "C" + j;
+                            xtable.put(colname, "");//fill other cols 
+                            if (addMeta) {
+                                metadata.addFieldAsList(TableHandler.KEY_TABLE + "1." + colname);
+                            }
+                        }
+
                         positions.add(xtable);
                         addMeta = false;
                     }
