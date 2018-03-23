@@ -353,8 +353,8 @@ public class MPCombobox extends javax.swing.JPanel {
     /**
      * If set to true, hitting "Enter" on the text field will trigger a search
      * for the entered value and popup the results if any.
-     * {@link LabeledCombobox#setContext(Context)} must be called before
-     * this can work.
+     * {@link LabeledCombobox#setContext(Context)} must be called before this
+     * can work.
      *
      * @param enabled
      */
@@ -480,7 +480,11 @@ public class MPCombobox extends javax.swing.JPanel {
      * @return The id obj of the selected entry or NULL if nothing is selected
      */
     public Object getSelectedItemId() {
-        return getSelectedItem().getIdObject();
+        MPComboBoxModelItem x = getSelectedItem();
+        if (x == null) {
+            return null;
+        }
+        return x.getIdObject();
     }
 
     /**

@@ -16,12 +16,12 @@
  */
 package mpv5;
 
-import com.apple.eawt.AboutHandler;
-import com.apple.eawt.AppEvent.AboutEvent;
-import com.apple.eawt.AppEvent.QuitEvent;
-import com.apple.eawt.Application;
-import com.apple.eawt.QuitHandler;
-import com.apple.eawt.QuitResponse;
+//import com.apple.eawt.AboutHandler;
+//import com.apple.eawt.AppEvent.AboutEvent;
+//import com.apple.eawt.AppEvent.QuitEvent;
+//import com.apple.eawt.Application;
+//import com.apple.eawt.QuitHandler;
+//import com.apple.eawt.QuitResponse;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -471,25 +471,25 @@ public class Main implements Runnable {
             System.setProperty("com.apple.mrj.application.apple.menu.about.name", Constants.TITLE);
             System.setProperty("com.apple.mrj.application.growbox.intrudes", "false");
             System.setProperty("apple.awt.application.name", Constants.TITLE);
-            Application app = Application.getApplication();
-
-            app.setAboutHandler(new AboutHandler() {
-                @Override
-                public void handleAbout(AboutEvent ae) {
-                    new About(new ImageIcon(About.class.getResource(mpv5.globals.Constants.ABOUT_IMAGE)));
-                }
-            });
-
-//	app.setPreferencesHandler(new PreferencesHandler() {
+//            Application app = Application.getApplication();
+//
+//            app.setAboutHandler(new AboutHandler() {
 //                @Override
-//		public void handlePreferences(PreferencesEvent pe) {}
-//	});
-            app.setQuitHandler(new QuitHandler() {
-                @Override
-                public void handleQuitRequestWith(QuitEvent event, QuitResponse response) {
-                    ((YabsApplication) YabsApplication.getInstance()).shutdown();
-                }
-            });
+//                public void handleAbout(AboutEvent ae) {
+//                    new About(new ImageIcon(About.class.getResource(mpv5.globals.Constants.ABOUT_IMAGE)));
+//                }
+//            });
+//
+////	app.setPreferencesHandler(new PreferencesHandler() {
+////                @Override
+////		public void handlePreferences(PreferencesEvent pe) {}
+////	});
+//            app.setQuitHandler(new QuitHandler() {
+//                @Override
+//                public void handleQuitRequestWith(QuitEvent event, QuitResponse response) {
+//                    ((YabsApplication) YabsApplication.getInstance()).shutdown();
+//                }
+//            });
         }
 
         if (osIsWindows) {

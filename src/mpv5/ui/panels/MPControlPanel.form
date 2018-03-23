@@ -18,7 +18,7 @@
     <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
-    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,1,-45,0,0,2,-71"/>
+    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,1,-22,0,0,4,124"/>
   </AuxValues>
 
   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
@@ -65,9 +65,6 @@
           <SubComponents>
             <Component class="javax.swing.JButton" name="jButton16">
               <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Tahoma" size="10" style="0"/>
-                </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mpv5/resources/images/48/preferences_plugin.png"/>
                 </Property>
@@ -86,14 +83,14 @@
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="iconTextGap" type="int" value="1"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[90, 90]"/>
+                  <Dimension value="[150, 150]"/>
                 </Property>
                 <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[90, 80]"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="jButton16" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[80, 70]"/>
+                  <Dimension value="[100, 100]"/>
                 </Property>
                 <Property name="verticalTextPosition" type="int" value="3"/>
               </Properties>
@@ -103,9 +100,6 @@
             </Component>
             <Component class="javax.swing.JButton" name="jButton1">
               <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Tahoma" size="10" style="0"/>
-                </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mpv5/resources/images/48/internet.png"/>
                 </Property>
@@ -124,14 +118,14 @@
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="iconTextGap" type="int" value="1"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[90, 90]"/>
+                  <Dimension value="[150, 150]"/>
                 </Property>
                 <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[90, 80]"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="jButton1" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[80, 70]"/>
+                  <Dimension value="[100, 100]"/>
                 </Property>
                 <Property name="verticalTextPosition" type="int" value="3"/>
               </Properties>
@@ -141,9 +135,6 @@
             </Component>
             <Component class="javax.swing.JButton" name="jButton15">
               <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Tahoma" size="10" style="0"/>
-                </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mpv5/resources/images/48/advancedsettings.png"/>
                 </Property>
@@ -162,14 +153,14 @@
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="iconTextGap" type="int" value="1"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[90, 90]"/>
+                  <Dimension value="[150, 150]"/>
                 </Property>
                 <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[90, 80]"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="jButton15" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[80, 70]"/>
+                  <Dimension value="[100, 100]"/>
                 </Property>
                 <Property name="verticalTextPosition" type="int" value="3"/>
               </Properties>
@@ -179,9 +170,6 @@
             </Component>
             <Component class="javax.swing.JButton" name="jButton7">
               <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Tahoma" size="10" style="0"/>
-                </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mpv5/resources/images/48/openofficeorg-20.png"/>
                 </Property>
@@ -200,14 +188,14 @@
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="iconTextGap" type="int" value="1"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[90, 90]"/>
+                  <Dimension value="[150, 150]"/>
                 </Property>
                 <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[90, 80]"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="jButton7" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[80, 70]"/>
+                  <Dimension value="[100, 100]"/>
                 </Property>
                 <Property name="verticalTextPosition" type="int" value="3"/>
               </Properties>
@@ -217,9 +205,6 @@
             </Component>
             <Component class="javax.swing.JButton" name="jButton20">
               <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Tahoma" size="10" style="0"/>
-                </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mpv5/resources/images/48/advancedsettings.png"/>
                 </Property>
@@ -238,14 +223,14 @@
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="iconTextGap" type="int" value="1"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[90, 90]"/>
+                  <Dimension value="[150, 150]"/>
                 </Property>
                 <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[90, 80]"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="jButton20" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[80, 70]"/>
+                  <Dimension value="[100, 100]"/>
                 </Property>
                 <Property name="verticalTextPosition" type="int" value="3"/>
               </Properties>
@@ -255,9 +240,6 @@
             </Component>
             <Component class="javax.swing.JButton" name="jButton21">
               <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Tahoma" size="10" style="0"/>
-                </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mpv5/resources/images/48/advancedsettings.png"/>
                 </Property>
@@ -276,14 +258,14 @@
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="iconTextGap" type="int" value="1"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[90, 90]"/>
+                  <Dimension value="[150, 150]"/>
                 </Property>
                 <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[90, 80]"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="jButton21" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[80, 70]"/>
+                  <Dimension value="[100, 100]"/>
                 </Property>
                 <Property name="verticalTextPosition" type="int" value="3"/>
               </Properties>
@@ -293,9 +275,6 @@
             </Component>
             <Component class="javax.swing.JButton" name="jButton10">
               <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Tahoma" size="10" style="0"/>
-                </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mpv5/resources/images/48/flag.png"/>
                 </Property>
@@ -314,14 +293,14 @@
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="iconTextGap" type="int" value="1"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[90, 90]"/>
+                  <Dimension value="[150, 150]"/>
                 </Property>
                 <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[90, 80]"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="jButton10" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[80, 70]"/>
+                  <Dimension value="[100, 100]"/>
                 </Property>
                 <Property name="verticalTextPosition" type="int" value="3"/>
               </Properties>
@@ -331,9 +310,6 @@
             </Component>
             <Component class="javax.swing.JButton" name="jButton12">
               <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Tahoma" size="10" style="0"/>
-                </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mpv5/resources/images/48/gkrellm2.png"/>
                 </Property>
@@ -352,14 +328,14 @@
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="iconTextGap" type="int" value="1"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[90, 90]"/>
+                  <Dimension value="[150, 150]"/>
                 </Property>
                 <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[90, 80]"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="jButton12" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[80, 70]"/>
+                  <Dimension value="[100, 100]"/>
                 </Property>
                 <Property name="verticalTextPosition" type="int" value="3"/>
               </Properties>
@@ -369,9 +345,6 @@
             </Component>
             <Component class="javax.swing.JButton" name="jButton2">
               <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Tahoma" size="10" style="0"/>
-                </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mpv5/resources/images/48/locale.png"/>
                 </Property>
@@ -390,14 +363,14 @@
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="iconTextGap" type="int" value="1"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[90, 90]"/>
+                  <Dimension value="[150, 150]"/>
                 </Property>
                 <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[90, 80]"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="jButton2" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[80, 70]"/>
+                  <Dimension value="[100, 100]"/>
                 </Property>
                 <Property name="verticalTextPosition" type="int" value="3"/>
               </Properties>
@@ -407,9 +380,6 @@
             </Component>
             <Component class="javax.swing.JButton" name="jButton5">
               <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Tahoma" size="10" style="0"/>
-                </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mpv5/resources/images/48/babelfish.png"/>
                 </Property>
@@ -428,14 +398,14 @@
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="iconTextGap" type="int" value="1"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[90, 90]"/>
+                  <Dimension value="[150, 150]"/>
                 </Property>
                 <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[90, 80]"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="jButton5" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[80, 70]"/>
+                  <Dimension value="[100, 100]"/>
                 </Property>
                 <Property name="verticalTextPosition" type="int" value="3"/>
               </Properties>
@@ -445,9 +415,6 @@
             </Component>
             <Component class="javax.swing.JButton" name="jButton6">
               <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Tahoma" size="10" style="0"/>
-                </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mpv5/resources/images/48/evolution-contacts.png"/>
                 </Property>
@@ -466,14 +433,14 @@
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="iconTextGap" type="int" value="1"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[90, 90]"/>
+                  <Dimension value="[150, 150]"/>
                 </Property>
                 <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[90, 80]"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="jButton6" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[80, 70]"/>
+                  <Dimension value="[100, 100]"/>
                 </Property>
                 <Property name="verticalTextPosition" type="int" value="3"/>
               </Properties>
@@ -483,9 +450,6 @@
             </Component>
             <Component class="javax.swing.JButton" name="jButton8">
               <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Tahoma" size="10" style="0"/>
-                </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mpv5/resources/images/48/draw-eraser.png"/>
                 </Property>
@@ -504,14 +468,14 @@
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="iconTextGap" type="int" value="1"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[90, 90]"/>
+                  <Dimension value="[150, 150]"/>
                 </Property>
                 <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[90, 80]"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="jButton8" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[80, 70]"/>
+                  <Dimension value="[100, 100]"/>
                 </Property>
                 <Property name="verticalTextPosition" type="int" value="3"/>
               </Properties>
@@ -521,9 +485,6 @@
             </Component>
             <Component class="javax.swing.JButton" name="jButton9">
               <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Tahoma" size="10" style="0"/>
-                </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mpv5/resources/images/48/fonts.png"/>
                 </Property>
@@ -542,14 +503,14 @@
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="iconTextGap" type="int" value="1"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[90, 90]"/>
+                  <Dimension value="[150, 150]"/>
                 </Property>
                 <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[90, 80]"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="jButton9" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[80, 70]"/>
+                  <Dimension value="[100, 100]"/>
                 </Property>
                 <Property name="verticalTextPosition" type="int" value="3"/>
               </Properties>
@@ -559,9 +520,6 @@
             </Component>
             <Component class="javax.swing.JButton" name="jButton17">
               <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Tahoma" size="10" style="0"/>
-                </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mpv5/resources/images/48/preferences_system_session_services.png"/>
                 </Property>
@@ -580,14 +538,14 @@
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="iconTextGap" type="int" value="1"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[90, 90]"/>
+                  <Dimension value="[150, 150]"/>
                 </Property>
                 <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[90, 80]"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="jButton17" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[80, 70]"/>
+                  <Dimension value="[100, 100]"/>
                 </Property>
                 <Property name="verticalTextPosition" type="int" value="3"/>
               </Properties>
@@ -597,9 +555,6 @@
             </Component>
             <Component class="javax.swing.JButton" name="jButton13">
               <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Tahoma" size="10" style="0"/>
-                </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mpv5/resources/images/48/blockdevice.png"/>
                 </Property>
@@ -618,14 +573,14 @@
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="iconTextGap" type="int" value="1"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[90, 90]"/>
+                  <Dimension value="[150, 150]"/>
                 </Property>
                 <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[90, 80]"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="jButton13" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[80, 70]"/>
+                  <Dimension value="[100, 100]"/>
                 </Property>
                 <Property name="verticalTextPosition" type="int" value="3"/>
               </Properties>
@@ -635,9 +590,6 @@
             </Component>
             <Component class="javax.swing.JButton" name="jButton14">
               <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Tahoma" size="10" style="0"/>
-                </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mpv5/resources/images/48/konsole.png"/>
                 </Property>
@@ -656,14 +608,14 @@
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="iconTextGap" type="int" value="1"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[90, 90]"/>
+                  <Dimension value="[150, 150]"/>
                 </Property>
                 <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[90, 80]"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="jButton14" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[80, 70]"/>
+                  <Dimension value="[100, 100]"/>
                 </Property>
                 <Property name="verticalTextPosition" type="int" value="3"/>
               </Properties>
@@ -673,9 +625,6 @@
             </Component>
             <Component class="javax.swing.JButton" name="jButton11">
               <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Tahoma" size="10" style="0"/>
-                </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mpv5/resources/images/48/usb.png"/>
                 </Property>
@@ -694,14 +643,14 @@
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="iconTextGap" type="int" value="1"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[90, 90]"/>
+                  <Dimension value="[150, 150]"/>
                 </Property>
                 <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[90, 80]"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="jButton11" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[80, 70]"/>
+                  <Dimension value="[100, 100]"/>
                 </Property>
                 <Property name="verticalTextPosition" type="int" value="3"/>
               </Properties>
@@ -711,9 +660,6 @@
             </Component>
             <Component class="javax.swing.JButton" name="jButton19">
               <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Tahoma" size="10" style="0"/>
-                </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mpv5/resources/images/48/krfb.png"/>
                 </Property>
@@ -732,14 +678,14 @@
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="iconTextGap" type="int" value="1"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[90, 90]"/>
+                  <Dimension value="[150, 150]"/>
                 </Property>
                 <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[90, 80]"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="jButton19" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[80, 70]"/>
+                  <Dimension value="[100, 100]"/>
                 </Property>
                 <Property name="verticalTextPosition" type="int" value="3"/>
               </Properties>
@@ -749,9 +695,6 @@
             </Component>
             <Component class="javax.swing.JButton" name="jButton18">
               <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Tahoma" size="10" style="0"/>
-                </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mpv5/resources/images/48/kxconfig.png"/>
                 </Property>
@@ -770,14 +713,14 @@
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="iconTextGap" type="int" value="1"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[90, 90]"/>
+                  <Dimension value="[150, 150]"/>
                 </Property>
                 <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[90, 80]"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="jButton18" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[80, 70]"/>
+                  <Dimension value="[100, 100]"/>
                 </Property>
                 <Property name="verticalTextPosition" type="int" value="3"/>
               </Properties>
@@ -787,9 +730,6 @@
             </Component>
             <Component class="javax.swing.JButton" name="jButton22">
               <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Tahoma" size="10" style="0"/>
-                </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mpv5/resources/images/48/style.png"/>
                 </Property>
@@ -808,14 +748,14 @@
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="iconTextGap" type="int" value="1"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[90, 90]"/>
+                  <Dimension value="[150, 150]"/>
                 </Property>
                 <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[90, 80]"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="jButton22" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[80, 70]"/>
+                  <Dimension value="[100, 100]"/>
                 </Property>
                 <Property name="verticalTextPosition" type="int" value="3"/>
               </Properties>
@@ -825,9 +765,6 @@
             </Component>
             <Component class="javax.swing.JButton" name="jButton23">
               <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Tahoma" size="10" style="0"/>
-                </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mpv5/resources/images/48/advancedsettings.png"/>
                 </Property>
@@ -846,14 +783,14 @@
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="iconTextGap" type="int" value="1"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[90, 90]"/>
+                  <Dimension value="[150, 150]"/>
                 </Property>
                 <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[90, 80]"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="jButton23" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[80, 70]"/>
+                  <Dimension value="[100, 100]"/>
                 </Property>
                 <Property name="verticalTextPosition" type="int" value="3"/>
               </Properties>
@@ -863,9 +800,6 @@
             </Component>
             <Component class="javax.swing.JButton" name="jButton24">
               <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Tahoma" size="10" style="0"/>
-                </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mpv5/resources/images/48/konsole.png"/>
                 </Property>
@@ -884,14 +818,14 @@
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="iconTextGap" type="int" value="1"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[90, 90]"/>
+                  <Dimension value="[150, 150]"/>
                 </Property>
                 <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[90, 80]"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="jButton24" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[80, 70]"/>
+                  <Dimension value="[100, 100]"/>
                 </Property>
                 <Property name="verticalTextPosition" type="int" value="3"/>
               </Properties>
@@ -901,9 +835,6 @@
             </Component>
             <Component class="javax.swing.JButton" name="jButton25">
               <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Tahoma" size="10" style="0"/>
-                </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mpv5/resources/images/48/advancedsettings.png"/>
                 </Property>
@@ -922,14 +853,14 @@
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="iconTextGap" type="int" value="1"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[90, 90]"/>
+                  <Dimension value="[150, 150]"/>
                 </Property>
                 <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[90, 80]"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="jButton25" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[80, 70]"/>
+                  <Dimension value="[100, 100]"/>
                 </Property>
                 <Property name="verticalTextPosition" type="int" value="3"/>
               </Properties>
@@ -939,9 +870,6 @@
             </Component>
             <Component class="javax.swing.JButton" name="jButton26">
               <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Tahoma" size="10" style="0"/>
-                </Property>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mpv5/resources/images/48/konsole.png"/>
                 </Property>
@@ -960,7 +888,7 @@
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="iconTextGap" type="int" value="1"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[90, 90]"/>
+                  <Dimension value="[150, 150]"/>
                 </Property>
                 <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[90, 80]"/>
@@ -969,7 +897,7 @@
                   <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="MPControlPanel.jButton26.name" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                 </Property>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[80, 70]"/>
+                  <Dimension value="[100, 100]"/>
                 </Property>
                 <Property name="verticalTextPosition" type="int" value="3"/>
               </Properties>

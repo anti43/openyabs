@@ -58,7 +58,7 @@ public class ControlPanel_Konsole extends javax.swing.JPanel implements ControlA
         jButton2 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
 
-        //\$2java.awt.Color(255, 255, 255));
+        setBackground(new java.awt.Color(255, 255, 255));
         java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Konsole.border.title"))); // NOI18N
         setName("Form"); // NOI18N
@@ -80,9 +80,7 @@ public class ControlPanel_Konsole extends javax.swing.JPanel implements ControlA
 
         jScrollPane2.setName("jScrollPane2"); // NOI18N
 
-//$2java.awt.Color(0, 24, 24));
         jTextArea2.setColumns(20);
-        jTextArea2.setForeground(new java.awt.Color(255, 255, 204));
         jTextArea2.setRows(5);
         jTextArea2.setText(bundle.getString("ControlPanel_Konsole.jTextArea2.text")); // NOI18N
         jTextArea2.setName("jTextArea2"); // NOI18N
@@ -90,7 +88,7 @@ public class ControlPanel_Konsole extends javax.swing.JPanel implements ControlA
 
         add(jScrollPane2, java.awt.BorderLayout.CENTER);
 
-//$2java.awt.Color(255, 255, 255));
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.setName("jPanel2"); // NOI18N
         jPanel2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
 
