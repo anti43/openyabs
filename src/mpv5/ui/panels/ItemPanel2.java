@@ -729,7 +729,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         date2 = new mpv5.ui.beans.LabeledDateChooser();
         toolbarpane = new javax.swing.JPanel();
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+       java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ItemPanel2.border.title_1"))); // NOI18N
         setMinimumSize(new java.awt.Dimension(800, 500));
         setName("ItemPanel"); // NOI18N
