@@ -83,7 +83,10 @@ public class TableView extends javax.swing.JFrame {
 
             }
         ));
+        jTable1.setGridColor(new java.awt.Color(204, 204, 204));
         jTable1.setName("jTable1"); // NOI18N
+        jTable1.setShowGrid(true);
+        jTable1.setShowVerticalLines(false);
         jScrollPane1.setViewportView(jTable1);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
