@@ -26,8 +26,6 @@ import enoa.handler.TemplateHandler;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -928,7 +926,16 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                 d[i][13] = FormatNumber.formatLokalCurrency(taxVal);
                 d[i][14] = FormatNumber.formatLokalCurrency(brutVolume);
                 d[i][16] = FormatNumber.formatLokalCurrency(discountVolume);
-                d[i][17] = data[i][16];
+                type = Integer.valueOf(data[i][10].toString());
+                switch (type) {
+                    case Constants.TYPE_REVENUE:
+                    case Constants.TYPE_EXPENSE:
+                        d[i][17] = data[i][16];
+                        break;
+                    default:
+                        d[i][17] = data[i][0];
+                        break;
+                }
                 volumenet += netVolume;
                 volumebrut += brutVolume;
                 taxvolume += taxVal;

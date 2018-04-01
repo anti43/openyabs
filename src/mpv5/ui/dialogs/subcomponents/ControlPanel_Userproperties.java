@@ -118,6 +118,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         resolv = new javax.swing.JCheckBox();
         remoteurl = new javax.swing.JCheckBox();
         noblank = new javax.swing.JCheckBox();
+        showItemAsDesc = new javax.swing.JCheckBox();
         jPanel11 = new javax.swing.JPanel();
         transdateX = new javax.swing.JCheckBox();
         enddateX = new javax.swing.JCheckBox();
@@ -157,7 +158,9 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         ean.setName("ean"); // NOI18N
 
         jButton3.setText(bundle.getString("ControlPanel_Userproperties.jButton3.text")); // NOI18N
+        jButton3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         jButton3.setName("jButton3"); // NOI18N
+        jButton3.setPreferredSize(new java.awt.Dimension(100, 24));
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
@@ -178,7 +181,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
                 .addGroup(productstobillspropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(ean, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(reference, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton3))
+                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         productstobillspropertiesLayout.setVerticalGroup(
@@ -195,7 +198,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(productstobillspropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cnumber)
-                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -320,7 +323,9 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         smtps.setName("smtps"); // NOI18N
 
         jButton4.setText(bundle.getString("ControlPanel_Userproperties.jButton4.text")); // NOI18N
+        jButton4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         jButton4.setName("jButton4"); // NOI18N
+        jButton4.setPreferredSize(new java.awt.Dimension(140, 24));
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton4ActionPerformed(evt);
@@ -331,7 +336,9 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         smtpport.setName("smtpport"); // NOI18N
 
         TestButton.setText(bundle.getString("ControlPanel_Userproperties.TestButton.text")); // NOI18N
+        TestButton.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         TestButton.setName("TestButton"); // NOI18N
+        TestButton.setPreferredSize(new java.awt.Dimension(120, 24));
         TestButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 TestButtonActionPerformed(evt);
@@ -370,9 +377,9 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
                             .addComponent(smtpuser, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(testadress, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel9Layout.createSequentialGroup()
-                        .addComponent(jButton4)
+                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(TestButton)))
+                        .addComponent(TestButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(20, Short.MAX_VALUE))
         );
         jPanel9Layout.setVerticalGroup(
@@ -397,8 +404,8 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
                     .addComponent(testadress, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton4)
-                    .addComponent(TestButton))
+                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(TestButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -560,6 +567,9 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         noblank.setText(bundle.getString("ControlPanel_Userproperties.noblank.text")); // NOI18N
         noblank.setName("noblank"); // NOI18N
 
+        showItemAsDesc.setText(bundle.getString("ControlPanel_Userproperties.showItemAsDesc.text")); // NOI18N
+        showItemAsDesc.setName("showItemAsDesc"); // NOI18N
+
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
         jPanel8.setLayout(jPanel8Layout);
         jPanel8Layout.setHorizontalGroup(
@@ -570,7 +580,8 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
                     .addComponent(noblank, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(remoteurl, javax.swing.GroupLayout.DEFAULT_SIZE, 249, Short.MAX_VALUE)
                     .addComponent(resolv, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(nocount, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(nocount, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(showItemAsDesc, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel8Layout.setVerticalGroup(
@@ -584,7 +595,9 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
                 .addComponent(resolv)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(nocount)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 2, Short.MAX_VALUE)
+                .addComponent(showItemAsDesc)
+                .addContainerGap())
         );
 
         jPanel11.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Userproperties.jPanel11.border.title"))); // NOI18N
@@ -654,7 +667,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
                     .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 869, Short.MAX_VALUE)))
+                    .addGap(0, 889, Short.MAX_VALUE)))
         );
 
         add(jPanel1, java.awt.BorderLayout.CENTER);
@@ -664,7 +677,9 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         jPanel6.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
 
         jButton2.setText(bundle.getString("ControlPanel_Userproperties.jButton2.text")); // NOI18N
+        jButton2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         jButton2.setName("jButton2"); // NOI18N
+        jButton2.setPreferredSize(new java.awt.Dimension(120, 24));
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -673,7 +688,9 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         jPanel6.add(jButton2);
 
         jButton1.setText(bundle.getString("ControlPanel_Userproperties.jButton1.text")); // NOI18N
+        jButton1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         jButton1.setName("jButton1"); // NOI18N
+        jButton1.setPreferredSize(new java.awt.Dimension(120, 24));
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -682,7 +699,9 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         jPanel6.add(jButton1);
 
         jButton5.setText(bundle.getString("ControlPanel_Userproperties.jButton5.text")); // NOI18N
+        jButton5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         jButton5.setName("jButton5"); // NOI18N
+        jButton5.setPreferredSize(new java.awt.Dimension(120, 24));
         jButton5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton5ActionPerformed(evt);
@@ -824,6 +843,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
     private javax.swing.JCheckBox resolv;
     private mpv5.ui.beans.LabeledTextField saveformat;
     private mpv5.ui.beans.LabeledCombobox shiptax;
+    private javax.swing.JCheckBox showItemAsDesc;
     private javax.swing.JCheckBox showoptionalcolumn;
     private mpv5.ui.beans.LabeledTextField smtphost;
     private mpv5.ui.beans.LabeledTextField smtpport;
@@ -899,6 +919,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
             Notificator.raiseNotification(e);
         }
         GlobalSettings.setProperty("org.openyabs.exportproperty.hidecountfortext", String.valueOf(nocount.isSelected()));
+        GlobalSettings.setProperty("org.openyabs.exportproperty.showitemasdesc", String.valueOf(showItemAsDesc.isSelected()));
         GlobalSettings.setProperty("org.openyabs.exportproperty.productsresolved", String.valueOf(resolv.isSelected()));
         GlobalSettings.setProperty("org.openyabs.exportproperty.blankunusedfields.disable", String.valueOf(noblank.isSelected()));
         GlobalSettings.setProperty("org.openyabs.exportproperty.loadremoteoodocbyurl", String.valueOf(remoteurl.isSelected()));
@@ -1014,6 +1035,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         testadress.setText(User.getCurrentUser().__getMail());
 
         nocount.setSelected(GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.hidecountfortext"));
+        showItemAsDesc.setSelected(GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.showitemasdesc"));
         resolv.setSelected(GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.productsresolved"));
         noblank.setSelected(GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.blankunusedfields.disable"));
         remoteurl.setSelected(GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.loadremoteoodocbyurl"));
