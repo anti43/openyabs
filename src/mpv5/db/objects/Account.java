@@ -40,6 +40,7 @@ import mpv5.utils.images.MPIcon;
 public class Account extends DatabaseObject {
 
     private static ArrayList<DatabaseObject> accounts;
+    private static final long serialVersionUID = 1287800802797171728L;
 
     /**
      * ANLAGEGUT KOSTEN Eigenkapital UNKOSTEN EINKOMMEN HAFTUNG
@@ -273,7 +274,7 @@ public class Account extends DatabaseObject {
             } else {
 //                Log.Debug(Account.class, "Check " + dobj);
                 int parentid = dobj.__getIntparentaccount();
-                if (((Account) firstnode.getUserObject()).__getIDS().intValue() == parentid) {
+                if (((Account) firstnode.getUserObject()).__getIDS() == parentid) {
                     firstnode.add(new DefaultMutableTreeNode(dobj));
 //                    Log.Debug(Account.class, "       Parent " + firstnode);
 //                    Log.Debug(Account.class, "             Added " + dobj);
@@ -436,7 +437,7 @@ public class Account extends DatabaseObject {
                 }
             } while (intp >= 1);
         }
-        return hierarchypath.replaceFirst(Group.GROUPSEPARATOR, "");
+        return hierarchypath.replaceFirst(Group.GROUPSEPARATOR, " ");
     }
 
     /**
@@ -478,7 +479,7 @@ public class Account extends DatabaseObject {
     }
 
     /**
-     * Safely import a database object from external sources (xml, csv etc)<br/>
+     * Safely import a database object from external sources (xml, csv etc)
      * Override this for ensuring the existance of DObject specific mandatory values.
      * @return
      */
