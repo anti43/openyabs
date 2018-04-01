@@ -46,7 +46,7 @@ public class QueryCriteria2 {
                 throw new IllegalArgumentException("You cannot mix LIKE and boolean/number values!");
             }
 
-            String val = "";
+            String val;
             if (p.getValue() instanceof Number) {
                 val = String.valueOf(p.getValue());
             } else if (p.getValue() instanceof Boolean) {
@@ -60,6 +60,12 @@ public class QueryCriteria2 {
             }
 
             switch (p.getCondition()) {
+                case QueryParameter.GREATEREQUALS:
+                    query += " AND " + p.getKey() + " >= " + val + " ";
+                    break;
+                case QueryParameter.LOWEREQUALS:
+                    query += " AND " + p.getKey() + " >= " + val + " ";
+                    break;
                 case QueryParameter.EQUALS:
                     query += " AND " + p.getKey() + " = " + val + " ";
                     break;
@@ -98,6 +104,7 @@ public class QueryCriteria2 {
     /**
      * Add OR conditions
      *
+     * @param param1
      * @param params
      */
     public void or(QueryParameter param1, List<QueryParameter> params) {
@@ -130,6 +137,20 @@ public class QueryCriteria2 {
             String val = value(p);
 
             switch (p.getCondition()) {
+                 case QueryParameter.GREATEREQUALS:
+                    if (!firstrun) {
+                        query += " OR " + p.getKey() + " >= " + val + " ";
+                    } else {
+                        query += " " + p.getKey() + " >= " + val + " ";
+                    }
+                    break;
+                 case QueryParameter.LOWEREQUALS:
+                    if (!firstrun) {
+                        query += " OR " + p.getKey() + " <= " + val + " ";
+                    } else {
+                        query += " " + p.getKey() + " <= " + val + " ";
+                    }
+                    break;
                 case QueryParameter.EQUALS:
                     if (!firstrun) {
                         query += " OR " + p.getKey() + " = " + val + " ";
@@ -249,7 +270,7 @@ public class QueryCriteria2 {
     }
 
     private String value(QueryParameter p) {
-        String val = "";
+        String val;
         if (p.getValue() instanceof Number) {
             val = String.valueOf(p.getValue());
         } else if (p.getValue() instanceof Boolean) {

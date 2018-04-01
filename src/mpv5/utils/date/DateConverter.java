@@ -32,17 +32,20 @@ import mpv5.utils.text.TypeConversion;
 
 /**
  *
- *  This class provides date formatting methods and default date formats
+ * This class provides date formatting methods and default
+ * date formats
  */
 public class DateConverter {
 
     /**
-     * Gets month strings. For example: "January", "February", etc.
+     * Gets month strings. For example: "January",
+     * "February", etc.
      */
     public static String[] months = DateFormatSymbols.getInstance().getMonths();
     private static Calendar cl = Calendar.getInstance();
     /**
-     * The date formatter with the short formatting style for the default locale.
+     * The date formatter with the short formatting style
+     * for the default locale.
      */
     public static DateFormat DEF_DATE_FORMAT = DateFormat.getDateInstance(DateFormat.MEDIUM);
     /**
@@ -73,14 +76,14 @@ public class DateConverter {
      * Contains all available default date formats
      */
     public static final ArrayList<DateFormat> DATE_FORMATS = new ArrayList<DateFormat>(Arrays.asList(new DateFormat[]{
-                DB_DATE_FORMAT,
-                ENG_DATE_FORMAT,
-                DE_DATE_FORMAT,
-                DE_FULL_DATE_FORMAT,
-                NATIVE_DATE_FORMAT,
-                DEF_DATE_FORMAT,
-                YEAR_DATE_FORMAT
-            }));
+        DB_DATE_FORMAT,
+        ENG_DATE_FORMAT,
+        DE_DATE_FORMAT,
+        DE_FULL_DATE_FORMAT,
+        NATIVE_DATE_FORMAT,
+        DEF_DATE_FORMAT,
+        YEAR_DATE_FORMAT
+    }));
 
     /**
      *
@@ -99,6 +102,7 @@ public class DateConverter {
      *
      * @param date
      * @param amount
+     * @param Typ
      * @return
      */
     public static synchronized Date addDynamic(Date date, Integer amount, Integer Typ) {
@@ -107,6 +111,7 @@ public class DateConverter {
 
         return cl.getTime();
     }
+
     /**
      *
      * @param date
@@ -122,6 +127,7 @@ public class DateConverter {
 
     /**
      * Get DAYS difference
+     *
      * @param date1
      * @param date2
      * @return
@@ -155,7 +161,9 @@ public class DateConverter {
     }
 
     /**
-     * Returns the same date , one second before the next day
+     * Returns the same date , one second before the next
+     * day
+     *
      * @param date
      * @return
      */
@@ -173,6 +181,7 @@ public class DateConverter {
 
     /**
      * Returns the same date, first millisecond
+     *
      * @param date
      * @return
      */
@@ -190,6 +199,7 @@ public class DateConverter {
 
     /**
      * Returns the same date, first millisecond of the year
+     *
      * @param date
      * @return
      */
@@ -209,6 +219,7 @@ public class DateConverter {
 
     /**
      * Returns the same date, last millisecond of the year
+     *
      * @param date
      * @return
      */
@@ -227,7 +238,87 @@ public class DateConverter {
     }
 
     /**
+     * Returns the same date, first Day of Week
+     *
+     * @param date
+     * @return
+     */
+    public static synchronized Date getStartOfWeek(Date date) {
+        Calendar calendar = cl;
+        synchronized (calendar) {
+            calendar.setTime(date);
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MILLISECOND, 1);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
+            return calendar.getTime();
+        }
+    }
+
+    /**
+     * Returns the same date, last Day of Week
+     *
+     * @param date
+     * @return
+     */
+    public static synchronized Date getEndOfWeek(Date date) {
+        Calendar calendar = cl;
+        synchronized (calendar) {
+            calendar.setTime(date);
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MILLISECOND, 1);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MINUTE, 0);       
+            calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
+            calendar.add(Calendar.DAY_OF_MONTH, 6);
+            return calendar.getTime();
+        }
+    }
+
+     /**
+     * Returns the same date, first Day of Week
+     *
+     * @param date
+     * @return
+     */
+    public static synchronized Date getStartOfQuarter(Date date) {
+        Calendar calendar = cl;
+        synchronized (calendar) {
+            calendar.setTime(date);
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MILLISECOND, 1);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH)/3 +1);
+            calendar.set(Calendar.DAY_OF_MONTH, 1);
+            return calendar.getTime();
+        }
+    }
+
+    /**
+     * Returns the same date, last Day of Week
+     *
+     * @param date
+     * @return
+     */
+    public static synchronized Date getEndOfQuarter(Date date) {
+        Calendar calendar = cl;
+        synchronized (calendar) {
+            calendar.setTime(date);
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MILLISECOND, 1);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH)/3 +4);
+            calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+            return calendar.getTime();
+        }
+    }
+    
+    /**
      * Returns the same date, first millisecond
+     *
      * @param date
      * @return
      */
@@ -246,6 +337,7 @@ public class DateConverter {
 
     /**
      * Returns the same date, last millisecond of the month
+     *
      * @param date
      * @return
      */
@@ -264,31 +356,36 @@ public class DateConverter {
 
     /**
      * Quarter as 1,2,3,4
+     *
      * @return
      */
     public static synchronized int getQuarter() {
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
-        int month = cal.get(Calendar.MONTH); /* 0 through 11 */
+        int month = cal.get(Calendar.MONTH);
+        /* 0 through 11 */
         int quarter = (month / 3) + 1;
         return quarter;
     }
 
     /**
      * Quarter of a given date as 1, 2, 3, 4
-     * @param date 
+     *
+     * @param date
      * @return Quarter as 1, 2, 3, 4
      */
     public static synchronized int getQuarter(Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
-        int month = cal.get(Calendar.MONTH); /* 0 through 11 */
+        int month = cal.get(Calendar.MONTH);
+        /* 0 through 11 */
         int quarter = (month / 3) + 1;
         return quarter;
     }
 
     /**
      * The current date in the default, localized format
+     *
      * @return
      */
     public static synchronized String getTodayDefDate() {
@@ -297,6 +394,7 @@ public class DateConverter {
 
     /**
      * The current date in SQL format
+     *
      * @return
      */
     public static synchronized String getTodayDBDate() {
@@ -378,10 +476,11 @@ public class DateConverter {
      * @return Default date
      */
     public static synchronized String getDefDateString(Date date) {
-        if (date == null)
+        if (date == null) {
             return "";
-        else
+        } else {
             return DEF_DATE_FORMAT.format(date);
+        }
     }
 
     /**
@@ -438,10 +537,9 @@ public class DateConverter {
     }
 
     /**
-     * Converts formated
-     * Default date (dd.mm.yyyy) or variants
-     * or
-     * yyyy-mm-dd hh.mm.ss[.nnnnnn] - SQL DATE Timestamp
+     * Converts formated Default date (dd.mm.yyyy) or
+     * variants or yyyy-mm-dd hh.mm.ss[.nnnnnn] - SQL DATE
+     * Timestamp
      *
      * to a Date object.
      *
@@ -480,6 +578,7 @@ public class DateConverter {
 
     /**
      * Try to parse the given object to a date
+     *
      * @param object
      * @return
      */
@@ -551,7 +650,7 @@ public class DateConverter {
     }
 
     /**
-     * 
+     *
      * @return
      */
     public static synchronized String getDefaultFormatString() {
@@ -567,32 +666,33 @@ public class DateConverter {
         for (int i = 0; i < locales.length; i++) {
             Locale locale = locales[i];
             additionalFormats.addAll(Arrays.asList(new DateFormat[]{
-                        DateFormat.getDateInstance(DateFormat.SHORT, locale),
-                        DateFormat.getDateInstance(DateFormat.MEDIUM, locale),
-                        DateFormat.getDateInstance(DateFormat.LONG, locale),
-                        DateFormat.getDateInstance(DateFormat.FULL, locale),
-                        DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM, locale),
-                        DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, locale),
-                        DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.MEDIUM, locale),
-                        DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.MEDIUM, locale),
-                        DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, locale),
-                        DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale),
-                        DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT, locale),
-                        DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.SHORT, locale),
-                        DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.FULL, locale),
-                        DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.FULL, locale),
-                        DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.FULL, locale),
-                        DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL, locale),
-                        DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.FULL, locale),
-                        DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.FULL, locale),
-                        DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.FULL, locale),
-                        DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL, locale)
-                    }));
+                DateFormat.getDateInstance(DateFormat.SHORT, locale),
+                DateFormat.getDateInstance(DateFormat.MEDIUM, locale),
+                DateFormat.getDateInstance(DateFormat.LONG, locale),
+                DateFormat.getDateInstance(DateFormat.FULL, locale),
+                DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM, locale),
+                DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, locale),
+                DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.MEDIUM, locale),
+                DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.MEDIUM, locale),
+                DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, locale),
+                DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, locale),
+                DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT, locale),
+                DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.SHORT, locale),
+                DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.FULL, locale),
+                DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.FULL, locale),
+                DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.FULL, locale),
+                DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL, locale),
+                DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.FULL, locale),
+                DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.FULL, locale),
+                DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.FULL, locale),
+                DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL, locale)
+            }));
         }
     }
 
     /**
      * Generates a random date, which is not in the future
+     *
      * @return
      */
     public static Date getRandomDate() {
@@ -600,7 +700,7 @@ public class DateConverter {
     }
 
     /**
-     * 
+     *
      * @return 01092010
      */
     public static String getDateNumeric() {
@@ -608,8 +708,9 @@ public class DateConverter {
         String month = getMonth();
         String day = getDayOfMonth();
         String dn = year + month + day;
-        if(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("item.date.locale")==null)
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("item.date.locale") == null) {
             mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("item.date.locale", Locale.getDefault().toString());
+        }
         try {
             Locale l = TypeConversion.stringToLocale(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("item.date.locale"));
             if (l.equals(Locale.GERMAN) || l.equals(Locale.GERMANY)) {

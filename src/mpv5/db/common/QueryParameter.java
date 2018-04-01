@@ -38,6 +38,14 @@ public class QueryParameter {
      * UPPER(a) NOT LIKE %A%
      */
     public static final int NOTLIKE = 3;
+    /**
+     * a => a
+     */
+    public static final int GREATEREQUALS = 4;
+    /**
+     * a =< a
+     */
+    public static final int LOWEREQUALS = 5;
     private Context context;
     private String key;
     private Object value;
