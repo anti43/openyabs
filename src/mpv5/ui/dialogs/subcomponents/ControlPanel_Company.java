@@ -8,16 +8,13 @@ import javax.swing.SwingUtilities;
 import mpv5.data.PropertyStore;
 import mpv5.db.common.Context;
 import mpv5.db.common.QueryHandler;
-import mpv5.db.objects.HistoryItem;
 import mpv5.db.objects.User;
-import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.beans.LabeledTextField;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.Popup;
 import mpv5.usermanagement.MPSecurityManager;
-import mpv5.utils.text.TypeConversion;
 import mpv5.utils.ui.PanelUtils;
 
 /**
@@ -265,6 +262,7 @@ public final class ControlPanel_Company extends javax.swing.JPanel implements Co
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    @Override
     public void setValues(PropertyStore values) {
         oldvalues = values;
         try {
@@ -280,10 +278,12 @@ public final class ControlPanel_Company extends javax.swing.JPanel implements Co
         }
     }
 
+    @Override
     public String getUname() {
         return UNAME;
     }
 
+    @Override
     public void reset() {
         setValues(oldvalues);
     }

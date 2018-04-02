@@ -28,22 +28,18 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.swing.SwingUtilities;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.Formattable;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria;
 import mpv5.db.objects.Contact;
-import mpv5.db.objects.HistoryItem;
 import mpv5.db.objects.MailMessage;
 import mpv5.db.objects.Template;
 import mpv5.globals.GlobalSettings;
@@ -232,6 +228,7 @@ public final class Export extends HashMap<String, Object> implements Waitable {
                         File f2 = FileDirectoryHandler.getTempFile("pdf");
                         Export ex = new Export(template);
                         ex.putAll(hm1);
+                        ex.putDataOwner(dataOwner);
                         try {
                             ex.processData(f2);
                             files.add(f2);
@@ -363,6 +360,7 @@ public final class Export extends HashMap<String, Object> implements Waitable {
         if (dataOwner != null) {
             ex.putAll(hm1);
         }
+        ex.putDataOwner(dataOwner);
         ex.setTemplate(preloadedTemplate.getExFile());
         ex.setTargetFile(f2);
         Log.Debug(Export.class, "createFile target file: " + f2);
@@ -504,6 +502,7 @@ public final class Export extends HashMap<String, Object> implements Waitable {
     private Exportable fromFile;
     private File toFile;
     private final Template template;
+    private DatabaseObject dob;
 
     /**
      *
@@ -600,4 +599,11 @@ public final class Export extends HashMap<String, Object> implements Waitable {
         return toFile;
     }
 
+    private void putDataOwner(DatabaseObject dataOwner) {
+        this.dob = dataOwner;
+    }
+
+    public DatabaseObject getDob() {
+        return dob;
+    }
 }

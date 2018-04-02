@@ -16,13 +16,14 @@
  */
 package mpv5.utils.export;
 
+import mpv5.utils.images.YabsQRCodeGenerator;
 import com.lowagie.text.FontFactory;
-import com.sun.star.table.XTable;
 import enoa.handler.TableHandler;
 import fr.opensagres.odfdom.converter.core.ODFConverterException;
 import fr.opensagres.odfdom.converter.pdf.PdfConverter;
 import fr.opensagres.odfdom.converter.pdf.PdfOptions;
 import fr.opensagres.xdocreport.core.XDocReportException;
+import fr.opensagres.xdocreport.core.document.SyntaxKind;
 import fr.opensagres.xdocreport.document.IXDocReport;
 import fr.opensagres.xdocreport.document.odt.ODTConstants;
 import fr.opensagres.xdocreport.document.registry.XDocReportRegistry;
@@ -32,17 +33,32 @@ import fr.opensagres.xdocreport.template.FieldsExtractor;
 import fr.opensagres.xdocreport.template.IContext;
 import fr.opensagres.xdocreport.template.TemplateEngineKind;
 import fr.opensagres.xdocreport.template.formatter.FieldsMetadata;
+import fr.opensagres.xdocreport.template.formatter.NullImageBehaviour;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.StyleContext;
+import javax.swing.text.StyledDocument;
+import javax.swing.text.html.MinimalHTMLWriter;
+import javax.swing.text.rtf.RTFEditorKit;
+import mpv5.db.common.Context;
+import mpv5.db.common.DatabaseObject;
+import mpv5.db.objects.Conversation;
+import mpv5.db.objects.Item;
 import mpv5.globals.GlobalSettings;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Notificator;
@@ -86,6 +102,7 @@ public class ODTFile2 extends Exportable {
         options.fontProvider(reg);
         report = XDocReportRegistry.getRegistry().loadReport(new FileInputStream(this), TemplateEngineKind.Velocity);
         extractor = FieldsExtractor.create();
+        report.removePreprocessor(ODTConstants.CONTENT_XML_ENTRY);
         report.addPreprocessor(ODTConstants.CONTENT_XML_ENTRY, YabsODTPreprocessor.INSTANCE);
         report.addPreprocessor(ODTConstants.STYLES_XML_ENTRY, YabsODTPreprocessor.INSTANCE);
     }
@@ -188,19 +205,34 @@ public class ODTFile2 extends Exportable {
                     Log.Debug(new Exception(String.valueOf(tablel.getClass())));
                 }
             }
-            report.setFieldsMetadata(metadata);
 
+            DatabaseObject dob = ((Export) d).getDob();
+            
+            if (dob instanceof Item && 
+                   ( ((Item)dob).__getInttype() == Item.TYPE_INVOICE
+                    || ((Item)dob).__getInttype() == Item.TYPE_PART_PAYMENT
+                    || ((Item)dob).__getInttype() == Item.TYPE_DEPOSIT) ) {
+                YabsQRCodeGenerator QRGen = new YabsQRCodeGenerator(dob);
+                QRGen.generate();
+                context.put("QRCode.img", QRGen.getImageProvider());
+                metadata.addFieldAsImage("QRCode.img");
+                metadata.addFieldAsImage("imageNotExistsAndRemoveImageTemplate", NullImageBehaviour.RemoveImageTemplate);
+                metadata.addFieldAsImage("imageNotExistsAndKeepImageTemplate", NullImageBehaviour.KeepImageTemplate);
+            }
+            
+            report.setFieldsMetadata(metadata);
             report.extractFields(extractor);
 
             if (!GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.blankunusedfields.disable")) {
-
                 Iterator<FieldExtractor> it = extractor.getFields().iterator();
                 while (it.hasNext()) {
                     FieldExtractor val = it.next();
                     if (!val.getName().startsWith("{")
+                            && !val.getName().endsWith(".img")
                             && !d.containsKey(val.getName())) {
                         if (!val.getName().startsWith(TableHandler.KEY_TABLE + "1")) {
                             d.put(val.getName(), "");
+                            Log.Debug(this, "Replacing: " + val.getName());
                         }
                     }
                 }
