@@ -171,7 +171,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
         itemtable.setFillsViewportHeight(true);
         ((MPTable) itemtable).setDefaultColumns(new Integer[]{100, 333, 100}, new Boolean[]{});
         ((MPTable) itemtable).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) itemtable, this));
-
+        dateFrame.setTime(new vTimeframe(DateConverter.getDate(DateConverter.getYear()), new Date()));
     }
 
     private void calculate() {

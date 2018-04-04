@@ -64,7 +64,7 @@ public class QueryCriteria2 {
                     query += " AND " + p.getKey() + " >= " + val + " ";
                     break;
                 case QueryParameter.LOWEREQUALS:
-                    query += " AND " + p.getKey() + " >= " + val + " ";
+                    query += " AND " + p.getKey() + " <= " + val + " ";
                     break;
                 case QueryParameter.EQUALS:
                     query += " AND " + p.getKey() + " = " + val + " ";
