@@ -933,7 +933,8 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                         d[i][17] = data[i][16];
                         break;
                     default:
-                        d[i][17] = data[i][0];
+                        if (GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.showitemasdesc"))
+                            d[i][17] = data[i][0];
                         break;
                 }
                 volumenet += netVolume;
