@@ -17,8 +17,6 @@
 package mpv5.db.objects;
 
 import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -26,7 +24,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -83,11 +80,12 @@ public final class ActivityListSubItem extends DatabaseObject {
 
             it.setActivitylistsids(listid);
             Date date = null;
-            try {
-                date = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH).parse((String) row[2]);
-            } catch (ParseException ex) {
-                Log.Debug(ActivityListSubItem.class, ex.getLocalizedMessage());
-            }
+           // try {
+                //date = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH).parse((String) row[2]);
+                date = (Date) row[2];
+          //  } catch (ParseException ex) {
+          //      Log.Debug(ActivityListSubItem.class, ex.getLocalizedMessage());
+          //  }
             it.setDatedoing(date);
             it.setQuantityvalue(new BigDecimal(row[3].toString()));
             it.setMeasure(row[4].toString());
@@ -96,7 +94,7 @@ public final class ActivityListSubItem extends DatabaseObject {
             it.setTaxpercentvalue(new BigDecimal(row[7].toString()));
             it.setTotalbrutvalue(new BigDecimal(row[8].toString()));
             it.setProductsids(Integer.valueOf(row[9].toString()));
-            it.setCname(RandomText.getString());
+            it.setCname(RandomText.getText(20));
             calculate(it);
 
 
@@ -237,7 +235,7 @@ public final class ActivityListSubItem extends DatabaseObject {
     }
 
     /**
-     * @param originalproductsids the originalproductsids to set
+     * @param productsids the originalproductsids to set
      */
     public void setProductsids(int productsids) {
         this.productsids = productsids;
@@ -303,7 +301,7 @@ public final class ActivityListSubItem extends DatabaseObject {
     }
 
     /**
-     * @param productlistsids the productlistsids to set
+     * @param activitylistsids the productlistsids to set
      */
     public void setActivitylistsids(int activitylistsids) {
         this.activitylistsids = activitylistsids;
@@ -404,7 +402,7 @@ public final class ActivityListSubItem extends DatabaseObject {
         //"Internal ID", "ID", "Date", "Count", "Measure", "Description", "Netto Price", "Tax Value", "Total Price", "Product", "cname"
         Object[] data = new Object[12];
         data[0] = __getIDS();
-        data[1] = Integer.valueOf(row);
+        data[1] = row;
         data[2] = __getDatedoing();
         data[3] = __getQuantityvalue();
         data[4] = __getMeasure();
@@ -412,7 +410,7 @@ public final class ActivityListSubItem extends DatabaseObject {
         data[6] = __getInternalvalue();
         data[7] = __getTaxpercentvalue();
         data[8] = __getTotalbrutvalue();
-        data[9] = Integer.valueOf(__getProductsids());
+        data[9] = __getProductsids();
         data[10] = __getCname();
         if (!__getDescription().equals("")) {
             data[11] = this;
@@ -461,7 +459,6 @@ public final class ActivityListSubItem extends DatabaseObject {
     /**
      * Get the items of this list
      * @param listid
-     * @param listname
      * @return
      * @throws NodataFoundException
      */
@@ -484,8 +481,8 @@ public final class ActivityListSubItem extends DatabaseObject {
 
     /**
      * Save the model of SubItems
-     * @param dataOwner
      * @param model
+     * @param row
      */
     public void updateRowFromModel(MPTableModel model, int row) {
         //"Internal ID", "ID", "Date", "Count", "Description", "Netto Price", "Tax Value", "Total Price", "Product", "cname"
@@ -503,6 +500,7 @@ public final class ActivityListSubItem extends DatabaseObject {
 
     /**
      * Generates a String array out of this ActivityListSubItem
+     * @param template
      * @return
      */
     public synchronized String[] toStringArray(Template template) {
@@ -532,6 +530,7 @@ public final class ActivityListSubItem extends DatabaseObject {
                 List<String[]> vals = p.getValues3();
                 Collections.sort(vals, new Comparator<String[]>() {
 
+                    @Override
                     public int compare(String[] o1, String[] o2) {
                         return o1[0].compareTo(o2[0]);
                     }
@@ -555,6 +554,7 @@ public final class ActivityListSubItem extends DatabaseObject {
      */
     public static Comparator<ActivityListSubItem> ORDER_COMPARATOR = new Comparator<ActivityListSubItem>() {
 
+        @Override
         public int compare(ActivityListSubItem o1, ActivityListSubItem o2) {
             if (o1.__getDatedoing() == null || o2.__getDatedoing() == null)
                 return -1;
