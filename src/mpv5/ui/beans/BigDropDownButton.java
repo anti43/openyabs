@@ -44,11 +44,9 @@ public class BigDropDownButton extends JLayeredPane {
         setToolTipText("");
         setMaximumSize(new java.awt.Dimension(104, 50));
         setMinimumSize(new java.awt.Dimension(104, 50));
-        setSize(new java.awt.Dimension(104, 50));
 
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/22/player_playlist.png"))); // NOI18N
-        jButton2.setBorder(null);
-        jButton2.setBorderPainted(false);
+        jButton2.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         jButton2.setFocusable(false);
         jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton2.setIconTextGap(0);
@@ -64,7 +62,7 @@ public class BigDropDownButton extends JLayeredPane {
         });
         setLayer(jButton2, javax.swing.JLayeredPane.PALETTE_LAYER);
         add(jButton2);
-        jButton2.setBounds(80, 3, 30, 60);
+        jButton2.setBounds(80, 0, 30, 30);
 
         jButton1.setBorder(null);
         jButton1.setFocusable(false);
