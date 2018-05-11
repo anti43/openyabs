@@ -18,10 +18,13 @@ package mpv5.mail;
 
 import com.sun.mail.smtp.SMTPSSLTransport;
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -38,6 +41,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import javax.mail.internet.MimeUtility;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Notificator;
@@ -69,6 +73,7 @@ public class SimpleMail implements Waiter {
     private boolean useSmtps;
     private File attachment;
     private String ccAddress;
+    private String senderName;
 
     /**
      *
@@ -85,13 +90,13 @@ public class SimpleMail implements Waiter {
      * @param text
      * @throws MessagingException
      */
-    public SimpleMail(String smtpHost, String smtpPort, String username, String password, boolean useTls,boolean useSSL,boolean useSmtps, String senderAddress, String recipientsAddress, String subject, String text) throws MessagingException {
+    public SimpleMail(String smtpHost, String smtpPort, String username, String password, boolean useTls, boolean useSSL, boolean useSmtps, String senderAddress, String recipientsAddress, String subject, String text) throws MessagingException {
         this.smtpHost = smtpHost;
         this.smtpPort = smtpPort;
         this.username = username;
         this.password = password;
-        this.useTls   = useTls;
-        this.useSSL   = useSSL;
+        this.useTls = useTls;
+        this.useSSL = useSSL;
         this.useSmtps = useSmtps;
         this.senderAddress = senderAddress;
         this.recipientsAddress = recipientsAddress;
@@ -125,14 +130,14 @@ public class SimpleMail implements Waiter {
                     try {
                         sendSmptmail();
                     } catch (MessagingException ex) {
-                        Notificator.raiseNotification(new RuntimeException("SMTP From: " + senderAddress + " to: " + recipientsAddress , ex), true); 
+                        Notificator.raiseNotification(new RuntimeException("SMTP From: " + senderAddress + " to: " + recipientsAddress, ex), true);
                     }
                 } else {
                     try {
                         sendSmptsMail();
                     } catch (Exception ex) {
-                        Notificator.raiseNotification(new RuntimeException("SMTPS From: " + senderAddress + " to: " + recipientsAddress , ex), true);
-                    }  
+                        Notificator.raiseNotification(new RuntimeException("SMTPS From: " + senderAddress + " to: " + recipientsAddress, ex), true);
+                    }
                 }
 
             }
@@ -162,6 +167,7 @@ public class SimpleMail implements Waiter {
 
     /**
      * Set the configuration for mails
+     *
      * @param c
      * @throws UnsupportedOperationException
      */
@@ -194,7 +200,7 @@ public class SimpleMail implements Waiter {
         this.smtpHost = smtpHost;
     }
 
-        /**
+    /**
      * @return the smtpHost
      */
     public String getSmtpPort() {
@@ -207,6 +213,7 @@ public class SimpleMail implements Waiter {
     public void setSmtpPort(String smtpPort) {
         this.smtpPort = smtpPort;
     }
+
     /**
      * @return the username
      */
@@ -353,65 +360,69 @@ public class SimpleMail implements Waiter {
     }
 
     private void sendSmptmail() throws MessagingException {
-        Log.Debug(this, "Sending mail via SMTP");
-        mpv5.YabsViewProxy.instance().getProgressbar().setIndeterminate(true);
-        MailAuthenticator auth = new MailAuthenticator(username, password);
+        try {
+            Log.Debug(this, "Sending mail via SMTP");
+            mpv5.YabsViewProxy.instance().getProgressbar().setIndeterminate(true);
+            MailAuthenticator auth = new MailAuthenticator(username, password);
 
-        Properties properties;
-        Session session;
-        properties = new Properties();
-        properties.put("mail.smtp.localhost", smtpHost);
-        properties.put("mail.smtp.host", smtpHost);
+            Properties properties;
+            Session session;
+            properties = new Properties();
+            properties.put("mail.smtp.localhost", smtpHost);
+            properties.put("mail.smtp.host", smtpHost);
 
-        if (useSSL) {
-            properties.put("mail.smtp.ssl.enable", true);
-            properties.put("mail.smtp.starttls.enable", "true");
+            if (useSSL) {
+                properties.put("mail.smtp.ssl.enable", true);
+                properties.put("mail.smtp.starttls.enable", "true");
 //            properties.put("mail.smtp.auth.mechanisms", "XOAUTH2");
 //            properties.put(OAuth2SaslClientFactory.OAUTH_TOKEN_PROP, oauthToken);
-        }
-        
-        properties.put("mail.smtp.port", (smtpPort!=null&&smtpPort.length()>1?smtpPort:"25"));
-        if (username != null) {
-            properties.put("mail.smtp.auth", "true");
-        }
-        if (useTls) {
-            properties.put("mail.smtp.starttls.enable", "true");
-        }
+            }
 
-        session = Session.getInstance(properties, auth);
-        if (Log.getLoglevel() == Log.LOGLEVEL_DEBUG)
-            session.setDebug(true);
-        // Define message
-        MimeMessage message = new MimeMessage(session);
-        message.setFrom(new InternetAddress(senderAddress));
-        message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipientsAddress));
-        if (getBccAddress() != null) {
-            message.addRecipient(Message.RecipientType.BCC, new InternetAddress(bccAddress));
-        }
-        message.setSubject(subject);
-        message.setSentDate(new Date());
+            properties.put("mail.smtp.port", (smtpPort != null && smtpPort.length() > 1 ? smtpPort : "25"));
+            if (username != null) {
+                properties.put("mail.smtp.auth", "true");
+            }
+            if (useTls) {
+                properties.put("mail.smtp.starttls.enable", "true");
+            }
 
-        // create the message part
-        MimeBodyPart messageBodyPart = new MimeBodyPart();
-        messageBodyPart.setContent( text, "text/html; charset=utf-8" );
-        //fill message
-        //messageBodyPart.setText(text);
-        
-        Multipart multipart = new MimeMultipart();
-        multipart.addBodyPart(messageBodyPart);
+            session = Session.getInstance(properties, auth);
+            if (Log.getLoglevel() == Log.LOGLEVEL_DEBUG) {
+                session.setDebug(true);
+            }
+            // Define message
+            MimeMessage message = new MimeMessage(session);
 
-        if (attachment != null) {
-            // Part two is attachment
-            messageBodyPart = new MimeBodyPart();
-            DataSource source = new FileDataSource(attachment);
-            messageBodyPart.setDataHandler(new DataHandler(source));
-            messageBodyPart.setFileName(attachment.getName());
+            InternetAddress from = new InternetAddress(senderAddress, MimeUtility.encodeText(senderName != null ? senderName : senderAddress), "UTF-8");
+            message.setFrom(from);
+            message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipientsAddress));
+            if (getBccAddress() != null) {
+                message.addRecipient(Message.RecipientType.BCC, new InternetAddress(bccAddress));
+            }
+            message.setSubject(subject);
+            message.setSentDate(new Date());
+
+            // create the message part
+            MimeBodyPart messageBodyPart = new MimeBodyPart();
+            messageBodyPart.setContent(text, "text/html; charset=utf-8");
+            //fill message
+            //messageBodyPart.setText(text);
+
+            Multipart multipart = new MimeMultipart();
             multipart.addBodyPart(messageBodyPart);
-        }
 
-        // Put parts in message
-        message.setContent(multipart);
-        try {
+            if (attachment != null) {
+                // Part two is attachment
+                messageBodyPart = new MimeBodyPart();
+                DataSource source = new FileDataSource(attachment);
+                messageBodyPart.setDataHandler(new DataHandler(source));
+                messageBodyPart.setFileName(attachment.getName());
+                multipart.addBodyPart(messageBodyPart);
+            }
+
+            // Put parts in message
+            message.setContent(multipart);
+
             // Send the message
             Transport.send(message);
             mpv5.YabsViewProxy.instance().getProgressbar().setIndeterminate(false);
@@ -420,6 +431,8 @@ public class SimpleMail implements Waiter {
         } catch (MessagingException messagingException) {
             Popup.error(messagingException);
             Log.Debug(this, messagingException.getLocalizedMessage());
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(SimpleMail.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
 // close the connection
         }
@@ -427,91 +440,92 @@ public class SimpleMail implements Waiter {
 
     /**
      * From http://www.nepherte.be/send-mail-over-smtps-in-java/
+     *
      * @throws NoSuchProviderException
      * @throws MessagingException
      */
     private void sendSmptsMail() throws NoSuchProviderException, MessagingException {
-        mpv5.YabsViewProxy.instance().getProgressbar().setIndeterminate(true);
-        Log.Debug(this, "Sending mail via SMTPS");
-        // create properties
-        Properties props = System.getProperties();
-        MailAuthenticator auth = new MailAuthenticator(username, password);
+        SMTPSSLTransport transport = null;
+        try {
+            mpv5.YabsViewProxy.instance().getProgressbar().setIndeterminate(true);
+            Log.Debug(this, "Sending mail via SMTPS");
+            // create properties
+            Properties props = System.getProperties();
+            MailAuthenticator auth = new MailAuthenticator(username, password);
 
-        props.put("mail.smtps.auth", Boolean.toString(username != null));
-        props.put("mail.smtps.starttls.enable", Boolean.toString(useTls));
+            props.put("mail.smtps.auth", Boolean.toString(username != null));
+            props.put("mail.smtps.starttls.enable", Boolean.toString(useTls));
 // < -- it is important you use the correct port. smtp uses 25, smtps 465 -->
-        props.put("mail.smtps.port", (smtpPort!=null&&smtpPort.length()>1?smtpPort:"465"));
+            props.put("mail.smtps.port", (smtpPort != null && smtpPort.length() > 1 ? smtpPort : "465"));
 // < -- put the smtps server host address here -->
-        props.put("mail.smtps.host", smtpHost);
+            props.put("mail.smtps.host", smtpHost);
 
 //
 //        props.put("mail.smtp.port", "587");
 //        props.put("mail.smtp.auth", (username != null));
 //        props.put("mail.smtp.starttls.enable", useTls);
-
 // create session
-        Session session = Session.getDefaultInstance(props, auth);
+            Session session = Session.getDefaultInstance(props, auth);
 //        session.setDebug(true);
 
-        // Define message
-        MimeMessage message = new MimeMessage(session);
-        message.setFrom(new InternetAddress(senderAddress));
-        message.setSentDate(new Date());
-        
-        for (int i = 0; i < rec.size(); i++) {
-            String recc = rec.get(i);
-            try {
-                message.addRecipient(Message.RecipientType.TO, new InternetAddress(recc));
-            } catch (MessagingException messagingException) {
-                Notificator.raiseNotification(messagingException);
-            }
-        }
-        for (int i = 0; i < bcc.size(); i++) {
-            String bbc = bcc.get(i);
-            try {
-                message.addRecipient(Message.RecipientType.BCC, new InternetAddress(bbc));
-            } catch (MessagingException messagingException) {
-                Notificator.raiseNotification(messagingException);
-            }
-        }
-        for (int i = 0; i < cc.size(); i++) {
-            String ccc = cc.get(i);
-            try {
-                message.addRecipient(Message.RecipientType.CC, new InternetAddress(ccc));
-            } catch (MessagingException messagingException) {
-                Notificator.raiseNotification(messagingException);
-            }
-        }
-        message.setSubject(subject);
+            // Define message
+            MimeMessage message = new MimeMessage(session);
+            InternetAddress from = new InternetAddress(senderAddress, MimeUtility.encodeText(senderName != null ? senderName : senderAddress), "UTF-8");
+            message.setFrom(from);
+            message.setSentDate(new Date());
 
-        // create the message part
-        MimeBodyPart messageBodyPart = new MimeBodyPart();
+            for (int i = 0; i < rec.size(); i++) {
+                String recc = rec.get(i);
+                try {
+                    message.addRecipient(Message.RecipientType.TO, new InternetAddress(recc));
+                } catch (MessagingException messagingException) {
+                    Notificator.raiseNotification(messagingException);
+                }
+            }
+            for (int i = 0; i < bcc.size(); i++) {
+                String bbc = bcc.get(i);
+                try {
+                    message.addRecipient(Message.RecipientType.BCC, new InternetAddress(bbc));
+                } catch (MessagingException messagingException) {
+                    Notificator.raiseNotification(messagingException);
+                }
+            }
+            for (int i = 0; i < cc.size(); i++) {
+                String ccc = cc.get(i);
+                try {
+                    message.addRecipient(Message.RecipientType.CC, new InternetAddress(ccc));
+                } catch (MessagingException messagingException) {
+                    Notificator.raiseNotification(messagingException);
+                }
+            }
+            message.setSubject(subject);
 
-        //fill message
-        messageBodyPart.setContent( text, "text/html; charset=utf-8" );
-        //messageBodyPart.setText(text);
-        Multipart multipart = new MimeMultipart();
-        multipart.addBodyPart(messageBodyPart);
-        
+            // create the message part
+            MimeBodyPart messageBodyPart = new MimeBodyPart();
 
-        if (attachment != null) {
-            // Part two is attachment
-            messageBodyPart = new MimeBodyPart();
-            DataSource source = new FileDataSource(attachment);
-            messageBodyPart.setDataHandler(new DataHandler(source));
-            messageBodyPart.setFileName(attachment.getName());
+            //fill message
+            messageBodyPart.setContent(text, "text/html; charset=utf-8");
+            //messageBodyPart.setText(text);
+            Multipart multipart = new MimeMultipart();
             multipart.addBodyPart(messageBodyPart);
-        }
 
-        // Put parts in message
-        message.setContent(multipart);
-        message.saveChanges();
+            if (attachment != null) {
+                // Part two is attachment
+                messageBodyPart = new MimeBodyPart();
+                DataSource source = new FileDataSource(attachment);
+                messageBodyPart.setDataHandler(new DataHandler(source));
+                messageBodyPart.setFileName(attachment.getName());
+                multipart.addBodyPart(messageBodyPart);
+            }
+
+            // Put parts in message
+            message.setContent(multipart);
+            message.saveChanges();
 // transport the message
 // < -- we will send the message over smtps -->
-        SMTPSSLTransport transport = (SMTPSSLTransport) session.getTransport("smtps");
+            transport = (SMTPSSLTransport) session.getTransport("smtps");
 
 // connect to server
-        try {
             // < -- fill in email address and password -->
             transport.connect();
 // send the message
@@ -522,9 +536,13 @@ public class SimpleMail implements Waiter {
         } catch (MessagingException messagingException) {
             Popup.error(messagingException);
             Log.Debug(this, messagingException.getLocalizedMessage());
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(SimpleMail.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
 // close the connection
-            transport.close();
+            if (transport != null) {
+                transport.close();
+            }
         }
     }
 
@@ -582,5 +600,19 @@ public class SimpleMail implements Waiter {
         protected PasswordAuthentication getPasswordAuthentication() {
             return new PasswordAuthentication(this.user, this.password);
         }
+    }
+
+    /**
+     * @return the senderName
+     */
+    public String getSenderName() {
+        return senderName;
+    }
+
+    /**
+     * @param senderName the senderName to set
+     */
+    public void setSenderName(String senderName) {
+        this.senderName = senderName;
     }
 }

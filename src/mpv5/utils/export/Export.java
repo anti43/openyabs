@@ -42,6 +42,7 @@ import mpv5.db.common.QueryCriteria;
 import mpv5.db.objects.Contact;
 import mpv5.db.objects.MailMessage;
 import mpv5.db.objects.Template;
+import mpv5.db.objects.User;
 import mpv5.globals.GlobalSettings;
 import mpv5.globals.Messages;
 import mpv5.handler.FormFieldsHandler;
@@ -87,7 +88,7 @@ public final class Export extends HashMap<String, Object> implements Waitable {
                 send = Popup.Y_N_dialog(Messages.NO_MAIL_TEMPLATE_DEFINED);
             }
 
-            if (send) {
+            if (send && m != null) {
                 Map<String, Object> hm1 = dataOwner.getFormFields();//new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
                 File f2 = FileDirectoryHandler.getTempFile(((Formattable) dataOwner).getFormatHandler().toUserString(), "pdf");
                 Export ex = new Export(preloadedTemplate);
@@ -105,6 +106,7 @@ public final class Export extends HashMap<String, Object> implements Waitable {
                         SimpleMail pr = new SimpleMail();
                         pr.setMailConfiguration(mpv5.db.objects.User.getCurrentUser().getMailConfiguration());
                         pr.setRecipientsAddress(cont.__getMailaddress());
+                        pr.setSenderName(User.getCurrentUser().__getFullname());
 
                         if (GlobalSettings.hasProperty("org.openyabs.exportproperty.mailbcc")) {
                             String bcc = GlobalSettings.getProperty("org.openyabs.exportproperty.mailbcc");
@@ -119,11 +121,9 @@ public final class Export extends HashMap<String, Object> implements Waitable {
                             }
                         }
 
-                        if (m != null && m.__getCname() != null) {
+                        try {
                             pr.setSubject(VariablesHandler.parse(m.__getCname(), dataOwner, hm1));
                             pr.setText(VariablesHandler.parse(m.__getDescription(), dataOwner, hm1));
-                        }
-                        try {
                             new Job(ex, (Waiter) pr).execute();
                         } catch (Exception e) {
                             Popup.error(e);
@@ -376,9 +376,9 @@ public final class Export extends HashMap<String, Object> implements Waitable {
      * @return
      */
     public static Waitable sourceFile(String aname, Template preloadedTemplate, DatabaseObject dataOwner) {
-        Map<String, Object> hm1 = dataOwner == null ? 
-                new FormFieldsHandler(null).getFormattedFormFields(null) : 
-                dataOwner.getFormFields();
+        Map<String, Object> hm1 = dataOwner == null
+                ? new FormFieldsHandler(null).getFormattedFormFields(null)
+                : dataOwner.getFormFields();
         File f2;
         if (aname == null) {
             f2 = FileDirectoryHandler.getTempFile("odt");
