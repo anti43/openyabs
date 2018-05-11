@@ -6,6 +6,7 @@ import java.awt.Dialog;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -171,7 +172,7 @@ public class wizard_FirstSettings1 extends javax.swing.JPanel implements Wizarda
         FileDirectoryHandler.copyFile(s, f);
         Log.Debug(Main.class, "Importing language from: " + f.getCanonicalPath());
 
-        String ref = LanguageManager.importLanguage(f.getName(), f);
+        String ref = LanguageManager.importLanguage(f.getName()+ " (" + new Date() + ")", f);
         User.getCurrentUser().setLanguage(ref);
         User.getCurrentUser().save(true);
     }
