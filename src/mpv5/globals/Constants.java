@@ -30,8 +30,13 @@ public interface Constants {
      *
      * Full Version number
      */
-    public static final String VERSION = "Yabs-1.2.7.5";//ATTENTION: when changing this, add language and template file to resources/etra folder for the new version!
+    public static final String VERSION = "Yabs-1.2.7.6";//ATTENTION: when changing this, add language and template file to resources/etra folder for the new version!
 
+    /**
+     * Supported languages build-in
+     */
+    public static final String[] LANGUAGES = new String[]{"EN", "DE"};
+    
     /**
      * The original database version of this release
      */
