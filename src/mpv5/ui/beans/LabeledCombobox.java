@@ -351,7 +351,7 @@ public class LabeledCombobox extends javax.swing.JPanel {
                     } else if (mPCombobox1.getContext() != null) {
                         obj.receive(DatabaseObject.getObject(mPCombobox1.getContext(), (Integer) getSelectedItem().getIdObject()));
                     } else {
-                        Log.Debug(this, "No dbos in model or nor context set!");
+                        Log.Debug(this, "No dbos in model or no context set!");
                     }
                 } catch (Exception ex) {
                     Log.Debug(this, ex.getMessage());
@@ -377,4 +377,8 @@ public class LabeledCombobox extends javax.swing.JPanel {
     public void setInvisible(boolean _invisible) {
         this._invisible = _invisible;
     }
+
+    /*public void setWhileTypeEnabled(boolean b) {
+       mPCombobox1.setSearchWhileTypeEnabled(b);
+    }*/
 }

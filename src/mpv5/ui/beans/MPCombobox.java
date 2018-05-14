@@ -20,6 +20,8 @@ import java.awt.event.MouseListener;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import javax.swing.ComboBoxEditor;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
@@ -45,12 +47,14 @@ public class MPCombobox extends javax.swing.JPanel {
 
     private static final long serialVersionUID = 1L;
     public boolean SEARCH_ON_ENTER = false;
+    public boolean SEARCH_WHILE_TYPE = false;
     private Context context;
     private int sortmode = 0;
     private JTable table;
     private boolean instantiated;
     private DataPanel receiver;
     private String prevSearch = "";
+    private ExecutorService executor = Executors.newSingleThreadExecutor();
 
     /**
      * If this combobox is within a table cell, set the table here
@@ -74,21 +78,12 @@ public class MPCombobox extends javax.swing.JPanel {
 
             @Override
             public void keyPressed(KeyEvent e) {
-
-                if (SEARCH_ON_ENTER && (e.getKeyCode() == KeyEvent.VK_ENTER) && getContext() != null) {
+                if (SEARCH_WHILE_TYPE && getContext() != null) {
+                    search();
+                } else if (SEARCH_ON_ENTER && (e.getKeyCode() == KeyEvent.VK_ENTER) && getContext() != null) {
                     search();
                 }
-//                if (table != null) {
                 jComboBox1.showPopup();
-//                }
-//                if (table != null) {
-//                    JComboBox combobox = getComboBox();
-//                    if (!combobox.isPopupVisible()) {
-//                        combobox.hidePopup();
-//                    } else {
-//                        combobox.showPopup();
-//                    }
-//                }
             }
 
             @Override
@@ -169,7 +164,7 @@ public class MPCombobox extends javax.swing.JPanel {
         if (!Main.INSTANTIATED) {
             return;
         }
-        if (SEARCH_ON_ENTER) {
+        if (SEARCH_ON_ENTER || SEARCH_WHILE_TYPE) {
             instantiated = true;
             Runnable runnable = new Runnable() {
 
@@ -178,29 +173,25 @@ public class MPCombobox extends javax.swing.JPanel {
                     ComboBoxEditor cbField = jComboBox1.getEditor();
                     Object value = cbField.getItem();
                     jComboBox1.setSelectedItem(new MPComboBoxModelItem(-1, value.toString()));
-                    if (prevSearch == null) {
-                        prevSearch = String.valueOf(value);
-                    } else {
-                        value = String.valueOf(value).equals(prevSearch) ? "" : String.valueOf(value);
-                        prevSearch = null;
-                    }
+
                     Object[][] data = null;
                     if (getComboBox().isEditable()) {
                         if (getContext().equals(Context.getProduct())) {
-                            data = new DatabaseSearch(getContext(), 200).getValuesFor2("ids, " + ConnectionTypeHandler.concat("cname", "' '", ConnectionTypeHandler.getToChar("externalnetvalue")), String.valueOf(value), null, true, true);
+                            data = new DatabaseSearch(getContext(), 20).getValuesFor2("ids, " + ConnectionTypeHandler.concat("cname", "' '", ConnectionTypeHandler.getToChar("externalnetvalue")), String.valueOf(value), null, true, true);
                         } else if (((getContext().equals(Context.getCustomer()) || getContext().equals(Context.getManufacturer()) || getContext().equals(Context.getSupplier())) && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "companiesovernames")) || getContext().isCompany() == true) {
-                            data = new DatabaseSearch(getContext(), 200).getValuesFor("ids, company", "company", jComboBox1.getSelectedItem().toString(), true);
+                            data = new DatabaseSearch(getContext(), 20).getValuesFor("ids, company", "company", value.toString(), true);
                         } else if (getContext().equals(Context.getCustomer()) || getContext().equals(Context.getManufacturer()) || getContext().equals(Context.getSupplier())) {
-                            data = new DatabaseSearch(getContext(), 200).getValuesFor("ids, cname, prename", "cname", jComboBox1.getSelectedItem().toString(), true);
+                            data = new DatabaseSearch(getContext(), 20).getValuesFor("ids, cname, prename", "cname", value.toString(), true);
                         } else {
-                            data = new DatabaseSearch(getContext(), 200).getValuesFor(getContext().getSearchFields(), "cname", jComboBox1.getSelectedItem().toString(), true);
+                            data = new DatabaseSearch(getContext(), 20).getValuesFor(getContext().getSearchFields(), "cname", value.toString(), true);
                         }
                     } else {
-                        data = new DatabaseSearch(getContext(), 200).getValuesFor("ids, cname", "cname", "", true);
+                        data = new DatabaseSearch(getContext(), 20).getValuesFor("ids, cname", "cname", "", true);
                     }
 
-                    jComboBox1.setModel(MPComboBoxModelItem.toModel(MPComboBoxModelItem.toItems(data, true, true)));
-                    if (data.length > 1) {
+                    if (data.length > 0) {
+                        jComboBox1.setModel(MPComboBoxModelItem.toModel(MPComboBoxModelItem.toItems(data, true, true)));
+               
                         if (table != null) {
                             table.editCellAt(table.getSelectedRow(), 4);
                         }
@@ -208,10 +199,14 @@ public class MPCombobox extends javax.swing.JPanel {
                             jComboBox1.showPopup();
                         }
                     }
+                    
+                    if (data.length == 1) {
+                        jComboBox1.setSelectedIndex(0);
+                    }
                 }
             };
             if (getContext() != null) {
-                new Thread(runnable).start();
+                executor.execute(runnable);
             }
         }
     }
@@ -365,6 +360,23 @@ public class MPCombobox extends javax.swing.JPanel {
             jComboBox1.setToolTipText(Messages.SEARCHABLE.toString());
         }
     }
+
+    /**
+     * If set to true, typing on the text field will trigger a search for the
+     * entered value and popup the results if any.
+     * {@link LabeledCombobox#setContext(Context)} must be called before this
+     * can work.
+     *
+     * @param enabled
+     */
+    /*public void setSearchWhileTypeEnabled(boolean enabled) {
+        SEARCH_WHILE_TYPE = enabled;
+        SEARCH_ON_ENTER = enabled;
+        jComboBox1.setEditable(enabled);
+        if (enabled) {
+            jComboBox1.setToolTipText(Messages.SEARCHABLE.toString());
+        }
+    }*/
 
     /**
      * Set the context for database queries
