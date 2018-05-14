@@ -73,6 +73,7 @@ import mpv5.globals.GlobalSettings;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.handler.Scheduler;
+import mpv5.i18n.LanguageManager;
 import mpv5.logging.Log;
 import mpv5.pluginhandling.YabsPluginLoader;
 
@@ -137,7 +138,7 @@ import org.jdesktop.application.SingleFrameApplication;
 /**
  * The application's main frame.
  */
-public class MPView extends FrameView implements YabsView, FlowProvider {
+public final class MPView extends FrameView implements YabsView, FlowProvider {
 
     public static MPView identifierView;
     private static Dimension initialSize = new Dimension(1100, 900);
@@ -663,8 +664,19 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         String fs = System.getProperty("yabs_firststart");
         if (fs != null) {
             wizard_FirstSettings1.build(getIdentifierFrame());
+        }else{
+             if(Constants.VERSION.equals(System.getProperty("yabsFirstStartVersion"))){
+                 try {
+                     if (LanguageManager.checkAndReplaceLangFiles()) {
+                         Notificator.raiseNotification(Messages.LANGUAGE_UPDATED, true);
+                     } else {
+                         Log.Debug(this, "Language file up to date");
+                     }
+                 } catch (Exception e) {
+                     Log.Debug(e);
+                 }
+             }
         }
-
     }
 
     private GroovyShell getGroovyShell() {
