@@ -141,7 +141,7 @@ public class wizard_FirstSettings1 extends javax.swing.JPanel implements Wizarda
         
         if (jCheckBox1.isSelected()) {
             try {
-                importInitialLanguage();
+                importInitialLanguage("DE");
             } catch (Exception ex) {
                 Log.Debug(wizard_FirstSettings1.class, ex);
             }
@@ -166,15 +166,8 @@ public class wizard_FirstSettings1 extends javax.swing.JPanel implements Wizarda
     private void setModels() {
     }
 
-    public void importInitialLanguage() throws IOException, Exception {
-        InputStream s = Main.class.getResourceAsStream("/mpv5/resources/extra/DE-" + Constants.VERSION + ".properties");
-        File f = FileDirectoryHandler.getTempFile("language-de", "properties");
-        FileDirectoryHandler.copyFile(s, f);
-        Log.Debug(Main.class, "Importing language from: " + f.getCanonicalPath());
-
-        String ref = LanguageManager.importLanguage(f.getName()+ " (" + new Date() + ")", f);
-        User.getCurrentUser().setLanguage(ref);
-        User.getCurrentUser().save(true);
+    public void importInitialLanguage(String langid) throws IOException, Exception {
+        LanguageManager.importFromJar(langid);
     }
 
     public void importInitialTemplate() throws Exception {

@@ -186,6 +186,17 @@ public class Main implements Runnable {
 //        splash.nextStep(Messages.LAUNCH.toString());
         splash.nextStep(Messages.DBCONN_UPDATE_BEPATIENT.toString());
         Log.Debug(Main.class, "Trying to launch application now..");
+
+        try {
+            File f = new File(FileDirectoryHandler.getTempDir(), Constants.VERSION + ".start");
+            if (!f.exists()) {
+                System.setProperty("yabsFirstStartVersion", Constants.VERSION);
+                FileDirectoryHandler.writeTo(f, System.currentTimeMillis());
+            }
+            Log.Debug(Main.class, "CACHE_DIR: " + f.getCanonicalPath());
+        } catch (Exception exception) {
+            Log.Debug(exception);
+        }
         Runnable runnable = new Runnable() {
 
             @Override
@@ -373,7 +384,7 @@ public class Main implements Runnable {
 
         try {
             //Cleanup
-            FileDirectoryHandler.deleteDirectoryContent2(new File(FileDirectoryHandler.getTempDir2()), ".properties", ".xml");
+            FileDirectoryHandler.deleteDirectoryContent2(new File(FileDirectoryHandler.getTempDir2()), ".properties", ".xml", ".start");
         } catch (IOException ex) {
         }
     }
@@ -403,7 +414,7 @@ public class Main implements Runnable {
             splash.init(12);
             Log.Print(Messages.START_MESSAGE);
             splash.nextStep(Messages.INIT.toString());
-            
+
             parseArgs(args);
             runStartScripts();
             readLocalSettings();
@@ -807,7 +818,7 @@ public class Main implements Runnable {
             }
         }
 
-        Runnable runnable3 = new Runnable() {
+        /* Runnable runnable3 = new Runnable() {
 
             @Override
             public void run() {
@@ -815,8 +826,7 @@ public class Main implements Runnable {
             }
         };
 
-        new Thread(runnable3).start();
-
+        new Thread(runnable3).start();*/
         if (!HEADLESS) {
             try {
                 (new Scheduler()).start();

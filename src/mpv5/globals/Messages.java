@@ -275,7 +275,7 @@ public enum Messages {
     CHECK_LIBS("Checking for needed libs"),
     MISSING_FILE("Missing File: "),
     MISSING_LIBS("Missing needed lib(s)! Programm may crash!"),
-    MISSING_KEYS("Missing Keys for Translation! Programm may not Translate Correctly!"),
+    MISSING_KEYS("Missing Keys for translation! Programm may not translate correctly!"),
     LANG_EMPTY("Language is Empty! Please select a Language!"),
     LANG_USED("Language is in use and can't be deleted!"),
     LANG_EXPORTED("Language is succesfull exported!"),
@@ -368,7 +368,8 @@ public enum Messages {
     TYPE_PART_PAYMENT("Partial Payment"),
     TYPE_DEPOSIT("Deposit"), 
     LANG_NOT_EXPORTED("Language could not be exported:"), 
-    ADD_MISSING_KEYS("Please add Missing keys to ");
+    ADD_MISSING_KEYS("Please add Missing keys to "), 
+    LANGUAGE_UPDATED("The current language file has been updated.");
 
     /**
      * @return the missing

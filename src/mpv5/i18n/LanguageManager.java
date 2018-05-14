@@ -18,17 +18,24 @@ package mpv5.i18n;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
 
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
@@ -36,6 +43,7 @@ import javax.swing.SwingUtilities;
 import mpv5.Main;
 import mpv5.db.common.*;
 import mpv5.db.objects.User;
+import mpv5.globals.Constants;
 import mpv5.globals.Headers;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
@@ -70,8 +78,7 @@ public class LanguageManager {
     private static boolean cached = false;
 
     /**
-     * Flushes the Language Cache so that it contains no
-     * Languages.
+     * Flushes the Language Cache so that it contains no Languages.
      */
     public static void flushLanguageCache() {
         cachedLanguages.clear();
@@ -268,8 +275,7 @@ public class LanguageManager {
     }
 
     /**
-     * The users selected language bundle, or default if not
-     * defined by the user
+     * The users selected language bundle, or default if not defined by the user
      *
      * @return
      */
@@ -301,8 +307,7 @@ public class LanguageManager {
 
     /**
      *
-     * @return A ComboBoxModel reflecting the available
-     * Languages
+     * @return A ComboBoxModel reflecting the available Languages
      */
     public static ComboBoxModel getLanguagesAsComboBoxModel() {
         Object[][] data = QueryHandler.instanceOf().clone(Context.getLanguage()).select("cname, longname", (String[]) null);
@@ -316,8 +321,7 @@ public class LanguageManager {
 
     /**
      *
-     * @return A ComboBoxModel reflecting the available
-     * Countries
+     * @return A ComboBoxModel reflecting the available Countries
      */
     public static synchronized mpv5.utils.models.MPComboboxModel getCountriesAsComboBoxModel() {
         if (COUNTRIES == null) {
@@ -343,8 +347,7 @@ public class LanguageManager {
 
     /**
      *
-     * @return A comboBoxModel reflecting the available
-     * locales
+     * @return A comboBoxModel reflecting the available locales
      */
     public static DefaultComboBoxModel getLocalesAsComboBoxModel() {
         Locale[] o = Locale.getAvailableLocales();
@@ -370,8 +373,7 @@ public class LanguageManager {
      * Imports a language file to DB
      *
      * @param langname
-     * @param file If it is a .zip, will get extracted and
-     * then processed
+     * @param file If it is a .zip, will get extracted and then processed
      * @param ignoreErrors
      * @return
      * @throws java.lang.Exception
@@ -436,8 +438,7 @@ public class LanguageManager {
      * Exports a language file to DB
      *
      * @param langid
-     * @param file If it is a .zip, will get extracted and
-     * then processed
+     * @param file If it is a .zip, will get extracted and then processed
      * @return
      * @throws java.lang.Exception
      * @throws UnsupportedOperationException
@@ -462,7 +463,7 @@ public class LanguageManager {
                         selectFirst("filename", new String[]{Context.SEARCH_NAME, langid, "'"});
                 if (data != null && data.length > 0) {
                     bundlefile = QueryHandler.instanceOf().clone(Context.getFiles()).retrieveFile(String.valueOf(
-                            data[0]),file);
+                            data[0]), file);
                 }
 
                 if (bundlefile != null) {
@@ -495,7 +496,7 @@ public class LanguageManager {
                         }
                     }
                 }
-                
+
                 if (!failures.isEmpty()) {
                     Popup.notice(failures, Messages.ADD_MISSING_KEYS.toString() + file + ":\n");
                 }
@@ -579,7 +580,7 @@ public class LanguageManager {
             }
         }
     }
-    
+
     /**
      * Returns the status of the language manager
      *
@@ -655,8 +656,8 @@ public class LanguageManager {
     }
 
     /**
-     * Checks the cache directory for cached languages and
-     * loads the last cached one
+     * Checks the cache directory for cached languages and loads the last cached
+     * one
      */
     public static void preLoadCachedLanguage() {
         File cache = FileDirectoryHandler.getTempDirAsFile();
@@ -716,20 +717,72 @@ public class LanguageManager {
                 }
             }
 
+            Set<String> skip = new HashSet(Arrays.asList(new String[]{Messages.START_MESSAGE.name(), Messages.LANGUAGE_UPDATED.name()}));
             Messages[] m = Messages.values();
             for (int j = 0; j < m.length; j++) {
-                if (!bundle.containsKey(m[j].name()) && !"START_MESSAGE".equals(m[j].name())) {
+                if (!bundle.containsKey(m[j].name()) && !skip.contains(m[j].name())) {
                     missing.add(m[j].name() + "=" + m[j].rawMessage());
                 }
             }
 
-            if (!missing.isEmpty() && popup) {
-                Popup.notice(missing, Messages.MISSING_KEYS);
+            if (!missing.isEmpty()) {
+                if (popup) {
+                    Popup.notice(missing, Messages.MISSING_KEYS);
+                } else {
+                    Notificator.raiseNotification(Messages.MISSING_KEYS);
+                }
             }
             return missing;
         } catch (Exception ex) {
             Log.Debug(LanguageManager.class, ex.getLocalizedMessage());
             return null;
         }
+    }
+
+    public static boolean checkAndReplaceLangFile(String langid) {
+
+        try {
+            Object[] data = QueryHandler.instanceOf().clone(Context.getLanguage()).
+                    selectFirst("longname", new String[]{Context.SEARCH_NAME, mpv5.db.objects.User.getCurrentUser().__getLanguage(), "'"});
+            if (data != null && data.length > 0) {
+                String previous = String.valueOf(data[0]).toLowerCase();
+                Log.Debug(LanguageManager.class, "previous: " + previous);
+                if (previous.startsWith(("language-" + langid).toLowerCase())
+                        || previous.startsWith((langid + "-").toLowerCase())) {
+                    importFromJar(langid.toUpperCase());
+                    return true;
+                }
+            }
+        } catch (NodataFoundException nodataFoundException) {
+            Logger.getLogger(LanguageManager.class.getName()).log(Level.SEVERE, null, nodataFoundException);
+        } catch (Exception ex) {
+            Logger.getLogger(LanguageManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
+    public static void importFromJar(String langid) throws Exception {
+        InputStream s = Main.class.getResourceAsStream("/mpv5/resources/extra/" + langid + "-" + Constants.VERSION + ".properties");
+        File f = FileDirectoryHandler.getTempFile(langid.toLowerCase() + "-" + Constants.VERSION, "properties");
+        FileDirectoryHandler.copyFile(s, f);
+        Log.Debug(Main.class, "Importing language from: " + f.getCanonicalPath());
+
+        String ref = LanguageManager.importLanguage(f.getName() + " (" + new Date() + ")", f);
+        User.getCurrentUser().setLanguage(ref);
+        User.getCurrentUser().save(true);
+        Log.Debug(LanguageManager.class, "\n\n\n#####################################\nLanguage updated: " + langid + "\n#####################################\n\n");
+    }
+
+    public static boolean checkAndReplaceLangFiles() {
+        boolean result = false;
+        for (String l : Constants.LANGUAGES) {
+            if (!l.equals("EN"))//default
+            {
+                if (checkAndReplaceLangFile(l)) {
+                    result = true;
+                }
+            }
+        }
+        return result;
     }
 }
