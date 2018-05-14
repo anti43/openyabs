@@ -464,24 +464,25 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
         map.put("invoiceaddress", getInvoiceaddress(data));
         map.put("deliveryaddress", getDeliveryaddress(data));
 
-        if (map.containsKey("country")) {
+        if (!map.containsKey("country")) {
             try {
-                map.put("country", LanguageManager.getCountryName(Integer.valueOf(map.get("country").toString())));
+                map.put("country", LanguageManager.getCountryName(Integer.valueOf("country")));
             } catch (Exception numberFormatException) {
                 //already resolved?
             }
         }
 
         try {
-            if (map.containsKey("ismale")) {
-                if (Boolean.valueOf(map.get("ismale").toString())) {
-                    map.put("gender", Messages.CONTACT_TYPE_MALE.toString());
-                    map.put("intro", Messages.CONTACT_INTRO_MALE.toString());
-                } else {
-                    map.put("gender", Messages.CONTACT_TYPE_FEMALE.toString());
-                    map.put("intro", Messages.CONTACT_INTRO_FEMALE.toString());
-                }
-
+            if (ismale) {
+                map.put("gender", Messages.CONTACT_TYPE_MALE.toString());
+                map.put("intro", Messages.CONTACT_INTRO_MALE.toString());
+            } else {
+                map.put("gender", Messages.CONTACT_TYPE_FEMALE.toString());
+                map.put("intro", Messages.CONTACT_INTRO_FEMALE.toString());
+            }
+            
+            if(title.length()==0){
+                 map.put("title", map.get("gender"));
             }
         } catch (Exception numberFormatException) {
             //already resolved?
