@@ -10,6 +10,7 @@ package mpv5.utils.files;
  */
 import java.awt.Desktop;
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 
 import java.io.File;
@@ -18,6 +19,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
@@ -714,4 +716,14 @@ public abstract class FileDirectoryHandler {
         }
     }
 
+    public static void writeTo(File f, Object data) throws FileNotFoundException, UnsupportedEncodingException, IOException {
+        try (OutputStream out = new FileOutputStream(f); 
+                InputStream in = new ByteArrayInputStream(String.valueOf(data).getBytes("utf-8"))) {
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = in.read(buf)) > 0) {
+                out.write(buf, 0, len);
+            }
+        }
+    }
 }
