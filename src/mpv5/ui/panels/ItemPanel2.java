@@ -2730,9 +2730,9 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                 ((MPTableModel) itemtable.getModel()).setRowAt(new SubItem((Product) o).getRowData(i), i, 4);
                 itemtable.setValueAt(opt, i, 14);
             }
-        } catch (NumberFormatException ex) {
-        } catch (NodataFoundException ex) {
-        }
+        } catch (Exception ex) {
+            Log.Debug(ex);
+        } 
     }
 
     @Override
@@ -3224,6 +3224,9 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                 }
             }
         }
+        
+        i2.setReforderids(dataOwner.__getIDS());
+        
         setDataOwner(i2, true);
         Popup.notice(i2 + Messages.INSERTED.getValue());
     }
