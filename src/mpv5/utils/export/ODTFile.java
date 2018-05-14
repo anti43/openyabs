@@ -28,9 +28,10 @@ import mpv5.logging.Log;
 import mpv5.ui.dialogs.Notificator;
 
 /**
- *
+ * OpenOffice based templating system (OLD)
  *
  */
+@Deprecated
 public class ODTFile extends Exportable {
 
    private static final long serialVersionUID = 1L;

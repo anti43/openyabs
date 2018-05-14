@@ -37,8 +37,9 @@ import mpv5.utils.images.MPIcon;
 
 /**
  *
- *
+ * PDF based templating system (OLD)
  */
+@Deprecated
 public class PDFFile extends Exportable {
 
     private PdfReader template;

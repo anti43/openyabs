@@ -44,6 +44,7 @@ import mpv5.utils.date.DateConverter;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
 import static mpv5.utils.numberformat.FormatNumber.*;
+
 /**
  *
  *
@@ -387,11 +388,13 @@ public final class SubItem extends DatabaseObject implements Triggerable {
         Context contextl = product.getContext();
         String params;
         String vars;
-        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty(contextl + mpv5.ui.beans.LightMPComboBox.VALUE_SEARCHFIELDS)
-                && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(contextl + mpv5.ui.beans.LightMPComboBox.VALUE_SEARCHFIELDS).contains("_$")) {
+        String key = contextl + mpv5.ui.beans.LightMPComboBox.VALUE_SEARCHFIELDS;
+        String prop = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(key);
+        if (prop != null && prop.contains("_$")) {
+            Log.Debug(this, "format: " + prop);
             try {
                 params = "ids";
-                vars = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(contextl + mpv5.ui.beans.LightMPComboBox.VALUE_SEARCHFIELDS);
+                vars = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(key);
                 String[] vaars = vars.split("_\\$");
 
                 for (int i = 0; i < vaars.length; i++) {
@@ -410,7 +413,7 @@ public final class SubItem extends DatabaseObject implements Triggerable {
                 String formatString = vars;
                 if (formatString != null) {
                     vaars = formatString.split("_\\$");
-                    Log.Debug(MPComboBoxModelItem.class, "Length of var string: " + vaars.length);
+                    Log.Debug(SubItem.class, formatString + " - length of var string: " + vaars.length);
                 }
                 String x = "";
                 String format = formatString;
@@ -425,11 +428,13 @@ public final class SubItem extends DatabaseObject implements Triggerable {
                             Log.Debug(e);
                         }
                         x = format;
+                        Log.Debug(this, x);
                     }
                 }
 
                 setDescription(VariablesHandler.parse(x, product));
-            } catch (NodataFoundException nodataFoundException) {
+            } catch (Exception x) {
+                Log.Debug(x);
                 setDescription(VariablesHandler.parse(product.__getCname(), product));
             }
         } else {
@@ -490,18 +495,18 @@ public final class SubItem extends DatabaseObject implements Triggerable {
         String[] possibleCols = new String[]{
             ////////////////// The exported columns///////////////////////////////////////
             /*1*/textitem ? String.valueOf(formatInteger(this.__getCountvalue())) : "",
-            /*2*/textitem ? String.valueOf(formatDezimal(this.__getQuantityvalue())) : "",
-            /*3*/textitem ? __getMeasure() : "",
-            /*4*/__getDescription(),
-            /*5*/textitem ? String.valueOf(formatLokalCurrency(this.__getExternalvalue())) : "",
-            /*6*/textitem ? String.valueOf(formatLokalCurrency(this.__getTotalnetvalue())) : "",
-            /*7*/textitem ? String.valueOf(formatPercent(this.__getTaxpercentvalue())) : "",
-            /*8*/textitem ? String.valueOf(formatLokalCurrency(this.getTotalTaxValue())) : "",
-            /*9*/textitem ? String.valueOf(formatLokalCurrency(this.__getTotalbrutvalue())) : "",
-            /*10*/__getLinkurl(),
-            /*11*/__getCname(),
-            /*12*/textitem ? String.valueOf(formatPercent(this.__getDiscount())) : "",
-            /*13*/textitem ? String.valueOf(formatLokalCurrency(this.totalnetvalue.subtract(this.discvalue))) : ""
+            /*2*/ textitem ? String.valueOf(formatDezimal(this.__getQuantityvalue())) : "",
+            /*3*/ textitem ? __getMeasure() : "",
+            /*4*/ __getDescription(),
+            /*5*/ textitem ? String.valueOf(formatLokalCurrency(this.__getExternalvalue())) : "",
+            /*6*/ textitem ? String.valueOf(formatLokalCurrency(this.__getTotalnetvalue())) : "",
+            /*7*/ textitem ? String.valueOf(formatPercent(this.__getTaxpercentvalue())) : "",
+            /*8*/ textitem ? String.valueOf(formatLokalCurrency(this.getTotalTaxValue())) : "",
+            /*9*/ textitem ? String.valueOf(formatLokalCurrency(this.__getTotalbrutvalue())) : "",
+            /*10*/ __getLinkurl(),
+            /*11*/ __getCname(),
+            /*12*/ textitem ? String.valueOf(formatPercent(this.__getDiscount())) : "",
+            /*13*/ textitem ? String.valueOf(formatLokalCurrency(this.totalnetvalue.subtract(this.discvalue))) : ""
         ///////////////////////////////////////////////////////////////////////////////
         };
         List<String> l = Arrays.asList(possibleCols);

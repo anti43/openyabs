@@ -470,9 +470,9 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             }
         };
         jToolBar3 = new javax.swing.JToolBar();
+        button_offers = new javax.swing.JButton();
         button_orders = new javax.swing.JButton();
         button_bills = new javax.swing.JButton();
-        button_offers = new javax.swing.JButton();
         button_credits = new javax.swing.JButton();
         jSeparator5 = new javax.swing.JToolBar.Separator();
         button_activitylists = new javax.swing.JButton();
@@ -1212,6 +1212,21 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jToolBar3.setRollover(true);
         jToolBar3.setName("jToolBar3"); // NOI18N
 
+        button_offers.setText(bundle.getString("ContactPanel.button_offers.text")); // NOI18N
+        button_offers.setFocusable(false);
+        button_offers.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        button_offers.setMaximumSize(new java.awt.Dimension(120, 29));
+        button_offers.setMinimumSize(new java.awt.Dimension(61, 29));
+        button_offers.setName("button_offers"); // NOI18N
+        button_offers.setPreferredSize(new java.awt.Dimension(100, 29));
+        button_offers.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        button_offers.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_offersActionPerformed(evt);
+            }
+        });
+        jToolBar3.add(button_offers);
+
         button_orders.setText(bundle.getString("ContactPanel.button_orders.text")); // NOI18N
         button_orders.setFocusable(false);
         button_orders.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -1240,21 +1255,6 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             }
         });
         jToolBar3.add(button_bills);
-
-        button_offers.setText(bundle.getString("ContactPanel.button_offers.text")); // NOI18N
-        button_offers.setFocusable(false);
-        button_offers.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        button_offers.setMaximumSize(new java.awt.Dimension(120, 29));
-        button_offers.setMinimumSize(new java.awt.Dimension(61, 29));
-        button_offers.setName("button_offers"); // NOI18N
-        button_offers.setPreferredSize(new java.awt.Dimension(100, 29));
-        button_offers.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        button_offers.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                button_offersActionPerformed(evt);
-            }
-        });
-        jToolBar3.add(button_offers);
 
         button_credits.setText(bundle.getString("ContactPanel.button_credits.text")); // NOI18N
         button_credits.setFocusable(false);

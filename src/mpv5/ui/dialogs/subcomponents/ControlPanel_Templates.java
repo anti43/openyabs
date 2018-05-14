@@ -47,7 +47,7 @@ import mpv5.ui.dialogs.Notificator;
 import mpv5.ui.dialogs.Search2;
 import mpv5.ui.panels.PreviewPanel;
 import mpv5.utils.export.Export;
-import mpv5.utils.export.ODTFile;
+import mpv5.utils.export.ODTFile2;
 import mpv5.utils.export.PDFFile;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.files.FileExecutor;
@@ -982,7 +982,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
                 if (f.getName().endsWith("pdf")) {
                     ex.setTemplate(new PDFFile(f.getPath()));
                 } else {
-                    ex.setTemplate(new ODTFile(f.getPath()));
+                    ex.setTemplate(new ODTFile2(f.getPath()));
                 }
 
                 ex.setTargetFile(f2);

@@ -71,7 +71,7 @@ import mpv5.utils.xdocreport.YabsODTPreprocessor;
 import org.odftoolkit.odfdom.doc.OdfTextDocument;
 
 /**
- *
+ * New templating system
  *
  */
 public class ODTFile2 extends Exportable {
@@ -139,7 +139,7 @@ public class ODTFile2 extends Exportable {
 
     private void fillFields(OutputStream out) throws IOException {
         try {
-            FieldsMetadata metadata = new FieldsMetadata();
+            FieldsMetadata metadata = new FieldsMetadata();  
             boolean addMeta = true;
 
             HashMap<String, Object> d = getData();
@@ -183,7 +183,8 @@ public class ODTFile2 extends Exportable {
                                 String colname = "C" + i++;
                                 xtable.put(colname, tableData[col]);
                                 if (addMeta) {
-                                    metadata.addFieldAsList(TableHandler.KEY_TABLE + "1." + colname);
+                                    //metadata.addFieldAsList(TableHandler.KEY_TABLE + "1." + colname);
+                                    metadata.addField(TableHandler.KEY_TABLE + "1." + colname, true, null, SyntaxKind.MarkDown.name(), false);
                                 }
                             } else {
                                 Notificator.raiseNotification("Invalid column definition in " + this.getTemplate().getCname() + ": " + col + ">" + (tableData.length - 1) + ")", false);
