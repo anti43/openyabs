@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -245,10 +246,36 @@ public class ProductGroup extends DatabaseObject {
         return firstnode;
     }
 
+    /**
+     *
+     * @return True if the group has no parent group
+     */
+    public boolean isRoot() {
+        return __getGroupsids() == 0;
+    }
+
     @Override
     public void ensureUniqueness() {
         if (!QueryHandler.instanceOf().clone(Context.getProductGroup()).checkUniqueness("cname", getCname())) {
             throw new UnsupportedOperationException(Messages.VALUE_ALREADY_EXISTS + " " + getCname());
+        }
+    }
+
+    @Override
+    public void onBeforeSave() {
+        if (isRoot() || Objects.equals(getDefault().ids, ids)) {
+            return;
+        }
+        try {
+            ProductGroup parent = (ProductGroup) getObject(Context.getProductGroup(), productgroupsids);
+            if (!parent.__getHierarchypath().contains(getDefault().toString())) {
+                //must be root of all
+                productgroupsids = getDefault().ids;
+            }
+            //all good
+        } catch (NodataFoundException ex) {
+            Logger.getLogger(ProductGroup.class.getName()).log(Level.SEVERE, null, ex);
+            productgroupsids = getDefault().ids;
         }
     }
 }

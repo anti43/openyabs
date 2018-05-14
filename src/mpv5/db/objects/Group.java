@@ -19,6 +19,7 @@ package mpv5.db.objects;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,6 +28,7 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import static mpv5.db.common.DatabaseObject.getObject;
 import mpv5.db.common.NodataFoundException;
+import static mpv5.db.objects.ProductGroup.getDefault;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Groups;
 
@@ -37,8 +39,8 @@ import mpv5.ui.dialogs.subcomponents.ControlPanel_Groups;
 public class Group extends DatabaseObject {
 
     /**
-     * Returns an empty "sample" Object of the specified
-     * <code>Context</code> type
+     * Returns an empty "sample" Object of the specified <code>Context</code>
+     * type
      *
      * @param context
      * @return
@@ -210,5 +212,23 @@ public class Group extends DatabaseObject {
      */
     public boolean isRoot() {
         return __getGroupsids() == 0;
+    }
+
+    @Override
+    public void onBeforeSave() {
+        if (isRoot() || Objects.equals(getDefault().ids, ids)) {
+            return;
+        }
+        try {
+            Group parent = (Group) getObject(Context.getGroup(), __getGroupsids());
+            if (!parent.__getHierarchypath().contains(getDefault().toString())) {
+                //must be root of all
+                setGroup(getDefault());
+            }
+            //all good
+        } catch (NodataFoundException ex) {
+            Logger.getLogger(ProductGroup.class.getName()).log(Level.SEVERE, null, ex);
+            setGroup(getDefault());
+        }
     }
 }

@@ -102,6 +102,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         this.cname = cname;
     }
 
+    
+
     /**
      * Represents a Context-ID pair which uniquely identifies a DatabaseObject
      *
@@ -541,6 +543,15 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      */
     public void ensureUniqueness() {
     }
+    
+    
+    /**
+     * Called before every @link save() invocation
+     * The native implementation actually
+     * does nothing, you need to override the method
+     */
+    public void onBeforeSave() { 
+    }
 
     /**
      *
@@ -824,6 +835,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             String message = null;
             uncacheObject(this);
 
+            onBeforeSave();
+            
             List<DatabaseObjectModifier> mods = null;
             if (Context.getModifiableContexts().contains(getContext())) {
                 mods = new ArrayList<DatabaseObjectModifier>(YabsPluginLoader.registeredModifiers);
