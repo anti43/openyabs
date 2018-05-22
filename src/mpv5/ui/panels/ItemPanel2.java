@@ -357,10 +357,11 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
     }
 
     private void setContactData(Contact dbo) {
-        prename.setText(dbo.__getPrename());
-        cname.setText(dbo.__getCname());
-        zip.setText(dbo.__getZip());
-        city.setText(dbo.__getCity());
+        prename.setText(dbo.getDefaultaddress().__getPrename());
+        cname.setText(dbo.getDefaultaddress().__getCname());
+        zip.setText(dbo.getDefaultaddress().__getZip());
+        city.setText(dbo.getDefaultaddress().__getCity());
+        street.setText(dbo.getDefaultaddress().__getStreet());
 
         //contactcity.setText(dbo.__getStreet() + ", " + dbo.__getCity() + ", " + dbo.__getCountry() + " (" + dbo.__getCNumber() + ")");
         if (inttype_ == Item.TYPE_INVOICE
