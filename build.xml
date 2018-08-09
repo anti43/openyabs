@@ -1,642 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- For automated build task using asl
-<project name="yabs" default="dist">
-    <property name="java-build.src-dir" location="src"/>
-    <import file="asl/asl-java-build.xml"/>
-
-    <property name="java-build.src-dir" 		location="src/main/java"/>
-    <property name="java-build.lib-dir" 		location="lib"/>
-    <property name="java-build.classes-dir" 	location="${common.target-dir}/classes"/>
-    <property name="java-build.dist-ext" 		value=".jar"/>
-    <property name="java-build.dist-filename" 	value="${ant.project.name}${java-build.dist-ext}"/>
-    <property name="java-build.dist-file" 		location="${common.dist-dir}/${java-build.dist-filename}"/>
-    <property name="java-build.jar-dir"         location="${common.dist-dir}"/>
-	<property name="java-build.jar-file"        location="${java-build.dist-file}"/>
-    <property name="java-build.source-ver" 		value="1.5"/>
-    <property name="java-build.target-ver" 		value="1.5"/>
-    <property name="java-build.debug" 			value="on"/>
-    <property name="java-build.jar-main-class" 		value="mpv5.Main"/>
-
-
-     <target name="copy-resources"
-            description="Copies resources in preparation to be packaged in jar">
-        <copy todir="${java-build.classes-dir}">
-            <fileset dir="${java-build.src-dir}">
-                <exclude name="**/*.java"/>
-            </fileset>
-        </copy>
-
-        <copy todir="${common.dist-dir}/lib" flatten="true" includeEmptyDirs="false">
-            <fileset dir="${java-build.lib-dir}">
-                <include name="**/*.jar"/>
-                <include name="**/*.so"/>
-                <include name="**/*.dll"/>
-            </fileset>
-        </copy>
-    </target>
-</project>
--->
-
-<project name="yabs" default="default" basedir="." xmlns:fx="javafx:com.sun.javafx.tools.ant">
-    <description>Builds, tests, and runs the project yabs.</description>
+<!-- You may freely edit this file. See commented blocks below for -->
+<!-- some examples of how to customize the build. -->
+<!-- (If you delete it and reopen the project it will be recreated.) -->
+<!-- By default, only the Clean and Build commands use this build script. -->
+<!-- Commands such as Run, Debug, and Test only use this build script if -->
+<!-- the Compile on Save feature is turned off for the project. -->
+<!-- You can turn off the Compile on Save (or Deploy on Save) setting -->
+<!-- in the project's Project Properties dialog box.-->
+<project name="openyabs" default="default" basedir=".">
+    <description>Builds, tests, and runs the project openyabs.</description>
     <import file="nbproject/build-impl.xml"/>
-   <loadproperties srcFile="src/mpv5/resources/Yabs.properties"/>
+    <!--
 
-    <target name="-post-compile">
-        <copy todir="${dist.dir}/lib">
-            <fileset dir="lib/jni/" />
-        </copy>
-    </target>
+    There exist several targets which are by default empty and which can be 
+    used for execution of your tasks. These targets are usually executed 
+    before and after some main targets. They are: 
 
-  <!-- Uncomment this section to build the rpm  
-  <rpm
-        specFile="yabs1.spec"
-        topDir="install/rpm"
-        cleanBuildDir="true"
-        failOnError="true"/>
-  -->
-  <!-- Uncomment this section to sign the jars 
-    <target name="-post-jar">
-        <exec dir="${dist.dir}/../security" executable="./generate_key.sh" os="Linux" failonerror="false"/>
-        <exec dir="${dist.dir}/../security" executable="./signjars.sh" os="Linux" failonerror="false" />
-    </target>
+      -pre-init:                 called before initialization of project properties
+      -post-init:                called after initialization of project properties
+      -pre-compile:              called before javac compilation
+      -post-compile:             called after javac compilation
+      -pre-compile-single:       called before javac compilation of single file
+      -post-compile-single:      called after javac compilation of single file
+      -pre-compile-test:         called before javac compilation of JUnit tests
+      -post-compile-test:        called after javac compilation of JUnit tests
+      -pre-compile-test-single:  called before javac compilation of single JUnit test
+      -post-compile-test-single: called after javac compilation of single JUunit test
+      -pre-jar:                  called before JAR building
+      -post-jar:                 called after JAR building
+      -post-clean:               called after cleaning build products
 
-Build a .deb:
+    (Targets beginning with '-' are not intended to be called on their own.)
 
-apt-get install alien
-alien paketname.rpm
-dpkg -i paketname.deb
+    Example of inserting an obfuscator after compilation could look like this:
+
+        <target name="-post-compile">
+            <obfuscate>
+                <fileset dir="${build.classes.dir}"/>
+            </obfuscate>
+        </target>
+
+    For list of available properties check the imported 
+    nbproject/build-impl.xml file. 
+
+
+    Another way to customize the build is by overriding existing main targets.
+    The targets of interest are: 
+
+      -init-macrodef-javac:     defines macro for javac compilation
+      -init-macrodef-junit:     defines macro for junit execution
+      -init-macrodef-debug:     defines macro for class debugging
+      -init-macrodef-java:      defines macro for class execution
+      -do-jar:                  JAR building
+      run:                      execution of project 
+      -javadoc-build:           Javadoc generation
+      test-report:              JUnit report generation
+
+    An example of overriding the target for project execution could look like this:
+
+        <target name="run" depends="openyabs-impl.jar">
+            <exec dir="bin" executable="launcher.exe">
+                <arg file="${dist.jar}"/>
+            </exec>
+        </target>
+
+    Notice that the overridden target depends on the jar target and not only on 
+    the compile target as the regular run target does. Again, for a list of available 
+    properties which you can use, check the target you are overriding in the
+    nbproject/build-impl.xml file. 
 
     -->
-    <target name="package-for-store" depends="jar">
-
-        <!-- Change the value of this property to be the name of your JAR,
-             minus the .jar extension. It should not have spaces.
-             <property name="store.jar.name" value="MyJarName"/>
-        -->
-        <property name="store.jar.name" value="yabs"/>
-
-
-        <!-- don't edit below this line -->
-
-        <property name="store.dir" value="store"/>
-        <property name="store.jar" value="${store.dir}/${store.jar.name}.jar"/>
-
-        <echo message="Packaging ${application.title} into a single JAR at ${store.jar}"/>
-
-        <delete dir="${store.dir}"/>
-        <mkdir dir="${store.dir}"/>
-
-        <jar destfile="${store.dir}/temp_final.jar" filesetmanifest="skip">
-            <zipgroupfileset dir="dist" includes="*.jar"/>
-            <zipgroupfileset dir="dist/lib" includes="*.jar"/>
-
-            <manifest>
-                <attribute name="Main-Class" value="${main.class}"/>
-            </manifest>
-        </jar>
-
-        <zip destfile="${store.jar}">
-            <zipfileset src="${store.dir}/temp_final.jar"
-                        excludes="META-INF/*.SF, META-INF/*.DSA, META-INF/*.RSA"/>
-        </zip>
-
-        <delete file="${store.dir}/temp_final.jar"/>
-
-    </target>
-    
-    <target name="build-native" depends="-set-do-build-native-package, -check-ant-jre-supports-native-packaging, -check-native-packager-external-tools, -fx-jar-impl, -build-native-own, -build-native-own2, -post-build-native-cleanup, -copy-to-install"/>
-    
-    <target name="-copy-to-install">
-        <delete dir="${deployment.dir}/../install/mac" includeEmptyDirs="true" quiet="true"/>
-        <copy todir="${deployment.dir}/../install/mac" preservelastmodified="true" overwrite="true">
-            <fileset dir="${deployment.dir}/bundles/"/>
-        </copy>
-    </target>
-    
-    <target name="-build-native-own" depends="-check-ant-jre-supports-native-packaging, -check-native-packager-external-tools, -fx-jar-impl">
-
-        <echo message="javafx.ant.classpath = ${javafx.ant.classpath}" level="verbose"/>
-        <typedef name="fx_deploy" classname="com.sun.javafx.tools.ant.DeployFXTask" classpath="${javafx.ant.classpath}"/>
-        <echo message="Launching &lt;fx:deploy&gt; task from ${ant-javafx.jar.location}" level="info"/>
-        <property name="deployment.dir" location="${dist.dir}"/>
-        <property name="pp_deploy_fs2" value="lib${file.separator}*.jar"/>
-        <basename property="deployment.jar" file="${dist.jar}"/>
-        <basename property="deployment.base" file="${deployment.jar}" suffix=".jar"/>
-        <echo message="deploy_deploy: pp_deploy_fs2 = ${pp_deploy_fs2}" level="verbose"/>
-        <echo message="deploy_deploy: deployment.dir = ${deployment.dir}" level="verbose"/>
-        <echo message="deploy_deploy: deployment.jar = ${deployment.jar}" level="verbose"/>
-        <echo message="deploy_deploy: deployment.base = ${deployment.base}" level="verbose"/>
-        <echo message="JavaScript: deploy-deploy" level="verbose"/>
-        <script language="javascript">
-            <![CDATA[
-                function isTrue(prop) {
-                    return prop != null && 
-                       (prop.toLowerCase()=="true" || prop.toLowerCase()=="yes" || prop.toLowerCase()=="on");
-                }                    
-                function prefix(s, len) {
-                    if(s == null || len <= 0 || s.length == 0) {
-                        return new String("");
-                    }
-                    return new String(s.substr(0, len));
-                }
-                function replaceSuffix(s, os, ns) {
-                    return prefix(s, s.indexOf(os)).concat(ns);
-                }
-                function startsWith(s, prefix) {
-                    return (s != null) && (s.indexOf(prefix) == 0);
-                }
-                function endsWith(s, suffix) {
-                    var i = s.lastIndexOf(suffix);
-                    return  (i != -1) && (i == (s.length - suffix.length));
-                }
-                function defined(s) {
-                    return (s != null) && (s != "null") && (s.length > 0);
-                }
-                function contains(array, prop) {
-                    for (var i = 0; i < array.length; i++) {
-                        var s1 = new String(array[i]);
-                        var s2 = new String(prop);
-                        if( s1.toLowerCase() == s2.toLowerCase() ) {
-                            return true;
-                        }
-                    }
-                    return false;
-                }
-                var S = java.io.File.separator;
-                var JFXLAZY = "download.mode.lazy.jar";
-                var fx_ant_api_1_1 = new String(project.getProperty("have-fx-ant-api-1.1"));
-                var fx_ant_api_1_2 = new String(project.getProperty("have-fx-ant-api-1.2"));
-                var have_jdk_pre7u14 = new String(project.getProperty("have-jdk-pre7u14"));
-
-                // get jars with lazy download mode property set
-                function getLazyJars() {
-                    var jars = new Array();
-                    var keys = project.getProperties().keys();
-                    while(keys.hasMoreElements()) {
-                        var pn = new String(keys.nextElement());
-                        if(startsWith(pn, JFXLAZY)) {
-                            var fname = pn.substring(JFXLAZY.length+1);
-                            jars.push(fname);
-                        }
-                    }
-                    return jars.length > 0 ? jars : null;
-                }
-                // set download mode of dependent libraries
-                function setDownloadMode(fsEager, fsLazy, jars) {
-                    for(var i = 0; i < jars.length; i++) {
-                        fsEager.setExcludes("lib" + S + jars[i]);
-                        fsLazy.setIncludes("lib" + S + jars[i]);
-                    }
-                }
-                // convert path to absolute if relative
-                function derelativizePath(path) {
-                    var f = new java.io.File(path);
-                    if(!f.exists()) {
-                        f = new java.io.File(new String(project.getBaseDir()) + S + path);
-                    }
-                    if(f.exists()) {
-                        try {
-                            return f.getCanonicalPath();
-                        } catch(err) {
-                            return path;
-                        }
-                    }
-                    return path;
-                }
-
-                // fx:deploy
-                var deploy = project.createTask("fx_deploy");
-                deploy.setProject(project);
-                var width = new String(project.getProperty("javafx.width"));
-                var height = new String(project.getProperty("javafx.height"));
-                var outdir = new String(project.getProperty("deployment.dir"));
-                var outfile = new String(project.getProperty("application.title"));
-                if(!defined(width)) width=new String("0");
-                if(!defined(height)) height=new String("0");
-                deploy.setWidth(width);
-                deploy.setHeight(height);
-                deploy.setOutdir(outdir);
-                deploy.setOutfile(outfile);
-                deploy.setVerbose(true);
-
-                // native packaging (time consuming, thus applied in explicit build only)
-                var nativeEnabled = new String(project.getProperty("do.build.native.package"));
-                var nativeType = new String(project.getProperty("native.bundling.type"));
-                var projStateRun = new String(project.getProperty("project.state.running"));
-                var projStateDbg = new String(project.getProperty("project.state.debugging"));
-                var projStatePrf = new String(project.getProperty("project.state.profiling"));
-                if(isTrue(nativeEnabled) && defined(nativeType) && nativeType != "none") {
-                    if(!isTrue(projStateRun) && !isTrue(projStateDbg) && !isTrue(projStatePrf)) {
-                        if(isTrue(fx_ant_api_1_2)) {
-                            deploy.setNativeBundles(nativeType);
-                            print("Note: To create native bundles the <fx:deploy> task may require external tools. See JavaFX 2.2+ documentation for details.");
-                            print("");
-                            print("Launching <fx:deploy> in native packager mode ..." + nativeType);
-                        } else {
-                            print("Warning: Native packaging is not supported by this version of JavaFX SDK deployment Ant task. Please upgrade to JDK 7u6 or higher.");
-                        }
-                    }
-                }
-
-                // fx:application
-                var app = deploy.createApplication();
-                app.setProject(project);
-                var title = new String(project.getProperty("application.title"));
-                var build = new String(project.getProperty("application.implementation.name"));
-                var mainclass = new String(project.getProperty("main.class"));
-                if(isTrue(fx_ant_api_1_2)) {
-                    app.setToolkit("swing");
-                }
-                
-                var appversion = new String(project.getProperty("application.implementation.version"));
-                if(defined(appversion)) {
-                    app.setVersion(appversion);
-                } else {
-                    app.setVersion("1.0");
-                }
-                app.setName(title + "-" + build + " (incl. JRE)");
-                app.setMainClass(mainclass);
-
-                // fx:resources
-                var res = deploy.createResources();
-                res.setProject(project);
-                var deploydir = new String(project.getProperty("deployment.dir"));
-                var fn = res.createFileSet();
-                fn.setProject(project);
-                fn.setDir(new java.io.File(deploydir));
-                var ia = new String(project.getProperty("deployment.jar"));
-                var ib = new String(project.getProperty("pp_deploy_fs2"));
-                fn.setIncludes(ia);
-                fn.setIncludes(ib);
-                fn.setRequiredFor("startup");
-                var lazyjars = getLazyJars();
-                if(lazyjars != null) {
-                    var fn2 = res.createFileSet();
-                    fn2.setProject(project);
-                    fn2.setDir(new java.io.File(deploydir));
-                    fn2.setRequiredFor("runtime");
-                    setDownloadMode(fn,fn2,lazyjars);
-                }
-
-                // fx:info
-                var info = deploy.createInfo();
-                info.setProject(project);
-                var vendor = new String(project.getProperty("application.vendor"));
-                var description = new String(project.getProperty("application.desc"));
-                info.setTitle(title); // title known from before
-                info.setVendor(vendor);
-                info.setDescription(description);
-                var splash = new String(project.getProperty("deploy.splash.image"));
-                if(defined(splash)) {
-                    if(isTrue(fx_ant_api_1_1)) {
-                        var sicon = info.createSplash();
-                        sicon.setHref(splash);
-                        sicon.setMode("any");
-                        print("Adding splash image reference: " + splash);
-                    } else {
-                        print("Warning: Splash Image not supported by this version of JavaFX SDK deployment Ant task. Please upgrade JavaFX to 2.0.2 or higher.");
-                    }
-                }
-                if(isTrue(nativeEnabled) && defined(nativeType) && nativeType != "none") {
-                    var icon = new String(project.getProperty("deploy.icon.native"));
-                    if(defined(icon)) {
-                        if(isTrue(fx_ant_api_1_2) && !isTrue(have_jdk_pre7u14)) {
-                            var dicon = derelativizePath(icon);
-                            // create temporary icon copy renamed to application name (required by native packager)
-                            var baseDir = new String(project.getProperty("basedir"));
-                            var buildDir = new String(project.getProperty("build.dir"));
-                            var deployBase = new String(project.getProperty("deployment.base"));
-                            var copyTask = project.createTask("copy");
-                            var source = new java.io.File(dicon);
-                            var sourceName = new String(source.getName());
-                            var lastDot = sourceName.lastIndexOf(".");
-                            var sourceExt;
-                            if(lastDot >=0) {
-                                sourceExt = sourceName.substr(lastDot);
-                            } else {
-                                sourceExt = new String("");
-                            }
-                            var target = new java.io.File(baseDir.concat(S).concat(buildDir).concat(S).concat("icon").concat(S).concat(deployBase).concat(sourceExt));
-                            copyTask.setFile(source);
-                            copyTask.setTofile(target);
-                            copyTask.setFlatten(true);
-                            copyTask.setFailOnError(false);
-                            copyTask.perform();
-                            var tempicon;
-                            if(target.exists()) {
-                                try {
-                                    tempicon = target.getCanonicalPath();
-                                } catch(err) {
-                                    tempicon = dicon;
-                                }
-                            } else {
-                                tempicon = dicon;
-                            }
-                            var nicon = info.createIcon();
-                            nicon.setHref(tempicon);
-                            print("Source native icon reference: " + dicon);
-                            print("Processed native icon reference: " + tempicon);
-                        } else {
-                            print("Warning: Native Package icon not supported by this version of JavaFX SDK deployment Ant task. Please upgrade to JDK7u14.");
-                        }
-                    }
-                } else {
-                    var icon = new String(project.getProperty("deploy.icon.webstart"));
-                    if(defined(icon)) {
-                        if(isTrue(fx_ant_api_1_1)) {
-                            var iicon = info.createIcon();
-                            iicon.setHref(icon);
-                            print("Adding WebStart icon reference: " + icon);
-                        } else {
-                            print("Warning: WebStart Icon not supported by this version of JavaFX SDK deployment Ant task. Please upgrade JavaFX to 2.0.2 or higher.");
-                        }
-                    }
-                }   
-
-                deploy.perform();
-                
-                app.setName(title);
-                                                     
-                //fx:platform
-                var plf = deploy.createPlatform();
-                plf.setBasedir("");
-                
-                //fx:bundleArgument (to fix W/O JRE BUG)
-                //<fx:bundleArgument arg="launcher-cfg-format" value="prop"/>
-                var bdlArg = deploy.createBundleArgument();
-                bdlArg.setArg("launcher-cfg-format");
-                bdlArg.setValue("prop");
-
-                //fx:bundleArgument (to fix DMG Mac BUG)
-                var bdlArg = deploy.createBundleArgument();
-                bdlArg.setArg("mac.dmg.simple");
-                bdlArg.setValue("true");                
-
-                //deploy.perform();                
-            ]]>
-        </script>
-    </target>
-    
-    <target name="-build-native-own2" depends="-check-ant-jre-supports-native-packaging, -check-native-packager-external-tools, -fx-jar-impl">
-
-        <echo message="javafx.ant.classpath = ${javafx.ant.classpath}" level="verbose"/>
-        <typedef name="fx_deploy" classname="com.sun.javafx.tools.ant.DeployFXTask" classpath="${javafx.ant.classpath}"/>
-        <echo message="Launching &lt;fx:deploy&gt; task from ${ant-javafx.jar.location}" level="info"/>
-        <property name="deployment.dir" location="${dist.dir}"/>
-        <property name="pp_deploy_fs2" value="lib${file.separator}*.jar"/>
-        <basename property="deployment.jar" file="${dist.jar}"/>
-        <basename property="deployment.base" file="${deployment.jar}" suffix=".jar"/>
-        <echo message="deploy_deploy: pp_deploy_fs2 = ${pp_deploy_fs2}" level="verbose"/>
-        <echo message="deploy_deploy: deployment.dir = ${deployment.dir}" level="verbose"/>
-        <echo message="deploy_deploy: deployment.jar = ${deployment.jar}" level="verbose"/>
-        <echo message="deploy_deploy: deployment.base = ${deployment.base}" level="verbose"/>
-        <echo message="JavaScript: deploy-deploy" level="verbose"/>
-        <script language="javascript">
-            <![CDATA[
-                function isTrue(prop) {
-                    return prop != null && 
-                       (prop.toLowerCase()=="true" || prop.toLowerCase()=="yes" || prop.toLowerCase()=="on");
-                }                    
-                function prefix(s, len) {
-                    if(s == null || len <= 0 || s.length == 0) {
-                        return new String("");
-                    }
-                    return new String(s.substr(0, len));
-                }
-                function replaceSuffix(s, os, ns) {
-                    return prefix(s, s.indexOf(os)).concat(ns);
-                }
-                function startsWith(s, prefix) {
-                    return (s != null) && (s.indexOf(prefix) == 0);
-                }
-                function endsWith(s, suffix) {
-                    var i = s.lastIndexOf(suffix);
-                    return  (i != -1) && (i == (s.length - suffix.length));
-                }
-                function defined(s) {
-                    return (s != null) && (s != "null") && (s.length > 0);
-                }
-                function contains(array, prop) {
-                    for (var i = 0; i < array.length; i++) {
-                        var s1 = new String(array[i]);
-                        var s2 = new String(prop);
-                        if( s1.toLowerCase() == s2.toLowerCase() ) {
-                            return true;
-                        }
-                    }
-                    return false;
-                }
-                var S = java.io.File.separator;
-                var JFXLAZY = "download.mode.lazy.jar";
-                var fx_ant_api_1_1 = new String(project.getProperty("have-fx-ant-api-1.1"));
-                var fx_ant_api_1_2 = new String(project.getProperty("have-fx-ant-api-1.2"));
-                var have_jdk_pre7u14 = new String(project.getProperty("have-jdk-pre7u14"));
-
-                // get jars with lazy download mode property set
-                function getLazyJars() {
-                    var jars = new Array();
-                    var keys = project.getProperties().keys();
-                    while(keys.hasMoreElements()) {
-                        var pn = new String(keys.nextElement());
-                        if(startsWith(pn, JFXLAZY)) {
-                            var fname = pn.substring(JFXLAZY.length+1);
-                            jars.push(fname);
-                        }
-                    }
-                    return jars.length > 0 ? jars : null;
-                }
-                // set download mode of dependent libraries
-                function setDownloadMode(fsEager, fsLazy, jars) {
-                    for(var i = 0; i < jars.length; i++) {
-                        fsEager.setExcludes("lib" + S + jars[i]);
-                        fsLazy.setIncludes("lib" + S + jars[i]);
-                    }
-                }
-                // convert path to absolute if relative
-                function derelativizePath(path) {
-                    var f = new java.io.File(path);
-                    if(!f.exists()) {
-                        f = new java.io.File(new String(project.getBaseDir()) + S + path);
-                    }
-                    if(f.exists()) {
-                        try {
-                            return f.getCanonicalPath();
-                        } catch(err) {
-                            return path;
-                        }
-                    }
-                    return path;
-                }
-
-                // fx:deploy
-                var deploy = project.createTask("fx_deploy");
-                deploy.setProject(project);
-                var width = new String(project.getProperty("javafx.width"));
-                var height = new String(project.getProperty("javafx.height"));
-                var outdir = new String(project.getProperty("deployment.dir"));
-                var outfile = new String(project.getProperty("application.title"));
-                if(!defined(width)) width=new String("0");
-                if(!defined(height)) height=new String("0");
-                deploy.setWidth(width);
-                deploy.setHeight(height);
-                deploy.setOutdir(outdir);
-                deploy.setOutfile(outfile);
-                deploy.setVerbose(true);
-
-                // native packaging (time consuming, thus applied in explicit build only)
-                var nativeEnabled = new String(project.getProperty("do.build.native.package"));
-                var nativeType = new String(project.getProperty("native.bundling.type"));
-                var projStateRun = new String(project.getProperty("project.state.running"));
-                var projStateDbg = new String(project.getProperty("project.state.debugging"));
-                var projStatePrf = new String(project.getProperty("project.state.profiling"));
-                if(isTrue(nativeEnabled) && defined(nativeType) && nativeType != "none") {
-                    if(!isTrue(projStateRun) && !isTrue(projStateDbg) && !isTrue(projStatePrf)) {
-                        if(isTrue(fx_ant_api_1_2)) {
-                            deploy.setNativeBundles(nativeType);
-                            print("Note: To create native bundles the <fx:deploy> task may require external tools. See JavaFX 2.2+ documentation for details.");
-                            print("");
-                            print("Launching <fx:deploy> in native packager mode ..." + nativeType);
-                        } else {
-                            print("Warning: Native packaging is not supported by this version of JavaFX SDK deployment Ant task. Please upgrade to JDK 7u6 or higher.");
-                        }
-                    }
-                }
-
-                // fx:application
-                var app = deploy.createApplication();
-                app.setProject(project);
-                var title = new String(project.getProperty("application.title"));
-                var build = new String(project.getProperty("application.implementation.name"));
-                var mainclass;
-                mainclass = new String(project.getProperty("main.class"));
-                if(isTrue(fx_ant_api_1_2)) {
-                    app.setToolkit("swing");
-                }
-                
-                var appversion = new String(project.getProperty("application.implementation.version"));
-                if(defined(appversion)) {
-                    app.setVersion(appversion);
-                } else {
-                    app.setVersion("1.0");
-                }
-                //var appname = new String(project.getProperty("application.name"));
-                app.setName(title + "-" + build);
-                app.setMainClass(mainclass);
-
-                // fx:resources
-                var res = deploy.createResources();
-                res.setProject(project);
-                var deploydir = new String(project.getProperty("deployment.dir"));
-                var fn = res.createFileSet();
-                fn.setProject(project);
-                fn.setDir(new java.io.File(deploydir));
-                var ia = new String(project.getProperty("deployment.jar"));
-                var ib = new String(project.getProperty("pp_deploy_fs2"));
-                fn.setIncludes(ia);
-                fn.setIncludes(ib);
-                fn.setRequiredFor("startup");
-                var lazyjars = getLazyJars();
-                if(lazyjars != null) {
-                    var fn2 = res.createFileSet();
-                    fn2.setProject(project);
-                    fn2.setDir(new java.io.File(deploydir));
-                    fn2.setRequiredFor("runtime");
-                    setDownloadMode(fn,fn2,lazyjars);
-                }
-
-                // fx:info
-                var info = deploy.createInfo();
-                info.setProject(project);
-                var vendor = new String(project.getProperty("application.vendor"));
-                var description = new String(project.getProperty("application.desc"));
-                info.setTitle(title); // title known from before
-                info.setVendor(vendor);
-                info.setDescription(description);
-                var splash = new String(project.getProperty("deploy.splash.image"));
-                if(defined(splash)) {
-                    if(isTrue(fx_ant_api_1_1)) {
-                        var sicon = info.createSplash();
-                        sicon.setHref(splash);
-                        sicon.setMode("any");
-                        print("Adding splash image reference: " + splash);
-                    } else {
-                        print("Warning: Splash Image not supported by this version of JavaFX SDK deployment Ant task. Please upgrade JavaFX to 2.0.2 or higher.");
-                    }
-                }
-                if(isTrue(nativeEnabled) && defined(nativeType) && nativeType != "none") {
-                    var icon = new String(project.getProperty("deploy.icon.native"));
-                    if(defined(icon)) {
-                        if(isTrue(fx_ant_api_1_2) && !isTrue(have_jdk_pre7u14)) {
-                            var dicon = derelativizePath(icon);
-                            // create temporary icon copy renamed to application name (required by native packager)
-                            var baseDir = new String(project.getProperty("basedir"));
-                            var buildDir = new String(project.getProperty("build.dir"));
-                            var deployBase = new String(project.getProperty("deployment.base"));
-                            var copyTask = project.createTask("copy");
-                            var source = new java.io.File(dicon);
-                            var sourceName = new String(source.getName());
-                            var lastDot = sourceName.lastIndexOf(".");
-                            var sourceExt;
-                            if(lastDot >=0) {
-                                sourceExt = sourceName.substr(lastDot);
-                            } else {
-                                sourceExt = new String("");
-                            }
-                            var target = new java.io.File(baseDir.concat(S).concat(buildDir).concat(S).concat("icon").concat(S).concat(deployBase).concat(sourceExt));
-                            copyTask.setFile(source);
-                            copyTask.setTofile(target);
-                            copyTask.setFlatten(true);
-                            copyTask.setFailOnError(false);
-                            copyTask.perform();
-                            var tempicon;
-                            if(target.exists()) {
-                                try {
-                                    tempicon = target.getCanonicalPath();
-                                } catch(err) {
-                                    tempicon = dicon;
-                                }
-                            } else {
-                                tempicon = dicon;
-                            }
-                            var nicon = info.createIcon();
-                            nicon.setHref(tempicon);
-                            print("Source native icon reference: " + dicon);
-                            print("Processed native icon reference: " + tempicon);
-                        } else {
-                            print("Warning: Native Package icon not supported by this version of JavaFX SDK deployment Ant task. Please upgrade to JDK7u14.");
-                        }
-                    }
-                } else {
-                    var icon = new String(project.getProperty("deploy.icon.webstart"));
-                    if(defined(icon)) {
-                        if(isTrue(fx_ant_api_1_1)) {
-                            var iicon = info.createIcon();
-                            iicon.setHref(icon);
-                            print("Adding WebStart icon reference: " + icon);
-                        } else {
-                            print("Warning: WebStart Icon not supported by this version of JavaFX SDK deployment Ant task. Please upgrade JavaFX to 2.0.2 or higher.");
-                        }
-                    }
-                }   
-                                
-                //fx:platform
-                var plf = deploy.createPlatform();
-                plf.setBasedir("");
-                
-                //fx:bundleArgument (to fix W/O JRE BUG)
-                //<fx:bundleArgument arg="launcher-cfg-format" value="prop"/>
-                var bdlArg = deploy.createBundleArgument();
-                bdlArg.setArg("launcher-cfg-format");
-                bdlArg.setValue("prop");
-
-                //fx:bundleArgument (to fix DMG Mac BUG)
-                var bdlArg = deploy.createBundleArgument();
-                bdlArg.setArg("mac.dmg.simple");
-                bdlArg.setValue("true");                
-                
-                deploy.perform();                
-            ]]>
-        </script>
-    </target>
 </project>

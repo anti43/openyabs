@@ -7,3 +7,4 @@
 /out/
 /.idea/
 *.start
+/nbproject/private/
