@@ -176,7 +176,7 @@ public class Context implements Serializable, Comparable<Context> {
     public static String UNIQUECOLUMNS_ITEMS = "cname";
     public static String UNIQUECOLUMNS_GROUPS = "cname";
     public static String UNIQUECOLUMNS_DEFAULT = "cname";
-    public static String DETAIL_CONTACT_SEARCH = "prename,cname,street,city,country,notes";
+    public static String DETAIL_CONTACT_SEARCH = "prename,cname,street,city,country,notes,company";
     private static final long serialVersionUID = 1L;
 
     //********** conditions ****************************************************
