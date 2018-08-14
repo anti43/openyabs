@@ -548,6 +548,13 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
                 return new MPIcon("/mpv5/resources/images/22/kontact_mail.png");
         }
     }
+    
+    public Item __getReferenceOrder(){
+        if (reforderids > 0) {
+            return getObject(Context.getOrder(), reforderids);
+        } 
+        return null;
+    }
 
     public Integer __getRefOrderIDS() {
         if (reforderids > 0) {
