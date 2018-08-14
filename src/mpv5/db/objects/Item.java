@@ -549,7 +549,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
         }
     }
     
-    public Item __getReferenceOrder(){
+    public Item getReferenceOrder(){
         if (reforderids > 0) {
             return getObject(Context.getOrder(), reforderids);
         } 
@@ -790,6 +790,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
         map.put("dateend", df.format(__getDateend()));
         map.put("datetodo", df.format(__getDatetodo()));
         map.put("description", evaluateAll(__getDescription()));
+        map.put("reference", getReferenceOrder());
 
         return super.resolveReferences(map);
     }
