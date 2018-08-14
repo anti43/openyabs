@@ -549,6 +549,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
         }
     }
     
+    @Persistable(false)
     public Item getReferenceOrder(){
         if (reforderids > 0) {
             return getObject(Context.getOrder(), reforderids);
@@ -635,59 +636,13 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     public Map<String, Object> resolveReferences(Map<String, Object> map) {
         //done before call resolveValueProperties(map);
 
-        try {
-            if (map.containsKey("intstatus")) {
-                map.put("status", getStatusString(Integer.valueOf(map.get("intstatus").toString())));
-            }
-        } catch (Exception numberFormatException) {
-            //already resolved?
-        }
-
-        try {
-            if (map.containsKey("inttype")) {
-                map.put("type", getTypeString(Integer.valueOf(map.get("inttype").toString())));
-                map.remove("inttype");
-            }
-        } catch (NumberFormatException numberFormatException) {
-            //already resolved?
-        }
-
-        if (map.containsKey("defaultaccountsids")) {
-            try {
-                try {
-                    map.put("account", DatabaseObject.getObject(Context.getAccounts(), Integer.valueOf(map.get("defaultaccountsids").toString())));
-                    map.remove("defaultaccountsids");
-                } catch (NodataFoundException ex) {
-                    map.put("account", null);
-                    Log.Debug(this, ex.getMessage());
-                }
-            } catch (NumberFormatException numberFormatException) {
-                //already resolved?
-            }
-        }
-
-        if (map.containsKey("contactsids")) {
-            try {
-                try {
-                    map.put("contact", DatabaseObject.getObject(Context.getContact(), Integer.valueOf(map.get("contactsids").toString())));
-                    map.remove("contactsids");
-                } catch (NodataFoundException ex) {
-                    map.put("contact", null);
-                    Log.Debug(this, ex.getMessage());
-                }
-            } catch (NumberFormatException numberFormatException) {
-                //already resolved?
-            }
-        }
-
-        if (map.containsKey("taxids")) {
-            try {
-                map.put("tax", FormatNumber.formatPercent(Tax.getTaxValue(Integer.valueOf(map.get("taxids").toString()))));
-                map.remove("taxids");
-            } catch (NumberFormatException numberFormatException) {
-                Log.Debug(numberFormatException);
-            }
-        }
+        
+        map.put("status", getStatus().toString());
+        map.put("type", getTypeString(Integer.valueOf(inttype).toString())));
+        map.put("account", DatabaseObject.getObject(Context.getAccounts(), Integer.valueOf(defaultaccountsids).toString())));
+        map.put("contact", DatabaseObject.getObject(Context.getContact(), Integer.valueOf(contactsids).toString())));
+        map.put("tax", FormatNumber.formatPercent(Tax.getTaxValue(Integer.valueOf(taxids).toString()))));
+          
 
         List<SubItem> data;
         List<String[]> data2;
