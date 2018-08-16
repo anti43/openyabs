@@ -27,6 +27,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -548,12 +550,16 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
                 return new MPIcon("/mpv5/resources/images/22/kontact_mail.png");
         }
     }
-    
+
     @Persistable(false)
-    public Item getReferenceOrder(){
+    public Item getReferenceOrder() {
         if (reforderids > 0) {
-            return getObject(Context.getOrder(), reforderids);
-        } 
+            try {
+                return (Item) getObject(Context.getOrder(), reforderids);
+            } catch (NodataFoundException ex) {
+                Logger.getLogger(Item.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         return null;
     }
 
@@ -636,13 +642,20 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     public Map<String, Object> resolveReferences(Map<String, Object> map) {
         //done before call resolveValueProperties(map);
 
-        
-        map.put("status", getStatus().toString());
-        map.put("type", getTypeString(Integer.valueOf(inttype).toString())));
-        map.put("account", DatabaseObject.getObject(Context.getAccounts(), Integer.valueOf(defaultaccountsids).toString())));
-        map.put("contact", DatabaseObject.getObject(Context.getContact(), Integer.valueOf(contactsids).toString())));
-        map.put("tax", FormatNumber.formatPercent(Tax.getTaxValue(Integer.valueOf(taxids).toString()))));
-          
+        map.put("status", getStatus());
+        map.put("type", getTypeString(inttype));
+        if (accountsids > 0) {
+            try {
+                map.put("account", DatabaseObject.getObject(Context.getAccounts(), accountsids));
+            } catch (NodataFoundException ex) {
+                Logger.getLogger(Item.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        try {
+            map.put("contact", DatabaseObject.getObject(Context.getContact(), contactsids));
+        } catch (NodataFoundException ex) {
+            Logger.getLogger(Item.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         List<SubItem> data;
         List<String[]> data2;
@@ -708,6 +721,11 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
                 taxGroups.put(taxPercentValue, BigDecimal.ZERO);
             }
             taxGroups.put(taxPercentValue, taxGroups.get(taxPercentValue).add(s.getTotalTaxValue()));
+        }
+
+        if (taxGroups.size() > 0) {
+            //backwards compatibility
+            map.put("tax", FormatNumber.formatPercent(taxGroups.keySet().iterator().next()));
         }
 
         int index = 0;
