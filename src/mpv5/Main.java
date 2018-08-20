@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.ReturnValue;
 import mpv5.logging.*;
+import mpv5.utils.reflection.Java10UrlClassloader;
 import org.jdesktop.application.SingleFrameApplication;
 import com.l2fprod.common.swing.plaf.LookAndFeelAddons;
 import enoa.connection.NoaConnection;
@@ -105,6 +106,7 @@ public class Main implements Runnable {
     public static boolean HEADLESS = false;
     public static String WINDOW_TITLE = Constants.VERSION;
     public static int SINGLE_PORT = 65531;
+    public static Java10UrlClassloader classLoader;
 
     /**
      * Use this method to (re) cache data from the database to avoid unnecessary
@@ -396,6 +398,8 @@ public class Main implements Runnable {
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
+
+        classLoader = new Java10UrlClassloader(new URL[0], Main.class.getClassLoader());
 
         INSTANTIATED = true;
         if (APPLICATION_CLASS == null) {//fallback

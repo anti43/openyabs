@@ -8,6 +8,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
+
+import mpv5.Main;
 import mpv5.logging.Log;
 
 /**
@@ -72,14 +74,12 @@ public class ResourceBundleUtf8 {
             }
         }
     }
-    private static Map<ClassLoader, Map<String, Map<Locale, ResourceBundle>>> bundleByClassLoaderByBaseNameByLocale =
-            new HashMap<ClassLoader, Map<String, Map<Locale, ResourceBundle>>>();
 
     /**
      * @see ResourceBundle#getBundle(String)
      */
     public static ResourceBundle getBundle(String pBaseName) {
-        ResourceBundle bundle = ResourceBundle.getBundle(pBaseName);
+        ResourceBundle bundle = ResourceBundle.getBundle(pBaseName, Locale.getDefault(), Main.classLoader);
         return createUtfPropertyResourceBundle(bundle);
     }
 
@@ -87,14 +87,16 @@ public class ResourceBundleUtf8 {
      * @see ResourceBundle#getBundle(String, Locale)
      */
     public static final ResourceBundle getBundle(String pBaseName, Locale pLocale) {
-        ResourceBundle bundle = ResourceBundle.getBundle(pBaseName, pLocale);
+        ResourceBundle bundle = ResourceBundle.getBundle(pBaseName, pLocale, Main.classLoader);
         return createUtfPropertyResourceBundle(bundle);
     }
 
     /**
      * @see ResourceBundle#getBundle(String, Locale, ClassLoader)
      */
-    public static ResourceBundle getBundle(String pBaseName, Locale pLocale, ClassLoader pLoader) {
+    /*  private static Map<ClassLoader, Map<String, Map<Locale, ResourceBundle>>> bundleByClassLoaderByBaseNameByLocale =
+            new HashMap<ClassLoader, Map<String, Map<Locale, ResourceBundle>>>();
+public static ResourceBundle getBundle(String pBaseName, Locale pLocale, ClassLoader pLoader) {
 
         Map<String, Map<Locale, ResourceBundle>> bundleByBaseNameByLocale;
         Map<Locale, ResourceBundle> bundleByLocale = null;
@@ -127,7 +129,7 @@ public class ResourceBundleUtf8 {
 
         return bundle;
     }
-
+*/
     private static ResourceBundle createUtfPropertyResourceBundle(ResourceBundle pBundle) {
         if (!(pBundle instanceof PropertyResourceBundle)) {
             Log.Debug(ResourceBundleUtf8.class, "only UTF- property files are supported");

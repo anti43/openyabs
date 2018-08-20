@@ -26,6 +26,9 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import mpv5.Main;
 import mpv5.logging.Log;
 
@@ -34,6 +37,7 @@ import mpv5.logging.Log;
  *
  */
 public class ClasspathTools {
+
 
     /**
      * Adds a path temporary to the Classpath
@@ -64,24 +68,10 @@ public class ClasspathTools {
         Log.Debug(ClasspathTools.class, "Adding path: " + s);
         try {
             URL u = s.toURL();
-            URLClassLoader urlClassLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
-            Class urlClass = URLClassLoader.class;
-            @SuppressWarnings(value = "unchecked")
-            Method method = urlClass.getDeclaredMethod("addURL", new Class[]{URL.class});
-            method.setAccessible(true);
-            method.invoke(urlClassLoader, new Object[]{u});
-        } catch (IllegalAccessException ex) {
-            mpv5.logging.Log.Debug(ex);//Logger.getLogger(ClasspathTools.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalArgumentException ex) {
-            mpv5.logging.Log.Debug(ex);//Logger.getLogger(ClasspathTools.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InvocationTargetException ex) {
-            mpv5.logging.Log.Debug(ex);//Logger.getLogger(ClasspathTools.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NoSuchMethodException ex) {
-            mpv5.logging.Log.Debug(ex);//Logger.getLogger(ClasspathTools.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SecurityException ex) {
-            mpv5.logging.Log.Debug(ex);//Logger.getLogger(ClasspathTools.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (MalformedURLException ex) {
-            mpv5.logging.Log.Debug(ex);//Logger.getLogger(ClasspathTools.class.getName()).log(Level.SEVERE, null, ex);
+            Java10UrlClassloader urlClassLoader = Main.classLoader;
+            urlClassLoader.addURL(u);
+        } catch (Throwable ex) {
+            Logger.getLogger(ClasspathTools.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
