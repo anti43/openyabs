@@ -2101,7 +2101,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         try {
             Item owner = (Item) DatabaseObject.getObject(Context.getOrder(), reforderids_, true);
             YabsViewProxy.instance().addOrShowTab(owner);
-        } catch (NodataFoundException ex) {
+        } catch (Exception ex) {
             Log.Debug(ex);
         }
     }//GEN-LAST:event_refOrderShowActionPerformed
