@@ -21,8 +21,8 @@
  */
 package mpv5.ui.panels;
 
-import enoa.handler.TableHandler;
-import enoa.handler.TemplateHandler;
+
+import mpv5.handler.TemplateHandler;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -68,6 +68,7 @@ import mpv5.utils.date.DateConverter;
 import mpv5.utils.date.vTimeframe;
 import mpv5.utils.export.DTAFile;
 import mpv5.utils.export.Export;
+import mpv5.utils.export.ODTFile2;
 import mpv5.utils.jobs.Job;
 import mpv5.utils.jobs.Waitable;
 import mpv5.utils.models.MPTableModel;
@@ -1506,7 +1507,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             }
 
             journalOrContactTemplate.setContextName(Messages.TYPE_JOURNAL.toString());
-            journalOrContactTemplate.injectTable(TableHandler.KEY_TABLE + 1, new MPTableModel(d));
+            journalOrContactTemplate.injectTable(ODTFile2.KEY_TABLE + 1, new MPTableModel(d));
             if (GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.journalasodt")) { //NOI18N
                 new Job(Export.createFile(journalOrContactTemplate, dataOwner), pr).execute();
             } else {

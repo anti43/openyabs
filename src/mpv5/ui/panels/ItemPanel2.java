@@ -21,7 +21,6 @@ along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
  */
 package mpv5.ui.panels;
 
-import enoa.handler.TemplateHandler;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -71,6 +70,7 @@ import mpv5.globals.Constants;
 import mpv5.globals.Headers;
 import mpv5.globals.Messages;
 import mpv5.handler.FormatHandler;
+import mpv5.handler.TemplateHandler;
 import mpv5.logging.Log;
 import mpv5.ui.beans.MPCBSelectionChangeReceiver;
 import mpv5.ui.beans.UserCheckbox;

@@ -10,7 +10,7 @@
  */
 package mpv5.ui.panels;
 
-import enoa.handler.TemplateHandler;
+import mpv5.handler.TemplateHandler;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;

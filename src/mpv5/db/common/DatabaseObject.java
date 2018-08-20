@@ -16,7 +16,6 @@
  */
 package mpv5.db.common;
 
-import enoa.handler.TemplateHandler;
 import groovy.lang.GroovyShell;
 import groovy.lang.Binding;
 import java.awt.Color;
@@ -42,6 +41,7 @@ import javax.swing.SwingUtilities;
 import mpv5.db.objects.ValueProperty;
 import mpv5.globals.Messages;
 import mpv5.db.objects.HistoryItem;
+import mpv5.handler.TemplateHandler;
 import mpv5.logging.Log;
 import mpv5.ui.panels.DataPanel;
 import mpv5.ui.dialogs.Popup;

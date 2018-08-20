@@ -16,24 +16,18 @@
  */
 package mpv5;
 
-//import com.apple.eawt.AboutHandler;
-//import com.apple.eawt.AppEvent.AboutEvent;
-//import com.apple.eawt.AppEvent.QuitEvent;
-//import com.apple.eawt.Application;
-//import com.apple.eawt.QuitHandler;
-//import com.apple.eawt.QuitResponse;
+
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.ReturnValue;
+import mpv5.handler.TemplateHandler;
 import mpv5.logging.*;
 import mpv5.utils.reflection.Java10UrlClassloader;
 import org.jdesktop.application.SingleFrameApplication;
 import com.l2fprod.common.swing.plaf.LookAndFeelAddons;
-import enoa.connection.NoaConnection;
-import enoa.connection.NoaConnectionLocalServer;
-import enoa.handler.TemplateHandler;
+
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
@@ -298,25 +292,6 @@ public class Main implements Runnable {
                 }
                 go(false);
 
-                if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_LOCALSERVER)) {
-                    final Thread startServerThread;
-
-                    Runnable runnable2 = new Runnable() {
-
-                        @Override
-                        public void run() {
-                            try {
-                                Log.Debug(Main.class, "Starting OpenOffice as background service..");
-                                NoaConnectionLocalServer.startOOServerIfNotRunning(LocalSettings.getProperty(LocalSettings.OFFICE_HOME), LocalSettings.getIntegerProperty(LocalSettings.OFFICE_PORT));
-                            } catch (Exception n) {
-                                Log.Debug(Main.class, n.getMessage());
-                            }
-                        }
-                    };
-                    startServerThread = new Thread(runnable2);
-                    startServerThread.start();
-                }
-
             } else if (Popup.Y_N_dialog(splash, Messages.NO_DB_CONNECTION, Messages.FIRST_START.toString())) {
                 Log.Debug(this, "Loading database config wizard...");
                 splash.setVisible(false);
@@ -364,7 +339,7 @@ public class Main implements Runnable {
                 }
                 mpv5.db.objects.User.getCurrentUser().logout();
             }
-            NoaConnection.killConnection();
+
             for (int i = 0; i < oap.size(); i++) {
                 Process p = oap.get(i);
                 try {
@@ -855,26 +830,10 @@ public class Main implements Runnable {
             }
         }
 
-        if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_AUTOSTART) && LocalSettings.getBooleanProperty(LocalSettings.OFFICE_USE)) {
-            Runnable runnable2 = new Runnable() {
-
-                @Override
-                public void run() {
-                    try {
-                        NoaConnection.getConnection();
-                    } catch (Exception ex) {
-                        Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
-            };
-
-            new Thread(runnable2).start();
-        }
 
         if (!HEADLESS) {
             checkTpls();
         }
-
     }
 
     private void loadPlugins() {

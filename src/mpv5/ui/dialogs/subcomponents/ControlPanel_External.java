@@ -4,7 +4,7 @@ import ag.ion.bion.officelayer.application.IApplicationAssistant;
 import ag.ion.bion.officelayer.application.ILazyApplicationInfo;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.internal.application.ApplicationAssistant;
-import enoa.connection.NoaConnection;
+
 import java.awt.Component;
 import java.io.File;
 import java.io.IOException;
@@ -279,7 +279,7 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
         Runnable runnable = new Runnable() {
             public void run() {
                 try {
-                    NoaConnection.definePath();
+
                     YabsViewProxy.instance().setWaiting(true);
                     IApplicationAssistant applicationAssistant = new ApplicationAssistant();
                     ILazyApplicationInfo appInfo = applicationAssistant.getLatestLocalLibreOfficeApplication();

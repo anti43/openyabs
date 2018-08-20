@@ -1,6 +1,6 @@
 package mpv5.ui.dialogs.subcomponents;
 
-import enoa.handler.TemplateHandler;
+import mpv5.handler.TemplateHandler;
 import java.awt.Cursor;
 import java.io.File;
 import java.net.URISyntaxException;

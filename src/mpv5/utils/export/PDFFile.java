@@ -24,7 +24,6 @@ import com.lowagie.text.pdf.AcroFields;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStamper;
-import enoa.handler.TableHandler;
 import java.awt.Color;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -94,7 +93,7 @@ public class PDFFile extends Exportable {
             Log.Debug(this, "Looking for tables in: " + getName());
             for (Iterator<String> it = getData().keySet().iterator(); it.hasNext();) {
                 String key = it.next();
-                if (key.contains(TableHandler.KEY_TABLE)) {//Table found
+                if (key.contains(ODTFile2.KEY_TABLE)) {//Table found
                     @SuppressWarnings("unchecked")
                     List<String[]> value = (List<String[]>) getData().get(key);
                     for (int i = 0; i < value.size(); i++) {

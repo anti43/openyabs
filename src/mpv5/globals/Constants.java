@@ -30,7 +30,7 @@ public interface Constants {
      *
      * Full Version number
      */
-    public static final String VERSION = "Yabs-1.2.7.7";//ATTENTION: when changing this, add language and template file to resources/etra folder for the new version!
+    public static final String VERSION = "Yabs-1.3";//ATTENTION: when changing this, add language and template file to resources/extra folder for the new version!
 
     /**
      * Supported languages build-in

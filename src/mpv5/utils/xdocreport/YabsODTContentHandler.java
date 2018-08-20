@@ -5,7 +5,7 @@
  */
 package mpv5.utils.xdocreport;
 
-import enoa.handler.TableHandler;
+
 import fr.opensagres.xdocreport.core.document.DocumentKind;
 import fr.opensagres.xdocreport.core.utils.StringUtils;
 import static fr.opensagres.xdocreport.document.odt.ODTConstants.TEXT_NS;
@@ -16,6 +16,8 @@ import fr.opensagres.xdocreport.template.formatter.FieldMetadata;
 import fr.opensagres.xdocreport.template.formatter.FieldsMetadata;
 import fr.opensagres.xdocreport.template.formatter.IDocumentFormatter;
 import java.util.Map;
+
+import mpv5.utils.export.ODTFile2;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -48,7 +50,7 @@ public class YabsODTContentHandler extends ODTBufferedDocumentContentHandler {
             this.textFieldParsing = true;
             return false;
         } else if (isTable(uri, localName)) {
-            if (attributes.getValue(0).equals(TableHandler.KEY_TABLE + "1")) {
+            if (attributes.getValue(0).equals(ODTFile2.KEY_TABLE + "1")) {
                 this.inTargetTable = true;
             }
         } else if (isColumn(uri, localName)) {
@@ -61,7 +63,7 @@ public class YabsODTContentHandler extends ODTBufferedDocumentContentHandler {
                 if (super.doStartElement(uri, localName, name, attributes)) {
                     BufferedElement buffer = this.getCurrentElement();
                     buffer.append(">");
-                    String tmp = "$" + TableHandler.KEY_TABLE + "1.C" + (i - 1);
+                    String tmp = "$" + ODTFile2.KEY_TABLE + "1.C" + (i - 1);
                     //buffer.append(tmp);
                     buffer.append(this.processRowIfNeeded(tmp, false));
                     return false;

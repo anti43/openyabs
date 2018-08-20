@@ -4,7 +4,7 @@ import ag.ion.bion.officelayer.application.IApplicationAssistant;
 import ag.ion.bion.officelayer.application.ILazyApplicationInfo;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.internal.application.ApplicationAssistant;
-import enoa.connection.NoaConnection;
+
 import java.awt.Cursor;
 import java.io.File;
 import java.util.List;
@@ -186,7 +186,7 @@ public class wizard_FirstSettings3 extends javax.swing.JPanel implements Wizarda
    }//GEN-LAST:event_jCheckBox3ItemStateChanged
 
    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-      NoaConnection.clearConnection();
+
       Runnable runnable2 = new Runnable() {
          @Override
          public void run() {
@@ -202,8 +202,7 @@ public class wizard_FirstSettings3 extends javax.swing.JPanel implements Wizarda
             LocalSettings.save();
             mpv5.YabsViewProxy.instance().setWaiting(true);
             try {
-               NoaConnection.killConnection();
-               NoaConnection.getConnection().getDesktopService().getFramesCount();
+
                Popup.notice(Messages.OO_DONE_LOADING);
             } catch (Exception e) {
                Popup.notice(Messages.ERROR_OCCURED);
@@ -256,7 +255,7 @@ public class wizard_FirstSettings3 extends javax.swing.JPanel implements Wizarda
       Runnable runnable = new Runnable() {
          public void run() {
             try {
-               NoaConnection.definePath();
+
                YabsViewProxy.instance().setWaiting(true);
                IApplicationAssistant applicationAssistant = new ApplicationAssistant();
                ILazyApplicationInfo appInfo = applicationAssistant.getLatestLocalLibreOfficeApplication();

@@ -4,7 +4,7 @@
 package mpv5.ui.frames;
 
 import com.l2fprod.common.swing.JOutlookBar;
-import enoa.connection.NoaConnection;
+
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import java.awt.BorderLayout;
@@ -3183,7 +3183,7 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                         n.addActionListener(new ActionListener() {
                             @Override
                             public void actionPerformed(ActionEvent e) {
-                                NoaConnection.killConnection();
+
                                 showOfficeStatus(false, description);
 
                                 plab.setToolTipText("<html><b>Office</b>");

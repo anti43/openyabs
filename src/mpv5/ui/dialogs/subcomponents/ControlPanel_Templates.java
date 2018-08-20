@@ -1,7 +1,6 @@
 package mpv5.ui.dialogs.subcomponents;
 
-import enoa.handler.TableHandler;
-import enoa.handler.TemplateHandler;
+import mpv5.handler.TemplateHandler;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Desktop;
@@ -977,13 +976,8 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
                     l.add(SubItem.getRandomItem().toStringArray());
                 }
 
-                ex.put(TableHandler.KEY_TABLE + "1", l);
-
-                if (f.getName().endsWith("pdf")) {
-                    ex.setTemplate(new PDFFile(f.getPath()));
-                } else {
-                    ex.setTemplate(new ODTFile2(f.getPath()));
-                }
+                ex.put(ODTFile2.KEY_TABLE + "1", l);
+                ex.setTemplate(new ODTFile2(f.getPath()));
 
                 ex.setTargetFile(f2);
 

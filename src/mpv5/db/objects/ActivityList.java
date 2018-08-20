@@ -16,8 +16,7 @@
  */
 package mpv5.db.objects;
 
-import enoa.handler.TableHandler;
-import enoa.handler.TemplateHandler;
+
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -35,8 +34,10 @@ import mpv5.globals.Constants;
 import mpv5.globals.GlobalSettings;
 import mpv5.globals.Messages;
 import mpv5.handler.FormatHandler;
+import mpv5.handler.TemplateHandler;
 import mpv5.logging.Log;
 import mpv5.ui.panels.ActivityConfirmationPanel;
+import mpv5.utils.export.ODTFile2;
 import mpv5.utils.images.MPIcon;
 import mpv5.utils.numberformat.FormatNumber;
 import mpv5.utils.text.TypeConversion;
@@ -190,7 +191,7 @@ public class ActivityList extends DatabaseObject implements Formattable, Templat
             Log.Debug(this, ex.getMessage());
         }
 
-        map.put(TableHandler.KEY_TABLE + "1", list);
+        map.put(ODTFile2.KEY_TABLE + "1", list);
 
         //date format localization
         if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("item.date.locale")) {

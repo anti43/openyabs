@@ -21,7 +21,7 @@
  */
 package mpv5.ui.panels;
 
-import enoa.handler.TemplateHandler;
+import mpv5.handler.TemplateHandler;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;

@@ -16,7 +16,6 @@
  */
 package mpv5.db.objects;
 
-import enoa.handler.TableHandler;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -38,6 +37,7 @@ import mpv5.handler.FormatHandler;
 import mpv5.handler.MPEnum;
 import mpv5.logging.Log;
 import mpv5.ui.panels.ItemPanel2;
+import mpv5.utils.export.ODTFile2;
 import mpv5.utils.images.MPIcon;
 import mpv5.utils.numberformat.FormatNumber;
 import mpv5.utils.text.TypeConversion;
@@ -466,7 +466,7 @@ public class ProductOrder extends DatabaseObject implements Formattable, Templat
             Log.Debug(this, ex.getMessage());
         }
 
-        map.put(TableHandler.KEY_TABLE + "1", list);
+        map.put(ODTFile2.KEY_TABLE + "1", list);
 
         //values
         map.put("netvalue", FormatNumber.formatDezimal(getNetvalue()));

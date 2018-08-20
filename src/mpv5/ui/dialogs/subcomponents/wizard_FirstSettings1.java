@@ -1,7 +1,7 @@
 package mpv5.ui.dialogs.subcomponents;
 
-import enoa.handler.FutureCallback;
-import enoa.handler.TemplateHandler;
+import mpv5.handler.FutureCallback;
+import mpv5.handler.TemplateHandler;
 import java.awt.Dialog;
 import java.io.File;
 import java.io.IOException;

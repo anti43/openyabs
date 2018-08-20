@@ -16,9 +16,9 @@
  */
 package mpv5.utils.export;
 
-import mpv5.utils.images.YabsQRCodeGenerator;
 import com.lowagie.text.FontFactory;
-import enoa.handler.TableHandler;
+import mpv5.utils.images.YabsQRCodeGenerator;
+
 import fr.opensagres.odfdom.converter.core.ODFConverterException;
 import fr.opensagres.odfdom.converter.pdf.PdfConverter;
 import fr.opensagres.odfdom.converter.pdf.PdfOptions;
@@ -76,6 +76,7 @@ import org.odftoolkit.odfdom.doc.OdfTextDocument;
  */
 public class ODTFile2 extends Exportable {
 
+    public static final String KEY_TABLE = "xtable1";
     private static final long serialVersionUID = 1L;
     private File f = null;
     private FileOutputStream outtmp;
@@ -156,7 +157,7 @@ public class ODTFile2 extends Exportable {
 
             String table = null;
             for (String k : d.keySet()) {
-                if (k.endsWith(TableHandler.KEY_TABLE + "1")) {
+                if (k.endsWith(ODTFile2.KEY_TABLE + "1")) {
                     table = k;
                     break;
                 }
@@ -183,8 +184,8 @@ public class ODTFile2 extends Exportable {
                                 String colname = "C" + i++;
                                 xtable.put(colname, tableData[col]);
                                 if (addMeta) {
-                                    //metadata.addFieldAsList(TableHandler.KEY_TABLE + "1." + colname);
-                                    metadata.addField(TableHandler.KEY_TABLE + "1." + colname, true, null, SyntaxKind.MarkDown.name(), false);
+                                    //metadata.addFieldAsList(ODTFile2.KEY_TABLE + "1." + colname);
+                                    metadata.addField(ODTFile2.KEY_TABLE + "1." + colname, true, null, SyntaxKind.MarkDown.name(), false);
                                 }
                             } else {
                                 Notificator.raiseNotification("Invalid column definition in " + this.getTemplate().getCname() + ": " + col + ">" + (tableData.length - 1) + ")", false);
@@ -194,14 +195,14 @@ public class ODTFile2 extends Exportable {
                             String colname = "C" + j;
                             xtable.put(colname, "");//fill other cols 
                             if (addMeta) {
-                                metadata.addFieldAsList(TableHandler.KEY_TABLE + "1." + colname);
+                                metadata.addFieldAsList(ODTFile2.KEY_TABLE + "1." + colname);
                             }
                         }
 
                         positions.add(xtable);
                         addMeta = false;
                     }
-                    context.put(TableHandler.KEY_TABLE + "1", positions);
+                    context.put(ODTFile2.KEY_TABLE + "1", positions);
                 } else {
                     Log.Debug(new Exception(String.valueOf(tablel.getClass())));
                 }
@@ -231,7 +232,7 @@ public class ODTFile2 extends Exportable {
                     if (!val.getName().startsWith("{")
                             && !val.getName().endsWith(".img")
                             && !d.containsKey(val.getName())) {
-                        if (!val.getName().startsWith(TableHandler.KEY_TABLE + "1")) {
+                        if (!val.getName().startsWith(ODTFile2.KEY_TABLE + "1")) {
                             d.put(val.getName(), "");
                             Log.Debug(this, "Replacing: " + val.getName());
                         }
