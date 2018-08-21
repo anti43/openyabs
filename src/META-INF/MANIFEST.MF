@@ -1,0 +1,27 @@
+Manifest-Version: 1.0
+Class-Path: lib/derbyrun.jar lib/PDFRenderer.jar lib/odfdom-java-0.8.7
+ .jar lib/microsoft-translator-java-api-0.6.1-jar-with-dependencies.ja
+ r lib/mysql-connector-java-5.1.23-bin.jar lib/groovy-all-1.8.4.jar li
+ b/derbyclient.jar lib/DTAus.jar lib/derby.jar lib/xmlrpc-server-3.1.2
+ .jar lib/xercesImpl.jar lib/noa-libre.jar lib/xdocreport-2.0.1-SNAPSH
+ OT.jar lib/ws-commons-util-1.0.2.jar lib/commons-io-2.0.1-javadoc.jar
+  lib/looks-2.0.1.jar lib/core-renderer.jar lib/derbynet.jar lib/org.o
+ sgi.core-4.2.0.jar lib/jcalendar-1.3.2.jar lib/ybsaf.jar lib/org.json
+ .jar lib/derbytools.jar lib/commons-lang-2.4.jar lib/MPCalendar.jar l
+ ib/swing-layout-1.0.3.jar lib/commons-httpclient-3.1.jar lib/xalan.ja
+ r lib/xmlrpc-common-3.1.2.jar lib/commons-cli-20070823.jar lib/httpco
+ re-nio-4.0.1.jar lib/xml-apis-1.3.04.jar lib/xercesImpl-2.9.1.jar lib
+ /commons-logging-1.1.jar lib/darcula.jar lib/oro-2.0.8.jar lib/microb
+ a-0.4.4.2.jar lib/google-api-translate-java-0.92.jar lib/jox-1.17b3.j
+ ar lib/frame4j.jar lib/iText-rtf-2.1.7.jar lib/AbsoluteLayout.jar lib
+ /commons-io-2.0.1.jar lib/xdocreport-2.0.2-SNAPSHOT.jar lib/barbecue-
+ 1.5-beta1.jar lib/commons-io-2.0.1-sources.jar lib/commons-collection
+ s-3.2.1.jar lib/httpcore-4.0.1.jar lib/javax.mail-1.5.6.jar lib/commo
+ ns-codec-1.3.jar lib/activation.jar lib/xmlrpc-client-3.1.2.jar lib/v
+ elocity-1.7.jar lib/core-3.3.0.jar lib/freemarker-2.3.20.jar lib/itex
+ t-2.1.7.jar lib/resolver.jar lib/swing-worker-1.1.jar lib/bcprov-jdk1
+ 6-145.jar lib/xml-apis.jar lib/vcard4j-1_1_3.jar lib/l2fprod-common-a
+ ll.jar lib/derbyLocale_de_DE.jar lib/dtdparser121.jar lib/tinylaf.jar
+  lib/jdom.jar lib/serializer.jar lib/jOpenDocument-1.1-jdk5.jar
+Main-Class: mpv5.Main
+
