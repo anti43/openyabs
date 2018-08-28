@@ -672,12 +672,13 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
                 SubItem t = data.get(i);
                 list.add(t.toStringArray());
 
+                /*@Deprecated
                 if (GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.pdftable", false)) {
                     data2 = t.getValues3();
                     for (String[] strings : data2) {
                         map.put("subitem" + i + "." + strings[0].toLowerCase(), strings[1]);
                     }
-                }
+                }*/
             }
 
             if (GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.hidecountfortext", true)) {

@@ -1507,7 +1507,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             }
 
             journalOrContactTemplate.setContextName(Messages.TYPE_JOURNAL.toString());
-            journalOrContactTemplate.injectTable(ODTFile2.KEY_TABLE + 1, new MPTableModel(d));
+            journalOrContactTemplate.injectTable(ODTFile2.KEY_TABLE + "1", new MPTableModel(d));
             if (GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.journalasodt")) { //NOI18N
                 new Job(Export.createFile(journalOrContactTemplate, dataOwner), pr).execute();
             } else {

@@ -128,10 +128,6 @@ public class ODTFile2 extends Exportable {
                 fillFields(new FileOutputStream(target));
                 Log.Debug(this, "Replaced Fields of odt file: " + this + " to " + target);
             }
-        } catch (IOException ex) {
-            Log.Debug(ex);
-        } catch (ODFConverterException ex) {
-            Log.Debug(ex);
         } catch (Exception ex) {
             Log.Debug(ex);
         } finally {
@@ -142,7 +138,7 @@ public class ODTFile2 extends Exportable {
     private void fillFields(OutputStream out) throws IOException {
         try {
             FieldsMetadata metadata = new FieldsMetadata();
-            boolean addMeta = true;
+
 
             HashMap<String, Object> templateData = getData();
             templateData.putAll(getTemplate().getData());
@@ -156,57 +152,18 @@ public class ODTFile2 extends Exportable {
                 }
             }
 
-            String table = null;
-            for (String k : templateData.keySet()) {
-                if (k.endsWith(ODTFile2.KEY_TABLE + "1")) {
-                    table = k;
-                    break;
-                }
+            String fmt = this.getTemplate().__getFormat();
+            String[] cols = fmt.split(",");
+
+            //I wanted to do this fully dynamic but then the xdocreport shows only keys not values, no idea why
+            //https://github.com/opensagres/xdocreport/issues/111
+            Object tablel = templateData.remove("item.xtable1");
+            if (tablel != null) {
+                filltable(1, cols, tablel, metadata, context);
             }
-
-            if (table != null) {
-                String fmt = this.getTemplate().__getFormat();
-                String[] cols = fmt.split(",");
-                Object tablel = templateData.get(table);
-                int ix = 0;
-                if (tablel instanceof List) {
-                    List list = (List) tablel;
-                    List<Map<String, String>> positions = new ArrayList<Map<String, String>>();
-                    for (Object s : list) {
-                        ix++;
-                        String[] tableData = (String[]) s;
-                        Log.Debug(this, "Table row " + ix + ": " + Arrays.asList(tableData));
-                        int i = 0;
-                        Map<String, String> xtable = new HashMap<String, String>();
-                        for (String s1 : cols) {
-                            int col = Integer.parseInt(s1) - 1;
-
-                            if (tableData.length > col) {
-                                String colname = "C" + i++;
-                                xtable.put(colname, tableData[col]);
-                                if (addMeta) {
-                                    //metadata.addFieldAsList(ODTFile2.KEY_TABLE + "1." + colname);
-                                    metadata.addField(ODTFile2.KEY_TABLE + "1." + colname, true, null, SyntaxKind.MarkDown.name(), false);
-                                }
-                            } else {
-                                Notificator.raiseNotification("Invalid column definition in " + this.getTemplate().getCname() + ": " + col + ">" + (tableData.length - 1) + ")", false);
-                            }
-                        }
-                        for (int j = i; j < i + 10; j++) {
-                            String colname = "C" + j;
-                            xtable.put(colname, "");//fill other cols 
-                            if (addMeta) {
-                                metadata.addFieldAsList(ODTFile2.KEY_TABLE + "1." + colname);
-                            }
-                        }
-
-                        positions.add(xtable);
-                        addMeta = false;
-                    }
-                    context.put(ODTFile2.KEY_TABLE + "1", positions);
-                } else {
-                    Log.Debug(new Exception(String.valueOf(tablel.getClass())));
-                }
+            Object table2 = templateData.remove("item.reference.xtable1");
+            if (table2 != null) {
+                filltable(2, cols, table2, metadata, context);
             }
 
             DatabaseObject dob = ((Export) templateData).getDob();
@@ -233,7 +190,7 @@ public class ODTFile2 extends Exportable {
 
                 if (!val.getName().startsWith("{")
                         && !val.getName().endsWith(".img")
-                        && !val.getName().startsWith(ODTFile2.KEY_TABLE)) {
+                        && !val.getName().startsWith(KEY_TABLE)) {
                     Object value = templateData.get(key);
                     if (value == null && doBlank) {
                         value = "";
@@ -250,6 +207,49 @@ public class ODTFile2 extends Exportable {
 
         } catch (XDocReportException | NoClassDefFoundError ex) {
             Log.Debug(ex);
+        }
+    }
+
+    private void filltable(int index, String[] cols, Object tablel, FieldsMetadata metadata, IContext context) {
+        boolean addMeta = true;
+        int ix = 0;
+        if (tablel instanceof List) {
+            List list = (List) tablel;
+            List<Map<String, String>> positions = new ArrayList<Map<String, String>>();
+            for (Object s : list) {
+                ix++;
+                String[] tableData = (String[]) s;
+                Log.Debug(this, "Table " + index + " row " + ix + ": " + Arrays.asList(tableData));
+                int i = 0;
+                Map<String, String> xtable = new HashMap<String, String>();
+                for (String s1 : cols) {
+                    int col = Integer.valueOf(s1) - 1;
+
+                    if (tableData.length > col) {
+                        String colname = "C" + i++;
+                        xtable.put(colname, tableData[col]);
+                        if (addMeta) {
+                            metadata.addFieldAsList(KEY_TABLE + index + "." + colname);
+                            //metadata.addField(KEY_TABLE + index + "." + colname, true, null, SyntaxKind.Html.name(), false);
+                        }
+                    } else {
+                        Notificator.raiseNotification("Invalid column definition in " + this.getTemplate().getCname() + ": " + col + ">" + (tableData.length - 1) + ")", false);
+                    }
+                }
+                /*for (int j = i; j < i + 10; j++) {
+                    String colname = "C" + j;
+                    xtable.put(colname, "");//fill other cols
+                    if (addMeta) {
+                        metadata.addFieldAsList(KEY_TABLE + index + "." + colname);
+                    }
+                }*/
+
+                positions.add(xtable);
+                addMeta = false;
+            }
+            context.put(KEY_TABLE + index, positions);
+        } else {
+            Log.Debug(new Exception(String.valueOf(tablel.getClass())));
         }
     }
 }
