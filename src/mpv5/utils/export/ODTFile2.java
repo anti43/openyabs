@@ -34,6 +34,7 @@ import fr.opensagres.xdocreport.template.IContext;
 import fr.opensagres.xdocreport.template.TemplateEngineKind;
 import fr.opensagres.xdocreport.template.formatter.FieldsMetadata;
 import fr.opensagres.xdocreport.template.formatter.NullImageBehaviour;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -55,6 +56,7 @@ import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 import javax.swing.text.html.MinimalHTMLWriter;
 import javax.swing.text.rtf.RTFEditorKit;
+
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.objects.Conversation;
@@ -72,11 +74,10 @@ import org.odftoolkit.odfdom.doc.OdfTextDocument;
 
 /**
  * New templating system
- *
  */
 public class ODTFile2 extends Exportable {
 
-    public static final String KEY_TABLE = "xtable1";
+    public static final String KEY_TABLE = "xtable";
     private static final long serialVersionUID = 1L;
     private File f = null;
     private FileOutputStream outtmp;
@@ -140,23 +141,23 @@ public class ODTFile2 extends Exportable {
 
     private void fillFields(OutputStream out) throws IOException {
         try {
-            FieldsMetadata metadata = new FieldsMetadata();  
+            FieldsMetadata metadata = new FieldsMetadata();
             boolean addMeta = true;
 
-            HashMap<String, Object> d = getData();
-            d.putAll(getTemplate().getData());
-            d.putAll(getTemplate().getTablesAsMap());
+            HashMap<String, Object> templateData = getData();
+            templateData.putAll(getTemplate().getData());
+            templateData.putAll(getTemplate().getTablesAsMap());
 
             IContext context = report.createContext();
             if (Log.isDebugging()) {
                 Log.Debug(this, "All fields:");
-                for (String k : d.keySet()) {
-                    Log.Debug(this, "Key: " + k + " [" + d.get(k) + "]");
+                for (String k : templateData.keySet()) {
+                    Log.Debug(this, "Key: " + k + " [" + templateData.get(k) + "]");
                 }
             }
 
             String table = null;
-            for (String k : d.keySet()) {
+            for (String k : templateData.keySet()) {
                 if (k.endsWith(ODTFile2.KEY_TABLE + "1")) {
                     table = k;
                     break;
@@ -166,7 +167,7 @@ public class ODTFile2 extends Exportable {
             if (table != null) {
                 String fmt = this.getTemplate().__getFormat();
                 String[] cols = fmt.split(",");
-                Object tablel = d.get(table);
+                Object tablel = templateData.get(table);
                 int ix = 0;
                 if (tablel instanceof List) {
                     List list = (List) tablel;
@@ -208,12 +209,12 @@ public class ODTFile2 extends Exportable {
                 }
             }
 
-            DatabaseObject dob = ((Export) d).getDob();
-            
-            if (dob instanceof Item && 
-                   ( ((Item)dob).__getInttype() == Item.TYPE_INVOICE
-                    || ((Item)dob).__getInttype() == Item.TYPE_PART_PAYMENT
-                    || ((Item)dob).__getInttype() == Item.TYPE_DEPOSIT) ) {
+            DatabaseObject dob = ((Export) templateData).getDob();
+
+            if (dob instanceof Item &&
+                    (((Item) dob).__getInttype() == Item.TYPE_INVOICE
+                            || ((Item) dob).__getInttype() == Item.TYPE_PART_PAYMENT
+                            || ((Item) dob).__getInttype() == Item.TYPE_DEPOSIT)) {
                 YabsQRCodeGenerator QRGen = new YabsQRCodeGenerator(dob);
                 QRGen.generate();
                 context.put("QRCode.img", QRGen.getImageProvider());
@@ -221,32 +222,34 @@ public class ODTFile2 extends Exportable {
                 metadata.addFieldAsImage("imageNotExistsAndRemoveImageTemplate", NullImageBehaviour.RemoveImageTemplate);
                 metadata.addFieldAsImage("imageNotExistsAndKeepImageTemplate", NullImageBehaviour.KeepImageTemplate);
             }
-            
+
             report.setFieldsMetadata(metadata);
             report.extractFields(extractor);
 
-            if (!GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.blankunusedfields.disable")) {
-                Iterator<FieldExtractor> it = extractor.getFields().iterator();
-                while (it.hasNext()) {
-                    FieldExtractor val = it.next();
-                    if (!val.getName().startsWith("{")
-                            && !val.getName().endsWith(".img")
-                            && !d.containsKey(val.getName())) {
-                        if (!val.getName().startsWith(ODTFile2.KEY_TABLE + "1")) {
-                            d.put(val.getName(), "");
-                            Log.Debug(this, "Replacing: " + val.getName());
-                        }
+            boolean doBlank = !GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.blankunusedfields.disable");
+
+            for (FieldExtractor val : extractor.getFields()) {
+                String key = val.getName();
+
+                if (!val.getName().startsWith("{")
+                        && !val.getName().endsWith(".img")
+                        && !val.getName().startsWith(ODTFile2.KEY_TABLE)) {
+                    Object value = templateData.get(key);
+                    if (value == null && doBlank) {
+                        value = "";
                     }
+                    Log.Debug(this, "Found value: " + String.valueOf(value) + " for key: " + key);
+                    context.put(key, value);
+                } else {
+                    Log.Debug(this, "Ignoring key: " + key);
                 }
+
             }
-            context.putMap(d);
 
             report.process(context, out);
 
-        } catch (XDocReportException ex) {
+        } catch (XDocReportException | NoClassDefFoundError ex) {
             Log.Debug(ex);
-        } catch (NoClassDefFoundError ex2) {
-            Log.Debug(ex2);
         }
     }
 }

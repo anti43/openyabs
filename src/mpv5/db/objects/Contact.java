@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComponent;
+
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.Formattable;
@@ -64,7 +65,7 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
 //   public final static int TYPE_SUPPLIER = 2;
 //   public final static int TYPE_MANUFACTURER = 3;
 
-//    public static String getTypeString(int typ) {
+    //    public static String getTypeString(int typ) {
 //        switch (typ) {
 //            case TYPE_CONTACT:
 //                return Messages.TYPE_CONTACT.getValue();
@@ -453,7 +454,6 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
 
     @Override
     public Map<String, Object> resolveReferences(Map<String, Object> map) {
-
         map.put("address", getDefaultaddress());
         int i = 0;
         List<Address> data = getAdresses();
@@ -461,45 +461,31 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
             map.put("address" + i, a);
             i++;
         }
-        map.put("invoiceaddress", getInvoiceaddress(data));
-        map.put("deliveryaddress", getDeliveryaddress(data));
+        map.put("invoice", getInvoiceaddress(data));
+        map.put("delivery", getDeliveryaddress(data));
 
-        if (!map.containsKey("country")) {
-            try {
-                map.put("country", LanguageManager.getCountryName(Integer.valueOf("country")));
-            } catch (Exception numberFormatException) {
-                //already resolved?
-            }
+        if ("country".matches("\\d+")) {
+            map.put("country", LanguageManager.getCountryName(Integer.valueOf("country")));
         }
 
-        try {
-            if (ismale) {
-                map.put("gender", Messages.CONTACT_TYPE_MALE.toString());
-                map.put("intro", Messages.CONTACT_INTRO_MALE.toString());
-            } else {
-                map.put("gender", Messages.CONTACT_TYPE_FEMALE.toString());
-                map.put("intro", Messages.CONTACT_INTRO_FEMALE.toString());
-            }
-            
-            if(title.length()==0){
-                 map.put("title", map.get("gender"));
-            }
-        } catch (Exception numberFormatException) {
-            //already resolved?
+        if (ismale) {
+            map.put("gender", Messages.CONTACT_TYPE_MALE.toString());
+            map.put("intro", Messages.CONTACT_INTRO_MALE.toString());
+        } else {
+            map.put("gender", Messages.CONTACT_TYPE_FEMALE.toString());
+            map.put("intro", Messages.CONTACT_INTRO_FEMALE.toString());
         }
 
-        if (!map.containsKey("fullname")) {
-            try {
-                if (prename != null && prename.length() > 0) {
-                    map.put("fullname", prename + " " + getCname());
-                } else {
-                    map.put("fullname", getCname());
-                }
-            } catch (Exception numberFormatException) {
-                //already resolved?
-            }
+        if (title.length() == 0) {
+            map.put("title", map.get("gender"));
         }
-        Log.Debug(this, map);
+
+        if (prename != null && prename.length() > 0) {
+            map.put("fullname", prename + " " + getCname());
+        } else {
+            map.put("fullname", getCname());
+        }
+
         return super.resolveReferences(map);
     }
 
@@ -669,7 +655,6 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
     }
 
     /**
-     *
      * @return
      */
     @Override
@@ -723,7 +708,7 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
         try {
             data = DatabaseObject.getReferencedObjects(this, Context.getAddress(), new Address());
             Collections.sort(data, new Comparator<Address>() {
-//[0 = billing adress, 1 = delivery adress, 2 = both, 3 = undefined]
+                //[0 = billing adress, 1 = delivery adress, 2 = both, 3 = undefined]
                 @Override
                 public int compare(Address o1, Address o2) {
                     return Integer.valueOf(o1.__getInttype()).compareTo(o2.__getInttype());

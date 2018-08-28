@@ -643,6 +643,8 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     public Map<String, Object> resolveReferences(Map<String, Object> map) {
         //done before call resolveValueProperties(map);
 
+        Log.Debug(this, "\n\n\n\n\n\n"+ map.keySet()+"\n\n\n\n\n\n");
+
         map.put("status", getStatus());
         map.put("type", getTypeString(inttype));
         if (accountsids > 0) {
