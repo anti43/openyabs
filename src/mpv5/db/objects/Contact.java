@@ -463,6 +463,8 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
         }
         map.put("invoice", getInvoiceaddress(data));
         map.put("delivery", getDeliveryaddress(data));
+        map.put("invoiceaddress", map.get("invoice"));
+        map.put("deliveryaddress", map.get("delivery"));
 
         if ("country".matches("\\d+")) {
             map.put("country", LanguageManager.getCountryName(Integer.valueOf("country")));
