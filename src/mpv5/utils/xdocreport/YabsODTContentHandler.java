@@ -17,6 +17,7 @@ import fr.opensagres.xdocreport.template.formatter.FieldsMetadata;
 import fr.opensagres.xdocreport.template.formatter.IDocumentFormatter;
 import java.util.Map;
 
+import mpv5.logging.Log;
 import mpv5.utils.export.ODTFile2;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -38,6 +39,7 @@ public class YabsODTContentHandler extends ODTBufferedDocumentContentHandler {
     private final String col = "table-cell";
     private final String row = "table-row";
     private final String para = "p";
+    private String currentTableKey = null;
     private int i;
 
     public YabsODTContentHandler(String entryName, FieldsMetadata fieldsMetadata, IDocumentFormatter formatter, Map<String, Object> sharedContext) {
@@ -50,8 +52,10 @@ public class YabsODTContentHandler extends ODTBufferedDocumentContentHandler {
             this.textFieldParsing = true;
             return false;
         } else if (isTable(uri, localName)) {
-            if (attributes.getValue(0).equals(ODTFile2.KEY_TABLE + "1")) {
+            String a = attributes.getValue(0);
+            if (a.startsWith(ODTFile2.KEY_TABLE )) {
                 this.inTargetTable = true;
+                this.currentTableKey = a;
             }
         } else if (isColumn(uri, localName)) {
             if (this.inTargetTable) {
@@ -61,9 +65,11 @@ public class YabsODTContentHandler extends ODTBufferedDocumentContentHandler {
         } else if (isParagraph(uri, localName)) {
             if (this.inTargetCol) {
                 if (super.doStartElement(uri, localName, name, attributes)) {
+
+                    Log.Debug(this, uri + ", " + localName + ", " + name + ", " + currentTableKey);
                     BufferedElement buffer = this.getCurrentElement();
                     buffer.append(">");
-                    String tmp = "$" + ODTFile2.KEY_TABLE + "1.C" + (i - 1);
+                    String tmp = "$" + currentTableKey + ".C" + (i - 1);
                     //buffer.append(tmp);
                     buffer.append(this.processRowIfNeeded(tmp, false));
                     return false;
