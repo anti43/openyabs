@@ -417,7 +417,7 @@ public class RemindPanel extends javax.swing.JPanel {
 
         int group = 1;
 
-        PreviewPanel pr;
+        PreviewWaiter pr;
         if (dataOwner != null && dataOwner.isExisting()) {
 
             if (labeledCombobox2.getSelectedItem() != null) {
@@ -446,7 +446,7 @@ public class RemindPanel extends javax.swing.JPanel {
                     Log.Debug(nodataFoundException);
                 }
 
-                pr = new PreviewPanel();
+                pr = new PreviewWaiter();
                 pr.setDataOwner(dataOwner);
                 new Job(ex, pr).execute();
             } else {
@@ -506,7 +506,7 @@ public class RemindPanel extends javax.swing.JPanel {
 
         int group = 1;
 
-        PreviewPanel pr;
+        PreviewWaiter pr;
         if (dataOwner != null && dataOwner.isExisting()) {
 
             if (labeledCombobox2.getSelectedItem() != null) {

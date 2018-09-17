@@ -25,16 +25,12 @@ import java.awt.Component;
 import mpv5.data.PropertyStore;
 import mpv5.ui.panels.*;
 import mpv5.handler.TemplateHandler;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+
 import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -45,12 +41,10 @@ import mpv5.db.objects.Stage;
 import mpv5.db.objects.Template;
 import mpv5.globals.Constants;
 import mpv5.globals.Messages;
-import mpv5.handler.FormFieldsHandler;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.Popup;
-import mpv5.ui.frames.MPView;
 import mpv5.utils.export.Export;
 import mpv5.utils.export.Exportable;
 import mpv5.utils.files.FileDirectoryHandler;
@@ -299,7 +293,7 @@ public class ControlPanel_Reminder extends javax.swing.JPanel implements DataPan
 
         int group = 1;
 
-        PreviewPanel pr;
+        PreviewWaiter pr;
         if (dataOwner != null && dataOwner.isExisting()) {
 
             if (labeledCombobox2.getSelectedItem() != null) {
@@ -316,7 +310,7 @@ public class ControlPanel_Reminder extends javax.swing.JPanel implements DataPan
                 ex.setTemplate(te);
                 ex.setTargetFile(f2);
                 
-                pr = new PreviewPanel();
+                pr = new PreviewWaiter();
                 pr.setDataOwner(dataOwner);
                 new Job(ex, pr).execute();
             } else {
@@ -351,7 +345,7 @@ public class ControlPanel_Reminder extends javax.swing.JPanel implements DataPan
 
         int group = 1;
 
-        PreviewPanel pr;
+        PreviewWaiter pr;
         if (dataOwner != null && dataOwner.isExisting()) {
 
             if (labeledCombobox2.getSelectedItem() != null) {

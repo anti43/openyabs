@@ -1451,9 +1451,9 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
     }
 
     private void preview() {
-        PreviewPanel pr;
+        PreviewWaiter pr;
         if (journalOrContactTemplate != null) {
-            pr = new PreviewPanel();
+            pr = new PreviewWaiter();
             pr.setDataOwner(dataOwner);
             TreeMap<String, Object> map = new TreeMap<String, Object>();
             map.put("journal.netvalue", volumeNetto.getText()); //NOI18N

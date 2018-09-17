@@ -2964,10 +2964,10 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
     }
 
     private void delivery() {
-        PreviewPanel pr;
+        PreviewWaiter pr;
         if (dataOwner != null && dataOwner.isExisting()) {
             if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), Constants.TYPE_DELIVERY_NOTE)) {
-                pr = new PreviewPanel();
+                pr = new PreviewWaiter();
                 pr.setDataOwner(dataOwner);
                 new Job(Export.createFile(TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), Constants.TYPE_DELIVERY_NOTE), dataOwner), pr).execute();
             } else {
@@ -2977,11 +2977,11 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
     }
 
     private void confirmation() {
-        PreviewPanel pr;
+        PreviewWaiter pr;
         if (dataOwner != null && dataOwner.isExisting()) {
             if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), Constants.TYPE_ORDER_CONFIRMATION)) {
 
-                pr = new PreviewPanel();
+                pr = new PreviewWaiter();
                 pr.setDataOwner(dataOwner);
                 new Job(Export.createFile(TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), Constants.TYPE_ORDER_CONFIRMATION), dataOwner), pr).execute();
             } else {
@@ -3029,10 +3029,10 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
     }
 
     private void preview() {
-        PreviewPanel pr;
+        PreviewWaiter pr;
         if (dataOwner != null && dataOwner.isExisting()) {
             if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
-                pr = new PreviewPanel();
+                pr = new PreviewWaiter();
                 pr.setDataOwner(dataOwner);
                 new Job(Export.createFile(TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()), dataOwner), pr).execute();
             } else {

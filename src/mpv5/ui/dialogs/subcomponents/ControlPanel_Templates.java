@@ -44,10 +44,9 @@ import mpv5.ui.dialogs.BigPopup;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.Notificator;
 import mpv5.ui.dialogs.Search2;
-import mpv5.ui.panels.PreviewPanel;
+import mpv5.ui.panels.PreviewWaiter;
 import mpv5.utils.export.Export;
 import mpv5.utils.export.ODTFile2;
-import mpv5.utils.export.PDFFile;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.files.FileExecutor;
 import mpv5.utils.files.FileMonitor;
@@ -981,7 +980,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
 
                 ex.setTargetFile(f2);
 
-                new Job(ex, new PreviewPanel()).execute();
+                new Job(ex, new PreviewWaiter()).execute();
             } catch (Exception ex1) {
                 Log.Debug(ex1);
                 Popup.error(ex1);

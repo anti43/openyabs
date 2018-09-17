@@ -1475,10 +1475,10 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
     }
 
     private void preview() {
-        PreviewPanel pr;
+        PreviewWaiter pr;
         if (dataOwner != null && dataOwner.isExisting()) {
             if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
-                pr = new PreviewPanel();
+                pr = new PreviewWaiter();
                 pr.setDataOwner(dataOwner);
                 new Job(Export.createFile(TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()), dataOwner), pr).execute();
             } else {
@@ -1488,10 +1488,10 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
     }
 
     private void preview_order() {
-        PreviewPanel pr;
+        PreviewWaiter pr;
         if (dataOwner != null && dataOwner.isExisting()) {
             if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), Constants.TYPE_PRODUCT_ORDER)) {
-                pr = new PreviewPanel();
+                pr = new PreviewWaiter();
                 pr.setDataOwner(dataOwner);
                 new Job(Export.createFile(TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), Constants.TYPE_PRODUCT_ORDER), dataOwner), pr).execute();
             } else {
