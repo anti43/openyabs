@@ -477,11 +477,7 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
             map.put("gender", Messages.CONTACT_TYPE_FEMALE.toString());
             map.put("intro", Messages.CONTACT_INTRO_FEMALE.toString());
         }
-
-        if (title.length() == 0) {
-            map.put("title", map.get("gender"));
-        }
-
+        
         if (prename != null && prename.length() > 0) {
             map.put("fullname", prename + " " + getCname());
         } else {
