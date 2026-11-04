@@ -17,6 +17,7 @@ import mpv5.ui.dialogs.Popup;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.export.ZugpferdFile;
 import mpv5.utils.text.Iban;
+import mpv5.utils.ui.FieldCheck;
 import mpv5.utils.ui.PanelUtils;
 
 /**
@@ -35,10 +36,15 @@ public final class ControlPanel_Company extends javax.swing.JPanel implements Co
 
     public ControlPanel_Company() {
         initComponents();
-        account1.getTextField().setToolTipText(Messages.COMPANY_VATID_TOOLTIP.toString());
-        taxnumber.getTextField().setToolTipText(Messages.COMPANY_TAXNUMBER_TOOLTIP.toString());
-        account.getTextField().setToolTipText(Messages.COMPANY_IBAN_TOOLTIP.toString());
-        banknumber.getTextField().setToolTipText(Messages.COMPANY_BIC_TOOLTIP.toString());
+        //mark invalid values while typing
+        FieldCheck.attach(account1, ZugpferdFile::isValidVatId, Messages.COMPANY_VATID_TOOLTIP.toString(),
+                Messages.COMPANY_VATID_INVALID.toString());
+        FieldCheck.attach(taxnumber, v -> !ZugpferdFile.isValidVatId(v), Messages.COMPANY_TAXNUMBER_TOOLTIP.toString(),
+                Messages.COMPANY_TAXNUMBER_IS_VATID.toString());
+        FieldCheck.attach(account, Iban::isValid, Messages.COMPANY_IBAN_TOOLTIP.toString(),
+                Messages.COMPANY_IBAN_INVALID_HINT.toString());
+        FieldCheck.attach(banknumber, Iban::isValidBic, Messages.COMPANY_BIC_TOOLTIP.toString(),
+                Messages.COMPANY_BIC_INVALID_HINT.toString());
         setValues(User.getCurrentUser().getProperties().getProperties("companyinfo."));
         setVisible(true);
     }
@@ -239,16 +245,21 @@ public final class ControlPanel_Company extends javax.swing.JPanel implements Co
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
+        String problems = checkSettings();
+        if (!problems.isEmpty() && !Popup.Y_N_dialog(Messages.COMPANY_CHECK_DATA + "\n" + problems + "\n\n"
+                + Messages.COMPANY_SAVE_ANYWAY)) {
+            return;
+        }
         setSettings();
         User.getCurrentUser().saveProperties();
-        checkSettings();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
-     * Warn about an invalid VAT ID, IBAN or BIC (they are used for e-invoices
-     * and QR codes)
+     * Check VAT ID, IBAN and BIC (they are used for e-invoices and QR codes)
+     *
+     * @return the problems, empty if everything is fine
      */
-    private void checkSettings() {
+    private String checkSettings() {
         StringBuilder problems = new StringBuilder();
         //VAT ID: the most common mix-up is the VAT ID in the tax number field
         String vatValue = account1.getText() == null ? "" : account1.getText().trim();
@@ -267,9 +278,7 @@ public final class ControlPanel_Company extends javax.swing.JPanel implements Co
         if (bicValue != null && !bicValue.trim().isEmpty() && !Iban.isValidBic(bicValue)) {
             problems.append("\n - ").append(Messages.ZUGFERD_INVALID_BIC).append(": ").append(bicValue);
         }
-        if (problems.length() > 0) {
-            Popup.warn(Messages.COMPANY_CHECK_DATA + "\n" + problems);
-        }
+        return problems.toString();
     }
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed

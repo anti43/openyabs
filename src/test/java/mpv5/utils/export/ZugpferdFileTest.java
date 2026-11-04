@@ -241,6 +241,8 @@ class ZugpferdFileTest {
         assertTrue(ZugpferdFile.isValidVatId("EL123456789"));
         assertTrue(ZugpferdFile.isValidVatId("FRXX123456789"));
         assertFalse(ZugpferdFile.isValidVatId("123456789"), "no prefix");
+        assertFalse(ZugpferdFile.isValidVatId("345435"), "reported case");
+        assertTrue(ZugpferdFile.isValidVatId("CHE-123.456.789 MWST"), "Swiss UID");
         assertFalse(ZugpferdFile.isValidVatId("DE12345678"), "German VAT ID needs 9 digits");
         assertFalse(ZugpferdFile.isValidVatId("30/123/45678"), "tax number");
         assertFalse(ZugpferdFile.isValidVatId("XX123456789"));
