@@ -15,6 +15,7 @@ import mpv5.ui.beans.LabeledTextField;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.Popup;
 import mpv5.usermanagement.MPSecurityManager;
+import mpv5.utils.export.ZugpferdFile;
 import mpv5.utils.text.Iban;
 import mpv5.utils.ui.PanelUtils;
 
@@ -34,6 +35,10 @@ public final class ControlPanel_Company extends javax.swing.JPanel implements Co
 
     public ControlPanel_Company() {
         initComponents();
+        account1.getTextField().setToolTipText(Messages.COMPANY_VATID_TOOLTIP.toString());
+        taxnumber.getTextField().setToolTipText(Messages.COMPANY_TAXNUMBER_TOOLTIP.toString());
+        account.getTextField().setToolTipText(Messages.COMPANY_IBAN_TOOLTIP.toString());
+        banknumber.getTextField().setToolTipText(Messages.COMPANY_BIC_TOOLTIP.toString());
         setValues(User.getCurrentUser().getProperties().getProperties("companyinfo."));
         setVisible(true);
     }
@@ -236,15 +241,24 @@ public final class ControlPanel_Company extends javax.swing.JPanel implements Co
 
         setSettings();
         User.getCurrentUser().saveProperties();
-        checkBankDetails();
+        checkSettings();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
-     * Warn about an invalid IBAN / BIC (they are used for e-invoices and QR
-     * codes)
+     * Warn about an invalid VAT ID, IBAN or BIC (they are used for e-invoices
+     * and QR codes)
      */
-    private void checkBankDetails() {
+    private void checkSettings() {
         StringBuilder problems = new StringBuilder();
+        //VAT ID: the most common mix-up is the VAT ID in the tax number field
+        String vatValue = account1.getText() == null ? "" : account1.getText().trim();
+        String taxValue = taxnumber.getText() == null ? "" : taxnumber.getText().trim();
+        if (vatValue.isEmpty() && ZugpferdFile.isValidVatId(taxValue)) {
+            problems.append("\n - ").append(Messages.COMPANY_VATID_IN_TAXNUMBER).append(" '").append(taxValue).append("'");
+        } else if (!vatValue.isEmpty() && !ZugpferdFile.isValidVatId(vatValue)) {
+            problems.append("\n - ").append(ZugpferdFile.isValidVatId(taxValue)
+                    ? Messages.COMPANY_VATID_SWAPPED : Messages.COMPANY_VATID_INVALID).append(" '").append(vatValue).append("'");
+        }
         String ibanValue = account.getText();
         if (ibanValue != null && !ibanValue.trim().isEmpty() && !Iban.isValid(ibanValue)) {
             problems.append("\n - ").append(Messages.ZUGFERD_INVALID_IBAN).append(": ").append(ibanValue);
@@ -254,7 +268,7 @@ public final class ControlPanel_Company extends javax.swing.JPanel implements Co
             problems.append("\n - ").append(Messages.ZUGFERD_INVALID_BIC).append(": ").append(bicValue);
         }
         if (problems.length() > 0) {
-            Popup.warn(Messages.COMPANY_CHECK_BANK + "\n" + problems);
+            Popup.warn(Messages.COMPANY_CHECK_DATA + "\n" + problems);
         }
     }
 

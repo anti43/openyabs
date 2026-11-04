@@ -417,6 +417,11 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         try {
             invoice = ZugpferdFile.createInvoice(dataOwner, format);
             problems = ZugpferdFile.validate(invoice);
+            mpv5.db.objects.Contact contact = dataOwner.getContact();
+            String buyerVatId = ZugpferdFile.checkBuyerVatId(contact, contact.getInvoiceaddress());
+            if (buyerVatId != null) {
+                problems.add(buyerVatId);
+            }
         } catch (Exception ex) {
             Log.Debug(this, ex);
             Popup.error(ex);
@@ -502,13 +507,13 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
             Notificator.raiseNotification(Messages.ZUGFERD_VALID + ": " + file, false);
         } else {
             StringBuilder text = new StringBuilder(Messages.ZUGFERD_INVALID.toString()).append("\n").append(file).append("\n");
-            List<String> errors = result.getErrors();
-            int max = Math.min(errors.size(), 15);
+            List<String> problems = result.getProblems();
+            int max = Math.min(problems.size(), 12);
             for (int i = 0; i < max; i++) {
-                text.append("\n - ").append(errors.get(i));
+                text.append("\n - ").append(problems.get(i));
             }
-            if (errors.size() > max) {
-                text.append("\n ... (").append(errors.size() - max).append(")");
+            if (problems.size() > max) {
+                text.append("\n ... (").append(problems.size() - max).append(")");
             }
             Popup.warn(text.toString());
         }

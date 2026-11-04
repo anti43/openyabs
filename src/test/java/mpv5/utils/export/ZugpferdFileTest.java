@@ -234,6 +234,120 @@ class ZugpferdFileTest {
     }
 
     @Test
+    void checksVatIdFormat() {
+        assertTrue(ZugpferdFile.isValidVatId("DE123456789"));
+        assertTrue(ZugpferdFile.isValidVatId("de 123 456 789"));
+        assertTrue(ZugpferdFile.isValidVatId("ATU12345678"));
+        assertTrue(ZugpferdFile.isValidVatId("EL123456789"));
+        assertTrue(ZugpferdFile.isValidVatId("FRXX123456789"));
+        assertFalse(ZugpferdFile.isValidVatId("123456789"), "no prefix");
+        assertFalse(ZugpferdFile.isValidVatId("DE12345678"), "German VAT ID needs 9 digits");
+        assertFalse(ZugpferdFile.isValidVatId("30/123/45678"), "tax number");
+        assertFalse(ZugpferdFile.isValidVatId("XX123456789"));
+        assertFalse(ZugpferdFile.isValidVatId(null));
+    }
+
+    /**
+     * Reported case: seller VAT ID without country prefix -> BR-CO-09, buyer
+     * with a tax number -> FX-SCH-A-000570. The pre-check must catch both and
+     * the validator result must say what to fix.
+     */
+    @Test
+    void vatIdWithoutPrefixIsExplained() throws Exception {
+        Map<String, String> c = company();
+        c.put("account1", "123456789");
+        Invoice invoice = ZugpferdFile.createInvoice(invoice(), new SubItem[]{line("a", "", "1", "Stk", "100", "19", "0")},
+                ZugpferdFile.createSender(c::get), buyer(), "ref", 0, null);
+        String problems = ZugpferdFile.validate(invoice).toString();
+        assertTrue(problems.contains(mpv5.globals.Messages.ZUGFERD_INVALID_VATID.toString()), problems);
+        assertTrue(problems.contains("'123456789'"), problems);
+
+        File xml = tmp.resolve("prefix.xml").toFile();
+        ZugpferdFile.writeXml(invoice, xml);
+        EInvoiceValidator.Result result = EInvoiceValidator.validate(xml);
+        assertFalse(result.isValid());
+        assertTrue(result.getProblems().toString().contains(mpv5.globals.Messages.ZUGFERD_HINT_VATID_PREFIX.toString()),
+                result.getProblems().toString());
+        assertTrue(result.getProblems().toString().contains("BR-CO-09"), result.getProblems().toString());
+    }
+
+    @Test
+    void buyerTaxNumberIsLeftOutAndReported() throws Exception {
+        Contact contact = new Contact();
+        contact.setCNumber("K-1002");
+        contact.setCompany("Handwerk GmbH");
+        contact.setMailaddress("info@handwerk.example");
+        Address a = new Address();
+        a.setCompany("Handwerk GmbH");
+        a.setStreet("Dorfstr. 1");
+        a.setZip("12345");
+        a.setCity("Dorf");
+        a.setCountry("276");
+        a.setTaxnumber("12/345/67890");
+        TradeParty buyer = contact.asZugpferdTradeparty(a);
+        assertTrue(ZugpferdFile.isEmpty(buyer.getVATID()));
+        assertTrue(ZugpferdFile.isEmpty(buyer.getTaxID()), "a tax number is not allowed for the buyer");
+        String problem = ZugpferdFile.checkBuyerVatId(contact, a);
+        assertNotNull(problem);
+        assertTrue(problem.contains("12/345/67890") && problem.contains("Handwerk GmbH"), problem);
+        assertNull(ZugpferdFile.checkBuyerVatId(contact, new Address()), "empty is fine");
+
+        Map<String, String> c = company();
+        Invoice invoice = ZugpferdFile.createInvoice(invoice(), new SubItem[]{line("a", "", "1", "Stk", "100", "19", "0")},
+                ZugpferdFile.createSender(c::get), buyer, "ref", 0, null, ZugpferdFile.Format.ZUGFERD);
+        File plain = tmp.resolve("plain2.pdf").toFile();
+        try (PDDocument doc = new PDDocument()) {
+            PDPage page = new PDPage();
+            page.setResources(new org.apache.pdfbox.pdmodel.PDResources());
+            doc.addPage(page);
+            doc.save(plain);
+        }
+        File pdf = tmp.resolve("taxnumber.pdf").toFile();
+        ZugpferdFile.writePdf(invoice, plain, pdf);
+        assertValid(pdf);
+    }
+
+    @Test
+    void explainsKnownRules() {
+        EInvoiceValidator.Result result = new EInvoiceValidator.Result(false, java.util.Arrays.asList(
+                "[BR-DE-5] Das Element \"Seller contact point\" (BT-41) muss übermittelt werden.",
+                "[BR-DE-7] Das Element \"Seller contact email address\" (BT-43) muss übermittelt werden.",
+                "Value of '@schemeID' is not allowed. [ID FX-SCH-A-000570]",
+                "PDF/A: The font programs for all fonts used shall be embedded",
+                "[XY-1] something unknown"), java.util.Collections.<String>emptyList(), "");
+        List<String> problems = result.getProblems();
+        assertEquals(4, problems.size(), problems.toString());
+        assertEquals(mpv5.globals.Messages.ZUGFERD_HINT_SELLER_CONTACT + " [BR-DE-5, BR-DE-7]", problems.get(0));
+        assertTrue(problems.get(1).startsWith(mpv5.globals.Messages.ZUGFERD_HINT_BUYER_TAXNUMBER.toString()));
+        assertTrue(problems.get(2).startsWith(mpv5.globals.Messages.ZUGFERD_HINT_FONTS.toString()));
+        assertEquals("[XY-1] something unknown", problems.get(3));
+    }
+
+    @Test
+    void vatIdInTaxNumberFieldIsFound() throws Exception {
+        //VAT ID entered in "Tax number", VAT ID field empty
+        Map<String, String> c = company();
+        c.remove("account1");
+        c.put("taxnumber", "DE 123 456 789");
+        TradeParty sender = ZugpferdFile.createSender(c::get);
+        assertEquals("DE123456789", sender.getVATID());
+        assertTrue(ZugpferdFile.isEmpty(sender.getTaxID()), sender.getTaxID());
+
+        //fields swapped
+        c.put("account1", "30/123/45678");
+        sender = ZugpferdFile.createSender(c::get);
+        assertEquals("DE123456789", sender.getVATID());
+        assertEquals("30/123/45678", sender.getTaxID());
+
+        Invoice invoice = ZugpferdFile.createInvoice(invoice(), new SubItem[]{line("a", "", "1", "Stk", "100", "19", "0")},
+                sender, buyer(), "ref", 0, null);
+        assertTrue(ZugpferdFile.validate(invoice).isEmpty(), ZugpferdFile.validate(invoice).toString());
+        File xml = tmp.resolve("swapped.xml").toFile();
+        ZugpferdFile.writeXml(invoice, xml);
+        assertValid(xml);
+    }
+
+    @Test
     void reportsMissingData() {
         Map<String, String> c = new HashMap<String, String>();
         c.put("business", "Nur Name");
