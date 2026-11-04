@@ -379,7 +379,7 @@ public enum Messages {
     ZUGFERD_NO_ITEMS("The invoice has no billable items"),
     ZUGFERD_PAYABLE_UNTIL("Payable until"),
     ZUGFERD_DISCOUNT("Discount"),
-    ZUGFERD_SELLER("Company settings"),
+    ZUGFERD_SELLER("Company Info (Control Panel)"),
     ZUGFERD_BUYER("Contact"),
     ZUGFERD_FIELD_NAME("Name"),
     ZUGFERD_FIELD_STREET("Street"),
@@ -391,7 +391,7 @@ public enum Messages {
     ZUGFERD_MISSING_DATA("The following data is missing for a valid electronic invoice:"),
     ZUGFERD_CONTINUE_ANYWAY("Create the electronic invoice anyway?"),
     ZUGFERD_CREATED("Electronic invoice created"),
-    ZUGFERD_FIELD_VATID("VAT ID (required, a tax number alone is not sufficient)"),
+    ZUGFERD_FIELD_VATID("VAT ID is missing (required, a tax number alone is not sufficient), e.g. DE123456789"),
     ZUGFERD_FIELD_COUNTRY("Country (unknown or missing)"),
     ZUGFERD_INVALID_IBAN("Invalid IBAN"),
     ZUGFERD_INVALID_BIC("Invalid BIC"),
@@ -400,7 +400,22 @@ public enum Messages {
     ZUGFERD_VALID("E-invoice checked by the official validator: valid"),
     ZUGFERD_INVALID("The e-invoice is NOT valid and may be rejected by the recipient:"),
     ZUGFERD_NOT_VALIDATED("The file could not be validated."),
-    COMPANY_CHECK_BANK("Please check the bank details:");
+    COMPANY_CHECK_BANK("Please check the bank details:"),
+    ZUGFERD_INVALID_VATID("VAT ID is invalid, it must start with the country code, e.g. DE123456789 (German VAT IDs: DE + 9 digits). Fix it in Control Panel > Company Info > VAT ID:"),
+    ZUGFERD_BUYER_VATID_IGNORED("the VAT ID field does not contain a valid VAT ID (e.g. DE123456789), it is left out of the e-invoice. A tax number (Steuernummer) is not allowed in e-invoices - enter the VAT ID of the customer in the contact (field VAT ID) or leave it empty:"),
+    ZUGFERD_HINT_VATID_PREFIX("A VAT ID has no valid country prefix. Enter it like DE123456789 in Control Panel > Company Info > VAT ID and in the VAT ID field of the contact (only a VAT ID, no tax number)."),
+    ZUGFERD_HINT_SELLER_VATID("Your VAT ID is missing: enter it (e.g. DE123456789) in Control Panel > Company Info > VAT ID."),
+    ZUGFERD_HINT_BUYER_TAXNUMBER("The VAT ID field of the contact contains a tax number. Only a VAT ID (e.g. DE123456789) is allowed - correct the contact and create the e-invoice again."),
+    ZUGFERD_HINT_SELLER_CONTACT("Contact data of your company is missing or incomplete: enter name, phone (at least 3 digits) and email in Control Panel > Company Info."),
+    ZUGFERD_HINT_SELLER_ADDRESS("Your company address is incomplete: enter street, zip, city and country in Control Panel > Company Info."),
+    ZUGFERD_HINT_BUYER_ADDRESS("The invoice address of the contact is incomplete: enter street, zip, city and country in the contact."),
+    ZUGFERD_HINT_BUYER_REFERENCE("The buyer reference (Leitweg-ID) is missing: add a value property 'leitweg-id' to the invoice or contact, or give the contact a customer number."),
+    ZUGFERD_HINT_IBAN("Bank details are missing or invalid: enter a valid IBAN (and BIC) in Control Panel > Company Info."),
+    ZUGFERD_HINT_PAYTERM("Due date / payment terms are missing: enter a payment term (days) in the contact."),
+    ZUGFERD_HINT_BUYER_EMAIL("The email address of the contact is missing: enter it in the contact."),
+    ZUGFERD_HINT_EMPTY("A field contains only spaces. Check the company info and the contact for fields with blanks only."),
+    ZUGFERD_HINT_FONTS("The invoice template uses a font which could not be embedded into the PDF. Install the font (or the Liberation / DejaVu fonts) or use another font in the template - or create an XRechnung (XML) instead."),
+    ZUGFERD_HINT_PDFA("The PDF created from the invoice template is not PDF/A-3 conform. Simplify the template (e.g. no transparent images) or create an XRechnung (XML) instead.");
 
 
     /**

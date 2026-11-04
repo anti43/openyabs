@@ -814,11 +814,11 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
             party.setAdditionalAddress(a.__getDepartment().trim());
         }
 
-        String taxId = ZugpferdFile.firstNonEmpty(a.__getTaxnumber(), __getTaxnumber()).replaceAll("\\s", "");
-        if (taxId.matches("[A-Za-z]{2}[A-Za-z0-9+*.]{2,13}")) {
-            party.setVATID(taxId.toUpperCase());
-        } else if (!taxId.isEmpty()) {
-            party.setTaxID(taxId);
+        //EN 16931 only knows the VAT ID of the buyer (BT-48), a tax number (Steuernummer) must not be
+        //sent (FX-SCH-A-000570); invalid values are reported by ZugpferdFile#checkBuyerVatId
+        String taxId = ZugpferdFile.firstNonEmpty(a.__getTaxnumber(), __getTaxnumber());
+        if (ZugpferdFile.isValidVatId(taxId)) {
+            party.setVATID(ZugpferdFile.normalizeVatId(taxId));
         }
 
         String mail = ZugpferdFile.nvl(__getMailaddress()).trim();

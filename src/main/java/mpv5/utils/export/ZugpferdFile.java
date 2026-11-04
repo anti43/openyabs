@@ -327,7 +327,8 @@ public class ZugpferdFile implements Waitable {
 
         String vatId = firstNonEmpty(company.apply("vatid"), company.apply("account1"));
         if (!isEmpty(vatId)) {
-            sender.addVATID(vatId.replaceAll("\\s", ""));
+            //kept even if invalid, validate() explains how to fix it
+            sender.addVATID(normalizeVatId(vatId));
         }
         String taxNumber = company.apply("taxnumber");
         if (!isEmpty(taxNumber)) {
@@ -387,7 +388,11 @@ public class ZugpferdFile implements Waitable {
         check(problems, seller, Messages.ZUGFERD_FIELD_CITY, s.getLocation());
         checkCountry(problems, seller, s.getCountry());
         //BR-CO-26: the seller must be identified by the VAT ID, a tax number alone is not enough
-        check(problems, seller, Messages.ZUGFERD_FIELD_VATID, s.getVATID());
+        if (isEmpty(s.getVATID())) {
+            problems.add(seller + Messages.ZUGFERD_FIELD_VATID);
+        } else if (!isValidVatId(s.getVATID())) {
+            problems.add(seller + Messages.ZUGFERD_INVALID_VATID + " '" + s.getVATID() + "'");
+        }
         check(problems, seller, Messages.ZUGFERD_FIELD_EMAIL, s.getUriUniversalCommunicationID());
         if (s.getContact() == null || isEmpty(s.getContact().getPhone())) {
             problems.add(seller + Messages.ZUGFERD_FIELD_PHONE);
@@ -406,7 +411,7 @@ public class ZugpferdFile implements Waitable {
         }
 
         TradeParty r = invoice.getRecipient();
-        String buyer = Messages.ZUGFERD_BUYER + ": ";
+        String buyer = Messages.ZUGFERD_BUYER + (isEmpty(r.getName()) ? "" : " '" + r.getName().trim() + "'") + ": ";
         check(problems, buyer, Messages.ZUGFERD_FIELD_NAME, r.getName());
         check(problems, buyer, Messages.ZUGFERD_FIELD_STREET, r.getStreet());
         check(problems, buyer, Messages.ZUGFERD_FIELD_ZIP, r.getZIP());
@@ -414,6 +419,55 @@ public class ZugpferdFile implements Waitable {
         checkCountry(problems, buyer, r.getCountry());
         check(problems, buyer, Messages.ZUGFERD_FIELD_EMAIL, r.getUriUniversalCommunicationID());
         return problems;
+    }
+
+    /**
+     * Remove spaces, dots and dashes, upper case
+     *
+     * @param vatId
+     * @return
+     */
+    public static String normalizeVatId(String vatId) {
+        return vatId == null ? "" : vatId.replaceAll("[\\s.\\-]", "").toUpperCase(Locale.ROOT);
+    }
+
+    /**
+     * Check the form of a VAT identification number: ISO 3166 country prefix
+     * (EL for Greece, XI for Northern Ireland) followed by the national number
+     * (BR-CO-09). German numbers must have 9 digits.
+     *
+     * @param vatId
+     * @return
+     */
+    public static boolean isValidVatId(String vatId) {
+        String v = normalizeVatId(vatId);
+        if (!v.matches("[A-Z]{2}[A-Z0-9+*]{2,13}")) {
+            return false;
+        }
+        String prefix = v.substring(0, 2);
+        if ("DE".equals(prefix)) {
+            return v.matches("DE[0-9]{9}");
+        }
+        return "EL".equals(prefix) || "XI".equals(prefix) || ISO_COUNTRIES.contains(prefix);
+    }
+
+    /**
+     * Check the VAT ID of a contact. EN 16931 only knows a VAT ID for the
+     * buyer, anything else in the field (e.g. a tax number) is left out of the
+     * e-invoice.
+     *
+     * @param contact
+     * @param address the invoice address, may be null
+     * @return a problem description or null
+     */
+    public static String checkBuyerVatId(Contact contact, mpv5.db.objects.Address address) {
+        String value = firstNonEmpty(address == null ? null : address.__getTaxnumber(), contact.__getTaxnumber());
+        if (!isEmpty(value) && !isValidVatId(value)) {
+            String name = firstNonEmpty(contact.__getCompany(), contact.__getCname());
+            return Messages.ZUGFERD_BUYER + (name.isEmpty() ? "" : " '" + name + "'") + ": "
+                    + Messages.ZUGFERD_BUYER_VATID_IGNORED + " '" + value.trim() + "'";
+        }
+        return null;
     }
 
     private static void checkCountry(List<String> problems, String prefix, String code) {
