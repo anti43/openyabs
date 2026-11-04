@@ -2245,7 +2245,6 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
 
         xhistory.setMaximumRowCount(100);
         xhistory.setAutoscrolls(true);
-        xhistory.setEditor(null);
         xhistory.setFocusable(false);
         xhistory.setMaximumSize(new java.awt.Dimension(500, 32767));
         xhistory.setMinimumSize(new java.awt.Dimension(100, 15));
