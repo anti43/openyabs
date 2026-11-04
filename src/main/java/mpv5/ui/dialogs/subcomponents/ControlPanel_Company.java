@@ -36,6 +36,7 @@ public final class ControlPanel_Company extends javax.swing.JPanel implements Co
 
     public ControlPanel_Company() {
         initComponents();
+        markRequiredFields();
         //mark invalid values while typing
         FieldCheck.attach(account1, ZugpferdFile::isValidVatId, Messages.COMPANY_VATID_TOOLTIP.toString(),
                 Messages.COMPANY_VATID_INVALID.toString());
@@ -253,6 +254,20 @@ public final class ControlPanel_Company extends javax.swing.JPanel implements Co
         setSettings();
         User.getCurrentUser().saveProperties();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    /**
+     * Mark the fields required for e-invoices with an asterisk and explain it
+     * (done here and not in the language files, so it also works with
+     * customized languages)
+     */
+    private void markRequiredFields() {
+        for (LabeledTextField f : new LabeledTextField[]{business, street, zip, city, country, phone, email, account1,
+            account}) {
+            f.set_Label(f.get_Label() + " *");
+        }
+        jTextArea1.setText("* " + Messages.COMPANY_REQUIRED_LEGEND + "\n" + jTextArea1.getText());
+        jTextArea1.setRows(jTextArea1.getRows() + 2);
+    }
 
     /**
      * Check VAT ID, IBAN and BIC (they are used for e-invoices and QR codes)
