@@ -324,6 +324,30 @@ class ZugpferdFileTest {
     }
 
     @Test
+    void vatIdInTaxNumberFieldIsFound() throws Exception {
+        //VAT ID entered in "Tax number", VAT ID field empty
+        Map<String, String> c = company();
+        c.remove("account1");
+        c.put("taxnumber", "DE 123 456 789");
+        TradeParty sender = ZugpferdFile.createSender(c::get);
+        assertEquals("DE123456789", sender.getVATID());
+        assertTrue(ZugpferdFile.isEmpty(sender.getTaxID()), sender.getTaxID());
+
+        //fields swapped
+        c.put("account1", "30/123/45678");
+        sender = ZugpferdFile.createSender(c::get);
+        assertEquals("DE123456789", sender.getVATID());
+        assertEquals("30/123/45678", sender.getTaxID());
+
+        Invoice invoice = ZugpferdFile.createInvoice(invoice(), new SubItem[]{line("a", "", "1", "Stk", "100", "19", "0")},
+                sender, buyer(), "ref", 0, null);
+        assertTrue(ZugpferdFile.validate(invoice).isEmpty(), ZugpferdFile.validate(invoice).toString());
+        File xml = tmp.resolve("swapped.xml").toFile();
+        ZugpferdFile.writeXml(invoice, xml);
+        assertValid(xml);
+    }
+
+    @Test
     void reportsMissingData() {
         Map<String, String> c = new HashMap<String, String>();
         c.put("business", "Nur Name");

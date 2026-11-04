@@ -325,14 +325,19 @@ public class ZugpferdFile implements Waitable {
         TradeParty sender = new TradeParty(name, nvl(company.apply("street")), nvl(company.apply("zip")),
                 nvl(company.apply("city")), toCountryCode(company.apply("country")));
 
-        String vatId = firstNonEmpty(company.apply("vatid"), company.apply("account1"));
+        //"account1" is labelled VAT ID, "taxnumber" tax number - but users mix them up, so the
+        //field holding a well formed VAT ID wins
+        String vatField = firstNonEmpty(company.apply("vatid"), company.apply("account1"));
+        String taxField = nvl(company.apply("taxnumber")).trim();
+        String vatId = isValidVatId(vatField) ? vatField : isValidVatId(taxField) ? taxField : vatField;
         if (!isEmpty(vatId)) {
             //kept even if invalid, validate() explains how to fix it
             sender.addVATID(normalizeVatId(vatId));
         }
-        String taxNumber = company.apply("taxnumber");
-        if (!isEmpty(taxNumber)) {
-            sender.addTaxID(taxNumber.trim());
+        String taxNumber = !taxField.isEmpty() && !taxField.equals(vatId) ? taxField
+                : !vatField.isEmpty() && !vatField.equals(vatId) && !isValidVatId(vatField) ? vatField : "";
+        if (!taxNumber.isEmpty()) {
+            sender.addTaxID(taxNumber);
         }
 
         //"account" is labelled IBAN and "banknumber" BIC, older (German) versions used
