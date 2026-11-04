@@ -24,22 +24,42 @@ dependencies {
     implementation fileTree(dir: 'lib', include: ['*.jar'])
 }
 
-compileJava   {
-    sourceCompatibility = '1.8'
-    targetCompatibility = '1.8'
-}
-
-// The Mustang (ZUGFeRD) libraries in lib/ require Java 11+ at runtime anyway,
-// so do not let Gradle reject dependencies built for newer JVMs
-java {
-    disableAutoTargetJvm()
+// Java 11 is the minimum (the Mustang e-invoice libraries need it); --release also
+// checks that only Java 11 APIs are used when building with a newer JDK
+tasks.withType(JavaCompile).configureEach {
+    options.release = 11
+    options.encoding = 'UTF-8'
 }
 
 // Using dependency list to generate a manifest with appropriate classpath
 jar {
+    archiveFileName = 'openyabs.jar'
     manifest {
         attributes 'Main-Class' : 'mpv5.Main'
         attributes 'Class-Path' : configurations.compileClasspath.collect { 'lib/' + it.getName() }.join(' ')
         attributes 'Add-Opens' : 'java.base/java.lang=ALL-UNNAMED'
+    }
+}
+
+// Zip for distribution: openyabs/openyabs.jar, openyabs/lib/ and start scripts (src/dist).
+// Start with yabs.sh / yabs.bat or "java -jar openyabs.jar" (Java 11+).
+tasks.register('distributionZip', Zip) {
+    group = 'distribution'
+    description = 'Builds build/distributions/openyabs-<version>.zip with the app jar, lib/ and start scripts'
+    archiveFileName = "openyabs-${project.version}.zip"
+    destinationDirectory = layout.buildDirectory.dir('distributions')
+    into('openyabs') {
+        from(tasks.named('jar'))
+        from('src/dist') {
+            filesMatching('*.sh') {
+                permissions { unix(0755) }
+            }
+        }
+        from('README.md')
+    }
+    into('openyabs/lib') {
+        from('lib') {
+            exclude 'docs/**' // API docs, not needed at runtime
+        }
     }
 }
