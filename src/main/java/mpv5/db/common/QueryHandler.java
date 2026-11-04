@@ -1037,7 +1037,9 @@ public class QueryHandler implements Cloneable {
         if (uniquecols != null) {
             for (int i = 0; i < uniquecols.length; i++) {
                 int j = uniquecols[i];
-                Object[][] val = select(values[j], new String[]{values[j], vals.getValue(values[j]).toString(), vals.getValue(values[j]).getWrapper()});
+                //qualify the column, the context may join tables with the same column name (e.g. cnumber)
+                String column = values[j].contains(".") ? values[j] : table + "." + values[j];
+                Object[][] val = select(column, new String[]{values[j], vals.getValue(values[j]).toString(), vals.getValue(values[j]).getWrapper()});
                 if (val != null && val.length > 0) {
                     mpv5.YabsViewProxy.instance().addMessage(Messages.VALUE_ALREADY_EXISTS + vals.getValue(values[j]).toString(), Color.RED);
                     return false;

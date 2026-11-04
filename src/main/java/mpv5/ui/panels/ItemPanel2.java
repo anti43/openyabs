@@ -94,6 +94,7 @@ import mpv5.utils.export.Export;
 import mpv5.utils.export.ZugpferdFile;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.jobs.Job;
+import mpv5.utils.jobs.Waiter;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPComboboxModel;
 import mpv5.utils.models.MPTableModel;
@@ -355,18 +356,99 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                 toInvoice(Item.TYPE_PART_PAYMENT);
             }
         });
-        toinvoice.add(Messages.CREATE_X_INVOICE.toString(), new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                toXInvoice();
-            }
-        });
+        initEInvoiceButton();
     }
 
-    private void toXInvoice() {
-        //DialogForFile d = new DialogForFile(DialogForFile.DIRECTORIES_ONLY);
-        //Job job = new Job(new ZugpferdFile(), d, files.size() + " PDF " + Messages.SAVED); //NOI18N
-        //job.execute();
+    private final JButton button_einvoice = new JButton();
+
+    /**
+     * Adds the E-Rechnung (XRechnung / ZUGFeRD) button to the toolbar
+     */
+    private void initEInvoiceButton() {
+        final JPopupMenu menu = new JPopupMenu();
+        JMenuItem xml = new JMenuItem(Messages.CREATE_XRECHNUNG.toString());
+        xml.addActionListener(e -> createEInvoice(ZugpferdFile.Format.XRECHNUNG));
+        menu.add(xml);
+        JMenuItem pdf = new JMenuItem(Messages.CREATE_ZUGFERD.toString());
+        pdf.addActionListener(e -> createEInvoice(ZugpferdFile.Format.ZUGFERD));
+        menu.add(pdf);
+
+        button_einvoice.setText(Messages.CREATE_X_INVOICE.toString());
+        button_einvoice.setBorder(button_orderconf.getBorder());
+        button_einvoice.setEnabled(false);
+        button_einvoice.setFocusable(false);
+        button_einvoice.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        button_einvoice.setMaximumSize(new java.awt.Dimension(200, 30));
+        button_einvoice.setMinimumSize(new java.awt.Dimension(50, 30));
+        button_einvoice.setName("button_einvoice"); // NOI18N
+        button_einvoice.setPreferredSize(new java.awt.Dimension(100, 30));
+        button_einvoice.setRequestFocusEnabled(false);
+        button_einvoice.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        button_einvoice.addActionListener(e -> menu.show(button_einvoice, 0, button_einvoice.getHeight()));
+        jToolBar1.add(button_einvoice);
+    }
+
+    /**
+     * Create an electronic invoice (XRechnung XML or ZUGFeRD PDF) for the
+     * current invoice
+     */
+    private void createEInvoice(final ZugpferdFile.Format format) {
+        if (dataOwner == null || !dataOwner.isExisting()) {
+            Popup.notice(Messages.NOT_POSSIBLE + "\n" + Messages.NOT_SAVED_YET);
+            return;
+        }
+        if (!ZugpferdFile.supports(dataOwner)) {
+            Popup.notice(Messages.ZUGFERD_NOT_AN_INVOICE);
+            return;
+        }
+        if (format == ZugpferdFile.Format.ZUGFERD
+                && !TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
+            Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
+            return;
+        }
+
+        List<String> problems;
+        final org.mustangproject.Invoice invoice;
+        try {
+            invoice = ZugpferdFile.createInvoice(dataOwner);
+            problems = ZugpferdFile.validate(invoice);
+        } catch (Exception ex) {
+            Log.Debug(this, ex);
+            Popup.error(ex);
+            return;
+        }
+        if (!problems.isEmpty()) {
+            StringBuilder text = new StringBuilder(Messages.ZUGFERD_MISSING_DATA.toString()).append("\n");
+            for (String problem : problems) {
+                text.append("\n - ").append(problem);
+            }
+            text.append("\n\n").append(Messages.ZUGFERD_CONTINUE_ANYWAY);
+            if (!Popup.Y_N_dialog(text.toString())) {
+                return;
+            }
+        }
+
+        String name = dataOwner.__getCnumber().replaceAll("[\\\\/:*?\"<>|\\s]", "_") + "." + format.getExtension();
+        DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY);
+        d.setFileFilter(format == ZugpferdFile.Format.XRECHNUNG ? DialogForFile.XML_FILES : DialogForFile.PDF_FILES);
+        d.setSelectedFile(new File(DialogForFile.CURRENT_DIR, name));
+        if (d.saveFile()) {
+            File chosen = d.getFile();
+            if (!chosen.getName().toLowerCase().endsWith("." + format.getExtension())) {
+                chosen = new File(chosen.getPath() + "." + format.getExtension());
+            }
+            final File target = chosen;
+            new Job(new ZugpferdFile(dataOwner, invoice, target, format), new Waiter() {
+                @Override
+                public void set(Object object, Exception exception) throws Exception {
+                    if (exception != null) {
+                        Popup.error(exception);
+                    } else {
+                        Notificator.raiseNotification(Messages.ZUGFERD_CREATED + ": " + target, false);
+                    }
+                }
+            }).execute();
+        }
     }
 
     private void setContactData(Contact dbo) {
@@ -463,6 +545,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                 toorder.setEnabled(inttype_ != Item.TYPE_ORDER && inttype_ != Item.TYPE_INVOICE);
                 toinvoice.setEnabled(inttype_ != Item.TYPE_INVOICE);
                 tocredit.setEnabled(inttype_ == Item.TYPE_INVOICE);
+                button_einvoice.setEnabled(ZugpferdFile.supports(dataOwner));
                 toinvoice.hidePopUP(inttype_ == Item.TYPE_DEPOSIT || inttype_ == Item.TYPE_PART_PAYMENT);
                 type.setText(Item.getTypeString(inttype_));
                 //            typelabel.setIcon(dataOwner.getIcon());

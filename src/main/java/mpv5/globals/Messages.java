@@ -372,7 +372,26 @@ public enum Messages {
     LANG_NOT_EXPORTED("Language could not be exported:"), 
     ADD_MISSING_KEYS("Please add Missing keys to "), 
     LANGUAGE_UPDATED("The current language file has been updated."),
-    CREATE_X_INVOICE("Create xml invoice");
+    CREATE_X_INVOICE("E-Invoice"),
+    CREATE_XRECHNUNG("XRechnung (XML)"),
+    CREATE_ZUGFERD("ZUGFeRD (PDF with embedded XML)"),
+    ZUGFERD_NOT_AN_INVOICE("Electronic invoices can only be created for invoices"),
+    ZUGFERD_NO_ITEMS("The invoice has no billable items"),
+    ZUGFERD_PAYABLE_UNTIL("Payable until"),
+    ZUGFERD_DISCOUNT("Discount"),
+    ZUGFERD_SELLER("Company settings"),
+    ZUGFERD_BUYER("Contact"),
+    ZUGFERD_FIELD_NAME("Name"),
+    ZUGFERD_FIELD_STREET("Street"),
+    ZUGFERD_FIELD_ZIP("Zip"),
+    ZUGFERD_FIELD_CITY("City"),
+    ZUGFERD_FIELD_TAXID("VAT ID or tax number"),
+    ZUGFERD_FIELD_EMAIL("Email"),
+    ZUGFERD_FIELD_PHONE("Phone"),
+    ZUGFERD_FIELD_IBAN("IBAN"),
+    ZUGFERD_MISSING_DATA("The following data is missing for a valid electronic invoice:"),
+    ZUGFERD_CONTINUE_ANYWAY("Create the electronic invoice anyway?"),
+    ZUGFERD_CREATED("Electronic invoice created");
 
 
     /**

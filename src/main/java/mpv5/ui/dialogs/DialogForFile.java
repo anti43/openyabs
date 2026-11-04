@@ -242,7 +242,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
                   return true;
                } else {
                   if (!Popup.Y_N_dialog(Messages.FILE_EXISTS + "\n" + getSelectedFile())) {
-                     saveFile();
+                     return saveFile();
                   } else {
                      this.file = this.getSelectedFile();
                      CURRENT_DIR = file.getParentFile();

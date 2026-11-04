@@ -37,10 +37,12 @@ import mpv5.db.common.Triggerable;
 import mpv5.globals.Constants;
 import mpv5.globals.GlobalSettings;
 import mpv5.globals.Headers;
+import mpv5.globals.Messages;
 import mpv5.handler.VariablesHandler;
 import mpv5.logging.Log;
 import mpv5.ui.panels.ItemPanel2;
 import mpv5.utils.date.DateConverter;
+import mpv5.utils.export.ZugpferdFile;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
 import org.mustangproject.ZUGFeRD.IZUGFeRDExportableItem;
@@ -1093,13 +1095,50 @@ public final class SubItem extends DatabaseObject implements Triggerable {
         return null;
     }
 
-    public IZUGFeRDExportableItem asZugpferdSubitem() {
-        return new org.mustangproject.Item(
-                new org.mustangproject.Product(getCname(),
-                __getDescription(),
-                __getMeasure(),
-                __getTaxpercentvalue()),
-                __getTotalbrutvalue(),
-                __getQuantityvalue());
+    /**
+     * Create an electronic invoice line from this item
+     *
+     * @param taxExemptionReason the reason given for lines without VAT
+     * @return the line or null if this is a text only / empty row
+     */
+    public IZUGFeRDExportableItem asZugpferdSubitem(String taxExemptionReason) {
+        BigDecimal quantity = quantityvalue == null ? BigDecimal.ZERO : quantityvalue;
+        BigDecimal price = externalvalue == null ? BigDecimal.ZERO : externalvalue;
+        BigDecimal tax = taxpercentvalue == null ? BigDecimal.ZERO : taxpercentvalue;
+        String text = ZugpferdFile.plainText(description);
+        String name = ZugpferdFile.plainText(getCname());
+
+        if (inttype == TYPE_TEXT || quantity.signum() == 0
+                || (price.signum() == 0 && text.isEmpty() && name.isEmpty())) {
+            return null;
+        }
+        if (name.isEmpty()) {
+            name = text.split("\n", 2)[0];
+        }
+        if (name.length() > 200) {
+            name = name.substring(0, 197) + "...";
+        }
+        if (name.isEmpty()) {
+            name = Messages.TYPE_SUBITEM.toString();
+        }
+
+        org.mustangproject.Product product = new org.mustangproject.Product(
+                name, text.equals(name) ? "" : text, ZugpferdFile.toUnitCode(measure), tax);
+        if (tax.signum() == 0) {
+            product.setTaxCategoryCode("E");
+            product.setTaxExemptionReason(taxExemptionReason);
+        }
+
+        org.mustangproject.Item line = new org.mustangproject.Item(product, price, quantity);
+        if (discount != null && discount.signum() != 0) {
+            //Mustang 2.26 treats line allowances as absolute amount for the whole line
+            //(2.15 applied them per unit) - covered by ZugpferdFileTest
+            BigDecimal amount = quantity.multiply(price).multiply(discount)
+                    .divide(BD100, 2, BigDecimal.ROUND_HALF_UP);
+            line.addAllowance(new org.mustangproject.Allowance(amount)
+                    .setTaxPercent(tax)
+                    .setReason(Messages.ZUGFERD_DISCOUNT + " " + discount.stripTrailingZeros().toPlainString() + "%"));
+        }
+        return line;
     }
 }

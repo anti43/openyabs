@@ -21,6 +21,7 @@ import mpv5.logging.Log;
 import mpv5.ui.panels.ContactPanel;
 import mpv5.utils.images.MPIcon;
 import mpv5.utils.text.RandomText;
+import mpv5.utils.export.ZugpferdFile;
 import org.mustangproject.TradeParty;
 
 /**
@@ -779,7 +780,55 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
         return save();
     }
 
+    /**
+     * Create the buyer of an electronic invoice from the invoice address of
+     * this contact
+     *
+     * @return
+     */
     public TradeParty asZugpferdTradeparty() {
-        return new TradeParty("Franz Müller", "teststr.12", "55232", "Entenhausen", "DE");
+        return asZugpferdTradeparty(getInvoiceaddress());
+    }
+
+    /**
+     * Create the buyer of an electronic invoice using the given address
+     *
+     * @param address
+     * @return
+     */
+    public TradeParty asZugpferdTradeparty(Address address) {
+        Address a = address == null ? getDefaultaddress() : address;
+        String person = ZugpferdFile.join(" ", a.__getPrename(), a.__getCname());
+        String company = ZugpferdFile.firstNonEmpty(a.__getCompany(), __getCompany());
+        String name = ZugpferdFile.firstNonEmpty(company, person, __getCname());
+
+        TradeParty party = new TradeParty(name,
+                ZugpferdFile.nvl(a.__getStreet()),
+                ZugpferdFile.nvl(a.__getZip()),
+                ZugpferdFile.nvl(a.__getCity()),
+                ZugpferdFile.toCountryCode(ZugpferdFile.firstNonEmpty(a.__getCountry(), __getCountry())));
+        if (!ZugpferdFile.isEmpty(__getCNumber())) {
+            party.setID(__getCNumber().trim());
+        }
+        if (!ZugpferdFile.isEmpty(a.__getDepartment())) {
+            party.setAdditionalAddress(a.__getDepartment().trim());
+        }
+
+        String taxId = ZugpferdFile.firstNonEmpty(a.__getTaxnumber(), __getTaxnumber()).replaceAll("\\s", "");
+        if (taxId.matches("[A-Za-z]{2}[A-Za-z0-9+*.]{2,13}")) {
+            party.setVATID(taxId.toUpperCase());
+        } else if (!taxId.isEmpty()) {
+            party.setTaxID(taxId);
+        }
+
+        String mail = ZugpferdFile.nvl(__getMailaddress()).trim();
+        if (!mail.isEmpty()) {
+            party.setEmail(mail);
+        }
+        String phone = ZugpferdFile.firstNonEmpty(__getWorkphone(), __getMainphone(), __getMobilephone());
+        if (!company.isEmpty() && !person.isEmpty() || !phone.isEmpty() || !mail.isEmpty()) {
+            party.setContact(new org.mustangproject.Contact(ZugpferdFile.firstNonEmpty(person, name), phone, mail));
+        }
+        return party;
     }
 }

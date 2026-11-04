@@ -12,6 +12,9 @@ repositories {
 dependencies {
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    // official EN16931 / XRechnung schematron validation of generated e-invoices
+    testImplementation 'org.mustangproject:validator:2.26.0'
 }
 
 test {
@@ -20,12 +23,17 @@ test {
 
 dependencies {
     implementation fileTree(dir: '/lib', include: ['*.jar'])
-    implementation 'org.mustangproject:library:2.15.2'
 }
 
 compileJava   {
     sourceCompatibility = '1.8'
     targetCompatibility = '1.8'
+}
+
+// The Mustang (ZUGFeRD) libraries in lib/ require Java 11+ at runtime anyway,
+// so do not let Gradle reject dependencies built for newer JVMs
+java {
+    disableAutoTargetJvm()
 }
 
 // Using dependency list to generate a manifest with appropriate classpath
