@@ -109,7 +109,7 @@ public class PropertyDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(labeledTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(labeledTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE)
+                .addComponent(labeledTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, mpv5.utils.ui.FitSize.w(labeledTextField2, 207), Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(

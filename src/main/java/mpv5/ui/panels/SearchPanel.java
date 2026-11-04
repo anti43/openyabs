@@ -153,11 +153,11 @@ public class SearchPanel extends javax.swing.JPanel {
         results.setLayout(resultsLayout);
         resultsLayout.setHorizontalGroup(
             resultsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(resultsscrollpane, javax.swing.GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE)
+            .addComponent(resultsscrollpane, javax.swing.GroupLayout.DEFAULT_SIZE, mpv5.utils.ui.FitSize.w(resultsscrollpane, 151), Short.MAX_VALUE)
         );
         resultsLayout.setVerticalGroup(
             resultsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(resultsscrollpane, javax.swing.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE)
+            .addComponent(resultsscrollpane, javax.swing.GroupLayout.DEFAULT_SIZE, mpv5.utils.ui.FitSize.h(resultsscrollpane, 158), Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -165,12 +165,12 @@ public class SearchPanel extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(results, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(searchfields, javax.swing.GroupLayout.DEFAULT_SIZE, 163, Short.MAX_VALUE)
+            .addComponent(searchfields, javax.swing.GroupLayout.DEFAULT_SIZE, mpv5.utils.ui.FitSize.w(searchfields, 163), Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(searchfields, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(searchfields, javax.swing.GroupLayout.PREFERRED_SIZE, mpv5.utils.ui.FitSize.h(searchfields, 55), javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addComponent(results, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );

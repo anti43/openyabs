@@ -348,11 +348,11 @@ public class DataPanelTB extends javax.swing.JPanel implements ActionListener, I
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(commonActionsToolbar, javax.swing.GroupLayout.DEFAULT_SIZE, 583, Short.MAX_VALUE)
+            .addComponent(commonActionsToolbar, javax.swing.GroupLayout.DEFAULT_SIZE, mpv5.utils.ui.FitSize.w(commonActionsToolbar, 583), Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(commonActionsToolbar, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(commonActionsToolbar, javax.swing.GroupLayout.PREFERRED_SIZE, mpv5.utils.ui.FitSize.h(commonActionsToolbar, 41), javax.swing.GroupLayout.PREFERRED_SIZE)
         );
     }
 
