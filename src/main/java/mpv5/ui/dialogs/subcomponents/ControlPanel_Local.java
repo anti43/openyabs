@@ -121,7 +121,7 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(authpanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(user)
-                    .addComponent(password, javax.swing.GroupLayout.DEFAULT_SIZE, mpv5.utils.ui.FitSize.w(password, 292), Short.MAX_VALUE))
+                    .addComponent(password, javax.swing.GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE))
                 .addContainerGap())
         );
         authpanelLayout.setVerticalGroup(
@@ -151,11 +151,11 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel2)
                                 .addGap(18, 18, 18)
-                                .addComponent(proxy, javax.swing.GroupLayout.PREFERRED_SIZE, mpv5.utils.ui.FitSize.w(proxy, 240), javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(proxy, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, mpv5.utils.ui.FitSize.w(jLabel3, 69), javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(port, javax.swing.GroupLayout.PREFERRED_SIZE, mpv5.utils.ui.FitSize.w(port, 55), javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(port, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jLabel1)
                             .addComponent(authpanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 220, Short.MAX_VALUE)))
@@ -190,7 +190,7 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(printdev, javax.swing.GroupLayout.DEFAULT_SIZE, mpv5.utils.ui.FitSize.w(printdev, 658), Short.MAX_VALUE)
+            .addComponent(printdev, javax.swing.GroupLayout.DEFAULT_SIZE, 658, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -216,8 +216,8 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(autolock, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, mpv5.utils.ui.FitSize.w(autolock, 652), Short.MAX_VALUE)
-                    .addComponent(escape, javax.swing.GroupLayout.DEFAULT_SIZE, mpv5.utils.ui.FitSize.w(escape, 652), Short.MAX_VALUE))
+                    .addComponent(autolock, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 652, Short.MAX_VALUE)
+                    .addComponent(escape, javax.swing.GroupLayout.DEFAULT_SIZE, 652, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -252,7 +252,7 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(backupbasedir, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, mpv5.utils.ui.FitSize.w(backupbasedir, 648), Short.MAX_VALUE)
+                    .addComponent(backupbasedir, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 648, Short.MAX_VALUE)
                     .addComponent(savebasedir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
