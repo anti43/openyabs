@@ -65,6 +65,7 @@ import mpv5.globals.GlobalSettings;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Notificator;
 import mpv5.utils.files.FileDirectoryHandler;
+import mpv5.utils.xdocreport.EmbeddingFontRegistry;
 import mpv5.utils.xdocreport.YabsFontFactoryImpl;
 import mpv5.utils.xdocreport.YabsODTPreprocessor;
 //import org.odftoolkit.odfdom.converter.core.ODFConverterException;
@@ -83,6 +84,7 @@ public class ODTFile2 extends Exportable {
     private FileOutputStream outtmp;
     private OdfTextDocument document;
     private final PdfOptions options;
+    private final PdfOptions pdfaOptions;
     private final IXDocReport report;
     private final FieldsExtractor<FieldExtractor> extractor;
 
@@ -102,6 +104,8 @@ public class ODTFile2 extends Exportable {
         ITextFontRegistry reg = ITextFontRegistry.getRegistry();
         options = PdfOptions.create();
         options.fontProvider(reg);
+        pdfaOptions = PdfOptions.create();
+        pdfaOptions.fontProvider(EmbeddingFontRegistry.getRegistry());
         report = XDocReportRegistry.getRegistry().loadReport(new FileInputStream(this), TemplateEngineKind.Velocity);
         extractor = FieldsExtractor.create();
         report.removePreprocessor(ODTConstants.CONTENT_XML_ENTRY);
@@ -121,7 +125,9 @@ public class ODTFile2 extends Exportable {
                 Log.Debug(this, "Replaced Fields of odt file: " + this + " to " + f);
                 document = OdfTextDocument.loadDocument(f);
                 Log.Debug(this, "Loaded odt file: " + f);
-                PdfConverter.getInstance().convert(document, new FileOutputStream(target), options);
+                try (FileOutputStream pdf = new FileOutputStream(target)) {
+                    PdfConverter.getInstance().convert(document, pdf, isEmbedAllFonts() ? pdfaOptions : options);
+                }
                 Log.Debug(this, "Completed pdf file: " + target);
                 Log.Debug(this, "Test access pdf file exists: " + target.exists() + " readable: " + target.canRead());
             } else {

@@ -16,9 +16,16 @@ import mpv5.db.objects.Address;
 import mpv5.db.objects.Contact;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.SubItem;
+import fr.opensagres.odfdom.converter.pdf.PdfConverter;
+import fr.opensagres.odfdom.converter.pdf.PdfOptions;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import mpv5.utils.date.DateConverter;
+import mpv5.utils.xdocreport.EmbeddingFontRegistry;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.junit.jupiter.api.Test;
+import org.odftoolkit.odfdom.doc.OdfTextDocument;
 import org.junit.jupiter.api.io.TempDir;
 import org.mustangproject.Invoice;
 import org.mustangproject.TradeParty;
@@ -110,6 +117,13 @@ class ZugpferdFileTest {
         assertEquals("LS", ZugpferdFile.toUnitCode("pauschal"));
         assertEquals("KGM", ZugpferdFile.toUnitCode("KGM"));
         assertEquals("C62", ZugpferdFile.toUnitCode("irgendwas"));
+        assertEquals("C62", ZugpferdFile.toUnitCode("EUR"), "not a unit code");
+        assertEquals("US", ZugpferdFile.toCountryCode("USA"));
+        assertEquals("GB", ZugpferdFile.toCountryCode("UK"));
+        assertEquals("AT", ZugpferdFile.toCountryCode("Österreich"));
+        assertEquals("", ZugpferdFile.toCountryCode("Atlantis"), "unknown must not silently become DE");
+        assertEquals("", ZugpferdFile.toCountryCode("999"));
+        assertEquals("", ZugpferdFile.toCountryCode("99999999999"));
         assertEquals("a & b\nc", ZugpferdFile.plainText("<p>a &amp; <b>b</b></p><div>c</div>"));
     }
 
@@ -131,7 +145,92 @@ class ZugpferdFileTest {
         assertTrue(s.contains("unitCode=\"HUR\""), "unit code");
         assertTrue(s.matches("(?s).*<ram:TaxBasisTotalAmount>300.00</ram:TaxBasisTotalAmount>.*"), s);
         assertTrue(s.matches("(?s).*<ram:GrandTotalAmount>357.00</ram:GrandTotalAmount>.*"), s);
-        validateIfPossible(xml);
+        assertValid(xml);
+    }
+
+    @Test
+    void dueDateIsInvoiceDatePlusPaymentTerm() throws Exception {
+        //YaBS sets "datetodo" (last edited) to the day of saving - it must not be used as due date
+        Item item = invoice();
+        item.setDatetodo(item.__getDateadded());
+        SubItem[] lines = {line("a", "", "1", "Stk", "100", "19", "0")};
+        Map<String, String> c = company();
+        Invoice withTerm = ZugpferdFile.createInvoice(item, lines, ZugpferdFile.createSender(c::get), buyer(), "ref", 30, null);
+        assertEquals(DateConverter.addDays(item.__getDateadded(), 30), withTerm.getDueDate());
+
+        item.setDatetodo(null);
+        Invoice noTerm = ZugpferdFile.createInvoice(item, lines, ZugpferdFile.createSender(c::get), buyer(), "ref", 0, null);
+        assertEquals(DateConverter.addDays(item.__getDateadded(), ZugpferdFile.DEFAULT_PAYTERM_DAYS), noTerm.getDueDate());
+
+        File xml = tmp.resolve("noterm.xml").toFile();
+        ZugpferdFile.writeXml(noTerm, xml);
+        assertValid(xml);
+    }
+
+    @Test
+    void sellerNeedsVatId() throws Exception {
+        Map<String, String> c = company();
+        c.remove("account1");
+        Invoice invoice = ZugpferdFile.createInvoice(invoice(), new SubItem[]{line("a", "", "1", "Stk", "100", "19", "0")},
+                ZugpferdFile.createSender(c::get), buyer(), "ref", 0, null);
+        List<String> problems = ZugpferdFile.validate(invoice);
+        assertTrue(problems.toString().contains(mpv5.globals.Messages.ZUGFERD_FIELD_VATID.toString()), problems.toString());
+
+        //and the official validator agrees (BR-CO-26)
+        File xml = tmp.resolve("novat.xml").toFile();
+        ZugpferdFile.writeXml(invoice, xml);
+        EInvoiceValidator.Result result = EInvoiceValidator.validate(xml);
+        assertFalse(result.isValid());
+        assertTrue(result.getErrors().toString().contains("BR-CO-26"), result.getErrors().toString());
+    }
+
+    @Test
+    void findsIbanAndBicWhateverFieldTheyAreIn() {
+        //older German labels: "Konto" = account, "IBAN" = banknumber
+        Map<String, String> c = company();
+        c.put("account", "1234567890");
+        c.put("banknumber", "DE02 1203 0000 0000 2020 51");
+        c.put("bic", "BYLADEM1001");
+        TradeParty sender = ZugpferdFile.createSender(c::get);
+        assertEquals("DE02120300000000202051", sender.getBankDetails().get(0).getIBAN());
+        assertEquals("BYLADEM1001", sender.getBankDetails().get(0).getBIC());
+    }
+
+    @Test
+    void reportsInvalidIban() {
+        Map<String, String> c = company();
+        c.put("account", "DE03 1203 0000 0000 2020 51");
+        Invoice invoice = ZugpferdFile.createInvoice(invoice(), new SubItem[]{line("a", "", "1", "Stk", "100", "19", "0")},
+                ZugpferdFile.createSender(c::get), buyer(), "ref", 0, null);
+        String problems = ZugpferdFile.validate(invoice).toString();
+        assertTrue(problems.contains(mpv5.globals.Messages.ZUGFERD_INVALID_IBAN.toString()), problems);
+    }
+
+    @Test
+    void reportsUnknownCountry() {
+        Map<String, String> c = company();
+        c.put("country", "Atlantis");
+        Invoice invoice = ZugpferdFile.createInvoice(invoice(), new SubItem[]{line("a", "", "1", "Stk", "100", "19", "0")},
+                ZugpferdFile.createSender(c::get), buyer(), "ref", 0, null);
+        String problems = ZugpferdFile.validate(invoice).toString();
+        assertTrue(problems.contains(mpv5.globals.Messages.ZUGFERD_FIELD_COUNTRY.toString()), problems);
+    }
+
+    @Test
+    void depositInvoiceCodes() throws Exception {
+        assertNull(ZugpferdFile.documentCode(Item.TYPE_DEPOSIT, ZugpferdFile.Format.XRECHNUNG), "386 violates BR-DE-17");
+        assertEquals("386", ZugpferdFile.documentCode(Item.TYPE_DEPOSIT, ZugpferdFile.Format.ZUGFERD));
+        assertEquals("326", ZugpferdFile.documentCode(Item.TYPE_PART_PAYMENT, ZugpferdFile.Format.XRECHNUNG));
+        assertNull(ZugpferdFile.documentCode(Item.TYPE_INVOICE, ZugpferdFile.Format.ZUGFERD));
+
+        Item deposit = invoice();
+        deposit.setInttype(Item.TYPE_DEPOSIT);
+        Map<String, String> c = company();
+        Invoice invoice = ZugpferdFile.createInvoice(deposit, new SubItem[]{line("a", "", "1", "Stk", "100", "19", "0")},
+                ZugpferdFile.createSender(c::get), buyer(), "ref", 0, null, ZugpferdFile.Format.XRECHNUNG);
+        File xml = tmp.resolve("deposit.xml").toFile();
+        ZugpferdFile.writeXml(invoice, xml);
+        assertValid(xml);
     }
 
     @Test
@@ -169,29 +268,49 @@ class ZugpferdFileTest {
         String xml = new String(importer.getRawXML(), StandardCharsets.UTF_8);
         assertTrue(xml.contains("urn:cen.eu:en16931:2017"), xml);
         assertTrue(xml.contains("357.00"));
-        validateIfPossible(pdf);
+
+        //the blank test page has no fonts, so the whole file must be valid PDF/A-3 + EN16931
+        assertValid(pdf);
     }
 
     /**
-     * Runs the official Mustang validator (schema + schematron) if it is on
-     * the test classpath
+     * The template PDF must embed all fonts (PDF/A-3), even those which are not
+     * installed (the bundled template uses Arial)
      */
-    private static void validateIfPossible(File file) throws Exception {
-        Class<?> c;
-        try {
-            c = Class.forName("org.mustangproject.validator.ZUGFeRDValidator");
-        } catch (ClassNotFoundException e) {
-            return;
+    @Test
+    void templatePdfIsPdfA3() throws Exception {
+        File plain = tmp.resolve("template.pdf").toFile();
+        OdfTextDocument doc = OdfTextDocument.loadDocument(new File("ext/templates/Yabs-1.2-Template-DE.odt"));
+        PdfOptions options = PdfOptions.create();
+        options.fontProvider(EmbeddingFontRegistry.getRegistry());
+        try (OutputStream out = new FileOutputStream(plain)) {
+            PdfConverter.getInstance().convert(doc, out, options);
         }
-        Object validator = c.getConstructor().newInstance();
-        String report = (String) c.getMethod("validate", String.class).invoke(validator, file.getAbsolutePath());
-        Files.write(new File(file.getPath() + ".report.xml").toPath(), report.getBytes(StandardCharsets.UTF_8));
-        System.out.println(file.getName() + ": " + report);
-        if (file.getName().endsWith(".xml")) {
-            assertTrue(report.contains("status=\"valid\""), report);
-        } else {
-            //the PDF is a plain PDF/A-less test document, only check the XML part
-            assertFalse(report.matches("(?s).*<xml[^>]*>.*?<summary status=\"invalid\".*?</xml>.*"), report);
-        }
+        File pdf = tmp.resolve("R-2026-0042-template.pdf").toFile();
+        ZugpferdFile.writePdf(build(), plain, pdf);
+        assertValid(pdf);
+    }
+
+    @Test
+    void validatorReportsPdfAErrors() throws Exception {
+        String report = "<validation><pdf>ValidationResult [flavour=3u, assertions=[TestAssertion [ruleId=RuleId "
+                + "[specification=ISO 19005-3:2012, clause=6.2.11.4.1, testNumber=1], status=failed, message=The font "
+                + "programs for all fonts used shall be embedded, location=Location [level=CosDocument]]]<summary "
+                + "status=\"invalid\"/></pdf><xml><messages></messages><summary status=\"valid\"/></xml>"
+                + "<summary status=\"valid\"/></validation>";
+        EInvoiceValidator.Result result = EInvoiceValidator.parse(report);
+        assertFalse(result.isValid());
+        assertEquals(1, result.getErrors().size());
+        assertTrue(result.getErrors().get(0).startsWith("PDF/A: The font programs"));
+    }
+
+    /**
+     * Runs the official validator (schema, EN16931 + XRechnung schematron,
+     * PDF/A-3)
+     */
+    private static void assertValid(File file) throws Exception {
+        EInvoiceValidator.Result result = EInvoiceValidator.validate(file);
+        Files.write(new File(file.getPath() + ".report.xml").toPath(), result.getReport().getBytes(StandardCharsets.UTF_8));
+        assertTrue(result.isValid(), file.getName() + ": " + result.getErrors());
     }
 }

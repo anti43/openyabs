@@ -15,6 +15,7 @@ import mpv5.ui.beans.LabeledTextField;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.Popup;
 import mpv5.usermanagement.MPSecurityManager;
+import mpv5.utils.text.Iban;
 import mpv5.utils.ui.PanelUtils;
 
 /**
@@ -235,7 +236,27 @@ public final class ControlPanel_Company extends javax.swing.JPanel implements Co
 
         setSettings();
         User.getCurrentUser().saveProperties();
+        checkBankDetails();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    /**
+     * Warn about an invalid IBAN / BIC (they are used for e-invoices and QR
+     * codes)
+     */
+    private void checkBankDetails() {
+        StringBuilder problems = new StringBuilder();
+        String ibanValue = account.getText();
+        if (ibanValue != null && !ibanValue.trim().isEmpty() && !Iban.isValid(ibanValue)) {
+            problems.append("\n - ").append(Messages.ZUGFERD_INVALID_IBAN).append(": ").append(ibanValue);
+        }
+        String bicValue = banknumber.getText();
+        if (bicValue != null && !bicValue.trim().isEmpty() && !Iban.isValidBic(bicValue)) {
+            problems.append("\n - ").append(Messages.ZUGFERD_INVALID_BIC).append(": ").append(bicValue);
+        }
+        if (problems.length() > 0) {
+            Popup.warn(Messages.COMPANY_CHECK_BANK + "\n" + problems);
+        }
+    }
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         reset();

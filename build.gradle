@@ -13,8 +13,6 @@ dependencies {
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    // official EN16931 / XRechnung schematron validation of generated e-invoices
-    testImplementation 'org.mustangproject:validator:2.26.0'
 }
 
 test {
@@ -22,7 +20,8 @@ test {
 }
 
 dependencies {
-    implementation fileTree(dir: '/lib', include: ['*.jar'])
+    // relative to the project; the Mustang library and validator (e-invoices) are in lib/ as well
+    implementation fileTree(dir: 'lib', include: ['*.jar'])
 }
 
 compileJava   {
