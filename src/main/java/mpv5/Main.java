@@ -384,10 +384,7 @@ public class Main implements Runnable {
         try {
             getOS();
             setEnv(null);
-            mpv5.ui.Appearance.install();
-            UIManager.setLookAndFeel(mpv5.ui.Appearance.LIGHT);
-            //enlarge fixed size labels, buttons and date fields which are too small for their text
-            mpv5.utils.ui.FitSize.install();
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
             splash = new SplashScreen(new ImageIcon(Main.class.getResource(mpv5.globals.Constants.SPLASH_IMAGE)));
             splash.init(12);
@@ -717,16 +714,20 @@ public class Main implements Runnable {
     public static void setLaF(final String lafname) {
         if (!Main.nolf && !HEADLESS) {
             try {
-                mpv5.ui.Appearance.install();
-                //FlatLaf (light) unless the user chose something else
-                String laf = mpv5.ui.Appearance.resolve(lafname);
-                try {
-                    Class.forName(laf);
-                } catch (ClassNotFoundException ex) {
-                    Log.Debug(Main.class, "Laf not valid here: " + laf);
-                    laf = mpv5.ui.Appearance.LIGHT;
+                if (lafname != null && lafname.trim().length() > 0) {
+                    try {
+                        Class.forName(lafname);
+                    } catch (ClassNotFoundException ex) {
+                        Log.Debug(Main.class, "Laf not valid here: " + lafname);
+                        return;
+                    }
+                    UIManager.setLookAndFeel(lafname);
+
+//                    BasicLookAndFeel darcula = new DarculaLaf();
+//                    UIManager.setLookAndFeel(darcula);
+                } else {
+                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                 }
-                UIManager.setLookAndFeel(laf);
                 LookAndFeelAddons.setAddon(LookAndFeelAddons.getBestMatchAddonClassName());
 
             } catch (Exception exe) {
@@ -740,12 +741,7 @@ public class Main implements Runnable {
             }
             try {
                 if (getApplication().isReady() && getApplication().getMainView().getFrame() != null && (getApplication().getMainView()).getFrame().isShowing()) {
-                    //all windows, not only the main frame (dialogs, popups)
-                    for (java.awt.Window w : java.awt.Window.getWindows()) {
-                        SwingUtilities.updateComponentTreeUI(w);
-                    }
-                    //fonts may have changed
-                    mpv5.utils.ui.FitSize.fitAllLater();
+                    SwingUtilities.updateComponentTreeUI((getApplication().getMainView()).getFrame());
                     ((YabsView) getApplication().getMainView()).getIdentifierFrame().validate();
                 }
             } catch (Exception e) {

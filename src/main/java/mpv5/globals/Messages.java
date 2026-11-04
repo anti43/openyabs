@@ -429,9 +429,7 @@ public enum Messages {
     COMPANY_BIC_INVALID_HINT("Not a valid BIC (8 or 11 characters), e.g. BYLADEM1001"),
     CONTACT_VATID_TOOLTIP("VAT ID of the customer with country code, e.g. DE123456789 (optional; no tax number - it cannot be used in e-invoices)"),
     CONTACT_VATID_INVALID("Not a valid VAT ID: it must start with the country code, e.g. DE123456789 (German: DE + 9 digits). A tax number (Steuernummer) is not allowed here - leave the field empty if the customer has no VAT ID."),
-    COMPANY_REQUIRED_LEGEND("required for e-invoices (instead of Business, Name is sufficient)"),
-    APPEARANCE_LIGHT("Light"),
-    APPEARANCE_DARK("Dark");
+    COMPANY_REQUIRED_LEGEND("required for e-invoices (instead of Business, Name is sufficient)");
 
 
     /**

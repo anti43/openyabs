@@ -28,19 +28,6 @@ public class YabsApplication extends SingleFrameApplication {
         main.startup();
     }
 
-    /**
-     * The application framework has just set its default look and feel
-     * ("system"), restore the YaBS default (FlatLaf) until the user is logged
-     * in, see {@link #ready()}
-     *
-     * @param args
-     */
-    @Override
-    protected void initialize(String[] args) {
-        super.initialize(args);
-        Main.setLaF(null);
-    }
-
     public FrameView getView() {
         return getMainView();
     }

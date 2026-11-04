@@ -569,7 +569,6 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
         MPView.identifierApplication = app;
 
         initComponents();
-        initAppearanceMenu();
 
         initNav();
 
@@ -1545,7 +1544,7 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
         naviPanelLayout.setVerticalGroup(
             naviPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(naviPanelLayout.createSequentialGroup()
-                .addComponent(nav_outlookbar, javax.swing.GroupLayout.PREFERRED_SIZE, mpv5.utils.ui.FitSize.h(nav_outlookbar, 497), Short.MAX_VALUE)
+                .addComponent(nav_outlookbar, javax.swing.GroupLayout.PREFERRED_SIZE, 497, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -1556,12 +1555,12 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
             .addGroup(mainPanelLayout.createSequentialGroup()
                 .addComponent(naviPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tabpanePanel, javax.swing.GroupLayout.DEFAULT_SIZE, mpv5.utils.ui.FitSize.w(tabpanePanel, 661), Short.MAX_VALUE))
+                .addComponent(tabpanePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 661, Short.MAX_VALUE))
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(naviPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(tabpanePanel, javax.swing.GroupLayout.DEFAULT_SIZE, mpv5.utils.ui.FitSize.h(tabpanePanel, 512), Short.MAX_VALUE)
+            .addComponent(tabpanePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 512, Short.MAX_VALUE)
         );
 
         menuBar.setName("menuBar"); // NOI18N
@@ -2396,47 +2395,10 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
     }//GEN-LAST:event_jButton18ActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        setAppearance(mpv5.ui.Appearance.SYSTEM);
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
-
-    /**
-     * Light / Dark / System entries in View &gt; Layout
-     */
-    private void initAppearanceMenu() {
-        final javax.swing.JRadioButtonMenuItem light = new javax.swing.JRadioButtonMenuItem(Messages.APPEARANCE_LIGHT.toString());
-        final javax.swing.JRadioButtonMenuItem dark = new javax.swing.JRadioButtonMenuItem(Messages.APPEARANCE_DARK.toString());
-        light.addActionListener(e -> setAppearance(mpv5.ui.Appearance.LIGHT));
-        dark.addActionListener(e -> setAppearance(mpv5.ui.Appearance.DARK));
-        jMenu2.insert(light, 0);
-        jMenu2.insert(dark, 1);
-        jMenu2.addMenuListener(new javax.swing.event.MenuListener() {
-            @Override
-            public void menuSelected(javax.swing.event.MenuEvent e) {
-                String current = UIManager.getLookAndFeel().getClass().getName();
-                light.setSelected(mpv5.ui.Appearance.LIGHT.equals(current));
-                dark.setSelected(mpv5.ui.Appearance.DARK.equals(current));
-            }
-
-            @Override
-            public void menuDeselected(javax.swing.event.MenuEvent e) {
-            }
-
-            @Override
-            public void menuCanceled(javax.swing.event.MenuEvent e) {
-            }
-        });
-    }
-
-    /**
-     * Switch and store the look and feel of the current user
-     *
-     * @param laf {@link mpv5.ui.Appearance#LIGHT}, DARK, SYSTEM or a class name
-     */
-    private void setAppearance(String laf) {
-        Main.setLaF(laf);
-        User.getCurrentUser().setLaf(laf);
+        Main.setLaF(null);
+        User.getCurrentUser().setLaf(UIManager.getSystemLookAndFeelClassName());
         User.getCurrentUser().save();
-    }
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
         addOrShowTab(MPControlPanel.instanceOf(), Messages.CONTROL_PANEL.toString());
