@@ -22,11 +22,14 @@ import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.objects.Contact;
@@ -41,6 +44,7 @@ import mpv5.handler.TemplateHandler;
 import mpv5.logging.Log;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.jobs.Waitable;
+import mpv5.utils.text.Iban;
 import org.mustangproject.BankDetails;
 import org.mustangproject.Invoice;
 import org.mustangproject.TradeParty;
@@ -62,7 +66,13 @@ import org.mustangproject.ZUGFeRD.ZUGFeRDExporterFromA3;
  * <code>companyinfo.*</code>), buyer data from the invoice contact. The buyer
  * reference (Leitweg-ID) is read from a value property named
  * {@value #KEY_BUYER_REFERENCE} on the invoice or the contact; if none exists
- * the customer number is used.
+ * the customer number is used. The due date is the invoice date plus the
+ * payment term of the contact ({@value #DEFAULT_PAYTERM_DAYS} days if the
+ * contact has none).
+ * <p>
+ * After writing, the file is checked with the official validator (see
+ * {@link EInvoiceValidator}), the result is available via
+ * {@link #getValidation()}.
  */
 public class ZugpferdFile implements Waitable {
 
@@ -97,11 +107,16 @@ public class ZugpferdFile implements Waitable {
     public static final String KEY_TAX_EXEMPTION_REASON = "taxexemptionreason";
     public static final String DEFAULT_TAX_EXEMPTION_REASON = "Umsatzsteuerbefreit";
     public static final String DEFAULT_CURRENCY = "EUR";
+    /**
+     * Payment term used if the contact has none
+     */
+    public static final int DEFAULT_PAYTERM_DAYS = 14;
     private static final String COMPANY_PREFIX = "companyinfo.";
     private final Item item;
     private final File target;
     private final Format format;
     private final Invoice prepared;
+    private EInvoiceValidator.Result validation;
 
     /**
      * @param item the invoice
@@ -135,6 +150,14 @@ public class ZugpferdFile implements Waitable {
     }
 
     /**
+     * @return the result of the validation of the written file, null if the
+     * file has not been written (yet) or the validator could not run
+     */
+    public EInvoiceValidator.Result getValidation() {
+        return validation;
+    }
+
+    /**
      * @param item
      * @return true if an electronic invoice can be created for this item type
      */
@@ -150,7 +173,8 @@ public class ZugpferdFile implements Waitable {
     public Exception waitFor() {
         try {
             mpv5.YabsViewProxy.instance().setWaiting(true);
-            Invoice invoice = prepared != null ? prepared : createInvoice(item);
+            validation = null;
+            Invoice invoice = prepared != null ? prepared : createInvoice(item, format);
             if (format == Format.XRECHNUNG) {
                 writeXml(invoice, target);
             } else {
@@ -162,6 +186,12 @@ public class ZugpferdFile implements Waitable {
                 }
             }
             Log.Debug(this, "E-Rechnung written: " + target);
+            try {
+                validation = EInvoiceValidator.validate(target);
+            } catch (Throwable t) {
+                //the file has been written, a missing validator must not hide that
+                Log.Debug(this, "E-Rechnung could not be validated: " + t);
+            }
             return null;
         } catch (Exception ex) {
             Log.Debug(ex);
@@ -175,17 +205,32 @@ public class ZugpferdFile implements Waitable {
      * Build the Mustang invoice from a stored YaBS invoice
      *
      * @param item
+     * @param format the target format (decides e.g. the document type code)
      * @return
      * @throws NodataFoundException if the contact does not exist
      */
-    public static Invoice createInvoice(Item item) throws NodataFoundException {
+    public static Invoice createInvoice(Item item, Format format) throws NodataFoundException {
         if (!supports(item)) {
             throw new IllegalArgumentException(Messages.ZUGFERD_NOT_AN_INVOICE + ": " + item);
         }
         Contact contact = item.getContact();
         Function<String, String> company = companySettings();
         return createInvoice(item, item.getSubitems(), createSender(company), contact.asZugpferdTradeparty(),
-                findBuyerReference(item, contact), contact.__getPayterm(), company.apply(KEY_TAX_EXEMPTION_REASON));
+                findBuyerReference(item, contact), contact.__getPayterm(), company.apply(KEY_TAX_EXEMPTION_REASON),
+                format);
+    }
+
+    /**
+     * Build the Mustang invoice (XRechnung) from the given parts (no database
+     * access)
+     *
+     * @see #createInvoice(Item, SubItem[], TradeParty, TradeParty, String,
+     * int, String, Format)
+     */
+    public static Invoice createInvoice(Item item, SubItem[] subitems, TradeParty sender, TradeParty recipient,
+            String buyerReference, int paytermDays, String taxExemptionReason) {
+        return createInvoice(item, subitems, sender, recipient, buyerReference, paytermDays, taxExemptionReason,
+                Format.XRECHNUNG);
     }
 
     /**
@@ -196,17 +241,17 @@ public class ZugpferdFile implements Waitable {
      * @param sender
      * @param recipient
      * @param buyerReference
-     * @param paytermDays
+     * @param paytermDays payment term of the contact in days, &lt;= 0 for the
+     * default of {@value #DEFAULT_PAYTERM_DAYS} days
      * @param taxExemptionReason
+     * @param format
      * @return
      */
     public static Invoice createInvoice(Item item, SubItem[] subitems, TradeParty sender, TradeParty recipient,
-            String buyerReference, int paytermDays, String taxExemptionReason) {
+            String buyerReference, int paytermDays, String taxExemptionReason, Format format) {
         Date issueDate = item.__getDateadded() != null ? item.__getDateadded() : new Date();
-        Date dueDate = item.__getDatetodo();
-        if (dueDate == null || dueDate.before(DateConverter.getStartOfDay(issueDate))) {
-            dueDate = paytermDays > 0 ? DateConverter.addDays(issueDate, paytermDays) : null;
-        }
+        //Item#datetodo is the "last edited" date, not a due date - always use the payment term
+        Date dueDate = dueDate(issueDate, paytermDays);
 
         Invoice invoice = new Invoice()
                 .setNumber(item.__getCnumber())
@@ -216,13 +261,12 @@ public class ZugpferdFile implements Waitable {
                 .setSender(sender)
                 .setRecipient(recipient)
                 .setReferenceNumber(isEmpty(buyerReference) ? item.__getCnumber() : buyerReference.trim());
-        if (dueDate != null) {
-            invoice.setDueDate(dueDate);
-            invoice.setPaymentTermDescription(Messages.ZUGFERD_PAYABLE_UNTIL + " "
-                    + new SimpleDateFormat("dd.MM.yyyy").format(dueDate));
-        }
-        if (item.__getInttype() == Item.TYPE_PART_PAYMENT) {
-            invoice.setDocumentCode("326");//partial invoice
+        invoice.setDueDate(dueDate);
+        invoice.setPaymentTermDescription(Messages.ZUGFERD_PAYABLE_UNTIL + " "
+                + new SimpleDateFormat("dd.MM.yyyy").format(dueDate));
+        String code = documentCode(item.__getInttype(), format);
+        if (code != null) {
+            invoice.setDocumentCode(code);
         }
 
         String reason = isEmpty(taxExemptionReason) ? DEFAULT_TAX_EXEMPTION_REASON : taxExemptionReason;
@@ -238,6 +282,34 @@ public class ZugpferdFile implements Waitable {
             throw new IllegalStateException(Messages.ZUGFERD_NO_ITEMS.toString());
         }
         return invoice;
+    }
+
+    /**
+     * @param issueDate
+     * @param paytermDays
+     * @return issue date + payment term (or {@value #DEFAULT_PAYTERM_DAYS}
+     * days)
+     */
+    public static Date dueDate(Date issueDate, int paytermDays) {
+        return DateConverter.addDays(issueDate, paytermDays > 0 ? paytermDays : DEFAULT_PAYTERM_DAYS);
+    }
+
+    /**
+     * UNTDID 1001 document type code
+     *
+     * @param itemType
+     * @param format
+     * @return the code or null for the default (380, commercial invoice)
+     */
+    static String documentCode(int itemType, Format format) {
+        if (itemType == Item.TYPE_PART_PAYMENT) {
+            return "326";//partial invoice
+        }
+        if (itemType == Item.TYPE_DEPOSIT && format == Format.ZUGFERD) {
+            //prepayment invoice; not allowed by XRechnung (BR-DE-17), there it is a 380
+            return "386";
+        }
+        return null;
     }
 
     /**
@@ -262,12 +334,28 @@ public class ZugpferdFile implements Waitable {
             sender.addTaxID(taxNumber.trim());
         }
 
-        String iban = firstNonEmpty(company.apply("account"), company.apply("iban"));
-        if (!isEmpty(iban)) {
-            BankDetails bank = new BankDetails(iban.replaceAll("\\s", ""));
-            String bic = firstNonEmpty(company.apply("banknumber"), company.apply("bic"));
-            if (!isEmpty(bic)) {
-                bank.setBIC(bic.replaceAll("\\s", ""));
+        //"account" is labelled IBAN and "banknumber" BIC, older (German) versions used
+        //"banknumber" for the IBAN - so pick whatever field holds a valid IBAN / BIC
+        String[] bankFields = {company.apply("account"), company.apply("iban"), company.apply("banknumber"),
+            company.apply("bic")};
+        String iban = null;
+        for (String v : bankFields) {
+            if (Iban.isValid(v)) {
+                iban = Iban.normalize(v);
+                break;
+            }
+        }
+        if (iban == null && !isEmpty(firstNonEmpty(company.apply("account"), company.apply("iban")))) {
+            //keep the invalid value, validate() reports it
+            iban = Iban.normalize(firstNonEmpty(company.apply("account"), company.apply("iban")));
+        }
+        if (iban != null) {
+            BankDetails bank = new BankDetails(iban);
+            for (String v : new String[]{company.apply("banknumber"), company.apply("bic"), company.apply("account")}) {
+                if (Iban.isValidBic(v)) {
+                    bank.setBIC(Iban.normalize(v));
+                    break;
+                }
             }
             bank.setAccountName(name);
             sender.addBankDetails(bank);
@@ -297,13 +385,24 @@ public class ZugpferdFile implements Waitable {
         check(problems, seller, Messages.ZUGFERD_FIELD_STREET, s.getStreet());
         check(problems, seller, Messages.ZUGFERD_FIELD_ZIP, s.getZIP());
         check(problems, seller, Messages.ZUGFERD_FIELD_CITY, s.getLocation());
-        check(problems, seller, Messages.ZUGFERD_FIELD_TAXID, firstNonEmpty(s.getVATID(), s.getTaxID()));
+        checkCountry(problems, seller, s.getCountry());
+        //BR-CO-26: the seller must be identified by the VAT ID, a tax number alone is not enough
+        check(problems, seller, Messages.ZUGFERD_FIELD_VATID, s.getVATID());
         check(problems, seller, Messages.ZUGFERD_FIELD_EMAIL, s.getUriUniversalCommunicationID());
         if (s.getContact() == null || isEmpty(s.getContact().getPhone())) {
             problems.add(seller + Messages.ZUGFERD_FIELD_PHONE);
         }
         if (s.getBankDetails() == null || s.getBankDetails().isEmpty()) {
             problems.add(seller + Messages.ZUGFERD_FIELD_IBAN);
+        } else {
+            for (BankDetails bank : s.getBankDetails()) {
+                if (!Iban.isValid(bank.getIBAN())) {
+                    problems.add(seller + Messages.ZUGFERD_INVALID_IBAN + ": " + bank.getIBAN());
+                }
+                if (!isEmpty(bank.getBIC()) && !Iban.isValidBic(bank.getBIC())) {
+                    problems.add(seller + Messages.ZUGFERD_INVALID_BIC + ": " + bank.getBIC());
+                }
+            }
         }
 
         TradeParty r = invoice.getRecipient();
@@ -312,8 +411,15 @@ public class ZugpferdFile implements Waitable {
         check(problems, buyer, Messages.ZUGFERD_FIELD_STREET, r.getStreet());
         check(problems, buyer, Messages.ZUGFERD_FIELD_ZIP, r.getZIP());
         check(problems, buyer, Messages.ZUGFERD_FIELD_CITY, r.getLocation());
+        checkCountry(problems, buyer, r.getCountry());
         check(problems, buyer, Messages.ZUGFERD_FIELD_EMAIL, r.getUriUniversalCommunicationID());
         return problems;
+    }
+
+    private static void checkCountry(List<String> problems, String prefix, String code) {
+        if (isEmpty(code) || !ISO_COUNTRIES.contains(code)) {
+            problems.add(prefix + Messages.ZUGFERD_FIELD_COUNTRY);
+        }
     }
 
     private static void check(List<String> problems, String prefix, Messages field, String value) {
@@ -361,7 +467,8 @@ public class ZugpferdFile implements Waitable {
     }
 
     /**
-     * Create the invoice PDF using the configured invoice template
+     * Create the invoice PDF using the configured invoice template. All fonts
+     * are embedded, as required by PDF/A-3.
      */
     private static File renderPdf(Item item) throws Exception {
         Template template = TemplateHandler.loadTemplate((long) item.templateGroupIds(), item.__getInttype());
@@ -369,11 +476,17 @@ public class ZugpferdFile implements Waitable {
             throw new IllegalStateException(Messages.NO_TEMPLATE_LOADED + " (" + User.getCurrentUser() + ")");
         }
         Export export = (Export) Export.createFile(item.__getCnumber().replaceAll("[^A-Za-z0-9._-]", "_"), template, item);
+        export.setEmbedAllFonts(true);
         Exception ex = export.waitFor();
         if (ex != null) {
             throw ex;
         }
-        return export.getTargetFile();
+        File pdf = export.getTargetFile();
+        //the template engine logs errors instead of throwing them
+        if (pdf == null || !pdf.isFile() || pdf.length() == 0) {
+            throw new IOException(Messages.ZUGFERD_PDF_FAILED + ": " + template);
+        }
+        return pdf;
     }
 
     /**
@@ -421,6 +534,7 @@ public class ZugpferdFile implements Waitable {
         return null;
     }
     private static final Map<String, String> COUNTRIES = new HashMap<String, String>();
+    private static final Set<String> ISO_COUNTRIES = new HashSet<String>(Arrays.asList(Locale.getISOCountries()));
 
     static {
         //ISO 3166 numeric codes as used in the YaBS country list -> alpha 2
@@ -439,37 +553,56 @@ public class ZugpferdFile implements Waitable {
     }
 
     /**
-     * Convert a YaBS country value (ISO numeric code, ISO alpha 2 code or
-     * country name) to ISO 3166 alpha 2. Defaults to DE.
+     * Convert a YaBS country value (ISO numeric code, ISO alpha 2/3 code or
+     * country name) to ISO 3166 alpha 2. An empty value defaults to DE.
      *
      * @param country
-     * @return
+     * @return the code or an empty String if the country is unknown
+     * (reported by {@link #validate(Invoice)})
      */
     public static String toCountryCode(String country) {
         if (isEmpty(country)) {
             return "DE";
         }
         String c = country.trim();
-        if (c.matches("\\d+")) {
+        if (c.matches("\\d{1,3}")) {
             String code = COUNTRIES.get(String.valueOf(Integer.parseInt(c)));
-            return code != null ? code : "DE";
+            return code != null ? code : "";
         }
-        if (c.matches("[A-Za-z]{2}")) {
-            return c.toUpperCase(Locale.ROOT);
+        String upper = c.toUpperCase(Locale.ROOT);
+        if (upper.matches("[A-Z]{2}")) {
+            return "UK".equals(upper) ? "GB" : ISO_COUNTRIES.contains(upper) ? upper : "";
         }
-        for (String iso : Locale.getISOCountries()) {
+        for (String iso : ISO_COUNTRIES) {
             Locale l = new Locale("", iso);
             if (c.equalsIgnoreCase(l.getDisplayCountry(Locale.ENGLISH))
-                    || c.equalsIgnoreCase(l.getDisplayCountry(Locale.GERMAN))) {
+                    || c.equalsIgnoreCase(l.getDisplayCountry(Locale.GERMAN))
+                    || upper.equals(l.getISO3Country())) {
                 return iso;
             }
         }
-        if (c.toLowerCase(Locale.ROOT).startsWith("deutsch")) {
+        String lower = c.toLowerCase(Locale.ROOT);
+        if (lower.startsWith("deutsch") || lower.equals("brd")) {
             return "DE";
         }
-        return "DE";
+        if (lower.equals("usa") || lower.startsWith("vereinigte staaten") || lower.startsWith("united states")) {
+            return "US";
+        }
+        if (lower.equals("england") || lower.startsWith("großbritannien") || lower.startsWith("grossbritannien")) {
+            return "GB";
+        }
+        return "";
     }
     private static final Map<String, String> UNITS = new HashMap<String, String>();
+    /**
+     * UN/ECE Recommendation 20/21 codes accepted as they are
+     */
+    private static final Set<String> UNIT_CODES = new HashSet<String>(Arrays.asList(
+            "C62", "H87", "EA", "XPP", "XPK", "XBX", "XCT", "XPA", "XRO", "XBG", "XBO", "XCN", "XPL", "E48", "P1", "LS",
+            "SET", "PR", "PK", "NAR", "NPR", "SEC", "MIN", "HUR", "DAY", "WEE", "MON", "ANN", "QAN",
+            "KGM", "GRM", "MGM", "TNE", "MTR", "KMT", "CMT", "MMT", "DMT", "MTK", "CMK", "KMK", "HAR", "MTQ", "CMQ",
+            "LTR", "MLT", "HLT", "KWH", "MWH", "KWT", "WTT", "KVA", "AMP", "VLT", "KTM", "KMH", "TKM", "D64",
+            "ZP", "ZZ", "A9", "E49", "E50", "E51", "E53", "KT", "KMQ", "B4", "LBR", "ONZ", "FOT", "INH", "GLL"));
 
     static {
         //UN/ECE Recommendation 20 unit codes
@@ -514,8 +647,8 @@ public class ZugpferdFile implements Waitable {
         if (code != null) {
             return code;
         }
-        if (m.matches("[A-Z0-9]{2,3}")) {
-            return m;//assume it already is a unit code
+        if (UNIT_CODES.contains(m.toUpperCase(Locale.ROOT))) {
+            return m.toUpperCase(Locale.ROOT);//already a unit code
         }
         return "C62";
     }

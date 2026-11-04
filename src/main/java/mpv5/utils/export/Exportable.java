@@ -31,6 +31,7 @@ public abstract class Exportable extends File {
     private File target;
     private HashMap<String, Object> data;
     private Template template;
+    private boolean embedAllFonts;
 
     public Exportable(String pathToFile) {
         super(pathToFile);
@@ -82,12 +83,29 @@ public abstract class Exportable extends File {
         return template;
     }
 
+    /**
+     * @param embedAllFonts true to embed every font into created PDF files
+     * (required for PDF/A, e.g. ZUGFeRD), substituting fonts which are not
+     * installed
+     */
+    public void setEmbedAllFonts(boolean embedAllFonts) {
+        this.embedAllFonts = embedAllFonts;
+    }
+
+    /**
+     * @return true if every font is embedded into created PDF files
+     */
+    public boolean isEmbedAllFonts() {
+        return embedAllFonts;
+    }
+
     abstract void run();
 
     void reset() {
         data = null;
         template = null;
         target = null;
+        embedAllFonts = false;
     }
 }
 

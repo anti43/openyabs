@@ -90,6 +90,7 @@ import mpv5.ui.toolbars.DataPanelTB;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
+import mpv5.utils.export.EInvoiceValidator;
 import mpv5.utils.export.Export;
 import mpv5.utils.export.ZugpferdFile;
 import mpv5.utils.files.FileDirectoryHandler;
@@ -372,6 +373,10 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         JMenuItem pdf = new JMenuItem(Messages.CREATE_ZUGFERD.toString());
         pdf.addActionListener(e -> createEInvoice(ZugpferdFile.Format.ZUGFERD));
         menu.add(pdf);
+        menu.addSeparator();
+        JMenuItem check = new JMenuItem(Messages.ZUGFERD_VALIDATE_FILE.toString());
+        check.addActionListener(e -> validateEInvoiceFile());
+        menu.add(check);
 
         button_einvoice.setText(Messages.CREATE_X_INVOICE.toString());
         button_einvoice.setBorder(button_orderconf.getBorder());
@@ -410,7 +415,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         List<String> problems;
         final org.mustangproject.Invoice invoice;
         try {
-            invoice = ZugpferdFile.createInvoice(dataOwner);
+            invoice = ZugpferdFile.createInvoice(dataOwner, format);
             problems = ZugpferdFile.validate(invoice);
         } catch (Exception ex) {
             Log.Debug(this, ex);
@@ -444,10 +449,68 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                     if (exception != null) {
                         Popup.error(exception);
                     } else {
-                        Notificator.raiseNotification(Messages.ZUGFERD_CREATED + ": " + target, false);
+                        showEInvoiceValidation(target, ((ZugpferdFile) object).getValidation());
                     }
                 }
             }).execute();
+        }
+    }
+
+    /**
+     * Check an existing XRechnung / ZUGFeRD file (e.g. before sending it to a
+     * customer)
+     */
+    private void validateEInvoiceFile() {
+        DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY);
+        d.setFileFilter(new javax.swing.filechooser.FileFilter() {
+            @Override
+            public boolean accept(File f) {
+                String n = f.getName().toLowerCase();
+                return f.isDirectory() || n.endsWith(".xml") || n.endsWith(".pdf");
+            }
+
+            @Override
+            public String getDescription() {
+                return Messages.CREATE_X_INVOICE + " (*.xml, *.pdf)";
+            }
+        });
+        if (d.chooseFile()) {
+            final File file = d.getFile();
+            new Job(new EInvoiceValidator(file), new Waiter() {
+                @Override
+                public void set(Object object, Exception exception) throws Exception {
+                    if (exception != null) {
+                        Popup.error(exception);
+                    } else {
+                        showEInvoiceValidation(file, ((EInvoiceValidator) object).getResult());
+                    }
+                }
+            }).execute();
+        }
+    }
+
+    /**
+     * Show the result of the official validation of an e-invoice
+     *
+     * @param file
+     * @param result null if the validation could not run
+     */
+    private void showEInvoiceValidation(File file, EInvoiceValidator.Result result) {
+        if (result == null) {
+            Popup.warn(Messages.ZUGFERD_CREATED + ": " + file + "\n\n" + Messages.ZUGFERD_NOT_VALIDATED);
+        } else if (result.isValid()) {
+            Notificator.raiseNotification(Messages.ZUGFERD_VALID + ": " + file, false);
+        } else {
+            StringBuilder text = new StringBuilder(Messages.ZUGFERD_INVALID.toString()).append("\n").append(file).append("\n");
+            List<String> errors = result.getErrors();
+            int max = Math.min(errors.size(), 15);
+            for (int i = 0; i < max; i++) {
+                text.append("\n - ").append(errors.get(i));
+            }
+            if (errors.size() > max) {
+                text.append("\n ... (").append(errors.size() - max).append(")");
+            }
+            Popup.warn(text.toString());
         }
     }
 

@@ -527,6 +527,7 @@ public final class Export extends HashMap<String, Object> implements Waitable {
     private File toFile;
     private final Template template;
     private DatabaseObject dob;
+    private boolean embedAllFonts;
 
     /**
      * @param t
@@ -590,6 +591,7 @@ public final class Export extends HashMap<String, Object> implements Waitable {
             fromFile.setTarget(toFile);
             fromFile.setData(this);
             fromFile.setTemplate(template);
+            fromFile.setEmbedAllFonts(embedAllFonts);
             fromFile.run();//dont call this on another thread; Exportable is _NOT_ threadsafe
             fromFile.reset();
         }
@@ -620,6 +622,14 @@ public final class Export extends HashMap<String, Object> implements Waitable {
      */
     public File getTargetFile() {
         return toFile;
+    }
+
+    /**
+     * @param embedAllFonts true to embed every font into the created PDF
+     * (required for PDF/A, e.g. ZUGFeRD)
+     */
+    public void setEmbedAllFonts(boolean embedAllFonts) {
+        this.embedAllFonts = embedAllFonts;
     }
 
     private void putDataOwner(DatabaseObject dataOwner) {
