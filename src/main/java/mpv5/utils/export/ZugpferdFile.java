@@ -446,7 +446,7 @@ public class ZugpferdFile implements Waitable {
      */
     public static boolean isValidVatId(String vatId) {
         String v = normalizeVatId(vatId);
-        if (!v.matches("[A-Z]{2}[A-Z0-9+*]{2,13}")) {
+        if (!v.matches("[A-Z]{2}[A-Z0-9+*]{2,14}")) {
             return false;
         }
         String prefix = v.substring(0, 2);

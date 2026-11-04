@@ -103,6 +103,9 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
      */
     public ContactPanel(Context context) {
         initComponents();
+        //only a VAT ID can be used in e-invoices, mark anything else while typing
+        mpv5.utils.ui.FieldCheck.attach(taxnumber, mpv5.utils.export.ZugpferdFile::isValidVatId,
+                Messages.CONTACT_VATID_TOOLTIP.toString(), Messages.CONTACT_VATID_INVALID.toString());
         setName("contactpanel");
         sp = new SearchPanel(context, this);
         tb = new mpv5.ui.toolbars.DataPanelTB(this);
