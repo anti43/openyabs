@@ -625,12 +625,12 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, mpv5.utils.ui.FitSize.w(jLabel1, 93), javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jToolBar2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(groupnameselect, javax.swing.GroupLayout.DEFAULT_SIZE, 356, Short.MAX_VALUE)
+                            .addComponent(groupnameselect, javax.swing.GroupLayout.DEFAULT_SIZE, mpv5.utils.ui.FitSize.w(groupnameselect, 356), Short.MAX_VALUE)
                             .addComponent(companyselect, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(number, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(taxnumber, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -731,18 +731,18 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(fax, javax.swing.GroupLayout.PREFERRED_SIZE, 333, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(mainphone, javax.swing.GroupLayout.PREFERRED_SIZE, 333, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(mobilephone, javax.swing.GroupLayout.PREFERRED_SIZE, 333, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(fax, javax.swing.GroupLayout.PREFERRED_SIZE, mpv5.utils.ui.FitSize.w(fax, 333), javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(mainphone, javax.swing.GroupLayout.PREFERRED_SIZE, mpv5.utils.ui.FitSize.w(mainphone, 333), javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(mobilephone, javax.swing.GroupLayout.PREFERRED_SIZE, mpv5.utils.ui.FitSize.w(mobilephone, 333), javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(website, javax.swing.GroupLayout.PREFERRED_SIZE, 333, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(mailaddress, javax.swing.GroupLayout.PREFERRED_SIZE, 333, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(workphone, javax.swing.GroupLayout.PREFERRED_SIZE, 333, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(website, javax.swing.GroupLayout.PREFERRED_SIZE, mpv5.utils.ui.FitSize.w(website, 333), javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(mailaddress, javax.swing.GroupLayout.PREFERRED_SIZE, mpv5.utils.ui.FitSize.w(mailaddress, 333), javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(workphone, javax.swing.GroupLayout.PREFERRED_SIZE, mpv5.utils.ui.FitSize.w(workphone, 333), javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, mpv5.utils.ui.FitSize.w(jButton4, 147), javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, mpv5.utils.ui.FitSize.w(jButton5, 147), javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(319, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
@@ -751,11 +751,11 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(mailaddress, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(mainphone, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(mainphone, javax.swing.GroupLayout.PREFERRED_SIZE, mpv5.utils.ui.FitSize.h(mainphone, 24), javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(website, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(fax, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(fax, javax.swing.GroupLayout.PREFERRED_SIZE, mpv5.utils.ui.FitSize.h(fax, 23), javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(mobilephone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -876,24 +876,24 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                         .addGroup(mainaddressLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(department, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, mainaddressLayout.createSequentialGroup()
-                                .addComponent(title, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(title, javax.swing.GroupLayout.PREFERRED_SIZE, mpv5.utils.ui.FitSize.w(title, 204), javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(prename, javax.swing.GroupLayout.DEFAULT_SIZE, 285, Short.MAX_VALUE)))
+                                .addComponent(prename, javax.swing.GroupLayout.DEFAULT_SIZE, mpv5.utils.ui.FitSize.w(prename, 285), Short.MAX_VALUE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(mainaddressLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cname, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cname, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, mpv5.utils.ui.FitSize.w(cname, 290), javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainaddressLayout.createSequentialGroup()
-                                .addComponent(male, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(male, javax.swing.GroupLayout.PREFERRED_SIZE, mpv5.utils.ui.FitSize.w(male, 80), javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(female, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(female, javax.swing.GroupLayout.PREFERRED_SIZE, mpv5.utils.ui.FitSize.w(female, 80), javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addComponent(street, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(mainaddressLayout.createSequentialGroup()
                         .addGroup(mainaddressLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addGroup(mainaddressLayout.createSequentialGroup()
-                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, mpv5.utils.ui.FitSize.w(jLabel5, 96), javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(countryselect, 0, 0, Short.MAX_VALUE))
-                            .addComponent(zip, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(countryselect, 0, mpv5.utils.ui.FitSize.w(countryselect, 0), Short.MAX_VALUE))
+                            .addComponent(zip, javax.swing.GroupLayout.PREFERRED_SIZE, mpv5.utils.ui.FitSize.w(zip, 213), javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(mainaddressLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(mainaddressLayout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -907,7 +907,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             mainaddressLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainaddressLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(displayname, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(displayname, javax.swing.GroupLayout.PREFERRED_SIZE, mpv5.utils.ui.FitSize.h(displayname, 30), javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
                 .addGroup(mainaddressLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(mainaddressLayout.createSequentialGroup()
@@ -932,7 +932,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(mainaddressLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER, false)
                     .addComponent(countryselect, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, mpv5.utils.ui.FitSize.h(jLabel5, 24), javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(button_order1))
                 .addGap(15, 15, 15))
         );
@@ -980,14 +980,14 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(bankid, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(bankname, javax.swing.GroupLayout.DEFAULT_SIZE, 319, Short.MAX_VALUE))
+                    .addComponent(bankname, javax.swing.GroupLayout.DEFAULT_SIZE, mpv5.utils.ui.FitSize.w(bankname, 319), Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(bankcountry, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(bankcurrency, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(bankaccount, javax.swing.GroupLayout.PREFERRED_SIZE, 353, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(bankcurrency, javax.swing.GroupLayout.PREFERRED_SIZE, mpv5.utils.ui.FitSize.w(bankcurrency, 124), javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(bankaccount, javax.swing.GroupLayout.PREFERRED_SIZE, mpv5.utils.ui.FitSize.w(bankaccount, 353), javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(315, 315, 315))
         );
         jPanel5Layout.setVerticalGroup(
@@ -1022,11 +1022,11 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 1005, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, mpv5.utils.ui.FitSize.w(jScrollPane1, 1005), Short.MAX_VALUE)
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, mpv5.utils.ui.FitSize.h(jScrollPane1, 225), Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab(bundle.getString("ContactPanel.jPanel4.TabConstraints.tabTitle"), jPanel4); // NOI18N
@@ -1081,11 +1081,11 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         propPanel.setLayout(propPanelLayout);
         propPanelLayout.setHorizontalGroup(
             propPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 1009, Short.MAX_VALUE)
+            .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, mpv5.utils.ui.FitSize.w(jPanel6, 1009), Short.MAX_VALUE)
         );
         propPanelLayout.setVerticalGroup(
             propPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 229, Short.MAX_VALUE)
+            .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, mpv5.utils.ui.FitSize.h(jPanel6, 229), Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab(bundle.getString("ContactPanel.propPanel.TabConstraints.tabTitle"), propPanel); // NOI18N
@@ -1136,13 +1136,13 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         filetabLayout.setHorizontalGroup(
             filetabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(filetabLayout.createSequentialGroup()
-                .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, mpv5.utils.ui.FitSize.w(jButton6, 120), javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(addfile1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(addfile1, javax.swing.GroupLayout.PREFERRED_SIZE, mpv5.utils.ui.FitSize.w(addfile1, 40), javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(removefile1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(removefile1, javax.swing.GroupLayout.PREFERRED_SIZE, mpv5.utils.ui.FitSize.w(removefile1, 40), javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(797, Short.MAX_VALUE))
-            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 1009, Short.MAX_VALUE)
+            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, mpv5.utils.ui.FitSize.w(jScrollPane5, 1009), Short.MAX_VALUE)
         );
         filetabLayout.setVerticalGroup(
             filetabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1152,7 +1152,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                     .addComponent(removefile1)
                     .addComponent(addfile1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE))
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, mpv5.utils.ui.FitSize.h(jScrollPane5, 198), Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab(bundle.getString("ContactPanel.filetab.TabConstraints.tabTitle"), filetab); // NOI18N
@@ -1165,7 +1165,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 1020, Short.MAX_VALUE)
+            .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, mpv5.utils.ui.FitSize.w(jScrollPane4, 1020), Short.MAX_VALUE)
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1327,14 +1327,14 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jPanel9Layout.setHorizontalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane2)
-            .addComponent(jToolBar3, javax.swing.GroupLayout.DEFAULT_SIZE, 1426, Short.MAX_VALUE)
+            .addComponent(jToolBar3, javax.swing.GroupLayout.DEFAULT_SIZE, mpv5.utils.ui.FitSize.w(jToolBar3, 1426), Short.MAX_VALUE)
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addComponent(jToolBar3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, mpv5.utils.ui.FitSize.h(jScrollPane2, 153), Short.MAX_VALUE))
         );
 
         jToolBar1.setFloatable(false);

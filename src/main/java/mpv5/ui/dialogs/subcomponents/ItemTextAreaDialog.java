@@ -122,12 +122,12 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(labeledSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 62, Short.MAX_VALUE)
-                        .addComponent(okButton, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(okButton, javax.swing.GroupLayout.PREFERRED_SIZE, mpv5.utils.ui.FitSize.w(okButton, 71), javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cancelButton)
                         .addGap(11, 11, 11))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 415, Short.MAX_VALUE)
-                    .addComponent(labeledCombobox1, javax.swing.GroupLayout.DEFAULT_SIZE, 415, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, mpv5.utils.ui.FitSize.w(jScrollPane1, 415), Short.MAX_VALUE)
+                    .addComponent(labeledCombobox1, javax.swing.GroupLayout.DEFAULT_SIZE, mpv5.utils.ui.FitSize.w(labeledCombobox1, 415), Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -141,7 +141,7 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(okButton)
                     .addComponent(cancelButton)
-                    .addComponent(labeledSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(labeledSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, mpv5.utils.ui.FitSize.h(labeledSpinner1, 21), javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 

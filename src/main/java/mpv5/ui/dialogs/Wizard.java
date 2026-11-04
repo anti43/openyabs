@@ -169,13 +169,13 @@ public class Wizard extends javax.swing.JDialog implements WizardMaster {
                 .addContainerGap()
                 .addComponent(cancel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 347, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, mpv5.utils.ui.FitSize.w(jScrollPane2, 347), Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(back)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(next)
                 .addContainerGap())
-            .addComponent(progressbar, javax.swing.GroupLayout.DEFAULT_SIZE, 541, Short.MAX_VALUE)
+            .addComponent(progressbar, javax.swing.GroupLayout.DEFAULT_SIZE, mpv5.utils.ui.FitSize.w(progressbar, 541), Short.MAX_VALUE)
         );
         controlLayout.setVerticalGroup(
             controlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -187,7 +187,7 @@ public class Wizard extends javax.swing.JDialog implements WizardMaster {
                         .addComponent(next)
                         .addComponent(back)
                         .addComponent(cancel))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, mpv5.utils.ui.FitSize.h(jScrollPane2, 30), Short.MAX_VALUE))
                 .addContainerGap())
         );
 

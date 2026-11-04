@@ -133,7 +133,7 @@ public class ControlPanel_Fonts extends javax.swing.JPanel implements ControlApp
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addGap(18, 18, 18)
-                        .addComponent(font, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(font, javax.swing.GroupLayout.PREFERRED_SIZE, mpv5.utils.ui.FitSize.w(font, 219), javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jFontChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );

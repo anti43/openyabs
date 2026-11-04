@@ -90,12 +90,12 @@ public class wizard_FirstSettings1 extends javax.swing.JPanel implements Wizarda
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 459, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, mpv5.utils.ui.FitSize.w(jScrollPane1, 459), Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, mpv5.utils.ui.FitSize.h(jScrollPane1, 179), javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 16, Short.MAX_VALUE))
         );
 
@@ -114,7 +114,7 @@ public class wizard_FirstSettings1 extends javax.swing.JPanel implements Wizarda
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jCheckBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jCheckBox1, javax.swing.GroupLayout.PREFERRED_SIZE, mpv5.utils.ui.FitSize.h(jCheckBox1, 24), javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 40, Short.MAX_VALUE))
         );
 
