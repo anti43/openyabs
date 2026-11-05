@@ -163,7 +163,10 @@ public class ODTFile2 extends Exportable {
 
             //I wanted to do this fully dynamic but then the xdocreport shows only keys not values, no idea why
             //https://github.com/opensagres/xdocreport/issues/111
-            Object tablel = templateData.remove("item.xtable1");
+            //the main table is stored as <context>.xtable1: "item" for invoices etc., but e.g.
+            //"Journal" for the invoice overview, which was not filled since the reference table was added
+            String mainTable = mainTableKey(templateData.keySet());
+            Object tablel = mainTable == null ? null : templateData.remove(mainTable);
             if (tablel != null) {
                 filltable(1, cols, tablel, metadata, context);
             }
@@ -214,6 +217,24 @@ public class ODTFile2 extends Exportable {
         } catch (XDocReportException | NoClassDefFoundError ex) {
             Log.Debug(ex);
         }
+    }
+
+    /**
+     * @param keys the keys of the template data
+     * @return the key of the main table ("item.xtable1", "Journal.xtable1",
+     * ...), null if there is none. The reference table
+     * (item.reference.xtable1) is not the main table.
+     */
+    static String mainTableKey(java.util.Collection<String> keys) {
+        if (keys.contains("item." + KEY_TABLE + "1")) {
+            return "item." + KEY_TABLE + "1";
+        }
+        for (String k : keys) {
+            if (k != null && k.endsWith("." + KEY_TABLE + "1") && !k.contains(".reference.")) {
+                return k;
+            }
+        }
+        return null;
     }
 
     private void filltable(int index, String[] cols, Object tablel, FieldsMetadata metadata, IContext context) {

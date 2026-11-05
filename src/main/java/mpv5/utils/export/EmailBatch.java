@@ -55,6 +55,12 @@ public class EmailBatch extends Exportable implements Waitable {
                         Log.Debug(Export.class, ex.getMessage());
                         log.add(dataOwner.getCname() + "->" + Messages.NO_MAIL_TEMPLATE_DEFINED + "\n");
                     }
+                    if (m == null) {
+                        //"Cancel" in the template selection (or no template): stop the whole batch
+                        //instead of asking again for every invoice
+                        log.add(Messages.MAIL_BATCH_CANCELLED + "\n");
+                        break;
+                    }
                 }
 
                 if (lastGroupId != dataOwner.templateGroupIds() || batchTemplate == null) {
