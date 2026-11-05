@@ -23,6 +23,21 @@ Ausführlich, mit Rechtslage und Checkliste: **[docs/E-Rechnung.md](docs/E-Rechn
   4. 14 Tage.
 
   Wer das Zahlungsziel als Text in Vorlagen pro Kundengruppe pflegt, trägt die Tage dort zusätzlich ein, damit PDF und E-Rechnung übereinstimmen.
+- **Mehrere Bankkonten, Zahlungsziel und Skonto pro Kunde:** Weitere Konten unter *Firmeninformation > Weitere Bankkonten…*. Im Kontakt, Reiter *E-Rechnung*, wird festgelegt:
+  - auf welches Konto der Kunde überweist,
+  - sein Zahlungsziel,
+  - sein Skonto (% und Tage).
+
+  Leer bedeutet jeweils: Standard aus der Firmeninformation (Konto aus IBAN/BIC, Felder *Zahlungsziel*, *Skonto %*, *Skonto Tage*). Die Werte erscheinen in der E-Rechnung (Skonto im XRechnung-Format `#SKONTO#…#`) und als Felder in den Vorlagen:
+
+  | Feld | Inhalt |
+  |---|---|
+  | `item.paymentiban`, `item.paymentbic`, `item.paymentbank`, `item.paymentaccountname` | Konto, auf das der Kunde zahlt |
+  | `item.paymentdays`, `item.paymentduedate` | Zahlungsziel in Tagen, Fälligkeitsdatum |
+  | `item.skontopercent`, `item.skontodays`, `item.skontodate` | Skonto: Prozent, Tage, Datum |
+  | `item.skontoamount`, `item.skontopayamount` | Skontobetrag, Zahlbetrag mit Skonto |
+
+  Ohne Skonto sind die Skonto-Felder leer.
 - **Ablage und Dateinamen wie bei den PDFs:** Der Speichern-Dialog der E-Rechnung schlägt denselben Ordner und Dateinamen vor wie der PDF-Export (*Benutzereinstellungen > Filename Defaults*). Mail-Anhänge heißen ebenso.
 - **Tipp: Rechnungen automatisch archivieren (Bcc).** YaBS kann jede versendete E-Mail – einzeln und im Serienversand, mit allen Anhängen (PDF, ZUGFeRD, XRechnung) – zusätzlich als Bcc an ein eigenes Archivpostfach senden. Einrichten unter *Werkzeuge > Einstellungen > Benutzereinstellungen*, Bereich E-Mail, Feld **„Bcc (alle E-Mails)“** (mehrere Adressen mit `;` trennen; gilt für alle Benutzer). Der Kunde sieht diese Adresse nicht. Details: [docs/E-Rechnung.md](docs/E-Rechnung.md#archivierung).
 

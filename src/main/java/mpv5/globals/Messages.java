@@ -449,7 +449,21 @@ public enum Messages {
     TEMPLATE_EINVOICE_PAYTERM_TOOLTIP("The payment term written in this template's text, in days. Used for the due date of e-invoices (XRechnung/ZUGFeRD) of contacts without their own payment term. Empty: default from the company info."),
     COMPANY_PAYTERM("Pay days"),
     COMPANY_PAYTERM_TOOLTIP("Default payment term in days for the due date of e-invoices, if neither the contact nor the invoice template has one. Empty: 14 days."),
-    MAIL_BATCH_CANCELLED("Bulk email cancelled - no mails were sent");
+    MAIL_BATCH_CANCELLED("Bulk email cancelled - no mails were sent"),
+    EINVOICE_ACCOUNT("Pays to account"),
+    EINVOICE_ACCOUNT_TOOLTIP("The bank account this customer transfers to. Shown in the templates (fields item.paymentiban, item.paymentbic, item.paymentbank, item.paymentaccountname) and used in e-invoices. Accounts: Company Info > Further bank accounts."),
+    EINVOICE_ACCOUNT_DEFAULT("Default"),
+    EINVOICE_ACCOUNT_MISSING("no longer in the company info"),
+    EINVOICE_PAYTERM("Payment term (days)"),
+    EINVOICE_PAYTERM_TOOLTIP("Same as the field Pay Term of the contact. Empty or 0: payment term of the invoice template, else the default from the company info."),
+    EINVOICE_SKONTO_TOOLTIP("Cash discount for this customer, percent and days. Empty: default from the company info. Templates: item.skontopercent, item.skontodays, item.skontodate, item.skontoamount, item.skontopayamount."),
+    COMPANY_SKONTO_PERCENT("Skonto %"),
+    COMPANY_SKONTO_DAYS("Skonto days"),
+    COMPANY_SKONTO_TOOLTIP("Default cash discount (percent and days) for all customers without their own. Used in templates and e-invoices."),
+    COMPANY_BANKACCOUNTS_BUTTON("Further bank accounts..."),
+    COMPANY_BANKACCOUNTS_INFO("Further accounts the customers can pay to. The account of the fields IBAN / BIC / Bankname above is the default. Which account a customer pays to is set at the contact, tab E-Invoice."),
+    BANKACCOUNT_NAME("Name"),
+    BANKACCOUNT_BANK("Bank");
 
 
     /**

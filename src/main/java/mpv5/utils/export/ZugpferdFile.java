@@ -221,10 +221,13 @@ public class ZugpferdFile implements Waitable {
         } catch (Exception e) {
             Log.Debug(ZugpferdFile.class, e.getMessage());
         }
-        int payterm = paytermDays(contact.__getPayterm(), paytermOf(template), parseDays(company.apply(KEY_PAYTERM)));
-        return createInvoice(item, item.getSubitems(), createSender(company), contact.asZugpferdTradeparty(),
-                findBuyerReference(item, contact), payterm, company.apply(KEY_TAX_EXEMPTION_REASON),
-                format);
+        //account, payment term and Skonto: contact, else defaults (template, company info)
+        PaymentTerms terms = PaymentTerms.forContact(contact, contact.__getPayterm(), paytermOf(template), company);
+        Invoice invoice = createInvoice(item, item.getSubitems(), createSender(company, terms.getAccount()),
+                contact.asZugpferdTradeparty(), findBuyerReference(item, contact), terms.getDays(),
+                company.apply(KEY_TAX_EXEMPTION_REASON), format);
+        applySkonto(invoice, terms);
+        return invoice;
     }
 
     /**
@@ -289,6 +292,22 @@ public class ZugpferdFile implements Waitable {
             throw new IllegalStateException(Messages.ZUGFERD_NO_ITEMS.toString());
         }
         return invoice;
+    }
+
+    /**
+     * Add the Skonto of the payment terms to the e-invoice, in the form
+     * required by XRechnung (BR-DE-18): one line "#SKONTO#TAGE=7#PROZENT=2.00#"
+     * in the payment terms, each line ending with a line break
+     *
+     * @param invoice
+     * @param terms
+     */
+    public static void applySkonto(Invoice invoice, PaymentTerms terms) {
+        if (terms == null || !terms.hasSkonto()) {
+            return;
+        }
+        String text = nvl(invoice.getPaymentTermDescription()).trim();
+        invoice.setPaymentTermDescription((text.isEmpty() ? "" : text + "\n") + terms.xrechnungSkonto() + "\n");
     }
 
     /**
@@ -385,6 +404,18 @@ public class ZugpferdFile implements Waitable {
      * @return
      */
     public static TradeParty createSender(Function<String, String> company) {
+        return createSender(company, null);
+    }
+
+    /**
+     * Create the seller from the company settings
+     *
+     * @param company lookup for <code>companyinfo.*</code> keys (without prefix)
+     * @param payTo the account the customer pays to, null for the account of
+     * the company info
+     * @return
+     */
+    public static TradeParty createSender(Function<String, String> company, BankAccount payTo) {
         String person = join(" ", company.apply("firstname"), company.apply("name"));
         String name = firstNonEmpty(company.apply("business"), person);
 
@@ -406,28 +437,12 @@ public class ZugpferdFile implements Waitable {
             sender.addTaxID(taxNumber);
         }
 
-        //"account" is labelled IBAN and "banknumber" BIC, older (German) versions used
-        //"banknumber" for the IBAN - so pick whatever field holds a valid IBAN / BIC
-        String[] bankFields = {company.apply("account"), company.apply("iban"), company.apply("banknumber"),
-            company.apply("bic")};
-        String iban = null;
-        for (String v : bankFields) {
-            if (Iban.isValid(v)) {
-                iban = Iban.normalize(v);
-                break;
-            }
-        }
-        if (iban == null && !isEmpty(firstNonEmpty(company.apply("account"), company.apply("iban")))) {
-            //keep the invalid value, validate() reports it
-            iban = Iban.normalize(firstNonEmpty(company.apply("account"), company.apply("iban")));
-        }
-        if (iban != null) {
-            BankDetails bank = new BankDetails(iban);
-            for (String v : new String[]{company.apply("banknumber"), company.apply("bic"), company.apply("account")}) {
-                if (Iban.isValidBic(v)) {
-                    bank.setBIC(Iban.normalize(v));
-                    break;
-                }
+        //the account the customer pays to (default: the account of the company info)
+        BankAccount account = payTo != null ? payTo : BankAccount.mainAccount(company);
+        if (account != null) {
+            BankDetails bank = new BankDetails(account.getIban());
+            if (!account.getBic().isEmpty()) {
+                bank.setBIC(account.getBic());
             }
             bank.setAccountName(name);
             sender.addBankDetails(bank);
@@ -639,7 +654,7 @@ public class ZugpferdFile implements Waitable {
     public static String findBuyerReference(Item item, Contact contact) {
         String ref = valueProperty(item, KEY_BUYER_REFERENCE);
         if (isEmpty(ref)) {
-            ref = valueProperty(contact, KEY_BUYER_REFERENCE);
+            ref = ContactProperty.get(contact, KEY_BUYER_REFERENCE);
         }
         if (isEmpty(ref)) {
             ref = contact.__getCNumber();

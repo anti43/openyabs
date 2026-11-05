@@ -262,16 +262,93 @@ public final class ControlPanel_Company extends javax.swing.JPanel implements Co
      */
     private final LabeledTextField payterm = new LabeledTextField();
 
+    private final LabeledTextField skontopercent = new LabeledTextField();
+    private final LabeledTextField skontodays = new LabeledTextField();
+
+    /**
+     * Defaults for the payment of invoices (contacts can override them in the
+     * tab "E-Invoice"): payment term, Skonto and further bank accounts
+     */
     private void addPaytermField() {
         java.awt.GridLayout grid = (java.awt.GridLayout) jPanel3.getLayout();
-        grid.setRows(grid.getRows() + 1);
+        grid.setRows(grid.getRows() + 2);
         payterm.set_Label(Messages.COMPANY_PAYTERM.toString());
         payterm.getTextField().setToolTipText(Messages.COMPANY_PAYTERM_TOOLTIP.toString());
         payterm.setName("payterm"); // NOI18N, = companyinfo.payterm
         jPanel3.add(payterm);
-        javax.swing.JLabel filler = new javax.swing.JLabel();
-        filler.setName("filler"); // NOI18N, setValues() needs a name
-        jPanel3.add(filler);
+        javax.swing.JButton accounts = new javax.swing.JButton(Messages.COMPANY_BANKACCOUNTS_BUTTON.toString());
+        accounts.setName("bankaccountsbutton"); // NOI18N, setValues() needs a name
+        accounts.setToolTipText(Messages.COMPANY_BANKACCOUNTS_INFO.toString());
+        accounts.addActionListener(e -> editBankAccounts());
+        jPanel3.add(accounts);
+        skontopercent.set_Label(Messages.COMPANY_SKONTO_PERCENT.toString());
+        skontopercent.getTextField().setToolTipText(Messages.COMPANY_SKONTO_TOOLTIP.toString());
+        skontopercent.setName(mpv5.utils.export.PaymentTerms.KEY_SKONTO_PERCENT); // NOI18N, = companyinfo.skontopercent
+        jPanel3.add(skontopercent);
+        skontodays.set_Label(Messages.COMPANY_SKONTO_DAYS.toString());
+        skontodays.getTextField().setToolTipText(Messages.COMPANY_SKONTO_TOOLTIP.toString());
+        skontodays.setName(mpv5.utils.export.PaymentTerms.KEY_SKONTO_DAYS); // NOI18N, = companyinfo.skontodays
+        jPanel3.add(skontodays);
+    }
+
+    /**
+     * Edit the further bank accounts (the first account is the one of the
+     * fields IBAN / BIC / Bankname); stored as companyinfo.bankaccounts
+     */
+    private void editBankAccounts() {
+        String key = "companyinfo." + mpv5.utils.export.BankAccount.KEY_ACCOUNTS;
+        java.util.List<mpv5.utils.export.BankAccount> current
+                = mpv5.utils.export.BankAccount.fromJson(User.getCurrentUser().getProperty(key));
+        javax.swing.table.DefaultTableModel model = new javax.swing.table.DefaultTableModel(new Object[]{
+            Messages.BANKACCOUNT_NAME.toString(), "IBAN", "BIC", Messages.BANKACCOUNT_BANK.toString()}, 0);
+        for (mpv5.utils.export.BankAccount a : current) {
+            model.addRow(new Object[]{a.getName(), Iban.format(a.getIban()), a.getBic(), a.getBank()});
+        }
+        for (int i = 0; i < 5; i++) {
+            model.addRow(new Object[]{"", "", "", ""});
+        }
+        javax.swing.JTable table = new javax.swing.JTable(model);
+        table.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
+        javax.swing.JScrollPane scroll = new javax.swing.JScrollPane(table);
+        scroll.setPreferredSize(new java.awt.Dimension(640, 180));
+        javax.swing.JPanel panel = new javax.swing.JPanel(new java.awt.BorderLayout(0, 6));
+        javax.swing.JTextArea info = new javax.swing.JTextArea(Messages.COMPANY_BANKACCOUNTS_INFO.toString());
+        info.setEditable(false);
+        info.setOpaque(false);
+        info.setLineWrap(true);
+        info.setWrapStyleWord(true);
+        info.setColumns(50);
+        panel.add(info, java.awt.BorderLayout.NORTH);
+        panel.add(scroll, java.awt.BorderLayout.CENTER);
+        if (javax.swing.JOptionPane.showConfirmDialog(this, panel, Messages.COMPANY_BANKACCOUNTS_BUTTON.toString(),
+                javax.swing.JOptionPane.OK_CANCEL_OPTION, javax.swing.JOptionPane.PLAIN_MESSAGE) != javax.swing.JOptionPane.OK_OPTION) {
+            return;
+        }
+        if (table.isEditing()) {
+            table.getCellEditor().stopCellEditing();
+        }
+        java.util.List<mpv5.utils.export.BankAccount> list = new java.util.ArrayList<mpv5.utils.export.BankAccount>();
+        StringBuilder invalid = new StringBuilder();
+        for (int r = 0; r < model.getRowCount(); r++) {
+            String iban = String.valueOf(model.getValueAt(r, 1)).trim();
+            if (iban.isEmpty()) {
+                continue;
+            }
+            String bic = String.valueOf(model.getValueAt(r, 2)).trim();
+            if (!Iban.isValid(iban)) {
+                invalid.append("\n - ").append(Messages.ZUGFERD_INVALID_IBAN).append(": ").append(iban);
+            }
+            if (!bic.isEmpty() && !Iban.isValidBic(bic)) {
+                invalid.append("\n - ").append(Messages.ZUGFERD_INVALID_BIC).append(": ").append(bic);
+            }
+            list.add(new mpv5.utils.export.BankAccount(String.valueOf(model.getValueAt(r, 0)), iban, bic,
+                    String.valueOf(model.getValueAt(r, 3))));
+        }
+        User.getCurrentUser().setProperty(key, mpv5.utils.export.BankAccount.toJson(list));
+        User.getCurrentUser().saveProperties();
+        if (invalid.length() > 0) {
+            Popup.warn(Messages.COMPANY_CHECK_DATA + "\n" + invalid);
+        }
     }
 
     /**

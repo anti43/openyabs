@@ -43,6 +43,7 @@ import mpv5.logging.Log;
 import mpv5.ui.panels.ItemPanel2;
 import mpv5.utils.export.ODTFile2;
 import mpv5.utils.images.MPIcon;
+import mpv5.utils.date.DateConverter;
 import mpv5.utils.numberformat.FormatNumber;
 import mpv5.utils.text.TypeConversion;
 
@@ -768,8 +769,58 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
         map.put("datetodo", df.format(__getDatetodo()));
         map.put("description", evaluateAll(__getDescription()));
         map.put("reference", getReferenceOrder());
+        putPaymentFields(map, df);
 
         return super.resolveReferences(map);
+    }
+
+    /**
+     * Template fields for the payment (account the customer pays to, payment
+     * term, Skonto), as set for the contact in the tab "E-Invoice", defaults
+     * from the company info: item.paymentiban, item.paymentbic,
+     * item.paymentbank, item.paymentaccountname, item.paymentdays,
+     * item.paymentduedate, item.skontopercent, item.skontodays,
+     * item.skontodate, item.skontoamount, item.skontopayamount
+     */
+    private void putPaymentFields(Map<String, Object> map, DateFormat df) {
+        String[] keys = {"paymentiban", "paymentbic", "paymentbank", "paymentaccountname", "paymentdays",
+            "paymentduedate", "skontopercent", "skontodays", "skontodate", "skontoamount", "skontopayamount"};
+        for (String k : keys) {
+            map.put(k, "");
+        }
+        try {
+            Contact contact = getContact();
+            Template template = null;
+            try {
+                template = mpv5.handler.TemplateHandler.loadTemplate((long) templateGroupIds(), __getInttype());
+            } catch (Exception e) {
+                Log.Debug(this, e.getMessage());
+            }
+            mpv5.utils.export.PaymentTerms terms = mpv5.utils.export.PaymentTerms.forContact(contact,
+                    contact.__getPayterm(), mpv5.utils.export.ZugpferdFile.paytermOf(template),
+                    mpv5.utils.export.ZugpferdFile.companySettings());
+            Date issue = __getDateadded() != null ? __getDateadded() : new Date();
+            map.put("paymentdays", String.valueOf(terms.getDays()));
+            map.put("paymentduedate", df.format(terms.dueDate(issue)));
+            mpv5.utils.export.BankAccount account = terms.getAccount();
+            if (account != null) {
+                map.put("paymentiban", mpv5.utils.text.Iban.format(account.getIban()));
+                map.put("paymentbic", account.getBic());
+                map.put("paymentbank", account.getBank());
+                map.put("paymentaccountname", account.getName());
+            }
+            if (terms.hasSkonto()) {
+                java.math.BigDecimal gross = getGrossAmount();
+                java.math.BigDecimal skonto = terms.skontoAmount(gross);
+                map.put("skontopercent", terms.formatPercent());
+                map.put("skontodays", String.valueOf(terms.getSkontoDays()));
+                map.put("skontodate", df.format(DateConverter.addDays(issue, terms.getSkontoDays())));
+                map.put("skontoamount", FormatNumber.formatDezimal(skonto));
+                map.put("skontopayamount", FormatNumber.formatDezimal(gross.subtract(skonto)));
+            }
+        } catch (Exception e) {
+            Log.Debug(this, "Payment fields: " + e.getMessage());
+        }
     }
 
     @Override
