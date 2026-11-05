@@ -1,0 +1,47 @@
+# Builds YaBS, runs the tests and publishes the distribution zip
+# (openyabs.jar, lib/, start scripts) as build artifact.
+name: Build
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21' # builds Java 11 bytecode (options.release = 11)
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      # the ZUGFeRD PDF test needs an installed font family to embed (PDF/A-3)
+      - name: Install fonts
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends fonts-liberation
+
+      - name: Test and build distribution zip
+        run: ./gradlew --no-daemon test distributionZip
+
+      # the artifact download is itself a zip which contains openyabs-<version>.zip;
+      # uploading the zip (and not the folder) keeps yabs.sh executable
+      - uses: actions/upload-artifact@v4
+        with:
+          name: openyabs-${{ github.run_number }}
+          path: build/distributions/*.zip
+          if-no-files-found: error
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: test-reports-${{ github.run_number }}
+          path: build/reports/tests/
+          if-no-files-found: ignore
