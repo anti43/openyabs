@@ -969,13 +969,13 @@ public final class SubItem extends DatabaseObject implements Triggerable {
     }
 
     static void calculate(SubItem s) {
-        BigDecimal disc = s.__getDiscount().divide(BD100, 9, BigDecimal.ROUND_HALF_UP);
-        s.setTotalbrutvalue(s.quantityvalue.multiply(s.externalvalue.multiply(((s.taxpercentvalue.divide(Constants.BD100, 9, BigDecimal.ROUND_HALF_UP)).add(BigDecimal.ONE)))));
-        s.setTotalbrutvalue(s.totalbrutvalue.subtract(s.totalbrutvalue.multiply(disc)));
-        s.defTotaltaxvalue(s.quantityvalue.multiply(s.externalvalue.multiply((s.taxpercentvalue.divide(Constants.BD100, 9, BigDecimal.ROUND_HALF_UP)))));
-        s.defTotaltaxvalue(s.totaltaxvalue.subtract(s.totaltaxvalue.multiply(disc)));
-        s.setTotalnetvalue(s.quantityvalue.multiply(s.externalvalue));
-        s.defDiscvalue(s.totalnetvalue.multiply(disc));
+        //EN 16931 arithmetic, rounded per line like the item table and the e-invoice
+        BigDecimal q = s.quantityvalue, p = s.externalvalue, d = s.__getDiscount(), t = s.taxpercentvalue;
+        BigDecimal tax = mpv5.utils.numberformat.InvoiceMath.lineTax(q, p, d, t);
+        s.setTotalnetvalue(mpv5.utils.numberformat.InvoiceMath.lineAmount(q, p));
+        s.defDiscvalue(mpv5.utils.numberformat.InvoiceMath.lineDiscount(q, p, d));
+        s.defTotaltaxvalue(tax);
+        s.setTotalbrutvalue(mpv5.utils.numberformat.InvoiceMath.lineNet(q, p, d).add(tax));
     }
 
     @Override

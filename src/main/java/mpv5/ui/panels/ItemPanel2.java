@@ -3004,6 +3004,21 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         ((MPTableModel) itemtable.getModel()).addCalculator(discbrutcalculator);
         discbrutcalculator.addLabel(hidden, 17);
 
+        //EN 16931 arithmetic (as in the e-invoice): each line rounded to 2 decimals, tax per VAT
+        //rate on the sum of the lines - the terms above summed unrounded double values, so the
+        //same service could give different totals (e.g. 20.97 / 20.98 VAT on 110.40)
+        final boolean optional = calcoptionalcol;
+        netCalculator.setRowFunction(v -> mpv5.utils.numberformat.InvoiceMath.lineAmount(quantity(v, optional), cell(v, 5)));
+        discnetcalculator.setRowFunction(v -> mpv5.utils.numberformat.InvoiceMath.lineDiscount(quantity(v, optional), cell(v, 5), cell(v, 15)));
+        discbrutcalculator.setRowFunction(v -> mpv5.utils.numberformat.InvoiceMath.round2(
+                mpv5.utils.numberformat.InvoiceMath.lineDiscount(quantity(v, optional), cell(v, 5), cell(v, 15))
+                        .multiply(BigDecimal.ONE.add(cell(v, 6).movePointLeft(2)))));
+        taxcalculator.setRowFunction(v -> mpv5.utils.numberformat.InvoiceMath.lineTax(quantity(v, optional), cell(v, 5), cell(v, 15), cell(v, 6)));
+        itemMultiplier.setRowFunction(v -> mpv5.utils.numberformat.InvoiceMath.lineNet(quantity(v, optional), cell(v, 5), cell(v, 15))
+                .add(mpv5.utils.numberformat.InvoiceMath.lineTax(quantity(v, optional), cell(v, 5), cell(v, 15), cell(v, 6))));
+        taxcalculator.setSumFunction(m -> invoiceTotals(m, optional).tax);
+        itemMultiplier.setSumFunction(m -> invoiceTotals(m, optional).gross);
+
 //        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("shiptax")) {
 //            int taxid = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("shiptax", new Integer(0));
 //            Double shiptax = Tax.getTaxValue(taxid).doubleValue();
@@ -3400,6 +3415,40 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         
         setDataOwner(i2, true);
         Popup.notice(i2 + Messages.INSERTED.getValue());
+    }
+
+    private static BigDecimal cell(java.util.Map<Integer, BigDecimal> values, int column) {
+        BigDecimal v = values.get(column);
+        return v == null ? BigDecimal.ZERO : v;
+    }
+
+    /**
+     * quantity of a row, times the optional column if it is used in the calculation
+     */
+    private static BigDecimal quantity(java.util.Map<Integer, BigDecimal> values, boolean optional) {
+        BigDecimal q = cell(values, 2);
+        if (optional) {
+            BigDecimal o = values.get(14);
+            q = q.multiply(o == null ? BigDecimal.ONE : o);
+        }
+        return q;
+    }
+
+    /**
+     * Totals of the item table according to EN 16931 (see InvoiceMath)
+     */
+    private static mpv5.utils.numberformat.InvoiceMath.Totals invoiceTotals(javax.swing.table.TableModel m, boolean optional) {
+        java.util.List<mpv5.utils.numberformat.InvoiceMath.Line> lines = new java.util.ArrayList<mpv5.utils.numberformat.InvoiceMath.Line>();
+        for (int r = 0; r < m.getRowCount(); r++) {
+            java.util.Map<Integer, BigDecimal> v = new java.util.HashMap<Integer, BigDecimal>();
+            for (int c : new int[]{2, 5, 6, 14, 15}) {
+                if (c < m.getColumnCount() && m.getValueAt(r, c) instanceof Number) {
+                    v.put(c, FormatNumber.getBigDecimal(m.getValueAt(r, c)));
+                }
+            }
+            lines.add(new mpv5.utils.numberformat.InvoiceMath.Line(quantity(v, optional), cell(v, 5), cell(v, 15), cell(v, 6)));
+        }
+        return mpv5.utils.numberformat.InvoiceMath.totals(lines);
     }
 
     private class alignRightToolbar extends JToolBar {
