@@ -3,7 +3,8 @@ plugins {
 }
 
 group = 'org.openyabs'
-version = '1.0-SNAPSHOT'
+// release builds pass -PreleaseVersion=1.2.3 (see .github/workflows/build.yml)
+version = findProperty('releaseVersion') ?: '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
