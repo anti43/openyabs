@@ -6,6 +6,8 @@ openyabs - Yet another Business Software
 
 **[Die deutsche Dokumentation zu Yabs befindet sich hier!](https://docs.google.com/document/d/1VhUi0wS-EJgfV-o89Hl-2wux810mJnqUV1wPxpgVIs4/pub)**
 
+**[E-Rechnung (XRechnung / ZUGFeRD) und E-Mail-Versand: Anforderungen und Hinweise](docs/E-Rechnung.md)**
+
 ===
 
 If you have any question regarding Yabs, please write to the mailing list (english and german) <a href="mailto:openyabs@googlegroups.com">openyabs@googlegroups.com</a>
