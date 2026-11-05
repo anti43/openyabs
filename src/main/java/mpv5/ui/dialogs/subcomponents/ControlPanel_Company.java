@@ -36,6 +36,7 @@ public final class ControlPanel_Company extends javax.swing.JPanel implements Co
 
     public ControlPanel_Company() {
         initComponents();
+        addPaytermField();
         markRequiredFields();
         //mark invalid values while typing
         FieldCheck.attach(account1, ZugpferdFile::isValidVatId, Messages.COMPANY_VATID_TOOLTIP.toString(),
@@ -254,6 +255,24 @@ public final class ControlPanel_Company extends javax.swing.JPanel implements Co
         setSettings();
         User.getCurrentUser().saveProperties();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    /**
+     * Default payment term (days) of e-invoices, for contacts and templates
+     * without their own; stored as companyinfo.payterm like the other fields
+     */
+    private final LabeledTextField payterm = new LabeledTextField();
+
+    private void addPaytermField() {
+        java.awt.GridLayout grid = (java.awt.GridLayout) jPanel3.getLayout();
+        grid.setRows(grid.getRows() + 1);
+        payterm.set_Label(Messages.COMPANY_PAYTERM.toString());
+        payterm.getTextField().setToolTipText(Messages.COMPANY_PAYTERM_TOOLTIP.toString());
+        payterm.setName("payterm"); // NOI18N, = companyinfo.payterm
+        jPanel3.add(payterm);
+        javax.swing.JLabel filler = new javax.swing.JLabel();
+        filler.setName("filler"); // NOI18N, setValues() needs a name
+        jPanel3.add(filler);
+    }
 
     /**
      * Mark the fields required for e-invoices with an asterisk and explain it

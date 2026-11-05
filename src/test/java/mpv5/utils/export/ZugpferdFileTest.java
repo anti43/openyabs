@@ -350,6 +350,18 @@ class ZugpferdFileTest {
     }
 
     @Test
+    void paytermOrderContactTemplateDefault() {
+        //the users write the payment term into templates per customer group
+        assertEquals(10, ZugpferdFile.paytermDays(10, 30, 21), "contact first");
+        assertEquals(30, ZugpferdFile.paytermDays(0, 30, 21), "then the template");
+        assertEquals(21, ZugpferdFile.paytermDays(0, 0, 21), "then the company default");
+        assertEquals(ZugpferdFile.DEFAULT_PAYTERM_DAYS, ZugpferdFile.paytermDays(0, 0, 0));
+        assertEquals(0, ZugpferdFile.parseDays("abc"));
+        assertEquals(30, ZugpferdFile.parseDays(" 30 "));
+        assertEquals(0, ZugpferdFile.paytermOf(null));
+    }
+
+    @Test
     void reportsMissingData() {
         Map<String, String> c = new HashMap<String, String>();
         c.put("business", "Nur Name");

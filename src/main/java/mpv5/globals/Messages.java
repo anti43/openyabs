@@ -444,7 +444,11 @@ public enum Messages {
     MAIL_BCC_TOOLTIP("Every mail sent by YaBS - single and bulk email, with all attachments (e.g. e-invoices) - is also sent as invisible copy to this address, e.g. an archive mailbox. Several addresses separated by ;. Applies to all users."),
     MAIL_CC_LABEL("Cc (all mails)"),
     MAIL_CC_TOOLTIP("Every mail sent by YaBS is also sent as visible copy to this address. Several addresses separated by ;. Applies to all users."),
-    MAIL_COPY_INVALID("Invalid email address (several addresses separated by ;) - invalid addresses are not used");
+    MAIL_COPY_INVALID("Invalid email address (several addresses separated by ;) - invalid addresses are not used"),
+    TEMPLATE_EINVOICE_PAYTERM("Pay days"),
+    TEMPLATE_EINVOICE_PAYTERM_TOOLTIP("The payment term written in this template's text, in days. Used for the due date of e-invoices (XRechnung/ZUGFeRD) of contacts without their own payment term. Empty: default from the company info."),
+    COMPANY_PAYTERM("Pay days"),
+    COMPANY_PAYTERM_TOOLTIP("Default payment term in days for the due date of e-invoices, if neither the contact nor the invoice template has one. Empty: 14 days.");
 
 
     /**

@@ -6,9 +6,25 @@ openyabs - Yet another Business Software
 
 **[Die deutsche Dokumentation zu Yabs befindet sich hier!](https://docs.google.com/document/d/1VhUi0wS-EJgfV-o89Hl-2wux810mJnqUV1wPxpgVIs4/pub)**
 
-**[E-Rechnung (XRechnung / ZUGFeRD) und E-Mail-Versand: Anforderungen und Hinweise](docs/E-Rechnung.md)**
+**[Aktueller Build zum Download (latest-master)](https://github.com/andreasweberd/openyabs/releases/tag/latest-master)** – ZIP entpacken und mit `yabs.sh` / `yabs.bat` starten (Java 11 oder neuer).
 
-**Tipp: Rechnungen automatisch archivieren (Bcc).** YaBS kann jede versendete E-Mail – einzeln und im Serienversand, mit allen Anhängen (PDF, ZUGFeRD, XRechnung) – zusätzlich als Bcc an ein eigenes Archivpostfach senden. So liegt jede verschickte Rechnung im Originalformat im Archiv (Aufbewahrungspflicht nach GoBD). Einrichten unter *Werkzeuge > Einstellungen > Benutzereinstellungen*, Bereich E-Mail, Feld **„Bcc (alle E-Mails)“** (mehrere Adressen mit `;` trennen; gilt für alle Benutzer). Der Kunde sieht diese Adresse nicht. Details: [docs/E-Rechnung.md](docs/E-Rechnung.md#archivierung).
+## E-Rechnung (XRechnung / ZUGFeRD)
+
+YaBS erstellt E-Rechnungen nach EN 16931 und prüft sie mit dem offiziellen Validator.
+Ausführlich, mit Rechtslage und Checkliste: **[docs/E-Rechnung.md](docs/E-Rechnung.md)**
+
+- **Formate:** ZUGFeRD (PDF mit eingebetteter E-Rechnung), XRechnung (XML) oder beides, erstellt über die Schaltfläche *E-Rechnung* in der Rechnung.
+- **Versand per E-Mail, pro Kunde einstellbar** (Kontakt, Reiter *E-Rechnung*): PDF (normal), ZUGFeRD, XRechnung oder PDF + XRechnung. Gilt für den Einzel- und den Serienversand. Ungültige E-Rechnungen werden nicht verschickt; der Grund wird angezeigt bzw. im Protokoll des Serienversands aufgeführt.
+- **Firmendaten:** Pflichtfelder sind in der Firmeninformation mit `*` markiert. USt-IdNr. und IBAN werden beim Eingeben geprüft.
+- **Zahlungsziel:** Das Fälligkeitsdatum in der E-Rechnung kommt
+  1. vom Kunden (Zahlungsbedingung), sonst
+  2. aus der Rechnungsvorlage (*Werkzeuge > Einstellungen > Vorlagen Manager*, Feld *Zahlungsziel* (Tage; englisch *Pay days*)), sonst
+  3. aus dem Standard in der Firmeninformation, sonst
+  4. 14 Tage.
+
+  Wer das Zahlungsziel als Text in Vorlagen pro Kundengruppe pflegt, trägt die Tage dort zusätzlich ein, damit PDF und E-Rechnung übereinstimmen.
+- **Ablage und Dateinamen wie bei den PDFs:** Der Speichern-Dialog der E-Rechnung schlägt denselben Ordner und Dateinamen vor wie der PDF-Export (*Benutzereinstellungen > Filename Defaults*). Mail-Anhänge heißen ebenso.
+- **Tipp: Rechnungen automatisch archivieren (Bcc).** YaBS kann jede versendete E-Mail – einzeln und im Serienversand, mit allen Anhängen (PDF, ZUGFeRD, XRechnung) – zusätzlich als Bcc an ein eigenes Archivpostfach senden. Einrichten unter *Werkzeuge > Einstellungen > Benutzereinstellungen*, Bereich E-Mail, Feld **„Bcc (alle E-Mails)“** (mehrere Adressen mit `;` trennen; gilt für alle Benutzer). Der Kunde sieht diese Adresse nicht. Details: [docs/E-Rechnung.md](docs/E-Rechnung.md#archivierung).
 
 ===
 

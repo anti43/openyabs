@@ -55,7 +55,13 @@ Angebote, Aufträge, Lieferscheine usw. werden immer als PDF versendet.
 - **Käufer:** Rechnungsadresse des Kontakts (Firma/Name, Straße, PLZ, Ort, Land) und die **E-Mail-Adresse des Kontakts**, die in der E-Rechnung Pflicht ist (PEPPOL-EN16931-R010).
   - **USt-IdNr. des Kunden** (Feld „UST-ID“): nur eine gültige USt-IdNr. wird übernommen. Eine Steuernummer ist für den Käufer in EN 16931 nicht vorgesehen und wird weggelassen. YaBS weist darauf hin.
   - **Leitweg-ID / Käuferreferenz** (Reiter „E-Rechnung“ beim Kontakt): Pflicht für öffentliche Auftraggeber. Ist sie leer, wird die Kundennummer verwendet (sonst die Rechnungsnummer).
-- **Fälligkeit:** Rechnungsdatum + **Zahlungsbedingung (Tage) des Kontakts**. Ohne eigene Zahlungsbedingung gelten 14 Tage.
+- **Fälligkeit:** Rechnungsdatum plus Zahlungsziel. Das Zahlungsziel kommt, in dieser Reihenfolge:
+  1. vom **Kunden** (Feld „Zahlungsbedingung“, wenn größer als 0),
+  2. aus der **Rechnungsvorlage**: *Werkzeuge > Einstellungen > Vorlagen Manager* (englisch: *Template Manager*), Feld „Zahlungsziel“ (Tage; englisch „Pay days“),
+  3. aus dem **Standard** in der Firmeninformation (Feld „Zahlungsziel (Tage)“),
+  4. sonst 14 Tage.
+
+  Wer das Zahlungsziel als Text in Vorlagen pro Kundengruppe hinterlegt, trägt die Tage dort zusätzlich ein. So passen PDF-Text und E-Rechnung zusammen.
 - **Positionen:**
   - Textzeilen und Zeilen mit Menge 0 werden übersprungen.
   - Rabatte werden als Positionsnachlass übertragen.
@@ -119,7 +125,7 @@ Im Journal Rechnungen markieren und per E-Mail versenden:
   - Die erste Prüfung nach dem Programmstart dauert deutlich länger (die Regelwerke werden geladen).
   - Große Serien mit E-Rechnungen brauchen daher länger als reine PDF-Serien.
 - **Dateinamen:**
-  - Die Anhänge heißen wie die Rechnung, z.B. `R-2026-0042.pdf` / `R-2026-0042.xml`.
+  - Die Anhänge heißen wie beim bisherigen PDF-Versand, z.B. `R-2026-0042.pdf` / `R-2026-0042.xml`. Maßgeblich ist die Vorgabe unter *Benutzereinstellungen > Filename Defaults*.
   - ZUGFeRD-Dateien sind PDFs und öffnen sich wie gewohnt.
 - **E-Mail-Server:** E-Rechnungen sind etwas größer als einfache PDFs (ZUGFeRD ist PDF/A-3 mit eingebetteten Schriften). Bei sehr vielen Mails in kurzer Zeit können E-Mail-Anbieter Versandlimits haben.
 
@@ -138,8 +144,14 @@ Am einfachsten ist eine **Bcc-Kopie an ein Archivpostfach**:
 - **Ungültige oder doppelte Adressen** werden beim Versand ausgelassen.
 - **Revisionssicher ist das noch nicht:** Ein Archivpostfach allein ist kein revisionssicheres Archiv. Ob es den GoBD genügt (Unveränderbarkeit, Verfahrensdokumentation), mit der Steuerberatung klären. Viele Archiv- und DMS-Lösungen nehmen E-Mails über eine solche Adresse direkt entgegen.
 
-Alternativ lässt sich jede E-Rechnung in der Rechnung über die Schaltfläche
-*E-Rechnung > XRechnung (XML)* bzw. *ZUGFeRD (PDF…)* als Datei speichern.
+**Ablage im Archivordner (wie die PDFs):** Über die Schaltfläche *E-Rechnung >
+XRechnung (XML)* bzw. *ZUGFeRD (PDF…)* in der Rechnung schlägt der
+Speichern-Dialog denselben Ordner und Dateinamen vor wie der PDF-Export
+(*Benutzereinstellungen > Filename Defaults*; Schrägstriche ergeben
+Unterordner). Wird dieser Ordner z.B. mit einer Cloud synchronisiert, liegen
+die E-Rechnungen dort neben den PDFs und lassen sich wie gewohnt per
+„Senden an“ an Buchhaltung oder DATEV weitergeben. Für DATEV & Co. ist die
+E-Rechnung (XML bzw. ZUGFeRD) das maßgebliche Dokument.
 
 ---
 
