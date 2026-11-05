@@ -103,6 +103,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
      */
     public ContactPanel(Context context) {
         initComponents();
+        initEInvoiceTab();
         //only a VAT ID can be used in e-invoices, mark anything else while typing
         mpv5.utils.ui.FieldCheck.attach(taxnumber, mpv5.utils.export.ZugpferdFile::isValidVatId,
                 Messages.CONTACT_VATID_TOOLTIP.toString(), Messages.CONTACT_VATID_INVALID.toString());
@@ -237,6 +238,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
             properties();
             
+            loadEInvoiceSettings();
             displayname.setText(dataOwner.getDefaultaddress().getDisplayName());
         }
     }
@@ -2194,6 +2196,97 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
     @Override
     public void actionAfterSave() {
+        saveEInvoiceSettings();
+    }
+
+    private final javax.swing.JComboBox<mpv5.utils.export.EInvoiceDelivery> einvoiceDelivery
+            = new javax.swing.JComboBox<mpv5.utils.export.EInvoiceDelivery>(mpv5.utils.export.EInvoiceDelivery.values());
+    private final javax.swing.JTextField einvoiceLeitweg = new javax.swing.JTextField(25);
+
+    /**
+     * Tab "E-Invoice": how invoices are sent to this contact by email and the
+     * Leitweg-ID (both stored as value properties of the contact)
+     */
+    private void initEInvoiceTab() {
+        javax.swing.JPanel p = new javax.swing.JPanel(new java.awt.GridBagLayout());
+        java.awt.GridBagConstraints c = new java.awt.GridBagConstraints();
+        c.insets = new java.awt.Insets(4, 6, 4, 6);
+        c.anchor = java.awt.GridBagConstraints.WEST;
+
+        c.gridx = 0;
+        c.gridy = 0;
+        p.add(new javax.swing.JLabel(Messages.EINVOICE_DELIVERY.toString()), c);
+        c.gridx = 1;
+        c.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        p.add(einvoiceDelivery, c);
+
+        c.gridx = 0;
+        c.gridy = 1;
+        c.fill = java.awt.GridBagConstraints.NONE;
+        p.add(new javax.swing.JLabel(Messages.EINVOICE_LEITWEG.toString()), c);
+        c.gridx = 1;
+        c.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        p.add(einvoiceLeitweg, c);
+
+        javax.swing.JTextArea info = new javax.swing.JTextArea(Messages.EINVOICE_TAB_INFO.toString());
+        info.setEditable(false);
+        info.setOpaque(false);
+        info.setLineWrap(true);
+        info.setWrapStyleWord(true);
+        info.setFocusable(false);
+        //otherwise the preferred width is the whole text in one line, which widens the form
+        info.setColumns(45);
+        c.gridx = 0;
+        c.gridy = 2;
+        c.gridwidth = 2;
+        c.weightx = 1;
+        c.weighty = 1;
+        c.fill = java.awt.GridBagConstraints.BOTH;
+        p.add(info, c);
+
+        jTabbedPane1.addTab(Messages.EINVOICE_TAB.toString(), p);
+    }
+
+    /**
+     * Show the e-invoice settings of the current contact
+     */
+    private void loadEInvoiceSettings() {
+        einvoiceDelivery.setSelectedItem(mpv5.utils.export.EInvoiceDelivery.forContact(dataOwner));
+        String leitweg = "";
+        try {
+            if (dataOwner != null && dataOwner.isExisting()
+                    && ValueProperty.hasProperty(dataOwner, mpv5.utils.export.ZugpferdFile.KEY_BUYER_REFERENCE)) {
+                Object v = ValueProperty.getProperty(dataOwner, mpv5.utils.export.ZugpferdFile.KEY_BUYER_REFERENCE).getValue();
+                leitweg = v == null ? "" : String.valueOf(v);
+            }
+        } catch (Exception e) {
+            Log.Debug(this, e.getMessage());
+        }
+        einvoiceLeitweg.setText(leitweg);
+    }
+
+    /**
+     * Store the e-invoice settings (the contact has been saved)
+     */
+    private void saveEInvoiceSettings() {
+        if (dataOwner == null || !dataOwner.isExisting()) {
+            return;
+        }
+        try {
+            mpv5.utils.export.EInvoiceDelivery.save(dataOwner,
+                    (mpv5.utils.export.EInvoiceDelivery) einvoiceDelivery.getSelectedItem());
+            String leitweg = einvoiceLeitweg.getText() == null ? "" : einvoiceLeitweg.getText().trim();
+            String key = mpv5.utils.export.ZugpferdFile.KEY_BUYER_REFERENCE;
+            if (leitweg.isEmpty()) {
+                if (ValueProperty.hasProperty(dataOwner, key)) {
+                    ValueProperty.deleteProperty(dataOwner, key);
+                }
+            } else {
+                ValueProperty.addOrUpdateProperty(key, leitweg, dataOwner);
+            }
+        } catch (Exception e) {
+            Log.Debug(this, e);
+        }
     }
 
     @Override

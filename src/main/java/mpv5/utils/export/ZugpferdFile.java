@@ -215,8 +215,15 @@ public class ZugpferdFile implements Waitable {
         }
         Contact contact = item.getContact();
         Function<String, String> company = companySettings();
+        Template template = null;
+        try {
+            template = TemplateHandler.loadTemplate((long) item.templateGroupIds(), item.__getInttype());
+        } catch (Exception e) {
+            Log.Debug(ZugpferdFile.class, e.getMessage());
+        }
+        int payterm = paytermDays(contact.__getPayterm(), paytermOf(template), parseDays(company.apply(KEY_PAYTERM)));
         return createInvoice(item, item.getSubitems(), createSender(company), contact.asZugpferdTradeparty(),
-                findBuyerReference(item, contact), contact.__getPayterm(), company.apply(KEY_TAX_EXEMPTION_REASON),
+                findBuyerReference(item, contact), payterm, company.apply(KEY_TAX_EXEMPTION_REASON),
                 format);
     }
 
@@ -282,6 +289,65 @@ public class ZugpferdFile implements Waitable {
             throw new IllegalStateException(Messages.ZUGFERD_NO_ITEMS.toString());
         }
         return invoice;
+    }
+
+    /**
+     * Value property of an invoice template: the payment term (days) written
+     * in the template text
+     */
+    public static final String KEY_TEMPLATE_PAYTERM = "einvoice.payterm";
+    /**
+     * Company setting (companyinfo.payterm): default payment term (days)
+     */
+    public static final String KEY_PAYTERM = "payterm";
+
+    /**
+     * The payment term of an e-invoice: the contact's term if set, otherwise
+     * the term of the invoice template, otherwise the default of the company
+     * settings, otherwise {@value #DEFAULT_PAYTERM_DAYS} days
+     *
+     * @param contactDays
+     * @param templateDays
+     * @param defaultDays
+     * @return the days
+     */
+    public static int paytermDays(int contactDays, int templateDays, int defaultDays) {
+        if (contactDays > 0) {
+            return contactDays;
+        }
+        if (templateDays > 0) {
+            return templateDays;
+        }
+        return defaultDays > 0 ? defaultDays : DEFAULT_PAYTERM_DAYS;
+    }
+
+    /**
+     * @param template an invoice template, may be null
+     * @return its payment term in days, 0 if not set
+     */
+    public static int paytermOf(mpv5.db.common.DatabaseObject template) {
+        Object v = template == null ? null : valueProperty(template, KEY_TEMPLATE_PAYTERM);
+        return v == null ? 0 : parseDays(String.valueOf(v));
+    }
+
+    /**
+     * @param template the (saved) template
+     * @param days the payment term, &lt;= 0 removes it
+     */
+    public static void savePayterm(mpv5.db.common.DatabaseObject template, int days) {
+        if (days > 0) {
+            ValueProperty.addOrUpdateProperty(KEY_TEMPLATE_PAYTERM, String.valueOf(days), template);
+        } else if (ValueProperty.hasProperty(template, KEY_TEMPLATE_PAYTERM)) {
+            ValueProperty.deleteProperty(template, KEY_TEMPLATE_PAYTERM);
+        }
+    }
+
+    static int parseDays(String value) {
+        try {
+            return isEmpty(value) ? 0 : Math.max(0, Integer.parseInt(value.trim()));
+        } catch (NumberFormatException e) {
+            return 0;
+        }
     }
 
     /**

@@ -97,7 +97,29 @@ public class TypeConversion {
      * @param email
      * @return
      */
-    public static InternetAddress stringToMail(String email) {
+    /**
+     * @param list ";" separated mail addresses
+     * @return true if it contains at least one address and all are valid
+     */
+    public static boolean isMailList(String list) {
+        if (list == null) {
+            return false;
+        }
+        boolean any = false;
+        for (String a : list.split(";")) {
+            String t = a.trim();
+            if (t.isEmpty()) {
+                continue;
+            }
+            if (stringToMail(t) == null) {
+                return false;
+            }
+            any = true;
+        }
+        return any;
+    }
+
+        public static InternetAddress stringToMail(String email) {
         if (!rfc2822.matcher(email).matches()) {
             return null;
         }

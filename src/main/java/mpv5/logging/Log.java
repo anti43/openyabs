@@ -91,7 +91,10 @@ public class Log {
     */
    public static final int LOGLEVEL_DEBUG = 2;
    private static int loglevel = 1;
-   private static List<LogConsole> loggers = Collections.synchronizedList(new ArrayList<LogConsole>(Arrays.asList(new LogConsole[]{(LogConsole) new YConsole()})));
+   //the console is a window: not available without a display (headless mode, tests)
+   private static List<LogConsole> loggers = Collections.synchronizedList(new ArrayList<LogConsole>(
+           java.awt.GraphicsEnvironment.isHeadless() ? Collections.<LogConsole>emptyList()
+           : Arrays.asList(new LogConsole[]{(LogConsole) new YConsole()})));
 
    /**
     * Print out a text file

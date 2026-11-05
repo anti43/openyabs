@@ -113,6 +113,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
         jScrollPane3 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList();
         type = new mpv5.ui.beans.LabeledCombobox();
+        einvoicePayterm = new mpv5.ui.beans.LabeledTextField();
         format = new mpv5.ui.beans.LabeledTextField();
         jButton8 = new javax.swing.JButton();
         printern = new mpv5.ui.beans.LabeledTextField();
@@ -254,6 +255,12 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
         type.set_Label(bundle.getString("ControlPanel_Templates.type._Label")); // NOI18N
         type.setName("type"); // NOI18N
 
+        //payment term of the template text, for the due date of e-invoices
+        einvoicePayterm.set_Label(Messages.TEMPLATE_EINVOICE_PAYTERM.toString());
+        einvoicePayterm.set_ValueClass(Integer.class);
+        einvoicePayterm.getTextField().setToolTipText(Messages.TEMPLATE_EINVOICE_PAYTERM_TOOLTIP.toString());
+        einvoicePayterm.setName("einvoicePayterm"); // NOI18N
+
         format.set_Label(bundle.getString("ControlPanel_Templates.format._Label")); // NOI18N
         format.set_Text("1,2,3,4,5,6,7,8,9"); // NOI18N
         format.setName("format"); // NOI18N
@@ -286,6 +293,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(type, javax.swing.GroupLayout.DEFAULT_SIZE, 383, Short.MAX_VALUE)
+                    .addComponent(einvoicePayterm, javax.swing.GroupLayout.DEFAULT_SIZE, 383, Short.MAX_VALUE)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(printern, javax.swing.GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE)
@@ -322,6 +330,8 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
                     .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(type, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(einvoicePayterm, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(groupname, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -431,6 +441,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
             DatabaseObject dato = dataOwner;
             dato.getPanelData(this);
             if (dato.save()) {
+                saveEInvoicePayterm(dato);
                 actionAfterSave();
                 refresh();
 //                TemplateHandler.cacheTemplates();
@@ -696,6 +707,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
     private mpv5.ui.beans.LabeledTextField printern;
     private javax.swing.JTable templates;
     private mpv5.ui.beans.LabeledCombobox type;
+    private mpv5.ui.beans.LabeledTextField einvoicePayterm;
     private javax.swing.JCheckBox updateService;
     // End of variables declaration//GEN-END:variables
     public String description_ = "";
@@ -783,6 +795,8 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
 
             jList1.setSelectedIndices(ix);
             pathtofile.setText(dataOwner.getFile().getPath());
+            int days = mpv5.utils.export.ZugpferdFile.paytermOf(dataOwner);
+            einvoicePayterm.setText(days > 0 ? String.valueOf(days) : "");
             lastImportedFile = null;
             lastmodified = lastmodified_;
             updateService.setSelected(isupdateenabled_);
@@ -793,6 +807,21 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
                 dataOwner.delete();
             }
         }
+    }
+
+    /**
+     * Store the payment term (days) of the template, empty or 0 removes it
+     */
+    private void saveEInvoicePayterm(DatabaseObject template) {
+        String v = einvoicePayterm.getText() == null ? "" : einvoicePayterm.getText().trim();
+        int days = 0;
+        try {
+            days = v.isEmpty() ? 0 : Integer.parseInt(v);
+        } catch (NumberFormatException e) {
+            Popup.warn(Messages.TEMPLATE_EINVOICE_PAYTERM + ": " + v);
+            return;
+        }
+        mpv5.utils.export.ZugpferdFile.savePayterm(template, days);
     }
 
     @Override

@@ -438,10 +438,16 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
             }
         }
 
-        String name = dataOwner.__getCnumber().replaceAll("[\\\\/:*?\"<>|\\s]", "_") + "." + format.getExtension();
+        //like the PDF export: folder and file name from the user settings ("Filename Defaults")
+        File dir = mpv5.db.objects.User.getSaveDir(dataOwner);
+        dir.mkdirs();
+        if (!dir.isDirectory()) {
+            dir = DialogForFile.CURRENT_DIR;
+        }
+        String name = dataOwner.getFormatHandler().toUserString().replaceAll("[\\\\/:*?\"<>|]", "_") + "." + format.getExtension();
         DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY);
         d.setFileFilter(format == ZugpferdFile.Format.XRECHNUNG ? DialogForFile.XML_FILES : DialogForFile.PDF_FILES);
-        d.setSelectedFile(new File(DialogForFile.CURRENT_DIR, name));
+        d.setSelectedFile(new File(dir, name));
         if (d.saveFile()) {
             File chosen = d.getFile();
             if (!chosen.getName().toLowerCase().endsWith("." + format.getExtension())) {

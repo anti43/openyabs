@@ -116,26 +116,24 @@ public final class Export extends HashMap<String, Object> implements Waitable {
                         pr.setRecipientsAddress(cont.__getMailaddress());
                         pr.setSenderName(User.getCurrentUser().__getFullname());
 
-                        if (GlobalSettings.hasProperty("org.openyabs.exportproperty.mailbcc")) {
-                            String bcc = GlobalSettings.getProperty("org.openyabs.exportproperty.mailbcc");
-                            if (mpv5.utils.text.TypeConversion.stringToMail(bcc) != null) {
-                                pr.setBccAddress(bcc);
-                            }
-                        }
-                        if (GlobalSettings.hasProperty("org.openyabs.exportproperty.mailcc")) {
-                            String cc = GlobalSettings.getProperty("org.openyabs.exportproperty.mailcc");
-                            if (mpv5.utils.text.TypeConversion.stringToMail(cc) != null) {
-                                pr.setCCAddress(cc);
-                            }
-                        }
+                        //copies of every mail, e.g. Bcc to an archive mailbox (user settings > mail)
+                        pr.setBccAddress(validAddresses(
+                                GlobalSettings.hasProperty(KEY_MAIL_BCC) ? GlobalSettings.getProperty(KEY_MAIL_BCC) : null));
+                        pr.setCCAddress(validAddresses(
+                                GlobalSettings.hasProperty(KEY_MAIL_CC) ? GlobalSettings.getProperty(KEY_MAIL_CC) : null));
 
                         try {
+                            //invoices: PDF, e-invoice or both, as configured for the contact
+                            Waitable attachments = invoiceAttachments(ex, dataOwner, cont, log);
+                            if (attachments == null) {
+                                return;//e-invoice data incomplete, already reported
+                            }
                             pr.setSubject(VariablesHandler.parse(m.__getCname(), dataOwner, hm1));
                             pr.setText(VariablesHandler.parse(m.__getDescription(), dataOwner, hm1));
                             if(log==null)
-                                new Job(ex, (Waiter) pr).execute();
+                                new Job(attachments, (Waiter) pr).execute();
                             else{
-                                new Job(ex, (Waiter) pr).executeSync();
+                                new Job(attachments, (Waiter) pr).executeSync();
                             }
                         } catch (Exception e) {
                             Popup.error(e);
@@ -165,6 +163,93 @@ public final class Export extends HashMap<String, Object> implements Waitable {
         } finally {
             mpv5.YabsViewProxy.instance().setWaiting(false);
         }
+    }
+
+    /**
+     * Global setting: BCC recipient(s) of all mails (";" separated)
+     */
+    public static final String KEY_MAIL_BCC = "org.openyabs.exportproperty.mailbcc";
+    /**
+     * Global setting: CC recipient(s) of all mails (";" separated)
+     */
+    public static final String KEY_MAIL_CC = "org.openyabs.exportproperty.mailcc";
+    /**
+     * @param lists ";" separated address lists, may be null
+     * @return the valid addresses as ";" separated list (invalid ones are
+     * logged and left out)
+     */
+    static String validAddresses(String... lists) {
+        StringBuilder b = new StringBuilder();
+        for (String list : lists) {
+            if (list == null) {
+                continue;
+            }
+            for (String a : list.split(";")) {
+                String t = a.trim();
+                if (t.isEmpty()) {
+                    continue;
+                }
+                if (mpv5.utils.text.TypeConversion.stringToMail(t) == null) {
+                    Log.Debug(Export.class, "Invalid mail address ignored: " + t);
+                } else if (!(";" + b + ";").contains(";" + t + ";")) {
+                    b.append(b.length() > 0 ? ";" : "").append(t);
+                }
+            }
+        }
+        return b.toString();
+    }
+
+    /**
+     * The attachments of a mail: the template PDF, or for invoices the format
+     * configured for the contact ({@link EInvoiceDelivery}).
+     *
+     * @param pdf renders the template PDF
+     * @param dataOwner
+     * @param contact the recipient
+     * @param log the batch log, null for a single mail
+     * @return the job creating the attachments, null if the e-invoice can not
+     * be created (reported to the user / batch log)
+     */
+    static Waitable invoiceAttachments(Export pdf, DatabaseObject dataOwner, Contact contact, List<String> log) {
+        if (!(dataOwner instanceof mpv5.db.objects.Item) || !ZugpferdFile.supports((mpv5.db.objects.Item) dataOwner)) {
+            return pdf;
+        }
+        EInvoiceDelivery delivery = EInvoiceDelivery.forContact(contact);
+        if (!delivery.isEInvoice()) {
+            return pdf;
+        }
+        mpv5.db.objects.Item item = (mpv5.db.objects.Item) dataOwner;
+        List<String> problems;
+        org.mustangproject.Invoice invoice;
+        try {
+            invoice = ZugpferdFile.createInvoice(item, delivery.getFormat());
+            problems = ZugpferdFile.validate(invoice);
+            String buyerVatId = ZugpferdFile.checkBuyerVatId(contact, contact.getInvoiceaddress());
+            if (buyerVatId != null) {
+                problems.add(buyerVatId);
+            }
+        } catch (Exception e) {
+            Log.Debug(e);
+            problems = new java.util.ArrayList<String>();
+            problems.add(String.valueOf(e.getLocalizedMessage()));
+            invoice = null;
+        }
+        if (!problems.isEmpty()) {
+            //never send an incomplete e-invoice to a customer
+            StringBuilder text = new StringBuilder(Messages.EINVOICE_NOT_SENT.toString())
+                    .append(" (").append(item.__getCnumber()).append(", ").append(delivery).append("): ")
+                    .append(Messages.ZUGFERD_MISSING_DATA);
+            for (String problem : problems) {
+                text.append("\n - ").append(problem);
+            }
+            if (log == null) {
+                Popup.warn(text.toString());
+            } else {
+                log.add(text.append("\n").toString());
+            }
+            return null;
+        }
+        return new InvoiceMail(pdf, invoice, delivery);
     }
 
     /**
