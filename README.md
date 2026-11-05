@@ -8,6 +8,8 @@ openyabs - Yet another Business Software
 
 **[E-Rechnung (XRechnung / ZUGFeRD) und E-Mail-Versand: Anforderungen und Hinweise](docs/E-Rechnung.md)**
 
+**Tipp: Rechnungen automatisch archivieren (Bcc).** YaBS kann jede versendete E-Mail – einzeln und im Serienversand, mit allen Anhängen (PDF, ZUGFeRD, XRechnung) – zusätzlich als Bcc an ein eigenes Archivpostfach senden. So liegt jede verschickte Rechnung im Originalformat im Archiv (Aufbewahrungspflicht nach GoBD). Einrichten unter *Werkzeuge > Einstellungen > Benutzereinstellungen*, Bereich E-Mail, Feld **„Bcc (alle E-Mails)“** (mehrere Adressen mit `;` trennen; gilt für alle Benutzer). Der Kunde sieht diese Adresse nicht. Details: [docs/E-Rechnung.md](docs/E-Rechnung.md#archivierung).
+
 ===
 
 If you have any question regarding Yabs, please write to the mailing list (english and german) <a href="mailto:openyabs@googlegroups.com">openyabs@googlegroups.com</a>

@@ -125,12 +125,21 @@ Im Journal Rechnungen markieren und per E-Mail versenden:
 
 ### Archivierung
 
-YaBS archiviert versendete E-Rechnungen **nicht automatisch**. Die
+YaBS legt versendete E-Rechnungen **nicht in einer eigenen Ablage** ab. Die
 Aufbewahrung im Originalformat (siehe Abschnitt 1) ist Aufgabe des Absenders.
-Zwei einfache Wege:
+Am einfachsten ist eine **Bcc-Kopie an ein Archivpostfach**:
 
-- **Bcc an ein eigenes Archivpostfach:** globale Eigenschaft `org.openyabs.exportproperty.mailbcc` unter *Werkzeuge > Einstellungen > Erweitert* (englisch: *Global Options*) setzen. Jede versendete Rechnung landet dann mit allen Anhängen im Archiv.
-- **Datei zusätzlich speichern:** in der Rechnung über die Schaltfläche *E-Rechnung > XRechnung (XML)* bzw. *ZUGFeRD (PDF…)*.
+- **Einrichten:** *Werkzeuge > Einstellungen > Benutzereinstellungen*, im Bereich E-Mail das Feld **„Bcc (alle E-Mails)“** (englisch: *User Properties*, „Bcc (all mails)“). Das Feld wird rot, solange eine Adresse ungültig ist. Mit „Speichern“ übernehmen.
+- **Mehrere Adressen:** mit `;` trennen, z.B. `archiv@firma.de; steuerbuero@kanzlei.de`.
+- **Was im Archiv landet:** **jede** von YaBS gesendete E-Mail – Einzel- und Serienversand, Rechnungen, Angebote usw. – mit **allen Anhängen**, also auch ZUGFeRD-PDF und XRechnung-XML im Originalformat.
+- **Für den Kunden unsichtbar:** Die Bcc-Adresse erscheint nicht in der E-Mail an den Kunden.
+- **Gilt für alle Benutzer.** Gespeichert wird die globale Eigenschaft `org.openyabs.exportproperty.mailbcc`.
+- **Sichtbare Kopie:** Daneben gibt es das Feld **„Cc (alle E-Mails)“** (`org.openyabs.exportproperty.mailcc`). Der Kunde sieht diese Adresse.
+- **Ungültige oder doppelte Adressen** werden beim Versand ausgelassen.
+- **Revisionssicher ist das noch nicht:** Ein Archivpostfach allein ist kein revisionssicheres Archiv. Ob es den GoBD genügt (Unveränderbarkeit, Verfahrensdokumentation), mit der Steuerberatung klären. Viele Archiv- und DMS-Lösungen nehmen E-Mails über eine solche Adresse direkt entgegen.
+
+Alternativ lässt sich jede E-Rechnung in der Rechnung über die Schaltfläche
+*E-Rechnung > XRechnung (XML)* bzw. *ZUGFeRD (PDF…)* als Datei speichern.
 
 ---
 
@@ -139,7 +148,8 @@ Zwei einfache Wege:
 1. **Firmeninformation vervollständigen:**
    - alle `*`-Felder,
    - USt-IdNr. mit `DE`,
-   - gültige IBAN.
+   - gültige IBAN,
+   - Bcc an ein Archivpostfach für die Aufbewahrung (Benutzereinstellungen, Bereich E-Mail).
 
    Ungültige Werte werden rot markiert.
 2. **Je Kunde:** Rechnungsadresse, E-Mail-Adresse und ggf. USt-IdNr. (nur USt-IdNr., keine Steuernummer) prüfen.

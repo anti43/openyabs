@@ -116,18 +116,11 @@ public final class Export extends HashMap<String, Object> implements Waitable {
                         pr.setRecipientsAddress(cont.__getMailaddress());
                         pr.setSenderName(User.getCurrentUser().__getFullname());
 
-                        if (GlobalSettings.hasProperty("org.openyabs.exportproperty.mailbcc")) {
-                            String bcc = GlobalSettings.getProperty("org.openyabs.exportproperty.mailbcc");
-                            if (mpv5.utils.text.TypeConversion.stringToMail(bcc) != null) {
-                                pr.setBccAddress(bcc);
-                            }
-                        }
-                        if (GlobalSettings.hasProperty("org.openyabs.exportproperty.mailcc")) {
-                            String cc = GlobalSettings.getProperty("org.openyabs.exportproperty.mailcc");
-                            if (mpv5.utils.text.TypeConversion.stringToMail(cc) != null) {
-                                pr.setCCAddress(cc);
-                            }
-                        }
+                        //copies of every mail, e.g. Bcc to an archive mailbox (user settings > mail)
+                        pr.setBccAddress(validAddresses(
+                                GlobalSettings.hasProperty(KEY_MAIL_BCC) ? GlobalSettings.getProperty(KEY_MAIL_BCC) : null));
+                        pr.setCCAddress(validAddresses(
+                                GlobalSettings.hasProperty(KEY_MAIL_CC) ? GlobalSettings.getProperty(KEY_MAIL_CC) : null));
 
                         try {
                             //invoices: PDF, e-invoice or both, as configured for the contact
@@ -170,6 +163,40 @@ public final class Export extends HashMap<String, Object> implements Waitable {
         } finally {
             mpv5.YabsViewProxy.instance().setWaiting(false);
         }
+    }
+
+    /**
+     * Global setting: BCC recipient(s) of all mails (";" separated)
+     */
+    public static final String KEY_MAIL_BCC = "org.openyabs.exportproperty.mailbcc";
+    /**
+     * Global setting: CC recipient(s) of all mails (";" separated)
+     */
+    public static final String KEY_MAIL_CC = "org.openyabs.exportproperty.mailcc";
+    /**
+     * @param lists ";" separated address lists, may be null
+     * @return the valid addresses as ";" separated list (invalid ones are
+     * logged and left out)
+     */
+    static String validAddresses(String... lists) {
+        StringBuilder b = new StringBuilder();
+        for (String list : lists) {
+            if (list == null) {
+                continue;
+            }
+            for (String a : list.split(";")) {
+                String t = a.trim();
+                if (t.isEmpty()) {
+                    continue;
+                }
+                if (mpv5.utils.text.TypeConversion.stringToMail(t) == null) {
+                    Log.Debug(Export.class, "Invalid mail address ignored: " + t);
+                } else if (!(";" + b + ";").contains(";" + t + ";")) {
+                    b.append(b.length() > 0 ? ";" : "").append(t);
+                }
+            }
+        }
+        return b.toString();
     }
 
     /**

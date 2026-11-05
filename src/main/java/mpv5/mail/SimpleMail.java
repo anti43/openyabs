@@ -104,6 +104,7 @@ public class SimpleMail implements Waiter {
         this.useSmtps = useSmtps;
         this.senderAddress = senderAddress;
         this.recipientsAddress = recipientsAddress;
+        split(recipientsAddress, rec);
         this.subject = subject;
         this.text = text;
         this.doSendEmail();
@@ -285,10 +286,32 @@ public class SimpleMail implements Waiter {
      */
     public void setRecipientsAddress(String recipientsAddress) {
         this.recipientsAddress = recipientsAddress;
-        String[] ccs = recipientsAddress.split(";");
-        for (int i = 0; i < ccs.length; i++) {
-            String ccc = ccs[i];
-            addAddress(ccc);
+        split(recipientsAddress, rec);
+    }
+
+    /**
+     * Add the addresses of a ";" separated list (trimmed, without empty and
+     * duplicate entries)
+     */
+    private static void split(String addresses, List<String> to) {
+        if (addresses == null) {
+            return;
+        }
+        for (String a : addresses.split(";")) {
+            String t = a.trim();
+            if (!t.isEmpty() && !to.contains(t)) {
+                to.add(t);
+            }
+        }
+    }
+
+    /**
+     * The progress bar of the main window, if there is one
+     */
+    private static void progress(boolean running) {
+        javax.swing.JProgressBar bar = mpv5.YabsViewProxy.instance().getProgressbar();
+        if (bar != null) {
+            bar.setIndeterminate(running);
         }
     }
 
@@ -403,7 +426,7 @@ public class SimpleMail implements Waiter {
     private void sendSmptmail() throws MessagingException {
         try {
             Log.Debug(this, "Sending mail via SMTP");
-            mpv5.YabsViewProxy.instance().getProgressbar().setIndeterminate(true);
+            progress(true);
             MailAuthenticator auth = new MailAuthenticator(username, password);
 
             Properties properties;
@@ -436,9 +459,15 @@ public class SimpleMail implements Waiter {
 
             InternetAddress from = new InternetAddress(senderAddress, MimeUtility.encodeText(senderName != null ? senderName : senderAddress), "UTF-8");
             message.setFrom(from);
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipientsAddress));
-            if (getBccAddress() != null) {
-                message.addRecipient(Message.RecipientType.BCC, new InternetAddress(bccAddress));
+            //all recipients, like the SMTPS path (before: only one BCC and no CC at all)
+            for (String to : rec) {
+                message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+            }
+            for (String c : cc) {
+                message.addRecipient(Message.RecipientType.CC, new InternetAddress(c));
+            }
+            for (String b : bcc) {
+                message.addRecipient(Message.RecipientType.BCC, new InternetAddress(b));
             }
             message.setSubject(subject);
             message.setSentDate(new Date());
@@ -466,7 +495,7 @@ public class SimpleMail implements Waiter {
 
             // Send the message
             Transport.send(message);
-            mpv5.YabsViewProxy.instance().getProgressbar().setIndeterminate(false);
+            progress(false);
             Log.Debug(this, "Mail sent: " + message);
             if (log == null)
                 Popup.notice(Messages.MAIL_SENT + " " + subject + "(" + recipientsAddress + ")");
@@ -492,7 +521,7 @@ public class SimpleMail implements Waiter {
     private void sendSmptsMail() throws NoSuchProviderException, MessagingException {
         SMTPSSLTransport transport = null;
         try {
-            mpv5.YabsViewProxy.instance().getProgressbar().setIndeterminate(true);
+            progress(true);
             Log.Debug(this, "Sending mail via SMTPS");
             // create properties
             Properties props = System.getProperties();
@@ -575,7 +604,7 @@ public class SimpleMail implements Waiter {
             transport.connect();
 // send the message
             transport.sendMessage(message, message.getAllRecipients());
-            mpv5.YabsViewProxy.instance().getProgressbar().setIndeterminate(false);
+            progress(false);
             Log.Debug(this, "Mail sent: " + message);
             if (log == null)
                 Popup.notice(Messages.MAIL_SENT + " " + subject + "(" + recipientsAddress + ")");
@@ -607,11 +636,21 @@ public class SimpleMail implements Waiter {
      */
     public void setBccAddress(String bccAddress) {
         this.bccAddress = bccAddress;
-        String[] ccs = bccAddress.split(";");
-        for (int i = 0; i < ccs.length; i++) {
-            String ccc = ccs[i];
-            addBCCAddress(ccc);
-        }
+        split(bccAddress, bcc);
+    }
+
+    /**
+     * @return all BCC recipients
+     */
+    public List<String> getBccAddresses() {
+        return new ArrayList<String>(bcc);
+    }
+
+    /**
+     * @return all CC recipients
+     */
+    public List<String> getCcAddresses() {
+        return new ArrayList<String>(cc);
     }
 
     public void addCCAddress(String ccc) {
@@ -620,19 +659,7 @@ public class SimpleMail implements Waiter {
 
     public void setCCAddress(String cc) {
         this.ccAddress = cc;
-        String[] ccs = cc.split(";");
-        for (int i = 0; i < ccs.length; i++) {
-            String ccc = ccs[i];
-            addCCAddress(ccc);
-        }
-    }
-
-    private void addAddress(String ccc) {
-        rec.add(ccc);
-    }
-
-    private void addBCCAddress(String ccc) {
-        bcc.add(ccc);
+        split(cc, this.cc);
     }
 
     /**
