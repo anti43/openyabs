@@ -34,6 +34,11 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
 
     public ControlPanel_Userproperties() {
         initComponents();
+        //mark invalid addresses while typing
+        mpv5.utils.ui.FieldCheck.attach(mailbcc, mpv5.utils.text.TypeConversion::isMailList,
+                Messages.MAIL_BCC_TOOLTIP.toString(), Messages.MAIL_COPY_INVALID.toString());
+        mpv5.utils.ui.FieldCheck.attach(mailcc, mpv5.utils.text.TypeConversion::isMailList,
+                Messages.MAIL_CC_TOOLTIP.toString(), Messages.MAIL_COPY_INVALID.toString());
 
         defcount.set_ValueClass(Double.class);
         deftax.setSearchEnabled(true);
@@ -90,6 +95,8 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         TestButton = new javax.swing.JButton();
         smtpssl = new javax.swing.JCheckBox();
         testadress = new mpv5.ui.beans.LabeledTextField();
+        mailbcc = new mpv5.ui.beans.LabeledTextField();
+        mailcc = new mpv5.ui.beans.LabeledTextField();
         jPanel4 = new javax.swing.JPanel();
         saveformat = new mpv5.ui.beans.LabeledTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -351,6 +358,12 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         testadress.set_Label(bundle.getString("ControlPanel_Userproperties.testadress._Label")); // NOI18N
         testadress.setName("testadress"); // NOI18N
 
+        mailbcc.set_Label(Messages.MAIL_BCC_LABEL.toString());
+        mailbcc.setName("mailbcc"); // NOI18N
+
+        mailcc.set_Label(Messages.MAIL_CC_LABEL.toString());
+        mailcc.setName("mailcc"); // NOI18N
+
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
         jPanel9Layout.setHorizontalGroup(
@@ -377,6 +390,10 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
                             .addComponent(smtpuser, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(testadress, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel9Layout.createSequentialGroup()
+                        .addComponent(mailbcc, javax.swing.GroupLayout.DEFAULT_SIZE, 344, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(mailcc, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel9Layout.createSequentialGroup()
                         .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(TestButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -402,6 +419,10 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
                             .addComponent(smtps)
                             .addComponent(smtpssl)))
                     .addComponent(testadress, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(mailbcc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(mailcc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -829,6 +850,8 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
+    private mpv5.ui.beans.LabeledTextField mailbcc;
+    private mpv5.ui.beans.LabeledTextField mailcc;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextPane jTextPane1;
@@ -923,6 +946,9 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         GlobalSettings.setProperty("org.openyabs.exportproperty.productsresolved", String.valueOf(resolv.isSelected()));
         GlobalSettings.setProperty("org.openyabs.exportproperty.blankunusedfields.disable", String.valueOf(noblank.isSelected()));
         GlobalSettings.setProperty("org.openyabs.exportproperty.loadremoteoodocbyurl", String.valueOf(remoteurl.isSelected()));
+        //copies of every mail (global, all users), e.g. Bcc to an archive mailbox
+        GlobalSettings.setProperty(mpv5.utils.export.Export.KEY_MAIL_BCC, mailbcc.getText() == null ? "" : mailbcc.getText().trim());
+        GlobalSettings.setProperty(mpv5.utils.export.Export.KEY_MAIL_CC, mailcc.getText() == null ? "" : mailcc.getText().trim());
 
         loadSettings();
     }
@@ -1039,6 +1065,10 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         resolv.setSelected(GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.productsresolved"));
         noblank.setSelected(GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.blankunusedfields.disable"));
         remoteurl.setSelected(GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.loadremoteoodocbyurl"));
+        mailbcc.setText(GlobalSettings.hasProperty(mpv5.utils.export.Export.KEY_MAIL_BCC)
+                ? GlobalSettings.getProperty(mpv5.utils.export.Export.KEY_MAIL_BCC) : "");
+        mailcc.setText(GlobalSettings.hasProperty(mpv5.utils.export.Export.KEY_MAIL_CC)
+                ? GlobalSettings.getProperty(mpv5.utils.export.Export.KEY_MAIL_CC) : "");
 
         try {
             Runnable runnable = new Runnable() {
