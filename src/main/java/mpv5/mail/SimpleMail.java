@@ -75,7 +75,7 @@ public class SimpleMail implements Waiter {
     private boolean useTls;
     private boolean useSSL;
     private boolean useSmtps;
-    private File attachment;
+    private final List<File> attachments = new ArrayList<File>();
     private String ccAddress;
     private String senderName;
     private List<String> log = null;
@@ -151,9 +151,23 @@ public class SimpleMail implements Waiter {
 
     @Override
     public void set(Object object, Exception exception) throws Exception {
+        if (exception != null) {
+            //e.g. the e-invoice is invalid: tell the user instead of only logging it
+            Log.Debug(this, exception);
+            String text = Messages.MAIL_NOT_SENT + " (" + recipientsAddress + "): " + exception.getLocalizedMessage();
+            if (log != null) {
+                log.add(text + "\n");
+            } else {
+                Popup.warn(text);
+            }
+            return;
+        }
         if (exception == null) {
             try {
-                if (object instanceof Export) {
+                if (object instanceof MailAttachments) {
+                    setAttachments(((MailAttachments) object).getAttachments());
+                    doSendEmail();
+                } else if (object instanceof Export) {
                     setAttachment(((Export) object).getTargetFile());
                     doSendEmail();
                 } else {
@@ -307,17 +321,41 @@ public class SimpleMail implements Waiter {
     }
 
     /**
-     * @return the attachment
+     * @return the (first) attachment, null if none
      */
     public File getAttachment() {
-        return attachment;
+        return attachments.isEmpty() ? null : attachments.get(0);
     }
 
     /**
-     * @param attachment the attachment to set
+     * @param attachment the only attachment, null for none
      */
     public void setAttachment(File attachment) {
-        this.attachment = attachment;
+        attachments.clear();
+        if (attachment != null) {
+            attachments.add(attachment);
+        }
+    }
+
+    /**
+     * @return all attachments
+     */
+    public List<File> getAttachments() {
+        return new ArrayList<File>(attachments);
+    }
+
+    /**
+     * @param files the attachments (replacing the current ones)
+     */
+    public void setAttachments(List<File> files) {
+        attachments.clear();
+        if (files != null) {
+            for (File f : files) {
+                if (f != null) {
+                    attachments.add(f);
+                }
+            }
+        }
     }
 
     /**
@@ -414,8 +452,8 @@ public class SimpleMail implements Waiter {
             Multipart multipart = new MimeMultipart();
             multipart.addBodyPart(messageBodyPart);
 
-            if (attachment != null) {
-                // Part two is attachment
+            for (File attachment : attachments) {
+                // further parts are the attachments
                 messageBodyPart = new MimeBodyPart();
                 DataSource source = new FileDataSource(attachment);
                 messageBodyPart.setDataHandler(new DataHandler(source));
@@ -516,8 +554,8 @@ public class SimpleMail implements Waiter {
             Multipart multipart = new MimeMultipart();
             multipart.addBodyPart(messageBodyPart);
 
-            if (attachment != null) {
-                // Part two is attachment
+            for (File attachment : attachments) {
+                // further parts are the attachments
                 messageBodyPart = new MimeBodyPart();
                 DataSource source = new FileDataSource(attachment);
                 messageBodyPart.setDataHandler(new DataHandler(source));
