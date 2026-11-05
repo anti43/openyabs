@@ -39,6 +39,28 @@ import javax.swing.table.TableCellEditor;
 public class DynamicTableCalculator implements Runnable {
 
     private HashMap<Integer, JComponent> sumcols = new HashMap<Integer, JComponent>();
+    private java.util.function.Function<java.util.Map<Integer, BigDecimal>, BigDecimal> rowFunction;
+    private java.util.function.Function<javax.swing.table.TableModel, BigDecimal> sumFunction;
+
+    /**
+     * Compute the row value with this function instead of the term (the map
+     * holds the numeric values of the row by column index)
+     *
+     * @param rowFunction
+     */
+    public void setRowFunction(java.util.function.Function<java.util.Map<Integer, BigDecimal>, BigDecimal> rowFunction) {
+        this.rowFunction = rowFunction;
+    }
+
+    /**
+     * Compute the displayed total with this function instead of summing up
+     * the target column (e.g. tax per VAT rate)
+     *
+     * @param sumFunction
+     */
+    public void setSumFunction(java.util.function.Function<javax.swing.table.TableModel, BigDecimal> sumFunction) {
+        this.sumFunction = sumFunction;
+    }
     private final JTable table;
     private final int[] targetColumns;
     private final String term;
@@ -72,9 +94,15 @@ public class DynamicTableCalculator implements Runnable {
             }
         }
         try {
-            DynamicArithmetic da = new DynamicArithmetic(term, values);
-            val = da.result;
+            if (rowFunction != null) {
+                val = rowFunction.apply(values);
+            } else {
+                DynamicArithmetic da = new DynamicArithmetic(term, values);
+                val = da.result;
+            }
         } catch (ParseFormatException ex) {
+            Log.Debug(this, ex);
+        } catch (RuntimeException ex) {
             Log.Debug(this, ex);
         }
 
@@ -175,6 +203,9 @@ public class DynamicTableCalculator implements Runnable {
 
             if (sumcols.containsKey(k)) {
                 BigDecimal ovalue = BigDecimal.ZERO;
+                if (sumFunction != null) {
+                    ovalue = sumFunction.apply(table.getModel());
+                } else
                 for (int j = 0; j < table.getRowCount(); j++) {
                     Object rowVal=table.getModel().getValueAt(j, k);
                     if (rowVal != null) {

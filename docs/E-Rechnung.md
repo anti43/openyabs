@@ -75,6 +75,20 @@ Angebote, Aufträge, Lieferscheine usw. werden immer als PDF versendet.
   - Einheiten werden auf UN/ECE-Codes abgebildet: `Stk` → C62, `Std.` → HUR, `pauschal` → LS usw. Unbekannte Einheiten werden C62.
 - **0 % USt.:** Positionen ohne Umsatzsteuer erhalten die Kategorie „E“ (steuerbefreit) mit dem Befreiungsgrund aus der Benutzereigenschaft `companyinfo.taxexemptionreason`. Dafür gibt es in der Firmeninformation noch kein eigenes Feld. Ohne diese Eigenschaft lautet der Grund „Umsatzsteuerbefreit“. Für Kleinunternehmer kann hier z.B. „Kein Ausweis von Umsatzsteuer, da Kleinunternehmer gemäß § 19 UStG“ eingetragen werden.
 
+### Berechnung der Beträge
+
+YaBS rechnet Rechnungsbeträge nach EN 16931, genau wie die E-Rechnung:
+
+1. jede Position: Menge × Preis, Rabatt, Positionsnetto – jeweils kaufmännisch auf 2 Nachkommastellen gerundet,
+2. je Steuersatz: Summe der Positionsnettos × Steuersatz, einmal gerundet,
+3. Brutto = Netto + Steuer.
+
+Dieselbe Leistung ergibt damit immer denselben Betrag, egal wie sie auf Positionen verteilt ist (z.B. aus mehreren Lieferscheinen). PDF und E-Rechnung stimmen auf den Cent überein.
+
+- **Ältere Versionen** haben ungerundet und mit Gleitkommazahlen gerechnet. Dadurch gab es Cent-Abweichungen, z.B. 20,97 statt 20,98 € Umsatzsteuer auf 110,40 € netto.
+- **Bereits gespeicherte Rechnungen** behalten ihre Beträge, bis sie geöffnet und erneut gespeichert werden.
+- **Zeilensummen:** Die Bruttosumme einer einzelnen Zeile in der Positionstabelle ist nur zur Anzeige gerundet. Die Summe dieser Zeilen kann um einen Cent von der Rechnungssumme abweichen, weil die Steuer je Steuersatz und nicht je Zeile gerundet wird.
+
 ### Prüfung
 
 YaBS prüft jede E-Rechnung zweimal:
