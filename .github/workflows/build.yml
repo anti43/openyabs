@@ -1,10 +1,14 @@
 # Builds YaBS, runs the tests and publishes the distribution zip
-# (openyabs.jar, lib/, start scripts) as build artifact.
+# (openyabs.jar, lib/, start scripts):
+# - every run: as workflow artifact (Actions > run > Artifacts)
+# - builds of master: as pre-release "latest-master" (replaced on every build)
+# - version tags (v1.2.3): as GitHub release "YaBS 1.2.3"
 name: Build
 
 on:
   push:
     branches: [master]
+    tags: ['v*']
   pull_request:
   workflow_dispatch:
 
@@ -29,7 +33,12 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends fonts-liberation
 
       - name: Test and build distribution zip
-        run: ./gradlew --no-daemon test distributionZip
+        run: |
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+            ./gradlew --no-daemon test distributionZip -PreleaseVersion="${GITHUB_REF_NAME#v}"
+          else
+            ./gradlew --no-daemon test distributionZip
+          fi
 
       # the artifact download is itself a zip which contains openyabs-<version>.zip;
       # uploading the zip (and not the folder) keeps yabs.sh executable
@@ -45,3 +54,34 @@ jobs:
           name: test-reports-${{ github.run_number }}
           path: build/reports/tests/
           if-no-files-found: ignore
+
+  release:
+    needs: build
+    # not for pull requests, only for master and version tags
+    if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/v'))
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    concurrency: release-${{ github.ref }}
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: openyabs-${{ github.run_number }}
+          path: dist
+
+      - name: Release for version tag
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          gh release create "$GITHUB_REF_NAME" dist/*.zip \
+            --title "YaBS ${GITHUB_REF_NAME#v}" --generate-notes
+
+      - name: Pre-release latest-master
+        if: github.ref == 'refs/heads/master'
+        run: |
+          gh release delete latest-master --cleanup-tag --yes || true
+          gh release create latest-master dist/*.zip --prerelease --target "$GITHUB_SHA" \
+            --title "Latest build (master)" \
+            --notes "Automatic build of master, commit $GITHUB_SHA ($(date -u '+%Y-%m-%d %H:%M UTC')). Replaced by every new build. Unzip and start with yabs.sh / yabs.bat (Java 11 or newer)."
