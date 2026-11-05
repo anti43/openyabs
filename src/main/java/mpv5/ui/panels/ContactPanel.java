@@ -2202,6 +2202,36 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     private final javax.swing.JComboBox<mpv5.utils.export.EInvoiceDelivery> einvoiceDelivery
             = new javax.swing.JComboBox<mpv5.utils.export.EInvoiceDelivery>(mpv5.utils.export.EInvoiceDelivery.values());
     private final javax.swing.JTextField einvoiceLeitweg = new javax.swing.JTextField(25);
+    /**
+     * the account the contact pays to: "" = account of the company info
+     */
+    private final javax.swing.JComboBox<Object> einvoiceAccount = new javax.swing.JComboBox<Object>();
+    /**
+     * mirror of the field "Pay Term" (payterm)
+     */
+    private final javax.swing.JTextField einvoicePayterm = new javax.swing.JTextField(6);
+    private final javax.swing.JTextField einvoiceSkontoPercent = new javax.swing.JTextField(6);
+    private final javax.swing.JTextField einvoiceSkontoDays = new javax.swing.JTextField(6);
+    private boolean syncingPayterm;
+
+    /**
+     * Entry of the account combo box
+     */
+    private static final class AccountItem {
+
+        final String iban;
+        final String label;
+
+        AccountItem(String iban, String label) {
+            this.iban = iban;
+            this.label = label;
+        }
+
+        @Override
+        public String toString() {
+            return label;
+        }
+    }
 
     /**
      * Tab "E-Invoice": how invoices are sent to this contact by email and the
@@ -2236,8 +2266,19 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         info.setFocusable(false);
         //otherwise the preferred width is the whole text in one line, which widens the form
         info.setColumns(45);
+        addEInvoiceRow(p, c, 2, Messages.EINVOICE_ACCOUNT.toString(), einvoiceAccount);
+        addEInvoiceRow(p, c, 3, Messages.EINVOICE_PAYTERM.toString(), einvoicePayterm);
+        addEInvoiceRow(p, c, 4, Messages.COMPANY_SKONTO_PERCENT.toString(), einvoiceSkontoPercent);
+        addEInvoiceRow(p, c, 5, Messages.COMPANY_SKONTO_DAYS.toString(), einvoiceSkontoDays);
+        einvoiceAccount.setToolTipText(Messages.EINVOICE_ACCOUNT_TOOLTIP.toString());
+        einvoicePayterm.setToolTipText(Messages.EINVOICE_PAYTERM_TOOLTIP.toString());
+        einvoiceSkontoPercent.setToolTipText(Messages.EINVOICE_SKONTO_TOOLTIP.toString());
+        einvoiceSkontoDays.setToolTipText(Messages.EINVOICE_SKONTO_TOOLTIP.toString());
+        syncPayterm(einvoicePayterm, payterm.getTextField());
+        syncPayterm(payterm.getTextField(), einvoicePayterm);
+
         c.gridx = 0;
-        c.gridy = 2;
+        c.gridy = 6;
         c.gridwidth = 2;
         c.weightx = 1;
         c.weighty = 1;
@@ -2247,20 +2288,96 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jTabbedPane1.addTab(Messages.EINVOICE_TAB.toString(), p);
     }
 
+    private static void addEInvoiceRow(javax.swing.JPanel p, java.awt.GridBagConstraints c, int row, String label,
+            javax.swing.JComponent field) {
+        c.gridx = 0;
+        c.gridy = row;
+        c.gridwidth = 1;
+        c.weightx = 0;
+        c.weighty = 0;
+        c.fill = java.awt.GridBagConstraints.NONE;
+        p.add(new javax.swing.JLabel(label), c);
+        c.gridx = 1;
+        c.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        p.add(field, c);
+    }
+
+    /**
+     * Copy every change of one payment term field to the other
+     */
+    private void syncPayterm(final javax.swing.JTextField from, final javax.swing.JTextField to) {
+        from.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            private void copy() {
+                if (syncingPayterm || from.getText().equals(to.getText())) {
+                    return;
+                }
+                syncingPayterm = true;
+                try {
+                    javax.swing.SwingUtilities.invokeLater(() -> {
+                        if (!from.getText().equals(to.getText())) {
+                            to.setText(from.getText());
+                        }
+                    });
+                } finally {
+                    syncingPayterm = false;
+                }
+            }
+
+            @Override
+            public void insertUpdate(javax.swing.event.DocumentEvent e) {
+                copy();
+            }
+
+            @Override
+            public void removeUpdate(javax.swing.event.DocumentEvent e) {
+                copy();
+            }
+
+            @Override
+            public void changedUpdate(javax.swing.event.DocumentEvent e) {
+                copy();
+            }
+        });
+    }
+
     /**
      * Show the e-invoice settings of the current contact
      */
     private void loadEInvoiceSettings() {
-        einvoiceDelivery.setSelectedItem(mpv5.utils.export.EInvoiceDelivery.forContact(dataOwner));
-        String leitweg = "";
-        try {
-            if (dataOwner != null && dataOwner.isExisting()
-                    && ValueProperty.hasProperty(dataOwner, mpv5.utils.export.ZugpferdFile.KEY_BUYER_REFERENCE)) {
-                Object v = ValueProperty.getProperty(dataOwner, mpv5.utils.export.ZugpferdFile.KEY_BUYER_REFERENCE).getValue();
-                leitweg = v == null ? "" : String.valueOf(v);
+        //accounts of the company info, the first entry is the default
+        String iban = mpv5.utils.export.BankAccount.contactIban(dataOwner);
+        javax.swing.DefaultComboBoxModel<Object> accounts = new javax.swing.DefaultComboBoxModel<Object>();
+        java.util.List<mpv5.utils.export.BankAccount> list
+                = mpv5.utils.export.BankAccount.companyAccounts(mpv5.utils.export.ZugpferdFile.companySettings());
+        accounts.addElement(new AccountItem("", Messages.EINVOICE_ACCOUNT_DEFAULT
+                + (list.isEmpty() ? "" : " (" + list.get(0) + ")")));
+        Object selected = accounts.getElementAt(0);
+        for (int i = 1; i < list.size(); i++) {
+            AccountItem item = new AccountItem(list.get(i).getIban(), list.get(i).toString());
+            accounts.addElement(item);
+            if (item.iban.equals(iban)) {
+                selected = item;
             }
-        } catch (Exception e) {
-            Log.Debug(this, e.getMessage());
+        }
+        if (!iban.isEmpty() && selected == accounts.getElementAt(0)
+                && (list.isEmpty() || !list.get(0).getIban().equals(iban))) {
+            //removed from the company info meanwhile: keep it visible
+            AccountItem missing = new AccountItem(iban, mpv5.utils.text.Iban.format(iban) + " - " + Messages.EINVOICE_ACCOUNT_MISSING);
+            accounts.addElement(missing);
+            selected = missing;
+        }
+        einvoiceAccount.setModel(accounts);
+        einvoiceAccount.setSelectedItem(selected);
+        einvoicePayterm.setText(payterm.getText());
+        String p = mpv5.utils.export.PaymentTerms.contactValue(dataOwner, mpv5.utils.export.PaymentTerms.KEY_SKONTO_PERCENT);
+        String d = mpv5.utils.export.PaymentTerms.contactValue(dataOwner, mpv5.utils.export.PaymentTerms.KEY_SKONTO_DAYS);
+        einvoiceSkontoPercent.setText(p == null ? "" : p);
+        einvoiceSkontoDays.setText(d == null ? "" : d);
+
+        einvoiceDelivery.setSelectedItem(mpv5.utils.export.EInvoiceDelivery.forContact(dataOwner));
+        String leitweg = mpv5.utils.export.ContactProperty.get(dataOwner, mpv5.utils.export.ZugpferdFile.KEY_BUYER_REFERENCE);
+        if (leitweg == null) {
+            leitweg = "";
         }
         einvoiceLeitweg.setText(leitweg);
     }
@@ -2275,15 +2392,14 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         try {
             mpv5.utils.export.EInvoiceDelivery.save(dataOwner,
                     (mpv5.utils.export.EInvoiceDelivery) einvoiceDelivery.getSelectedItem());
-            String leitweg = einvoiceLeitweg.getText() == null ? "" : einvoiceLeitweg.getText().trim();
-            String key = mpv5.utils.export.ZugpferdFile.KEY_BUYER_REFERENCE;
-            if (leitweg.isEmpty()) {
-                if (ValueProperty.hasProperty(dataOwner, key)) {
-                    ValueProperty.deleteProperty(dataOwner, key);
-                }
-            } else {
-                ValueProperty.addOrUpdateProperty(key, leitweg, dataOwner);
-            }
+            Object account = einvoiceAccount.getSelectedItem();
+            mpv5.utils.export.BankAccount.saveForContact(dataOwner, account instanceof AccountItem ? ((AccountItem) account).iban : "");
+            mpv5.utils.export.PaymentTerms.saveContactValue(dataOwner, mpv5.utils.export.PaymentTerms.KEY_SKONTO_PERCENT,
+                    einvoiceSkontoPercent.getText());
+            mpv5.utils.export.PaymentTerms.saveContactValue(dataOwner, mpv5.utils.export.PaymentTerms.KEY_SKONTO_DAYS,
+                    einvoiceSkontoDays.getText());
+            mpv5.utils.export.ContactProperty.set(dataOwner, mpv5.utils.export.ZugpferdFile.KEY_BUYER_REFERENCE,
+                    einvoiceLeitweg.getText());
         } catch (Exception e) {
             Log.Debug(this, e);
         }

@@ -95,14 +95,8 @@ public enum EInvoiceDelivery {
      * @return the delivery configured for the contact, {@link #PDF} if none
      */
     public static EInvoiceDelivery forContact(DatabaseObject contact) {
-        try {
-            if (contact != null && contact.isExisting() && ValueProperty.hasProperty(contact, KEY)) {
-                return parse(ValueProperty.getProperty(contact, KEY).getValue());
-            }
-        } catch (Exception e) {
-            Log.Debug(EInvoiceDelivery.class, e.getMessage());
-        }
-        return PDF;
+        //independent of the context the contact was opened with (customer, supplier, ...)
+        return parse(ContactProperty.get(contact, KEY));
     }
 
     /**
@@ -112,12 +106,6 @@ public enum EInvoiceDelivery {
      * @param delivery
      */
     public static void save(DatabaseObject contact, EInvoiceDelivery delivery) {
-        if (delivery == null || delivery == PDF) {
-            if (ValueProperty.hasProperty(contact, KEY)) {
-                ValueProperty.deleteProperty(contact, KEY);
-            }
-        } else {
-            ValueProperty.addOrUpdateProperty(KEY, delivery.name(), contact);
-        }
+        ContactProperty.set(contact, KEY, delivery == null || delivery == PDF ? null : delivery.name());
     }
 }

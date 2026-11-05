@@ -52,6 +52,11 @@ Angebote, Aufträge, Lieferscheine usw. werden immer als PDF versendet.
   - Telefon und E-Mail (Kontaktdaten des Verkäufers, BR-DE-5/6/7)
   - **USt-IdNr.** mit Ländercode, z.B. `DE123456789`. Eine Steuernummer allein genügt **nicht** (BR-CO-26). Steht die USt-IdNr. versehentlich im Feld „Steuernummer“, wird sie trotzdem erkannt.
   - **IBAN** (wird geprüft), BIC optional
+- **Bankkonto, auf das der Kunde zahlt:** Weitere Konten unter *Firmeninformation > Weitere Bankkonten…* (Bezeichnung, IBAN, BIC, Bank). Im Kontakt, Reiter „E-Rechnung“, Feld „Zahlung an Konto“, wird das Konto des Kunden gewählt; „Standard“ ist das Konto aus den Feldern IBAN/BIC der Firmeninformation. Dieses Konto steht in der E-Rechnung und in den Vorlagen (`item.paymentiban`, `item.paymentbic`, `item.paymentbank`, `item.paymentaccountname`).
+- **Skonto:**
+  - **Einstellen:** beim Kontakt (Reiter „E-Rechnung“, Prozent und Tage), sonst der Standard aus der Firmeninformation („Skonto %“, „Skonto Tage“).
+  - **In der E-Rechnung:** in der von XRechnung verlangten Form `#SKONTO#TAGE=10#PROZENT=2.00#` in den Zahlungsbedingungen (geprüft mit dem offiziellen Validator).
+  - **In Vorlagen:** `item.skontopercent`, `item.skontodays`, `item.skontodate`, `item.skontoamount` (Skontobetrag vom Brutto) und `item.skontopayamount` (Zahlbetrag mit Skonto). Ohne Skonto bleiben diese Felder leer.
 - **Käufer:** Rechnungsadresse des Kontakts (Firma/Name, Straße, PLZ, Ort, Land) und die **E-Mail-Adresse des Kontakts**, die in der E-Rechnung Pflicht ist (PEPPOL-EN16931-R010).
   - **USt-IdNr. des Kunden** (Feld „UST-ID“): nur eine gültige USt-IdNr. wird übernommen. Eine Steuernummer ist für den Käufer in EN 16931 nicht vorgesehen und wird weggelassen. YaBS weist darauf hin.
   - **Leitweg-ID / Käuferreferenz** (Reiter „E-Rechnung“ beim Kontakt): Pflicht für öffentliche Auftraggeber. Ist sie leer, wird die Kundennummer verwendet (sonst die Rechnungsnummer).
@@ -62,6 +67,8 @@ Angebote, Aufträge, Lieferscheine usw. werden immer als PDF versendet.
   4. sonst 14 Tage.
 
   Wer das Zahlungsziel als Text in Vorlagen pro Kundengruppe hinterlegt, trägt die Tage dort zusätzlich ein. So passen PDF-Text und E-Rechnung zusammen.
+
+  Das Zahlungsziel des Kunden lässt sich auch im Reiter „E-Rechnung“ einstellen (dasselbe Feld wie „Zahlungsbedingung“). In Vorlagen stehen `item.paymentdays` und `item.paymentduedate` zur Verfügung, damit Text und E-Rechnung automatisch übereinstimmen.
 - **Positionen:**
   - Textzeilen und Zeilen mit Menge 0 werden übersprungen.
   - Rabatte werden als Positionsnachlass übertragen.
