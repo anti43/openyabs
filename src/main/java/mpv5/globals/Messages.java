@@ -487,6 +487,8 @@ public enum Messages {
     CONTACT_SECTION_PAYMENT("Payment"),
     CONTACT_SECTION_BANK("Bank account"),
     CONTACT_SECTION_DOCUMENTS("Documents"),
+    CONTACT_DETAILS("Details"),
+    CONTACT_EINVOICE_HINT("E-invoice"),
     MODERN_UI("Modern contact view (preview, takes effect for newly opened tabs)");
 
 

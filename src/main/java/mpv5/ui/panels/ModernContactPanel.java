@@ -170,11 +170,49 @@ public class ModernContactPanel extends JPanel implements DataPanel, javax.swing
     private final JTextField einvoiceSkontoDays = new JTextField(6);
     //tabs
     private final JTabbedPane tabs = new JTabbedPane();
-    private final JTabbedPane addresspanel = new JTabbedPane(JTabbedPane.LEFT);
+    //main address and additional addresses in one card, chosen with the selector
+    private final JPanel addressSelector = new JPanel(new WrapLayout(FlowLayout.LEFT, ModernTheme.px(4), ModernTheme.px(2)));
+    private final ButtonGroup addressGroup = new ButtonGroup();
+    private final java.awt.CardLayout addressCards = new java.awt.CardLayout();
+    private final JPanel addressBody = new JPanel(addressCards) {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public java.awt.Dimension getPreferredSize() {
+            //the height of the shown address, not of the largest one
+            for (Component c : getComponents()) {
+                if (c.isVisible()) {
+                    return c.getPreferredSize();
+                }
+            }
+            return super.getPreferredSize();
+        }
+    };
+    private final ChipToggle mainAddressChip = new ChipToggle(text("ContactPanel.mainaddress.TabConstraints.tabTitle"));
+    private final JButton addAddressButton = link(text("ContactPanel.button_order1.text"), "/images/16/add.png");
+    private final Map<ModernAddressForm, ChipToggle> addressChips = new java.util.LinkedHashMap<ModernAddressForm, ChipToggle>();
+    private static final String MAIN_ADDRESS = "main";
+    /**
+     * The files of a contact are not used currently, the tab is hidden
+     */
+    private static final boolean SHOW_FILES = false;
     private final JTable proptable = new MPTable(this);
     private final JTable filetable = new MPTable(this);
     //documents of the contact
-    private final JTable dataTable = new MPTable(this);
+    private final JTable dataTable = new MPTable(this) {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public Component prepareRenderer(javax.swing.table.TableCellRenderer renderer, int row, int column) {
+            Component c = super.prepareRenderer(renderer, row, column);
+            if (c instanceof JComponent) {
+                //the details line is often longer than the column
+                Object v = getValueAt(row, column);
+                ((JComponent) c).setToolTipText(v == null || String.valueOf(v).isEmpty() ? null : String.valueOf(v));
+            }
+            return c;
+        }
+    };
     private final JPopupMenu itemTablePopup;
     private final JTextField filter = new JTextField(14);
     private final Map<Related, ChipToggle> relatedButtons = new EnumMap<Related, ChipToggle>(Related.class);
@@ -245,10 +283,10 @@ public class ModernContactPanel extends JPanel implements DataPanel, javax.swing
         content.add(createHeader(), BorderLayout.NORTH);
 
         tabs.addTab(Messages.CONTACT_OVERVIEW.toString(), scroll(createOverview()));
-        tabs.addTab(text("ContactPanel.addresspanel.TabConstraints.tabTitle"), createAddressesTab());
-        tabs.addTab(Messages.EINVOICE_TAB.toString(), scroll(createEInvoiceTab()));
         tabs.addTab(text("ContactPanel.propPanel.TabConstraints.tabTitle"), createPropertiesTab());
-        tabs.addTab(text("ContactPanel.filetab.TabConstraints.tabTitle"), createFilesTab());
+        if (SHOW_FILES) {
+            tabs.addTab(text("ContactPanel.filetab.TabConstraints.tabTitle"), createFilesTab());
+        }
 
         createRelatedPanel();
         split = new JSplitPane(JSplitPane.VERTICAL_SPLIT, tabs, relatedPanel);
@@ -386,6 +424,10 @@ public class ModernContactPanel extends JPanel implements DataPanel, javax.swing
         payterm.getTextField().setToolTipText(Messages.EINVOICE_PAYTERM_TOOLTIP.toString());
         einvoiceSkontoPercent.setToolTipText(Messages.EINVOICE_SKONTO_TOOLTIP.toString());
         einvoiceSkontoDays.setToolTipText(Messages.EINVOICE_SKONTO_TOOLTIP.toString());
+        //the explanation of the former e-invoice tab
+        String einvoiceInfo = "<html><div style='width:360px'>" + Messages.EINVOICE_TAB_INFO + "</div></html>";
+        einvoiceDelivery.setToolTipText(einvoiceInfo);
+        einvoiceLeitweg.setToolTipText(einvoiceInfo);
 
         DocumentListener nameChanged = new DocumentListener() {
             @Override
@@ -469,11 +511,22 @@ public class ModernContactPanel extends JPanel implements DataPanel, javax.swing
                 .row(Card.field(text("ContactPanel.department._Label"), department, 2),
                         Card.field(null, gender, 1)));
 
-        grid.add(new Card(Messages.CONTACT_SECTION_ADDRESS.toString())
+        addressSelector.setOpaque(false);
+        addressBody.setOpaque(false);
+        mainAddressChip.addActionListener(e -> showAddress(MAIN_ADDRESS));
+        addressGroup.add(mainAddressChip);
+        mainAddressChip.setSelected(true);
+        addAddressButton.setToolTipText(text("ContactPanel.button_order1.text"));
+        addAddressButton.addActionListener(e -> addAddress());
+        addressBody.add(new Card(null).flat()
                 .row(Card.field(text("ContactPanel.street._Label"), street))
                 .row(Card.field(text("ContactPanel.zip._Label"), zip, 1),
                         Card.field(text("ContactPanel.city._Label"), city, 2))
-                .row(Card.field(text("ContactPanel.jLabel5.text"), countryselect)));
+                .row(Card.field(text("ContactPanel.jLabel5.text"), countryselect)), MAIN_ADDRESS);
+        resetAddressSelector();
+        grid.add(new Card(Messages.CONTACT_SECTION_ADDRESS.toString())
+                .addFull(addressSelector)
+                .addFull(addressBody));
 
         grid.add(new Card(Messages.CONTACT_SECTION_COMMUNICATION.toString())
                 .row(Card.field(text("ContactPanel.phone._Label"), mainphone),
@@ -493,7 +546,9 @@ public class ModernContactPanel extends JPanel implements DataPanel, javax.swing
                         Card.field(null, einvoiceImmediate, 2))
                 .row(Card.field(Messages.EINVOICE_ACCOUNT.toString(), einvoiceAccount))
                 .row(Card.field(Messages.COMPANY_SKONTO_PERCENT.toString(), einvoiceSkontoPercent),
-                        Card.field(Messages.COMPANY_SKONTO_DAYS.toString(), einvoiceSkontoDays)));
+                        Card.field(Messages.COMPANY_SKONTO_DAYS.toString(), einvoiceSkontoDays))
+                .row(Card.field(Messages.EINVOICE_DELIVERY.toString(), einvoiceDelivery))
+                .row(Card.field(Messages.EINVOICE_LEITWEG.toString(), einvoiceLeitweg)));
 
         grid.add(new Card(Messages.CONTACT_SECTION_BANK.toString())
                 .row(Card.field(text("ContactPanel.bankaccount._Label"), bankaccount))
@@ -504,33 +559,6 @@ public class ModernContactPanel extends JPanel implements DataPanel, javax.swing
 
         JScrollPane notesScroll = new JScrollPane(notes);
         grid.add(new Card(text("ContactPanel.jPanel4.TabConstraints.tabTitle")).addFull(notesScroll, 1));
-        return grid;
-    }
-
-    private JComponent createAddressesTab() {
-        JButton add = link(text("ContactPanel.button_order1.text"), "/images/16/add.png");
-        add.addActionListener(e -> addAddress());
-        Card card = new Card(text("ContactPanel.addresspanel.TabConstraints.tabTitle"));
-        card.headerAction(add);
-        card.addFull(addresspanel, 1);
-        return padded(card);
-    }
-
-    private JComponent createEInvoiceTab() {
-        JTextArea info = new JTextArea(Messages.EINVOICE_TAB_INFO.toString());
-        info.setEditable(false);
-        info.setOpaque(false);
-        info.setLineWrap(true);
-        info.setWrapStyleWord(true);
-        info.setFocusable(false);
-        info.setForeground(ModernTheme.muted());
-        info.setFont(ModernTheme.font(-1, Font.PLAIN));
-
-        ResponsiveGrid grid = new ResponsiveGrid(420, 2);
-        grid.add(new Card(Messages.EINVOICE_TAB.toString())
-                .row(Card.field(Messages.EINVOICE_DELIVERY.toString(), einvoiceDelivery))
-                .row(Card.field(Messages.EINVOICE_LEITWEG.toString(), einvoiceLeitweg))
-                .addFull(info));
         return grid;
     }
 
@@ -733,6 +761,17 @@ public class ModernContactPanel extends JPanel implements DataPanel, javax.swing
         relatedButtons.get(r).setSelected(true);
         dataTable.setModel(ContactService.loadRelated(dataOwner, r));
         TableFormat.stripFirstColumn(dataTable);
+        int details = dataTable.getColumnModel().getColumnCount() - 1;
+        if (r != Related.PRODUCTS && details > 0) {
+            //the details get the space, the other columns what they need
+            for (int i = 0; i < details; i++) {
+                if (dataTable.getColumnModel().getColumn(i).getMaxWidth() > 0) {
+                    dataTable.getColumnModel().getColumn(i).setPreferredWidth(ModernTheme.px(100));
+                }
+            }
+            dataTable.getColumnModel().getColumn(details).setPreferredWidth(ModernTheme.px(900));
+            dataTable.getColumnModel().getColumn(details).setCellRenderer(new DetailsRenderer());
+        }
         setupSorter();
         if (r.isItem()) {
             //newest first
@@ -757,6 +796,25 @@ public class ModernContactPanel extends JPanel implements DataPanel, javax.swing
                 ? null : RowFilter.<TableModel, Integer>regexFilter("(?i)" + Pattern.quote(t.trim())));
     }
     // </editor-fold>
+
+    /**
+     * The details column: muted, with some space to the column before
+     */
+    private static final class DetailsRenderer extends javax.swing.table.DefaultTableCellRenderer {
+
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                boolean hasFocus, int row, int column) {
+            Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            setBorder(BorderFactory.createEmptyBorder(0, ModernTheme.px(12), 0, ModernTheme.px(4)));
+            if (!isSelected) {
+                c.setForeground(ModernTheme.blend(table.getForeground(), table.getBackground(), 0.3f));
+            }
+            return c;
+        }
+    }
 
     // <editor-fold defaultstate="collapsed" desc="Actions">
     private void openNew(DatabaseObject o) {
@@ -820,29 +878,100 @@ public class ModernContactPanel extends JPanel implements DataPanel, javax.swing
     }
 
     private void fillFiles() {
+        if (!SHOW_FILES) {
+            return;
+        }
         filetable.setModel(ContactService.loadFiles(dataOwner));
         TableFormat.stripFirstColumn(filetable);
     }
 
+    /**
+     * Shows the additional addresses of the contact as entries of the address
+     * selector
+     */
     private void addAddresses() {
-        addresspanel.removeAll();
+        for (ModernAddressForm f : addressChips.keySet()) {
+            addressBody.remove(f);
+        }
+        addressChips.clear();
         for (Address a : ContactService.getAddresses(dataOwner)) {
-            AddressPanel p = new AddressPanel();
-            p.setName(a.__getDepartment() + " - " + a.__getCname());
-            p.setDataOwner(a, true);
-            p.setDataParent(dataOwner);
-            addresspanel.add(p);
+            ModernAddressForm f = newAddressForm();
+            f.setDataOwner(a, true);
+            addAddressForm(f);
+        }
+        resetAddressSelector();
+        showAddress(MAIN_ADDRESS);
+    }
+
+    private ModernAddressForm newAddressForm() {
+        ModernAddressForm f = new ModernAddressForm(new ModernAddressForm.Listener() {
+            @Override
+            public void saved(ModernAddressForm form) {
+                ChipToggle chip = addressChips.get(form);
+                if (chip != null) {
+                    chip.setText(form.getLabel());
+                    addressSelector.revalidate();
+                }
+            }
+
+            @Override
+            public void deleted(ModernAddressForm form) {
+                addressBody.remove(form);
+                ChipToggle chip = addressChips.remove(form);
+                if (chip != null) {
+                    addressGroup.remove(chip);
+                }
+                resetAddressSelector();
+                showAddress(MAIN_ADDRESS);
+            }
+        });
+        f.setDataParent(dataOwner);
+        return f;
+    }
+
+    private void addAddressForm(final ModernAddressForm f) {
+        final String key = "address" + System.identityHashCode(f);
+        f.setName(key);
+        addressBody.add(f, key);
+        ChipToggle chip = new ChipToggle(f.getLabel());
+        chip.addActionListener(e -> showAddress(key));
+        addressGroup.add(chip);
+        addressChips.put(f, chip);
+    }
+
+    private void resetAddressSelector() {
+        addressSelector.removeAll();
+        addressSelector.add(mainAddressChip);
+        for (ChipToggle c : addressChips.values()) {
+            addressSelector.add(c);
+        }
+        addressSelector.add(addAddressButton);
+        //additional addresses can be saved for saved contacts only
+        addAddressButton.setEnabled(dataOwner == null || dataOwner.isExisting());
+        addressSelector.revalidate();
+        addressSelector.repaint();
+    }
+
+    private void showAddress(String key) {
+        addressCards.show(addressBody, key);
+        if (MAIN_ADDRESS.equals(key)) {
+            mainAddressChip.setSelected(true);
+        }
+        //the card height follows the shown address
+        Component grid = SwingUtilities.getAncestorOfClass(ResponsiveGrid.class, addressBody);
+        if (grid != null) {
+            grid.revalidate();
+            grid.repaint();
         }
     }
 
     private void addAddress() {
-        AddressPanel p = new AddressPanel();
-        p.setName(Messages.NEW_VALUE.toString());
-        p.setDataParent(dataOwner);
-        Address a = ContactService.newAddress(dataOwner);
-        p.setDataOwner(a, true);
-        addresspanel.add(p);
-        addresspanel.setSelectedComponent(p);
+        ModernAddressForm f = newAddressForm();
+        f.setDataOwner(ContactService.newAddress(dataOwner), true);
+        addAddressForm(f);
+        resetAddressSelector();
+        addressChips.get(f).setSelected(true);
+        showAddress(f.getName());
     }
 
     private void properties() {

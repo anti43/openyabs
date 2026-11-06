@@ -25,6 +25,8 @@ Die Kontaktansicht gibt es zusätzlich in einem modernen, skalierenden Layout (K
 - Einschalten: *Werkzeuge > Einstellungen > Benutzereinstellungen*, Kästchen **„Moderne Kontaktansicht“**; gilt für neu geöffnete Registerkarten.
 - Oder beim Start: `java -Dyabs.ui=modern -jar openyabs.jar` (bzw. `-Dyabs.ui=classic`); das überschreibt die Benutzereinstellung.
 
+In der modernen Ansicht stehen die Einstellungen des Reiters *E-Rechnung* (Versand, Leitweg-ID, Konto, Zahlungsziel, Skonto) in der Karte **Zahlung**; Haupt- und weitere Adressen (Rechnungs-/Lieferadressen) sind in der Karte **Anschrift** zusammengefasst. In der Vorgangsliste zeigt die Spalte **Inhalt** die Positionen jedes Angebots, Auftrags, jeder Rechnung bzw. Tätigkeitsliste in einer Zeile; der Filter durchsucht sie mit.
+
 Die Auswahl trifft `YabsViewProxy` (`registerModernView`); alle anderen Ansichten bleiben unverändert.
 
 ## E-Rechnung (XRechnung / ZUGFeRD)

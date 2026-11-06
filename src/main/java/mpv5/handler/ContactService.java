@@ -97,7 +97,10 @@ public final class ContactService {
     }
 
     /**
-     * Loads the records of the given kind which belong to the contact
+     * Loads the records of the given kind which belong to the contact. Offers,
+     * orders, invoices, credit notes and activity lists get a last column
+     * "Details": their positions as one line (see
+     * {@link #detailLine(List)}).
      *
      * @param contact
      * @param related
@@ -107,18 +110,194 @@ public final class ContactService {
         if (related.isItem()) {
             Object[][] data = new DatabaseSearch(related.getContext())
                     .getValuesFor(Context.DEFAULT_ITEM_SEARCH, "contactsids", contact.__getIDS());
-            MPTableModel mod = new MPTableModel(data, Headers.ITEM_DEFAULT);
-            mod.setTypes(new Class[]{Integer.class, Object.class, Date.class, Double.class});
+            MPTableModel mod = new MPTableModel(withDetails(related, data), withDetailsHeader(Headers.ITEM_DEFAULT.getValue()));
+            mod.setTypes(new Class[]{Integer.class, Object.class, Date.class, Double.class, String.class});
             return mod;
         } else if (related == Related.ACTIVITIES) {
             Object[][] data = new DatabaseSearch(related.getContext(), 1000)
                     .getValuesFor(Context.DEFAULT_ACTIVITYLIST_SEARCH, new String[]{"contactsids"}, contact.__getIDS());
-            return new MPTableModel(data, Headers.ACTIVITY_DEFAULT);
+            return new MPTableModel(withDetails(related, data), withDetailsHeader(Headers.ACTIVITY_DEFAULT.getValue()));
         } else {
             Object[][] data = new DatabaseSearch(related.getContext(), 1000)
                     .getValuesFor(Context.DEFAULT_PRODUCT_SEARCH, new String[]{"manufacturersids", "suppliersids"}, contact.__getIDS());
             return new MPTableModel(data, Headers.PRODUCT_DEFAULT);
         }
+    }
+
+    /**
+     * Maximal length of the details line of a record
+     */
+    public static final int MAX_DETAIL_LENGTH = 300;
+    private static final int MAX_POSITION_LENGTH = 80;
+    private static final int IDS_PER_QUERY = 500;
+
+    private static String[] withDetailsHeader(String[] header) {
+        String[] h = Arrays.copyOf(header, header.length + 1);
+        h[header.length] = Messages.CONTACT_DETAILS.toString();
+        return h;
+    }
+
+    /**
+     * @return the data with the details line of each record as last column
+     */
+    private static Object[][] withDetails(Related related, Object[][] data) {
+        if (data == null) {
+            return new Object[0][];
+        }
+        java.util.Map<Integer, String> details = loadDetails(related, data);
+        Object[][] out = new Object[data.length][];
+        for (int i = 0; i < data.length; i++) {
+            Object[] row = Arrays.copyOf(data[i], data[i].length + 1);
+            Integer id = toId(data[i].length > 0 ? data[i][0] : null);
+            String d = id == null ? null : details.get(id);
+            row[data[i].length] = d == null ? "" : d;
+            out[i] = row;
+        }
+        return out;
+    }
+
+    private static Integer toId(Object o) {
+        if (o == null) {
+            return null;
+        }
+        try {
+            return Integer.valueOf(String.valueOf(o).trim());
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    /**
+     * The positions of the records (subitems of items, entries of activity
+     * lists) as one line per record, with one query per 500 records
+     */
+    private static java.util.Map<Integer, String> loadDetails(Related related, Object[][] data) {
+        java.util.Map<Integer, String> result = new java.util.HashMap<Integer, String>();
+        Context context;
+        String parent;
+        String order;
+        if (related.isItem()) {
+            context = Context.getSubItem();
+            parent = "itemsids";
+            order = "itemsids, ids";
+        } else if (related == Related.ACTIVITIES) {
+            context = Context.getActivityListItems();
+            parent = "activitylistsids";
+            order = "activitylistsids, datedoing, ids";
+        } else {
+            return result;
+        }
+        List<Integer> ids = new java.util.ArrayList<Integer>();
+        for (Object[] row : data) {
+            Integer id = row.length > 0 ? toId(row[0]) : null;
+            if (id != null) {
+                ids.add(id);
+            }
+        }
+        for (int start = 0; start < ids.size(); start += IDS_PER_QUERY) {
+            List<Integer> chunk = ids.subList(start, Math.min(ids.size(), start + IDS_PER_QUERY));
+            StringBuilder in = new StringBuilder();
+            for (Integer id : chunk) {
+                in.append(in.length() == 0 ? "" : ",").append(id);
+            }
+            try {
+                Object[][] positions = QueryHandler.instanceOf().clone(context).freeSelectQuery(
+                        "SELECT " + parent + ", quantityvalue, measure, description, cname FROM %%tablename%%"
+                        + " WHERE " + parent + " IN (" + in + ") AND invisible = 0 ORDER BY " + order,
+                        mpv5.usermanagement.MPSecurityManager.VIEW, null).getData();
+                java.util.Map<Integer, List<Object[]>> byParent = new java.util.LinkedHashMap<Integer, List<Object[]>>();
+                for (Object[] p : positions == null ? new Object[0][] : positions) {
+                    Integer id = toId(p[0]);
+                    if (id != null) {
+                        byParent.computeIfAbsent(id, k -> new java.util.ArrayList<Object[]>())
+                                .add(Arrays.copyOfRange(p, 1, p.length));
+                    }
+                }
+                for (java.util.Map.Entry<Integer, List<Object[]>> e : byParent.entrySet()) {
+                    result.put(e.getKey(), detailLine(e.getValue()));
+                }
+            } catch (Exception e) {
+                //the details are a help only, the list works without them
+                Log.Debug(ContactService.class, e);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * The positions of a record as one line, e.g. "2 h Consulting · 1 Website
+     * relaunch · ...", at most {@link #MAX_DETAIL_LENGTH} characters.
+     *
+     * @param positions per position: quantity, measure, description, name
+     * @return the line, "" if there are no positions
+     */
+    public static String detailLine(List<Object[]> positions) {
+        StringBuilder b = new StringBuilder();
+        for (Object[] p : positions) {
+            String text = plain(p.length > 2 ? p[2] : null);
+            if (text.isEmpty()) {
+                text = plain(p.length > 3 ? p[3] : null);
+            }
+            if (text.isEmpty()) {
+                continue;
+            }
+            String part = shorten(quantity(p.length > 0 ? p[0] : null, p.length > 1 ? p[1] : null) + text, MAX_POSITION_LENGTH);
+            if (b.length() > 0) {
+                b.append(" \u00b7 ");
+            }
+            b.append(part);
+            if (b.length() >= MAX_DETAIL_LENGTH) {
+                break;
+            }
+        }
+        return shorten(b.toString(), MAX_DETAIL_LENGTH);
+    }
+
+    /**
+     * @return "2 h " for quantity 2 and measure "h", "" for quantity 0 or 1
+     * without measure
+     */
+    private static String quantity(Object quantity, Object measure) {
+        double q;
+        try {
+            q = quantity == null ? 0 : Double.parseDouble(String.valueOf(quantity));
+        } catch (NumberFormatException e) {
+            q = 0;
+        }
+        String m = plain(measure);
+        if (q == 0 || (q == 1 && m.isEmpty())) {
+            return "";
+        }
+        String n;
+        if (q == Math.rint(q) && Math.abs(q) < 1e12) {
+            n = String.valueOf((long) q);
+        } else {
+            java.text.NumberFormat f = java.text.NumberFormat.getNumberInstance();
+            f.setMaximumFractionDigits(2);
+            n = f.format(q);
+        }
+        return n + (m.isEmpty() ? "" : " " + m) + " ";
+    }
+
+    /**
+     * @return the text without HTML tags, line breaks and repeated spaces
+     */
+    static String plain(Object o) {
+        if (o == null) {
+            return "";
+        }
+        String s = String.valueOf(o);
+        if (s.equalsIgnoreCase("null")) {
+            return "";
+        }
+        s = s.replaceAll("(?s)<[^>]*>", " ")
+                .replace("&nbsp;", " ").replace("&lt;", "<").replace("&gt;", ">")
+                .replace("&quot;", "\"").replace("&amp;", "&");
+        return s.replaceAll("\\s+", " ").trim();
+    }
+
+    private static String shorten(String s, int max) {
+        return s.length() <= max ? s : s.substring(0, max - 1).trim() + "\u2026";
     }
 
     /**

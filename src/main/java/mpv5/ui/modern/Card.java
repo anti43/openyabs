@@ -103,6 +103,20 @@ public class Card extends JPanel {
     }
     private static final int FILLER_ROW = 10000;
 
+    private boolean flat;
+
+    /**
+     * A flat card has no background, border and padding: a form inside
+     * another card
+     *
+     * @return this
+     */
+    public Card flat() {
+        flat = true;
+        setBorder(BorderFactory.createEmptyBorder());
+        return this;
+    }
+
     /**
      * Puts a component (e.g. a button) at the right of the title
      *
@@ -177,6 +191,10 @@ public class Card extends JPanel {
 
     @Override
     protected void paintComponent(Graphics g) {
+        if (flat) {
+            super.paintComponent(g);
+            return;
+        }
         Graphics2D g2 = (Graphics2D) g.create();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         int arc = ModernTheme.px(12);

@@ -52,4 +52,27 @@ class ContactServiceTest {
         assertEquals(0, ContactService.selectedAccount(options, ""));
         assertEquals(0, ContactService.selectedAccount(options, "DE00000000000000000000"));
     }
+
+    @Test
+    void detailLineJoinsPositionsWithQuantityAndMeasure() {
+        String line = ContactService.detailLine(Arrays.asList(
+                new Object[]{12.0, "h", "Web design", ""},
+                new Object[]{1.0, "", "<p>Hosting <b>Business</b></p>", ""},
+                new Object[]{2.0, "", "", "Printer cartridge"},
+                new Object[]{0.0, "", "Shipping &amp; handling", null}));
+        assertEquals("12 h Web design \u00b7 Hosting Business \u00b7 2 Printer cartridge \u00b7 Shipping & handling", line);
+    }
+
+    @Test
+    void detailLineSkipsEmptyPositionsAndIsLimited() {
+        assertEquals("", ContactService.detailLine(java.util.Collections.singletonList(new Object[]{1.0, "", null, "null"})));
+        StringBuilder longText = new StringBuilder();
+        for (int i = 0; i < 100; i++) {
+            longText.append("word ");
+        }
+        Object[] p = {1.0, "", longText.toString(), ""};
+        String line = ContactService.detailLine(Arrays.asList(p, p, p, p, p, p));
+        assertTrue(line.length() <= ContactService.MAX_DETAIL_LENGTH, line);
+        assertTrue(line.endsWith("\u2026"), line);
+    }
 }
