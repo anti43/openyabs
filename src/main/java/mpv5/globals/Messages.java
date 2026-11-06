@@ -477,7 +477,17 @@ public enum Messages {
     MASSEXPORT_EMAIL_STARTED("Sending emails"),
     RECEIPT_ADD_TO_NEW_INVOICE("Combine into new invoice"),
     MASSEXPORT_EINVOICE_CHECKING("creating and checking the e-invoice ..."),
-    BANKACCOUNT_BANK("Bank");
+    BANKACCOUNT_BANK("Bank"),
+    CONTACT_OVERVIEW("Overview"),
+    CONTACT_NEW("New contact"),
+    CONTACT_SECTION_PERSON("Name"),
+    CONTACT_SECTION_ADDRESS("Address"),
+    CONTACT_SECTION_COMMUNICATION("Communication"),
+    CONTACT_SECTION_BUSINESS("Business"),
+    CONTACT_SECTION_PAYMENT("Payment"),
+    CONTACT_SECTION_BANK("Bank account"),
+    CONTACT_SECTION_DOCUMENTS("Documents"),
+    MODERN_UI("Modern contact view (preview, takes effect for newly opened tabs)");
 
 
     /**

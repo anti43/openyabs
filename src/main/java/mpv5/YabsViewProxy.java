@@ -15,11 +15,15 @@ import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JProgressBar;
+import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
+import mpv5.db.objects.Contact;
+import mpv5.db.objects.User;
 import mpv5.logging.Log;
 import mpv5.pluginhandling.YabsPluginLoader;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.panels.DataPanel;
+import mpv5.ui.panels.ModernContactPanel;
 import org.jdesktop.application.Application;
 
 /**
@@ -306,6 +310,95 @@ public class YabsViewProxy implements YabsView {
         } else {
             return Collections.unmodifiableList(views);
         }
+    }
+
+    /**
+     * Creates the view of a database object in the modern layout
+     */
+    public static interface ViewFactory {
+
+        /**
+         * @param context the context of the object to show
+         * @return the view
+         */
+        public DataPanel create(Context context);
+    }
+    /**
+     * System property to choose the views at start: "modern" or "classic"
+     * (overrides the user setting), e.g. java -Dyabs.ui=modern -jar
+     * openyabs.jar
+     */
+    public static final String UI_PROPERTY = "yabs.ui";
+    /**
+     * User setting (group org.openyabs.uiproperty) to use the modern views
+     */
+    public static final String MODERN_UI_SETTING = "modernui";
+    private final ConcurrentHashMap<Class, ViewFactory> modernViews = new ConcurrentHashMap<Class, ViewFactory>();
+
+    {
+        //the views which exist in the modern layout already, all others stay classic
+        registerModernView(Contact.class, new ViewFactory() {
+            @Override
+            public DataPanel create(Context context) {
+                return new ModernContactPanel(context);
+            }
+        });
+    }
+
+    /**
+     * Registers the modern view of a kind of database object. Used instead of
+     * the classic view ({@link DatabaseObject#getView()}) when the modern views
+     * are enabled ({@link #isModernUi()}).
+     *
+     * @param clazz e.g. Contact.class
+     * @param factory creates the view
+     */
+    public void registerModernView(Class<? extends DatabaseObject> clazz, ViewFactory factory) {
+        modernViews.put(clazz, factory);
+    }
+
+    /**
+     * @return true if the modern views are used: the system property
+     * {@value #UI_PROPERTY} if set, else the setting of the current user
+     */
+    public boolean isModernUi() {
+        String p = System.getProperty(UI_PROPERTY);
+        if (p != null && p.trim().length() > 0) {
+            return p.trim().equalsIgnoreCase("modern");
+        }
+        try {
+            return User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", MODERN_UI_SETTING);
+        } catch (Exception e) {
+            Log.Debug(this, e);
+            return false;
+        }
+    }
+
+    /**
+     * The modern view of the object, if the modern views are enabled and one
+     * exists for this kind of object
+     *
+     * @param item
+     * @return the view (not yet filled with the object), or null to use the
+     * classic view
+     */
+    public DataPanel getModernView(DatabaseObject item) {
+        if (item == null || !isModernUi()) {
+            return null;
+        }
+        for (Class c = item.getClass(); c != null && DatabaseObject.class.isAssignableFrom(c); c = c.getSuperclass()) {
+            ViewFactory f = modernViews.get(c);
+            if (f != null) {
+                try {
+                    return f.create(item.getContext());
+                } catch (Exception e) {
+                    //never lose the view: fall back to the classic one
+                    Log.Debug(this, e);
+                    return null;
+                }
+            }
+        }
+        return null;
     }
 
     public DataPanel getViewFor(DatabaseObject item) {

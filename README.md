@@ -18,6 +18,15 @@ YaBS nutzt Apache Derby 10.17.1.0, das Java 21 voraussetzt.
 
 Vor jedem Update empfiehlt sich eine Kopie des Datenbankordners.
 
+## Moderne Kontaktansicht (Vorschau)
+
+Die Kontaktansicht gibt es zusätzlich in einem modernen, skalierenden Layout (Kopfzeile mit Name und Rollen, Daten in Karten, die sich je nach Fensterbreite auf 1–3 Spalten verteilen, Vorgänge darunter). Alle Funktionen der klassischen Ansicht sind enthalten.
+
+- Einschalten: *Werkzeuge > Einstellungen > Benutzereinstellungen*, Kästchen **„Moderne Kontaktansicht“**; gilt für neu geöffnete Registerkarten.
+- Oder beim Start: `java -Dyabs.ui=modern -jar openyabs.jar` (bzw. `-Dyabs.ui=classic`); das überschreibt die Benutzereinstellung.
+
+Die Auswahl trifft `YabsViewProxy` (`registerModernView`); alle anderen Ansichten bleiben unverändert.
+
 ## E-Rechnung (XRechnung / ZUGFeRD)
 
 YaBS erstellt E-Rechnungen nach EN 16931 und prüft sie mit dem offiziellen Validator.
