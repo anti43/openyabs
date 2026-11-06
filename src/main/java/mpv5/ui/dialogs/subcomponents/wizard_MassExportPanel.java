@@ -217,79 +217,78 @@ public class wizard_MassExportPanel extends javax.swing.JPanel implements Wizard
     public void load() {
     }
 
+    /**
+     * true while the invoices are created: a second click on "next" must not
+     * create them again
+     */
+    private volatile boolean running;
+
+    /**
+     * Creates the invoices. Runs on the thread of the wizard ("next"), not on
+     * the event dispatch thread: the panels and the database are used on the
+     * EDT (short), creating and validating e-invoices runs here, so the window
+     * stays responsive and the progress bar shows what is going on.
+     */
     private void doit() throws NodataFoundException {
+        if (running) {
+            return;
+        }
         //asked before anything is created: nothing is sent without confirmation
         final boolean send = email.isSelected() && confirmEmail();
         if (email.isSelected() && !send) {
             return;
         }
         final boolean createEInvoice = einvoice.isSelected();
-
-        SwingUtilities.invokeLater(new Runnable() {
-
-            @Override
-            public void run() {
-
-                int index = 1;
-                final java.util.HashMap<String, Object> mails = new java.util.HashMap<String, Object>();
-                master.getProgressbar().setMaximum(data.size());
-                setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                jTextArea2.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                for (Map.Entry<Contact, List<Item>> entry : data.entrySet()) {
-
-                    try {
-                        final Contact key = entry.getKey();
-                        final List<Item> value = entry.getValue();
-                        Item i = Item.createFor(key);
-
-                        i.setGroup((Group) Group.getObject(Context.getGroup(), Integer.valueOf(labeledCombobox1.getSelectedItem().getId())));
-                        DataPanel tab = mpv5.YabsViewProxy.instance().getIdentifierView().addTab(i, true);
-
-                        tab.paste(value.toArray(new DatabaseObject[value.size()]));
-
-                        final DatabaseObject dato = tab.getDataOwner();
-                        tab.actionBeforeCreate();
-                        boolean error = false;
-                        if (dato.getPanelData(tab) && dato.save()) {
-                            tab.actionAfterCreate();
-                            tab.setDataOwner(dato, true);
-                            //ZUGFeRD: the e-invoice is the PDF (same file name), no plain PDF
-                            boolean zugferd = createEInvoice && mpv5.utils.export.EInvoiceFiles.replacesPdf(key);
-                            if (jCheckBox1.isSelected() && !zugferd) {
-                                dato.toPdf(false);
-                            }
-                            jTextArea2.append("Created: " + dato + " ... SUCCESS!\n");
-                            if (createEInvoice) {
-                                for (String line : mpv5.utils.export.EInvoiceFiles.write((Item) dato, key,
-                                        mpv5.db.objects.User.getSaveDir(dato))) {
-                                    jTextArea2.append("   " + line + "\n");
-                                }
-                            }
-                            if (send) {
-                                mails.put(((Item) dato).__getCnumber(), dato);
-                            }
-                            if (!jCheckBox3.isSelected()) {
-                                mpv5.YabsViewProxy.instance().getIdentifierView().removeTab(tab);
-                            }
-                        } else {
-                            jTextArea2.append("\nCreated: " + dato + " ... FAILURE\n");
-                            tab.showRequiredFields();
-                            error = true;
-                        }
-
-                        if (jCheckBox2.isSelected() && !error) {
-                            for (int j = 0; j < value.size(); j++) {
-                                Item get = value.get(j);
-                                get.setIntstatus(Item.STATUS_FINISHED);
-                                get.save();
-                            }
-                        }
-                        master.getProgressbar().setValue(index++);
-                    } catch (Exception ex) {
-                        Logger.getLogger(wizard_MassExportPanel.class.getName()).log(Level.SEVERE, null, ex);
-                        Popup.error(ex);
-                    }
+        final javax.swing.JProgressBar bar = master.getProgressbar();
+        final java.util.HashMap<String, Object> mails = new java.util.HashMap<String, Object>();
+        final int total = data.size();
+        running = true;
+        onEdt(() -> {
+            setControlsEnabled(false);
+            bar.setMinimum(0);
+            bar.setMaximum(total);
+            bar.setValue(0);
+            bar.setStringPainted(true);
+            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            jTextArea2.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+        });
+        try {
+            int index = 0;
+            for (Map.Entry<Contact, List<Item>> entry : data.entrySet()) {
+                final Contact key = entry.getKey();
+                final List<Item> value = entry.getValue();
+                final int number = ++index;
+                progress(bar, number, total, key + ": " + mpv5.globals.Messages.ACTION_CREATING, false);
+                final Item[] created = {null};
+                onEdt(() -> created[0] = createInvoice(key, value, createEInvoice));
+                if (created[0] == null) {
+                    continue;
                 }
+                if (createEInvoice) {
+                    //creating and checking takes a few seconds (the first check longer: the rules are loaded)
+                    progress(bar, number, total, created[0].__getCnumber() + ": " + mpv5.globals.Messages.MASSEXPORT_EINVOICE_CHECKING, true);
+                    final List<String> lines = mpv5.utils.export.EInvoiceFiles.write(created[0], key,
+                            mpv5.db.objects.User.getSaveDir(created[0]));
+                    onEdt(() -> {
+                        for (String line : lines) {
+                            jTextArea2.append("   " + line + "\n");
+                        }
+                    });
+                }
+                if (send) {
+                    mails.put(created[0].__getCnumber(), created[0]);
+                }
+                final int done = number;
+                onEdt(() -> {
+                    bar.setIndeterminate(false);
+                    bar.setValue(done);
+                });
+            }
+        } finally {
+            running = false;
+            onEdt(() -> {
+                bar.setIndeterminate(false);
+                bar.setString(mpv5.globals.Messages.DONE.toString());
                 setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
                 jTextArea2.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
                 if (!mails.isEmpty()) {
@@ -306,8 +305,87 @@ public class wizard_MassExportPanel extends javax.swing.JPanel implements Wizard
                     }, "Emails: " + mpv5.globals.Messages.DONE).execute();
                 }
                 master.isEnd(true);
+            });
+        }
+    }
+
+    /**
+     * Create and save the invoice of one contact (on the EDT: uses the item
+     * panel)
+     *
+     * @return the saved invoice, null on failure
+     */
+    private Item createInvoice(Contact key, List<Item> value, boolean createEInvoice) {
+        try {
+            Item i = Item.createFor(key);
+            i.setGroup((Group) Group.getObject(Context.getGroup(), Integer.valueOf(labeledCombobox1.getSelectedItem().getId())));
+            DataPanel tab = mpv5.YabsViewProxy.instance().getIdentifierView().addTab(i, true);
+            tab.paste(value.toArray(new DatabaseObject[value.size()]));
+            final DatabaseObject dato = tab.getDataOwner();
+            tab.actionBeforeCreate();
+            if (!(dato.getPanelData(tab) && dato.save())) {
+                jTextArea2.append("\nCreated: " + dato + " ... FAILURE\n");
+                tab.showRequiredFields();
+                return null;
             }
+            tab.actionAfterCreate();
+            tab.setDataOwner(dato, true);
+            //ZUGFeRD: the e-invoice is the PDF (same file name), no plain PDF
+            boolean zugferd = createEInvoice && mpv5.utils.export.EInvoiceFiles.replacesPdf(key);
+            if (jCheckBox1.isSelected() && !zugferd) {
+                dato.toPdf(false);
+            }
+            jTextArea2.append("Created: " + dato + " ... SUCCESS!\n");
+            if (!jCheckBox3.isSelected()) {
+                mpv5.YabsViewProxy.instance().getIdentifierView().removeTab(tab);
+            }
+            if (jCheckBox2.isSelected()) {
+                for (Item get : value) {
+                    get.setIntstatus(Item.STATUS_FINISHED);
+                    get.save();
+                }
+            }
+            return (Item) dato;
+        } catch (Exception ex) {
+            Logger.getLogger(wizard_MassExportPanel.class.getName()).log(Level.SEVERE, null, ex);
+            jTextArea2.append(key + ": " + mpv5.globals.Messages.ERROR_OCCURED.toString().trim() + " " + ex.getLocalizedMessage() + "\n");
+            return null;
+        }
+    }
+
+    /**
+     * @param indeterminate true: running animation (e.g. while an e-invoice
+     * is checked)
+     */
+    private void progress(final javax.swing.JProgressBar bar, final int number, final int total, final String what,
+            final boolean indeterminate) {
+        onEdt(() -> {
+            bar.setIndeterminate(indeterminate);
+            bar.setString(number + " / " + total + "  " + what);
         });
+    }
+
+    private void setControlsEnabled(boolean enabled) {
+        for (javax.swing.JComponent c : new javax.swing.JComponent[]{jCheckBox1, jCheckBox2, jCheckBox3, einvoice, email, labeledCombobox1}) {
+            c.setEnabled(enabled);
+        }
+    }
+
+    /**
+     * Run on the event dispatch thread and wait for it
+     */
+    private static void onEdt(Runnable r) {
+        if (SwingUtilities.isEventDispatchThread()) {
+            r.run();
+            return;
+        }
+        try {
+            SwingUtilities.invokeAndWait(r);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } catch (java.lang.reflect.InvocationTargetException e) {
+            Logger.getLogger(wizard_MassExportPanel.class.getName()).log(Level.SEVERE, null, e.getCause());
+        }
     }
 
     /**

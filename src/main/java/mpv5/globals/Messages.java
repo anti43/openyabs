@@ -476,6 +476,7 @@ public enum Messages {
     MASSEXPORT_EMAIL_CONFIRM("%d new invoice(s) will be sent to the customers by email right after they are created (PDF / e-invoice according to the contact setting).\n\nReally send?"),
     MASSEXPORT_EMAIL_STARTED("Sending emails"),
     RECEIPT_ADD_TO_NEW_INVOICE("Combine into new invoice"),
+    MASSEXPORT_EINVOICE_CHECKING("creating and checking the e-invoice ..."),
     BANKACCOUNT_BANK("Bank");
 
 
