@@ -148,6 +148,9 @@ public class QueryHandler implements Cloneable {
             conn = DatabaseConnection.instanceOf();
             sqlConn = conn.getConnection();
             versionCheck();
+            //the update may have reconnected or rebuilt the database
+            conn = DatabaseConnection.instanceOf();
+            sqlConn = conn.getConnection();
             runFixes();
             createPs();
         } catch (Exception ex) {

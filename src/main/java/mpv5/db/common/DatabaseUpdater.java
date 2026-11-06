@@ -16,7 +16,9 @@
  */
 package mpv5.db.common;
 
-import java.util.Iterator;
+import java.io.File;
+import java.sql.SQLException;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 import mpv5.db.objects.Template;
@@ -227,10 +229,8 @@ public class DatabaseUpdater {
             "ALTER TABLE productordersubitems ADD COLUMN discount DOUBLE DEFAULT 0 NOT NULL"
         });
         UPDATES_DERBY.put(1.1974, new String[]{
-            "ALTER TABLE schedule ADD COLUMN eventtype2",
-            "UPDATE schedule SET eventtype2=eventtype",
-            "ALTER TABLE schedule DROP COLUMN eventtype",
-            "RENAME COLUMN schedule.eventtype2 TO eventtype"
+            //"ALTER TABLE schedule ADD COLUMN eventtype2" has no type and never worked,
+            //the following statements were skipped - done by 1.1975
         });
         UPDATES_DERBY.put(1.1975, new String[]{
             "ALTER TABLE schedule ADD COLUMN eventtype2 BIGINT",
@@ -630,56 +630,66 @@ public class DatabaseUpdater {
      */
     public void updateFrom(double version) throws Exception {
         Log.Debug(DatabaseUpdater.class, "Updating database from " + version);
-
-        double newVersion = version;
-
-        if (ConnectionTypeHandler.getDriverType() == ConnectionTypeHandler.DERBY) {
-            for (Iterator<Double> keys = UPDATES_DERBY.keySet().iterator(); keys.hasNext();) {
-                Double vers = keys.next();
-                if (vers > version) {
-                    String[] val = UPDATES_DERBY.get(vers);
-                    try {
-                        DatabaseConnection.instanceOf().runQueries(val);
-                        if (vers > newVersion) {
-                            newVersion = vers;
-                        }
-                    } catch (Exception ex) {
-                        Log.Debug(ex);
-                        throw ex;
-                    }
+        boolean derby = ConnectionTypeHandler.getDriverType() == ConnectionTypeHandler.DERBY;
+        SchemaUpdate update = new SchemaUpdate(reconnect -> {
+            try {
+                DatabaseConnection dc = DatabaseConnection.instanceOf();
+                if (reconnect || dc.getConnection() == null || dc.getConnection().isClosed()) {
+                    dc.reconnect(false);
                 }
+                return dc.getConnection();
+            } catch (SQLException e) {
+                throw e;
+            } catch (Exception e) {
+                throw new SQLException(e);
             }
-        } else {
-            for (Iterator<Double> keys = UPDATES_MYSQL.keySet().iterator(); keys.hasNext();) {
-                Double vers = keys.next();
-                if (vers > version) {
-                    String[] val = UPDATES_MYSQL.get(vers);
-                    try {
-                        DatabaseConnection.instanceOf().runQueries(val);
-                        if (vers > newVersion) {
-                            newVersion = vers;
-                        }
-                    } catch (Exception ex) {
-                        Log.Debug(ex);
-                        throw ex;
-                    }
-                }
+        }, derby, DatabaseConnection::withPrefix);
+        try {
+            double newVersion = update.run(version, derby ? UPDATES_DERBY : UPDATES_MYSQL);
+            Log.Debug(DatabaseUpdater.class, "Database updated to " + newVersion);
+        } catch (SchemaUpdate.DamagedDatabaseException e) {
+            Log.Debug(e);
+            if (!derby) {
+                throw e;
             }
+            rebuild(e);
         }
-
-        setVersion(newVersion);
     }
 
-    private void setVersion(double newVersion) {
-        try {
-            DatabaseConnection.instanceOf().runQueries(
-                    new String[]{
-                        "UPDATE globalsettings SET value ='" + newVersion + "' WHERE cname = 'yabs_dbversion'"});
-        } catch (Exception ex) {
-            Log.Debug(ex);
-            Popup.error(ex);
+    /**
+     * The Derby catalog is damaged: offer to copy all data into a new database
+     */
+    private void rebuild(SchemaUpdate.DamagedDatabaseException cause) throws Exception {
+        File db = new File(DatabaseConnection.instanceOf().getCtype().getURL(), ConnectionTypeHandler.getDBNAME());
+        if (!db.isDirectory()) {
+            //network server (//host:port/...) or unknown location: can only be repaired on the server
+            throw cause;
         }
-
+        boolean de = Locale.getDefault().getLanguage().equals("de");
+        String question = de
+                ? "Die Datenbank kann nicht aktualisiert werden, ihre interne Struktur (Trigger) ist beschädigt:\n"
+                + cause.getCause().getMessage() + "\n\n"
+                + "YaBS kann alle Daten in eine neu angelegte Datenbank kopieren. Die alte Datenbank bleibt "
+                + "unverändert als Sicherung erhalten (" + db.getName() + "-backup-<Datum>).\n"
+                + "Bei großen Datenbanken kann das einige Minuten dauern.\n\nJetzt neu aufbauen?"
+                : "The database can not be updated, its internal structure (triggers) is damaged:\n"
+                + cause.getCause().getMessage() + "\n\n"
+                + "YaBS can copy all data into a newly created database. The old database is kept unchanged "
+                + "as backup (" + db.getName() + "-backup-<date>).\n"
+                + "This can take some minutes for large databases.\n\nRebuild now?";
+        if (!Popup.Y_N_dialog(question, de ? "Datenbank neu aufbauen" : "Rebuild database")) {
+            throw cause;
+        }
+        DatabaseConnection.shutdown();
+        DerbyRebuild rebuild = new DerbyRebuild(db, DatabaseConnection.getUser(), DatabaseConnection.getPassword(),
+                DatabaseInstallation.DERBY_STRUCTURE, DatabaseInstallation.INITIAL_DATA, UPDATES_DERBY,
+                DatabaseConnection::withPrefix);
+        long rows = rebuild.run();
+        DatabaseConnection.instanceOf().reconnect(false);
+        Popup.OK_dialog(de
+                ? "Die Datenbank wurde neu aufgebaut (" + rows + " Datensätze kopiert).\nDie alte Datenbank liegt in " + rebuild.getBackup()
+                : "The database was rebuilt (" + rows + " rows copied).\nThe old database is in " + rebuild.getBackup(),
+                de ? "Datenbank neu aufgebaut" : "Database rebuilt");
     }
 
     public Map<Double, String[]> getStructureForMigration(int conType) {

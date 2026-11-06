@@ -24,7 +24,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '21' # builds Java 11 bytecode (options.release = 11)
+          java-version: '21' # Java 21 is the minimum (options.release = 21, Derby 10.17)
 
       - uses: gradle/actions/setup-gradle@v4
 
@@ -84,4 +84,4 @@ jobs:
           gh release delete latest-master --cleanup-tag --yes || true
           gh release create latest-master dist/*.zip --prerelease --target "$GITHUB_SHA" \
             --title "Latest build (master)" \
-            --notes "Automatic build of master, commit $GITHUB_SHA ($(date -u '+%Y-%m-%d %H:%M UTC')). Replaced by every new build. Unzip and start with yabs.sh / yabs.bat (Java 11 or newer)."
+            --notes "Automatic build of master, commit $GITHUB_SHA ($(date -u '+%Y-%m-%d %H:%M UTC')). Replaced by every new build. Unzip and start with yabs.sh / yabs.bat (Java 21 or newer)."
