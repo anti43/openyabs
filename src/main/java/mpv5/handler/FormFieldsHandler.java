@@ -111,16 +111,50 @@ public class FormFieldsHandler {
         List<String[]> mapi = User.getCurrentUser().getProperties().getProperties("companyinfo.").getList();
         for (String[] strings : mapi) {
             if (strings[1] != null) {
-                maps.put("companyinfo." + strings[0], strings[1].contains("[") ? VariablesHandler.parse(strings[1], obj) : strings[1]);
+                maps.put("companyinfo." + strings[0], resolve(strings[0], strings[1], obj));
             }
         }
         
         mapi = User.getCurrentUser().getProperties().getProperties("template.").getList();
         for (String[] strings : mapi) {
             if (strings[1] != null) {
-                maps.put("template." + strings[0], strings[1].contains("[") ? VariablesHandler.parse(strings[1], obj) : strings[1]);
+                maps.put("template." + strings[0], resolve(strings[0], strings[1], obj));
             }
         }
         return maps;
+    }
+
+    /**
+     * true while a company / template setting is resolved on this thread:
+     * resolving builds the form fields again, which would resolve the settings
+     * again - endlessly (StackOverflowError)
+     */
+    private static final ThreadLocal<Boolean> RESOLVING = new ThreadLocal<Boolean>();
+
+    /**
+     * @param key setting name without prefix
+     * @param value
+     * @param obj
+     * @return the value with its variables ([...]) replaced
+     */
+    static Object resolve(String key, String value, DatabaseObject obj) {
+        if (!value.contains("[") || isData(key) || Boolean.TRUE.equals(RESOLVING.get())) {
+            return value;
+        }
+        RESOLVING.set(Boolean.TRUE);
+        try {
+            return VariablesHandler.parse(value, obj);
+        } finally {
+            RESOLVING.remove();
+        }
+    }
+
+    /**
+     * @param key setting name without prefix
+     * @return true for settings holding data, not template text (e.g. the
+     * further bank accounts as JSON)
+     */
+    static boolean isData(String key) {
+        return mpv5.utils.export.BankAccount.KEY_ACCOUNTS.equals(key);
     }
 }
