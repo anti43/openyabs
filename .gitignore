@@ -39,4 +39,5 @@ bin/
 .vscode/
 
 ### Mac OS ###
-.DS_Storederby.log
+.DS_Store
+derby.log
