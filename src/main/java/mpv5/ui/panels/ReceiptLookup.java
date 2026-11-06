@@ -166,7 +166,7 @@ public class ReceiptLookup extends javax.swing.JPanel {
 
     private void popup(MouseEvent e) throws Exception {
         JPopupMenu menu = new JPopupMenu();
-        JMenuItem x = new JMenuItem("Add to new invoice");
+        JMenuItem x = new JMenuItem(mpv5.globals.Messages.RECEIPT_ADD_TO_NEW_INVOICE.toString());
         x.addActionListener(new ActionListener() {
 
             @Override

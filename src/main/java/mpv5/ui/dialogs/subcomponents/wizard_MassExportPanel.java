@@ -97,6 +97,8 @@ public class wizard_MassExportPanel extends javax.swing.JPanel implements Wizard
         jCheckBox3 = new javax.swing.JCheckBox();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea2 = new javax.swing.JTextArea();
+        einvoice = new javax.swing.JCheckBox();
+        email = new javax.swing.JCheckBox();
 
         setName("Form"); // NOI18N
 
@@ -124,6 +126,14 @@ public class wizard_MassExportPanel extends javax.swing.JPanel implements Wizard
         jCheckBox3.setText(bundle.getString("wizard_MassExportPanel.jCheckBox3.text")); // NOI18N
         jCheckBox3.setName("jCheckBox3"); // NOI18N
 
+        einvoice.setText(mpv5.globals.Messages.MASSEXPORT_EINVOICE.toString());
+        einvoice.setToolTipText(mpv5.globals.Messages.MASSEXPORT_EINVOICE_TOOLTIP.toString());
+        einvoice.setName("einvoice"); // NOI18N
+
+        email.setText(mpv5.globals.Messages.MASSEXPORT_EMAIL.toString());
+        email.setToolTipText(mpv5.globals.Messages.MASSEXPORT_EMAIL_TOOLTIP.toString());
+        email.setName("email"); // NOI18N
+
         jScrollPane2.setName("jScrollPane2"); // NOI18N
 
         jTextArea2.setColumns(20);
@@ -142,6 +152,8 @@ public class wizard_MassExportPanel extends javax.swing.JPanel implements Wizard
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(jCheckBox3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jCheckBox1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(einvoice, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(email, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jCheckBox2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 323, Short.MAX_VALUE))
                         .addGap(331, 339, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
@@ -176,6 +188,10 @@ public class wizard_MassExportPanel extends javax.swing.JPanel implements Wizard
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBox1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(einvoice)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(email)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE)
                 .addContainerGap())
         );
@@ -202,6 +218,12 @@ public class wizard_MassExportPanel extends javax.swing.JPanel implements Wizard
     }
 
     private void doit() throws NodataFoundException {
+        //asked before anything is created: nothing is sent without confirmation
+        final boolean send = email.isSelected() && confirmEmail();
+        if (email.isSelected() && !send) {
+            return;
+        }
+        final boolean createEInvoice = einvoice.isSelected();
 
         SwingUtilities.invokeLater(new Runnable() {
 
@@ -209,9 +231,9 @@ public class wizard_MassExportPanel extends javax.swing.JPanel implements Wizard
             public void run() {
 
                 int index = 1;
+                final java.util.HashMap<String, Object> mails = new java.util.HashMap<String, Object>();
                 master.getProgressbar().setMaximum(data.size());
                 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
-                // jTextArea1.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                 jTextArea2.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                 for (Map.Entry<Contact, List<Item>> entry : data.entrySet()) {
 
@@ -231,14 +253,24 @@ public class wizard_MassExportPanel extends javax.swing.JPanel implements Wizard
                         if (dato.getPanelData(tab) && dato.save()) {
                             tab.actionAfterCreate();
                             tab.setDataOwner(dato, true);
-                            if (jCheckBox1.isSelected()) {
+                            //ZUGFeRD: the e-invoice is the PDF (same file name), no plain PDF
+                            boolean zugferd = createEInvoice && mpv5.utils.export.EInvoiceFiles.replacesPdf(key);
+                            if (jCheckBox1.isSelected() && !zugferd) {
                                 dato.toPdf(false);
+                            }
+                            jTextArea2.append("Created: " + dato + " ... SUCCESS!\n");
+                            if (createEInvoice) {
+                                for (String line : mpv5.utils.export.EInvoiceFiles.write((Item) dato, key,
+                                        mpv5.db.objects.User.getSaveDir(dato))) {
+                                    jTextArea2.append("   " + line + "\n");
+                                }
+                            }
+                            if (send) {
+                                mails.put(((Item) dato).__getCnumber(), dato);
                             }
                             if (!jCheckBox3.isSelected()) {
                                 mpv5.YabsViewProxy.instance().getIdentifierView().removeTab(tab);
                             }
-
-                            jTextArea2.append("Created: " + dato + " ... SUCCESS!\n");
                         } else {
                             jTextArea2.append("\nCreated: " + dato + " ... FAILURE\n");
                             tab.showRequiredFields();
@@ -259,18 +291,40 @@ public class wizard_MassExportPanel extends javax.swing.JPanel implements Wizard
                     }
                 }
                 setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-                // jTextArea1.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
                 jTextArea2.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                if (!mails.isEmpty()) {
+                    //the serial mail of the overview: e-invoice per contact setting,
+                    //incomplete e-invoices are not sent, log and cancel included
+                    jTextArea2.append(mpv5.globals.Messages.MASSEXPORT_EMAIL_STARTED + " (" + mails.size() + ")\n");
+                    new mpv5.utils.jobs.Job(new mpv5.utils.export.EmailBatch(mails), new mpv5.utils.jobs.Waiter() {
+                        @Override
+                        public void set(Object object, Exception exception) throws Exception {
+                            if (exception != null) {
+                                Popup.error(exception);
+                            }
+                        }
+                    }, "Emails: " + mpv5.globals.Messages.DONE).execute();
+                }
                 master.isEnd(true);
             }
         });
     }
 
+    /**
+     * @return true if the user confirms sending the new invoices by email
+     */
+    private boolean confirmEmail() {
+        int invoices = data.size();
+        return Popup.Y_N_dialog(String.format(mpv5.globals.Messages.MASSEXPORT_EMAIL_CONFIRM.toString(), invoices),
+                mpv5.globals.Messages.MASSEXPORT_EMAIL.toString());
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JCheckBox jCheckBox2;
     private javax.swing.JCheckBox jCheckBox3;
+    private javax.swing.JCheckBox einvoice;
+    private javax.swing.JCheckBox email;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

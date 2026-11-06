@@ -25,6 +25,7 @@ Ausführlich, mit Rechtslage und Checkliste: **[docs/E-Rechnung.md](docs/E-Rechn
 
 - **Formate:** ZUGFeRD (PDF mit eingebetteter E-Rechnung), XRechnung (XML) oder beides, erstellt über die Schaltfläche *E-Rechnung* in der Rechnung.
 - **Versand per E-Mail, pro Kunde einstellbar** (Kontakt, Reiter *E-Rechnung*): PDF (normal), ZUGFeRD, XRechnung oder PDF + XRechnung. Gilt für den Einzel- und den Serienversand. Ungültige E-Rechnungen werden nicht verschickt; der Grund wird angezeigt bzw. im Protokoll des Serienversands aufgeführt.
+- **Sammelrechnungen** (*Vorgangssuche*, Rechtsklick *Zu neuer Rechnung zusammenfassen*): optional E-Rechnungen gemäß Kundeneinstellung als Dateien erzeugen und/oder die neuen Rechnungen direkt per E-Mail senden (mit Sicherheitsabfrage).
 - **Firmendaten:** Pflichtfelder sind in der Firmeninformation mit `*` markiert. USt-IdNr. und IBAN werden beim Eingeben geprüft.
 - **Zahlungsziel:** Das Fälligkeitsdatum in der E-Rechnung kommt
   1. vom Kunden (Kästchen *Sofort fällig* im Reiter *E-Rechnung*, sonst Zahlungsbedingung), sonst
