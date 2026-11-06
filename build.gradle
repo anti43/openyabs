@@ -25,10 +25,10 @@ dependencies {
     implementation fileTree(dir: 'lib', include: ['*.jar'])
 }
 
-// Java 11 is the minimum (the Mustang e-invoice libraries need it); --release also
-// checks that only Java 11 APIs are used when building with a newer JDK
+// Java 21 is the minimum (Apache Derby 10.17 needs it); --release also
+// checks that only Java 21 APIs are used when building with a newer JDK
 tasks.withType(JavaCompile).configureEach {
-    options.release = 11
+    options.release = 21
     options.encoding = 'UTF-8'
 }
 
@@ -43,7 +43,7 @@ jar {
 }
 
 // Zip for distribution: openyabs/openyabs.jar, openyabs/lib/ and start scripts (src/dist).
-// Start with yabs.sh / yabs.bat or "java -jar openyabs.jar" (Java 11+).
+// Start with yabs.sh / yabs.bat or "java -jar openyabs.jar" (Java 21+).
 tasks.register('distributionZip', Zip) {
     group = 'distribution'
     description = 'Builds build/distributions/openyabs-<version>.zip with the app jar, lib/ and start scripts'

@@ -225,6 +225,23 @@ public class DatabaseConnection {
       }
    }
 
+   /**
+    * @param sql a statement of the structure or the updates
+    * @return the statement with the configured table prefix
+    */
+   public static String withPrefix(String sql) {
+      String string = sql;
+      if (prefix != null) {
+         string = string.replace(" table ", " table " + prefix);
+         string = string.replace(" TABLE ", " TABLE " + prefix);
+         string = string.replace(" on ", " on " + prefix);
+         string = string.replace(" ON ", " ON " + prefix);
+         string = string.replace(" into ", " into " + prefix);
+         string = string.replace(" INTO ", " INTO " + prefix);
+      }
+      return string;
+   }
+
    public boolean runQueries(String[] queries) throws SQLException {
       if (prog != null) {
          prog.setStringPainted(true);
@@ -241,15 +258,7 @@ public class DatabaseConnection {
 //            stm.executeBatch();
          for (int i = 0; i < queries.length; i++) {
             try {
-               String string = queries[i];
-               if (prefix != null) {
-                  string = string.replace(" table ", " table " + prefix);
-                  string = string.replace(" TABLE ", " TABLE " + prefix);
-                  string = string.replace(" on ", " on " + prefix);
-                  string = string.replace(" ON ", " ON " + prefix);
-                  string = string.replace(" into ", " into " + prefix);
-                  string = string.replace(" INTO ", " INTO " + prefix);
-               }
+               String string = withPrefix(queries[i]);
                Log.Print(string);
                stm.execute(string);
                if (prog != null) {

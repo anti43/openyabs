@@ -6,7 +6,17 @@ openyabs - Yet another Business Software
 
 **[Die deutsche Dokumentation zu Yabs befindet sich hier!](https://docs.google.com/document/d/1VhUi0wS-EJgfV-o89Hl-2wux810mJnqUV1wPxpgVIs4/pub)**
 
-**[Aktueller Build zum Download (latest-master)](https://github.com/andreasweberd/openyabs/releases/tag/latest-master)** – ZIP entpacken und mit `yabs.sh` / `yabs.bat` starten (Java 11 oder neuer).
+**[Aktueller Build zum Download (latest-master)](https://github.com/andreasweberd/openyabs/releases/tag/latest-master)** – ZIP entpacken und mit `yabs.sh` / `yabs.bat` starten (Java 21 oder neuer).
+
+## Datenbank (Apache Derby 10.17, Java 21)
+
+YaBS nutzt Apache Derby 10.17.1.0, das Java 21 voraussetzt.
+
+- **Ältere Datenbanken** werden beim ersten Start im *Soft-Upgrade*-Modus geöffnet und auf die aktuelle YaBS-Version aktualisiert. Das Dateiformat bleibt dabei unverändert, ältere YaBS-Versionen (Derby 10.8) können dieselbe Datenbank weiterhin öffnen.
+- **Unterbrochene Updates** setzen beim nächsten Start dort fort, wo sie aufgehört haben. Bereits durchgeführte Änderungen werden übersprungen. Die Versionsnummer wird nach jedem Schritt gespeichert und bei einem Fehler nicht erhöht.
+- **Beschädigte Datenbank** (z. B. „StoredPreparedStatement … ist nicht vorhanden“ und danach „Keine aktuelle Verbindung“): YaBS bietet an, alle Daten in eine neu angelegte Datenbank zu kopieren. Die alte Datenbank bleibt unverändert als `<name>-backup-<Datum>` daneben liegen. Die neu aufgebaute Datenbank hat das Derby-10.17-Format und kann **nicht mehr** mit älteren YaBS-Versionen geöffnet werden; die Sicherung schon. Bei großen Datenbanken dauert das einige Minuten.
+
+Vor jedem Update empfiehlt sich eine Kopie des Datenbankordners.
 
 ## E-Rechnung (XRechnung / ZUGFeRD)
 
