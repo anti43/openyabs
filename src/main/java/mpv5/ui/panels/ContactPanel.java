@@ -2210,6 +2210,10 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
      * mirror of the field "Pay Term" (payterm)
      */
     private final javax.swing.JTextField einvoicePayterm = new javax.swing.JTextField(6);
+    /**
+     * payable immediately (due on the invoice date) instead of the payment term
+     */
+    private final javax.swing.JCheckBox einvoiceImmediate = new javax.swing.JCheckBox();
     private final javax.swing.JTextField einvoiceSkontoPercent = new javax.swing.JTextField(6);
     private final javax.swing.JTextField einvoiceSkontoDays = new javax.swing.JTextField(6);
     private boolean syncingPayterm;
@@ -2268,8 +2272,11 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         info.setColumns(45);
         addEInvoiceRow(p, c, 2, Messages.EINVOICE_ACCOUNT.toString(), einvoiceAccount);
         addEInvoiceRow(p, c, 3, Messages.EINVOICE_PAYTERM.toString(), einvoicePayterm);
-        addEInvoiceRow(p, c, 4, Messages.COMPANY_SKONTO_PERCENT.toString(), einvoiceSkontoPercent);
-        addEInvoiceRow(p, c, 5, Messages.COMPANY_SKONTO_DAYS.toString(), einvoiceSkontoDays);
+        addEInvoiceRow(p, c, 4, Messages.EINVOICE_PAY_IMMEDIATELY.toString(), einvoiceImmediate);
+        addEInvoiceRow(p, c, 5, Messages.COMPANY_SKONTO_PERCENT.toString(), einvoiceSkontoPercent);
+        addEInvoiceRow(p, c, 6, Messages.COMPANY_SKONTO_DAYS.toString(), einvoiceSkontoDays);
+        einvoiceImmediate.setToolTipText(Messages.EINVOICE_PAY_IMMEDIATELY_TOOLTIP.toString());
+        einvoiceImmediate.addActionListener(e -> updateImmediate());
         einvoiceAccount.setToolTipText(Messages.EINVOICE_ACCOUNT_TOOLTIP.toString());
         einvoicePayterm.setToolTipText(Messages.EINVOICE_PAYTERM_TOOLTIP.toString());
         einvoiceSkontoPercent.setToolTipText(Messages.EINVOICE_SKONTO_TOOLTIP.toString());
@@ -2278,7 +2285,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         syncPayterm(payterm.getTextField(), einvoicePayterm);
 
         c.gridx = 0;
-        c.gridy = 6;
+        c.gridy = 7;
         c.gridwidth = 2;
         c.weightx = 1;
         c.weighty = 1;
@@ -2300,6 +2307,15 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         c.gridx = 1;
         c.fill = java.awt.GridBagConstraints.HORIZONTAL;
         p.add(field, c);
+    }
+
+    /**
+     * The payment term does not apply to contacts that pay immediately
+     */
+    private void updateImmediate() {
+        boolean term = !einvoiceImmediate.isSelected();
+        einvoicePayterm.setEnabled(term);
+        payterm.getTextField().setEnabled(term);
     }
 
     /**
@@ -2369,6 +2385,8 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         einvoiceAccount.setModel(accounts);
         einvoiceAccount.setSelectedItem(selected);
         einvoicePayterm.setText(payterm.getText());
+        einvoiceImmediate.setSelected(mpv5.utils.export.PaymentTerms.isImmediate(dataOwner));
+        updateImmediate();
         String p = mpv5.utils.export.PaymentTerms.contactValue(dataOwner, mpv5.utils.export.PaymentTerms.KEY_SKONTO_PERCENT);
         String d = mpv5.utils.export.PaymentTerms.contactValue(dataOwner, mpv5.utils.export.PaymentTerms.KEY_SKONTO_DAYS);
         einvoiceSkontoPercent.setText(p == null ? "" : p);
@@ -2394,6 +2412,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                     (mpv5.utils.export.EInvoiceDelivery) einvoiceDelivery.getSelectedItem());
             Object account = einvoiceAccount.getSelectedItem();
             mpv5.utils.export.BankAccount.saveForContact(dataOwner, account instanceof AccountItem ? ((AccountItem) account).iban : "");
+            mpv5.utils.export.PaymentTerms.saveImmediate(dataOwner, einvoiceImmediate.isSelected());
             mpv5.utils.export.PaymentTerms.saveContactValue(dataOwner, mpv5.utils.export.PaymentTerms.KEY_SKONTO_PERCENT,
                     einvoiceSkontoPercent.getText());
             mpv5.utils.export.PaymentTerms.saveContactValue(dataOwner, mpv5.utils.export.PaymentTerms.KEY_SKONTO_DAYS,

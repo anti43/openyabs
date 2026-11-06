@@ -61,14 +61,16 @@ Angebote, Aufträge, Lieferscheine usw. werden immer als PDF versendet.
   - **USt-IdNr. des Kunden** (Feld „UST-ID“): nur eine gültige USt-IdNr. wird übernommen. Eine Steuernummer ist für den Käufer in EN 16931 nicht vorgesehen und wird weggelassen. YaBS weist darauf hin.
   - **Leitweg-ID / Käuferreferenz** (Reiter „E-Rechnung“ beim Kontakt): Pflicht für öffentliche Auftraggeber. Ist sie leer, wird die Kundennummer verwendet (sonst die Rechnungsnummer).
 - **Fälligkeit:** Rechnungsdatum plus Zahlungsziel. Das Zahlungsziel kommt, in dieser Reihenfolge:
-  1. vom **Kunden** (Feld „Zahlungsbedingung“, wenn größer als 0),
+  1. vom **Kunden**: Kästchen „Sofort fällig“ im Reiter „E-Rechnung“, sonst Feld „Zahlungsbedingung“, wenn größer als 0,
   2. aus der **Rechnungsvorlage**: *Werkzeuge > Einstellungen > Vorlagen Manager* (englisch: *Template Manager*), Feld „Zahlungsziel“ (Tage; englisch „Pay days“),
   3. aus dem **Standard** in der Firmeninformation (Feld „Zahlungsziel (Tage)“),
   4. sonst 14 Tage.
 
+  **0 Tage = sofort fällig:** In Vorlage und Firmeninformation bedeutet 0 „sofort fällig“, leer bedeutet „nicht gesetzt“. Beim Kunden steht 0 in „Zahlungsbedingung“ dagegen für „nicht gesetzt“, weil alle Kunden ohne Eintrag dort 0 haben; für ihn gibt es das Kästchen „Sofort fällig“. Bei sofortiger Fälligkeit ist das Fälligkeitsdatum das Rechnungsdatum, und als Zahlungsbedingung steht „Zahlbar sofort ohne Abzug“ in der E-Rechnung statt „Zahlbar bis …“.
+
   Wer das Zahlungsziel als Text in Vorlagen pro Kundengruppe hinterlegt, trägt die Tage dort zusätzlich ein. So passen PDF-Text und E-Rechnung zusammen.
 
-  Das Zahlungsziel des Kunden lässt sich auch im Reiter „E-Rechnung“ einstellen (dasselbe Feld wie „Zahlungsbedingung“). In Vorlagen stehen `item.paymentdays` und `item.paymentduedate` zur Verfügung, damit Text und E-Rechnung automatisch übereinstimmen.
+  Das Zahlungsziel des Kunden lässt sich auch im Reiter „E-Rechnung“ einstellen (dasselbe Feld wie „Zahlungsbedingung“). In Vorlagen stehen `item.paymentdays`, `item.paymentduedate` und `item.paymentterms` („Zahlbar bis 29.11.2026“ bzw. „Zahlbar sofort ohne Abzug“) zur Verfügung, damit Text und E-Rechnung automatisch übereinstimmen.
 - **Positionen:**
   - Textzeilen und Zeilen mit Menge 0 werden übersprungen.
   - Rabatte werden als Positionsnachlass übertragen.

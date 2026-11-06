@@ -88,7 +88,7 @@ class InvoiceMailTest {
         c.remove("account1");//no VAT ID -> BR-CO-26
         Invoice invoice = ZugpferdFile.createInvoice(ZugpferdFileTest.invoice(),
                 new SubItem[]{ZugpferdFileTest.line("a", "", "1", "Stk", "100", "19", "0")},
-                ZugpferdFile.createSender(c::get), ZugpferdFileTest.buyer(), "ref", 0, null);
+                ZugpferdFile.createSender(c::get), ZugpferdFileTest.buyer(), "ref", ZugpferdFile.PAYTERM_UNSET, null);
         InvoiceMail m = mail(invoice, EInvoiceDelivery.XRECHNUNG);
         Exception e = m.waitFor();
         assertNotNull(e, "must not be sent");

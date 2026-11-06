@@ -796,7 +796,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
             jList1.setSelectedIndices(ix);
             pathtofile.setText(dataOwner.getFile().getPath());
             int days = mpv5.utils.export.ZugpferdFile.paytermOf(dataOwner);
-            einvoicePayterm.setText(days > 0 ? String.valueOf(days) : "");
+            einvoicePayterm.setText(days >= 0 ? String.valueOf(days) : "");
             lastImportedFile = null;
             lastmodified = lastmodified_;
             updateService.setSelected(isupdateenabled_);
@@ -810,13 +810,17 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
     }
 
     /**
-     * Store the payment term (days) of the template, empty or 0 removes it
+     * Store the payment term (days) of the template, 0 = payable immediately,
+     * empty removes it
      */
     private void saveEInvoicePayterm(DatabaseObject template) {
         String v = einvoicePayterm.getText() == null ? "" : einvoicePayterm.getText().trim();
-        int days = 0;
+        int days;
         try {
-            days = v.isEmpty() ? 0 : Integer.parseInt(v);
+            days = v.isEmpty() ? mpv5.utils.export.ZugpferdFile.PAYTERM_UNSET : Integer.parseInt(v);
+            if (days < 0) {
+                throw new NumberFormatException(v);
+            }
         } catch (NumberFormatException e) {
             Popup.warn(Messages.TEMPLATE_EINVOICE_PAYTERM + ": " + v);
             return;

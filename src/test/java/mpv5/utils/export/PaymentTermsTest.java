@@ -70,4 +70,22 @@ class PaymentTermsTest {
         EInvoiceValidator.Result r = EInvoiceValidator.validate(xml);
         assertTrue(r.isValid(), r.getErrors().toString());
     }
+
+    @Test
+    void paymentTermFromTheCompanyDefault() {
+        Map<String, String> c = ZugpferdFileTest.company();
+        c.remove("payterm");
+        assertEquals(ZugpferdFile.DEFAULT_PAYTERM_DAYS,
+                PaymentTerms.forContact(null, 0, ZugpferdFile.PAYTERM_UNSET, c::get).getDays(), "nothing set");
+        c.put("payterm", "30");
+        assertEquals(30, PaymentTerms.forContact(null, 0, ZugpferdFile.PAYTERM_UNSET, c::get).getDays());
+        assertEquals(10, PaymentTerms.forContact(null, 10, ZugpferdFile.PAYTERM_UNSET, c::get).getDays(), "contact");
+        assertEquals(0, PaymentTerms.forContact(null, 0, 0, c::get).getDays(), "template: payable immediately");
+        c.put("payterm", "0");
+        PaymentTerms immediate = PaymentTerms.forContact(null, 0, ZugpferdFile.PAYTERM_UNSET, c::get);
+        assertTrue(immediate.isImmediate());
+        java.util.Date issue = new java.util.Date();
+        assertEquals(issue, immediate.dueDate(issue));
+        assertEquals(mpv5.globals.Messages.ZUGFERD_PAYABLE_IMMEDIATELY.toString(), immediate.text(issue));
+    }
 }
