@@ -779,12 +779,13 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
      * term, Skonto), as set for the contact in the tab "E-Invoice", defaults
      * from the company info: item.paymentiban, item.paymentbic,
      * item.paymentbank, item.paymentaccountname, item.paymentdays,
-     * item.paymentduedate, item.skontopercent, item.skontodays,
+     * item.paymentduedate, item.paymentterms ("Zahlbar bis 29.11.2026" or
+     * "Zahlbar sofort ohne Abzug"), item.skontopercent, item.skontodays,
      * item.skontodate, item.skontoamount, item.skontopayamount
      */
     private void putPaymentFields(Map<String, Object> map, DateFormat df) {
         String[] keys = {"paymentiban", "paymentbic", "paymentbank", "paymentaccountname", "paymentdays",
-            "paymentduedate", "skontopercent", "skontodays", "skontodate", "skontoamount", "skontopayamount"};
+            "paymentduedate", "paymentterms", "skontopercent", "skontodays", "skontodate", "skontoamount", "skontopayamount"};
         for (String k : keys) {
             map.put(k, "");
         }
@@ -802,6 +803,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
             Date issue = __getDateadded() != null ? __getDateadded() : new Date();
             map.put("paymentdays", String.valueOf(terms.getDays()));
             map.put("paymentduedate", df.format(terms.dueDate(issue)));
+            map.put("paymentterms", terms.text(issue));
             mpv5.utils.export.BankAccount account = terms.getAccount();
             if (account != null) {
                 map.put("paymentiban", mpv5.utils.text.Iban.format(account.getIban()));

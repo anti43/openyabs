@@ -27,15 +27,17 @@ Ausführlich, mit Rechtslage und Checkliste: **[docs/E-Rechnung.md](docs/E-Rechn
 - **Versand per E-Mail, pro Kunde einstellbar** (Kontakt, Reiter *E-Rechnung*): PDF (normal), ZUGFeRD, XRechnung oder PDF + XRechnung. Gilt für den Einzel- und den Serienversand. Ungültige E-Rechnungen werden nicht verschickt; der Grund wird angezeigt bzw. im Protokoll des Serienversands aufgeführt.
 - **Firmendaten:** Pflichtfelder sind in der Firmeninformation mit `*` markiert. USt-IdNr. und IBAN werden beim Eingeben geprüft.
 - **Zahlungsziel:** Das Fälligkeitsdatum in der E-Rechnung kommt
-  1. vom Kunden (Zahlungsbedingung), sonst
+  1. vom Kunden (Kästchen *Sofort fällig* im Reiter *E-Rechnung*, sonst Zahlungsbedingung), sonst
   2. aus der Rechnungsvorlage (*Werkzeuge > Einstellungen > Vorlagen Manager*, Feld *Zahlungsziel* (Tage; englisch *Pay days*)), sonst
   3. aus dem Standard in der Firmeninformation, sonst
   4. 14 Tage.
 
+  0 Tage in Vorlage oder Firmeninformation (bzw. *Sofort fällig* beim Kunden) heißt: fällig am Rechnungsdatum, Zahlungsbedingung „Zahlbar sofort ohne Abzug“.
+
   Wer das Zahlungsziel als Text in Vorlagen pro Kundengruppe pflegt, trägt die Tage dort zusätzlich ein, damit PDF und E-Rechnung übereinstimmen.
 - **Mehrere Bankkonten, Zahlungsziel und Skonto pro Kunde:** Weitere Konten unter *Firmeninformation > Weitere Bankkonten…*. Im Kontakt, Reiter *E-Rechnung*, wird festgelegt:
   - auf welches Konto der Kunde überweist,
-  - sein Zahlungsziel,
+  - sein Zahlungsziel oder *Sofort fällig*,
   - sein Skonto (% und Tage).
 
   Leer bedeutet jeweils: Standard aus der Firmeninformation (Konto aus IBAN/BIC, Felder *Zahlungsziel*, *Skonto %*, *Skonto Tage*). Die Werte erscheinen in der E-Rechnung (Skonto im XRechnung-Format `#SKONTO#…#`) und als Felder in den Vorlagen:
@@ -44,6 +46,7 @@ Ausführlich, mit Rechtslage und Checkliste: **[docs/E-Rechnung.md](docs/E-Rechn
   |---|---|
   | `item.paymentiban`, `item.paymentbic`, `item.paymentbank`, `item.paymentaccountname` | Konto, auf das der Kunde zahlt |
   | `item.paymentdays`, `item.paymentduedate` | Zahlungsziel in Tagen, Fälligkeitsdatum |
+  | `item.paymentterms` | „Zahlbar bis 29.11.2026“ bzw. „Zahlbar sofort ohne Abzug“ |
   | `item.skontopercent`, `item.skontodays`, `item.skontodate` | Skonto: Prozent, Tage, Datum |
   | `item.skontoamount`, `item.skontopayamount` | Skontobetrag, Zahlbetrag mit Skonto |
 

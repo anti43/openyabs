@@ -31,7 +31,9 @@ import mpv5.utils.date.DateConverter;
  * payment term and the cash discount (Skonto). Everything can be set per
  * contact (tab "E-Invoice"); the defaults come from the company info.
  * <ul>
- * <li>payment term: contact, invoice template, company info, 14 days</li>
+ * <li>payment term: contact, invoice template, company info, 14 days; 0
+ * days (or "payable immediately" at the contact) means due on the invoice
+ * date</li>
  * <li>Skonto: contact, company info, none</li>
  * <li>bank account: contact, account of the company info</li>
  * </ul>
@@ -46,6 +48,12 @@ public class PaymentTerms {
      * Value property of a contact / company setting: Skonto days
      */
     public static final String KEY_SKONTO_DAYS = "skontodays";
+    /**
+     * Value property of a contact: "1" if invoices are payable immediately
+     * (the payment term column of the contact can not hold "0 days": 0 means
+     * not set there)
+     */
+    public static final String KEY_IMMEDIATE = "immediate";
     private static final String CONTACT_PREFIX = "einvoice.";
     private final int days;
     private final BigDecimal skontoPercent;
@@ -63,14 +71,18 @@ public class PaymentTerms {
     /**
      * @param contact
      * @param contactPayterm the contact's payment term (days), 0 if none
-     * @param templateDays the payment term of the invoice template, 0 if none
+     * @param templateDays the payment term of the invoice template
+     * ({@link ZugpferdFile#paytermOf}), {@link ZugpferdFile#PAYTERM_UNSET} if
+     * none
      * @param company lookup for companyinfo.* keys (without prefix)
      * @return the payment terms for an invoice to this contact
      */
     public static PaymentTerms forContact(DatabaseObject contact, int contactPayterm, int templateDays,
             Function<String, String> company) {
-        int days = ZugpferdFile.paytermDays(contactPayterm, templateDays,
-                ZugpferdFile.parseDays(company.apply(ZugpferdFile.KEY_PAYTERM)));
+        int contactDays = isImmediate(contact) ? 0
+                : contactPayterm > 0 ? contactPayterm : ZugpferdFile.PAYTERM_UNSET;
+        int days = ZugpferdFile.paytermDays(contactDays, templateDays,
+                ZugpferdFile.parseTerm(company.apply(ZugpferdFile.KEY_PAYTERM)));
         BigDecimal percent = parsePercent(contactValue(contact, KEY_SKONTO_PERCENT));
         int sdays = ZugpferdFile.parseDays(contactValue(contact, KEY_SKONTO_DAYS));
         if (percent.signum() <= 0 || sdays <= 0) {
@@ -88,6 +100,22 @@ public class PaymentTerms {
      */
     public static String contactValue(DatabaseObject contact, String key) {
         return ContactProperty.get(contact, CONTACT_PREFIX + key);
+    }
+
+    /**
+     * @param contact
+     * @return true if invoices to the contact are payable immediately
+     */
+    public static boolean isImmediate(DatabaseObject contact) {
+        return "1".equals(contactValue(contact, KEY_IMMEDIATE));
+    }
+
+    /**
+     * @param contact the (saved) contact
+     * @param immediate true: payable immediately, false: its payment term
+     */
+    public static void saveImmediate(DatabaseObject contact, boolean immediate) {
+        saveContactValue(contact, KEY_IMMEDIATE, immediate ? "1" : null);
     }
 
     /**
@@ -115,6 +143,21 @@ public class PaymentTerms {
 
     public int getDays() {
         return days;
+    }
+
+    /**
+     * @return true if payable immediately (due on the invoice date)
+     */
+    public boolean isImmediate() {
+        return days == 0;
+    }
+
+    /**
+     * @param issueDate
+     * @return "Zahlbar bis 29.11.2026" or "Zahlbar sofort ohne Abzug"
+     */
+    public String text(Date issueDate) {
+        return ZugpferdFile.paymentTermsText(days, dueDate(issueDate));
     }
 
     /**

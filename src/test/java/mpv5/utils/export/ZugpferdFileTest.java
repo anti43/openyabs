@@ -16,6 +16,7 @@ import mpv5.db.objects.Address;
 import mpv5.db.objects.Contact;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.SubItem;
+import mpv5.globals.Messages;
 import fr.opensagres.odfdom.converter.pdf.PdfConverter;
 import fr.opensagres.odfdom.converter.pdf.PdfOptions;
 import java.io.FileOutputStream;
@@ -102,7 +103,7 @@ class ZugpferdFileTest {
             line("   ", "Hinweis: Lieferung frei Haus", "0", "", "0", "0", "0")
         };
         Map<String, String> c = company();
-        return ZugpferdFile.createInvoice(invoice(), lines, ZugpferdFile.createSender(c::get), buyer(), "04011000-12345-34", 0, null);
+        return ZugpferdFile.createInvoice(invoice(), lines, ZugpferdFile.createSender(c::get), buyer(), "04011000-12345-34", ZugpferdFile.PAYTERM_UNSET, null);
     }
 
     @Test
@@ -159,7 +160,7 @@ class ZugpferdFileTest {
         assertEquals(DateConverter.addDays(item.__getDateadded(), 30), withTerm.getDueDate());
 
         item.setDatetodo(null);
-        Invoice noTerm = ZugpferdFile.createInvoice(item, lines, ZugpferdFile.createSender(c::get), buyer(), "ref", 0, null);
+        Invoice noTerm = ZugpferdFile.createInvoice(item, lines, ZugpferdFile.createSender(c::get), buyer(), "ref", ZugpferdFile.PAYTERM_UNSET, null);
         assertEquals(DateConverter.addDays(item.__getDateadded(), ZugpferdFile.DEFAULT_PAYTERM_DAYS), noTerm.getDueDate());
 
         File xml = tmp.resolve("noterm.xml").toFile();
@@ -172,7 +173,7 @@ class ZugpferdFileTest {
         Map<String, String> c = company();
         c.remove("account1");
         Invoice invoice = ZugpferdFile.createInvoice(invoice(), new SubItem[]{line("a", "", "1", "Stk", "100", "19", "0")},
-                ZugpferdFile.createSender(c::get), buyer(), "ref", 0, null);
+                ZugpferdFile.createSender(c::get), buyer(), "ref", ZugpferdFile.PAYTERM_UNSET, null);
         List<String> problems = ZugpferdFile.validate(invoice);
         assertTrue(problems.toString().contains(mpv5.globals.Messages.ZUGFERD_FIELD_VATID.toString()), problems.toString());
 
@@ -201,7 +202,7 @@ class ZugpferdFileTest {
         Map<String, String> c = company();
         c.put("account", "DE03 1203 0000 0000 2020 51");
         Invoice invoice = ZugpferdFile.createInvoice(invoice(), new SubItem[]{line("a", "", "1", "Stk", "100", "19", "0")},
-                ZugpferdFile.createSender(c::get), buyer(), "ref", 0, null);
+                ZugpferdFile.createSender(c::get), buyer(), "ref", ZugpferdFile.PAYTERM_UNSET, null);
         String problems = ZugpferdFile.validate(invoice).toString();
         assertTrue(problems.contains(mpv5.globals.Messages.ZUGFERD_INVALID_IBAN.toString()), problems);
     }
@@ -211,7 +212,7 @@ class ZugpferdFileTest {
         Map<String, String> c = company();
         c.put("country", "Atlantis");
         Invoice invoice = ZugpferdFile.createInvoice(invoice(), new SubItem[]{line("a", "", "1", "Stk", "100", "19", "0")},
-                ZugpferdFile.createSender(c::get), buyer(), "ref", 0, null);
+                ZugpferdFile.createSender(c::get), buyer(), "ref", ZugpferdFile.PAYTERM_UNSET, null);
         String problems = ZugpferdFile.validate(invoice).toString();
         assertTrue(problems.contains(mpv5.globals.Messages.ZUGFERD_FIELD_COUNTRY.toString()), problems);
     }
@@ -227,7 +228,7 @@ class ZugpferdFileTest {
         deposit.setInttype(Item.TYPE_DEPOSIT);
         Map<String, String> c = company();
         Invoice invoice = ZugpferdFile.createInvoice(deposit, new SubItem[]{line("a", "", "1", "Stk", "100", "19", "0")},
-                ZugpferdFile.createSender(c::get), buyer(), "ref", 0, null, ZugpferdFile.Format.XRECHNUNG);
+                ZugpferdFile.createSender(c::get), buyer(), "ref", ZugpferdFile.PAYTERM_UNSET, null, ZugpferdFile.Format.XRECHNUNG);
         File xml = tmp.resolve("deposit.xml").toFile();
         ZugpferdFile.writeXml(invoice, xml);
         assertValid(xml);
@@ -259,7 +260,7 @@ class ZugpferdFileTest {
         Map<String, String> c = company();
         c.put("account1", "123456789");
         Invoice invoice = ZugpferdFile.createInvoice(invoice(), new SubItem[]{line("a", "", "1", "Stk", "100", "19", "0")},
-                ZugpferdFile.createSender(c::get), buyer(), "ref", 0, null);
+                ZugpferdFile.createSender(c::get), buyer(), "ref", ZugpferdFile.PAYTERM_UNSET, null);
         String problems = ZugpferdFile.validate(invoice).toString();
         assertTrue(problems.contains(mpv5.globals.Messages.ZUGFERD_INVALID_VATID.toString()), problems);
         assertTrue(problems.contains("'123456789'"), problems);
@@ -296,7 +297,7 @@ class ZugpferdFileTest {
 
         Map<String, String> c = company();
         Invoice invoice = ZugpferdFile.createInvoice(invoice(), new SubItem[]{line("a", "", "1", "Stk", "100", "19", "0")},
-                ZugpferdFile.createSender(c::get), buyer, "ref", 0, null, ZugpferdFile.Format.ZUGFERD);
+                ZugpferdFile.createSender(c::get), buyer, "ref", ZugpferdFile.PAYTERM_UNSET, null, ZugpferdFile.Format.ZUGFERD);
         File plain = tmp.resolve("plain2.pdf").toFile();
         try (PDDocument doc = new PDDocument()) {
             PDPage page = new PDPage();
@@ -342,7 +343,7 @@ class ZugpferdFileTest {
         assertEquals("30/123/45678", sender.getTaxID());
 
         Invoice invoice = ZugpferdFile.createInvoice(invoice(), new SubItem[]{line("a", "", "1", "Stk", "100", "19", "0")},
-                sender, buyer(), "ref", 0, null);
+                sender, buyer(), "ref", ZugpferdFile.PAYTERM_UNSET, null);
         assertTrue(ZugpferdFile.validate(invoice).isEmpty(), ZugpferdFile.validate(invoice).toString());
         File xml = tmp.resolve("swapped.xml").toFile();
         ZugpferdFile.writeXml(invoice, xml);
@@ -352,13 +353,37 @@ class ZugpferdFileTest {
     @Test
     void paytermOrderContactTemplateDefault() {
         //the users write the payment term into templates per customer group
+        int unset = ZugpferdFile.PAYTERM_UNSET;
         assertEquals(10, ZugpferdFile.paytermDays(10, 30, 21), "contact first");
-        assertEquals(30, ZugpferdFile.paytermDays(0, 30, 21), "then the template");
-        assertEquals(21, ZugpferdFile.paytermDays(0, 0, 21), "then the company default");
-        assertEquals(ZugpferdFile.DEFAULT_PAYTERM_DAYS, ZugpferdFile.paytermDays(0, 0, 0));
-        assertEquals(0, ZugpferdFile.parseDays("abc"));
-        assertEquals(30, ZugpferdFile.parseDays(" 30 "));
-        assertEquals(0, ZugpferdFile.paytermOf(null));
+        assertEquals(30, ZugpferdFile.paytermDays(unset, 30, 21), "then the template");
+        assertEquals(21, ZugpferdFile.paytermDays(unset, unset, 21), "then the company default");
+        assertEquals(ZugpferdFile.DEFAULT_PAYTERM_DAYS, ZugpferdFile.paytermDays(unset, unset, unset));
+        assertEquals(0, ZugpferdFile.paytermDays(0, 30, 21), "contact payable immediately");
+        assertEquals(0, ZugpferdFile.paytermDays(unset, 0, 21), "template payable immediately");
+        assertEquals(0, ZugpferdFile.paytermDays(unset, unset, 0), "company default payable immediately");
+        assertEquals(unset, ZugpferdFile.parseTerm("abc"));
+        assertEquals(unset, ZugpferdFile.parseTerm(" "));
+        assertEquals(unset, ZugpferdFile.parseTerm("-3"));
+        assertEquals(0, ZugpferdFile.parseTerm("0"));
+        assertEquals(30, ZugpferdFile.parseTerm(" 30 "));
+        assertEquals(unset, ZugpferdFile.paytermOf(null));
+    }
+
+    @Test
+    void payableImmediatelyIsDueOnTheInvoiceDate() throws Exception {
+        Item item = invoice();
+        SubItem[] lines = {line("a", "", "1", "Stk", "100", "19", "0")};
+        Map<String, String> c = company();
+        Invoice invoice = ZugpferdFile.createInvoice(item, lines, ZugpferdFile.createSender(c::get), buyer(), "ref", 0, null);
+        assertEquals(item.__getDateadded(), invoice.getDueDate());
+        assertEquals(Messages.ZUGFERD_PAYABLE_IMMEDIATELY.toString(), invoice.getPaymentTermDescription());
+        File xml = tmp.resolve("immediate.xml").toFile();
+        ZugpferdFile.writeXml(invoice, xml);
+        assertValid(xml);
+
+        Invoice term = ZugpferdFile.createInvoice(item, lines, ZugpferdFile.createSender(c::get), buyer(), "ref", 30, null);
+        assertTrue(term.getPaymentTermDescription().startsWith(Messages.ZUGFERD_PAYABLE_UNTIL.toString()),
+                term.getPaymentTermDescription());
     }
 
     @Test
@@ -443,7 +468,7 @@ class ZugpferdFileTest {
             line("d", "", "1", "Stk", "10", "7.000000001", "0")
         };
         Map<String, String> c = company();
-        Invoice invoice = ZugpferdFile.createInvoice(invoice(), lines, ZugpferdFile.createSender(c::get), buyer(), "ref", 0, null);
+        Invoice invoice = ZugpferdFile.createInvoice(invoice(), lines, ZugpferdFile.createSender(c::get), buyer(), "ref", ZugpferdFile.PAYTERM_UNSET, null);
         File xml = tmp.resolve("rates.xml").toFile();
         ZugpferdFile.writeXml(invoice, xml);
         String s = new String(Files.readAllBytes(xml.toPath()), StandardCharsets.UTF_8);

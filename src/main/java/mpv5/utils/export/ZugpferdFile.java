@@ -111,6 +111,10 @@ public class ZugpferdFile implements Waitable {
      * Payment term used if the contact has none
      */
     public static final int DEFAULT_PAYTERM_DAYS = 14;
+    /**
+     * payment term not set (0 days means payable immediately)
+     */
+    public static final int PAYTERM_UNSET = -1;
     private static final String COMPANY_PREFIX = "companyinfo.";
     private final Item item;
     private final File target;
@@ -251,8 +255,9 @@ public class ZugpferdFile implements Waitable {
      * @param sender
      * @param recipient
      * @param buyerReference
-     * @param paytermDays payment term of the contact in days, &lt;= 0 for the
-     * default of {@value #DEFAULT_PAYTERM_DAYS} days
+     * @param paytermDays payment term in days, 0 for payable immediately
+     * (due on the invoice date), &lt; 0 for the default of
+     * {@value #DEFAULT_PAYTERM_DAYS} days
      * @param taxExemptionReason
      * @param format
      * @return
@@ -272,8 +277,7 @@ public class ZugpferdFile implements Waitable {
                 .setRecipient(recipient)
                 .setReferenceNumber(isEmpty(buyerReference) ? item.__getCnumber() : buyerReference.trim());
         invoice.setDueDate(dueDate);
-        invoice.setPaymentTermDescription(Messages.ZUGFERD_PAYABLE_UNTIL + " "
-                + new SimpleDateFormat("dd.MM.yyyy").format(dueDate));
+        invoice.setPaymentTermDescription(paymentTermsText(paytermDays, dueDate));
         String code = documentCode(item.__getInttype(), format);
         if (code != null) {
             invoice.setDocumentCode(code);
@@ -323,41 +327,68 @@ public class ZugpferdFile implements Waitable {
     /**
      * The payment term of an e-invoice: the contact's term if set, otherwise
      * the term of the invoice template, otherwise the default of the company
-     * settings, otherwise {@value #DEFAULT_PAYTERM_DAYS} days
+     * settings, otherwise {@value #DEFAULT_PAYTERM_DAYS} days. 0 days means
+     * payable immediately.
      *
-     * @param contactDays
-     * @param templateDays
-     * @param defaultDays
+     * @param contactDays {@link #PAYTERM_UNSET} if not set
+     * @param templateDays {@link #PAYTERM_UNSET} if not set
+     * @param defaultDays {@link #PAYTERM_UNSET} if not set
      * @return the days
      */
     public static int paytermDays(int contactDays, int templateDays, int defaultDays) {
-        if (contactDays > 0) {
+        if (contactDays >= 0) {
             return contactDays;
         }
-        if (templateDays > 0) {
+        if (templateDays >= 0) {
             return templateDays;
         }
-        return defaultDays > 0 ? defaultDays : DEFAULT_PAYTERM_DAYS;
+        return defaultDays >= 0 ? defaultDays : DEFAULT_PAYTERM_DAYS;
+    }
+
+    /**
+     * @param days the payment term, 0 for payable immediately
+     * @param dueDate
+     * @return the payment terms text, e.g. "Zahlbar bis 29.11.2026" or
+     * "Zahlbar sofort ohne Abzug"
+     */
+    public static String paymentTermsText(int days, Date dueDate) {
+        return days == 0 ? Messages.ZUGFERD_PAYABLE_IMMEDIATELY.toString()
+                : Messages.ZUGFERD_PAYABLE_UNTIL + " " + new SimpleDateFormat("dd.MM.yyyy").format(dueDate);
     }
 
     /**
      * @param template an invoice template, may be null
-     * @return its payment term in days, 0 if not set
+     * @return its payment term in days (0 = payable immediately),
+     * {@link #PAYTERM_UNSET} if not set
      */
     public static int paytermOf(mpv5.db.common.DatabaseObject template) {
         Object v = template == null ? null : valueProperty(template, KEY_TEMPLATE_PAYTERM);
-        return v == null ? 0 : parseDays(String.valueOf(v));
+        return v == null ? PAYTERM_UNSET : parseTerm(String.valueOf(v));
     }
 
     /**
      * @param template the (saved) template
-     * @param days the payment term, &lt;= 0 removes it
+     * @param days the payment term (0 = payable immediately), &lt; 0 removes it
      */
     public static void savePayterm(mpv5.db.common.DatabaseObject template, int days) {
-        if (days > 0) {
+        if (days >= 0) {
             ValueProperty.addOrUpdateProperty(KEY_TEMPLATE_PAYTERM, String.valueOf(days), template);
         } else if (ValueProperty.hasProperty(template, KEY_TEMPLATE_PAYTERM)) {
             ValueProperty.deleteProperty(template, KEY_TEMPLATE_PAYTERM);
+        }
+    }
+
+    /**
+     * @param value a payment term in days, may be empty
+     * @return the days (0 = payable immediately), {@link #PAYTERM_UNSET} if
+     * empty or invalid
+     */
+    public static int parseTerm(String value) {
+        try {
+            int days = isEmpty(value) ? PAYTERM_UNSET : Integer.parseInt(value.trim());
+            return days < 0 ? PAYTERM_UNSET : days;
+        } catch (NumberFormatException e) {
+            return PAYTERM_UNSET;
         }
     }
 
@@ -371,12 +402,12 @@ public class ZugpferdFile implements Waitable {
 
     /**
      * @param issueDate
-     * @param paytermDays
+     * @param paytermDays 0 = payable immediately, &lt; 0 for the default
      * @return issue date + payment term (or {@value #DEFAULT_PAYTERM_DAYS}
      * days)
      */
     public static Date dueDate(Date issueDate, int paytermDays) {
-        return DateConverter.addDays(issueDate, paytermDays > 0 ? paytermDays : DEFAULT_PAYTERM_DAYS);
+        return DateConverter.addDays(issueDate, paytermDays >= 0 ? paytermDays : DEFAULT_PAYTERM_DAYS);
     }
 
     /**
