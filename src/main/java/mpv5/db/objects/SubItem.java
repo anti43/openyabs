@@ -1104,7 +1104,8 @@ public final class SubItem extends DatabaseObject implements Triggerable {
     public IZUGFeRDExportableItem asZugpferdSubitem(String taxExemptionReason) {
         BigDecimal quantity = quantityvalue == null ? BigDecimal.ZERO : quantityvalue;
         BigDecimal price = externalvalue == null ? BigDecimal.ZERO : externalvalue;
-        BigDecimal tax = taxpercentvalue == null ? BigDecimal.ZERO : taxpercentvalue;
+        //2 decimals: hidden decimals would split the VAT breakdown (BR-S-08)
+        BigDecimal tax = mpv5.utils.numberformat.InvoiceMath.rate(taxpercentvalue);
         String text = ZugpferdFile.plainText(description);
         String name = ZugpferdFile.plainText(getCname());
 
