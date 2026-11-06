@@ -83,8 +83,20 @@ public final class InvoiceMath {
      * @return the tax of a single line (for display only, the invoice total
      * is computed per rate, see {@link #totals(List)})
      */
+    /**
+     * VAT rates are compared and printed with 2 decimals. Stored rates can
+     * carry hidden decimals (e.g. 19.0000000001 from a calculated or imported
+     * value) - they would form a separate VAT breakdown (BR-S-08).
+     *
+     * @param taxPercent
+     * @return the rate with 2 decimals, 0 for null
+     */
+    public static BigDecimal rate(BigDecimal taxPercent) {
+        return round2(taxPercent);
+    }
+
     public static BigDecimal lineTax(BigDecimal quantity, BigDecimal price, BigDecimal discountPercent, BigDecimal taxPercent) {
-        return round2(lineNet(quantity, price, discountPercent).multiply(nz(taxPercent)).divide(HUNDRED, 9, RoundingMode.HALF_UP));
+        return round2(lineNet(quantity, price, discountPercent).multiply(rate(taxPercent)).divide(HUNDRED, 9, RoundingMode.HALF_UP));
     }
 
     /**
@@ -98,7 +110,7 @@ public final class InvoiceMath {
             this.quantity = nz(quantity);
             this.price = nz(price);
             this.discountPercent = nz(discountPercent);
-            this.taxPercent = nz(taxPercent);
+            this.taxPercent = rate(taxPercent);
         }
     }
 

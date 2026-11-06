@@ -432,6 +432,27 @@ class ZugpferdFileTest {
         assertTrue(result.getErrors().get(0).startsWith("PDF/A: The font programs"));
     }
 
+    @Test
+    void groupsTaxRatesWithHiddenDecimals() throws Exception {
+        //BR-S-08: rates stored as e.g. 19.0000000001 (shown as 19.00) gave one
+        //VAT breakdown per line instead of one for all 19 % lines
+        SubItem[] lines = {
+            line("a", "", "1", "Stk", "314.90", "19", "0"),
+            line("b", "", "1", "Stk", "251.80", "19.0000000001", "0"),
+            line("c", "", "1", "Stk", "151.80", "18.9999999999", "0"),
+            line("d", "", "1", "Stk", "10", "7.000000001", "0")
+        };
+        Map<String, String> c = company();
+        Invoice invoice = ZugpferdFile.createInvoice(invoice(), lines, ZugpferdFile.createSender(c::get), buyer(), "ref", 0, null);
+        File xml = tmp.resolve("rates.xml").toFile();
+        ZugpferdFile.writeXml(invoice, xml);
+        String s = new String(Files.readAllBytes(xml.toPath()), StandardCharsets.UTF_8);
+        String trade = s.substring(s.indexOf("<ram:ApplicableHeaderTradeSettlement"));
+        assertEquals(2, trade.split("<ram:ApplicableTradeTax>", -1).length - 1, trade);
+        assertTrue(trade.contains("<ram:BasisAmount>718.50</ram:BasisAmount>"), trade);
+        assertValid(xml);
+    }
+
     /**
      * Runs the official validator (schema, EN16931 + XRechnung schematron,
      * PDF/A-3)
