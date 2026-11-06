@@ -152,6 +152,17 @@ Im Journal Rechnungen markieren und per E-Mail versenden:
   - ZUGFeRD-Dateien sind PDFs und öffnen sich wie gewohnt.
 - **E-Mail-Server:** E-Rechnungen sind etwas größer als einfache PDFs (ZUGFeRD ist PDF/A-3 mit eingebetteten Schriften). Bei sehr vielen Mails in kurzer Zeit können E-Mail-Anbieter Versandlimits haben.
 
+### Sammelrechnungen aus der Vorgangssuche
+
+*Vorgangssuche*: Belege markieren, Rechtsklick **„Zu neuer Rechnung zusammenfassen“**. Der Assistent erstellt pro Kunde eine Rechnung mit den Positionen der markierten Belege. Optionen:
+
+- **PDF exportieren:** normales PDF aus der Rechnungsvorlage.
+- **E-Rechnungen gemäß Kundeneinstellung erzeugen (Dateien):** im Ordner des PDF-Exports.
+  - **ZUGFeRD:** das PDF mit eingebetteter XML. Es ersetzt für diese Kunden das normale PDF (gleicher Dateiname).
+  - **XRechnung / PDF + XRechnung:** die XML-Datei, dazu auf Wunsch das normale PDF.
+  - Jede Datei wird geprüft. Das Protokoll des Assistenten zeigt pro Rechnung „erstellt“, „ungültig“ (mit Fehlern) oder „nicht erstellt“ (mit fehlenden Daten). Unvollständige E-Rechnungen werden nicht geschrieben.
+- **Neue Rechnungen per E-Mail senden** (standardmäßig aus): Vor dem Erstellen fragt YaBS nach, wie viele Rechnungen verschickt werden. Der Versand läuft danach genau wie der Serienversand im Journal, also PDF / E-Rechnung gemäß Kundeneinstellung, ungültige E-Rechnungen werden übersprungen und im Protokoll aufgeführt.
+
 ### Archivierung
 
 YaBS legt versendete E-Rechnungen **nicht in einer eigenen Ablage** ab. Die
@@ -206,6 +217,7 @@ E-Rechnung (XML bzw. ZUGFeRD) das maßgebliche Dokument.
 | `mpv5.utils.export.EInvoiceDelivery` | Versandformat je Kontakt (ValueProperty `einvoice.delivery`) |
 | `mpv5.utils.export.InvoiceMail` | erzeugt und prüft die Mail-Anhänge |
 | `mpv5.utils.export.Export#mail` | Einzel- und Serienversand, wählt das Format |
+| `mpv5.utils.export.EInvoiceFiles` | E-Rechnung als Datei gemäß Kundeneinstellung (Sammelrechnung) |
 | `mpv5.mail.SimpleMail` | Versand mit mehreren Anhängen |
 | `mpv5.utils.text.Iban` | Prüfung von IBAN und BIC |
 
