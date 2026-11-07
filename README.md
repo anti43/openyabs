@@ -18,6 +18,42 @@ YaBS nutzt Apache Derby 10.17.1.0, das Java 21 voraussetzt.
 
 Vor jedem Update empfiehlt sich eine Kopie des Datenbankordners.
 
+## Moderne Ansichten für Kontakte und Produkte (Vorschau)
+
+Kontakt- und Produktansicht gibt es zusätzlich in einem modernen, skalierenden Layout (Kopfzeile mit Name und Rollen, Daten in Karten, die sich je nach Fensterbreite auf 1–3 Spalten verteilen, Vorgänge darunter). Alle Funktionen der klassischen Ansicht sind enthalten.
+
+- Einschalten: *Werkzeuge > Einstellungen > Benutzereinstellungen*, Kästchen **„Moderne Ansichten für Kontakte und Produkte“**; gilt für neu geöffnete Registerkarten.
+- Oder beim Start: `java -Dyabs.ui=modern -jar openyabs.jar` (bzw. `-Dyabs.ui=classic`); das überschreibt die Benutzereinstellung.
+
+In der modernen Ansicht stehen die Einstellungen des Reiters *E-Rechnung* (Versand, Leitweg-ID, Konto, Zahlungsziel, Skonto) in der Karte **Zahlung**; Haupt- und weitere Adressen (Rechnungs-/Lieferadressen) sind in der Karte **Anschrift** zusammengefasst. In der Vorgangsliste zeigt die Spalte **Inhalt** die Positionen jedes Angebots, Auftrags, jeder Rechnung bzw. Tätigkeitsliste in einer Zeile; der Filter durchsucht sie mit.
+
+In der modernen Produktansicht stehen alle Daten ohne Reiter in Karten (Allgemein, Preise, Einordnung, Beschreibung, Hersteller und Lieferanten, Lager, Staffelpreise, Bild und Dateien). Einkaufspreis, Aufschlag %, Verkaufspreis und Bruttopreis rechnen sich beim Tippen gegenseitig aus. Das Produktbild erscheint im Kopf. Unten stehen die Angebote, Aufträge, Rechnungen und Gutschriften mit diesem Produkt (Kontakt, Menge, Netto der Position, Positionstext) samt Summe.
+
+Alle Aktionen zum ganzen Datensatz stehen in einer Befehlsleiste oben (Speichern hervorgehoben, Löschen rechts abgesetzt, Seltenes unter *Mehr*). Tastenkürzel, solange der Fokus in der Ansicht ist:
+
+| Kürzel | Aktion |
+|---|---|
+| Strg+S | Speichern |
+| Strg+Umschalt+S | Als neu speichern |
+| Strg+R | Änderungen verwerfen |
+| Strg+P / Strg+Umschalt+P | Drucken / PDF |
+| Strg+E | E-Mail |
+| Strg+F | Vorgangsliste filtern |
+| Strg+Umschalt+F | Suchleiste links |
+| Strg+C / Strg+V | Datensatz in die Ablage / aus der Ablage (in Textfeldern und Tabellen: Text kopieren/einfügen wie gewohnt) |
+| Strg+D | Favorit an/aus |
+| Strg+Entf | Löschen (mit Rückfrage; in Textfeldern: Wort löschen) |
+| Strg+Umschalt+H | Verlauf (Kontakt) |
+| Strg+F1 | Übersicht aller Tastenkürzel |
+
+**Löschen** fragt mit einer Liste nach, was mitgelöscht wird: was in den Papierkorb geht (beim Kontakt auch alle Angebote, Aufträge, Rechnungen, Gutschriften und deren Positionen), was endgültig gelöscht wird (gespeicherte Einstellungen wie Leitweg-ID und Zahlungsbedingungen, Staffelpreise eines Produkts) und was erhalten bleibt (Adressen, Dateien, Tätigkeitslisten, Positionen mit dem Produkt). *Abbrechen* ist vorgewählt.
+
+**Alle Tastenkürzel** zeigt *Hilfe > Tastenkürzel* (Strg+F1); die Kürzel des Menüs werden dort direkt aus dem Menü gelesen. Geändert im Hauptmenü, damit nichts doppelt belegt ist und nichts überrascht: *Beenden* Strg+Q (vorher Strg+X), *Als neu speichern* Strg+Umschalt+S (vorher Strg+N), *Kopieren* in die Ablage Strg+C und *Einfügen* Strg+V (vorher Strg+N / Strg+B; in Textfeldern und Tabellen bleibt Text kopieren/einfügen), *Alle Registerkarten schließen* Strg+Umschalt+W (vorher Strg+L, das weiterhin die Log-Konsole öffnet).
+
+**Hauptfenster:** Navigation links über die volle Höhe, Registerkarten flach in einer scrollbaren Zeile (Schließen-Kreuz pro Karte), schlichtere Werkzeug- und Statusleiste; beim ersten Start passt sich die Fenstergröße dem Bildschirm an. Das gilt immer, unabhängig von der Einstellung für die modernen Ansichten.
+
+Die Auswahl trifft `YabsViewProxy` (`registerModernView`); alle anderen Ansichten bleiben unverändert.
+
 ## E-Rechnung (XRechnung / ZUGFeRD)
 
 YaBS erstellt E-Rechnungen nach EN 16931 und prüft sie mit dem offiziellen Validator.

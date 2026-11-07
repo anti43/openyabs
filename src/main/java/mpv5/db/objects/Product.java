@@ -137,6 +137,11 @@ public class Product extends DatabaseObject implements Formattable, Templateable
 
    @Override
    public JComponent getView() {
+      //modern or classic view, as chosen by the user
+      mpv5.ui.panels.DataPanel modern = mpv5.YabsViewProxy.instance().getModernView(this);
+      if (modern != null) {
+         return (JComponent) modern;
+      }
       ProductPanel p = new ProductPanel(getContext());
       return p;
    }

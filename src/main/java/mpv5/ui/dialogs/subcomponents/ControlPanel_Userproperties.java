@@ -34,6 +34,10 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
 
     public ControlPanel_Userproperties() {
         initComponents();
+        //modern views (see YabsViewProxy), the system property yabs.ui overrides it
+        modernui.setText(Messages.MODERN_UI.toString());
+        modernui.setName("modernui");
+        jPanel5.add(modernui);
         //mark invalid addresses while typing
         mpv5.utils.ui.FieldCheck.attach(mailbcc, mpv5.utils.text.TypeConversion::isMailList,
                 Messages.MAIL_BCC_TOOLTIP.toString(), Messages.MAIL_COPY_INVALID.toString());
@@ -877,6 +881,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
     private mpv5.ui.beans.LabeledTextField smtpuser;
     private javax.swing.JCheckBox supresscurrencysymbols;
     private javax.swing.JCheckBox tabs;
+    private final javax.swing.JCheckBox modernui = new javax.swing.JCheckBox();
     private mpv5.ui.beans.LabeledTextField testadress;
     private javax.swing.JCheckBox transdateX;
     private javax.swing.JCheckBox unpaidbills;
@@ -895,6 +900,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
             mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(saveformat.getName(), saveformat.getText().replace("\\", "/"));
 //            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(savedir.getName(), savedir.get_Text(false));
             mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "norecycletabs", tabs.isSelected());
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", mpv5.YabsViewProxy.MODERN_UI_SETTING, modernui.isSelected());
             mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "avoidmultipleviews", views.isSelected());
             mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "hidecolumnquantity", columnquantity.isSelected());
             mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "hideproductscolumn", hideproductscolumn.isSelected());
@@ -962,6 +968,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
 
     private void loadSettings() {
         tabs.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "norecycletabs"));
+        modernui.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", mpv5.YabsViewProxy.MODERN_UI_SETTING));
         nowarnings.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "nowarnings"));
         views.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "avoidmultipleviews"));
         unpaidbills.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hideunpaidbills"));

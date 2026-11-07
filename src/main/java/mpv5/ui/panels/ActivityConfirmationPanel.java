@@ -705,8 +705,8 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         try {
             int cid = Integer.valueOf(contact.getSelectedItem().getId());
             Contact c = (Contact) DatabaseObject.getObject(Context.getContact(), cid);
-            ContactPanel cp = new ContactPanel(Context.getContact());
-            mpv5.YabsViewProxy.instance().getIdentifierView().addOrShowTab(cp, Messages.TYPE_CONTACT.toString());
+            DataPanel cp = (DataPanel) c.getView();
+            mpv5.YabsViewProxy.instance().getIdentifierView().addOrShowTab((javax.swing.JComponent) cp, Messages.TYPE_CONTACT.toString());
             cp.setDataOwner(c, true);
         } catch (NumberFormatException e) {
             Log.Debug(this, e);
