@@ -276,20 +276,32 @@ public final class ItemService {
         } catch (NodataFoundException ex) {
             Log.Debug(ItemService.class, ex.getMessage());
         }
+        //positions saved so far: the deductions follow them
+        int next;
         if (itemType == Item.TYPE_INVOICE
                 && (source.__getInttype() == Item.TYPE_DEPOSIT || source.__getInttype() == Item.TYPE_PART_PAYMENT)) {
-            SubItem.saveModelMinus(i2, positions, true, true, source);
+            //final invoice from a deposit / part payment: the positions of the order,
+            //minus this deposit (and, if wanted, the other ones below)
+            Item order = referencedOrder(source);
+            next = 0;
+            if (order != null) {
+                next = SubItem.saveModel(i2, SubItem.toModel(copyPositions(order), true), true, true).size();
+            }
+            next += SubItem.saveModelMinus(i2, positions, true, true, source, next).size();
         } else {
-            SubItem.saveModel(i2, positions, true, true);
+            next = SubItem.saveModel(i2, positions, true, true).size();
         }
 
-        if (itemType == Item.TYPE_INVOICE && source.__getRefOrderIDS() != null) {
-            int orderIDS = 0;
-            if (source.__getInttype() == Item.TYPE_PART_PAYMENT || source.__getInttype() == Item.TYPE_DEPOSIT) {
-                orderIDS = source.__getRefOrderIDS();
-            } else if (source.__getInttype() == Item.TYPE_ORDER) {
-                orderIDS = source.__getIDS();
-            }
+        //the order whose deposits / part payments are deducted: the source itself,
+        //or the order a deposit / part payment refers to
+        int orderIDS = 0;
+        if (source.__getInttype() == Item.TYPE_ORDER) {
+            orderIDS = source.__getIDS();
+        } else if ((source.__getInttype() == Item.TYPE_PART_PAYMENT || source.__getInttype() == Item.TYPE_DEPOSIT)
+                && source.__getRefOrderIDS() != null) {
+            orderIDS = source.__getRefOrderIDS();
+        }
+        if (itemType == Item.TYPE_INVOICE && orderIDS > 0) {
             ArrayList<Item> d1 = null;
             try {
                 d1 = DatabaseObject.getObjects(Context.getDeposit(), new QueryCriteria("reforderids", orderIDS));
@@ -324,7 +336,7 @@ public final class ItemService {
                     if (Objects.equals(i.__getIDS(), source.__getIDS())) {
                         continue;
                     }
-                    SubItem.saveModelMinus(i2, SubItem.toModel(i.getSubitems()), true, true, i);
+                    next += SubItem.saveModelMinus(i2, SubItem.toModel(i.getSubitems()), true, true, i, next).size();
                 }
             }
         }
@@ -332,6 +344,22 @@ public final class ItemService {
         //the totals of the saved positions (the clone has those of the source)
         updateTotals(i2);
         return i2;
+    }
+
+    /**
+     * @return the order a deposit / part payment refers to, null if none
+     */
+    private static Item referencedOrder(Item source) {
+        Integer id = source.__getRefOrderIDS();
+        if (id == null || id <= 0) {
+            return null;
+        }
+        try {
+            return (Item) DatabaseObject.getObject(Context.getOrder(), id);
+        } catch (NodataFoundException e) {
+            Log.Debug(ItemService.class, e.getMessage());
+            return null;
+        }
     }
 
     /**
@@ -344,8 +372,8 @@ public final class ItemService {
         List<mpv5.utils.numberformat.InvoiceMath.Line> lines = new ArrayList<mpv5.utils.numberformat.InvoiceMath.Line>();
         BigDecimal discountGross = BigDecimal.ZERO;
         for (SubItem si : item.getSubitems()) {
-            lines.add(new mpv5.utils.numberformat.InvoiceMath.Line(si.__getQuantityvalue(), si.__getExternalvalue(), si.__getDiscount(), si.__getTaxpercentvalue()));
-            BigDecimal d = mpv5.utils.numberformat.InvoiceMath.lineDiscount(si.__getQuantityvalue(), si.__getExternalvalue(), si.__getDiscount());
+            lines.add(new mpv5.utils.numberformat.InvoiceMath.Line(si.effectiveQuantity(), si.__getExternalvalue(), si.__getDiscount(), si.__getTaxpercentvalue()));
+            BigDecimal d = mpv5.utils.numberformat.InvoiceMath.lineDiscount(si.effectiveQuantity(), si.__getExternalvalue(), si.__getDiscount());
             discountGross = discountGross.add(mpv5.utils.numberformat.InvoiceMath.round2(
                     d.multiply(BigDecimal.ONE.add(mpv5.utils.numberformat.InvoiceMath.rate(si.__getTaxpercentvalue()).movePointLeft(2)))));
         }
@@ -576,7 +604,7 @@ public final class ItemService {
             BigDecimal discountvalue, BigDecimal taxvalue, String description) {
         List<mpv5.utils.numberformat.InvoiceMath.Line> lines = new ArrayList<mpv5.utils.numberformat.InvoiceMath.Line>();
         for (SubItem si : positions) {
-            lines.add(new mpv5.utils.numberformat.InvoiceMath.Line(si.__getQuantityvalue(), si.__getExternalvalue(), si.__getDiscount(), si.__getTaxpercentvalue()));
+            lines.add(new mpv5.utils.numberformat.InvoiceMath.Line(si.effectiveQuantity(), si.__getExternalvalue(), si.__getDiscount(), si.__getTaxpercentvalue()));
         }
         Map<BigDecimal, BigDecimal[]> byRate = new LinkedHashMap<BigDecimal, BigDecimal[]>();
         for (Map.Entry<BigDecimal, BigDecimal[]> e : mpv5.utils.numberformat.InvoiceMath.totals(lines).byRate.entrySet()) {
@@ -610,5 +638,84 @@ public final class ItemService {
 
     private static BigDecimal nz(BigDecimal v) {
         return v == null ? BigDecimal.ZERO : v;
+    }
+
+    /**
+     * The staggered price for a new quantity, unless the user typed a price of
+     * their own
+     *
+     * @param tiers {minimum quantity, price} of the product
+     * @param normalPrice the price of the product without tier
+     * @param quantity the new quantity
+     * @param currentPrice the price of the position now
+     * @return the new price, or null to keep the current one (it is not one of
+     * the product's prices, or it is already right)
+     */
+    public static BigDecimal staggeredPrice(List<BigDecimal[]> tiers, BigDecimal normalPrice, BigDecimal quantity, BigDecimal currentPrice) {
+        if (tiers.isEmpty()) {
+            return null;
+        }
+        boolean productPrice = currentPrice == null || currentPrice.signum() == 0
+                || (normalPrice != null && normalPrice.compareTo(currentPrice) == 0);
+        for (BigDecimal[] t : tiers) {
+            productPrice |= t[1] != null && t[1].compareTo(currentPrice) == 0;
+        }
+        if (!productPrice) {
+            return null;
+        }
+        BigDecimal p = Product.priceFor(tiers, quantity, normalPrice);
+        return p == null || (currentPrice != null && p.compareTo(currentPrice) == 0) ? null : p;
+    }
+
+    /**
+     * Keeps the prices of the positions with a product at the staggered price
+     * of their quantity (column 2 quantity, 5 price, 10 product): when the
+     * quantity changes, the price follows - not if the user typed another price
+     *
+     * @param model the positions
+     */
+    public static void followStaggeredPrices(final MPTableModel model) {
+        for (javax.swing.event.TableModelListener l : model.getTableModelListeners()) {
+            if (l instanceof StaggeredPrices) {
+                return;
+            }
+        }
+        model.addTableModelListener(new StaggeredPrices(model));
+    }
+
+    private static final class StaggeredPrices implements javax.swing.event.TableModelListener {
+
+        private final MPTableModel model;
+
+        StaggeredPrices(MPTableModel model) {
+            this.model = model;
+        }
+
+        @Override
+        public void tableChanged(javax.swing.event.TableModelEvent e) {
+            if (e.getType() != javax.swing.event.TableModelEvent.UPDATE || e.getColumn() != 2
+                    || e.getFirstRow() < 0 || e.getLastRow() >= model.getRowCount()) {
+                return;
+            }
+            for (int r = e.getFirstRow(); r <= e.getLastRow(); r++) {
+                Object product = model.getValueAt(r, 10);
+                Object quantity = model.getValueAt(r, 2);
+                if (!(product instanceof Product) || !(quantity instanceof Number)) {
+                    continue;
+                }
+                Product p = (Product) product;
+                List<BigDecimal[]> tiers = new ArrayList<BigDecimal[]>();
+                for (mpv5.db.objects.ProductPrice pp : p.findProductPrices()) {
+                    tiers.add(new BigDecimal[]{pp.getMincountvalue(), pp.getExternalnetvalue()});
+                }
+                Object price = model.getValueAt(r, 5);
+                BigDecimal now = price instanceof Number ? mpv5.utils.numberformat.FormatNumber.getBigDecimal(price) : null;
+                BigDecimal next = staggeredPrice(tiers, p.__getExternalnetvalue(),
+                        mpv5.utils.numberformat.FormatNumber.getBigDecimal(quantity), now);
+                if (next != null) {
+                    model.setValueAt(next, r, 5);
+                }
+            }
+        }
     }
 }

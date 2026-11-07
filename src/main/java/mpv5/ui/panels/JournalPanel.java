@@ -930,12 +930,9 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                             d[i][11] = Item.getStatusString(Item.STATUS_PAID);
                             break;
                         case 2000:
-                            d[i][15] = FormatNumber.formatLokalCurrency(netVolume.negate());
-                            profitnet = profitnet.subtract(netVolume);
-                            profittax = profittax.subtract(taxVal);
-                            expensenet = expensenet.add(netVolume);
-                            expensetax = expensetax.add(taxVal);
-                            expensebrut = expensebrut.add(brutVolume);
+                            //unpaid expense: like an unpaid invoice, not (yet) part of
+                            //profit and expenses (cash basis), only of the volume
+                            d[i][15] = FormatNumber.formatLokalCurrency(0d);
                             d[i][11] = Item.getStatusString(Item.STATUS_IN_PROGRESS);
                             break;
                         default:

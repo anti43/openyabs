@@ -61,6 +61,18 @@ public class DynamicTableCalculator implements Runnable {
     public void setSumFunction(java.util.function.Function<javax.swing.table.TableModel, BigDecimal> sumFunction) {
         this.sumFunction = sumFunction;
     }
+    private final java.util.Map<Integer, java.util.function.Function<Object, BigDecimal>> parsers = new HashMap<Integer, java.util.function.Function<Object, BigDecimal>>();
+
+    /**
+     * Reads the cells of a column with this function (e.g. a number typed as
+     * text), instead of taking only numeric cells
+     *
+     * @param column
+     * @param parser
+     */
+    public void setColumnParser(int column, java.util.function.Function<Object, BigDecimal> parser) {
+        parsers.put(column, parser);
+    }
     private final JTable table;
     private final int[] targetColumns;
     private final String term;
@@ -89,7 +101,9 @@ public class DynamicTableCalculator implements Runnable {
         HashMap<Integer, BigDecimal> values = new HashMap<Integer, BigDecimal>();
         for (int i=0; i < table.getModel().getColumnCount(); i++) {
             Object rowVal=table.getModel().getValueAt(row, i);
-            if (rowVal instanceof Number){
+            if (parsers.containsKey(i)) {
+                values.put(i, parsers.get(i).apply(rowVal));
+            } else if (rowVal instanceof Number){
                 values.put(i, FormatNumber.getBigDecimal(rowVal));
             }
         }

@@ -127,4 +127,38 @@ class MoneyFixesTest {
         assertEquals(9.0, mpv5.db.objects.ProductlistSubItem.withPercent(10.0, -10), 0d);
         assertEquals(1.12, mpv5.db.objects.ProductlistSubItem.withPercent("0.99", 13), 0d);
     }
+
+    @Test
+    void optionalColumnFactorIsItsNumberOrOne() {
+        Locale old = Locale.getDefault();
+        try {
+            Locale.setDefault(Locale.GERMANY);
+            assertAmount("3", SubItem.optionalFactor("3"));
+            assertAmount("2.5", SubItem.optionalFactor("2,5"));
+            assertAmount("3", SubItem.optionalFactor("3 Monate"));
+            assertAmount("1", SubItem.optionalFactor(""));
+            assertAmount("1", SubItem.optionalFactor(null));
+            assertAmount("1", SubItem.optionalFactor("Option B"));
+            assertAmount("4", SubItem.optionalFactor(4));
+        } finally {
+            Locale.setDefault(old);
+        }
+    }
+
+    @Test
+    void staggeredPriceFollowsTheQuantityUnlessTypedByHand() {
+        List<BigDecimal[]> tiers = new ArrayList<BigDecimal[]>();
+        tiers.add(new BigDecimal[]{new BigDecimal("10"), new BigDecimal("9.00")});
+        BigDecimal normal = new BigDecimal("10.00");
+        //normal price, quantity reaches the tier: tier price
+        assertAmount("9.00", ItemService.staggeredPrice(tiers, normal, new BigDecimal("10"), new BigDecimal("10.00")));
+        //tier price, quantity below again: normal price
+        assertAmount("10.00", ItemService.staggeredPrice(tiers, normal, new BigDecimal("2"), new BigDecimal("9.00")));
+        //already right: nothing to do
+        assertEquals(null, ItemService.staggeredPrice(tiers, normal, new BigDecimal("12"), new BigDecimal("9")));
+        //a price of the user's own stays
+        assertEquals(null, ItemService.staggeredPrice(tiers, normal, new BigDecimal("12"), new BigDecimal("8.50")));
+        //no tiers: the price is never touched
+        assertEquals(null, ItemService.staggeredPrice(new ArrayList<BigDecimal[]>(), normal, new BigDecimal("12"), new BigDecimal("10")));
+    }
 }

@@ -664,7 +664,7 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
                     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
                             boolean hasFocus, int row, int col) {
                         try {
-                            if (table.getValueAt(row, 0).equals(BigDecimal.ZERO) && col == 4) {
+                            if ((table.getValueAt(row, 0) instanceof BigDecimal && ((BigDecimal) table.getValueAt(row, 0)).signum() == 0) && col == 4) {
                                 this.setText("---");
                             } else {
                                 this.setText(value.toString());
@@ -672,7 +672,7 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
                         } catch (Exception e) {
                         }
 
-                        if ((float) table.getValueAt(row, 5) > 1 || table.getValueAt(row, 0).equals(BigDecimal.ZERO)) {
+                        if ((float) table.getValueAt(row, 5) > 1 || (table.getValueAt(row, 0) instanceof BigDecimal && ((BigDecimal) table.getValueAt(row, 0)).signum() == 0)) {
                             this.setBackground(Color.RED);
                         } else {
                             this.setBackground(Color.WHITE);
@@ -1200,7 +1200,7 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         }
 
         private void calcStatus() {
-            if (!this.ordered.equals(BigDecimal.ZERO)) {
+            if (this.ordered.signum() != 0) {
                 this.status = this.used.divide(this.ordered, 2, RoundingMode.HALF_UP).floatValue();
             }
             this.percent = Math.round(((Float) this.status) * 100f);

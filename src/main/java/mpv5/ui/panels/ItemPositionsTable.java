@@ -499,6 +499,14 @@ public class ItemPositionsTable extends JPanel {
         taxcalculator.setRowFunction(v -> InvoiceMath.lineTax(quantity(v, optional), cell(v, 5), cell(v, 15), cell(v, 6)));
         itemMultiplier.setRowFunction(v -> InvoiceMath.lineNet(quantity(v, optional), cell(v, 5), cell(v, 15))
                 .add(InvoiceMath.lineTax(quantity(v, optional), cell(v, 5), cell(v, 15), cell(v, 6))));
+        //the optional column holds text ("3", "3 months"): its number is the factor
+        if (optional) {
+            for (DynamicTableCalculator c : new DynamicTableCalculator[]{netCalculator, discnetcalculator, discbrutcalculator, taxcalculator, itemMultiplier}) {
+                c.setColumnParser(14, SubItem::optionalFactor);
+            }
+        }
+        //the price of a product follows its staggered prices when the quantity changes
+        mpv5.handler.ItemService.followStaggeredPrices(getModel());
         taxcalculator.setSumFunction(m -> invoiceTotals(m, optional).tax);
         itemMultiplier.setSumFunction(m -> invoiceTotals(m, optional).gross);
 
@@ -589,10 +597,13 @@ public class ItemPositionsTable extends JPanel {
         List<InvoiceMath.Line> lines = new ArrayList<InvoiceMath.Line>();
         for (int r = 0; r < m.getRowCount(); r++) {
             Map<Integer, BigDecimal> v = new HashMap<Integer, BigDecimal>();
-            for (int c : new int[]{2, 5, 6, 14, 15}) {
+            for (int c : new int[]{2, 5, 6, 15}) {
                 if (c < m.getColumnCount() && m.getValueAt(r, c) instanceof Number) {
                     v.put(c, FormatNumber.getBigDecimal(m.getValueAt(r, c)));
                 }
+            }
+            if (optional && 14 < m.getColumnCount()) {
+                v.put(14, SubItem.optionalFactor(m.getValueAt(r, 14)));
             }
             lines.add(new InvoiceMath.Line(quantity(v, optional), cell(v, 5), cell(v, 15), cell(v, 6)));
         }

@@ -730,7 +730,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
         Map<String, BigDecimal> taxGroups = new java.util.LinkedHashMap<String, BigDecimal>();
         java.util.List<mpv5.utils.numberformat.InvoiceMath.Line> lines = new java.util.ArrayList<mpv5.utils.numberformat.InvoiceMath.Line>();
         for (SubItem s : getSubitems()) {
-            lines.add(new mpv5.utils.numberformat.InvoiceMath.Line(s.__getQuantityvalue(), s.__getExternalvalue(), s.__getDiscount(), s.__getTaxpercentvalue()));
+            lines.add(new mpv5.utils.numberformat.InvoiceMath.Line(s.effectiveQuantity(), s.__getExternalvalue(), s.__getDiscount(), s.__getTaxpercentvalue()));
         }
         for (Map.Entry<BigDecimal, BigDecimal[]> rate : mpv5.utils.numberformat.InvoiceMath.totals(lines).byRate.entrySet()) {
             taxGroups.put(rate.getKey().stripTrailingZeros().toPlainString(), rate.getValue()[1]);
