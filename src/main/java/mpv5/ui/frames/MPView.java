@@ -1033,7 +1033,6 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
      */
     @Override
     public int addTab(JComponent tab, String name) {
-        mpv5.ui.modern.ClassicPolish.applyLater(tab);
         JScrollPane spane = new JScrollPane(tab);
         //flat: the tab pane draws the frame
         spane.setBorder(javax.swing.BorderFactory.createEmptyBorder());

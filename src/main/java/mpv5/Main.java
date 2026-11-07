@@ -766,9 +766,6 @@ public class Main implements Runnable {
                     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                 }
                 LookAndFeelAddons.setAddon(LookAndFeelAddons.getBestMatchAddonClassName());
-                if (mpv5.ui.modern.YabsLookAndFeel.isActive()) {
-                    mpv5.ui.modern.ClassicPolish.hookWindows();
-                }
 
             } catch (Exception exe) {
                 try {
