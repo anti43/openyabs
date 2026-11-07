@@ -717,10 +717,24 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
         java.awt.Dimension screen = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
         mainPanel.setPreferredSize(new java.awt.Dimension(screen.width * 85 / 100, screen.height * 75 / 100));
 
-        //navigation buttons: flat, highlighted under the mouse
-        for (javax.swing.JPanel nav : new javax.swing.JPanel[]{nav_contacts, nav_accounting, nav_products, nav_extras, nav_simple_inner}) {
+        //navigation buttons: flat, full width, a line between the entries, highlighted under the mouse
+        javax.swing.JPanel[] navs = {nav_contacts, nav_accounting, nav_products, nav_extras, nav_simple_inner};
+        javax.swing.JPanel[] parents = {parent_nav_contacts, parent_nav_accounting, parent_nav_products, parent_nav_extras, parent_nav_simple};
+        for (int i = 0; i < navs.length; i++) {
+            javax.swing.JPanel nav = navs[i];
             nav.setBackground(mpv5.ui.modern.ModernTheme.cardBackground());
+            if (nav.getLayout() instanceof java.awt.GridLayout) {
+                ((java.awt.GridLayout) nav.getLayout()).setVgap(0);
+                ((java.awt.GridLayout) nav.getLayout()).setHgap(0);
+            }
             flatButtons(nav);
+            //the buttons take the width of the navigation instead of a fixed width in the middle
+            if (parents[i] != null && nav.getParent() == parents[i]) {
+                parents[i].removeAll();
+                parents[i].setLayout(new BorderLayout());
+                parents[i].setBackground(mpv5.ui.modern.ModernTheme.cardBackground());
+                parents[i].add(nav, BorderLayout.NORTH);
+            }
         }
 
         //toolbar: no fixed height, flat, separated by a line
@@ -749,7 +763,14 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
             if (x instanceof javax.swing.AbstractButton && !(x instanceof javax.swing.JToggleButton)) {
                 final javax.swing.AbstractButton b = (javax.swing.AbstractButton) x;
                 b.setContentAreaFilled(false);
-                b.setBorderPainted(false);
+                b.setBorderPainted(true);
+                //a line under every entry separates them
+                b.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                        javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, mpv5.ui.modern.ModernTheme.border()),
+                        javax.swing.BorderFactory.createEmptyBorder(mpv5.ui.modern.ModernTheme.px(6), mpv5.ui.modern.ModernTheme.px(8),
+                                mpv5.ui.modern.ModernTheme.px(6), mpv5.ui.modern.ModernTheme.px(8))));
+                b.setPreferredSize(null);
+                b.setMaximumSize(null);
                 b.setFocusPainted(false);
                 b.setOpaque(true);
                 b.setBackground(mpv5.ui.modern.ModernTheme.cardBackground());

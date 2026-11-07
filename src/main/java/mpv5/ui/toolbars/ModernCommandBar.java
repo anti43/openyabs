@@ -219,6 +219,10 @@ public class ModernCommandBar extends JPanel {
         right.add(delete);
         add(right, BorderLayout.EAST);
 
+        //all elements of the bar in one height
+        uniformHeight(left);
+        uniformHeight(right);
+
         shortcut(SAVE, () -> {
             if (editable) {
                 RecordActions.save(view);
@@ -323,6 +327,43 @@ public class ModernCommandBar extends JPanel {
     }
 
     /**
+     * @return the height of all elements in the bar: room for a 22px icon
+     */
+    public static int barHeight() {
+        return Math.max(ModernTheme.px(34), 22 + ModernTheme.px(10));
+    }
+
+    /**
+     * Gives the buttons, combo boxes ... in the container the height of the
+     * bar; icon-only buttons become square
+     */
+    private static void uniformHeight(java.awt.Container c) {
+        for (java.awt.Component x : c.getComponents()) {
+            if (x instanceof JSeparator || x instanceof javax.swing.Box.Filler) {
+                continue;
+            }
+            if (x instanceof AbstractButton || x instanceof mpv5.ui.modern.SplitButton
+                    || x instanceof mpv5.ui.beans.PrinitingComboBox || x instanceof javax.swing.JComboBox) {
+                fixHeight((JComponent) x);
+            } else if (x instanceof java.awt.Container) {
+                uniformHeight((java.awt.Container) x);
+            }
+        }
+    }
+
+    private static void fixHeight(JComponent x) {
+        int h = barHeight();
+        x.setPreferredSize(null);
+        Dimension d = x.getPreferredSize();
+        boolean iconOnly = x instanceof AbstractButton && ((AbstractButton) x).getIcon() != null
+                && (((AbstractButton) x).getText() == null || ((AbstractButton) x).getText().isEmpty());
+        Dimension size = new Dimension(iconOnly ? h : d.width, h);
+        x.setPreferredSize(size);
+        x.setMinimumSize(new Dimension(Math.min(size.width, ModernTheme.px(24)), h));
+        x.setMaximumSize(new Dimension(Integer.MAX_VALUE, h));
+    }
+
+    /**
      * Binds a key to an action while the focus is in the view. Keys the
      * focused component uses itself (e.g. Ctrl+C in a text field) stay with
      * the component.
@@ -366,6 +407,9 @@ public class ModernCommandBar extends JPanel {
             }
         }
         extras.add(c);
+        if (c instanceof JComponent) {
+            uniformHeight(extras);
+        }
     }
 
     /**
