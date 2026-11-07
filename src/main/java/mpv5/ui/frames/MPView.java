@@ -599,6 +599,14 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
         shortcuts.setAccelerator(mpv5.ui.toolbars.ModernCommandBar.HELP);
         shortcuts.addActionListener(e -> mpv5.ui.dialogs.ShortcutsDialog.show(getFrame().getRootPane()));
         helpmenu.add(shortcuts, 0);
+        //View > Layout > Modern
+        javax.swing.JMenuItem modernLaf = new javax.swing.JMenuItem(Messages.LAF_MODERN.toString());
+        modernLaf.addActionListener(e -> {
+            Main.setLaF(mpv5.ui.modern.YabsLookAndFeel.class.getName());
+            User.getCurrentUser().setLaf(mpv5.ui.modern.YabsLookAndFeel.class.getName());
+            User.getCurrentUser().save();
+        });
+        jMenu2.add(modernLaf, 0);
 //        jMenuItem24.setEnabled(!LocalSettings.getBooleanProperty(LocalSettings.OFFICE_REMOTE));
 
         nav_outlookbar.setAnimated(navBarAnimated);
@@ -694,6 +702,12 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
         int gap = mpv5.ui.modern.ModernTheme.px(6);
         java.awt.Color bg = mpv5.ui.modern.ModernTheme.background();
         java.awt.Color line = mpv5.ui.modern.ModernTheme.border();
+        //colors and borders follow the look and feel (set again after it changed)
+        UIManager.addPropertyChangeListener(e -> {
+            if ("lookAndFeel".equals(e.getPropertyName())) {
+                javax.swing.SwingUtilities.invokeLater(this::applyFrameStyle);
+            }
+        });
 
         naviPanel.removeAll();
         naviPanel.setLayout(new BorderLayout());
@@ -727,40 +741,77 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
         javax.swing.JPanel[] parents = {parent_nav_contacts, parent_nav_accounting, parent_nav_products, parent_nav_extras, parent_nav_simple};
         for (int i = 0; i < navs.length; i++) {
             javax.swing.JPanel nav = navs[i];
-            nav.setBackground(mpv5.ui.modern.ModernTheme.cardBackground());
             if (nav.getLayout() instanceof java.awt.GridLayout) {
                 ((java.awt.GridLayout) nav.getLayout()).setVgap(0);
                 ((java.awt.GridLayout) nav.getLayout()).setHgap(0);
             }
-            flatButtons(nav);
+            hoverButtons(nav);
             //the buttons take the width of the navigation instead of a fixed width in the middle
             if (parents[i] != null && nav.getParent() == parents[i]) {
                 parents[i].removeAll();
                 parents[i].setLayout(new BorderLayout());
-                parents[i].setBackground(mpv5.ui.modern.ModernTheme.cardBackground());
                 parents[i].add(nav, BorderLayout.NORTH);
             }
         }
-
-        //toolbar: no fixed height, flat, separated by a line
         mainToolbar.setPreferredSize(null);
         mainToolbar.setOpaque(true);
-        mainToolbar.setBackground(mpv5.ui.modern.ModernTheme.cardBackground());
-        mainToolbar.setBorder(javax.swing.BorderFactory.createCompoundBorder(
-                javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, line),
-                javax.swing.BorderFactory.createEmptyBorder(gap / 2, gap, gap / 2, gap)));
         for (java.awt.Component c : mainToolbar.getComponents()) {
             if (c instanceof javax.swing.AbstractButton) {
                 ((javax.swing.AbstractButton) c).setMargin(new java.awt.Insets(gap / 2, gap, gap / 2, gap));
             }
         }
         statusPanel.setOpaque(true);
+        statusPanel.setPreferredSize(null);
+        statusPanel.setMaximumSize(null);
+        applyFrameStyle();
+    }
+
+    /**
+     * Colors and borders of the main window, from the current look and feel
+     */
+    private void applyFrameStyle() {
+        int gap = mpv5.ui.modern.ModernTheme.px(6);
+        java.awt.Color bg = mpv5.ui.modern.ModernTheme.background();
+        java.awt.Color line = mpv5.ui.modern.ModernTheme.border();
+        naviPanel.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 0, 1, line));
+        tabpanePanel.setBackground(bg);
+        mainPanel.setBackground(bg);
+        javax.swing.JPanel[] navs = {nav_contacts, nav_accounting, nav_products, nav_extras, nav_simple_inner};
+        javax.swing.JPanel[] parents = {parent_nav_contacts, parent_nav_accounting, parent_nav_products, parent_nav_extras, parent_nav_simple};
+        for (int i = 0; i < navs.length; i++) {
+            navs[i].setBackground(mpv5.ui.modern.ModernTheme.cardBackground());
+            if (parents[i] != null) {
+                parents[i].setBackground(mpv5.ui.modern.ModernTheme.cardBackground());
+            }
+            flatButtons(navs[i]);
+        }
+
+        //toolbar: no fixed height, flat, separated by a line
+        mainToolbar.setBackground(mpv5.ui.modern.ModernTheme.cardBackground());
+        mainToolbar.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, line),
+                javax.swing.BorderFactory.createEmptyBorder(gap / 2, gap, gap / 2, gap)));
         statusPanel.setBackground(mpv5.ui.modern.ModernTheme.cardBackground());
         statusPanel.setBorder(javax.swing.BorderFactory.createCompoundBorder(
                 javax.swing.BorderFactory.createMatteBorder(1, 0, 0, 0, line),
                 javax.swing.BorderFactory.createEmptyBorder(2, gap, 2, gap)));
-        statusPanel.setPreferredSize(null);
-        statusPanel.setMaximumSize(null);
+    }
+
+    /**
+     * Highlights the navigation buttons under the mouse (once)
+     */
+    private static void hoverButtons(java.awt.Container c) {
+        for (java.awt.Component x : c.getComponents()) {
+            if (x instanceof javax.swing.AbstractButton && !(x instanceof javax.swing.JToggleButton)) {
+                final javax.swing.AbstractButton b = (javax.swing.AbstractButton) x;
+                b.setRolloverEnabled(true);
+                b.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
+                b.getModel().addChangeListener(e -> b.setBackground(b.getModel().isRollover()
+                        ? mpv5.ui.modern.ModernTheme.accentSoft() : mpv5.ui.modern.ModernTheme.cardBackground()));
+            } else if (x instanceof java.awt.Container) {
+                hoverButtons((java.awt.Container) x);
+            }
+        }
     }
 
     private static void flatButtons(java.awt.Container c) {
@@ -780,10 +831,6 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
                 b.setOpaque(true);
                 b.setBackground(mpv5.ui.modern.ModernTheme.cardBackground());
                 b.setForeground(mpv5.ui.modern.ModernTheme.foreground());
-                b.setRolloverEnabled(true);
-                b.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
-                b.getModel().addChangeListener(e -> b.setBackground(b.getModel().isRollover()
-                        ? mpv5.ui.modern.ModernTheme.accentSoft() : mpv5.ui.modern.ModernTheme.cardBackground()));
             } else if (x instanceof java.awt.Container) {
                 flatButtons((java.awt.Container) x);
             }
@@ -986,6 +1033,7 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
      */
     @Override
     public int addTab(JComponent tab, String name) {
+        mpv5.ui.modern.ClassicPolish.applyLater(tab);
         JScrollPane spane = new JScrollPane(tab);
         //flat: the tab pane draws the frame
         spane.setBorder(javax.swing.BorderFactory.createEmptyBorder());
@@ -2496,8 +2544,8 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
     }//GEN-LAST:event_jButton18ActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        Main.setLaF(null);
-        User.getCurrentUser().setLaf(UIManager.getSystemLookAndFeelClassName());
+        Main.setLaF(Main.SYSTEM_LAF);
+        User.getCurrentUser().setLaf(Main.SYSTEM_LAF);
         User.getCurrentUser().save();
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 

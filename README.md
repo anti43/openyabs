@@ -56,7 +56,13 @@ In der modernen Belegansicht stehen Kunde, Belegdaten, Termine, Freitext, Dateie
 
 **Hauptfenster:** Navigation links über die volle Höhe, Registerkarten flach in einer scrollbaren Zeile (Schließen-Kreuz pro Karte), schlichtere Werkzeug- und Statusleiste; beim ersten Start passt sich die Fenstergröße dem Bildschirm an. Das gilt immer, unabhängig von der Einstellung für die modernen Ansichten.
 
-Die Auswahl trifft `YabsViewProxy` (`registerModernView`); alle anderen Ansichten bleiben unverändert.
+**Modernes Erscheinungsbild für alles andere:** Mit eingeschalteten modernen Ansichten verwendet YaBS das Erscheinungsbild *YaBS Modern* (auf Basis von [FlatLaf](https://www.formdev.com/flatlaf/), Apache-2.0), damit Listen, Einstellungen, Dialoge, Menüs und die übrigen klassischen Masken zu den modernen Ansichten passen: abgerundete Felder und Schaltflächen mit leichtem Verlauf und Schatten, Popups und Menüs mit Schatten, Tabellen mit Zeilenlinien und größerer Zeilenhöhe, fette Abschnittsüberschriften. Alte Rahmen (geätzt, Relief, harte Linien) der klassischen Masken werden dabei durch abgerundete ersetzt, ohne die Masken selbst zu ändern.
+
+- Gilt, solange kein anderes Erscheinungsbild gewählt ist (ein früher gespeichertes System-/Metal-Erscheinungsbild zählt als „nicht gewählt“).
+- *Ansicht > Layout > Modern* wählt es ausdrücklich, *Ansicht > Layout > System* schaltet zurück auf das Erscheinungsbild des Betriebssystems; andere Erscheinungsbilder wie bisher in den Benutzereinstellungen.
+- Farben und Größen stehen in `src/main/resources/mpv5/ui/modern/YabsLookAndFeel.properties`.
+
+Die Auswahl der Ansichten trifft `YabsViewProxy` (`registerModernView`); alle anderen Ansichten bleiben unverändert.
 
 ## E-Rechnung (XRechnung / ZUGFeRD)
 

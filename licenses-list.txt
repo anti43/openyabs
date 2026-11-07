@@ -42,3 +42,4 @@ httpcore-4.0.1.jar;Apache HttpCore;Apache License Version 2.0;The Apache Softwar
 httpcore-nio-4.0.1.jar;Apache HttpCore;Apache License Version 2.0;The Apache Software Foundation
 commons-codec-1.3.jar;Apache Commons Codec;Apache License Version 2.0;The Apache Software Foundation
 tinylaf-1_4;A (mostly painted) Look and Feel;GNU Lesser General Public License;Hans Bickel  
+flatlaf-3.5.4.jar;FlatLaf - Swing Look and Feel;Apache License Version 2.0;FormDev Software GmbH

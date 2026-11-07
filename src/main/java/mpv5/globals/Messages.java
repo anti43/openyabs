@@ -557,6 +557,7 @@ public enum Messages {
     ITEM_CREATE("Create"),
     ITEM_MORE_DOCUMENTS("Documents"),
     ITEM_NEW("New document"),
+    LAF_MODERN("Modern"),
     MODERN_UI("Modern views for contacts, products and documents (preview, takes effect for newly opened tabs)");
 
 

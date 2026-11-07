@@ -708,11 +708,48 @@ public class Main implements Runnable {
     }
 
     /**
-     *
-     * @param lafname
+     * The user explicitly chose the look and feel of the system (View &gt;
+     * Layout &gt; System)
      */
-    public static void setLaF(final String lafname) {
+    public static final String SYSTEM_LAF = "system";
+
+    /**
+     * The look and feel to use: the user's choice; if the user did not choose
+     * one (or only the default of the platform), the modern look and feel when
+     * the modern views are enabled. {@link #SYSTEM_LAF} always means the look
+     * and feel of the system.
+     *
+     * @param lafname the user's look and feel (class name), may be empty
+     * @return the class name of the look and feel to use, or null for the
+     * system look and feel
+     */
+    public static String effectiveLaF(String lafname) {
+        if (SYSTEM_LAF.equals(lafname)) {
+            return null;
+        }
+        //no choice (or only the default of the platform): modern if enabled
+        if (lafname == null || lafname.trim().length() == 0
+                || lafname.equals(UIManager.getSystemLookAndFeelClassName())
+                || lafname.equals(UIManager.getCrossPlatformLookAndFeelClassName())) {
+            try {
+                if (YabsViewProxy.instance().isModernUi()) {
+                    return mpv5.ui.modern.YabsLookAndFeel.class.getName();
+                }
+            } catch (Exception e) {
+                Log.Debug(Main.class, e);
+            }
+        }
+        return lafname;
+    }
+
+    /**
+     *
+     * @param lafname0
+     */
+    public static void setLaF(final String lafname0) {
         if (!Main.nolf && !HEADLESS) {
+            mpv5.ui.modern.YabsLookAndFeel.register();
+            final String lafname = effectiveLaF(lafname0);
             try {
                 if (lafname != null && lafname.trim().length() > 0) {
                     try {
@@ -729,6 +766,9 @@ public class Main implements Runnable {
                     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                 }
                 LookAndFeelAddons.setAddon(LookAndFeelAddons.getBestMatchAddonClassName());
+                if (mpv5.ui.modern.YabsLookAndFeel.isActive()) {
+                    mpv5.ui.modern.ClassicPolish.hookWindows();
+                }
 
             } catch (Exception exe) {
                 try {
