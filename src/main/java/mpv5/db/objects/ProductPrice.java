@@ -42,7 +42,7 @@ public class ProductPrice extends DatabaseObject {
 
     @Override
     public JComponent getView() {
-        return new ProductPanel(getProduct());
+        return mpv5.YabsViewProxy.instance().productView(getProduct());
     }
 
     @Override

@@ -31,6 +31,8 @@ public class Avatar extends JComponent {
 
     private static final long serialVersionUID = 1L;
     private String initials = "";
+    private java.awt.Image image;
+    private boolean square;
 
     public Avatar() {
         int d = ModernTheme.px(48);
@@ -45,6 +47,22 @@ public class Avatar extends JComponent {
     public void setName(String name) {
         super.setName(name);
         initials = initials(name);
+        repaint();
+    }
+
+    /**
+     * @param image shown instead of the initials, null for the initials
+     */
+    public void setImage(java.awt.Image image) {
+        this.image = image;
+        repaint();
+    }
+
+    /**
+     * @param square a rounded square instead of a circle (e.g. products)
+     */
+    public void setSquare(boolean square) {
+        this.square = square;
         repaint();
     }
 
@@ -74,8 +92,29 @@ public class Avatar extends JComponent {
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         int d = Math.min(getWidth(), getHeight()) - 1;
+        java.awt.Shape shape = square
+                ? new java.awt.geom.RoundRectangle2D.Float(0, 0, d, d, d / 4f, d / 4f)
+                : new java.awt.geom.Ellipse2D.Float(0, 0, d, d);
+        if (image != null && image.getWidth(null) > 0) {
+            g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            g2.setColor(ModernTheme.cardBackground());
+            g2.fill(shape);
+            g2.clip(shape);
+            //fit the whole image into the badge
+            int w = image.getWidth(null);
+            int h = image.getHeight(null);
+            double f = Math.min((double) d / w, (double) d / h);
+            int iw = (int) Math.round(w * f);
+            int ih = (int) Math.round(h * f);
+            g2.drawImage(image, (d - iw) / 2, (d - ih) / 2, iw, ih, null);
+            g2.setClip(null);
+            g2.setColor(ModernTheme.border());
+            g2.draw(shape);
+            g2.dispose();
+            return;
+        }
         g2.setColor(ModernTheme.accent());
-        g2.fillOval(0, 0, d, d);
+        g2.fill(shape);
         g2.setColor(java.awt.Color.WHITE);
         g2.setFont(getFont());
         FontMetrics fm = g2.getFontMetrics();

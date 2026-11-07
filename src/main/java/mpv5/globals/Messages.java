@@ -489,7 +489,28 @@ public enum Messages {
     CONTACT_SECTION_DOCUMENTS("Documents"),
     CONTACT_DETAILS("Details"),
     CONTACT_EINVOICE_HINT("E-invoice"),
-    MODERN_UI("Modern contact view (preview, takes effect for newly opened tabs)");
+    PRODUCT_USAGE_CONTACT("Contact"),
+    PRODUCT_USAGE_QUANTITY("Quantity"),
+    PRODUCT_USAGE_SUMMARY("%d documents · quantity %s · net %s"),
+    PRODUCT_SECTION_GENERAL("General"),
+    PRODUCT_SECTION_PRICES("Prices"),
+    PRODUCT_SECTION_CLASSIFICATION("Classification"),
+    PRODUCT_SECTION_DESCRIPTION("Description"),
+    PRODUCT_SECTION_SUPPLIERS("Manufacturer and suppliers"),
+    PRODUCT_SECTION_STOCK("Inventory"),
+    PRODUCT_SECTION_TIERS("Staggered prices"),
+    PRODUCT_SECTION_IMAGE("Image and files"),
+    PRODUCT_MARKUP("Markup %"),
+    PRODUCT_GROSS("Gross price"),
+    PRODUCT_ADD_SUPPLIER("Add supplier"),
+    PRODUCT_SUPPLIER("Supplier"),
+    PRODUCT_DEFAULT_SUPPLIER("Default"),
+    PRODUCT_ADD_TIER("Add price"),
+    PRODUCT_TIER_FROM("From quantity"),
+    PRODUCT_TIER_PRICE("Price (net)"),
+    PRODUCT_SET_IMAGE("Use as product image"),
+    PRODUCT_NO_IMAGE("No image - add a picture file and use it as product image"),
+    MODERN_UI("Modern views for contacts and products (preview, takes effect for newly opened tabs)");
 
 
     /**

@@ -2593,11 +2593,11 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
     }//GEN-LAST:event_jButton11ActionPerformed
 
     private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
-        addTab(new ProductPanel(Context.getProduct(), Product.TYPE_SERVICE), Messages.NEW_SERVICE);
+        addTab(mpv5.YabsViewProxy.instance().newProductView(Product.TYPE_SERVICE), Messages.NEW_SERVICE);
     }//GEN-LAST:event_jButton12ActionPerformed
 
     private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
-        addTab(new ProductPanel(Context.getProduct(), Product.TYPE_PRODUCT), Messages.NEW_PRODUCT);
+        addTab(mpv5.YabsViewProxy.instance().newProductView(Product.TYPE_PRODUCT), Messages.NEW_PRODUCT);
     }//GEN-LAST:event_jButton13ActionPerformed
 
     private void errorlabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_errorlabelMouseClicked
@@ -2898,7 +2898,7 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     }//GEN-LAST:event_sjournalActionPerformed
 
     private void sproductsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sproductsActionPerformed
-        addTab(new ProductPanel(Context.getProduct(), Product.TYPE_PRODUCT), Messages.NEW_PRODUCT);
+        addTab(mpv5.YabsViewProxy.instance().newProductView(Product.TYPE_PRODUCT), Messages.NEW_PRODUCT);
     }//GEN-LAST:event_sproductsActionPerformed
 
     private void sinvoicesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sinvoicesActionPerformed

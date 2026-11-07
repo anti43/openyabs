@@ -115,7 +115,7 @@ import mpv5.utils.ui.TextFieldUtils;
  * {@link DatabaseObject#getPanelData(DataPanel)}), so they must keep their
  * names.
  */
-public class ModernContactPanel extends JPanel implements DataPanel, javax.swing.Scrollable {
+public class ModernContactPanel extends ModernDataPanel {
 
     private static final long serialVersionUID = 1L;
     private final java.util.ResourceBundle bundle = LanguageManager.getBundle();
@@ -199,20 +199,7 @@ public class ModernContactPanel extends JPanel implements DataPanel, javax.swing
     private final JTable proptable = new MPTable(this);
     private final JTable filetable = new MPTable(this);
     //documents of the contact
-    private final JTable dataTable = new MPTable(this) {
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        public Component prepareRenderer(javax.swing.table.TableCellRenderer renderer, int row, int column) {
-            Component c = super.prepareRenderer(renderer, row, column);
-            if (c instanceof JComponent) {
-                //the details line is often longer than the column
-                Object v = getValueAt(row, column);
-                ((JComponent) c).setToolTipText(v == null || String.valueOf(v).isEmpty() ? null : String.valueOf(v));
-            }
-            return c;
-        }
-    };
+    private final JTable dataTable = tooltipTable(this);
     private final JPopupMenu itemTablePopup;
     private final JTextField filter = new JTextField(14);
     private final Map<Related, ChipToggle> relatedButtons = new EnumMap<Related, ChipToggle>(Related.class);
@@ -269,7 +256,6 @@ public class ModernContactPanel extends JPanel implements DataPanel, javax.swing
     public ModernContactPanel(Context context) {
         super(new BorderLayout());
         setName("contactpanel");
-        setBackground(ModernTheme.background());
 
         sp = new SearchPanel(context, this);
         dataOwner = new Contact();
@@ -289,22 +275,8 @@ public class ModernContactPanel extends JPanel implements DataPanel, javax.swing
         }
 
         createRelatedPanel();
-        split = new JSplitPane(JSplitPane.VERTICAL_SPLIT, tabs, relatedPanel);
-        split.setResizeWeight(0.62);
-        split.setBorder(BorderFactory.createEmptyBorder(0, ModernTheme.px(8), ModernTheme.px(8), ModernTheme.px(8)));
-        split.setOpaque(false);
-        split.setContinuousLayout(true);
+        split = split(tabs, relatedPanel);
         content.add(split, BorderLayout.CENTER);
-        //initially about 60% for the contact data, 40% for the documents
-        split.addComponentListener(new java.awt.event.ComponentAdapter() {
-            @Override
-            public void componentResized(java.awt.event.ComponentEvent e) {
-                if (split.getHeight() > 0) {
-                    split.removeComponentListener(this);
-                    split.setDividerLocation(0.6);
-                }
-            }
-        });
 
         add(content, BorderLayout.CENTER);
         add(leftpane, BorderLayout.WEST);
@@ -330,44 +302,6 @@ public class ModernContactPanel extends JPanel implements DataPanel, javax.swing
     }
 
     // <editor-fold defaultstate="collapsed" desc="Layout">
-    private static String text(String key) {
-        try {
-            return LanguageManager.getBundle().getString(key);
-        } catch (Exception e) {
-            return key;
-        }
-    }
-
-    private static LabeledTextField field() {
-        return ModernTheme.plain(new LabeledTextField());
-    }
-
-    private static JButton action(String label) {
-        JButton b = new JButton(label);
-        b.setFocusable(false);
-        return b;
-    }
-
-    private static JButton link(String label, String icon) {
-        JButton b = new JButton(label);
-        java.net.URL url = icon == null ? null : ModernContactPanel.class.getResource(icon);
-        if (url != null) {
-            b.setIcon(new javax.swing.ImageIcon(url));
-        }
-        b.setFocusable(false);
-        return b;
-    }
-
-    private static JScrollPane scroll(JComponent c) {
-        JScrollPane s = new JScrollPane(c);
-        s.setBorder(BorderFactory.createEmptyBorder());
-        //the view background instead of the content color of the tabbed pane
-        s.getViewport().setOpaque(true);
-        s.getViewport().setBackground(ModernTheme.background());
-        s.getVerticalScrollBar().setUnitIncrement(ModernTheme.px(16));
-        return s;
-    }
-
     private void initFields() {
         number.setEnabled(false);
         number.setFocusable(false);
@@ -404,7 +338,6 @@ public class ModernContactPanel extends JPanel implements DataPanel, javax.swing
         ModernTheme.roomy(einvoiceLeitweg);
         ModernTheme.roomy(einvoiceSkontoPercent);
         ModernTheme.roomy(einvoiceSkontoDays);
-        ModernTheme.roomy(filter);
         notes.setLineWrap(true);
         notes.setWrapStyleWord(true);
         //tab moves on to the next field instead of inserting a tab
@@ -600,16 +533,7 @@ public class ModernContactPanel extends JPanel implements DataPanel, javax.swing
         return padded(card);
     }
 
-    private static JComponent padded(JComponent c) {
-        JPanel p = new JPanel(new BorderLayout());
-        p.setBackground(ModernTheme.background());
-        p.setBorder(ModernTheme.padding(12, 12));
-        p.add(c, BorderLayout.CENTER);
-        return p;
-    }
-
     private void createRelatedPanel() {
-        ModernTheme.style(dataTable);
         dataTable.setAutoCreateRowSorter(true);
         dataTable.setDragEnabled(true);
         ((MPTable) dataTable).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) dataTable, this));
@@ -636,22 +560,7 @@ public class ModernContactPanel extends JPanel implements DataPanel, javax.swing
         }
 
         filter.setToolTipText(text("ContactPanel.filterme._Label"));
-        filter.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                applyFilter();
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                applyFilter();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                applyFilter();
-            }
-        });
+        liveFilter(dataTable, filter);
         JPanel filterPanel = new JPanel(new BorderLayout(ModernTheme.px(6), 0));
         filterPanel.setOpaque(false);
         filterPanel.add(ModernTheme.fieldLabel(text("ContactPanel.filterme._Label")), BorderLayout.WEST);
@@ -755,24 +664,16 @@ public class ModernContactPanel extends JPanel implements DataPanel, javax.swing
         if (r == null) {
             relatedGroup.clearSelection();
             dataTable.setModel(new MPTableModel());
-            setupSorter();
+            resetFilter(dataTable, filter);
             return;
         }
         relatedButtons.get(r).setSelected(true);
         dataTable.setModel(ContactService.loadRelated(dataOwner, r));
         TableFormat.stripFirstColumn(dataTable);
-        int details = dataTable.getColumnModel().getColumnCount() - 1;
-        if (r != Related.PRODUCTS && details > 0) {
-            //the details get the space, the other columns what they need
-            for (int i = 0; i < details; i++) {
-                if (dataTable.getColumnModel().getColumn(i).getMaxWidth() > 0) {
-                    dataTable.getColumnModel().getColumn(i).setPreferredWidth(ModernTheme.px(100));
-                }
-            }
-            dataTable.getColumnModel().getColumn(details).setPreferredWidth(ModernTheme.px(900));
-            dataTable.getColumnModel().getColumn(details).setCellRenderer(new DetailsRenderer());
+        if (r != Related.PRODUCTS) {
+            detailsColumn(dataTable);
         }
-        setupSorter();
+        resetFilter(dataTable, filter);
         if (r.isItem()) {
             //newest first
             dataTable.getRowSorter().toggleSortOrder(2);
@@ -780,41 +681,7 @@ public class ModernContactPanel extends JPanel implements DataPanel, javax.swing
         }
     }
 
-    private void setupSorter() {
-        dataTable.setRowSorter(new TableRowSorter<TableModel>(dataTable.getModel()));
-        applyFilter();
-    }
-
-    @SuppressWarnings("unchecked")
-    private void applyFilter() {
-        if (!(dataTable.getRowSorter() instanceof TableRowSorter)) {
-            return;
-        }
-        TableRowSorter<TableModel> sorter = (TableRowSorter<TableModel>) dataTable.getRowSorter();
-        String t = filter.getText();
-        sorter.setRowFilter(t == null || t.trim().isEmpty()
-                ? null : RowFilter.<TableModel, Integer>regexFilter("(?i)" + Pattern.quote(t.trim())));
-    }
     // </editor-fold>
-
-    /**
-     * The details column: muted, with some space to the column before
-     */
-    private static final class DetailsRenderer extends javax.swing.table.DefaultTableCellRenderer {
-
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-                boolean hasFocus, int row, int column) {
-            Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            setBorder(BorderFactory.createEmptyBorder(0, ModernTheme.px(12), 0, ModernTheme.px(4)));
-            if (!isSelected) {
-                c.setForeground(ModernTheme.blend(table.getForeground(), table.getBackground(), 0.3f));
-            }
-            return c;
-        }
-    }
 
     // <editor-fold defaultstate="collapsed" desc="Actions">
     private void openNew(DatabaseObject o) {
@@ -1060,65 +927,6 @@ public class ModernContactPanel extends JPanel implements DataPanel, javax.swing
                 einvoiceSkontoDays.getText());
     }
 
-    private void setTitle(String title) {
-        if (this.getParent() instanceof JViewport || this.getParent() instanceof JTabbedPane) {
-            JTabbedPane jTabbedPane = null;
-            //this->viewport->scrollpane->tabbedpane
-            if (this.getParent().getParent() != null && this.getParent().getParent().getParent() instanceof JTabbedPane) {
-                jTabbedPane = (JTabbedPane) this.getParent().getParent().getParent();
-            } else if (this.getParent() instanceof JTabbedPane) {
-                jTabbedPane = (JTabbedPane) this.getParent();
-            } else if (this.getRootPane() != null && this.getRootPane().getParent() instanceof JFrame) {
-                //free floating window
-                ((JFrame) this.getRootPane().getParent()).setTitle(title);
-            }
-            if (jTabbedPane != null && jTabbedPane.getSelectedIndex() >= 0) {
-                jTabbedPane.setTitleAt(jTabbedPane.getSelectedIndex(), title);
-            }
-        }
-    }
-    // </editor-fold>
-
-    // <editor-fold defaultstate="collapsed" desc="Scrollable">
-    /*
-     * The main window puts every tab into a scroll pane. The panel fills the
-     * visible area (the overview and the documents scroll by themselves) and
-     * only scrolls as a whole if the window is smaller than this.
-     */
-    private static final int MIN_WIDTH = 560;
-    private static final int MIN_HEIGHT = 520;
-
-    @Override
-    public java.awt.Dimension getPreferredScrollableViewportSize() {
-        return getPreferredSize();
-    }
-
-    @Override
-    public int getScrollableUnitIncrement(java.awt.Rectangle visibleRect, int orientation, int direction) {
-        return ModernTheme.px(16);
-    }
-
-    @Override
-    public int getScrollableBlockIncrement(java.awt.Rectangle visibleRect, int orientation, int direction) {
-        return ModernTheme.px(160);
-    }
-
-    @Override
-    public boolean getScrollableTracksViewportWidth() {
-        return getParent() instanceof JViewport && getParent().getWidth() >= ModernTheme.px(MIN_WIDTH);
-    }
-
-    @Override
-    public boolean getScrollableTracksViewportHeight() {
-        return getParent() instanceof JViewport && getParent().getHeight() >= ModernTheme.px(MIN_HEIGHT);
-    }
-
-    @Override
-    public java.awt.Dimension getPreferredSize() {
-        java.awt.Dimension d = super.getPreferredSize();
-        //when the window is too small: scroll, but not over the whole preferred size of the cards
-        return new java.awt.Dimension(Math.min(d.width, ModernTheme.px(MIN_WIDTH)), Math.min(d.height, ModernTheme.px(MIN_HEIGHT)));
-    }
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="DataPanel">
@@ -1137,7 +945,7 @@ public class ModernContactPanel extends JPanel implements DataPanel, javax.swing
         exposeData();
 
         if (object.isExisting()) {
-            setTitle(object.__getCname());
+            setTabTitle(object.__getCname());
         }
         printing.init(dataOwner);
         tb.setFavourite(Favourite.isFavourite(object));

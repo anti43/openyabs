@@ -18,12 +18,14 @@ import javax.swing.JProgressBar;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.objects.Contact;
+import mpv5.db.objects.Product;
 import mpv5.db.objects.User;
 import mpv5.logging.Log;
 import mpv5.pluginhandling.YabsPluginLoader;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.panels.DataPanel;
 import mpv5.ui.panels.ModernContactPanel;
+import mpv5.ui.panels.ModernProductPanel;
 import org.jdesktop.application.Application;
 
 /**
@@ -318,10 +320,11 @@ public class YabsViewProxy implements YabsView {
     public static interface ViewFactory {
 
         /**
-         * @param context the context of the object to show
+         * @param item the object to show (its context, type ...); the view is
+         * not filled with it yet
          * @return the view
          */
-        public DataPanel create(Context context);
+        public DataPanel create(DatabaseObject item);
     }
     /**
      * System property to choose the views at start: "modern" or "classic"
@@ -337,12 +340,8 @@ public class YabsViewProxy implements YabsView {
 
     {
         //the views which exist in the modern layout already, all others stay classic
-        registerModernView(Contact.class, new ViewFactory() {
-            @Override
-            public DataPanel create(Context context) {
-                return new ModernContactPanel(context);
-            }
-        });
+        registerModernView(Contact.class, item -> new ModernContactPanel(item.getContext()));
+        registerModernView(Product.class, item -> new ModernProductPanel(item.getContext(), ((Product) item).__getInttype()));
     }
 
     /**
@@ -355,6 +354,35 @@ public class YabsViewProxy implements YabsView {
      */
     public void registerModernView(Class<? extends DatabaseObject> clazz, ViewFactory factory) {
         modernViews.put(clazz, factory);
+    }
+
+    /**
+     * A new, empty view for a product or service: modern or classic, as
+     * configured
+     *
+     * @param type Product.TYPE_PRODUCT or TYPE_SERVICE
+     * @return the view
+     */
+    public JComponent newProductView(int type) {
+        Product p = new Product();
+        p.setInttype(type);
+        DataPanel modern = getModernView(p);
+        return modern != null ? (JComponent) modern : new mpv5.ui.panels.ProductPanel(Context.getProduct(), type);
+    }
+
+    /**
+     * The view of a product, filled with it: modern or classic, as configured
+     *
+     * @param p
+     * @return the view
+     */
+    public javax.swing.JPanel productView(Product p) {
+        DataPanel modern = getModernView(p);
+        if (modern != null) {
+            modern.setDataOwner(p, true);
+            return (javax.swing.JPanel) modern;
+        }
+        return new mpv5.ui.panels.ProductPanel(p);
     }
 
     /**
@@ -390,7 +418,7 @@ public class YabsViewProxy implements YabsView {
             ViewFactory f = modernViews.get(c);
             if (f != null) {
                 try {
-                    return f.create(item.getContext());
+                    return f.create(item);
                 } catch (Exception e) {
                     //never lose the view: fall back to the classic one
                     Log.Debug(this, e);

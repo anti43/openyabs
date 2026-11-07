@@ -281,7 +281,7 @@ public class ProductsOverview extends javax.swing.JPanel implements ListPanel {
             if (evt.getClickCount() > 1) {
                 try {
                     Product p = (Product) DatabaseObject.getObject(Context.getProduct(), Integer.valueOf(listtable.getModel().getValueAt(listtable.getSelectedRow(), 0).toString()));
-                    ProductPanel pan = new ProductPanel(p);
+                    javax.swing.JPanel pan = mpv5.YabsViewProxy.instance().productView(p);
                     BigPopup.showPopup(this, pan, p.__getCname(), false);
                 } catch (NodataFoundException ex) {
                 }
