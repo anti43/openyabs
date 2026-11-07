@@ -144,6 +144,24 @@ class DatabaseUpdateTest {
     }
 
     @Test
+    void updateDoesNotRequestGeneratedKeys() throws Exception {
+        //Derby 10.17 closes the connection on UPDATE userproperties with RETURN_GENERATED_KEYS
+        //(ArrayIndexOutOfBoundsException) - "no current connection" when YaBS is closed
+        assertEquals(Statement.RETURN_GENERATED_KEYS, DatabaseConnection.generatedKeys(" insert INTO items (cname) VALUES ('a')"));
+        assertEquals(Statement.NO_GENERATED_KEYS, DatabaseConnection.generatedKeys("UPDATE userproperties SET value = 'a'"));
+        assertEquals(Statement.NO_GENERATED_KEYS, DatabaseConnection.generatedKeys("DELETE FROM objectlocks WHERE ids = 1"));
+        assertEquals(Statement.NO_GENERATED_KEYS, DatabaseConnection.generatedKeys(null));
+        try (Connection c = create()) {
+            new SchemaUpdate(r -> c, true, null).run(1.0, derbyUpdates());
+            String update = "UPDATE userproperties SET value = 'a', dateadded = '2026-11-07' WHERE usersids = 1 AND cname = 'x'";
+            try (Statement s = c.createStatement()) {
+                s.executeUpdate(update, DatabaseConnection.generatedKeys(update));
+            }
+            assertFalse(c.isClosed());
+        }
+    }
+
+    @Test
     void classifiesDerbyErrors() {
         assertEquals(SchemaUpdate.Outcome.DAMAGED, SchemaUpdate.classify(
                 new SQLException("StoredPreparedStatement '58f10349-012e-4f2f-1cb2-0000019e4c10' ist nicht vorhanden.", "42X94"), true));

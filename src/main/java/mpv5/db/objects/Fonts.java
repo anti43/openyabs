@@ -138,7 +138,7 @@ public class Fonts extends DatabaseObject {
             Connection sqlConn = DatabaseConnection.instanceOf().getConnection();
             try {
                 sqlConn.setAutoCommit(false);
-                PreparedStatement ps = sqlConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
+                PreparedStatement ps = sqlConn.prepareStatement(query, mpv5.db.common.DatabaseConnection.generatedKeys(query));
                 ps.setString(1, this.__getCname());
                 ps.setString(2, this.__getEncoding());
                 ps.setBoolean(3, this.__isEmbedded());
@@ -185,7 +185,7 @@ public class Fonts extends DatabaseObject {
                 int fileLength = (int) font.length();
 
                 java.io.InputStream fin = new java.io.FileInputStream(font);
-                PreparedStatement ps = sqlConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
+                PreparedStatement ps = sqlConn.prepareStatement(query, mpv5.db.common.DatabaseConnection.generatedKeys(query));
                 ps.setString(1, this.__getCname());
                 ps.setString(2, this.__getEncoding());
                 ps.setBoolean(3, this.__isEmbedded());

@@ -226,6 +226,22 @@ public class DatabaseConnection {
    }
 
    /**
+    * Generated keys are only requested for INSERT statements. Derby 10.17
+    * throws an ArrayIndexOutOfBoundsException for some UPDATE statements with
+    * {@link Statement#RETURN_GENERATED_KEYS} and closes the connection ("no
+    * current connection" afterwards, e.g. when YaBS is closed); Derby 10.8
+    * ignored it.
+    *
+    * @param sql
+    * @return {@link Statement#RETURN_GENERATED_KEYS} for INSERT, else
+    * {@link Statement#NO_GENERATED_KEYS}
+    */
+   public static int generatedKeys(String sql) {
+      return sql != null && sql.trim().regionMatches(true, 0, "INSERT", 0, 6)
+            ? java.sql.Statement.RETURN_GENERATED_KEYS : java.sql.Statement.NO_GENERATED_KEYS;
+   }
+
+   /**
     * @param sql a statement of the structure or the updates
     * @return the statement with the configured table prefix
     */
