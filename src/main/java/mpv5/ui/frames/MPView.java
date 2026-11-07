@@ -2728,7 +2728,8 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
     }//GEN-LAST:event_jButton16ActionPerformed
 
     private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton17ActionPerformed
-        addOrShowTab(JournalPanel.instanceOf(), Messages.OVERVIEW);
+        //the name of the entry as tab title ("Overview" was used for two different views)
+        addOrShowTab(JournalPanel.instanceOf(), jButton17.getText());
     }//GEN-LAST:event_jButton17ActionPerformed
 
     private void helpmenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_helpmenuActionPerformed
@@ -2982,7 +2983,7 @@ private void jMenuItem51ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
 
 private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton23ActionPerformed
 
-    addOrShowTab(new ReceiptLookup(), Messages.OVERVIEW);
+    addOrShowTab(new ReceiptLookup(), jButton23.getText());
 }//GEN-LAST:event_jButton23ActionPerformed
 
     private void jButton30ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton30ActionPerformed
@@ -3000,7 +3001,8 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     }//GEN-LAST:event_scustomersActionPerformed
 
     private void sjournalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sjournalActionPerformed
-        addOrShowTab(JournalPanel.instanceOf(), Messages.OVERVIEW);
+        //the name of the entry as tab title ("Overview" was used for two different views)
+        addOrShowTab(JournalPanel.instanceOf(), jButton17.getText());
     }//GEN-LAST:event_sjournalActionPerformed
 
     private void sproductsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sproductsActionPerformed
