@@ -54,6 +54,40 @@ public class WrapLayout extends FlowLayout {
         return d;
     }
 
+    /**
+     * The preferred size is computed with the width of the last layout; when
+     * the width changes (e.g. the window is made smaller), the number of
+     * lines changes too, so the container is laid out once more with the new
+     * width.
+     */
+    @Override
+    public void layoutContainer(Container target) {
+        super.layoutContainer(target);
+        if (!(target instanceof javax.swing.JComponent)) {
+            return;
+        }
+        final Dimension preferred = preferredLayoutSize(target);
+        Integer last = (Integer) ((javax.swing.JComponent) target).getClientProperty(LAST_HEIGHT);
+        if (last == null || last != preferred.height) {
+            ((javax.swing.JComponent) target).putClientProperty(LAST_HEIGHT, preferred.height);
+            if (last != null) {
+                SwingUtilities.invokeLater(() -> {
+                    Container top = target;
+                    //revalidate up to the next scroll pane or window, so the parents take the new height
+                    while (top.getParent() != null && !(top.getParent() instanceof javax.swing.JViewport)
+                            && !(top.getParent() instanceof java.awt.Window)) {
+                        top = top.getParent();
+                    }
+                    top.invalidate();
+                    target.invalidate();
+                    top.validate();
+                    top.repaint();
+                });
+            }
+        }
+    }
+    private static final String LAST_HEIGHT = "WrapLayout.lastHeight";
+
     private Dimension layoutSize(Container target, boolean preferred) {
         synchronized (target.getTreeLock()) {
             int targetWidth = target.getSize().width;

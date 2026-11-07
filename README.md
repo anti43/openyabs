@@ -50,6 +50,8 @@ Alle Aktionen zum ganzen Datensatz stehen in einer Befehlsleiste oben (Speichern
 
 **Alle Tastenkürzel** zeigt *Hilfe > Tastenkürzel* (Strg+F1); die Kürzel des Menüs werden dort direkt aus dem Menü gelesen. Geändert im Hauptmenü, damit nichts doppelt belegt ist und nichts überrascht: *Beenden* Strg+Q (vorher Strg+X), *Als neu speichern* Strg+Umschalt+S (vorher Strg+N), *Kopieren* in die Ablage Strg+C und *Einfügen* Strg+V (vorher Strg+N / Strg+B; in Textfeldern und Tabellen bleibt Text kopieren/einfügen), *Alle Registerkarten schließen* Strg+Umschalt+W (vorher Strg+L, das weiterhin die Log-Konsole öffnet).
 
+**Hauptfenster:** Navigation links über die volle Höhe, Registerkarten flach in einer scrollbaren Zeile (Schließen-Kreuz pro Karte), schlichtere Werkzeug- und Statusleiste; beim ersten Start passt sich die Fenstergröße dem Bildschirm an. Das gilt immer, unabhängig von der Einstellung für die modernen Ansichten.
+
 Die Auswahl trifft `YabsViewProxy` (`registerModernView`); alle anderen Ansichten bleiben unverändert.
 
 ## E-Rechnung (XRechnung / ZUGFeRD)

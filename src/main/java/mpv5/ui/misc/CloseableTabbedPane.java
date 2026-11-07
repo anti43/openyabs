@@ -128,6 +128,45 @@ public final class CloseableTabbedPane extends JTabbedPane implements MouseListe
      * @param hoover the closeicon when the mouse is over
      * @param pressed the closeicon when the mouse is pressed
      */
+    private boolean modern;
+
+    /**
+     * Switches to the flat look of the modern views: one scrollable row of
+     * tabs, drawn close buttons. Kept when the look and feel changes.
+     */
+    public void useModernLook() {
+        modern = true;
+        setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+        setCloseIcons(new mpv5.ui.modern.ModernTabbedPaneUI.CloseIcon(0),
+                new mpv5.ui.modern.ModernTabbedPaneUI.CloseIcon(1),
+                new mpv5.ui.modern.ModernTabbedPaneUI.CloseIcon(2));
+        //also replaces the layout manager set in the constructor with the one of the tabs
+        setUI(new mpv5.ui.modern.ModernTabbedPaneUI(SwingUtilities.LEFT));
+        headerViewport = null;
+        findHeaderViewport();
+        revalidate();
+        repaint();
+    }
+
+    @Override
+    public void updateUI() {
+        if (modern) {
+            setUI(new mpv5.ui.modern.ModernTabbedPaneUI(SwingUtilities.LEFT));
+            headerViewport = null;
+            findHeaderViewport();
+        } else {
+            super.updateUI();
+        }
+    }
+
+    private void findHeaderViewport() {
+        for (Component c : getComponents()) {
+            if ("TabbedPane.scrollableViewport".equals(c.getName())) {
+                headerViewport = (JViewport) c;
+            }
+        }
+    }
+
     public void setCloseIcons(Icon normal, Icon hoover, Icon pressed) {
         normalCloseIcon = normal;
         hooverCloseIcon = hoover;

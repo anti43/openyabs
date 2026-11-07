@@ -271,6 +271,8 @@ public class ModernContactPanel extends ModernDataPanel {
         content.setOpaque(false);
         content.add(createHeader(), BorderLayout.NORTH);
 
+        //flat tabs like the main window
+        tabs.setUI(new mpv5.ui.modern.ModernTabbedPaneUI(javax.swing.SwingConstants.TRAILING));
         tabs.addTab(Messages.CONTACT_OVERVIEW.toString(), scroll(createOverview()));
         tabs.addTab(text("ContactPanel.propPanel.TabConstraints.tabTitle"), createPropertiesTab());
         if (SHOW_FILES) {

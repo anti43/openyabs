@@ -589,7 +589,7 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
         staterrorlabel = errorlabel;
         history = xhistory;
         history.setRenderer(new ComboBoxRendererForTooltip());
-        tabpanePanel.add(new JScrollPane(getTabPane()), BorderLayout.CENTER);
+        modernizeFrame();
 
         favMenu = favouritesMenu;
         reloadFavorites();
@@ -682,6 +682,87 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
                      Log.Debug(e);
                  }
              }
+        }
+    }
+
+    /**
+     * The main window in the modern layout: navigation on the left over the
+     * full height, the tabs filling the rest (no fixed sizes, no extra scroll
+     * pane around the tabs; every tab scrolls itself), flat tabs, toolbar and
+     * status bar. Done here instead of in the generated code, so the form
+     * stays editable.
+     */
+    private void modernizeFrame() {
+        int gap = mpv5.ui.modern.ModernTheme.px(6);
+        java.awt.Color bg = mpv5.ui.modern.ModernTheme.background();
+        java.awt.Color line = mpv5.ui.modern.ModernTheme.border();
+
+        naviPanel.removeAll();
+        naviPanel.setLayout(new BorderLayout());
+        naviPanel.add(nav_outlookbar, BorderLayout.CENTER);
+        naviPanel.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 0, 1, line));
+
+        tabpanePanel.removeAll();
+        tabpanePanel.setLayout(new BorderLayout());
+        tabpanePanel.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+        tabpanePanel.setBackground(bg);
+        getTabPane().useModernLook();
+        tabpanePanel.add(getTabPane(), BorderLayout.CENTER);
+
+        mainPanel.removeAll();
+        mainPanel.setLayout(new BorderLayout(gap, 0));
+        mainPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+        mainPanel.setBackground(bg);
+        mainPanel.add(naviPanel, BorderLayout.WEST);
+        mainPanel.add(tabpanePanel, BorderLayout.CENTER);
+        //first start: a size which fits today's screens (later the last size is restored)
+        java.awt.Dimension screen = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+        mainPanel.setPreferredSize(new java.awt.Dimension(screen.width * 85 / 100, screen.height * 75 / 100));
+
+        //navigation buttons: flat, highlighted under the mouse
+        for (javax.swing.JPanel nav : new javax.swing.JPanel[]{nav_contacts, nav_accounting, nav_products, nav_extras, nav_simple_inner}) {
+            nav.setBackground(mpv5.ui.modern.ModernTheme.cardBackground());
+            flatButtons(nav);
+        }
+
+        //toolbar: no fixed height, flat, separated by a line
+        mainToolbar.setPreferredSize(null);
+        mainToolbar.setOpaque(true);
+        mainToolbar.setBackground(mpv5.ui.modern.ModernTheme.cardBackground());
+        mainToolbar.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, line),
+                javax.swing.BorderFactory.createEmptyBorder(gap / 2, gap, gap / 2, gap)));
+        for (java.awt.Component c : mainToolbar.getComponents()) {
+            if (c instanceof javax.swing.AbstractButton) {
+                ((javax.swing.AbstractButton) c).setMargin(new java.awt.Insets(gap / 2, gap, gap / 2, gap));
+            }
+        }
+        statusPanel.setOpaque(true);
+        statusPanel.setBackground(mpv5.ui.modern.ModernTheme.cardBackground());
+        statusPanel.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                javax.swing.BorderFactory.createMatteBorder(1, 0, 0, 0, line),
+                javax.swing.BorderFactory.createEmptyBorder(2, gap, 2, gap)));
+        statusPanel.setPreferredSize(null);
+        statusPanel.setMaximumSize(null);
+    }
+
+    private static void flatButtons(java.awt.Container c) {
+        for (java.awt.Component x : c.getComponents()) {
+            if (x instanceof javax.swing.AbstractButton && !(x instanceof javax.swing.JToggleButton)) {
+                final javax.swing.AbstractButton b = (javax.swing.AbstractButton) x;
+                b.setContentAreaFilled(false);
+                b.setBorderPainted(false);
+                b.setFocusPainted(false);
+                b.setOpaque(true);
+                b.setBackground(mpv5.ui.modern.ModernTheme.cardBackground());
+                b.setForeground(mpv5.ui.modern.ModernTheme.foreground());
+                b.setRolloverEnabled(true);
+                b.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
+                b.getModel().addChangeListener(e -> b.setBackground(b.getModel().isRollover()
+                        ? mpv5.ui.modern.ModernTheme.accentSoft() : mpv5.ui.modern.ModernTheme.cardBackground()));
+            } else if (x instanceof java.awt.Container) {
+                flatButtons((java.awt.Container) x);
+            }
         }
     }
 
@@ -895,6 +976,10 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
     @Override
     public int addTab(JComponent tab, String name) {
         JScrollPane spane = new JScrollPane(tab);
+        //flat: the tab pane draws the frame
+        spane.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+        spane.getVerticalScrollBar().setUnitIncrement(mpv5.ui.modern.ModernTheme.px(16));
+        spane.getHorizontalScrollBar().setUnitIncrement(mpv5.ui.modern.ModernTheme.px(16));
         getTabPane().addTab(name, spane);
         getTabPane().setSelectedComponent(spane);
         return getTabPane().getSelectedIndex();
