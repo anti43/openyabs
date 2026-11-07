@@ -250,8 +250,8 @@ public abstract class ModernDataPanel extends JPanel implements DataPanel, Scrol
             protected void setValue(Object value) {
                 setHorizontalAlignment(RIGHT);
                 if (value instanceof Number) {
-                    super.setValue(mpv5.utils.numberformat.FormatNumber.formatDezimal(
-                            java.math.BigDecimal.valueOf(((Number) value).doubleValue())));
+                    //formatDezimal rounds exactly (BigDecimal as is, others via their decimal string)
+                    super.setValue(mpv5.utils.numberformat.FormatNumber.formatDezimal((Number) value));
                 } else {
                     super.setValue(value);
                 }

@@ -1171,23 +1171,15 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
     private void pasteItem(final Item dbo) {
         Item o = (Item) dbo.clone();
         if (User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "pasten")) {
-            SubItem s = new SubItem();
-            s.setQuantityvalue(BigDecimal.ONE);
-            s.setInternalvalue(dbo.__getNetvalue());
-            s.setExternalvalue(dbo.__getNetvalue());
-            s.setTotalnetvalue(dbo.__getNetvalue());
-            s.setTotalbrutvalue(dbo.__getNetvalue().add(dbo.__getTaxvalue()));
-            if (s.__getTotalnetvalue().doubleValue() > 0d) {
-                s.setTaxpercentvalue(s.__getTotalbrutvalue().subtract(s.__getTotalnetvalue()).multiply(Constants.BD100)
-                        .divide(s.__getTotalnetvalue(), 9, RoundingMode.HALF_UP));
+            //the document as position(s): one per VAT rate, net after discount
+            String text = Messages.GOOSE1 + " " + dbo.__getCnumber() + " " + Messages.GOOSE2 + " " + DateConverter.getDefDateString(o.__getDateadded());
+            for (SubItem s : ItemService.asPositions(dbo, text)) {
+                positions.addPosition(s);
             }
-            s.setCname(dbo.__getCname());
-            s.setDescription(Messages.GOOSE1 + " " + dbo.__getCnumber() + " " + Messages.GOOSE2 + " " + DateConverter.getDefDateString(o.__getDateadded()));
             afterSaveRunnables.add(() -> {
                 dbo.setIntstatus(Item.STATUS_FINISHED);
                 dbo.save();
             });
-            positions.addPosition(s);
         } else {
             o.setIntstatus(Item.STATUS_IN_PROGRESS);
             o.setInttype(inttype_);
@@ -1196,26 +1188,8 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
             o.setDateadded(new Date());
             o.setDatetodo(new Date());
             o.setDateend(new Date());
-            SubItem[] sitems = dbo.getSubitems();
-            SubItem[] subs = new SubItem[sitems.length];
-            for (int i = 0; i < sitems.length; i++) {
-                SubItem si = sitems[i];
-                SubItem psi = new SubItem();
-                psi.setQuantityvalue(BigDecimal.ONE);
-                psi.setInternalvalue(si.__getInternalvalue());
-                psi.setExternalvalue(si.__getExternalvalue());
-                psi.setTotalnetvalue(si.__getTotalnetvalue());
-                psi.setTotalbrutvalue(dbo.__getNetvalue().add(dbo.__getTaxvalue()));
-                if (psi.__getTotalnetvalue().doubleValue() > 0d) {
-                    psi.setTaxpercentvalue(psi.__getTotalbrutvalue().subtract(psi.__getTotalnetvalue()).multiply(Constants.BD100)
-                            .divide(psi.__getTotalnetvalue(), 9, RoundingMode.HALF_UP));
-                }
-                psi.setCname(si.__getCname());
-                psi.setDescription(si.__getDescription());
-                psi.setCountvalue(si.__getCountvalue());
-                psi.setOrdernr(si.__getCountvalue().intValue());
-                subs[i] = psi;
-            }
+            //the positions as they are (quantity, unit, price, VAT rate, discount, product)
+            SubItem[] subs = ItemService.copyPositions(dbo);
             o.setIDS(-1);
             setDataOwner(o, true);
             positions.setModel(SubItem.toModel(subs, true));

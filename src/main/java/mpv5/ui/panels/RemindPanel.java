@@ -393,7 +393,7 @@ public class RemindPanel extends javax.swing.JPanel {
             s.setDescription(jTextPane1.getText());
             s.setTemplategroup(mpv5.db.objects.User.getCurrentUser().__getGroupsids());
             try {
-                s.setExtravalue(Double.valueOf(labeledTextField1.getText()));
+                s.setExtravalue(fee());
             } catch (NumberFormatException e) {
                 s.setExtravalue(0d);
             }
@@ -579,7 +579,7 @@ public class RemindPanel extends javax.swing.JPanel {
                 s.setTemplategroup(mpv5.db.objects.User.getCurrentUser().__getGroupsids());
                 s.setDescription(jTextPane1.getText());
                 try {
-                    s.setExtravalue(labeledTextField1.getValue(0d));
+                    s.setExtravalue(fee());
                 } catch (NumberFormatException numberFormatException) {
                     s.setExtravalue(0d);
                 }
@@ -592,7 +592,7 @@ public class RemindPanel extends javax.swing.JPanel {
             }
             dataOwner.setDescription(jTextPane1.getText());
             try {
-                dataOwner.setExtravalue(Double.valueOf(labeledTextField1.getText()));
+                dataOwner.setExtravalue(fee());
             } catch (NumberFormatException numberFormatException) {
                 dataOwner.setExtravalue(0d);
             }
@@ -634,5 +634,14 @@ public class RemindPanel extends javax.swing.JPanel {
 
         labeledTextField1.setText(r.__getExtravalue());
         jTextPane1.setText(r.__getDescription());
+    }
+
+    /**
+     * @return the fee as typed, in the format of the user's locale ("5,00"),
+     * 0 if empty or not a number
+     */
+    private double fee() {
+        java.math.BigDecimal v = mpv5.utils.numberformat.FormatNumber.parseDezimal(labeledTextField1.getText());
+        return v == null ? 0d : mpv5.utils.numberformat.FormatNumber.round(v).doubleValue();
     }
 }

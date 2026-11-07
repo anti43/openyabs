@@ -2693,34 +2693,8 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                 Item o = (Item) dbo.clone();
 
                 if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "pasten")) {
-                    SubItem s = new SubItem();
-                    s.setQuantityvalue(BigDecimal.ONE);
-//                    s.setItemsids(o.__getIDS());
-                    s.setInternalvalue(((Item) dbo).__getNetvalue());
-                    s.setExternalvalue(((Item) dbo).__getNetvalue());
-                    s.setTotalnetvalue(((Item) dbo).__getNetvalue());
-                    s.setTotalbrutvalue(((Item) dbo).__getNetvalue().add(((Item) dbo).__getTaxvalue()));
-                    if (s.__getTotalnetvalue().doubleValue() > 0d) {
-                        BigDecimal tp = s.__getTotalbrutvalue().subtract(s.__getTotalnetvalue()).multiply(Constants.BD100).divide(s.__getTotalnetvalue(), 9, RoundingMode.HALF_UP);
-                        if (tpvs == null) {
-                            tpvs = tp;
-                        }
-//                        if (tpvs.equals(tpvs)) {
-                        s.setTaxpercentvalue(tp);
-//                        } else {
-//                            Popup.warn(Messages.TAXES_NOT_EQUAL);
-//                            break;
-//                        }
-                    }
-                    s.setCname(((Item) dbo).__getCname());
-                    s.setDescription(Messages.GOOSE1 + " " + ((Item) dbo).__getCnumber() + " " + Messages.GOOSE2 + " " + DateConverter.getDefDateString(o.__getDateadded()));
-//                   if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("deftax")) {
-//                        int taxid = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("deftax", new Integer(0));
-//                        BigDecimal deftax = Tax.getTaxValue(taxid);
-//                        s.setTaxpercentvalue(deftax);
-//                    }
-
-//                    Log.PrintArray(s.toStringArray());
+                    //the document as position(s): one per VAT rate, net after discount
+                    String text = Messages.GOOSE1 + " " + ((Item) dbo).__getCnumber() + " " + Messages.GOOSE2 + " " + DateConverter.getDefDateString(o.__getDateadded());
                     afterSaveRunnables.add(new Runnable() {
 
                         @Override
@@ -2731,7 +2705,9 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                     });
 
                     omodel = (MPTableModel) itemtable.getModel();
-                    omodel.addRow(s.getRowData(omodel.getRowCount() + 1));
+                    for (SubItem s : mpv5.handler.ItemService.asPositions((Item) dbo, text)) {
+                        omodel.addRow(s.getRowData(omodel.getRowCount() + 1));
+                    }
                     ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
 
                 } else {
@@ -2743,26 +2719,8 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                     o.setDatetodo(new Date());
                     o.setDateend(new Date());
 
-                    SubItem[] sitems = ((Item) dbo).getSubitems();
-                    SubItem[] subs = new SubItem[sitems.length];
-                    for (int i = 0; i < sitems.length; i++) {
-                        SubItem si = sitems[i];
-                        SubItem psi = new SubItem();
-                        psi.setQuantityvalue(BigDecimal.ONE);
-                        psi.setInternalvalue(si.__getInternalvalue());
-                        psi.setExternalvalue(si.__getExternalvalue());
-                        psi.setTotalnetvalue(si.__getTotalnetvalue());
-                        psi.setTotalbrutvalue(((Item) dbo).__getNetvalue().add(((Item) dbo).__getTaxvalue()));
-                        if (psi.__getTotalnetvalue().doubleValue() > 0d) {
-                            BigDecimal tp = psi.__getTotalbrutvalue().subtract(psi.__getTotalnetvalue()).multiply(Constants.BD100).divide(psi.__getTotalnetvalue(), 9, RoundingMode.HALF_UP);
-                            psi.setTaxpercentvalue(tp);
-                        }
-                        psi.setCname(si.__getCname());
-                        psi.setDescription(si.__getDescription());
-                        psi.setCountvalue(si.__getCountvalue());
-                        psi.setOrdernr(si.__getCountvalue().intValue());
-                        subs[i] = psi;
-                    }
+                    //the positions as they are (quantity, unit, price, VAT rate, discount, product)
+                    SubItem[] subs = mpv5.handler.ItemService.copyPositions((Item) dbo);
                     o.setIDS(-1);
                     setDataOwner(o, true);
 
@@ -3053,18 +3011,20 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                 if (!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "ordersoverproducts")) {
                     ProductSelectDialog.instanceOf((MPTableModel) itemtable.getModel(), itemtable.getSelectedRow(), e, 0, null, null);
                 } else {
-                    SubItem s = new SubItem();
                     Item o = (Item) Popup.SelectValue(Context.getOrder());
                     if (o != null) {
-                        s.setQuantityvalue(BigDecimal.ONE);
-                        s.setItemsids(o.__getIDS());
-                        s.setExternalvalue(o.__getNetvalue().add(o.__getTaxvalue()));
-                        s.setTotalnetvalue(o.__getNetvalue());
-                        s.setCname(o.__getCname());
-                        s.setDescription(Messages.TYPE_ORDER + " " + o.__getCnumber() + " " + DateConverter.getDefDateString(o.__getDateadded()));
-
-                        ((MPTableModel) itemtable.getModel()).setRowAt(s.getRowData(itemtable.getSelectedRow()), itemtable.getSelectedRow(), 1);
-
+                        //the order as position(s): one per VAT rate, net after discount
+                        //(before: the gross amount as net price without VAT)
+                        int row = itemtable.getSelectedRow();
+                        MPTableModel m = ((MPTableModel) itemtable.getModel());
+                        java.util.List<SubItem> ps = mpv5.handler.ItemService.asPositions(o,
+                                Messages.TYPE_ORDER + " " + o.__getCnumber() + " " + DateConverter.getDefDateString(o.__getDateadded()));
+                        for (int k = 0; k < ps.size(); k++) {
+                            if (k > 0) {
+                                m.insertRow(row + k);
+                            }
+                            m.setRowAt(ps.get(k).getRowData(row + k), row + k, 1);
+                        }
                         usedOrders.add(o);
                     }
                 }
@@ -3398,7 +3358,16 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
             } else if (d2 != null) {
                 data2 = d2;
             }
-            if (data2 != null && data2.size() > 1 && Popup.Y_N_dialog(Messages.PartPayment_Existing.toString())) {
+            //earlier deposits / part payments of the order (this document excluded)
+            int others = 0;
+            if (data2 != null) {
+                for (Item i : data2) {
+                    if (!Objects.equals(i.__getIDS(), dataOwner.__getIDS())) {
+                        others++;
+                    }
+                }
+            }
+            if (others > 0 && Popup.Y_N_dialog(Messages.PartPayment_Existing.toString())) {
                 MPTableModel model = (MPTableModel) itemtable.getModel();
                 Iterator<Item> it = data2.iterator();
                 while (it.hasNext()) {
@@ -3412,7 +3381,9 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         }
         
         i2.setReforderids(dataOwner.__getIDS());
-        
+        //the totals of the saved positions (the clone has those of the source)
+        mpv5.handler.ItemService.updateTotals(i2);
+
         setDataOwner(i2, true);
         Popup.notice(i2 + Messages.INSERTED.getValue());
     }

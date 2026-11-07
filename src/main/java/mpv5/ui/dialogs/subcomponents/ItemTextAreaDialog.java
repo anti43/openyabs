@@ -213,11 +213,14 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
             p = SubItem.getFromModel(m, getParentTable().getSelectedRow());
         } else {
             p = new SubItem(product);
-//            p.setQuantityvalue(new BigDecimal(labeledSpinner1.get_Value().toString()));
-            p.setExternalvalue(product.findPriceFor(p.__getCountvalue().doubleValue()));
+        }
+        BigDecimal quantity = new BigDecimal(labeledSpinner1.get_Value().toString());
+        if (product != null) {
+            //staggered price for the quantity (not for the position number)
+            p.setExternalvalue(product.findPriceFor(quantity));
         }
         p.setDescription(textArea.getText());
-        p.setQuantityvalue(new BigDecimal(labeledSpinner1.get_Value().toString()));
+        p.setQuantityvalue(quantity);
 
         m.setRowAt(p.getRowData(getParentTable().getSelectedRow()), getParentTable().getSelectedRow(), 1, 14);
         labeledCombobox1.setSelectedIndex(-1);

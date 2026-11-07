@@ -211,7 +211,7 @@ public abstract class VariablesHandler {
                 vars.add(new String[]{"[contact.prename]", c.__getPrename()});
                 vars.add(new String[]{"[contact.title]", c.__getTitle()});
                 vars.add(new String[]{"[contact.country]", c.__getCountry()});
-                vars.add(new String[]{"[grosvaluef]", FormatNumber.formatLokalCurrency(((Item) target).__getTaxvalue().doubleValue() + ((Item) target).__getNetvalue().doubleValue())});
+                vars.add(new String[]{"[grosvaluef]", FormatNumber.formatLokalCurrency(((Item) target).getGrossAmount())});
                 vars.add(new String[]{"[type]", Item.getTypeString(((Item) target).__getInttype())});
 
                 if (c.__getisMale()) {

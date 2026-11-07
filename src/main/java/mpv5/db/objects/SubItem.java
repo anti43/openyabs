@@ -370,7 +370,7 @@ public final class SubItem extends DatabaseObject implements Triggerable {
 
         if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("defcount")) {
             Double defcount = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("defcount", 0d);
-            i.setQuantityvalue(new BigDecimal(defcount));
+            i.setQuantityvalue(BigDecimal.valueOf(defcount));
         } else {
             i.setQuantityvalue(BigDecimal.ONE);
         }
@@ -480,7 +480,7 @@ public final class SubItem extends DatabaseObject implements Triggerable {
         Double defcount = 1d;
         if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("defcount")) {
             defcount = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("defcount", 0d);
-            i.setQuantityvalue(new BigDecimal(defcount));
+            i.setQuantityvalue(BigDecimal.valueOf(defcount));
         }
         return i;
     }
@@ -600,8 +600,11 @@ public final class SubItem extends DatabaseObject implements Triggerable {
      * @param quantity the quantity to set
      */
     public void setQuantityvalue(BigDecimal quantity) {
+        if (quantity == null) {
+            quantity = BigDecimal.ZERO;
+        }
         this.quantityvalue = quantity;
-        if (quantity.compareTo(BigDecimal.ZERO) == 0) {
+        if (quantity.signum() == 0) {
             setInttype(TYPE_TEXT);
         }
     }

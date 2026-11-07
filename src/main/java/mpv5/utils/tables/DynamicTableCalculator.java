@@ -108,7 +108,7 @@ public class DynamicTableCalculator implements Runnable {
 
         for (int i = 0; i < targetColumns.length; i++) {
             int j = targetColumns[i];
-            ((MPTableModel) table.getModel()).setValueAt(val.doubleValue(), row, j, true);
+            ((MPTableModel) table.getModel()).setValueAt(val, row, j, true);
         }
         return val;
     }

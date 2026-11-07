@@ -21,6 +21,8 @@
  */
 package mpv5.ui.panels;
 
+import java.math.BigDecimal;
+
 
 import mpv5.YabsViewProxy;
 import mpv5.handler.TemplateHandler;
@@ -840,20 +842,31 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
     private mpv5.ui.beans.LabeledTextField volumeNetto;
     // End of variables declaration//GEN-END:variables
 
+    /**
+     * An amount of the journal query: exact, rounded to cents (the database
+     * computes net - discount etc. in floating point)
+     */
+    private static BigDecimal money(Object value) {
+        if (value == null || String.valueOf(value).trim().length() == 0) {
+            return BigDecimal.ZERO;
+        }
+        return new BigDecimal(String.valueOf(value)).setScale(2, java.math.RoundingMode.HALF_UP);
+    }
+
     private Object[][] parse(Object[][] data) {
         //#entity date group account number type status value
-        double profitnet = 0d;
-        double revenuenet = 0d;
-        double volumenet = 0d;
-        double expensenet = 0d;
-        double taxvolume = 0d;
-        double profittax = 0d;
-        double revenuetax = 0d;
-        double expensetax = 0d;
-        double volumebrut = 0d;
-        double revenuebrut = 0d;
-        double expensebrut = 0d;
-        double discountvolume = 0d;
+        BigDecimal profitnet = BigDecimal.ZERO;
+        BigDecimal revenuenet = BigDecimal.ZERO;
+        BigDecimal volumenet = BigDecimal.ZERO;
+        BigDecimal expensenet = BigDecimal.ZERO;
+        BigDecimal taxvolume = BigDecimal.ZERO;
+        BigDecimal profittax = BigDecimal.ZERO;
+        BigDecimal revenuetax = BigDecimal.ZERO;
+        BigDecimal expensetax = BigDecimal.ZERO;
+        BigDecimal volumebrut = BigDecimal.ZERO;
+        BigDecimal revenuebrut = BigDecimal.ZERO;
+        BigDecimal expensebrut = BigDecimal.ZERO;
+        BigDecimal discountvolume = BigDecimal.ZERO;
 
         Object[][] d = new Object[data.length][18];
         try {
@@ -882,47 +895,47 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                         break;
                 }
 
-                double netVolume = Double.valueOf(data[i][12].toString());
-                double taxVal = Double.valueOf(data[i][13].toString());
-                double brutVolume = Double.valueOf(data[i][14].toString());
-                double discountVolume = Double.valueOf(data[i][15].toString());
+                BigDecimal netVolume = money(data[i][12]);
+                BigDecimal taxVal = money(data[i][13]);
+                BigDecimal brutVolume = money(data[i][14]);
+                BigDecimal discountVolume = money(data[i][15]);
                 d[i][11] = Item.getStatusString(Integer.valueOf(data[i][11].toString()));
 
                 if (null != Integer.valueOf(data[i][11].toString())) {
                     switch (Integer.valueOf(data[i][11].toString())) {
                         case Item.STATUS_PAID:
                             if (Integer.valueOf(data[i][10].toString()) == Item.TYPE_CREDIT) {
-                                profitnet -= netVolume;
-                                profittax -= taxVal;
-                                expensenet -= (-1 * netVolume);
-                                expensetax -= (-1 * taxVal);
-                                expensebrut -= (-1 * brutVolume);
-                                d[i][15] = FormatNumber.formatLokalCurrency(-1 * netVolume);
+                                profitnet = profitnet.subtract(netVolume);
+                                profittax = profittax.subtract(taxVal);
+                                expensenet = expensenet.add(netVolume);
+                                expensetax = expensetax.add(taxVal);
+                                expensebrut = expensebrut.add(brutVolume);
+                                d[i][15] = FormatNumber.formatLokalCurrency(netVolume.negate());
                             } else {
-                                profitnet += netVolume;
-                                profittax += taxVal;
-                                revenuenet += netVolume;
-                                revenuetax += taxVal;
-                                revenuebrut += brutVolume;
+                                profitnet = profitnet.add(netVolume);
+                                profittax = profittax.add(taxVal);
+                                revenuenet = revenuenet.add(netVolume);
+                                revenuetax = revenuetax.add(taxVal);
+                                revenuebrut = revenuebrut.add(brutVolume);
                                 d[i][15] = FormatNumber.formatLokalCurrency(netVolume);
                             }
                             break;
                         case 1000:
-                            d[i][15] = FormatNumber.formatLokalCurrency(-1 * netVolume);
-                            profitnet -= netVolume;
-                            profittax -= taxVal;
-                            expensenet -= (-1 * netVolume);
-                            expensetax -= (-1 * taxVal);
-                            expensebrut -= (-1 * brutVolume);
+                            d[i][15] = FormatNumber.formatLokalCurrency(netVolume.negate());
+                            profitnet = profitnet.subtract(netVolume);
+                            profittax = profittax.subtract(taxVal);
+                            expensenet = expensenet.add(netVolume);
+                            expensetax = expensetax.add(taxVal);
+                            expensebrut = expensebrut.add(brutVolume);
                             d[i][11] = Item.getStatusString(Item.STATUS_PAID);
                             break;
                         case 2000:
-                            d[i][15] = FormatNumber.formatLokalCurrency(-1 * netVolume);
-                            profitnet -= netVolume;
-                            profittax -= taxVal;
-                            expensenet -= (-1 * netVolume);
-                            expensetax -= (-1 * taxVal);
-                            expensebrut -= (1 * brutVolume);
+                            d[i][15] = FormatNumber.formatLokalCurrency(netVolume.negate());
+                            profitnet = profitnet.subtract(netVolume);
+                            profittax = profittax.subtract(taxVal);
+                            expensenet = expensenet.add(netVolume);
+                            expensetax = expensetax.add(taxVal);
+                            expensebrut = expensebrut.add(brutVolume);
                             d[i][11] = Item.getStatusString(Item.STATUS_IN_PROGRESS);
                             break;
                         default:
@@ -945,10 +958,10 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                             d[i][17] = data[i][0];
                         break;
                 }
-                volumenet += netVolume;
-                volumebrut += brutVolume;
-                taxvolume += taxVal;
-                discountvolume += discountVolume;
+                volumenet = volumenet.add(netVolume);
+                volumebrut = volumebrut.add(brutVolume);
+                taxvolume = taxvolume.add(taxVal);
+                discountvolume = discountvolume.add(discountVolume);
             }
         } catch (Exception numberFormatException) {
             Log.Debug(numberFormatException);
@@ -1284,7 +1297,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                             if (statusc.getComboBox().getSelectedItem().equals(Messages.STATUS_PAID)) {
                                 revenuesParams.and(new QueryParameter(c, "status", Item.STATUS_PAID, QueryParameter.EQUALS)); //NOI18N
                             } else if (statusc.getComboBox().getSelectedItem().equals(Messages.STATUS_UNPAID)) {
-                                revenuesParams.and(new QueryParameter(Context.getExpense(), "status", Item.STATUS_PAID, QueryParameter.NOTEQUAL)); //NOI18N
+                                revenuesParams.and(new QueryParameter(c, "status", Item.STATUS_PAID, QueryParameter.NOTEQUAL)); //NOI18N
                             }
                             try {
                                 String datecriterium = "dateadded"; //NOI18N

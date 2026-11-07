@@ -195,7 +195,7 @@ public final class ActivityListSubItem extends DatabaseObject {
             defcount = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("defcount", 0d);
         }
         as.setMeasure(defunit);
-        as.setQuantityvalue(new BigDecimal(defcount));
+        as.setQuantityvalue(BigDecimal.valueOf(defcount));
         as.setTaxpercentvalue(BigDecimal.valueOf(deftax));
         return as;
     }

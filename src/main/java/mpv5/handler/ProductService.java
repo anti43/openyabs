@@ -388,7 +388,8 @@ public final class ProductService {
             try {
                 Object[][] data = QueryHandler.instanceOf().clone(Context.getSubItem()).freeSelectQuery(
                         "SELECT items.ids, items.cnumber, items.dateadded, contacts.cname, contacts.company,"
-                        + " subitems.quantityvalue, subitems.measure, subitems.totalnetvalue, subitems.description, subitems.cname"
+                        + " subitems.quantityvalue, subitems.measure, subitems.totalnetvalue, subitems.description, subitems.cname,"
+                        + " subitems.externalvalue, subitems.discount"
                         + " FROM subitems INNER JOIN items ON subitems.itemsids = items.ids"
                         + " LEFT OUTER JOIN contacts ON items.contactsids = contacts.ids"
                         + " WHERE subitems.originalproductsids = " + product.__getIDS()
@@ -407,14 +408,15 @@ public final class ProductService {
             "Internal ID", Headers.ITEM_DEFAULT.getValue()[1], Headers.ITEM_DEFAULT.getValue()[2],
             Messages.PRODUCT_USAGE_CONTACT.toString(), Messages.PRODUCT_USAGE_QUANTITY.toString(),
             Headers.ITEM_DEFAULT.getValue()[3], Messages.CONTACT_DETAILS.toString()});
-        m.setTypes(new Class[]{Integer.class, Object.class, Date.class, String.class, Double.class, Double.class, String.class});
+        m.setTypes(new Class[]{Integer.class, Object.class, Date.class, String.class, BigDecimal.class, BigDecimal.class, String.class});
         return m;
     }
 
     /**
      * @param d ids, cnumber, date, contact name, company, quantity, measure,
-     * net, description, name
-     * @return the table row
+     * net, description, name[, price, discount %]
+     * @return the table row; with price and discount the net value is that
+     * after discount (as on the document)
      */
     static Object[] usageRow(Object[] d) {
         String name = ContactService.plain(d[3]);
@@ -425,7 +427,12 @@ public final class ProductService {
         if (text.isEmpty()) {
             text = ContactService.plain(d[9]);
         }
-        return new Object[]{toInt(d[0]), d[1], d[2], contact, toDouble(d[5]), toDouble(d[7]), text};
+        BigDecimal quantity = toDecimal(d[5]);
+        BigDecimal net = toDecimal(d[7]);
+        if (d.length > 11 && d[10] != null) {
+            net = mpv5.utils.numberformat.InvoiceMath.lineNet(quantity, toDecimal(d[10]), toDecimal(d[11]));
+        }
+        return new Object[]{toInt(d[0]), d[1], d[2], contact, quantity, net, text};
     }
 
     private static Integer toInt(Object o) {
@@ -436,11 +443,12 @@ public final class ProductService {
         }
     }
 
-    private static Double toDouble(Object o) {
+    private static BigDecimal toDecimal(Object o) {
         try {
-            return Double.valueOf(String.valueOf(o).trim());
+            //the decimal as stored/shown (0.1), never the binary double
+            return new BigDecimal(String.valueOf(o).trim());
         } catch (Exception e) {
-            return 0d;
+            return BigDecimal.ZERO;
         }
     }
 
@@ -448,16 +456,16 @@ public final class ProductService {
      * @param model from {@link #loadUsage(Product, Usage)}
      * @return {number of documents, total quantity, total net value}
      */
-    public static double[] usageTotals(javax.swing.table.TableModel model) {
+    public static BigDecimal[] usageTotals(javax.swing.table.TableModel model) {
         java.util.Set<Object> documents = new java.util.HashSet<Object>();
-        double quantity = 0;
-        double net = 0;
+        BigDecimal quantity = BigDecimal.ZERO;
+        BigDecimal net = BigDecimal.ZERO;
         for (int i = 0; i < model.getRowCount(); i++) {
             documents.add(model.getValueAt(i, 0));
-            quantity += toDouble(model.getValueAt(i, USAGE_QUANTITY));
-            net += toDouble(model.getValueAt(i, USAGE_NET));
+            quantity = quantity.add(toDecimal(model.getValueAt(i, USAGE_QUANTITY)));
+            net = net.add(toDecimal(model.getValueAt(i, USAGE_NET)));
         }
-        return new double[]{documents.size(), quantity, net};
+        return new BigDecimal[]{BigDecimal.valueOf(documents.size()), quantity, net};
     }
     // </editor-fold>
 }

@@ -837,10 +837,9 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
         dataTable.getColumnModel().getColumn(3).setPreferredWidth(ModernTheme.px(220));
         amountColumn(dataTable, ProductService.USAGE_NET);
         resetFilter(dataTable, filter);
-        double[] totals = ProductService.usageTotals(m);
-        summary.setText(String.format(Messages.PRODUCT_USAGE_SUMMARY.toString(), (int) totals[0],
-                FormatNumber.formatDezimal(BigDecimal.valueOf(totals[1])),
-                FormatNumber.formatDezimal(BigDecimal.valueOf(totals[2]))));
+        BigDecimal[] totals = ProductService.usageTotals(m);
+        summary.setText(String.format(Messages.PRODUCT_USAGE_SUMMARY.toString(), totals[0].intValue(),
+                FormatNumber.formatDezimal(totals[1]), FormatNumber.formatDezimal(totals[2])));
     }
 
     private void openItem(Object id) {

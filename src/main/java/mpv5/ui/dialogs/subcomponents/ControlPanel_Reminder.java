@@ -275,7 +275,7 @@ public class ControlPanel_Reminder extends javax.swing.JPanel implements DataPan
             s.setCname(msg);
             s.setGroupsids(mpv5.db.objects.User.getCurrentUser().__getGroupsids());
             s.setDescription(jTextPane1.getText());
-            s.setExtravalue(FormatNumber.parseDezimal(labeledTextField1.getText()).doubleValue());
+            s.setExtravalue(fee());
             if (labeledCombobox2.getSelectedItem() != null) {
                 s.setTemplategroup(Integer.valueOf(labeledCombobox2.getSelectedItem().getId()));
             }
@@ -441,7 +441,7 @@ public class ControlPanel_Reminder extends javax.swing.JPanel implements DataPan
                 }
                 dataOwner.setDescription(jTextPane1.getText());
                 try {
-                    dataOwner.setExtravalue(Double.valueOf(labeledTextField1.getText()));
+                    dataOwner.setExtravalue(fee());
                 } catch (NumberFormatException numberFormatException) {
                     dataOwner.setExtravalue(0d);
                 }
@@ -575,5 +575,14 @@ public class ControlPanel_Reminder extends javax.swing.JPanel implements DataPan
 
     @Override
     public void reset() {
+    }
+
+    /**
+     * @return the fee as typed, in the format of the user's locale ("5,00"),
+     * 0 if empty or not a number
+     */
+    private double fee() {
+        java.math.BigDecimal v = FormatNumber.parseDezimal(labeledTextField1.getText());
+        return v == null ? 0d : FormatNumber.round(v).doubleValue();
     }
 }

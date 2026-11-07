@@ -42,8 +42,8 @@ class ProductServiceTest {
             "<p>Ink &amp; toner</p>", "P-1"});
         assertEquals(7, row[0]);
         assertEquals("ACME Ltd (Smith)", row[3]);
-        assertEquals(2.0, row[4]);
-        assertEquals(59.8, row[5]);
+        assertEquals(new BigDecimal("2.0"), row[4]);
+        assertEquals(new BigDecimal("59.8"), row[5]);
         assertEquals("Ink & toner", row[6]);
         //no description: the name of the position
         assertEquals("P-1", ProductService.usageRow(new Object[]{"7", "", null, "Smith", "", "1", "", "1", null, "P-1"})[6]);
@@ -56,9 +56,17 @@ class ProductServiceTest {
             {1, "R-1", null, "A", 2.0, 20.0, ""},
             {1, "R-1", null, "A", 3.0, 30.0, ""},
             {2, "R-2", null, "B", 5.0, 45.5, ""}}, new String[]{"id", "n", "d", "c", "q", "v", "x"});
-        double[] t = ProductService.usageTotals(m);
-        assertEquals(2, (int) t[0]);
-        assertEquals(10.0, t[1], 1e-9);
-        assertEquals(95.5, t[2], 1e-9);
+        BigDecimal[] t = ProductService.usageTotals(m);
+        assertEquals(2, t[0].intValue());
+        assertEquals(0, new BigDecimal("10").compareTo(t[1]));
+        assertEquals(0, new BigDecimal("95.5").compareTo(t[2]));
+    }
+
+    @Test
+    void usageNetIsAfterDiscount() {
+        //2 x 30.00 with 10 % discount: 54.00, not the 60.00 before discount
+        Object[] row = ProductService.usageRow(new Object[]{"7", "R-1", null, "Smith", "", "2", "pcs", "60",
+            "", "P-1", "30", "10"});
+        assertEquals(0, new BigDecimal("54.00").compareTo((BigDecimal) row[5]));
     }
 }

@@ -310,7 +310,16 @@ public final class ItemService {
             } else if (d2 != null) {
                 data2 = d2;
             }
-            if (data2 != null && data2.size() > 1 && ask.test(Messages.PartPayment_Existing.toString())) {
+            //earlier deposits / part payments of the order (the source itself excluded)
+            int others = 0;
+            if (data2 != null) {
+                for (Item i : data2) {
+                    if (!Objects.equals(i.__getIDS(), source.__getIDS())) {
+                        others++;
+                    }
+                }
+            }
+            if (others > 0 && ask.test(Messages.PartPayment_Existing.toString())) {
                 for (Item i : data2) {
                     if (Objects.equals(i.__getIDS(), source.__getIDS())) {
                         continue;
@@ -320,7 +329,32 @@ public final class ItemService {
             }
         }
         i2.setReforderids(source.__getIDS());
+        //the totals of the saved positions (the clone has those of the source)
+        updateTotals(i2);
         return i2;
+    }
+
+    /**
+     * Sets net, discount and VAT of the document from its saved positions
+     * (EN 16931, as the view and the e-invoice compute them) and saves it
+     *
+     * @param item
+     */
+    public static void updateTotals(Item item) {
+        List<mpv5.utils.numberformat.InvoiceMath.Line> lines = new ArrayList<mpv5.utils.numberformat.InvoiceMath.Line>();
+        BigDecimal discountGross = BigDecimal.ZERO;
+        for (SubItem si : item.getSubitems()) {
+            lines.add(new mpv5.utils.numberformat.InvoiceMath.Line(si.__getQuantityvalue(), si.__getExternalvalue(), si.__getDiscount(), si.__getTaxpercentvalue()));
+            BigDecimal d = mpv5.utils.numberformat.InvoiceMath.lineDiscount(si.__getQuantityvalue(), si.__getExternalvalue(), si.__getDiscount());
+            discountGross = discountGross.add(mpv5.utils.numberformat.InvoiceMath.round2(
+                    d.multiply(BigDecimal.ONE.add(mpv5.utils.numberformat.InvoiceMath.rate(si.__getTaxpercentvalue()).movePointLeft(2)))));
+        }
+        mpv5.utils.numberformat.InvoiceMath.Totals t = mpv5.utils.numberformat.InvoiceMath.totals(lines);
+        item.setNetvalue(t.amount);
+        item.setDiscountvalue(t.discount);
+        item.setTaxvalue(t.tax);
+        item.setDiscountGrosvalue(discountGross);
+        item.save(true);
     }
 
     /**
@@ -472,5 +506,109 @@ public final class ItemService {
             }
             return new Object[]{ordered, used, measure, description, (float) Math.round(status * 100f), status};
         }
+    }
+
+    /**
+     * The positions of a document as new positions (e.g. for a new document
+     * made from it): quantity, unit, price, VAT rate, discount, product and
+     * texts as they are - only not linked to the source
+     *
+     * @param source
+     * @return new positions in the order of the source
+     */
+    public static SubItem[] copyPositions(Item source) {
+        SubItem[] src = source.getSubitems();
+        SubItem[] out = new SubItem[src.length];
+        for (int i = 0; i < src.length; i++) {
+            out[i] = copyPosition(src[i]);
+            out[i].setOrdernr(i);
+        }
+        return out;
+    }
+
+    /**
+     * @param si
+     * @return a new, unsaved copy of the position
+     */
+    public static SubItem copyPosition(SubItem si) {
+        SubItem c = new SubItem();
+        c.setCname(si.getCname());
+        c.setDescription(si.__getDescription());
+        c.setMeasure(si.__getMeasure());
+        c.setLinkurl(si.__getLinkurl());
+        c.setCountvalue(si.__getCountvalue());
+        c.setQuantityvalue(si.__getQuantityvalue());
+        c.setInttype(si.getInttype());
+        c.setExternalvalue(si.__getExternalvalue());
+        c.setInternalvalue(si.__getInternalvalue());
+        c.setTaxpercentvalue(si.__getTaxpercentvalue());
+        c.setDiscount(si.__getDiscount());
+        c.setOriginalproductsids(si.__getOriginalproductsids());
+        c.setDatedelivery(si.__getDatedelivery());
+        c.setIDS(-1);
+        return c;
+    }
+
+    /**
+     * A whole document as position(s) of another document: one position per
+     * VAT rate with the net amount after discount, so that net, VAT and gross
+     * stay exactly those of the source (also with mixed VAT rates)
+     *
+     * @param source
+     * @param description the text of the position(s)
+     * @return at least one position
+     */
+    public static List<SubItem> asPositions(Item source, String description) {
+        return asPositions(source.getSubitems(), source.__getCname(), source.__getNetvalue(),
+                source.__getDiscountvalue(), source.__getTaxvalue(), description);
+    }
+
+    /**
+     * @param positions the positions of the document
+     * @param cname the name of the document
+     * @param netvalue stored net (before discount), used without positions
+     * @param discountvalue stored discount, used without positions
+     * @param taxvalue stored VAT, used without positions
+     * @param description the text of the position(s)
+     * @return see {@link #asPositions(Item, String)}
+     */
+    static List<SubItem> asPositions(SubItem[] positions, String cname, BigDecimal netvalue,
+            BigDecimal discountvalue, BigDecimal taxvalue, String description) {
+        List<mpv5.utils.numberformat.InvoiceMath.Line> lines = new ArrayList<mpv5.utils.numberformat.InvoiceMath.Line>();
+        for (SubItem si : positions) {
+            lines.add(new mpv5.utils.numberformat.InvoiceMath.Line(si.__getQuantityvalue(), si.__getExternalvalue(), si.__getDiscount(), si.__getTaxpercentvalue()));
+        }
+        Map<BigDecimal, BigDecimal[]> byRate = new LinkedHashMap<BigDecimal, BigDecimal[]>();
+        for (Map.Entry<BigDecimal, BigDecimal[]> e : mpv5.utils.numberformat.InvoiceMath.totals(lines).byRate.entrySet()) {
+            if (e.getValue()[0].signum() != 0) {
+                byRate.put(e.getKey(), e.getValue());
+            }
+        }
+        List<SubItem> out = new ArrayList<SubItem>();
+        if (byRate.isEmpty()) {
+            //no positions (or only text): the stored totals
+            BigDecimal net = nz(netvalue).subtract(nz(discountvalue));
+            BigDecimal rate = net.signum() == 0 ? BigDecimal.ZERO
+                    : nz(taxvalue).multiply(new BigDecimal(100)).divide(net, 2, RoundingMode.HALF_UP);
+            byRate.put(rate, new BigDecimal[]{net, nz(taxvalue)});
+        }
+        for (Map.Entry<BigDecimal, BigDecimal[]> e : byRate.entrySet()) {
+            SubItem s = new SubItem();
+            s.setCname(cname);
+            s.setDescription(byRate.size() > 1
+                    ? description + " (" + e.getKey().stripTrailingZeros().toPlainString() + " %)"
+                    : description);
+            s.setQuantityvalue(BigDecimal.ONE);
+            s.setExternalvalue(e.getValue()[0]);
+            s.setInternalvalue(e.getValue()[0]);
+            s.setTaxpercentvalue(e.getKey());
+            s.setIDS(-1);
+            out.add(s);
+        }
+        return out;
+    }
+
+    private static BigDecimal nz(BigDecimal v) {
+        return v == null ? BigDecimal.ZERO : v;
     }
 }

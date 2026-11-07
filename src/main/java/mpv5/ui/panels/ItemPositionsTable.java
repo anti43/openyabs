@@ -510,16 +510,20 @@ public class ItemPositionsTable extends JPanel {
                 if (!User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "ordersoverproducts")) {
                     ProductSelectDialog.instanceOf(getModel(), itemtable.getSelectedRow(), e, 0, null, null);
                 } else {
-                    SubItem s = new SubItem();
                     Item o = (Item) Popup.SelectValue(Context.getOrder());
                     if (o != null) {
-                        s.setQuantityvalue(BigDecimal.ONE);
-                        s.setItemsids(o.__getIDS());
-                        s.setExternalvalue(o.__getNetvalue().add(o.__getTaxvalue()));
-                        s.setTotalnetvalue(o.__getNetvalue());
-                        s.setCname(o.__getCname());
-                        s.setDescription(Messages.TYPE_ORDER + " " + o.__getCnumber() + " " + DateConverter.getDefDateString(o.__getDateadded()));
-                        getModel().setRowAt(s.getRowData(itemtable.getSelectedRow()), itemtable.getSelectedRow(), 1);
+                        //the order as position(s): one per VAT rate, net after discount
+                        //(before: the gross amount as net price without VAT)
+                        int row = itemtable.getSelectedRow();
+                        MPTableModel m = getModel();
+                        java.util.List<SubItem> ps = mpv5.handler.ItemService.asPositions(o,
+                                Messages.TYPE_ORDER + " " + o.__getCnumber() + " " + DateConverter.getDefDateString(o.__getDateadded()));
+                        for (int k = 0; k < ps.size(); k++) {
+                            if (k > 0) {
+                                m.insertRow(row + k);
+                            }
+                            m.setRowAt(ps.get(k).getRowData(row + k), row + k, 1);
+                        }
                         usedOrders.add(o);
                     }
                 }

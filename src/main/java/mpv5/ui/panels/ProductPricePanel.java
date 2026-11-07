@@ -23,16 +23,22 @@ public class ProductPricePanel extends javax.swing.JPanel {
     public ProductPricePanel(BigDecimal p, BigDecimal m) {
         initComponents();
         price.set_ValueClass(Double.class);
-        price.set_Text(p.toPlainString());
+        //in the user's number format (12,50), all decimals of the price
+        price.set_Text(priceFormat().format(p));
         minimum.setValue(m.intValue());
     }
 
     public BigDecimal getPrize() {
         try {
-            return new BigDecimal(price.get_Text());
+            BigDecimal v = mpv5.utils.numberformat.FormatNumber.parseDezimal(price.get_Text());
+            return v == null ? BigDecimal.ZERO : v;
         } catch (Exception e) {
             return BigDecimal.ZERO;
         }
+    }
+
+    private static java.text.DecimalFormat priceFormat() {
+        return new java.text.DecimalFormat("#,##0.00####", java.text.DecimalFormatSymbols.getInstance());
     }
 
     public BigDecimal getMin() {
