@@ -521,21 +521,19 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
      * @return
      */
     public DataPanel getTabAt(int position) {
-        if (getTabPane().getComponent(position) instanceof DataPanel) {
-            return (DataPanel) getTabPane().getComponent(position);
-        } else if (getTabPane().getComponent(position) instanceof JScrollPane) {
-            try {
-                return (DataPanel) ((JScrollPane) getTabPane().getComponent(position)).getComponent(0);
-            } catch (ClassCastException e) {
-                try {
-                    return (DataPanel) ((JViewport) ((JScrollPane) getTabPane().getComponent(position)).getComponent(0)).getComponent(0);
-                } catch (Exception et) {
-                    return null;
-                }
-            }
-        } else {
+        //the content of the tab: with scrolling tabs the tab pane has further children
+        //(arrows, viewport), so getComponent(i) is not the i-th tab
+        if (position < 0 || position >= getTabPane().getTabCount()) {
             return null;
         }
+        Component c = getTabPane().getComponentAt(position);
+        if (c instanceof DataPanel) {
+            return (DataPanel) c;
+        } else if (c instanceof JScrollPane) {
+            Component view = ((JScrollPane) c).getViewport().getView();
+            return view instanceof DataPanel ? (DataPanel) view : null;
+        }
+        return null;
     }
 
     @Override
@@ -823,7 +821,7 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
             for (int i = 0; i < count; i++) {
                 if (getTabAt(i) != null) {
                     DataPanel panel = getTabAt(i);
-                    if (item.equals(panel.getDataOwner())) {
+                    if (sameRecord(item, panel.getDataOwner())) {
                         getTabPane().setSelectedIndex(i);
                         if (tabTitle == null) {
                             getTabPane().setTitleAt(i, item.__getCname());
@@ -938,26 +936,13 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
      */
     @Override
     public void addOrShowTab(JComponent instanceOf, Object label) {
-        Component[] tabs = getTabPane().getComponents();
         boolean found = false;
-        JScrollPane scroll = null;
-        for (int i = 0; i < tabs.length; i++) {
-            JComponent component = (JComponent) tabs[i];
-            if (component instanceof JScrollPane) {
-                scroll = (JScrollPane) component;
-                component = (JComponent) ((JScrollPane) component).getComponent(0);
-            }
-            try {
-                if (component.getComponent(0).equals(instanceOf)) {
-                    if (scroll == null) {
-                        getTabPane().setSelectedComponent(instanceOf);
-                    } else {
-                        getTabPane().setSelectedComponent(scroll);
-                    }
-                    found = true;
-                }
-            } catch (Exception e) {
-                Log.Debug(this, e.getMessage());
+        for (int i = 0; i < getTabPane().getTabCount() && !found; i++) {
+            Component c = getTabPane().getComponentAt(i);
+            Component view = c instanceof JScrollPane ? ((JScrollPane) c).getViewport().getView() : c;
+            if (view != null && view.equals(instanceOf)) {
+                getTabPane().setSelectedIndex(i);
+                found = true;
             }
         }
 
@@ -3594,13 +3579,10 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 
     @Override
     public void removeTab(DataPanel t) {
-        int count = getTabPane().getTabCount();
-        for (int i = 0; i < count; i++) {
-            Component c = getTabPane().getComponent(i);
-            if (c == t) {
-                getTabPane().remove(c);
-            } else if (c instanceof JScrollPane && ((JScrollPane) c).getViewport().getView() == t) {
-                getTabPane().remove(c);
+        for (int i = getTabPane().getTabCount() - 1; i >= 0; i--) {
+            Component c = getTabPane().getComponentAt(i);
+            if (c == t || (c instanceof JScrollPane && ((JScrollPane) c).getViewport().getView() == t)) {
+                getTabPane().removeTabAt(i);
             }
         }
         getTabPane().validate();
@@ -3647,8 +3629,35 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     @Override
     public void showPreviousDatabaseObject() {
         if (hasPreviousDatabaseObject()) {
-            addOrShowTab(FLOW.get(pif - 1));
+            showInFlow(pif - 1);
         }
+    }
+
+    /**
+     * @return true if both are the same row of the database, also if they
+     * were loaded in different contexts (e.g. a contact as customer and as
+     * contact)
+     */
+    private static boolean sameRecord(DatabaseObject a, DatabaseObject b) {
+        return a != null && b != null && a.isExisting() && b.isExisting()
+                && a.__getIDS().equals(b.__getIDS()) && a.getDbIdentity().equals(b.getDbIdentity());
+    }
+
+    /**
+     * Back / forward: shows the record of the history, in its open tab if
+     * there is one (instead of opening it again)
+     */
+    private void showInFlow(int index) {
+        DatabaseObject d = FLOW.get(index);
+        for (int i = 0; i < getTabPane().getTabCount(); i++) {
+            DataPanel p = getTabAt(i);
+            if (p != null && sameRecord(d, p.getDataOwner())) {
+                getTabPane().setSelectedIndex(i);
+                setPointInFlow(index);
+                return;
+            }
+        }
+        addOrShowTab(d);
     }
 
     @Override
@@ -3659,7 +3668,7 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     @Override
     public void showNextDatabaseObject() {
         if (hasNextDatabaseObject()) {
-            addOrShowTab(FLOW.get(pif + 1));
+            showInFlow(pif + 1);
         }
     }
 

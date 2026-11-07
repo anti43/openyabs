@@ -305,20 +305,24 @@ public abstract class ModernDataPanel extends JPanel implements DataPanel, Scrol
      * @param title
      */
     protected void setTabTitle(String title) {
-        if (title == null || !(getParent() instanceof JViewport || getParent() instanceof JTabbedPane)) {
+        if (title == null) {
             return;
         }
-        JTabbedPane tabs = null;
-        //this->viewport->scrollpane->tabbedpane
-        if (getParent().getParent() != null && getParent().getParent().getParent() instanceof JTabbedPane) {
-            tabs = (JTabbedPane) getParent().getParent().getParent();
-        } else if (getParent() instanceof JTabbedPane) {
-            tabs = (JTabbedPane) getParent();
+        //the tab which holds this view (not the selected one: the view may be filled later)
+        Component child = this;
+        Component parent = getParent();
+        while (parent != null && !(parent instanceof JTabbedPane)) {
+            child = parent;
+            parent = parent.getParent();
+        }
+        if (parent != null) {
+            JTabbedPane tabs = (JTabbedPane) parent;
+            int i = tabs.indexOfComponent(child);
+            if (i >= 0) {
+                tabs.setTitleAt(i, title);
+            }
         } else if (getRootPane() != null && getRootPane().getParent() instanceof JFrame) {
             ((JFrame) getRootPane().getParent()).setTitle(title);
-        }
-        if (tabs != null && tabs.getSelectedIndex() >= 0) {
-            tabs.setTitleAt(tabs.getSelectedIndex(), title);
         }
     }
 
