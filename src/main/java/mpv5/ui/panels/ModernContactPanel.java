@@ -294,8 +294,7 @@ public class ModernContactPanel extends ModernDataPanel {
         JButton schedule = new JButton(text("ContactPanel.jButton3.text"));
         schedule.addActionListener(e -> showSchedule());
         tb.addAction(web, null);
-        //Ctrl+H is backspace in text fields, so Ctrl+Shift+H
-        tb.addAction(history, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_H, java.awt.event.InputEvent.CTRL_DOWN_MASK | java.awt.event.InputEvent.SHIFT_DOWN_MASK));
+        tb.addAction(history, ModernCommandBar.HISTORY);
         tb.addAction(schedule, null);
         tb.addAction(printing, null);
         //Ctrl+F: find in the documents of the contact

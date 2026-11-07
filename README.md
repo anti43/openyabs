@@ -44,6 +44,9 @@ Alle Aktionen zum ganzen Datensatz stehen in einer Befehlsleiste oben (Speichern
 | Strg+D | Favorit an/aus |
 | Strg+Entf | Löschen (mit Rückfrage; in Textfeldern: Wort löschen) |
 | Strg+Umschalt+H | Verlauf (Kontakt) |
+| Strg+F1 | Übersicht aller Tastenkürzel |
+
+**Alle Tastenkürzel** zeigt *Hilfe > Tastenkürzel* (Strg+F1); die Kürzel des Menüs werden dort direkt aus dem Menü gelesen. Geändert im Hauptmenü, damit nichts doppelt belegt ist und nichts überrascht: *Beenden* Strg+Q (vorher Strg+X), *Als neu speichern* Strg+Umschalt+S (vorher Strg+N), *Kopieren* in die Ablage Strg+C und *Einfügen* Strg+V (vorher Strg+N / Strg+B; in Textfeldern und Tabellen bleibt Text kopieren/einfügen), *Alle Registerkarten schließen* Strg+Umschalt+W (vorher Strg+L, das weiterhin die Log-Konsole öffnet).
 
 Die Auswahl trifft `YabsViewProxy` (`registerModernView`); alle anderen Ansichten bleiben unverändert.
 

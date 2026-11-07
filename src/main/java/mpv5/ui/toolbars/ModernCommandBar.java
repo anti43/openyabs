@@ -71,6 +71,40 @@ public class ModernCommandBar extends JPanel {
     public static final KeyStroke PASTE = KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.CTRL_DOWN_MASK);
     public static final KeyStroke FAVOURITE = KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.CTRL_DOWN_MASK);
     public static final KeyStroke DELETE = KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, InputEvent.CTRL_DOWN_MASK);
+    /**
+     * Shortcut of the help with all shortcuts
+     */
+    public static final KeyStroke HELP = KeyStroke.getKeyStroke(KeyEvent.VK_F1, InputEvent.CTRL_DOWN_MASK);
+    /**
+     * Shortcut of the history of a contact (Ctrl+H is backspace in text
+     * fields)
+     */
+    public static final KeyStroke HISTORY = KeyStroke.getKeyStroke(KeyEvent.VK_H, InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK);
+
+    /**
+     * The shortcuts of the modern views with their descriptions, for the
+     * help ({@link mpv5.ui.dialogs.ShortcutsDialog})
+     *
+     * @return {KeyStroke, description} pairs
+     */
+    public static java.util.List<Object[]> shortcuts() {
+        java.util.List<Object[]> l = new java.util.ArrayList<Object[]>();
+        l.add(new Object[]{SAVE, text("MPV5View.jButton25.toolTipText")});
+        l.add(new Object[]{SAVE_AS_NEW, text("MPV5View.jButton4.toolTipText")});
+        l.add(new Object[]{REVERT, Messages.SHORTCUT_REVERT.toString()});
+        l.add(new Object[]{PRINT, text("MPV5View.jButton23.toolTipText")});
+        l.add(new Object[]{PDF, text("DataPanelTB.pdfButton.toolTipText")});
+        l.add(new Object[]{MAIL, text("DataPanelTB.mailButton.toolTipText")});
+        l.add(new Object[]{FIND, Messages.SHORTCUT_FIND_LIST.toString()});
+        l.add(new Object[]{SEARCH_PANEL, text("DataPanelTB.but1.toolTipText")});
+        l.add(new Object[]{COPY, Messages.SHORTCUT_COPY_RECORD.toString()});
+        l.add(new Object[]{PASTE, Messages.SHORTCUT_PASTE_RECORD.toString()});
+        l.add(new Object[]{FAVOURITE, text("MPV5View.jButton24.toolTipText")});
+        l.add(new Object[]{DELETE, Messages.SHORTCUT_DELETE_RECORD.toString()});
+        l.add(new Object[]{HISTORY, Messages.SHORTCUT_HISTORY.toString()});
+        l.add(new Object[]{HELP, Messages.KEYBOARD_SHORTCUTS.toString()});
+        return l;
+    }
     private final DataPanel view;
     private final JComponent viewComponent;
     private final JPanel left = new JPanel(new WrapLayout(FlowLayout.LEFT, ModernTheme.px(4), ModernTheme.px(4)));
@@ -158,6 +192,9 @@ public class ModernCommandBar extends JPanel {
         odt = item(more, text("DataPanelTB.odtButton.toolTipText"), null, null);
         odt.setVisible(view instanceof ExportablePanel);
         odt.addActionListener(e -> RecordActions.odt(view));
+        more.addSeparator();
+        JMenuItem keys = item(more, Messages.KEYBOARD_SHORTCUTS.toString(), "/images/16/configure_shortcuts.png", HELP);
+        keys.addActionListener(e -> mpv5.ui.dialogs.ShortcutsDialog.show(this));
         JButton moreButton = button(Messages.MORE_ACTIONS.toString() + " \u25BE", null, null);
         moreButton.addActionListener(e -> more.show(moreButton, 0, moreButton.getHeight()));
 
@@ -207,6 +244,7 @@ public class ModernCommandBar extends JPanel {
         shortcut(COPY, this::copy);
         shortcut(PASTE, () -> RecordActions.paste(view));
         shortcut(FAVOURITE, favourite::doClick);
+        shortcut(HELP, () -> mpv5.ui.dialogs.ShortcutsDialog.show(this));
         shortcut(DELETE, () -> {
             if (editable) {
                 RecordActions.delete(view);

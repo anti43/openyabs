@@ -511,6 +511,23 @@ public enum Messages {
     PRODUCT_SET_IMAGE("Use as product image"),
     PRODUCT_NO_IMAGE("No image - add a picture file and use it as product image"),
     MORE_ACTIONS("More"),
+    KEYBOARD_SHORTCUTS("Keyboard shortcuts"),
+    SHORTCUTS_INFO("The shortcuts of a contact or product view work while you work in it (cursor in a field, list or button of the view). Otherwise the shortcuts of the menu apply. Text fields and tables keep their usual keys."),
+    SHORTCUTS_RECORD("Contacts and products (modern view)"),
+    SHORTCUTS_MENU("Main window (menu)"),
+    SHORTCUTS_TEXT("Text fields and tables"),
+    SHORTCUT_REVERT("Discard changes (show the saved data)"),
+    SHORTCUT_FIND_LIST("Find: filter the documents list"),
+    SHORTCUT_COPY_RECORD("Copy the record to the temporary list (outside text fields)"),
+    SHORTCUT_PASTE_RECORD("Paste from the temporary list (outside text fields)"),
+    SHORTCUT_DELETE_RECORD("Delete the record (asks first; in text fields: delete word)"),
+    SHORTCUT_HISTORY("History (contacts)"),
+    SHORTCUT_TEXT_COPY("Copy / cut / paste text"),
+    SHORTCUT_TEXT_ALL("Select all"),
+    SHORTCUT_TEXT_WORD("Delete word before / after the cursor"),
+    SHORTCUT_TEXT_FIELDS("Next / previous field"),
+    SHORTCUT_TEXT_SEARCH("In name or number: open the record with this name / number"),
+    SHORTCUT_TABLE_COPY("In tables: copy the selected cells"),
     MODERN_UI("Modern views for contacts and products (preview, takes effect for newly opened tabs)");
 
 

@@ -595,6 +595,12 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
         reloadFavorites();
         identifierView = this;
         filedialog = new DialogForFile(DialogForFile.FILES_ONLY);
+        //Help > Keyboard shortcuts
+        javax.swing.JMenuItem shortcuts = new javax.swing.JMenuItem(Messages.KEYBOARD_SHORTCUTS.toString());
+        shortcuts.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/16/configure_shortcuts.png")));
+        shortcuts.setAccelerator(mpv5.ui.toolbars.ModernCommandBar.HELP);
+        shortcuts.addActionListener(e -> mpv5.ui.dialogs.ShortcutsDialog.show(getFrame().getRootPane()));
+        helpmenu.add(shortcuts, 0);
 //        jMenuItem24.setEnabled(!LocalSettings.getBooleanProperty(LocalSettings.OFFICE_REMOTE));
 
         nav_outlookbar.setAnimated(navBarAnimated);
@@ -1604,7 +1610,7 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
         });
         fileMenu.add(jMenuItem13);
 
-        jMenuItem14.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem14.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/16/filesaveas.png"))); // NOI18N
         jMenuItem14.setText(bundle.getString("MPView.jMenuItem14.text")); // NOI18N
         jMenuItem14.setName("jMenuItem14"); // NOI18N
@@ -1793,7 +1799,7 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
         jSeparator9.setName("jSeparator9"); // NOI18N
         fileMenu.add(jSeparator9);
 
-        jMenuItem12.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem12.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/16/remove.png"))); // NOI18N
         jMenuItem12.setText(bundle.getString("MPView.jMenuItem12.text")); // NOI18N
         jMenuItem12.setName("jMenuItem12"); // NOI18N
@@ -1822,7 +1828,7 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
         jSeparator4.setName("jSeparator4"); // NOI18N
         editMenu.add(jSeparator4);
 
-        jMenuItem9.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem9.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/16/editcopy.png"))); // NOI18N
         jMenuItem9.setText(bundle.getString("MPView.jMenuItem9.text")); // NOI18N
         jMenuItem9.setName("jMenuItem9"); // NOI18N
@@ -1833,7 +1839,7 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
         });
         editMenu.add(jMenuItem9);
 
-        jMenuItem16.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_B, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem16.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem16.setText(bundle.getString("MPView.jMenuItem16.text")); // NOI18N
         jMenuItem16.setName("jMenuItem16"); // NOI18N
         jMenuItem16.addActionListener(new java.awt.event.ActionListener() {
@@ -1908,7 +1914,7 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
         jMenu15.setText(bundle.getString("MPView.jMenu15.text")); // NOI18N
         jMenu15.setName("jMenu15"); // NOI18N
 
-        jMenuItem35.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem35.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem35.setText(bundle.getString("MPView.jMenuItem35.text")); // NOI18N
         jMenuItem35.setName("jMenuItem35"); // NOI18N
         jMenuItem35.addActionListener(new java.awt.event.ActionListener() {
@@ -2455,7 +2461,9 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
 
     private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem9ActionPerformed
 
-        getClipboardMenu().add(new ClipboardMenuItem(getCurrentTab().getDataOwner()));
+        if (getCurrentTab() != null && getCurrentTab().getDataOwner() != null && getCurrentTab().getDataOwner().isExisting()) {
+            getClipboardMenu().add(new ClipboardMenuItem(getCurrentTab().getDataOwner()));
+        }
 
     }//GEN-LAST:event_jMenuItem9ActionPerformed
 
@@ -2517,7 +2525,9 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
     }//GEN-LAST:event_jMenuItem14ActionPerformed
 
     private void jMenuItem16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem16ActionPerformed
-        getCurrentTab().paste(getClipboardItems());
+        if (getCurrentTab() != null && getClipboardItems() != null && getClipboardItems().length > 0) {
+            getCurrentTab().paste(getClipboardItems());
+        }
     }//GEN-LAST:event_jMenuItem16ActionPerformed
 
     private void jMenuItem15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem15ActionPerformed
