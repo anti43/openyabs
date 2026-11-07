@@ -32,6 +32,16 @@ import javax.swing.JButton;
 public class PrimaryButton extends JButton {
 
     private static final long serialVersionUID = 1L;
+    private Color color;
+
+    /**
+     * @param color fill color instead of the accent color (e.g. red for
+     * Delete), null for the accent color
+     */
+    public void setColor(Color color) {
+        this.color = color;
+        repaint();
+    }
 
     /**
      * @param text
@@ -60,7 +70,7 @@ public class PrimaryButton extends JButton {
     protected void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g.create();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        Color c = ModernTheme.accent();
+        Color c = color != null ? color : ModernTheme.accent();
         if (!isEnabled()) {
             c = ModernTheme.muted();
         } else if (getModel().isPressed()) {

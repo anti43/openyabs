@@ -106,7 +106,9 @@ public final class RecordActions {
      */
     public static void delete(DataPanel view) {
         DatabaseObject dato = view.getDataOwner();
-        if (dato.isExisting() && Popup.Y_N_dialog(Messages.REALLY_DELETE)) {
+        //lists what is deleted with the record before asking
+        if (dato.isExisting() && mpv5.ui.dialogs.DeleteConfirmDialog.confirm(
+                view instanceof java.awt.Component ? (java.awt.Component) view : null, dato)) {
             dato.getPanelData(view);
             dato.delete();
             view.refresh();
