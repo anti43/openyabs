@@ -1198,8 +1198,8 @@ public class QueryHandler implements Cloneable {
 
     private void createPs() {
         try {
-            ivpps = sqlConn.prepareStatement(ivpquery, PreparedStatement.RETURN_GENERATED_KEYS);
-            uvpps = sqlConn.prepareStatement(uvpquery, PreparedStatement.RETURN_GENERATED_KEYS);
+            ivpps = sqlConn.prepareStatement(ivpquery, DatabaseConnection.generatedKeys(ivpquery));
+            uvpps = sqlConn.prepareStatement(uvpquery, DatabaseConnection.generatedKeys(uvpquery));
         } catch (SQLException ex) {
             Log.Debug(this, ex.getMessage());
         }
@@ -1384,7 +1384,7 @@ public class QueryHandler implements Cloneable {
                 if (psHistory == null) {
                     try {
                         String query = "INSERT INTO " + Context.getHistory().getDbIdentity() + " (cname, username, dbidentity, intitem, groupsids, dateadded) VALUES (?, ?, ?, ?, ?, ?)";
-                        psHistory = sqlConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
+                        psHistory = sqlConn.prepareStatement(query, DatabaseConnection.generatedKeys(query));
                     } catch (SQLException ex) {
                         mpv5.logging.Log.Debug(ex);//Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -1418,7 +1418,7 @@ public class QueryHandler implements Cloneable {
                 if (psLock == null) {
                     try {
                         String query = "INSERT INTO " + Context.getLock().getDbIdentity() + " (cname, rowid, usersids) VALUES (?, ?, ?)";
-                        psLock = sqlConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
+                        psLock = sqlConn.prepareStatement(query, DatabaseConnection.generatedKeys(query));
                     } catch (SQLException ex) {
                         mpv5.logging.Log.Debug(ex);//Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -1440,7 +1440,7 @@ public class QueryHandler implements Cloneable {
                 if (psUnLock == null) {
                     try {
                         String query = "DELETE FROM " + Context.getLock().getDbIdentity() + " WHERE cname = ? AND rowid = ? AND usersids = ?";
-                        psUnLock = sqlConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
+                        psUnLock = sqlConn.prepareStatement(query, DatabaseConnection.generatedKeys(query));
                     } catch (SQLException ex) {
                         mpv5.logging.Log.Debug(ex);//Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -1786,7 +1786,8 @@ public class QueryHandler implements Cloneable {
      */
     public PreparedStatement buildPreparedSelectStatement(String columns[], String[] conditionColumns, String order, boolean like) throws SQLException {
 
-        return sqlConn.prepareStatement(buildQuery(columns, conditionColumns, order, like, "OR"), PreparedStatement.RETURN_GENERATED_KEYS);
+        String sql = buildQuery(columns, conditionColumns, order, like, "OR");
+        return sqlConn.prepareStatement(sql, DatabaseConnection.generatedKeys(sql));
     }
 
     /**
@@ -2423,7 +2424,7 @@ public class QueryHandler implements Cloneable {
             if (log != null) {
                 log.append("\n " + query);
             }
-            stm.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
+            stm.executeUpdate(query, DatabaseConnection.generatedKeys(query));
             int res = stm.getUpdateCount();
             if (log != null) {
                 log.append("\n " + res + " rows affected.");
@@ -2656,7 +2657,7 @@ public class QueryHandler implements Cloneable {
             int fileLength = (int) file.length();
             name = RandomText.getText(23);
             java.io.InputStream fin = new java.io.FileInputStream(file);
-            PreparedStatement ps = sqlConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
+            PreparedStatement ps = sqlConn.prepareStatement(query, DatabaseConnection.generatedKeys(query));
             ps.setString(1, name);
             ps.setInt(5, mpv5.db.objects.User.getCurrentUser().getID());
             ps.setLong(4, file.length());
@@ -3045,7 +3046,7 @@ public class QueryHandler implements Cloneable {
                     int fileLength = (int) file.length();
                     name = RandomText.getText(23);
                     java.io.InputStream fin = new java.io.FileInputStream(file);
-                    PreparedStatement ps = sqlConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
+                    PreparedStatement ps = sqlConn.prepareStatement(query, DatabaseConnection.generatedKeys(query));
                     ps.setString(1, name);
                     ps.setLong(4, file.length());
                     ps.setDate(3, new java.sql.Date(new Date().getTime()));
@@ -3151,7 +3152,7 @@ public class QueryHandler implements Cloneable {
                     int fileLength = (int) file.length();
                     name = RandomText.getText(23);
                     java.io.InputStream fin = new java.io.FileInputStream(file);
-                    PreparedStatement ps = sqlConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
+                    PreparedStatement ps = sqlConn.prepareStatement(query, DatabaseConnection.generatedKeys(query));
                     ps.setBinaryStream(1, fin, fileLength);
                     ps.setString(2, cname);
                     ps.execute();
