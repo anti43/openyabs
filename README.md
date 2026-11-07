@@ -29,6 +29,22 @@ In der modernen Ansicht stehen die Einstellungen des Reiters *E-Rechnung* (Versa
 
 In der modernen Produktansicht stehen alle Daten ohne Reiter in Karten (Allgemein, Preise, Einordnung, Beschreibung, Hersteller und Lieferanten, Lager, Staffelpreise, Bild und Dateien). Einkaufspreis, Aufschlag %, Verkaufspreis und Bruttopreis rechnen sich beim Tippen gegenseitig aus. Das Produktbild erscheint im Kopf. Unten stehen die Angebote, Aufträge, Rechnungen und Gutschriften mit diesem Produkt (Kontakt, Menge, Netto der Position, Positionstext) samt Summe.
 
+Alle Aktionen zum ganzen Datensatz stehen in einer Befehlsleiste oben (Speichern hervorgehoben, Löschen rechts abgesetzt, Seltenes unter *Mehr*). Tastenkürzel, solange der Fokus in der Ansicht ist:
+
+| Kürzel | Aktion |
+|---|---|
+| Strg+S | Speichern |
+| Strg+Umschalt+S | Als neu speichern |
+| Strg+R | Änderungen verwerfen |
+| Strg+P / Strg+Umschalt+P | Drucken / PDF |
+| Strg+E | E-Mail |
+| Strg+F | Vorgangsliste filtern |
+| Strg+Umschalt+F | Suchleiste links |
+| Strg+C / Strg+V | Datensatz in die Ablage / aus der Ablage (in Textfeldern und Tabellen: Text kopieren/einfügen wie gewohnt) |
+| Strg+D | Favorit an/aus |
+| Strg+Entf | Löschen (mit Rückfrage; in Textfeldern: Wort löschen) |
+| Strg+Umschalt+H | Verlauf (Kontakt) |
+
 Die Auswahl trifft `YabsViewProxy` (`registerModernView`); alle anderen Ansichten bleiben unverändert.
 
 ## E-Rechnung (XRechnung / ZUGFeRD)

@@ -510,6 +510,7 @@ public enum Messages {
     PRODUCT_TIER_PRICE("Price (net)"),
     PRODUCT_SET_IMAGE("Use as product image"),
     PRODUCT_NO_IMAGE("No image - add a picture file and use it as product image"),
+    MORE_ACTIONS("More"),
     MODERN_UI("Modern views for contacts and products (preview, takes effect for newly opened tabs)");
 
 

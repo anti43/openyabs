@@ -90,7 +90,7 @@ import mpv5.ui.modern.ModernTheme;
 import mpv5.ui.modern.ResponsiveGrid;
 import mpv5.ui.modern.WrapLayout;
 import mpv5.ui.popups.FileTablePopUp;
-import mpv5.ui.toolbars.DataPanelTB;
+import mpv5.ui.toolbars.ModernCommandBar;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.export.Export;
 import mpv5.utils.files.FileDirectoryHandler;
@@ -119,7 +119,7 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
     private static final long serialVersionUID = 1L;
     private Product dataOwner;
     private final int type;
-    private final DataPanelTB tb;
+    private final ModernCommandBar tb;
     private final SearchPanel sp;
     private final JPanel leftpane = new JPanel(new BorderLayout());
     private String old_cnumber = "";
@@ -225,8 +225,18 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
         add(content, BorderLayout.CENTER);
         add(leftpane, BorderLayout.WEST);
         //the toolbar calls showSearchBar(), so it is created last
-        tb = new DataPanelTB(this);
+        tb = new ModernCommandBar(this);
         add(tb, BorderLayout.NORTH);
+        //the actions of a product, next to the record actions
+        tb.addAction(previewButton, null);
+        tb.addAction(orderButton, null);
+        tb.addAction(listButton, null);
+        tb.addAction(printing, null);
+        //Ctrl+F: find in the documents with the product
+        tb.setFindAction(() -> {
+            filter.requestFocusInWindow();
+            filter.selectAll();
+        });
 
         dateadded_ = new Date();
         intaddedby_ = User.getCurrentUser().__getIDS();
@@ -365,11 +375,6 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
         chips.setOpaque(false);
         chips.add(productChip);
         chips.add(serviceChip);
-        chips.add(Box.createHorizontalStrut(ModernTheme.px(18)));
-        chips.add(previewButton);
-        chips.add(orderButton);
-        chips.add(listButton);
-        chips.add(printing);
         displayname.setAlignmentX(LEFT_ALIGNMENT);
         meta.setAlignmentX(LEFT_ALIGNMENT);
         chips.setAlignmentX(LEFT_ALIGNMENT);

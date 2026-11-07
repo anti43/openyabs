@@ -126,22 +126,7 @@ public class DataPanelTB extends javax.swing.JPanel implements ActionListener, I
     }
 
     public void save() {
-        try {
-            DatabaseObject dato = parents.getDataOwner();
-            parents.actionBeforeSave();
-            if (dato.getPanelData(parents) && dato.save()) {
-                try {
-                    parents.actionAfterSave();
-                    parents.setDataOwner(dato, true);
-                } catch (Exception e) {
-                    Log.Debug(this, e);
-                }
-            } else {
-                parents.showRequiredFields();
-            }
-        } catch (ChangeNotApprovedException ex) {
-            Log.Debug(this, ex.getMessage());
-        }
+        RecordActions.save(parents);
     }
 
     /**
@@ -404,13 +389,7 @@ public class DataPanelTB extends javax.swing.JPanel implements ActionListener, I
     }// </editor-fold>//GEN-END:initComponents
 
     private void but2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but2ActionPerformed
-        DatabaseObject dato = parents.getDataOwner();
-
-        if (dato.isExisting()) {
-            dato.getPanelData((parents));
-            dato.reset();
-            parents.setDataOwner(dato, true);
-        }
+        RecordActions.revert(parents);
 }//GEN-LAST:event_but2ActionPerformed
 
     private void but3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but3ActionPerformed
@@ -418,71 +397,22 @@ public class DataPanelTB extends javax.swing.JPanel implements ActionListener, I
     }//GEN-LAST:event_but3ActionPerformed
 
     private void but4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but4ActionPerformed
-        DatabaseObject dato = parents.getDataOwner();
-
-        boolean d = dato.getPanelData(parents);
-        dato.setIDS(-1);
-        parents.actionBeforeCreate();
-
-        if (d && dato.save()) {
-            try {
-                parents.actionAfterCreate();
-                parents.setDataOwner(dato, true);
-            } catch (Exception e) {
-                Log.Debug(this, e);
-            }
-        } else {
-            parents.showRequiredFields();
-        }
+        RecordActions.saveAsNew(parents);
 }//GEN-LAST:event_but4ActionPerformed
 
     private void but6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but6ActionPerformed
-        DatabaseObject dato = parents.getDataOwner();
-        if (mpv5.db.objects.User.getCurrentUser().isDefault()) {
-            Popup.notice(Messages.DEFAULT_USER);
-        } else if (dato.isExisting()) {
-            if (dato.lock()) {
-                Popup.notice(dato.toString() + Messages.LOCKED);
-                but6.setEnabled(false);
-            } else {
-                Popup.notice(Messages.LOCK_FAILED);
-            }
-        } else {
-            Popup.notice(Messages.NOT_SAVED_YET);
+        if (RecordActions.lock(parents)) {
+            but6.setEnabled(false);
         }
 }//GEN-LAST:event_but6ActionPerformed
 
     private void printButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printButtonActionPerformed
-
-        DatabaseObject dato = parents.getDataOwner();
-        if (dato.isExisting()) {
-            parents.print();
-
-            final String fmessage = Messages.PRINTED + dato.__getCname();
-            final String fdbid = dato.getDbIdentity();
-            final int fids = dato.__getIDS();
-            final int fgids = dato.__getGroupsids();
-            Runnable runnable = new Runnable() {
-
-                @Override
-                public void run() {
-                    QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, mpv5.db.objects.User.getCurrentUser().__getCname(), fdbid, fids, fgids);
-                }
-            };
-            new Thread(runnable).start();
-        }
+        RecordActions.print(parents);
 }//GEN-LAST:event_printButtonActionPerformed
 
     private void but5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but5ActionPerformed
-
-        DatabaseObject dato = parents.getDataOwner();
-        if (dato.isExisting() && Popup.Y_N_dialog(Messages.REALLY_DELETE)) {
-            dato.getPanelData(parents);
-            dato.delete();
-            parents.refresh();
-            parents.setDataOwner(dato.getObject(dato.getContext()), true);
-        }
-    }//GEN-LAST:event_but5ActionPerformed
+        RecordActions.delete(parents);
+}//GEN-LAST:event_but5ActionPerformed
 
     private void but7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but7ActionPerformed
     }//GEN-LAST:event_but7ActionPerformed
@@ -497,38 +427,20 @@ public class DataPanelTB extends javax.swing.JPanel implements ActionListener, I
     }//GEN-LAST:event_but1ItemStateChanged
 
     private void mailButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mailButtonActionPerformed
-
-        DatabaseObject dato = parents.getDataOwner();
-        if (dato.isExisting()) {
-            parents.mail();
-        }
-    }//GEN-LAST:event_mailButtonActionPerformed
+        RecordActions.mail(parents);
+}//GEN-LAST:event_mailButtonActionPerformed
 
     private void but10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but10ActionPerformed
-
-        DatabaseObject dato = parents.getDataOwner();
-        if (dato.isExisting()) {
-            mpv5.YabsViewProxy.instance().addToClipBoard(dato);
-//            mpv5.YabsViewProxy.instance().setClipBoardVisible(true);
-        }
-    }//GEN-LAST:event_but10ActionPerformed
+        RecordActions.copyToClipboard(parents);
+}//GEN-LAST:event_but10ActionPerformed
 
     private void pdfButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pdfButtonActionPerformed
-
-        DatabaseObject dato = parents.getDataOwner();
-        if (dato.isExisting() && parents instanceof ExportablePanel) {
-            ((ExportablePanel) parents).pdf();
-        }
-
-    }//GEN-LAST:event_pdfButtonActionPerformed
+        RecordActions.pdf(parents);
+}//GEN-LAST:event_pdfButtonActionPerformed
 
     private void odtButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_odtButtonActionPerformed
-        DatabaseObject dato = parents.getDataOwner();
-        if (dato.isExisting()) {
-            ((ExportablePanel) parents).odt();
-        }
-
-    }//GEN-LAST:event_odtButtonActionPerformed
+        RecordActions.odt(parents);
+}//GEN-LAST:event_odtButtonActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JToggleButton but1;
     private javax.swing.JButton but10;
@@ -550,39 +462,11 @@ public class DataPanelTB extends javax.swing.JPanel implements ActionListener, I
     // End of variables declaration//GEN-END:variables
 
     private void favRemover(java.awt.event.ActionEvent evt) {
-
-        DatabaseObject dato = parents.getDataOwner();
-        if (!mpv5.db.objects.User.getCurrentUser().isDefault() && dato.isExisting()) {
-            dato.getPanelData(parents);
-            if (dato.save()) {
-                Favourite.removeFavourite(dato);
-                mpv5.YabsViewProxy.instance().reloadFavorites();
-                parents.setDataOwner(dato, true);
-            } else {
-                parents.showRequiredFields();
-            }
-        }
+        RecordActions.removeFavourite(parents);
     }
 
     private void favAdd(java.awt.event.ActionEvent evt) {
-        DatabaseObject dato = parents.getDataOwner();
-        Favourite fav = null;
-        if (!mpv5.db.objects.User.getCurrentUser().isDefault()) {
-            if (dato.isExisting()) {
-                dato.getPanelData(parents);
-                if (dato.save()) {
-                    fav = new Favourite(dato);
-                    fav.save();
-                    mpv5.YabsViewProxy.instance().reloadFavorites();
-                    mpv5.YabsViewProxy.instance().addMessage(Messages.ADDED_TO_FAVOURITES + dato.__getCname(), Color.GREEN);
-                    parents.setDataOwner(dato, true);
-                } else {
-                    parents.showRequiredFields();
-                }
-            }
-        } else {
-            Popup.notice(Messages.DEFAULT_USER);
-        }
+        RecordActions.addFavourite(parents);
     }
 
     /**

@@ -90,7 +90,7 @@ import mpv5.ui.modern.SplitButton;
 import mpv5.ui.modern.WrapLayout;
 import mpv5.ui.popups.DOTablePopUp;
 import mpv5.ui.popups.FileTablePopUp;
-import mpv5.ui.toolbars.DataPanelTB;
+import mpv5.ui.toolbars.ModernCommandBar;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.export.EInvoiceDelivery;
 import mpv5.utils.export.Export;
@@ -120,7 +120,7 @@ public class ModernContactPanel extends ModernDataPanel {
     private static final long serialVersionUID = 1L;
     private final java.util.ResourceBundle bundle = LanguageManager.getBundle();
     private Contact dataOwner;
-    private final DataPanelTB tb;
+    private final ModernCommandBar tb;
     private final SearchPanel sp;
     //search panel on the left
     private final JPanel leftpane = new JPanel(new BorderLayout());
@@ -284,8 +284,25 @@ public class ModernContactPanel extends ModernDataPanel {
         add(content, BorderLayout.CENTER);
         add(leftpane, BorderLayout.WEST);
         //the toolbar calls showSearchBar(), so it is created last
-        tb = new DataPanelTB(this);
+        tb = new ModernCommandBar(this);
         add(tb, BorderLayout.NORTH);
+        //the actions of a contact, next to the record actions
+        JButton web = new JButton(text("ContactPanel.jButton5.text"));
+        web.addActionListener(e -> openWebsite());
+        JButton history = new JButton(text("ContactPanel.jButton2.text"));
+        history.addActionListener(e -> showHistory());
+        JButton schedule = new JButton(text("ContactPanel.jButton3.text"));
+        schedule.addActionListener(e -> showSchedule());
+        tb.addAction(web, null);
+        //Ctrl+H is backspace in text fields, so Ctrl+Shift+H
+        tb.addAction(history, javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_H, java.awt.event.InputEvent.CTRL_DOWN_MASK | java.awt.event.InputEvent.SHIFT_DOWN_MASK));
+        tb.addAction(schedule, null);
+        tb.addAction(printing, null);
+        //Ctrl+F: find in the documents of the contact
+        tb.setFindAction(() -> {
+            filter.requestFocusInWindow();
+            filter.selectAll();
+        });
 
         dateadded_ = new Date();
         intaddedby_ = User.getCurrentUser().__getIDS();
@@ -399,27 +416,13 @@ public class ModernContactPanel extends ModernDataPanel {
         displayname.setForeground(ModernTheme.foreground());
         meta.setFont(ModernTheme.font(-1, Font.PLAIN));
         meta.setForeground(ModernTheme.muted());
-        //roles and actions in one row, wrapped into more lines on narrow windows
+        //the roles; the actions are in the command bar
         JPanel chips = new JPanel(new WrapLayout(FlowLayout.LEFT, ModernTheme.px(6), ModernTheme.px(4)));
         chips.setOpaque(false);
         chips.add(company);
         chips.add(customer);
         chips.add(supplier);
         chips.add(manufacturer);
-        chips.add(Box.createHorizontalStrut(ModernTheme.px(18)));
-        JButton mail = link(text("ContactPanel.sendamail.text"), null);
-        mail.addActionListener(e -> sendMail());
-        JButton web = link(text("ContactPanel.jButton5.text"), null);
-        web.addActionListener(e -> openWebsite());
-        JButton history = link(text("ContactPanel.jButton2.text"), null);
-        history.addActionListener(e -> showHistory());
-        JButton schedule = link(text("ContactPanel.jButton3.text"), "/images/16/cal.png");
-        schedule.addActionListener(e -> showSchedule());
-        chips.add(mail);
-        chips.add(web);
-        chips.add(history);
-        chips.add(schedule);
-        chips.add(printing);
         displayname.setAlignmentX(LEFT_ALIGNMENT);
         meta.setAlignmentX(LEFT_ALIGNMENT);
         chips.setAlignmentX(LEFT_ALIGNMENT);
@@ -986,7 +989,6 @@ public class ModernContactPanel extends ModernDataPanel {
         printing.init(dataOwner);
         tb.setFavourite(Favourite.isFavourite(object));
         tb.setEditable(!object.isReadOnly());
-        tb.setExportButtonsEnabled(Context.getTemplateableContexts().contains(dataOwner.getContext()));
 
         addAddresses();
         if (object.isReadOnly()) {
@@ -1182,6 +1184,11 @@ public class ModernContactPanel extends ModernDataPanel {
 
     @Override
     public void mail() {
+        //the address as typed, also before it is saved
+        if (mailaddress.hasText()) {
+            sendMail();
+            return;
+        }
         try {
             Desktop.getDesktop().mail(new URI("mailto:" + dataOwner.__getMailaddress()));
         } catch (Exception ex) {
