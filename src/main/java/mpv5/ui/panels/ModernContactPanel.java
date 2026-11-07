@@ -73,7 +73,6 @@ import mpv5.handler.ContactService;
 import mpv5.handler.ContactService.Related;
 import mpv5.i18n.LanguageManager;
 import mpv5.logging.Log;
-import mpv5.ui.beans.DropDownButton;
 import mpv5.ui.beans.LabeledCombobox;
 import mpv5.ui.beans.LabeledTextField;
 import mpv5.ui.beans.PrinitingComboBox;
@@ -87,6 +86,7 @@ import mpv5.ui.modern.Card;
 import mpv5.ui.modern.ChipToggle;
 import mpv5.ui.modern.ModernTheme;
 import mpv5.ui.modern.ResponsiveGrid;
+import mpv5.ui.modern.SplitButton;
 import mpv5.ui.modern.WrapLayout;
 import mpv5.ui.popups.DOTablePopUp;
 import mpv5.ui.popups.FileTablePopUp;
@@ -205,11 +205,11 @@ public class ModernContactPanel extends ModernDataPanel {
     private final Map<Related, ChipToggle> relatedButtons = new EnumMap<Related, ChipToggle>(Related.class);
     private final ButtonGroup relatedGroup = new ButtonGroup();
     private Related related;
-    private final JButton newOffer = action(text("ContactPanel.button_offer.text"));
-    private final JButton newOrder = action(text("ContactPanel.button_order.text"));
-    private final DropDownButton newInvoice = new DropDownButton();
-    private final JButton newCredit = action(text("ContactPanel.button_credit.text"));
-    private final JButton newProduct = action(text("ContactPanel.button_product.text"));
+    private final JButton newOffer = ModernTheme.actionButton(new JButton(text("ContactPanel.button_offer.text")), "/images/16/add.png");
+    private final JButton newOrder = ModernTheme.actionButton(new JButton(text("ContactPanel.button_order.text")), "/images/16/add.png");
+    private final SplitButton newInvoice = new SplitButton(text("ContactPanel.button_bill._Label"), "/images/16/add.png");
+    private final JButton newCredit = ModernTheme.actionButton(new JButton(text("ContactPanel.button_credit.text")), "/images/16/add.png");
+    private final JButton newProduct = ModernTheme.actionButton(new JButton(text("ContactPanel.button_product.text")), "/images/16/add.png");
     private final JPanel relatedPanel = new JPanel(new BorderLayout());
     private final JSplitPane split;
     // <editor-fold defaultstate="collapsed" desc="Data fields, filled by name from / copied to the contact">
@@ -469,10 +469,17 @@ public class ModernContactPanel extends ModernDataPanel {
                 .row(Card.field(text("ContactPanel.mailer._Label"), mailaddress))
                 .row(Card.field(text("ContactPanel.web._Label"), website)));
 
+        //business data and bank account in one card
         grid.add(new Card(Messages.CONTACT_SECTION_BUSINESS.toString())
                 .row(Card.field(text("ContactPanel.number._Label"), number, 1),
                         Card.field(text("ContactPanel.groupnameselect._Label"), groupnameselect, 2))
-                .row(Card.field(text("ContactPanel.taxnumber._Label"), taxnumber)));
+                .row(Card.field(text("ContactPanel.taxnumber._Label"), taxnumber))
+                .section(Messages.CONTACT_SECTION_BANK.toString())
+                .row(Card.field(text("ContactPanel.bankaccount._Label"), bankaccount))
+                .row(Card.field(text("ContactPanel.bankid._Label"), bankid, 1),
+                        Card.field(text("ContactPanel.bankname._Label"), bankname, 2))
+                .row(Card.field(text("ContactPanel.bankcurrency._Label"), bankcurrency),
+                        Card.field(text("ContactPanel.bankcountry._Label"), bankcountry)));
 
         grid.add(new Card(Messages.CONTACT_SECTION_PAYMENT.toString())
                 .row(Card.field(Messages.EINVOICE_PAYTERM.toString(), payterm, 1),
@@ -482,13 +489,6 @@ public class ModernContactPanel extends ModernDataPanel {
                         Card.field(Messages.COMPANY_SKONTO_DAYS.toString(), einvoiceSkontoDays))
                 .row(Card.field(Messages.EINVOICE_DELIVERY.toString(), einvoiceDelivery))
                 .row(Card.field(Messages.EINVOICE_LEITWEG.toString(), einvoiceLeitweg)));
-
-        grid.add(new Card(Messages.CONTACT_SECTION_BANK.toString())
-                .row(Card.field(text("ContactPanel.bankaccount._Label"), bankaccount))
-                .row(Card.field(text("ContactPanel.bankid._Label"), bankid, 1),
-                        Card.field(text("ContactPanel.bankname._Label"), bankname, 2))
-                .row(Card.field(text("ContactPanel.bankcurrency._Label"), bankcurrency),
-                        Card.field(text("ContactPanel.bankcountry._Label"), bankcountry)));
 
         JScrollPane notesScroll = new JScrollPane(notes);
         grid.add(new Card(text("ContactPanel.jPanel4.TabConstraints.tabTitle")).addFull(notesScroll, 1));
@@ -568,14 +568,13 @@ public class ModernContactPanel extends ModernDataPanel {
 
         newOffer.addActionListener(e -> openNew(ContactService.newItem(dataOwner, Item.TYPE_OFFER)));
         newOrder.addActionListener(e -> openNew(ContactService.newItem(dataOwner, Item.TYPE_ORDER)));
-        newInvoice.set_Label(text("ContactPanel.button_bill._Label"));
         newInvoice.setToolTipText(text("ContactPanel.button_bill.toolTipText"));
         newInvoice.addActionListener(e -> openNew(ContactService.newItem(dataOwner, Item.TYPE_INVOICE)));
         newInvoice.add(Messages.NEW_DEPOSIT.toString(), e -> openNew(ContactService.newItem(dataOwner, Item.TYPE_DEPOSIT)));
         newInvoice.add(Messages.NEW_PART_PAYMENT.toString(), e -> openNew(ContactService.newItem(dataOwner, Item.TYPE_PART_PAYMENT)));
         newCredit.addActionListener(e -> openNew(ContactService.newItem(dataOwner, Item.TYPE_CREDIT)));
         newProduct.addActionListener(e -> openNew(ContactService.newProduct(dataOwner)));
-        JPanel create = new JPanel(new FlowLayout(FlowLayout.RIGHT, ModernTheme.px(4), 0));
+        JPanel create = new JPanel(new WrapLayout(FlowLayout.RIGHT, ModernTheme.px(8), ModernTheme.px(4)));
         create.setOpaque(false);
         create.add(newOffer);
         create.add(newOrder);
@@ -672,6 +671,8 @@ public class ModernContactPanel extends ModernDataPanel {
         TableFormat.stripFirstColumn(dataTable);
         if (r != Related.PRODUCTS) {
             detailsColumn(dataTable);
+            //net value: column 3 of offers, invoices ..., column 2 of activity lists
+            amountColumn(dataTable, r.isItem() ? 3 : 2);
         }
         resetFilter(dataTable, filter);
         if (r.isItem()) {

@@ -203,6 +203,26 @@ public final class ModernTheme {
     }
 
     /**
+     * Makes a button a well sized action button (e.g. "New invoice"): larger
+     * font and padding, optional icon
+     *
+     * @param b
+     * @param icon resource path, may be null
+     * @return b
+     */
+    public static <T extends javax.swing.AbstractButton> T actionButton(T b, String icon) {
+        b.setFont(font(1, Font.PLAIN));
+        b.setMargin(new java.awt.Insets(px(6), px(14), px(6), px(14)));
+        b.setIconTextGap(px(6));
+        java.net.URL url = icon == null ? null : ModernTheme.class.getResource(icon);
+        if (url != null) {
+            b.setIcon(new javax.swing.ImageIcon(url));
+        }
+        b.setFocusable(false);
+        return b;
+    }
+
+    /**
      * Gives a text component some inner space
      *
      * @param t

@@ -160,6 +160,26 @@ public class Card extends JPanel {
     }
 
     /**
+     * Starts a sub-section of the card: a thin line and a small heading
+     *
+     * @param title
+     * @return this
+     */
+    public Card section(String title) {
+        JPanel p = new JPanel(new BorderLayout(0, ModernTheme.px(6)));
+        p.setOpaque(false);
+        p.setBorder(BorderFactory.createEmptyBorder(ModernTheme.px(6), 0, 0, 0));
+        javax.swing.JSeparator line = new javax.swing.JSeparator();
+        line.setForeground(ModernTheme.border());
+        p.add(line, BorderLayout.NORTH);
+        JLabel l = new JLabel(title);
+        l.setFont(ModernTheme.font(0, java.awt.Font.BOLD));
+        l.setForeground(ModernTheme.muted());
+        p.add(l, BorderLayout.CENTER);
+        return addFull(p);
+    }
+
+    /**
      * Adds a component over the full width
      *
      * @param c
