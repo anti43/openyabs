@@ -599,14 +599,30 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
         shortcuts.setAccelerator(mpv5.ui.toolbars.ModernCommandBar.HELP);
         shortcuts.addActionListener(e -> mpv5.ui.dialogs.ShortcutsDialog.show(getFrame().getRootPane()));
         helpmenu.add(shortcuts, 0);
-        //View > Layout > Modern
-        javax.swing.JMenuItem modernLaf = new javax.swing.JMenuItem(Messages.LAF_MODERN.toString());
-        modernLaf.addActionListener(e -> {
-            Main.setLaF(mpv5.ui.modern.YabsLookAndFeel.class.getName());
-            User.getCurrentUser().setLaf(mpv5.ui.modern.YabsLookAndFeel.class.getName());
-            User.getCurrentUser().save();
+        //View > Layout > Modern look: modern views and look (default) or classic
+        final javax.swing.JCheckBoxMenuItem modernLook = new javax.swing.JCheckBoxMenuItem(Messages.LAF_MODERN.toString());
+        modernLook.setToolTipText(Messages.LAF_MODERN_TIP.toString());
+        modernLook.addActionListener(e -> {
+            mpv5.YabsViewProxy.instance().setModernUi(modernLook.isSelected());
+            mpv5.YabsViewProxy.instance().addMessage(Messages.LAF_MODERN_CHANGED.toString());
+            Popup.notice(Messages.LAF_MODERN_CHANGED.toString());
         });
-        jMenu2.add(modernLaf, 0);
+        jMenu2.add(modernLook, 0);
+        jMenu2.add(new javax.swing.JPopupMenu.Separator(), 1);
+        jMenu2.addMenuListener(new javax.swing.event.MenuListener() {
+            @Override
+            public void menuSelected(javax.swing.event.MenuEvent e) {
+                modernLook.setSelected(mpv5.YabsViewProxy.instance().isModernUi());
+            }
+
+            @Override
+            public void menuDeselected(javax.swing.event.MenuEvent e) {
+            }
+
+            @Override
+            public void menuCanceled(javax.swing.event.MenuEvent e) {
+            }
+        });
 //        jMenuItem24.setEnabled(!LocalSettings.getBooleanProperty(LocalSettings.OFFICE_REMOTE));
 
         nav_outlookbar.setAnimated(navBarAnimated);

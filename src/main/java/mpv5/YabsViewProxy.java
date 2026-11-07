@@ -403,8 +403,9 @@ public class YabsViewProxy implements YabsView {
     }
 
     /**
-     * @return true if the modern views are used: the system property
-     * {@value #UI_PROPERTY} if set, else the setting of the current user
+     * @return true if the modern views and look are used: the system property
+     * {@value #UI_PROPERTY} if set, else the setting of the current user -
+     * modern unless the user switched to classic (View &gt; Layout)
      */
     public boolean isModernUi() {
         String p = System.getProperty(UI_PROPERTY);
@@ -412,11 +413,27 @@ public class YabsViewProxy implements YabsView {
             return p.trim().equalsIgnoreCase("modern");
         }
         try {
-            return User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", MODERN_UI_SETTING);
+            return User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty$" + MODERN_UI_SETTING, Boolean.TRUE);
         } catch (Exception e) {
             Log.Debug(this, e);
-            return false;
+            return true;
         }
+    }
+
+    /**
+     * Switches the current user to the modern or the classic views and look
+     * (saved with the user); open tabs keep their view
+     *
+     * @param modern
+     */
+    public void setModernUi(boolean modern) {
+        User u = User.getCurrentUser();
+        u.getProperties().changeProperty("org.openyabs.uiproperty", MODERN_UI_SETTING, modern);
+        u.saveProperties();
+        //no look and feel of the user's own: the one belonging to modern / classic
+        u.setLaf("");
+        u.save();
+        mpv5.Main.setLaF("");
     }
 
     /**

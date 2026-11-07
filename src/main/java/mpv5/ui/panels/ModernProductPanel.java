@@ -835,6 +835,7 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
         detailsColumn(dataTable);
         //contact gets room, the net value of the position is an amount
         dataTable.getColumnModel().getColumn(3).setPreferredWidth(ModernTheme.px(220));
+        amountColumn(dataTable, ProductService.USAGE_QUANTITY);
         amountColumn(dataTable, ProductService.USAGE_NET);
         resetFilter(dataTable, filter);
         BigDecimal[] totals = ProductService.usageTotals(m);

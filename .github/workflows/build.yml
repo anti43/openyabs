@@ -1,6 +1,8 @@
 # Builds YaBS, runs the tests and publishes the distribution zip
-# (openyabs.jar, lib/, start scripts):
-# - every run: as workflow artifact (Actions > run > Artifacts)
+# (openyabs.jar, lib/, start scripts) and installers with their own Java
+# runtime (.deb, .rpm, .msi; src/packaging/build-installer.sh):
+# - every run: as workflow artifacts (Actions > run > Artifacts); installers
+#   not for pull requests
 # - builds of master: as pre-release "latest-master" (replaced on every build)
 # - version tags (v1.2.3): as GitHub release "YaBS 1.2.3"
 name: Build
@@ -55,10 +57,78 @@ jobs:
           path: build/reports/tests/
           if-no-files-found: ignore
 
-  release:
+  installers:
     needs: build
-    # not for pull requests, only for master and version tags
-    if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/v'))
+    # not for pull requests (slow); for master, version tags and manual runs
+    if: github.event_name != 'pull_request'
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # built on the oldest supported Ubuntu: the package dependencies
+          # (e.g. libasound2) then also fit Debian 12 and Ubuntu 22.04+
+          - os: ubuntu-22.04
+            types: deb rpm
+          # jpackage of Java 21 needs WiX Toolset 3
+          - os: windows-2022
+            types: msi
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: openyabs-${{ github.run_number }}
+          path: build/distributions
+
+      - name: Install packaging tools (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends fakeroot rpm
+
+      - name: WiX Toolset 3 on the PATH (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $wix = Get-ChildItem "${env:ProgramFiles(x86)}" -Directory -Filter "WiX Toolset v3*" -ErrorAction SilentlyContinue | Select-Object -First 1
+          if (-not $wix) {
+            choco install wixtoolset --version 3.14.1 -y --no-progress
+            $wix = Get-ChildItem "${env:ProgramFiles(x86)}" -Directory -Filter "WiX Toolset v3*" | Select-Object -First 1
+          }
+          "$($wix.FullName)\bin" | Out-File -FilePath $env:GITHUB_PATH -Append -Encoding utf8
+
+      # installer versions are numbers only: the tag (v1.2.3 -> 1.2.3), else 0.0.<run>
+      - name: Build installers
+        shell: bash
+        run: |
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+            version="${GITHUB_REF_NAME#v}"
+            version="${version%%-*}"
+          else
+            version="0.0.${GITHUB_RUN_NUMBER}"
+          fi
+          mkdir -p dist
+          for type in ${{ matrix.types }}; do
+            src/packaging/build-installer.sh "$type" "$version"
+            cp build/installer/out/* dist/
+          done
+          ls -l dist
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: installers-${{ matrix.os }}-${{ github.run_number }}
+          path: dist/*
+          if-no-files-found: error
+
+  release:
+    needs: [build, installers]
+    # not for pull requests, only for master and version tags; the zip is
+    # published even if an installer could not be built
+    if: always() && needs.build.result == 'success' && github.event_name != 'pull_request' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/v'))
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -72,16 +142,23 @@ jobs:
           name: openyabs-${{ github.run_number }}
           path: dist
 
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          pattern: installers-*-${{ github.run_number }}
+          path: dist
+          merge-multiple: true
+
       - name: Release for version tag
         if: startsWith(github.ref, 'refs/tags/v')
         run: |
-          gh release create "$GITHUB_REF_NAME" dist/*.zip \
+          gh release create "$GITHUB_REF_NAME" dist/* \
             --title "YaBS ${GITHUB_REF_NAME#v}" --generate-notes
 
       - name: Pre-release latest-master
         if: github.ref == 'refs/heads/master'
         run: |
           gh release delete latest-master --cleanup-tag --yes || true
-          gh release create latest-master dist/*.zip --prerelease --target "$GITHUB_SHA" \
+          gh release create latest-master dist/* --prerelease --target "$GITHUB_SHA" \
             --title "Latest build (master)" \
-            --notes "Automatic build of master, commit $GITHUB_SHA ($(date -u '+%Y-%m-%d %H:%M UTC')). Replaced by every new build. Unzip and start with yabs.sh / yabs.bat (Java 21 or newer)."
+            --notes "Automatic build of master, commit $GITHUB_SHA ($(date -u '+%Y-%m-%d %H:%M UTC')). Replaced by every new build. Installers with their own Java: .msi (Windows), .deb (Debian, Ubuntu: sudo apt install ./yabs_*.deb), .rpm (Fedora, openSUSE: sudo dnf install ./yabs-*.rpm). Or unzip the zip and start with yabs.sh / yabs.bat (Java 21 or newer)."

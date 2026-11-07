@@ -245,7 +245,13 @@ public class Main implements Runnable {
         checkSingleInstance();
 
         Log.Debug(this, "Startup procedure... ");
-        getApplication().getContext().getLocalStorage().setDirectory(new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR)));
+        //a relative cache dir (default "Cache", before the first-start wizard) is in the
+        //user's YaBS folder, not in the working dir (read-only for installed packages)
+        File cache = new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR));
+        if (!cache.isAbsolute() && MPPATH != null) {
+            cache = new File(MPPATH, cache.getPath());
+        }
+        getApplication().getContext().getLocalStorage().setDirectory(cache);
 
         splash.nextStep(Messages.FIRST_INSTANCE.toString());
         splash.nextStep(Messages.DB_CHECK.toString());
