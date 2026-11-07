@@ -719,8 +719,8 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         try {
             int cid = Integer.valueOf(order.getSelectedItem().getId());
             Item i = (Item) DatabaseObject.getObject(Context.getOrder(), cid);
-            ItemPanel2 ip = new ItemPanel2(Context.getOrder());
-            mpv5.YabsViewProxy.instance().getIdentifierView().addOrShowTab(ip, Messages.TYPE_ORDER.toString());
+            DataPanel ip = (DataPanel) i.getView();
+            mpv5.YabsViewProxy.instance().getIdentifierView().addOrShowTab((javax.swing.JComponent) ip, Messages.TYPE_ORDER.toString());
             ip.setDataOwner(i, true);
         } catch (NumberFormatException e) {
             Log.Debug(this, e);

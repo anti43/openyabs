@@ -18,6 +18,7 @@ import javax.swing.JProgressBar;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.objects.Contact;
+import mpv5.db.objects.Item;
 import mpv5.db.objects.Product;
 import mpv5.db.objects.User;
 import mpv5.logging.Log;
@@ -342,6 +343,8 @@ public class YabsViewProxy implements YabsView {
         //the views which exist in the modern layout already, all others stay classic
         registerModernView(Contact.class, item -> new ModernContactPanel(item.getContext()));
         registerModernView(Product.class, item -> new ModernProductPanel(item.getContext(), ((Product) item).__getInttype()));
+        registerModernView(Item.class, item -> new mpv5.ui.panels.ModernItemPanel(
+                mpv5.handler.ItemService.contextOf(((Item) item).__getInttype()), ((Item) item).__getInttype()));
     }
 
     /**
@@ -368,6 +371,20 @@ public class YabsViewProxy implements YabsView {
         p.setInttype(type);
         DataPanel modern = getModernView(p);
         return modern != null ? (JComponent) modern : new mpv5.ui.panels.ProductPanel(Context.getProduct(), type);
+    }
+
+    /**
+     * A new, empty view for an offer, order, invoice ...: modern or classic,
+     * as configured
+     *
+     * @param type Item.TYPE_*
+     * @return the view
+     */
+    public JComponent newItemView(int type) {
+        Item i = (Item) DatabaseObject.getObject(mpv5.handler.ItemService.contextOf(type));
+        i.setInttype(type);
+        DataPanel modern = getModernView(i);
+        return modern != null ? (JComponent) modern : new mpv5.ui.panels.ItemPanel2(mpv5.handler.ItemService.contextOf(type), type);
     }
 
     /**

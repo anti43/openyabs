@@ -690,6 +690,11 @@ public final class SubItem extends DatabaseObject implements Triggerable {
     public JComponent getView() {
         try {
             Item dos = (Item) DatabaseObject.getObject(Context.getInvoice(), __getItemsids());
+            //the view of the document, modern or classic
+            mpv5.ui.panels.DataPanel modern = mpv5.YabsViewProxy.instance().getModernView(dos);
+            if (modern != null) {
+                return (JComponent) modern;
+            }
             ItemPanel2 ip = null;
             switch (dos.__getInttype()) {
                 case Constants.TYPE_OFFER:

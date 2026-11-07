@@ -613,7 +613,7 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
         ActionListener l = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                addTab(new ItemPanel2(Context.getInvoice(), Item.TYPE_INVOICE), Messages.NEW_INVOICE);
+                addTab(mpv5.YabsViewProxy.instance().newItemView(Item.TYPE_INVOICE), Messages.NEW_INVOICE);
             }
         };
         ddb1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/32/folder_blue.png")));
@@ -626,7 +626,7 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
                 new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                addTab(new ItemPanel2(Context.getDeposit(), Item.TYPE_DEPOSIT), Messages.NEW_DEPOSIT);
+                addTab(mpv5.YabsViewProxy.instance().newItemView(Item.TYPE_DEPOSIT), Messages.NEW_DEPOSIT);
             }
         });
         ddb1.add(
@@ -635,7 +635,7 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
                 new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                addTab(new ItemPanel2(Context.getPartPayment(), Item.TYPE_PART_PAYMENT), Messages.NEW_PART_PAYMENT);
+                addTab(mpv5.YabsViewProxy.instance().newItemView(Item.TYPE_PART_PAYMENT), Messages.NEW_PART_PAYMENT);
             }
         });
 
@@ -2686,11 +2686,11 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
 
-        addTab(new ItemPanel2(Context.getOffer(), Item.TYPE_OFFER), Messages.NEW_OFFER);
+        addTab(mpv5.YabsViewProxy.instance().newItemView(Item.TYPE_OFFER), Messages.NEW_OFFER);
     }//GEN-LAST:event_jButton10ActionPerformed
 
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
-        addTab(new ItemPanel2(Context.getOrder(), Item.TYPE_ORDER), Messages.NEW_ORDER);
+        addTab(mpv5.YabsViewProxy.instance().newItemView(Item.TYPE_ORDER), Messages.NEW_ORDER);
     }//GEN-LAST:event_jButton11ActionPerformed
 
     private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
@@ -2981,7 +2981,7 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 }//GEN-LAST:event_jButton23ActionPerformed
 
     private void jButton30ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton30ActionPerformed
-        addTab(new ItemPanel2(Context.getCredit(), Item.TYPE_CREDIT), Messages.NEW_CREDIT);
+        addTab(mpv5.YabsViewProxy.instance().newItemView(Item.TYPE_CREDIT), Messages.NEW_CREDIT);
     }//GEN-LAST:event_jButton30ActionPerformed
 
     private void scustomersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_scustomersActionPerformed
@@ -3003,7 +3003,7 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     }//GEN-LAST:event_sproductsActionPerformed
 
     private void sinvoicesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sinvoicesActionPerformed
-        addTab(new ItemPanel2(Context.getInvoice(), Item.TYPE_INVOICE), Messages.NEW_INVOICE);
+        addTab(mpv5.YabsViewProxy.instance().newItemView(Item.TYPE_INVOICE), Messages.NEW_INVOICE);
     }//GEN-LAST:event_sinvoicesActionPerformed
 
     private void simplenavActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_simplenavActionPerformed

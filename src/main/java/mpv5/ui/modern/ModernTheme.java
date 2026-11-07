@@ -247,6 +247,20 @@ public final class ModernTheme {
         return field;
     }
 
+    /**
+     * Same as {@link #plain(LabeledTextField)} for date choosers
+     *
+     * @param field
+     * @return the field
+     */
+    public static mpv5.ui.beans.LabeledDateChooser plain(mpv5.ui.beans.LabeledDateChooser field) {
+        hideLabels(field);
+        field.setPreferredSize(null);
+        field.setMinimumSize(null);
+        field.setMaximumSize(null);
+        return field;
+    }
+
     private static void hideLabels(Container c) {
         for (Component child : c.getComponents()) {
             if (child instanceof JLabel) {

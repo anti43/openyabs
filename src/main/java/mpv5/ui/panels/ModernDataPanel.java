@@ -143,6 +143,16 @@ public abstract class ModernDataPanel extends JPanel implements DataPanel, Scrol
      * @return a split pane which starts with 60% for the data
      */
     protected static JSplitPane split(JComponent top, JComponent bottom) {
+        return split(top, bottom, 0.6);
+    }
+
+    /**
+     * @param top
+     * @param bottom
+     * @param ratio the part of the height the top gets initially
+     * @return the split pane
+     */
+    protected static JSplitPane split(JComponent top, JComponent bottom, final double ratio) {
         final JSplitPane split = new JSplitPane(JSplitPane.VERTICAL_SPLIT, top, bottom);
         split.setResizeWeight(0.62);
         split.setBorder(BorderFactory.createEmptyBorder(0, ModernTheme.px(8), ModernTheme.px(8), ModernTheme.px(8)));
@@ -153,7 +163,7 @@ public abstract class ModernDataPanel extends JPanel implements DataPanel, Scrol
             public void componentResized(java.awt.event.ComponentEvent e) {
                 if (split.getHeight() > 0) {
                     split.removeComponentListener(this);
-                    split.setDividerLocation(0.6);
+                    split.setDividerLocation(ratio);
                 }
             }
         });

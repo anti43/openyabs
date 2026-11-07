@@ -545,7 +545,19 @@ public enum Messages {
     DELETE_PREVIEW_TIER("from %s: %s"),
     DELETE_PREVIEW_MORE("... and %d more"),
     DELETE_PREVIEW_CONFIRM("Delete"),
-    MODERN_UI("Modern views for contacts and products (preview, takes effect for newly opened tabs)");
+    ITEM_MOVE_UP("Move up"),
+    ITEM_MOVE_DOWN("Move down"),
+    ITEM_SECTION_CUSTOMER("Customer"),
+    ITEM_SECTION_DOCUMENT("Document"),
+    ITEM_SECTION_DATES("Dates"),
+    ITEM_SECTION_TEXT("Free text"),
+    ITEM_SECTION_POSITIONS("Positions"),
+    ITEM_SECTION_FILES("Files"),
+    ITEM_SECTION_PROPERTIES("Properties"),
+    ITEM_CREATE("Create"),
+    ITEM_MORE_DOCUMENTS("Documents"),
+    ITEM_NEW("New document"),
+    MODERN_UI("Modern views for contacts, products and documents (preview, takes effect for newly opened tabs)");
 
 
     /**
