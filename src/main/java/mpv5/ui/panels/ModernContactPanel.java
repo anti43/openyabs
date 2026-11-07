@@ -205,6 +205,9 @@ public class ModernContactPanel extends ModernDataPanel {
     private final Map<Related, ChipToggle> relatedButtons = new EnumMap<Related, ChipToggle>(Related.class);
     private final ButtonGroup relatedGroup = new ButtonGroup();
     private Related related;
+    //the list the user chose last, shown again when its role is switched back on
+    private Related chosenRelated;
+    private boolean loading;
     private final JButton newOffer = ModernTheme.actionButton(new JButton(text("ContactPanel.button_offer.text")), "/images/16/add.png");
     private final JButton newOrder = ModernTheme.actionButton(new JButton(text("ContactPanel.button_order.text")), "/images/16/add.png");
     private final SplitButton newInvoice = new SplitButton(text("ContactPanel.button_bill._Label"), "/images/16/add.png");
@@ -553,7 +556,10 @@ public class ModernContactPanel extends ModernDataPanel {
         for (Related r : Related.values()) {
             final Related rel = r;
             ChipToggle b = new ChipToggle(labels[r.ordinal()]);
-            b.addActionListener(e -> showRelated(rel));
+            b.addActionListener(e -> {
+                chosenRelated = rel;
+                showRelated(rel);
+            });
             relatedButtons.put(r, b);
             relatedGroup.add(b);
             segments.add(b);
@@ -644,11 +650,34 @@ public class ModernContactPanel extends ModernDataPanel {
         newInvoice.setVisible(isCustomer);
         newCredit.setVisible(isCustomer);
         newProduct.setVisible(hasProducts);
-        if (related != null && !relatedButtons.get(related).isVisible()) {
+        //the roles changed which lists exist: keep a list on screen, prefer the one chosen last
+        Related wanted = pickRelated(isCustomer, hasProducts);
+        if (loading) {
+            //setDataOwner shows the default list afterwards
+        } else if (wanted != related && dataOwner != null && dataOwner.isExisting()) {
+            showRelated(wanted);
+        } else if (wanted == null && related != null) {
             showRelated(null);
         }
         relatedPanel.revalidate();
         relatedPanel.repaint();
+    }
+
+    /**
+     * @return the list to show for the given roles: the one chosen last (or
+     * shown first) if available, else the current one, else invoices (customers) or
+     * products (suppliers, manufacturers); null if none is available
+     */
+    private Related pickRelated(boolean isCustomer, boolean hasProducts) {
+        for (Related r : new Related[]{chosenRelated, related}) {
+            if (r != null && (r.isForCustomers() ? isCustomer : hasProducts)) {
+                return r;
+            }
+        }
+        if (isCustomer) {
+            return Related.INVOICES;
+        }
+        return hasProducts ? Related.PRODUCTS : null;
     }
 
     /**
@@ -942,8 +971,14 @@ public class ModernContactPanel extends ModernDataPanel {
         if (!populate) {
             return;
         }
-        dataOwner.setPanelData(this);
-        exposeData();
+        //the role chips are set while loading: no list reloads until the end
+        loading = true;
+        try {
+            dataOwner.setPanelData(this);
+            exposeData();
+        } finally {
+            loading = false;
+        }
 
         if (object.isExisting()) {
             setTabTitle(object.__getCname());
@@ -957,8 +992,10 @@ public class ModernContactPanel extends ModernDataPanel {
         if (object.isReadOnly()) {
             Popup.notice(Messages.LOCKED_BY);
         }
+        related = null;
+        chosenRelated = ContactService.defaultRelated(dataOwner);
         updateRoleControls();
-        showRelated(ContactService.defaultRelated(dataOwner));
+        showRelated(chosenRelated);
         properties();
         loadEInvoiceSettings();
         updateHeader();
