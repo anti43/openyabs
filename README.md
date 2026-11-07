@@ -52,6 +52,8 @@ Alle Aktionen zum ganzen Datensatz stehen in einer Befehlsleiste oben (Speichern
 
 In der modernen Belegansicht stehen Kunde, Belegdaten, Termine, Freitext, Dateien und Eigenschaften in Karten, die Positionen mit den Summen (Netto − Rabatt + Steuer = **Gesamt**) bilden den Hauptbereich. Vorschau, weitere Belege (Lieferschein, Auftragsbestätigung, Drucken mit AB), E-Rechnung, *Erstellen* (Auftrag, Rechnung, Anzahlung, Abschlagsrechnung, Gutschrift), Mahnen, Termin, Vergleich mit dem Auftrag und referenzierte Belege stehen in der Befehlsleiste. Strg+F springt in die Positionen.
 
+**Tätigkeitslisten** sind ausgeblendet (Navigation, Listen im Kontakt, Rückfragen beim Erstellen von Rechnungen, Löschbestätigung). Daten und Funktionen bleiben erhalten; einblenden mit `java -Dyabs.activitylists=true -jar openyabs.jar`.
+
 **Hauptfenster:** Navigation links über die volle Höhe, Registerkarten flach in einer scrollbaren Zeile (Schließen-Kreuz pro Karte), schlichtere Werkzeug- und Statusleiste; beim ersten Start passt sich die Fenstergröße dem Bildschirm an. Das gilt immer, unabhängig von der Einstellung für die modernen Ansichten.
 
 Die Auswahl trifft `YabsViewProxy` (`registerModernView`); alle anderen Ansichten bleiben unverändert.

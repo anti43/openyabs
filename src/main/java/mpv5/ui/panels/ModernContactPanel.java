@@ -649,7 +649,8 @@ public class ModernContactPanel extends ModernDataPanel {
         boolean isCustomer = customer.isSelected();
         boolean hasProducts = supplier.isSelected() || manufacturer.isSelected();
         for (Map.Entry<Related, ChipToggle> e : relatedButtons.entrySet()) {
-            e.getValue().setVisible(e.getKey().isForCustomers() ? isCustomer : hasProducts);
+            e.getValue().setVisible((e.getKey().isForCustomers() ? isCustomer : hasProducts)
+                    && (e.getKey() != Related.ACTIVITIES || mpv5.globals.Features.activityLists()));
         }
         newOffer.setVisible(isCustomer);
         newOrder.setVisible(isCustomer);

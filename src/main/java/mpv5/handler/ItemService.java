@@ -261,8 +261,10 @@ public final class ItemService {
         i2.defineFormatHandler(new FormatHandler(i2));
         i2.save();
         try {
-            ArrayList<ActivityList> data = DatabaseObject.getObjects(Context.getActivityList(), new QueryCriteria("orderids", source.__getIDS()));
-            if (ask.test(Messages.ActivityList_Existing.toString())) {
+            ArrayList<ActivityList> data = mpv5.globals.Features.activityLists()
+                    ? DatabaseObject.getObjects(Context.getActivityList(), new QueryCriteria("orderids", source.__getIDS()))
+                    : new ArrayList<ActivityList>();
+            if (!data.isEmpty() && ask.test(Messages.ActivityList_Existing.toString())) {
                 Iterator<ActivityList> it = data.iterator();
                 while (it.hasNext()) {
                     SubItem s = it.next().getDataForInvoice();
@@ -340,10 +342,12 @@ public final class ItemService {
                 Log.Debug(ItemService.class, ex.getMessage());
             }
         }
-        try {
-            list.addAll(DatabaseObject.getObjects(Context.getActivityList(), new QueryCriteria("orderids", order.__getIDS())));
-        } catch (NodataFoundException ex) {
-            Log.Debug(ItemService.class, ex.getMessage());
+        if (mpv5.globals.Features.activityLists()) {
+            try {
+                list.addAll(DatabaseObject.getObjects(Context.getActivityList(), new QueryCriteria("orderids", order.__getIDS())));
+            } catch (NodataFoundException ex) {
+                Log.Debug(ItemService.class, ex.getMessage());
+            }
         }
         return list;
     }
@@ -385,29 +389,31 @@ public final class ItemService {
         }
         //activity lists are no items: their entries count by product
         //(the classic view failed with a ClassCastException here)
-        try {
-            for (Object o : DatabaseObject.getObjects(Context.getActivityList(), new QueryCriteria("orderids", orderId))) {
-                if (!(o instanceof ActivityList)) {
-                    continue;
-                }
-                for (mpv5.db.objects.ActivityListSubItem a : ((ActivityList) o).getPositions()) {
-                    try {
-                        Product p = (Product) DatabaseObject.getObject(Context.getProduct(), a.__getProductsids());
-                        CompareRow r = pm.get(p);
-                        if (r == null) {
-                            r = new CompareRow(p);
-                            r.measure = a.__getMeasure();
-                            r.description = a.__getDescription();
-                            pm.put(p, r);
+        if (mpv5.globals.Features.activityLists()) {
+            try {
+                for (Object o : DatabaseObject.getObjects(Context.getActivityList(), new QueryCriteria("orderids", orderId))) {
+                    if (!(o instanceof ActivityList)) {
+                        continue;
+                    }
+                    for (mpv5.db.objects.ActivityListSubItem a : ((ActivityList) o).getPositions()) {
+                        try {
+                            Product p = (Product) DatabaseObject.getObject(Context.getProduct(), a.__getProductsids());
+                            CompareRow r = pm.get(p);
+                            if (r == null) {
+                                r = new CompareRow(p);
+                                r.measure = a.__getMeasure();
+                                r.description = a.__getDescription();
+                                pm.put(p, r);
+                            }
+                            r.used = r.used.add(a.__getQuantityvalue());
+                        } catch (NodataFoundException ex) {
+                            Log.Debug(ItemService.class, ex.getMessage());
                         }
-                        r.used = r.used.add(a.__getQuantityvalue());
-                    } catch (NodataFoundException ex) {
-                        Log.Debug(ItemService.class, ex.getMessage());
                     }
                 }
+            } catch (Exception ex) {
+                Log.Debug(ItemService.class, ex.getMessage());
             }
-        } catch (Exception ex) {
-            Log.Debug(ItemService.class, ex.getMessage());
         }
         Object[][] d = new Object[pm.size()][];
         int i = 0;

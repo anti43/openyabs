@@ -157,7 +157,8 @@ public final class DeletionPreview {
         keptCount(kept, Messages.DELETE_PREVIEW_FILES, count(Context.getFilesToContacts(),
                 "SELECT COUNT(*) FROM %%tablename%% WHERE contactsids = " + c.__getIDS(), true));
         keptCount(kept, Messages.DELETE_PREVIEW_ACTIVITIES, count(Context.getActivityList(),
-                "SELECT COUNT(*) FROM %%tablename%% WHERE contactsids = " + c.__getIDS() + " AND invisible = 0", true));
+                "SELECT COUNT(*) FROM %%tablename%% WHERE contactsids = " + c.__getIDS() + " AND invisible = 0",
+                mpv5.globals.Features.activityLists()));
         kept(groups, kept);
     }
 

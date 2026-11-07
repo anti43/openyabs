@@ -717,6 +717,11 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
         java.awt.Dimension screen = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
         mainPanel.setPreferredSize(new java.awt.Dimension(screen.width * 85 / 100, screen.height * 75 / 100));
 
+        //activity lists are hidden (see Features)
+        if (!mpv5.globals.Features.activityLists()) {
+            nav_accounting.remove(jButton21);
+        }
+
         //navigation buttons: flat, full width, a line between the entries, highlighted under the mouse
         javax.swing.JPanel[] navs = {nav_contacts, nav_accounting, nav_products, nav_extras, nav_simple_inner};
         javax.swing.JPanel[] parents = {parent_nav_contacts, parent_nav_accounting, parent_nav_products, parent_nav_extras, parent_nav_simple};
