@@ -61,6 +61,8 @@ public class ControlPanel_Fonts extends javax.swing.JPanel implements ControlApp
         UIManager.put("Table.font", font);
         UIManager.put("TableHeader.font", font);
         UIManager.put("TextField.font", font);
+        UIManager.put("FormattedTextField.font", font);
+        UIManager.put("Spinner.font", font);
         UIManager.put("PasswordField.font", font);
         UIManager.put("TextArea.font", font);
         UIManager.put("TextPane.font", font);

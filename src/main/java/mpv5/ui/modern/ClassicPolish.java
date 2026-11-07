@@ -119,7 +119,21 @@ public final class ClassicPolish {
         }
         c.putClientProperty(DONE, Boolean.TRUE);
         Border b = c.getBorder();
-        if (c instanceof JButton && !(c.getParent() instanceof JToolBar)) {
+        if (c instanceof JButton && c.getParent() instanceof JToolBar) {
+            if (isOld(b)) {
+                //an action of a toolbar row with a hard frame (e.g. "Create invoice"):
+                //a rounded outline, highlighted under the mouse like other toolbar buttons
+                int v = ModernTheme.px(3);
+                int h = ModernTheme.px(10);
+                int arc = Math.max(0, UIManager.getInt("Button.arc"));
+                int gap = ModernTheme.px(2);
+                c.setBorder(new CompoundBorder(
+                        javax.swing.BorderFactory.createEmptyBorder(gap, gap, gap, gap),
+                        new FlatLineBorder(new Insets(v, h, v, h), ModernTheme.border(), 1, arc)));
+                c.setOpaque(false);
+                ((AbstractButton) c).setRolloverEnabled(true);
+            }
+        } else if (c instanceof JButton) {
             AbstractButton btn = (AbstractButton) c;
             if (isOld(b)) {
                 //a button of the form with a hard frame: a normal, rounded button
