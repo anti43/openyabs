@@ -520,8 +520,10 @@ public class MassPrintPanel
         }
 
         if (!files.isEmpty()) {
-            DialogForFile.CURRENT_DIR = new File(LocalSettings.getProperty(LocalSettings.BASE_DIR) + File.separator + "test");
-            DialogForFile d = new DialogForFile();
+            //the configured folder for documents, else the folder chosen last
+            File dir = mpv5.utils.files.LastDirectory.configuredBaseDir();
+            DialogForFile d = new DialogForFile(DialogForFile.DIRECTORIES_ONLY,
+                    dir != null ? dir : mpv5.utils.files.LastDirectory.get());
             Job job = new Job(files, d, files.size() + " PDF " + Messages.SAVED);
             job.execute();
             mpv5.YabsViewProxy.instance().getProgressbar().setValue(100);

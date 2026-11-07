@@ -62,6 +62,12 @@ In der modernen Belegansicht stehen Kunde, Belegdaten, Termine, Freitext, Dateie
 - *Ansicht > Layout > Modern* wählt es ausdrücklich, *Ansicht > Layout > System* schaltet zurück auf das Erscheinungsbild des Betriebssystems; andere Erscheinungsbilder wie bisher in den Benutzereinstellungen.
 - Farben und Größen stehen in `src/main/resources/mpv5/ui/modern/YabsLookAndFeel.properties`.
 
+**Dateidialoge** (Speichern, Öffnen, Ordner wählen) sind größer, merken sich ihre Größe und haben rechts eine Leiste **Orte** (Zuletzt verwendet, Ablageordner aus den lokalen Einstellungen, Persönlicher Ordner, Schreibtisch, Dokumente). Sie starten immer in einem sinnvollen Ordner:
+
+- Belege (ODT/PDF exportieren, Mahnungen, Massendruck): im **Ablageordner aus den lokalen Einstellungen**, falls einer eingestellt ist (samt Unterordnern aus dem Speicherformat des Benutzers), sonst im zuletzt gewählten Ordner.
+- Alle anderen Dateidialoge: im **zuletzt gewählten Ordner**, sonst im Ablageordner, sonst auf dem Schreibtisch bzw. im persönlichen Ordner.
+- Der zuletzt gewählte Ordner wird in den lokalen Einstellungen (`lastfiledir`) gespeichert und gilt auch nach einem Neustart. Ein vorgeschlagener Dateiname ohne Ordner landet nicht mehr im Programmordner, sondern dort.
+
 Die Auswahl der Ansichten trifft `YabsViewProxy` (`registerModernView`); alle anderen Ansichten bleiben unverändert.
 
 ## E-Rechnung (XRechnung / ZUGFeRD)

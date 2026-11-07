@@ -495,7 +495,7 @@ public class RemindPanel extends javax.swing.JPanel {
                     Log.Debug(nodataFoundException);
                 }
 
-                new Job(Export.createFile(dataOwner.__getCname(), t, dataOwner, hm1), new DialogForFile(DialogForFile.FILES_ONLY, dataOwner.__getCname())).execute();
+                new Job(Export.createFile(dataOwner.__getCname(), t, dataOwner, hm1), new DialogForFile(mpv5.db.objects.User.getSaveDir(dataOwner), dataOwner.__getCname())).execute();
             } else {
                 Popup.notice(Messages.NO_TEMPLATE_DEFINDED);
             }
@@ -532,7 +532,7 @@ public class RemindPanel extends javax.swing.JPanel {
                     Log.Debug(nodataFoundException);
                 }
 
-                new Job(Export.sourceFile(dataOwner.__getCname(), t, dataOwner, hm1), new DialogForFile(DialogForFile.FILES_ONLY, dataOwner.__getCname())).execute();
+                new Job(Export.sourceFile(dataOwner.__getCname(), t, dataOwner, hm1), new DialogForFile(mpv5.db.objects.User.getSaveDir(dataOwner), dataOwner.__getCname())).execute();
             } else {
                 Popup.notice(Messages.NO_TEMPLATE_DEFINDED);
             }

@@ -334,7 +334,7 @@ public class ControlPanel_Reminder extends javax.swing.JPanel implements DataPan
                 HashMap<String, Object> hm1 = new HashMap<>();
                 File f2 = FileDirectoryHandler.getTempFile("pdf");
 
-                new Job(Export.createFile(dataOwner.__getCname(), t, dataOwner, hm1), new DialogForFile(DialogForFile.FILES_ONLY, dataOwner.__getCname())).execute();
+                new Job(Export.createFile(dataOwner.__getCname(), t, dataOwner, hm1), new DialogForFile(mpv5.db.objects.User.getSaveDir(dataOwner), dataOwner.__getCname())).execute();
             } else {
                 Popup.notice(Messages.NO_TEMPLATE_DEFINDED);
             }
@@ -357,7 +357,7 @@ public class ControlPanel_Reminder extends javax.swing.JPanel implements DataPan
                 Exportable te = TemplateHandler.loadTemplate(group, Constants.TYPE_REMINDER).getExFile();
                 HashMap<String, Object> hm1 = new HashMap<>();
                 File f2 = FileDirectoryHandler.getTempFile("odt");
-                new Job(Export.sourceFile(dataOwner.__getCname(), t, dataOwner, hm1), new DialogForFile(DialogForFile.FILES_ONLY, dataOwner.__getCname())).execute();
+                new Job(Export.sourceFile(dataOwner.__getCname(), t, dataOwner, hm1), new DialogForFile(mpv5.db.objects.User.getSaveDir(dataOwner), dataOwner.__getCname())).execute();
             } else {
                 Popup.notice(Messages.NO_TEMPLATE_DEFINDED);
             }

@@ -558,6 +558,12 @@ public enum Messages {
     ITEM_MORE_DOCUMENTS("Documents"),
     ITEM_NEW("New document"),
     LAF_MODERN("Modern"),
+    FILE_PLACES("Places"),
+    FILE_PLACE_LAST("Last used"),
+    FILE_PLACE_SAVEDIR("Save folder"),
+    FILE_PLACE_HOME("Home"),
+    FILE_PLACE_DESKTOP("Desktop"),
+    FILE_PLACE_DOCUMENTS("Documents"),
     MODERN_UI("Modern views for contacts, products and documents (preview, takes effect for newly opened tabs)");
 
 
