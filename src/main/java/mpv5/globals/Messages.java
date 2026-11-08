@@ -13,7 +13,7 @@ import mpv5.i18n.LanguageManager;
  * This enum holds all messages for the mp5 main application Start with -license
  * for details.\nStart with -help for command line options. : YaBS (
  *
- * @version) (C) 2006-2009 Openyabs.org
+ * @version) (C) 2006-2009 OpenYaBS
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -31,7 +31,7 @@ public enum Messages {
 
     START_MESSAGE(
     "\n"
-    + "YaBS " + Constants.VERSION + " (C) 2006-" +  Calendar.getInstance().get(Calendar.YEAR) + " Openyabs.org\n\n"
+    + "YaBS " + Constants.VERSION + " (C) 2006-" +  Calendar.getInstance().get(Calendar.YEAR) + " OpenYaBS\n\n"
     + "******************************************************************************\n"
     + "* This program is free software; you can redistribute it and/or modify it \n"
     + "* under the terms of the GNU General Public License as published by the \n"
@@ -253,7 +253,7 @@ public enum Messages {
     CONTACT_INTRO_FEMALE("Dear"),
     INVENTORY_STOCK_TRESHOLD("The stock count of the following product has reached the alarm threshold: "),
     PRINT_NOT_POSSIBLE("Could not find a print service for the give file. Try 'print through default application' setting instead:"),
-    UPDATE_AVAILABLE("There is an update available for Yabs, check openyabs.org"),
+    UPDATE_AVAILABLE("There is an update available for Yabs, check https://github.com/andreasweberd/openyabs/"),
     NO_UPDATE_AVAILABLE("There is no update available"),
     SEARCHABLE("This is a search-enabled field - type a phrase and hit 'Enter'"),
     TYPE_PRODUCT_ORDER("Product Order"),
@@ -301,7 +301,7 @@ public enum Messages {
     + "The mail will be send without any text body now."),
     ADD_CONTACT("Add contact.."),
     SEARCH_CONTACT("Search contact.."),
-    LANGUAGE_FILE("Your language file is not up to date! Visit openyabs.org for a new language file or edit the existing one via Tools->Control Panel->Babelfish"),
+    LANGUAGE_FILE("Your language file is not up to date! Visit https://github.com/andreasweberd/openyabs/ for a new language file or edit the existing one via Tools->Control Panel->Babelfish"),
     IMPORT_LANGUAGES_DONE("A new language has been imported, do you want to assign the language to a user?"),
     IMPORT_TEMPLATES_DONE("A new template has been imported; before you can use it, you need to go to Tools->Control Panel->Templates to assign the new template to a user!"),
     IMPORT_PLUGINS_DONE("A new plugin has been imported; before you can use it, you need to go to Tools->Control Panel->Plugins to assign the new plugin to a user!"),
