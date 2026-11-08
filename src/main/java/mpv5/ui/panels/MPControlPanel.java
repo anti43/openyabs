@@ -2,33 +2,66 @@ package mpv5.ui.panels;
 
 import groovy.ui.Console;
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.RenderingHints;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Supplier;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
 import javax.swing.Icon;
-import javax.swing.JButton;
+import javax.swing.ImageIcon;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.ListCellRenderer;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import mpv5.YabsViewProxy;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.QueryHandler;
 import mpv5.db.objects.User;
-import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
+import mpv5.handler.SearchService;
+import mpv5.i18n.LanguageManager;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Accounts;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_AdvancedGlobalProperties;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Company;
+import mpv5.ui.dialogs.subcomponents.ControlPanel_External;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Fonts;
-import mpv5.ui.dialogs.subcomponents.ControlPanel_Userproperties;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Formats;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Groups;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Konsole;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Local;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Locale;
-import mpv5.ui.dialogs.subcomponents.ControlPanel_External;
+import mpv5.ui.dialogs.subcomponents.ControlPanel_MailTemplates;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Massprint;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Plugins;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_ProductGroups;
@@ -36,714 +69,178 @@ import mpv5.ui.dialogs.subcomponents.ControlPanel_Reminder;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Schedule;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Taxes;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Templates;
+import mpv5.ui.dialogs.subcomponents.ControlPanel_Userproperties;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Users;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_ValueProps;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_WebShopManager;
 import mpv5.ui.frames.MPBabelFish;
+import mpv5.ui.modern.ModernTheme;
+import mpv5.ui.modern.ResponsiveGrid;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.files.FileDirectoryHandler;
 
 /**
- *
- *
+ * The settings: a searchable list of all settings on the left, an overview
+ * or the chosen setting on the right
  */
-public class MPControlPanel extends javax.swing.JPanel {
+public class MPControlPanel extends JPanel {
 
+    private static final long serialVersionUID = 1L;
     private static MPControlPanel cpanel;
 
     /**
-     *
-     * @return
+     * @return the settings panel
      */
     public static synchronized MPControlPanel instanceOf() {
-        if (cpanel != null) {
-            return cpanel;
-        } else {
+        if (cpanel == null) {
             cpanel = new MPControlPanel();
-            return cpanel;
+        }
+        return cpanel;
+    }
+
+    /**
+     * One setting
+     */
+    public static final class Entry {
+
+        public final String group;
+        public final String title;
+        public final String description;
+        final String icon;
+        final Icon customIcon;
+        /**
+         * creates the panel to show, null for an action
+         */
+        final Supplier<ControlApplet> panel;
+        final Class<?> panelClass;
+        final Runnable action;
+
+        Entry(String group, String title, String description, String icon, Class<?> panelClass, Supplier<ControlApplet> panel, Runnable action, Icon customIcon) {
+            this.group = group;
+            this.title = title;
+            this.description = description == null ? "" : description;
+            this.icon = icon;
+            this.panelClass = panelClass;
+            this.panel = panel;
+            this.action = action;
+            this.customIcon = customIcon;
+        }
+
+        private final java.util.Map<Integer, Icon> icons = new java.util.HashMap<Integer, Icon>();
+
+        Icon icon(int size) {
+            if (!icons.containsKey(size)) {
+                icons.put(size, scaled(size));
+            }
+            return icons.get(size);
+        }
+
+        private Icon scaled(int size) {
+            Icon i = customIcon;
+            if (i == null && icon != null) {
+                java.net.URL u = MPControlPanel.class.getResource("/images/48/" + icon + ".png");
+                i = u == null ? null : new ImageIcon(u);
+            }
+            if (i instanceof ImageIcon && i.getIconWidth() != size) {
+                return new ImageIcon(((ImageIcon) i).getImage().getScaledInstance(size, size, Image.SCALE_SMOOTH));
+            }
+            return i;
+        }
+
+        /**
+         * @param needle
+         * @return true if every word of the needle is in the title, the
+         * description or the group
+         */
+        public boolean matches(String needle) {
+            return SearchService.matches(title + " " + description + " " + group, needle);
+        }
+
+        @Override
+        public String toString() {
+            return title;
         }
     }
-    private Context context;
 
-    /**
-     * Creates new form ListPanel
-     */
-    private MPControlPanel() {
-        initComponents();
-        removeAll();
-        add(jScrollPane1, BorderLayout.CENTER);
-        validate();
-        repaint();
+    private static String label(String key) {
+        try {
+            return LanguageManager.getBundle().getString(key);
+        } catch (Exception e) {
+            return key;
+        }
     }
 
+    private static Entry panel(String group, String key, Messages desc, String icon, Class<?> c, Supplier<ControlApplet> s) {
+        return new Entry(group, label("MPControlPanel." + key + ".text"), desc.toString(), icon, c, s, null, null);
+    }
+
+    private static Entry action(String group, String key, Messages desc, String icon, Runnable r) {
+        return new Entry(group, label("MPControlPanel." + key + ".text"), desc.toString(), icon, null, null, r, null);
+    }
+
+    private final List<Entry> plugins = new ArrayList<Entry>();
+
     /**
-     * This me4thod is called from within the constructor to initialize the
-     * form. WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
+     * @return all settings, grouped
      */
-    @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+    public static List<Entry> entries() {
+        List<Entry> l = new ArrayList<Entry>();
+        String business = Messages.SETTINGS_GROUP_BUSINESS.toString();
+        l.add(panel(business, "jButton23", Messages.SETTINGS_D_COMPANY, "advancedsettings", ControlPanel_Company.class, ControlPanel_Company::new));
+        l.add(panel(business, "jButton20", Messages.SETTINGS_D_TEMPLATES, "advancedsettings", ControlPanel_Templates.class, ControlPanel_Templates::new));
+        l.add(new Entry(business, Messages.SETTINGS_MAIL_TEMPLATES.toString(), Messages.SETTINGS_D_MAILTEMPLATES.toString(), "advancedsettings",
+                ControlPanel_MailTemplates.class, ControlPanel_MailTemplates::new, null, null));
+        l.add(panel(business, "jButton21", Messages.SETTINGS_D_TAXES, "advancedsettings", ControlPanel_Taxes.class, ControlPanel_Taxes::new));
+        l.add(panel(business, "jButton18", Messages.SETTINGS_D_REMINDER, "kxconfig", ControlPanel_Reminder.class, ControlPanel_Reminder::new));
+        l.add(panel(business, "jButton13", Messages.SETTINGS_D_FORMATS, "blockdevice", ControlPanel_Formats.class,
+                () -> new ControlPanel_Formats(User.getCurrentUser())));
+        l.add(panel(business, "jButton12", Messages.SETTINGS_D_ACCOUNTS, "gkrellm2", ControlPanel_Accounts.class, ControlPanel_Accounts::new));
+        l.add(panel(business, "jButton17", Messages.SETTINGS_D_PRODUCTGROUPS, "preferences_system_session_services", ControlPanel_ProductGroups.class, ControlPanel_ProductGroups::new));
+        l.add(panel(business, "jButton10", Messages.SETTINGS_D_GROUPS, "flag", ControlPanel_Groups.class, ControlPanel_Groups::new));
+        l.add(panel(business, "jButton25", Messages.SETTINGS_D_MASSPRINT, "advancedsettings", ControlPanel_Massprint.class, ControlPanel_Massprint::new));
+        l.add(panel(business, "jButton22", Messages.SETTINGS_D_SCHEDULE, "style", ControlPanel_Schedule.class, ControlPanel_Schedule::new));
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        buttons = new javax.swing.JPanel();
-        jButton16 = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
-        jButton15 = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
-        jButton20 = new javax.swing.JButton();
-        jButton21 = new javax.swing.JButton();
-        jButton10 = new javax.swing.JButton();
-        jButton12 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
-        jButton8 = new javax.swing.JButton();
-        jButton9 = new javax.swing.JButton();
-        jButton17 = new javax.swing.JButton();
-        jButton13 = new javax.swing.JButton();
-        jButton14 = new javax.swing.JButton();
-        jButton11 = new javax.swing.JButton();
-        jButton19 = new javax.swing.JButton();
-        jButton18 = new javax.swing.JButton();
-        jButton22 = new javax.swing.JButton();
-        jButton23 = new javax.swing.JButton();
-        jButton24 = new javax.swing.JButton();
-        jButton25 = new javax.swing.JButton();
-        jButton26 = new javax.swing.JButton();
-        details = new javax.swing.JPanel();
-        scroller = new javax.swing.JScrollPane();
-        jToolBar1 = new javax.swing.JToolBar();
-        jButton4 = new javax.swing.JButton();
-        actions = new javax.swing.JPanel();
-
-        setForeground(java.awt.SystemColor.activeCaption);
-        setName("Form"); // NOI18N
-        setLayout(new java.awt.BorderLayout());
-
-        jScrollPane1.setAutoscrolls(true);
-        jScrollPane1.setName("jScrollPane1"); // NOI18N
-        jScrollPane1.setPreferredSize(new java.awt.Dimension(343, 303));
-
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
-        buttons.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("MPControlPanel.buttons.border.title"))); // NOI18N
-        buttons.setAutoscrolls(true);
-        buttons.setMaximumSize(new java.awt.Dimension(32767, 400));
-        buttons.setMinimumSize(new java.awt.Dimension(30, 150));
-        buttons.setName("buttons"); // NOI18N
-        buttons.setPreferredSize(new java.awt.Dimension(500, 250));
-
-        jButton16.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/48/preferences_plugin.png"))); // NOI18N
-        jButton16.setText(bundle.getString("MPControlPanel.jButton16.text")); // NOI18N
-        jButton16.setToolTipText(bundle.getString("MPControlPanel.jButton16.toolTipText")); // NOI18N
-        jButton16.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jButton16.setContentAreaFilled(false);
-        jButton16.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton16.setIconTextGap(1);
-        jButton16.setMaximumSize(new java.awt.Dimension(150, 150));
-        jButton16.setMinimumSize(new java.awt.Dimension(90, 80));
-        jButton16.setName("jButton16"); // NOI18N
-        jButton16.setPreferredSize(new java.awt.Dimension(100, 100));
-        jButton16.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton16.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton16ActionPerformed(evt);
-            }
-        });
-        buttons.add(jButton16);
-
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/48/internet.png"))); // NOI18N
-        jButton1.setText(bundle.getString("MPControlPanel.jButton1.text")); // NOI18N
-        jButton1.setToolTipText(bundle.getString("MPControlPanel.jButton1.toolTipText")); // NOI18N
-        jButton1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jButton1.setContentAreaFilled(false);
-        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton1.setIconTextGap(1);
-        jButton1.setMaximumSize(new java.awt.Dimension(150, 150));
-        jButton1.setMinimumSize(new java.awt.Dimension(90, 80));
-        jButton1.setName("jButton1"); // NOI18N
-        jButton1.setPreferredSize(new java.awt.Dimension(100, 100));
-        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-        buttons.add(jButton1);
-
-        jButton15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/48/advancedsettings.png"))); // NOI18N
-        jButton15.setText(bundle.getString("MPControlPanel.jButton15.text")); // NOI18N
-        jButton15.setToolTipText(bundle.getString("MPControlPanel.jButton15.toolTipText")); // NOI18N
-        jButton15.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jButton15.setContentAreaFilled(false);
-        jButton15.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton15.setIconTextGap(1);
-        jButton15.setMaximumSize(new java.awt.Dimension(150, 150));
-        jButton15.setMinimumSize(new java.awt.Dimension(90, 80));
-        jButton15.setName("jButton15"); // NOI18N
-        jButton15.setPreferredSize(new java.awt.Dimension(100, 100));
-        jButton15.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton15.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton15ActionPerformed(evt);
-            }
-        });
-        buttons.add(jButton15);
-
-        jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/48/openofficeorg-20.png"))); // NOI18N
-        jButton7.setText(bundle.getString("MPControlPanel.jButton7.text")); // NOI18N
-        jButton7.setToolTipText(bundle.getString("MPControlPanel.jButton7.toolTipText")); // NOI18N
-        jButton7.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jButton7.setContentAreaFilled(false);
-        jButton7.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton7.setIconTextGap(1);
-        jButton7.setMaximumSize(new java.awt.Dimension(150, 150));
-        jButton7.setMinimumSize(new java.awt.Dimension(90, 80));
-        jButton7.setName("jButton7"); // NOI18N
-        jButton7.setPreferredSize(new java.awt.Dimension(100, 100));
-        jButton7.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton7.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton7ActionPerformed(evt);
-            }
-        });
-        buttons.add(jButton7);
-
-        jButton20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/48/advancedsettings.png"))); // NOI18N
-        jButton20.setText(bundle.getString("MPControlPanel.jButton20.text")); // NOI18N
-        jButton20.setToolTipText(bundle.getString("MPControlPanel.jButton20.toolTipText")); // NOI18N
-        jButton20.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jButton20.setContentAreaFilled(false);
-        jButton20.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton20.setIconTextGap(1);
-        jButton20.setMaximumSize(new java.awt.Dimension(150, 150));
-        jButton20.setMinimumSize(new java.awt.Dimension(90, 80));
-        jButton20.setName("jButton20"); // NOI18N
-        jButton20.setPreferredSize(new java.awt.Dimension(100, 100));
-        jButton20.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton20.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton20ActionPerformed(evt);
-            }
-        });
-        buttons.add(jButton20);
-
-        jButton21.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/48/advancedsettings.png"))); // NOI18N
-        jButton21.setText(bundle.getString("MPControlPanel.jButton21.text")); // NOI18N
-        jButton21.setToolTipText(bundle.getString("MPControlPanel.jButton21.toolTipText")); // NOI18N
-        jButton21.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jButton21.setContentAreaFilled(false);
-        jButton21.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton21.setIconTextGap(1);
-        jButton21.setMaximumSize(new java.awt.Dimension(150, 150));
-        jButton21.setMinimumSize(new java.awt.Dimension(90, 80));
-        jButton21.setName("jButton21"); // NOI18N
-        jButton21.setPreferredSize(new java.awt.Dimension(100, 100));
-        jButton21.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton21.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton21ActionPerformed(evt);
-            }
-        });
-        buttons.add(jButton21);
-
-        jButton10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/48/flag.png"))); // NOI18N
-        jButton10.setText(bundle.getString("MPControlPanel.jButton10.text")); // NOI18N
-        jButton10.setToolTipText(bundle.getString("MPControlPanel.jButton10.toolTipText")); // NOI18N
-        jButton10.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jButton10.setContentAreaFilled(false);
-        jButton10.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton10.setIconTextGap(1);
-        jButton10.setMaximumSize(new java.awt.Dimension(150, 150));
-        jButton10.setMinimumSize(new java.awt.Dimension(90, 80));
-        jButton10.setName("jButton10"); // NOI18N
-        jButton10.setPreferredSize(new java.awt.Dimension(100, 100));
-        jButton10.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton10.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton10ActionPerformed(evt);
-            }
-        });
-        buttons.add(jButton10);
-
-        jButton12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/48/gkrellm2.png"))); // NOI18N
-        jButton12.setText(bundle.getString("MPControlPanel.jButton12.text")); // NOI18N
-        jButton12.setToolTipText(bundle.getString("MPControlPanel.jButton12.toolTipText")); // NOI18N
-        jButton12.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jButton12.setContentAreaFilled(false);
-        jButton12.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton12.setIconTextGap(1);
-        jButton12.setMaximumSize(new java.awt.Dimension(150, 150));
-        jButton12.setMinimumSize(new java.awt.Dimension(90, 80));
-        jButton12.setName("jButton12"); // NOI18N
-        jButton12.setPreferredSize(new java.awt.Dimension(100, 100));
-        jButton12.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton12.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton12ActionPerformed(evt);
-            }
-        });
-        buttons.add(jButton12);
-
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/48/locale.png"))); // NOI18N
-        jButton2.setText(bundle.getString("MPControlPanel.jButton2.text")); // NOI18N
-        jButton2.setToolTipText(bundle.getString("MPControlPanel.jButton2.toolTipText")); // NOI18N
-        jButton2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jButton2.setContentAreaFilled(false);
-        jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton2.setIconTextGap(1);
-        jButton2.setMaximumSize(new java.awt.Dimension(150, 150));
-        jButton2.setMinimumSize(new java.awt.Dimension(90, 80));
-        jButton2.setName("jButton2"); // NOI18N
-        jButton2.setPreferredSize(new java.awt.Dimension(100, 100));
-        jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-        buttons.add(jButton2);
-
-        jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/48/babelfish.png"))); // NOI18N
-        jButton5.setText(bundle.getString("MPControlPanel.jButton5.text")); // NOI18N
-        jButton5.setToolTipText(bundle.getString("MPControlPanel.jButton5.toolTipText")); // NOI18N
-        jButton5.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jButton5.setContentAreaFilled(false);
-        jButton5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton5.setIconTextGap(1);
-        jButton5.setMaximumSize(new java.awt.Dimension(150, 150));
-        jButton5.setMinimumSize(new java.awt.Dimension(90, 80));
-        jButton5.setName("jButton5"); // NOI18N
-        jButton5.setPreferredSize(new java.awt.Dimension(100, 100));
-        jButton5.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
-            }
-        });
-        buttons.add(jButton5);
-
-        jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/48/evolution-contacts.png"))); // NOI18N
-        jButton6.setText(bundle.getString("MPControlPanel.jButton6.text")); // NOI18N
-        jButton6.setToolTipText(bundle.getString("MPControlPanel.jButton6.toolTipText")); // NOI18N
-        jButton6.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jButton6.setContentAreaFilled(false);
-        jButton6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton6.setIconTextGap(1);
-        jButton6.setMaximumSize(new java.awt.Dimension(150, 150));
-        jButton6.setMinimumSize(new java.awt.Dimension(90, 80));
-        jButton6.setName("jButton6"); // NOI18N
-        jButton6.setPreferredSize(new java.awt.Dimension(100, 100));
-        jButton6.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
-            }
-        });
-        buttons.add(jButton6);
-
-        jButton8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/48/draw-eraser.png"))); // NOI18N
-        jButton8.setText(bundle.getString("MPControlPanel.jButton8.text")); // NOI18N
-        jButton8.setToolTipText(bundle.getString("MPControlPanel.jButton8.toolTipText")); // NOI18N
-        jButton8.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jButton8.setContentAreaFilled(false);
-        jButton8.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton8.setIconTextGap(1);
-        jButton8.setMaximumSize(new java.awt.Dimension(150, 150));
-        jButton8.setMinimumSize(new java.awt.Dimension(90, 80));
-        jButton8.setName("jButton8"); // NOI18N
-        jButton8.setPreferredSize(new java.awt.Dimension(100, 100));
-        jButton8.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton8.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton8ActionPerformed(evt);
-            }
-        });
-        buttons.add(jButton8);
-
-        jButton9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/48/fonts.png"))); // NOI18N
-        jButton9.setText(bundle.getString("MPControlPanel.jButton9.text")); // NOI18N
-        jButton9.setToolTipText(bundle.getString("MPControlPanel.jButton9.toolTipText")); // NOI18N
-        jButton9.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jButton9.setContentAreaFilled(false);
-        jButton9.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton9.setIconTextGap(1);
-        jButton9.setMaximumSize(new java.awt.Dimension(150, 150));
-        jButton9.setMinimumSize(new java.awt.Dimension(90, 80));
-        jButton9.setName("jButton9"); // NOI18N
-        jButton9.setPreferredSize(new java.awt.Dimension(100, 100));
-        jButton9.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton9.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton9ActionPerformed(evt);
-            }
-        });
-        buttons.add(jButton9);
-
-        jButton17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/48/preferences_system_session_services.png"))); // NOI18N
-        jButton17.setText(bundle.getString("MPControlPanel.jButton17.text")); // NOI18N
-        jButton17.setToolTipText(bundle.getString("MPControlPanel.jButton17.toolTipText")); // NOI18N
-        jButton17.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jButton17.setContentAreaFilled(false);
-        jButton17.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton17.setIconTextGap(1);
-        jButton17.setMaximumSize(new java.awt.Dimension(150, 150));
-        jButton17.setMinimumSize(new java.awt.Dimension(90, 80));
-        jButton17.setName("jButton17"); // NOI18N
-        jButton17.setPreferredSize(new java.awt.Dimension(100, 100));
-        jButton17.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton17.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton17ActionPerformed(evt);
-            }
-        });
-        buttons.add(jButton17);
-
-        jButton13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/48/blockdevice.png"))); // NOI18N
-        jButton13.setText(bundle.getString("MPControlPanel.jButton13.text")); // NOI18N
-        jButton13.setToolTipText(bundle.getString("MPControlPanel.jButton13.toolTipText")); // NOI18N
-        jButton13.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jButton13.setContentAreaFilled(false);
-        jButton13.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton13.setIconTextGap(1);
-        jButton13.setMaximumSize(new java.awt.Dimension(150, 150));
-        jButton13.setMinimumSize(new java.awt.Dimension(90, 80));
-        jButton13.setName("jButton13"); // NOI18N
-        jButton13.setPreferredSize(new java.awt.Dimension(100, 100));
-        jButton13.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton13.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton13ActionPerformed(evt);
-            }
-        });
-        buttons.add(jButton13);
-
-        jButton14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/48/konsole.png"))); // NOI18N
-        jButton14.setText(bundle.getString("MPControlPanel.jButton14.text")); // NOI18N
-        jButton14.setToolTipText(bundle.getString("MPControlPanel.jButton14.toolTipText")); // NOI18N
-        jButton14.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jButton14.setContentAreaFilled(false);
-        jButton14.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton14.setIconTextGap(1);
-        jButton14.setMaximumSize(new java.awt.Dimension(150, 150));
-        jButton14.setMinimumSize(new java.awt.Dimension(90, 80));
-        jButton14.setName("jButton14"); // NOI18N
-        jButton14.setPreferredSize(new java.awt.Dimension(100, 100));
-        jButton14.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton14.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton14ActionPerformed(evt);
-            }
-        });
-        buttons.add(jButton14);
-
-        jButton11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/48/usb.png"))); // NOI18N
-        jButton11.setText(bundle.getString("MPControlPanel.jButton11.text")); // NOI18N
-        jButton11.setToolTipText(bundle.getString("MPControlPanel.jButton11.toolTipText")); // NOI18N
-        jButton11.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jButton11.setContentAreaFilled(false);
-        jButton11.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton11.setIconTextGap(1);
-        jButton11.setMaximumSize(new java.awt.Dimension(150, 150));
-        jButton11.setMinimumSize(new java.awt.Dimension(90, 80));
-        jButton11.setName("jButton11"); // NOI18N
-        jButton11.setPreferredSize(new java.awt.Dimension(100, 100));
-        jButton11.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton11.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton11ActionPerformed(evt);
-            }
-        });
-        buttons.add(jButton11);
-
-        jButton19.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/48/krfb.png"))); // NOI18N
-        jButton19.setText(bundle.getString("MPControlPanel.jButton19.text")); // NOI18N
-        jButton19.setToolTipText(bundle.getString("MPControlPanel.jButton19.toolTipText")); // NOI18N
-        jButton19.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jButton19.setContentAreaFilled(false);
-        jButton19.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton19.setIconTextGap(1);
-        jButton19.setMaximumSize(new java.awt.Dimension(150, 150));
-        jButton19.setMinimumSize(new java.awt.Dimension(90, 80));
-        jButton19.setName("jButton19"); // NOI18N
-        jButton19.setPreferredSize(new java.awt.Dimension(100, 100));
-        jButton19.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton19.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton19ActionPerformed(evt);
-            }
-        });
-        buttons.add(jButton19);
-
-        jButton18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/48/kxconfig.png"))); // NOI18N
-        jButton18.setText(bundle.getString("MPControlPanel.jButton18.text")); // NOI18N
-        jButton18.setToolTipText(bundle.getString("MPControlPanel.jButton18.toolTipText")); // NOI18N
-        jButton18.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jButton18.setContentAreaFilled(false);
-        jButton18.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton18.setIconTextGap(1);
-        jButton18.setMaximumSize(new java.awt.Dimension(150, 150));
-        jButton18.setMinimumSize(new java.awt.Dimension(90, 80));
-        jButton18.setName("jButton18"); // NOI18N
-        jButton18.setPreferredSize(new java.awt.Dimension(100, 100));
-        jButton18.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton18.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton18ActionPerformed(evt);
-            }
-        });
-        buttons.add(jButton18);
-
-        jButton22.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/48/style.png"))); // NOI18N
-        jButton22.setText(bundle.getString("MPControlPanel.jButton22.text")); // NOI18N
-        jButton22.setToolTipText(bundle.getString("MPControlPanel.jButton22.toolTipText")); // NOI18N
-        jButton22.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jButton22.setContentAreaFilled(false);
-        jButton22.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton22.setIconTextGap(1);
-        jButton22.setMaximumSize(new java.awt.Dimension(150, 150));
-        jButton22.setMinimumSize(new java.awt.Dimension(90, 80));
-        jButton22.setName("jButton22"); // NOI18N
-        jButton22.setPreferredSize(new java.awt.Dimension(100, 100));
-        jButton22.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton22.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton22ActionPerformed(evt);
-            }
-        });
-        buttons.add(jButton22);
-
-        jButton23.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/48/advancedsettings.png"))); // NOI18N
-        jButton23.setText(bundle.getString("MPControlPanel.jButton23.text")); // NOI18N
-        jButton23.setToolTipText(bundle.getString("MPControlPanel.jButton23.toolTipText")); // NOI18N
-        jButton23.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jButton23.setContentAreaFilled(false);
-        jButton23.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton23.setIconTextGap(1);
-        jButton23.setMaximumSize(new java.awt.Dimension(150, 150));
-        jButton23.setMinimumSize(new java.awt.Dimension(90, 80));
-        jButton23.setName("jButton23"); // NOI18N
-        jButton23.setPreferredSize(new java.awt.Dimension(100, 100));
-        jButton23.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton23.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton23ActionPerformed(evt);
-            }
-        });
-        buttons.add(jButton23);
-
-        jButton24.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/48/konsole.png"))); // NOI18N
-        jButton24.setText(bundle.getString("MPControlPanel.jButton24.text")); // NOI18N
-        jButton24.setToolTipText(bundle.getString("MPControlPanel.jButton24.toolTipText")); // NOI18N
-        jButton24.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jButton24.setContentAreaFilled(false);
-        jButton24.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton24.setIconTextGap(1);
-        jButton24.setMaximumSize(new java.awt.Dimension(150, 150));
-        jButton24.setMinimumSize(new java.awt.Dimension(90, 80));
-        jButton24.setName("jButton24"); // NOI18N
-        jButton24.setPreferredSize(new java.awt.Dimension(100, 100));
-        jButton24.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton24.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton24ActionPerformed(evt);
-            }
-        });
-        buttons.add(jButton24);
-
-        jButton25.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/48/advancedsettings.png"))); // NOI18N
-        jButton25.setText(bundle.getString("MPControlPanel.jButton25.text")); // NOI18N
-        jButton25.setToolTipText(bundle.getString("MPControlPanel.jButton25.toolTipText")); // NOI18N
-        jButton25.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jButton25.setContentAreaFilled(false);
-        jButton25.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton25.setIconTextGap(1);
-        jButton25.setMaximumSize(new java.awt.Dimension(150, 150));
-        jButton25.setMinimumSize(new java.awt.Dimension(90, 80));
-        jButton25.setName("jButton25"); // NOI18N
-        jButton25.setPreferredSize(new java.awt.Dimension(100, 100));
-        jButton25.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton25.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton25ActionPerformed(evt);
-            }
-        });
-        buttons.add(jButton25);
-
-        jButton26.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/48/konsole.png"))); // NOI18N
-        jButton26.setText(bundle.getString("MPControlPanel.jButton26.text")); // NOI18N
-        jButton26.setToolTipText(bundle.getString("MPControlPanel.jButton26.toolTipText")); // NOI18N
-        jButton26.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jButton26.setContentAreaFilled(false);
-        jButton26.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton26.setIconTextGap(1);
-        jButton26.setMaximumSize(new java.awt.Dimension(150, 150));
-        jButton26.setMinimumSize(new java.awt.Dimension(90, 80));
-        jButton26.setName(bundle.getString("MPControlPanel.jButton26.name")); // NOI18N
-        jButton26.setPreferredSize(new java.awt.Dimension(100, 100));
-        jButton26.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton26.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton26ActionPerformed(evt);
-            }
-        });
-        buttons.add(jButton26);
-
-        jScrollPane1.setViewportView(buttons);
-
-        add(jScrollPane1, java.awt.BorderLayout.NORTH);
-
-        details.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("MPControlPanel.details.border.title"))); // NOI18N
-        details.setMinimumSize(new java.awt.Dimension(300, 400));
-        details.setName("details"); // NOI18N
-        details.setPreferredSize(new java.awt.Dimension(400, 400));
-        details.setLayout(new java.awt.BorderLayout());
-
-        scroller.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        scroller.setName("scroller"); // NOI18N
-        details.add(scroller, java.awt.BorderLayout.CENTER);
-
-        jToolBar1.setFloatable(false);
-        jToolBar1.setRollover(true);
-        jToolBar1.setName("jToolBar1"); // NOI18N
-
-        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/32/adept_keep.png"))); // NOI18N
-        jButton4.setText(bundle.getString("MPControlPanel.jButton4.text")); // NOI18N
-        jButton4.setToolTipText(bundle.getString("MPControlPanel.jButton4.toolTipText")); // NOI18N
-        jButton4.setFocusable(false);
-        jButton4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton4.setName("jButton4"); // NOI18N
-        jButton4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(jButton4);
-
-        details.add(jToolBar1, java.awt.BorderLayout.NORTH);
-
-        add(details, java.awt.BorderLayout.CENTER);
-
-        actions.setName("actions"); // NOI18N
-        actions.setLayout(new java.awt.BorderLayout());
-        add(actions, java.awt.BorderLayout.SOUTH);
-    }// </editor-fold>//GEN-END:initComponents
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-
-        openDetails(new ControlPanel_Local());
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-
-        if (Popup.Y_N_dialog(Messages.REALLY_WIPE)) {
+        String people = Messages.SETTINGS_GROUP_PEOPLE.toString();
+        l.add(panel(people, "jButton6", Messages.SETTINGS_D_USERS, "evolution-contacts", ControlPanel_Users.class, ControlPanel_Users::new));
+        l.add(panel(people, "jButton16", Messages.SETTINGS_D_USERPROPERTIES, "preferences_plugin", ControlPanel_Userproperties.class, ControlPanel_Userproperties::new));
+        l.add(panel(people, "jButton2", Messages.SETTINGS_D_LOCALE, "locale", ControlPanel_Locale.class, ControlPanel_Locale::new));
+        l.add(panel(people, "jButton9", Messages.SETTINGS_D_FONT, "fonts", ControlPanel_Fonts.class, ControlPanel_Fonts::new));
+        l.add(action(people, "jButton5", Messages.SETTINGS_D_TRANSLATE, "babelfish", () -> {
+            YabsViewProxy.instance().setWaiting(true);
             try {
-                FileDirectoryHandler.deleteDirectoryContent(new File(FileDirectoryHandler.getTempDir2()));
-            } catch (IOException ex) {
-                Popup.error(ex);
+                new MPBabelFish();
+            } finally {
+                YabsViewProxy.instance().setWaiting(false);
+            }
+        }));
+
+        String system = Messages.SETTINGS_GROUP_SYSTEM.toString();
+        l.add(panel(system, "jButton1", Messages.SETTINGS_D_LOCAL, "internet", ControlPanel_Local.class, ControlPanel_Local::new));
+        l.add(panel(system, "jButton7", Messages.SETTINGS_D_EXTERNAL, "openofficeorg-20", ControlPanel_External.class, ControlPanel_External::new));
+        l.add(panel(system, "jButton11", Messages.SETTINGS_D_PLUGINS, "usb", ControlPanel_Plugins.class, ControlPanel_Plugins::new));
+        l.add(panel(system, "jButton19", Messages.SETTINGS_D_WEBSHOPS, "krfb", ControlPanel_WebShopManager.class, ControlPanel_WebShopManager::new));
+        l.add(panel(system, "jButton15", Messages.SETTINGS_D_GLOBAL, "advancedsettings", ControlPanel_AdvancedGlobalProperties.class, ControlPanel_AdvancedGlobalProperties::new));
+        l.add(panel(system, "jButton24", Messages.SETTINGS_D_SCRIPTS, "konsole", ControlPanel_ValueProps.class, ControlPanel_ValueProps::new));
+        l.add(panel(system, "jButton14", Messages.SETTINGS_D_SQL, "konsole", ControlPanel_Konsole.class, ControlPanel_Konsole::new));
+        l.add(action(system, "jButton26", Messages.SETTINGS_D_GROOVY, "konsole", MPControlPanel::groovy));
+        l.add(action(system, "jButton8", Messages.SETTINGS_D_WIPE, "draw-eraser", () -> {
+            if (Popup.Y_N_dialog(Messages.REALLY_WIPE)) {
+                try {
+                    FileDirectoryHandler.deleteDirectoryContent(new File(FileDirectoryHandler.getTempDir2()));
+                } catch (IOException ex) {
+                    Popup.error(ex);
+                }
+            }
+        }));
+        synchronized (MPControlPanel.class) {
+            if (cpanel != null) {
+                l.addAll(cpanel.plugins);
             }
         }
-    }//GEN-LAST:event_jButton8ActionPerformed
+        return l;
+    }
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        openDetails(new ControlPanel_Locale());
-    }//GEN-LAST:event_jButton2ActionPerformed
-
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        mpv5.YabsViewProxy.instance().setWaiting(true);
-        new MPBabelFish();
-        mpv5.YabsViewProxy.instance().setWaiting(false);
-
-    }//GEN-LAST:event_jButton5ActionPerformed
-
-    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
-
-        openDetails(new ControlPanel_Fonts());
-    }//GEN-LAST:event_jButton9ActionPerformed
-
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-
-        openDetails(new ControlPanel_Users());
-    }//GEN-LAST:event_jButton6ActionPerformed
-
-    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
-        openDetails(new ControlPanel_Groups());
-
-    }//GEN-LAST:event_jButton10ActionPerformed
-
-    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
-        openDetails(new ControlPanel_Plugins());
-    }//GEN-LAST:event_jButton11ActionPerformed
-
-    private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
-        openDetails(new ControlPanel_Accounts());
-    }//GEN-LAST:event_jButton12ActionPerformed
-
-    private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
-        openDetails(new ControlPanel_Formats(mpv5.db.objects.User.getCurrentUser()));
-    }//GEN-LAST:event_jButton13ActionPerformed
-
-    private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
-        openDetails(new ControlPanel_Konsole());
-    }//GEN-LAST:event_jButton14ActionPerformed
-
-    private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
-        openDetails(new ControlPanel_AdvancedGlobalProperties());
-    }//GEN-LAST:event_jButton15ActionPerformed
-
-    private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
-        openDetails(new ControlPanel_Userproperties());
-    }//GEN-LAST:event_jButton16ActionPerformed
-
-    private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton17ActionPerformed
-        openDetails(new ControlPanel_ProductGroups());
-    }//GEN-LAST:event_jButton17ActionPerformed
-
-    private void jButton19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton19ActionPerformed
-        openDetails(new ControlPanel_WebShopManager());
-    }//GEN-LAST:event_jButton19ActionPerformed
-
-    private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton20ActionPerformed
-        openDetails(new ControlPanel_Templates());
-    }//GEN-LAST:event_jButton20ActionPerformed
-
-    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-        openDetails(new ControlPanel_External());
-    }//GEN-LAST:event_jButton7ActionPerformed
-
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        removeAll();
-        add(jScrollPane1, BorderLayout.CENTER);
-        validate();
-        repaint();
-    }//GEN-LAST:event_jButton4ActionPerformed
-
-    private void jButton21ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton21ActionPerformed
-        openDetails(new ControlPanel_Taxes());
-    }//GEN-LAST:event_jButton21ActionPerformed
-
-    private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
-        openDetails(new ControlPanel_Reminder());
-    }//GEN-LAST:event_jButton18ActionPerformed
-
-    private void jButton22ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton22ActionPerformed
-        openDetails(new ControlPanel_Schedule());
-    }//GEN-LAST:event_jButton22ActionPerformed
-
-    private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton23ActionPerformed
-        openDetails(new ControlPanel_Company());
-    }//GEN-LAST:event_jButton23ActionPerformed
-
-    private void jButton24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton24ActionPerformed
-        openDetails(new ControlPanel_ValueProps());
-    }//GEN-LAST:event_jButton24ActionPerformed
-
-    private void jButton25ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton25ActionPerformed
-        openDetails(new ControlPanel_Massprint());
-    }//GEN-LAST:event_jButton25ActionPerformed
-
-    private void jButton26ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton26ActionPerformed
+    private static void groovy() {
         if (MPSecurityManager.checkAdminAccess()) {
             Log.setLogLevel(Log.LOGLEVEL_DEBUG);
             Console console = new Console();
@@ -757,143 +254,468 @@ public class MPControlPanel extends javax.swing.JPanel {
             console.setFrame(YabsViewProxy.instance().getIdentifierFrame());
             console.run();
         }
-    }//GEN-LAST:event_jButton26ActionPerformed
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel actions;
-    private javax.swing.JPanel buttons;
-    private javax.swing.JPanel details;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton10;
-    private javax.swing.JButton jButton11;
-    private javax.swing.JButton jButton12;
-    private javax.swing.JButton jButton13;
-    private javax.swing.JButton jButton14;
-    private javax.swing.JButton jButton15;
-    private javax.swing.JButton jButton16;
-    private javax.swing.JButton jButton17;
-    private javax.swing.JButton jButton18;
-    private javax.swing.JButton jButton19;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton20;
-    private javax.swing.JButton jButton21;
-    private javax.swing.JButton jButton22;
-    private javax.swing.JButton jButton23;
-    private javax.swing.JButton jButton24;
-    private javax.swing.JButton jButton25;
-    private javax.swing.JButton jButton26;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
-    private javax.swing.JButton jButton8;
-    private javax.swing.JButton jButton9;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JToolBar jToolBar1;
-    private javax.swing.JScrollPane scroller;
-    // End of variables declaration//GEN-END:variables
-
-    /**
-     * This method adds a button to the Properties panel, with given Icon and
-     * Text. A click on the generated button creates a new instance of the given
-     * class.
-     *
-     * @param icon
-     * @param text
-     * @param clazz
-     */
-    public void addShortcut(Icon icon, String text, final Class clazz) {
-        JButton button = new JButton(text, icon);
-        button.setToolTipText(text); // NOI18N
-        button.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 0, 10)); // NOI18N
-        button.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        button.setContentAreaFilled(false);
-        button.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        button.setMaximumSize(new java.awt.Dimension(90, 90));
-        button.setMinimumSize(new java.awt.Dimension(90, 80));
-        button.setPreferredSize(new java.awt.Dimension(90, 80));
-        button.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-
-        button.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                try {
-                    clazz.newInstance();
-                } catch (InstantiationException ex) {
-                    Log.Debug(this, ex);
-                } catch (IllegalAccessException ex) {
-                    Log.Debug(this, ex);
-                }
-            }
-        });
-
-        buttons.add(button);
     }
 
     /**
-     * This method adds a button to the Properties panel, with given Icon and
-     * Text. A click on the generated button places the JPanel on the details
-     * pane. 
-     * Bring your own scrollpane!
+     * Shows the settings tab with the given setting
+     *
+     * @param e
+     */
+    public static void show(Entry e) {
+        if (e.panel != null) {
+            mpv5.YabsViewProxy.instance().getIdentifierView().addOrShowTab(instanceOf(), Messages.CONTROL_PANEL.toString());
+        }
+        instanceOf().open(e);
+    }
+
+    // ------------------------------------------------------------------ view
+    private final JTextField search = ModernTheme.roomy(new JTextField());
+    private final DefaultListModel<Object> model = new DefaultListModel<Object>();
+    private final JList<Object> list = new JList<Object>(model);
+    private final CardLayout cards = new CardLayout();
+    private final JPanel right = new JPanel(cards);
+    private final JPanel overview = new JPanel();
+    private final JLabel detailIcon = new JLabel();
+    private final JLabel detailTitle = new JLabel();
+    private final JLabel detailText = new JLabel();
+    private final JScrollPane scroller = new JScrollPane();
+    private final JPanel actions = new JPanel(new BorderLayout());
+    private List<Entry> all = new ArrayList<Entry>();
+    private boolean listing;
+
+    private MPControlPanel() {
+        super(new BorderLayout());
+        setName("Form");
+        setBackground(ModernTheme.background());
+
+        //left: search and list
+        JPanel side = new JPanel(new BorderLayout(0, ModernTheme.px(8)));
+        side.setBackground(ModernTheme.cardBackground());
+        side.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(0, 0, 0, 1, ModernTheme.border()),
+                ModernTheme.padding(12, 10)));
+        search.putClientProperty("JTextField.placeholderText", Messages.SETTINGS_SEARCH_HINT.toString());
+        search.putClientProperty("JTextField.showClearButton", Boolean.TRUE);
+        search.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                filter();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                filter();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                filter();
+            }
+        });
+        search.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+                    list.requestFocusInWindow();
+                    selectNext(list.getSelectedIndex(), 1);
+                    e.consume();
+                } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    Entry first = firstEntry();
+                    if (first != null) {
+                        open(first);
+                    }
+                } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    search.setText("");
+                }
+            }
+        });
+        side.add(search, BorderLayout.NORTH);
+
+        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        list.setCellRenderer(new Renderer());
+        list.setOpaque(false);
+        list.addListSelectionListener(e -> {
+            if (e.getValueIsAdjusting() || listing) {
+                return;
+            }
+            Object o = list.getSelectedValue();
+            if (o instanceof Entry) {
+                open((Entry) o);
+            }
+        });
+        list.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                int d = e.getKeyCode() == KeyEvent.VK_DOWN ? 1 : e.getKeyCode() == KeyEvent.VK_UP ? -1 : 0;
+                if (d != 0) {
+                    if (!selectNext(list.getSelectedIndex(), d) && d < 0) {
+                        search.requestFocusInWindow();
+                    }
+                    e.consume();
+                }
+            }
+        });
+        JScrollPane ls = new JScrollPane(list);
+        ls.setBorder(BorderFactory.createEmptyBorder());
+        ls.setPreferredSize(new Dimension(ModernTheme.px(200), ModernTheme.px(300)));
+        ls.setOpaque(false);
+        ls.getViewport().setOpaque(false);
+        side.add(ls, BorderLayout.CENTER);
+        JLabel home = new JLabel(Messages.SETTINGS_OVERVIEW.toString());
+        home.setForeground(ModernTheme.accent());
+        home.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        home.setBorder(ModernTheme.padding(4, 4));
+        home.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                showOverview();
+            }
+        });
+        side.add(home, BorderLayout.SOUTH);
+        side.setPreferredSize(new Dimension(ModernTheme.px(270), ModernTheme.px(300)));
+        add(side, BorderLayout.WEST);
+
+        //right: overview or a setting
+        overview.setLayout(new BoxLayout(overview, BoxLayout.Y_AXIS));
+        overview.setBackground(ModernTheme.background());
+        overview.setBorder(ModernTheme.padding(16, 20));
+        JScrollPane os = new JScrollPane(overview);
+        os.setBorder(BorderFactory.createEmptyBorder());
+        os.setPreferredSize(new Dimension(ModernTheme.px(400), ModernTheme.px(300)));
+        os.getVerticalScrollBar().setUnitIncrement(ModernTheme.px(16));
+        right.add(os, "overview");
+
+        JPanel detail = new JPanel(new BorderLayout());
+        detail.setOpaque(false);
+        JPanel head = new JPanel(new BorderLayout(ModernTheme.px(12), 0));
+        head.setBackground(ModernTheme.cardBackground());
+        head.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(0, 0, 1, 0, ModernTheme.border()),
+                ModernTheme.padding(10, 16)));
+        detailTitle.setFont(ModernTheme.font(5, Font.BOLD));
+        detailText.setForeground(ModernTheme.muted());
+        JPanel texts = new JPanel();
+        texts.setOpaque(false);
+        texts.setLayout(new BoxLayout(texts, BoxLayout.Y_AXIS));
+        texts.add(detailTitle);
+        texts.add(detailText);
+        head.add(detailIcon, BorderLayout.WEST);
+        head.add(texts, BorderLayout.CENTER);
+        detail.add(head, BorderLayout.NORTH);
+        scroller.setBorder(BorderFactory.createEmptyBorder());
+        //fits the tab, the panel scrolls (the actions stay visible)
+        scroller.setPreferredSize(new Dimension(ModernTheme.px(400), ModernTheme.px(300)));
+        scroller.getVerticalScrollBar().setUnitIncrement(ModernTheme.px(16));
+        detail.add(scroller, BorderLayout.CENTER);
+        actions.setOpaque(false);
+        detail.add(actions, BorderLayout.SOUTH);
+        right.add(detail, "detail");
+        add(right, BorderLayout.CENTER);
+
+        reload();
+    }
+
+    private void reload() {
+        all = entries();
+        filter();
+    }
+
+    private void filter() {
+        String n = search.getText().trim();
+        Object selected = list.getSelectedValue();
+        listing = true;
+        try {
+            model.clear();
+            String group = null;
+            for (Entry e : all) {
+                if (n.isEmpty() || e.matches(n)) {
+                    if (!e.group.equals(group)) {
+                        group = e.group;
+                        model.addElement(group);
+                    }
+                    model.addElement(e);
+                }
+            }
+            if (model.isEmpty()) {
+                model.addElement(Messages.SETTINGS_NOTHING.toString());
+            }
+            if (selected != null && model.contains(selected)) {
+                list.setSelectedValue(selected, true);
+            }
+        } finally {
+            listing = false;
+        }
+        buildOverview(n);
+    }
+
+    private Entry firstEntry() {
+        for (int i = 0; i < model.size(); i++) {
+            if (model.get(i) instanceof Entry) {
+                return (Entry) model.get(i);
+            }
+        }
+        return null;
+    }
+
+    private boolean selectNext(int from, int d) {
+        for (int i = from + d; i >= 0 && i < model.size(); i += d) {
+            if (model.get(i) instanceof Entry) {
+                list.setSelectedIndex(i);
+                list.ensureIndexIsVisible(i);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void buildOverview(String n) {
+        overview.removeAll();
+        String group = null;
+        ResponsiveGrid grid = null;
+        for (Entry e : all) {
+            if (!n.isEmpty() && !e.matches(n)) {
+                continue;
+            }
+            if (!e.group.equals(group)) {
+                group = e.group;
+                JLabel h = new JLabel(group);
+                h.setFont(ModernTheme.font(2, Font.BOLD));
+                h.setAlignmentX(LEFT_ALIGNMENT);
+                h.setBorder(BorderFactory.createEmptyBorder(overview.getComponentCount() == 0 ? 0 : ModernTheme.px(18), 2, ModernTheme.px(8), 0));
+                overview.add(h);
+                grid = new ResponsiveGrid(ModernTheme.px(250), 4);
+                grid.setOpaque(false);
+                grid.setAlignmentX(LEFT_ALIGNMENT);
+                overview.add(grid);
+            }
+            grid.add(new Tile(e));
+        }
+        if (overview.getComponentCount() == 0) {
+            JLabel none = new JLabel(Messages.SETTINGS_NOTHING.toString());
+            none.setForeground(ModernTheme.muted());
+            overview.add(none);
+        }
+        overview.add(Box.createVerticalGlue());
+        overview.revalidate();
+        overview.repaint();
+    }
+
+    private void showOverview() {
+        listing = true;
+        list.clearSelection();
+        listing = false;
+        cards.show(right, "overview");
+    }
+
+    /**
+     * Opens a setting
+     *
+     * @param e
+     */
+    public void open(Entry e) {
+        if (e.panel == null) {
+            if (e.action != null) {
+                e.action.run();
+            }
+            return;
+        }
+        select(e.panelClass);
+        show(e.panel.get(), e);
+    }
+
+    private void select(Class<?> c) {
+        listing = true;
+        try {
+            list.clearSelection();
+            for (int i = 0; i < model.size(); i++) {
+                if (model.get(i) instanceof Entry && ((Entry) model.get(i)).panelClass == c && c != null) {
+                    list.setSelectedIndex(i);
+                    list.ensureIndexIsVisible(i);
+                    break;
+                }
+            }
+        } finally {
+            listing = false;
+        }
+    }
+
+    private void show(ControlApplet panel, Entry e) {
+        mpv5.YabsViewProxy.instance().setWaiting(true);
+        try {
+            if (e == null) {
+                for (Entry x : all) {
+                    if (x.panelClass == panel.getClass()) {
+                        e = x;
+                    }
+                }
+            }
+            detailTitle.setText(e == null ? ((Component) panel).getClass().getSimpleName().replace("ControlPanel_", "") : e.title);
+            detailText.setText(e == null ? "" : e.description);
+            detailText.setVisible(e != null && !e.description.isEmpty());
+            detailIcon.setIcon(e == null ? null : e.icon(32));
+            actions.removeAll();
+            Component a = panel.getAndRemoveActionPanel();
+            if (a != null) {
+                actions.add(a, BorderLayout.CENTER);
+            }
+            scroller.setViewportView((Component) panel);
+            cards.show(right, "detail");
+            revalidate();
+            repaint();
+        } catch (Exception ex) {
+            //no rights for this
+            Log.Debug(this, ex);
+        } finally {
+            mpv5.YabsViewProxy.instance().setWaiting(false);
+        }
+    }
+
+    /**
+     * Shows a Control Panel Applet
+     *
+     * @param panel
+     */
+    public synchronized void openDetails(ControlApplet panel) {
+        select(panel.getClass());
+        show(panel, null);
+    }
+
+    /**
+     * Adds a setting (for plugins): a click shows the panel
      *
      * @param icon
      * @param text
      * @param panel
      */
     public void addShortcut(Icon icon, String text, final ControlApplet panel) {
-        JButton button = new JButton(text, icon);
-        button.setToolTipText(text); // NOI18N
-        button.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 0, 10)); // NOI18N
-        button.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        button.setContentAreaFilled(false);
-        button.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        button.setMaximumSize(new java.awt.Dimension(90, 90));
-        button.setMinimumSize(new java.awt.Dimension(90, 80));
-        button.setPreferredSize(new java.awt.Dimension(90, 80));
-        button.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        button.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                try {
-                    openDetails(panel);
-                } catch (Exception ex) {
-                    Log.Debug(this, ex);
-                }
-            }
-        });
-
-        buttons.add(button);
-        validate();
-        repaint();
+        plugins.add(new Entry(Messages.SETTINGS_GROUP_PLUGINS.toString(), text, "", null, panel.getClass(), () -> panel, null, icon));
+        reload();
     }
 
     /**
-     * Show a Control Panel Applet
+     * Adds a setting (for plugins): a click creates a new instance of the
+     * class
      *
-     * @param panel
+     * @param icon
+     * @param text
+     * @param clazz
      */
-    public synchronized void openDetails(ControlApplet panel) {
-        mpv5.YabsViewProxy.instance().setWaiting(true);
+    public void addShortcut(Icon icon, String text, final Class<?> clazz) {
+        plugins.add(new Entry(Messages.SETTINGS_GROUP_PLUGINS.toString(), text, "", null, null, null, () -> {
+            try {
+                clazz.getDeclaredConstructor().newInstance();
+            } catch (Exception ex) {
+                Log.Debug(MPControlPanel.class, ex);
+            }
+        }, icon));
+        reload();
+    }
 
-        try {
-            actions.removeAll();
-            actions.add(((JPanel) panel.getAndRemoveActionPanel()));
-            actions.validate();
-            scroller.add((Component) panel);
-            scroller.setViewportView((Component) panel);
+    // ------------------------------------------------------------------ parts
+    /**
+     * A setting in the overview
+     */
+    private final class Tile extends JPanel {
 
-            removeAll();
-            add(details, BorderLayout.CENTER);
-            add(actions, BorderLayout.SOUTH);
-            validate();
-            repaint();
+        private static final long serialVersionUID = 1L;
+        private boolean hover;
 
-            ((Component) panel).validate();
+        Tile(final Entry e) {
+            super(new BorderLayout(ModernTheme.px(12), 0));
+            setOpaque(false);
+            setBorder(ModernTheme.padding(12, 14));
+            setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            setToolTipText(e.description.isEmpty() ? null : e.description);
+            JLabel i = new JLabel(e.icon(32));
+            i.setVerticalAlignment(SwingConstants.TOP);
+            add(i, BorderLayout.WEST);
+            JPanel t = new JPanel(new BorderLayout(0, ModernTheme.px(2)));
+            t.setOpaque(false);
+            JLabel title = new JLabel(e.title);
+            title.setFont(ModernTheme.font(1, Font.BOLD));
+            t.add(title, BorderLayout.NORTH);
+            JTextArea d = new JTextArea(e.description);
+            d.setLineWrap(true);
+            d.setWrapStyleWord(true);
+            d.setEditable(false);
+            d.setFocusable(false);
+            d.setOpaque(false);
+            d.setBorder(null);
+            d.setFont(ModernTheme.font(-1, Font.PLAIN));
+            d.setForeground(ModernTheme.muted());
+            d.setRows(2);
+            t.add(d, BorderLayout.CENTER);
+            add(t, BorderLayout.CENTER);
+            MouseAdapter m = new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent ev) {
+                    open(e);
+                }
 
-        } catch (Exception e) {
-            //No rights for this!
-        } finally {
-            mpv5.YabsViewProxy.instance().setWaiting(false);
-            mpv5.YabsViewProxy.instance().getIdentifierFrame().validate();
+                @Override
+                public void mouseEntered(MouseEvent ev) {
+                    hover = true;
+                    repaint();
+                }
+
+                @Override
+                public void mouseExited(MouseEvent ev) {
+                    hover = getMousePosition(true) != null;
+                    repaint();
+                }
+            };
+            for (JComponent c : new JComponent[]{this, i, title, d, t}) {
+                c.addMouseListener(m);
+                if (c != this) {
+                    c.setCursor(getCursor());
+                }
+            }
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            int arc = ModernTheme.px(12);
+            g2.setColor(ModernTheme.cardBackground());
+            g2.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, arc, arc);
+            g2.setColor(hover ? ModernTheme.accent() : ModernTheme.border());
+            g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, arc, arc);
+            g2.dispose();
+            super.paintComponent(g);
+        }
+    }
+
+    /**
+     * Groups small and gray, settings with icon
+     */
+    private static final class Renderer implements ListCellRenderer<Object> {
+
+        private final JLabel label = new JLabel();
+
+        @Override
+        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean selected, boolean focus) {
+            label.setOpaque(selected);
+            label.setIconTextGap(ModernTheme.px(8));
+            if (value instanceof Entry) {
+                Entry e = (Entry) value;
+                label.setText(e.title);
+                label.setIcon(e.icon(20));
+                label.setFont(ModernTheme.font(0, Font.PLAIN));
+                label.setForeground(selected ? Color.WHITE : ModernTheme.foreground());
+                label.setBackground(ModernTheme.accent());
+                label.setBorder(ModernTheme.padding(5, 8));
+                label.setToolTipText(e.description.isEmpty() ? null : e.description);
+            } else {
+                label.setText(String.valueOf(value).toUpperCase());
+                label.setIcon(null);
+                label.setOpaque(false);
+                label.setFont(ModernTheme.font(-2, Font.BOLD));
+                label.setForeground(ModernTheme.muted());
+                label.setBorder(BorderFactory.createEmptyBorder(index == 0 ? ModernTheme.px(2) : ModernTheme.px(12), ModernTheme.px(8), ModernTheme.px(4), 0));
+                label.setToolTipText(null);
+            }
+            return label;
         }
     }
 }
