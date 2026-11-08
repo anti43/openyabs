@@ -59,9 +59,9 @@ public class ReceiptLookup extends javax.swing.JPanel {
             new Object[]{Context.getOrder(), Item.getTypeString(Item.TYPE_ORDER)},
             new Object[]{Context.getDelivery(), Item.getTypeString(Item.TYPE_DELIVERY_NOTE)},
             new Object[]{Context.getConfirmation(), Item.getTypeString(Item.TYPE_ORDER_CONFIRMATION)},
-            new Object[]{Context.getOrder(), Item.getTypeString(Item.TYPE_DEPOSIT)},
-            new Object[]{Context.getDelivery(), Item.getTypeString(Item.TYPE_PART_PAYMENT)},
-            new Object[]{Context.getConfirmation(), Item.getTypeString(Item.TYPE_CREDIT)}};
+            new Object[]{Context.getDeposit(), Item.getTypeString(Item.TYPE_DEPOSIT)},
+            new Object[]{Context.getPartPayment(), Item.getTypeString(Item.TYPE_PART_PAYMENT)},
+            new Object[]{Context.getCredit(), Item.getTypeString(Item.TYPE_CREDIT)}};
         type.setModel(typeModel);
         type.setSearchEnabled(false);
         type.setSearchOnEnterEnabled(false);

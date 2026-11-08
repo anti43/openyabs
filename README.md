@@ -173,7 +173,8 @@ Invoicing software has to calculate correctly. YaBS calculates with exact decima
 - **Tabs and navigation**: several records open side by side, back and forward like a browser, favourites, a clipboard for records, a search bar.
 - **Keyboard shortcuts** for everything frequent: `Ctrl+S` save, `Ctrl+P` print, `Ctrl+Shift+P` PDF, `Ctrl+E` mail, `Ctrl+F` filter, `Ctrl+C` / `Ctrl+V` copy and paste records, `Ctrl+F1` shows all shortcuts.
 - **Safe deleting**: before deleting, YaBS lists everything that would be deleted with it; deleted records go to a trash bin first.
-- **Your language**: English and German included – on a German system (or with a German locale) YaBS switches to German by itself; further translations can be made inside the application.
+- **Your language**: English and German included – on a German system (or with a German locale) YaBS switches to German by itself, and *View › Language* switches at any time (YaBS restarts itself); further translations can be made inside the application.
+- **Zoom like in a browser**: `Ctrl +` / `Ctrl −` / `Ctrl 0` make the whole application larger or smaller (80 – 200 %), remembered on each computer.
 
 ## Teams: users, groups and rights
 

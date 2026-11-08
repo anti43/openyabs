@@ -237,7 +237,8 @@ public class ControlPanel_Fonts extends javax.swing.JPanel implements ControlApp
         jFontChooser1.setSelectedFont(Font.decode(LocalSettings.getProperty(LocalSettings.DEFAULT_FONT)));
         font.setText(getFontString(jFontChooser1.getSelectedFont()));
 
-        applyFont(Font.decode(getFontString(font.getText())));
+        //with the zoom factor (Ctrl+Plus / Ctrl+Minus)
+        mpv5.ui.modern.Zoom.applyFont(Font.decode(getFontString(font.getText())));
 
     }
 

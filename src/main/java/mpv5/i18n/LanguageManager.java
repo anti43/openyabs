@@ -557,10 +557,11 @@ public class LanguageManager {
                         }
                     }
                     if (!found) {
-                        failed = true;
+                        //only a check: a file without the keys of a newer version (e.g. the
+                        //cached copy after an update) is completed from the database copy;
+                        //it must not disable all languages ("failed") for the session
                         Log.Debug(LanguageManager.class, "Key '" + string + "' not found in file " + file);
                         if (!popupOnError) {
-                            mpv5.YabsViewProxy.instance().addMessage(Messages.ERROR_OCCURED.toString());
                             return false;
                         } else {
                             try {
@@ -693,7 +694,8 @@ public class LanguageManager {
             try {
                 ResourceBundle bundle = ResourceBundleUtf8.getBundle(lastfile.getName().substring(0, lastfile.getName().lastIndexOf(".")));
                 if (lastfile.canRead()) {
-                    defLanguageBundle = bundle;
+                    //only cached for its user: the built-in English stays the default
+                    //(it was replaced here, so English could not be chosen again)
                     cachelanguage(lastfile.getName().substring(0, lastfile.getName().lastIndexOf(".")), bundle);
                 }
             } catch (Exception e) {
@@ -843,5 +845,60 @@ public class LanguageManager {
             Log.Debug(LanguageManager.class, e);
             return false;
         }
+    }
+
+    /**
+     * Languages to choose from: built-in English, German (imported if needed)
+     * and all other imported languages; the newest import of German only
+     *
+     * @return {id or "import:DE", name}; the id of German is null if it is not
+     * imported yet
+     */
+    public static List<String[]> choices() {
+        List<String[]> l = new ArrayList<String[]>();
+        l.add(new String[]{"buildin_en", "English"});
+        String german = null;
+        List<String[]> others = new ArrayList<String[]>();
+        try {
+            Object[][] data = QueryHandler.instanceOf().clone(Context.getLanguage()).select("cname, longname", (String[]) null);
+            for (Object[] d : data == null ? new Object[0][] : data) {
+                String id = String.valueOf(d[0]);
+                String name = String.valueOf(d[1]);
+                if (name.toLowerCase().startsWith("de-") || name.toLowerCase().startsWith("language-de")) {
+                    german = id;//the last one is the newest
+                } else {
+                    others.add(new String[]{id, name});
+                }
+            }
+        } catch (Exception e) {
+            Log.Debug(LanguageManager.class, e);
+        }
+        l.add(new String[]{german == null ? "import:DE" : german, "Deutsch"});
+        l.addAll(others);
+        return l;
+    }
+
+    /**
+     * Switches the current user to the language (imports German first if
+     * needed); takes effect at the next start
+     *
+     * @param id an id of {@link #choices()}
+     */
+    public static void switchTo(String id) throws Exception {
+        User u = User.getCurrentUser();
+        if ("import:DE".equals(id)) {
+            quietImport = true;
+            try {
+                importFromJar("DE");
+            } finally {
+                quietImport = false;
+            }
+        } else {
+            u.setLanguage(id);
+            u.save(true);
+        }
+        //chosen by the user: no automatic switch to German any more
+        u.getProperties().changeProperty("org.openyabs.languageproperty", "autoimportde", true);
+        u.saveProperties();
     }
 }

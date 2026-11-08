@@ -152,8 +152,29 @@ public final class GeneralListPanel extends javax.swing.JPanel {
      * @param list
      */
     public <T extends DatabaseObject> void setData(List<T> list) {
+        loads++;
+        showLoading(false);
+        apply(list, build(list));
+    }
+
+    /**
+     * The table model of the list, with the grouping rows (database lookups,
+     * not on the event thread for large lists)
+     */
+    private static final class Built {
+
+        MPTableModel model;
+        List<Integer> groupingRows;
+    }
+
+    private <T extends DatabaseObject> void apply(List<T> list, Built b) {
         jLabel1.setText(list.size() + " " + Messages.ENTRIES);
         odata = list;
+        rend.setGroupingRows(b.groupingRows);
+        listtable.setModel(b.model);
+    }
+
+    private <T extends DatabaseObject> Built build(List<T> list) {
         List<Integer> groupingRows = new ArrayList<>();
 
         Object[][] model = null;
@@ -257,8 +278,10 @@ public final class GeneralListPanel extends javax.swing.JPanel {
 
         MPTableModel m = new MPTableModel(model);
         m.setTypes(new Class[]{Object.class, DatabaseObject.class, String.class, Date.class, DatabaseObject.class, ImageIcon.class});
-        rend.setGroupingRows(groupingRows);
-        listtable.setModel(m);
+        Built b = new Built();
+        b.model = m;
+        b.groupingRows = groupingRows;
+        return b;
 
 //        TableFormat.hideHeader(listtable);
 //        TableFormat.stripColumn(listtable, 4);
@@ -453,20 +476,94 @@ public final class GeneralListPanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     void setData(Context context) {
-        try {
-            setData(DatabaseObject.getObjects(context));
-        } catch (NodataFoundException ex) {
-            Log.Debug(ex);
-            setData(Collections.EMPTY_LIST);
-        }
+        load(() -> {
+            try {
+                return DatabaseObject.getObjects(context);
+            } catch (NodataFoundException ex) {
+                Log.Debug(ex);
+                return Collections.<DatabaseObject>emptyList();
+            }
+        });
     }
 
     void setData(Context context, QueryCriteria2 q) {
-        try {
-            setData(DatabaseObject.getObjects(context, q));
-        } catch (NodataFoundException ex) {
-            Log.Debug(ex);
-            setData(Collections.EMPTY_LIST);
+        load(() -> {
+            try {
+                return DatabaseObject.getObjects(context, q);
+            } catch (NodataFoundException ex) {
+                Log.Debug(ex);
+                return Collections.<DatabaseObject>emptyList();
+            }
+        });
+    }
+
+    /**
+     * counts the loads: only the result of the latest one is shown
+     */
+    private int loads;
+    private javax.swing.JComponent loadingView;
+
+    /**
+     * Loads the list in the background and shows a loading animation meanwhile
+     */
+    private void load(java.util.function.Supplier<List<DatabaseObject>> query) {
+        final int load = ++loads;
+        showLoading(true);
+        new javax.swing.SwingWorker<Object[], Void>() {
+            @Override
+            protected Object[] doInBackground() {
+                List<DatabaseObject> list = query.get();
+                return new Object[]{list, build(list)};
+            }
+
+            @Override
+            @SuppressWarnings("unchecked")
+            protected void done() {
+                if (load != loads) {
+                    return;//a newer load is running
+                }
+                showLoading(false);
+                try {
+                    Object[] r = get();
+                    apply((List<DatabaseObject>) r[0], (Built) r[1]);
+                } catch (Exception ex) {
+                    Log.Debug(GeneralListPanel.this, ex);
+                    apply(Collections.<DatabaseObject>emptyList(), build(Collections.<DatabaseObject>emptyList()));
+                }
+            }
+        }.execute();
+    }
+
+    /**
+     * While loading: an animated progress bar instead of the table
+     */
+    private void showLoading(boolean loading) {
+        if (loading) {
+            if (loadingView == null) {
+                javax.swing.JPanel p = new javax.swing.JPanel(new java.awt.GridBagLayout());
+                p.setOpaque(true);
+                p.setBackground(listtable.getBackground());
+                javax.swing.JPanel box = new javax.swing.JPanel(new java.awt.BorderLayout(0, mpv5.ui.modern.ModernTheme.px(8)));
+                box.setOpaque(false);
+                javax.swing.JLabel l = new javax.swing.JLabel(Messages.PLEASE_WAIT.toString(), javax.swing.SwingConstants.CENTER);
+                l.setFont(mpv5.ui.modern.ModernTheme.font(2, java.awt.Font.PLAIN));
+                l.setForeground(mpv5.ui.modern.ModernTheme.muted());
+                javax.swing.JProgressBar bar = new javax.swing.JProgressBar();
+                bar.setIndeterminate(true);
+                bar.setPreferredSize(new java.awt.Dimension(mpv5.ui.modern.ModernTheme.px(260), mpv5.ui.modern.ModernTheme.px(8)));
+                box.add(l, java.awt.BorderLayout.NORTH);
+                box.add(bar, java.awt.BorderLayout.CENTER);
+                p.add(box);
+                loadingView = p;
+            }
+            jLabel1.setText(Messages.PLEASE_WAIT.toString());
+            setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.WAIT_CURSOR));
+            jScrollPane1.setViewportView(loadingView);
+        } else {
+            setCursor(null);
+            if (jScrollPane1.getViewport().getView() != listtable) {
+                jScrollPane1.setViewportView(listtable);
+            }
         }
     }
 

@@ -137,12 +137,34 @@ public class ItemPositionsTable extends JPanel {
         buttons.add(up);
         buttons.add(down);
 
+        //the actions of the document right of the position buttons, directly above the list
+        JPanel bar = new JPanel(new BorderLayout(ModernTheme.px(12), 0));
+        bar.setOpaque(false);
+        bar.add(buttons, BorderLayout.WEST);
+        actions.setOpaque(false);
+        bar.add(actions, BorderLayout.CENTER);
+        bar.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, ModernTheme.px(6), 0));
+
         JScrollPane scroll = new JScrollPane(itemtable);
         scroll.getViewport().setBackground(ModernTheme.cardBackground());
-        add(buttons, BorderLayout.NORTH);
+        add(bar, BorderLayout.NORTH);
         add(scroll, BorderLayout.CENTER);
         add(createTotals(), BorderLayout.SOUTH);
         setDefaultPositions();
+    }
+
+    private final JPanel actions = new JPanel(new mpv5.ui.modern.WrapLayout(FlowLayout.RIGHT, ModernTheme.px(4), 0));
+
+    /**
+     * Adds an action of the document to the bar above the positions (right)
+     *
+     * @param c a button
+     */
+    public void addAction(javax.swing.JComponent c) {
+        if (c instanceof javax.swing.AbstractButton) {
+            ModernTheme.actionButton((javax.swing.AbstractButton) c, null);
+        }
+        actions.add(c);
     }
 
     private static JLabel total() {

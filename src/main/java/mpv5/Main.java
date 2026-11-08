@@ -256,7 +256,7 @@ public class Main implements Runnable {
         splash.nextStep(Messages.FIRST_INSTANCE.toString());
         splash.nextStep(Messages.DB_CHECK.toString());
 
-        ControlPanel_Fonts.applyFont(Font.decode(LocalSettings.getProperty(LocalSettings.DEFAULT_FONT)));
+        mpv5.ui.modern.Zoom.applyStoredFont();
         if (FORCE_INSTALLER == null) {
             Log.Debug(this, "Probing database connection... ");
             if (probeDatabaseConnection()) {
@@ -693,6 +693,45 @@ public class Main implements Runnable {
                 Log.Print(cl.getOptions().get(idx));
             }
             Log.Print("\n");
+        }
+    }
+
+    /**
+     * Restarts YaBS: the same program (java with its arguments, or the
+     * launcher of an installed package) is started again when this one has
+     * shut down (database closed, settings saved)
+     */
+    public static void restart() {
+        try {
+            java.util.List<String> cmd = new java.util.ArrayList<String>();
+            String launcher = System.getProperty("jpackage.app-path");
+            if (launcher != null && launcher.length() > 0) {
+                //installed package: its launcher sets the Java options itself
+                cmd.add(launcher);
+            } else {
+                //java [JVM options] (-jar openyabs.jar | -cp <class path> <main class>) [arguments]
+                cmd.add(System.getProperty("java.home") + File.separator + "bin" + File.separator + "java");
+                cmd.addAll(java.lang.management.ManagementFactory.getRuntimeMXBean().getInputArguments());
+                String[] command = System.getProperty("sun.java.command", Main.class.getName()).trim().split("\\s+");
+                if (command[0].endsWith(".jar")) {
+                    cmd.add("-jar");
+                } else {
+                    cmd.add("-cp");
+                    cmd.add(System.getProperty("java.class.path"));
+                }
+                cmd.addAll(java.util.Arrays.asList(command));
+            }
+            final ProcessBuilder pb = new ProcessBuilder(cmd).directory(new File(System.getProperty("user.dir"))).inheritIO();
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                try {
+                    pb.start();
+                } catch (Exception e) {
+                    System.err.println("Restart failed: " + e);
+                }
+            }));
+            getApplication().exit();
+        } catch (Exception e) {
+            Log.Debug(Main.class, e);
         }
     }
 

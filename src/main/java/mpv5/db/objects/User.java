@@ -310,7 +310,7 @@ public class User extends DatabaseObject {
             try {
                 Locale.setDefault(TypeConversion.stringToLocale(__getLocale()));
                 Log.Debug(this, "Locale.setDefault() for: " + Locale.getDefault());
-                ControlPanel_Fonts.applyFont(Font.decode(LocalSettings.getProperty(LocalSettings.DEFAULT_FONT)));
+                mpv5.ui.modern.Zoom.applyStoredFont();
                 if (UIManager.getLookAndFeel().getName() == null ? __getLaf() != null : !UIManager.getLookAndFeel().getName().equals(__getLaf())) {
                     Main.setLaF(__getLaf());
                 }

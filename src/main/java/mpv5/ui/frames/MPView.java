@@ -608,6 +608,62 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
             Popup.notice(Messages.LAF_MODERN_CHANGED.toString());
         });
         jMenu2.add(modernLook, 0);
+        //View > Language: built-in English, German and imported languages
+        final javax.swing.JMenu languages = new javax.swing.JMenu(Messages.LANGUAGE_MENU.toString());
+        languages.addMenuListener(new javax.swing.event.MenuListener() {
+            @Override
+            public void menuSelected(javax.swing.event.MenuEvent e) {
+                languages.removeAll();
+                javax.swing.ButtonGroup g = new javax.swing.ButtonGroup();
+                String current = User.getCurrentUser().__getLanguage();
+                for (final String[] l : mpv5.i18n.LanguageManager.choices()) {
+                    javax.swing.JRadioButtonMenuItem i = new javax.swing.JRadioButtonMenuItem(l[1]);
+                    i.setSelected(l[0].equals(current) || (current == null && l[0].equals("buildin_en")));
+                    g.add(i);
+                    i.addActionListener(ev -> {
+                        if (l[0].equals(User.getCurrentUser().__getLanguage())) {
+                            return;
+                        }
+                        try {
+                            mpv5.i18n.LanguageManager.switchTo(l[0]);
+                            if (Popup.Y_N_dialog(Messages.LANGUAGE_CHANGED_RESTART.toString(), l[1])) {
+                                Main.restart();
+                            }
+                        } catch (Exception ex) {
+                            Log.Debug(this, ex);
+                            Popup.error(ex);
+                        }
+                    });
+                    languages.add(i);
+                }
+            }
+
+            @Override
+            public void menuDeselected(javax.swing.event.MenuEvent e) {
+            }
+
+            @Override
+            public void menuCanceled(javax.swing.event.MenuEvent e) {
+            }
+        });
+        languages.add(new javax.swing.JMenuItem(" "));//filled when opened
+        viewMenu.add(languages, 0);
+        //View > Zoom in / out / 100 % (also Ctrl+= and the number pad, see Zoom.install)
+        javax.swing.JMenuItem zoomIn = new javax.swing.JMenuItem(Messages.ZOOM_IN.toString());
+        zoomIn.setAccelerator(mpv5.ui.modern.Zoom.IN);
+        zoomIn.addActionListener(e -> mpv5.ui.modern.Zoom.step(1));
+        javax.swing.JMenuItem zoomOut = new javax.swing.JMenuItem(Messages.ZOOM_OUT.toString());
+        zoomOut.setAccelerator(mpv5.ui.modern.Zoom.OUT);
+        zoomOut.addActionListener(e -> mpv5.ui.modern.Zoom.step(-1));
+        javax.swing.JMenuItem zoomReset = new javax.swing.JMenuItem(Messages.ZOOM_RESET.toString());
+        zoomReset.setAccelerator(mpv5.ui.modern.Zoom.RESET);
+        zoomReset.addActionListener(e -> mpv5.ui.modern.Zoom.step(0));
+        viewMenu.addSeparator();
+        viewMenu.add(zoomIn);
+        viewMenu.add(zoomOut);
+        viewMenu.add(zoomReset);
+        //the other key variants (the menu handles the ones shown there)
+        mpv5.ui.modern.Zoom.install(getFrame().getRootPane());
         jMenu2.add(new javax.swing.JPopupMenu.Separator(), 1);
         jMenu2.addMenuListener(new javax.swing.event.MenuListener() {
             @Override

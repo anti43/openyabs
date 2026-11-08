@@ -367,10 +367,11 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
         JPanel center = new JPanel();
         center.setOpaque(false);
         center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
-        displayname.setFont(ModernTheme.font(8, Font.BOLD));
+        //the main information of the view: large
+        displayname.setFont(ModernTheme.font(13, Font.BOLD));
         displayname.setForeground(ModernTheme.foreground());
         //contact / date / user in the title line, readable (there is room for it)
-        meta.setFont(ModernTheme.font(3, Font.PLAIN));
+        meta.setFont(ModernTheme.font(5, Font.PLAIN));
         meta.setBorder(BorderFactory.createEmptyBorder(0, ModernTheme.px(20), 0, 0));
         meta.setForeground(ModernTheme.muted());
         JPanel chips = new JPanel(new FlowLayout(FlowLayout.LEFT, ModernTheme.px(6), 0));

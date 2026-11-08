@@ -349,11 +349,12 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         JPanel center = new JPanel();
         center.setOpaque(false);
         center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
-        displayname.setFont(ModernTheme.font(8, Font.BOLD));
+        //the main information of the view: large
+        displayname.setFont(ModernTheme.font(13, Font.BOLD));
         displayname.setForeground(ModernTheme.foreground());
         displayname.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, ModernTheme.px(14)));
         //contact / date / user in the title line, readable (there is room for it)
-        meta.setFont(ModernTheme.font(3, Font.PLAIN));
+        meta.setFont(ModernTheme.font(5, Font.PLAIN));
         meta.setBorder(BorderFactory.createEmptyBorder(0, ModernTheme.px(20), 0, 0));
         meta.setForeground(ModernTheme.muted());
         JPanel titleRow = new JPanel(new WrapLayout(FlowLayout.LEFT, 0, ModernTheme.px(2)));
@@ -452,11 +453,11 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
     }
 
     /**
-     * The actions of a document in the command bar
+     * The actions of a document: in the bar directly above the positions
      */
     private void createActions() {
         previewButton.addActionListener(e -> preview(dataOwner.__getInttype()));
-        tb.addAction(previewButton, null);
+        positions.addAction(previewButton);
 
         JPopupMenu docs = new JPopupMenu();
         deliveryNote.addActionListener(e -> preview(Constants.TYPE_DELIVERY_NOTE));
@@ -465,7 +466,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         docs.add(orderConfirmation);
         docs.addSeparator();
         docs.add(printWithConfirmation);
-        tb.addAction(menuButton(documentsButton, docs), null);
+        positions.addAction(menuButton(documentsButton, docs));
 
         JPopupMenu einvoice = new JPopupMenu();
         JMenuItem xml = new JMenuItem(Messages.CREATE_XRECHNUNG.toString());
@@ -478,7 +479,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         einvoice.add(pdf);
         einvoice.addSeparator();
         einvoice.add(check);
-        tb.addAction(menuButton(einvoiceButton, einvoice), null);
+        positions.addAction(menuButton(einvoiceButton, einvoice));
 
         JPopupMenu create = new JPopupMenu();
         toOrder.addActionListener(e -> convertToOrder());
@@ -492,7 +493,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         create.add(toPartPayment);
         create.addSeparator();
         create.add(toCredit);
-        tb.addAction(menuButton(createButton, create), null);
+        positions.addAction(menuButton(createButton, create));
 
         remindButton.addActionListener(e -> {
             if (dataOwner != null && dataOwner.isExisting()) {
@@ -506,10 +507,10 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         });
         compareButton.addActionListener(e -> compareToOrder());
         referencesButton.addActionListener(e -> showReferences());
-        tb.addAction(remindButton, null);
-        tb.addAction(scheduleButton, null);
-        tb.addAction(compareButton, null);
-        tb.addAction(referencesButton, null);
+        positions.addAction(remindButton);
+        positions.addAction(scheduleButton);
+        positions.addAction(compareButton);
+        positions.addAction(referencesButton);
     }
     // </editor-fold>
 
