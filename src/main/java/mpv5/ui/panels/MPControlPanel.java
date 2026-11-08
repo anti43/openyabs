@@ -156,9 +156,59 @@ public class MPControlPanel extends JPanel {
             return SearchService.matches(title + " " + description + " " + group, needle);
         }
 
+        /**
+         * @param c
+         * @return true if this setting shows a panel of the class
+         */
+        public boolean isPanel(Class<?> c) {
+            return panelClass == c;
+        }
+
         @Override
         public String toString() {
             return title;
+        }
+    }
+
+    /**
+     * A settings page of a plugin
+     */
+    public static final class PluginPage extends JPanel implements ControlApplet {
+
+        private static final long serialVersionUID = 1L;
+        private final JPanel actions = new JPanel();
+
+        PluginPage(mpv5.plugin.ExtensionManager.Page page) {
+            super(new BorderLayout());
+            setOpaque(false);
+            setBorder(ModernTheme.padding(12, 14));
+            JComponent c;
+            try {
+                c = page.page.get();
+            } catch (Throwable t) {
+                Log.Debug(MPControlPanel.class, t);
+                c = new JLabel(String.format(Messages.PLUGINS_FAILED.toString(), page.title) + " " + t);
+            }
+            add(c, BorderLayout.CENTER);
+            actions.setOpaque(false);
+        }
+
+        @Override
+        public Component getAndRemoveActionPanel() {
+            return actions;
+        }
+
+        @Override
+        public void setValues(mpv5.data.PropertyStore values) {
+        }
+
+        @Override
+        public String getUname() {
+            return "pluginpage";
+        }
+
+        @Override
+        public void reset() {
         }
     }
 
@@ -236,6 +286,11 @@ public class MPControlPanel extends JPanel {
             if (cpanel != null) {
                 l.addAll(cpanel.plugins);
             }
+        }
+        //the settings pages of the running plugins
+        for (final mpv5.plugin.ExtensionManager.Page pg : mpv5.plugin.ExtensionManager.instance().pages()) {
+            l.add(new Entry(Messages.SETTINGS_GROUP_PLUGINS.toString(), pg.title, pg.description, "preferences_plugin",
+                    PluginPage.class, () -> new PluginPage(pg), null, null));
         }
         return l;
     }
@@ -413,6 +468,7 @@ public class MPControlPanel extends JPanel {
         add(right, BorderLayout.CENTER);
 
         reload();
+        mpv5.plugin.ExtensionManager.instance().addChangeListener(() -> SwingUtilities.invokeLater(this::reload));
     }
 
     private void reload() {
