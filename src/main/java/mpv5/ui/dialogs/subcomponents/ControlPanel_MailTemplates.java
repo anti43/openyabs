@@ -43,6 +43,7 @@ public class ControlPanel_MailTemplates extends javax.swing.JPanel implements Co
 
     public ControlPanel_MailTemplates() {
         initComponents();
+        modernLayout();
         refresh();
         groupname.setSearchEnabled(true);
         groupname.setContext(Context.getGroup());
@@ -408,9 +409,33 @@ public class ControlPanel_MailTemplates extends javax.swing.JPanel implements Co
     }
 
     public Component getAndRemoveActionPanel() {
-        this.remove(jPanel6);
-        validate();
-        return jPanel6;
+        return actions;
+    }
+
+    private javax.swing.JPanel actions = new javax.swing.JPanel();
+
+    /**
+     * The parts of the form as cards, the buttons in the action bar
+     */
+    private void modernLayout() {
+        java.util.ResourceBundle b = mpv5.i18n.LanguageManager.getBundle();
+        removeAll();
+        setBorder(null);
+        setLayout(new java.awt.BorderLayout());
+        setOpaque(false);
+        mpv5.ui.modern.ModernTheme.style(templates);
+        jScrollPane4.setBorder(javax.swing.BorderFactory.createLineBorder(mpv5.ui.modern.ModernTheme.border()));
+        groupname.getComboBox().setPreferredSize(null);
+        jScrollPane2.setPreferredSize(new java.awt.Dimension(mpv5.ui.modern.ModernTheme.px(300), mpv5.ui.modern.ModernTheme.px(260)));
+        mpv5.ui.modern.Card details = new mpv5.ui.modern.Card(b.getString("ControlPanel_MailTemplates.jPanel4.border.title_1"))
+                .row(mpv5.ui.modern.Applets.field(fullname, 2), mpv5.ui.modern.Card.field(groupname.get_Label(), groupname.getComboBox(), 1))
+                .row(mpv5.ui.modern.Card.field(jLabel1.getText(), jScrollPane2))
+                .addFull(mpv5.ui.modern.Applets.hint(Messages.MAILTEMPLATES_HINT.toString()));
+        add(mpv5.ui.modern.Applets.treePage(b.getString("ControlPanel_MailTemplates.jScrollPane4.border.title_1"), jScrollPane4, null, details), java.awt.BorderLayout.CENTER);
+        mpv5.ui.modern.Applets.danger(jButton4);
+        mpv5.ui.modern.PrimaryButton save = new mpv5.ui.modern.PrimaryButton(jButton2.getText(), "/images/16/filesave.png");
+        save.addActionListener(e -> jButton2.doClick());
+        actions = mpv5.ui.modern.Applets.actionBar(new javax.swing.JComponent[]{jButton4}, new javax.swing.JComponent[]{jButton3, jButton7, save});
     }
 
     @Override

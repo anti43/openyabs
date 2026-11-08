@@ -74,6 +74,7 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
     public ControlPanel_Groups() {
         if (MPSecurityManager.checkAdminAccess()) {
             initComponents();
+            modernLayout();
             tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
             refresh();
         }
@@ -82,6 +83,7 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
     public ControlPanel_Groups(Group aThis) {
         if (MPSecurityManager.checkAdminAccess()) {
             initComponents();
+            modernLayout();
             tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
             refresh();
             setDataOwner(aThis, true);
@@ -497,9 +499,30 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
     }
 
     public Component getAndRemoveActionPanel() {
-        this.remove(jPanel2);
-        validate();
-        return jPanel2;
+        return actions;
+    }
+
+    private javax.swing.JPanel actions = new javax.swing.JPanel();
+
+    /**
+     * The tree and the details as cards, the buttons in the action bar
+     */
+    private void modernLayout() {
+        removeAll();
+        setBorder(null);
+        setLayout(new java.awt.BorderLayout());
+        setOpaque(false);
+        jScrollPane2.setPreferredSize(new java.awt.Dimension(mpv5.ui.modern.ModernTheme.px(260), mpv5.ui.modern.ModernTheme.px(120)));
+        mpv5.ui.modern.Card details = new mpv5.ui.modern.Card(mpv5.i18n.LanguageManager.getBundle().getString("ControlPanel_Groups.rightpane.border.title"))
+                .row(mpv5.ui.modern.Applets.field(cname))
+                .row(mpv5.ui.modern.Applets.field(parents), mpv5.ui.modern.Applets.field(path))
+                .row(mpv5.ui.modern.Card.field(jLabel2.getText(), jScrollPane2))
+                .addFull(mpv5.ui.modern.Applets.hint(jTextArea2.getText() + "<br>" + jLabel3.getText()));
+        add(mpv5.ui.modern.Applets.treePage(jLabel1.getText(), jScrollPane1, tree.getToolTipText(), details), java.awt.BorderLayout.CENTER);
+        mpv5.ui.modern.Applets.danger(jButton4);
+        mpv5.ui.modern.PrimaryButton save = new mpv5.ui.modern.PrimaryButton(jButton2.getText(), "/images/16/filesave.png");
+        save.addActionListener(e -> jButton2.doClick());
+        actions = mpv5.ui.modern.Applets.actionBar(new javax.swing.JComponent[]{jButton4}, new javax.swing.JComponent[]{jButton3, jButton1, save});
     }
 
     @Override

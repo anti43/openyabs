@@ -70,6 +70,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
     public ControlPanel_Accounts() {
         if (MPSecurityManager.checkAdminAccess()) {
             initComponents();
+            modernLayout();
             tax.set_ValueClass(Double.class);
             tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 
@@ -82,6 +83,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
     public ControlPanel_Accounts(Account aThis) {
         if (MPSecurityManager.checkAdminAccess()) {
             initComponents();
+            modernLayout();
             tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
             refresh();
             setDataOwner(aThis, true);
@@ -687,9 +689,36 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
     }
 
     public Component getAndRemoveActionPanel() {
-        this.remove(jPanel6);
-        validate();
-        return jPanel6;
+        return actions;
+    }
+
+    private javax.swing.JPanel actions = new javax.swing.JPanel();
+
+    /**
+     * The tree and the details as cards, the buttons in the action bar
+     */
+    private void modernLayout() {
+        removeAll();
+        setBorder(null);
+        setLayout(new java.awt.BorderLayout());
+        setOpaque(false);
+        jScrollPane2.setPreferredSize(new java.awt.Dimension(mpv5.ui.modern.ModernTheme.px(260), mpv5.ui.modern.ModernTheme.px(100)));
+        typeselect.setPreferredSize(null);
+        groupnameselect.setPreferredSize(null);
+        classv.getSpinner().setPreferredSize(null);
+        mpv5.ui.modern.Card details = new mpv5.ui.modern.Card(mpv5.i18n.LanguageManager.getBundle().getString("ControlPanel_Accounts.rightpane.border.title"))
+                .row(mpv5.ui.modern.Applets.field(cname, 2), mpv5.ui.modern.Applets.field(idtf, 1))
+                .row(mpv5.ui.modern.Card.field(jLabel5.getText(), typeselect), mpv5.ui.modern.Card.field(jLabel4.getText(), groupnameselect))
+                .row(mpv5.ui.modern.Applets.field(parents), mpv5.ui.modern.Card.field(classv.get_Label(), classv.getSpinner()), mpv5.ui.modern.Applets.field(tax))
+                .row(mpv5.ui.modern.Card.field(jLabel2.getText(), jScrollPane2))
+                .addFull(mpv5.ui.modern.Applets.hint(jTextArea2.getText() + "<br>" + jLabel3.getText()))
+                .addFull(count);
+        add(mpv5.ui.modern.Applets.treePage(jLabel1.getText(), jScrollPane1, tree.getToolTipText(), details), java.awt.BorderLayout.CENTER);
+        mpv5.ui.modern.Applets.danger(jButton4);
+        mpv5.ui.modern.Applets.danger(jButton7);
+        mpv5.ui.modern.PrimaryButton save = new mpv5.ui.modern.PrimaryButton(jButton2.getText(), "/images/16/filesave.png");
+        save.addActionListener(e -> jButton2.doClick());
+        actions = mpv5.ui.modern.Applets.actionBar(new javax.swing.JComponent[]{jButton4, jButton7, jButton6, jButton5}, new javax.swing.JComponent[]{jButton3, jButton1, save});
     }
 
     @Override

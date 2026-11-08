@@ -56,6 +56,7 @@ public class ControlPanel_Schedule extends javax.swing.JPanel implements Control
      */
     public ControlPanel_Schedule() {
         initComponents();
+        modernLayout();
 
         labeledCombobox2.setContext(Context.getUser());
         labeledCombobox2.setSearchEnabled(true);
@@ -714,9 +715,104 @@ public class ControlPanel_Schedule extends javax.swing.JPanel implements Control
 
     @Override
     public Component getAndRemoveActionPanel() {
-        this.remove(jPanel2);
-        validate();
-        return jPanel2;
+        return actions;
+    }
+
+    private javax.swing.JPanel actions = new javax.swing.JPanel();
+
+    /**
+     * The event types and a clear table of the document types (dashboard,
+     * hide before alarm, warning and alarm days), the buttons in the action
+     * bar
+     */
+    private void modernLayout() {
+        java.util.ResourceBundle b = mpv5.i18n.LanguageManager.getBundle();
+        removeAll();
+        setBorder(null);
+        setLayout(new java.awt.BorderLayout());
+        setOpaque(false);
+
+        mpv5.ui.modern.ModernTheme.style(jTable1);
+        jScrollPane2.setPreferredSize(new java.awt.Dimension(mpv5.ui.modern.ModernTheme.px(300), mpv5.ui.modern.ModernTheme.px(160)));
+        labeledCombobox2.getComboBox().setPreferredSize(null);
+        javax.swing.JPanel typeButtons = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, mpv5.ui.modern.ModernTheme.px(6), 0));
+        typeButtons.setOpaque(false);
+        typeButtons.add(add);
+        typeButtons.add(copy);
+        typeButtons.add(copy1);
+        typeButtons.add(mpv5.ui.modern.Applets.danger(remove));
+        mpv5.ui.modern.Card types = new mpv5.ui.modern.Card(b.getString("ControlPanel_Schedule.jPanel3.border.title"))
+                .addFull(jScrollPane2, 1)
+                .row(mpv5.ui.modern.Card.field(jLabel1.getText(), labeledCombobox2.getComboBox()), mpv5.ui.modern.Applets.field(labeledTextField2))
+                .addFull(typeButtons);
+
+        javax.swing.JPanel grid = new javax.swing.JPanel(new java.awt.GridBagLayout());
+        grid.setOpaque(false);
+        String[] heads = {Messages.SCHEDULE_KIND.toString(), Messages.SCHEDULE_DASHBOARD.toString(),
+            Messages.SCHEDULE_HIDE.toString(), Messages.SCHEDULE_WARN.toString(), Messages.SCHEDULE_ALARM.toString()};
+        java.awt.GridBagConstraints g = new java.awt.GridBagConstraints();
+        g.insets = new java.awt.Insets(mpv5.ui.modern.ModernTheme.px(3), mpv5.ui.modern.ModernTheme.px(6), mpv5.ui.modern.ModernTheme.px(3), mpv5.ui.modern.ModernTheme.px(6));
+        g.anchor = java.awt.GridBagConstraints.WEST;
+        for (int c = 0; c < heads.length; c++) {
+            javax.swing.JLabel h = new javax.swing.JLabel(heads[c]);
+            h.setFont(mpv5.ui.modern.ModernTheme.font(-1, java.awt.Font.BOLD));
+            h.setForeground(mpv5.ui.modern.ModernTheme.muted());
+            g.gridx = c;
+            g.gridy = 0;
+            g.weightx = c == 0 ? 1 : 0;
+            grid.add(h, g);
+        }
+        Object[][] rows = {
+            {use_offers, hide_offers, offer_warn, offer_alert},
+            {use_orders, hide_orders, order_warn, order_alert},
+            {use_confi, hide_confi, confi_warn, confi_alert},
+            {use_deliv, hide_deliv, deliv_warn, deliv_alert},
+            {use_bills, hide_bills, bill_warn, bill_alert},
+            {use_part, hide_part, part_warn, part_alert},
+            {use_deposit, hide_deposit, deposit_warn, deposit_alert},
+            {use_rev, hide_rev, rev_warn, rev_alert}};
+        int y = 1;
+        for (Object[] r : rows) {
+            javax.swing.JCheckBox use = (javax.swing.JCheckBox) r[0];
+            javax.swing.JCheckBox hide = (javax.swing.JCheckBox) r[1];
+            mpv5.ui.beans.LabeledTextField warn = (mpv5.ui.beans.LabeledTextField) r[2];
+            mpv5.ui.beans.LabeledTextField alert = (mpv5.ui.beans.LabeledTextField) r[3];
+            String name = warn.get_Label() == null || warn.get_Label().trim().isEmpty() ? alert.get_Label() : warn.get_Label();
+            use.setToolTipText(use.getText());
+            use.setText("");
+            use.setOpaque(false);
+            hide.setToolTipText(hide.getText());
+            hide.setText("");
+            hide.setOpaque(false);
+            javax.swing.JTextField w = mpv5.ui.modern.ModernTheme.plain(warn).getTextField();
+            javax.swing.JTextField a = mpv5.ui.modern.ModernTheme.plain(alert).getTextField();
+            java.awt.Dimension d = new java.awt.Dimension(mpv5.ui.modern.ModernTheme.px(70), w.getPreferredSize().height);
+            w.setPreferredSize(d);
+            w.setMinimumSize(d);
+            a.setPreferredSize(d);
+            a.setMinimumSize(d);
+            w.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+            a.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+            javax.swing.JLabel kind = new javax.swing.JLabel(name == null ? "" : name.trim());
+            kind.setMinimumSize(kind.getPreferredSize());
+            Object[] cells = {kind, use, hide, w, a};
+            for (int c = 0; c < cells.length; c++) {
+                g.gridx = c;
+                g.gridy = y;
+                g.weightx = c == 0 ? 1 : 0;
+                g.anchor = c == 0 ? java.awt.GridBagConstraints.WEST : java.awt.GridBagConstraints.CENTER;
+                grid.add((java.awt.Component) cells[c], g);
+            }
+            y++;
+        }
+        mpv5.ui.modern.Card deadlines = new mpv5.ui.modern.Card(Messages.SCHEDULE_DEADLINES.toString())
+                .addFull(grid)
+                .addFull(mpv5.ui.modern.Applets.hint(Messages.SCHEDULE_DEADLINES_HINT.toString()));
+        add(mpv5.ui.modern.Applets.page(null, 560, deadlines, types), java.awt.BorderLayout.CENTER);
+
+        mpv5.ui.modern.PrimaryButton saveButton = new mpv5.ui.modern.PrimaryButton(save.getText(), "/images/16/filesave.png");
+        saveButton.addActionListener(e -> save.doClick());
+        actions = mpv5.ui.modern.Applets.actionBar(new javax.swing.JComponent[]{advanced}, new javax.swing.JComponent[]{apply, saveButton});
     }
 
     @Override

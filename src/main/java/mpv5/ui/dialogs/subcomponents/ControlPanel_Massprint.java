@@ -47,6 +47,7 @@ public class ControlPanel_Massprint extends javax.swing.JPanel implements Contro
 
     public ControlPanel_Massprint() {
         initComponents();
+        modernLayout();
         objects.setModel(Item.getItemEnum());
         refresh();
         setVisible(true);
@@ -279,9 +280,39 @@ public class ControlPanel_Massprint extends javax.swing.JPanel implements Contro
 
     @Override
     public Component getAndRemoveActionPanel() {
-        this.remove(jPanel1);
-        validate();
-        return jPanel1;
+        return actions;
+    }
+
+    private javax.swing.JPanel actions = new javax.swing.JPanel();
+
+    /**
+     * The parts of the form as cards, the buttons in the action bar
+     */
+    private void modernLayout() {
+        java.util.ResourceBundle b = mpv5.i18n.LanguageManager.getBundle();
+        removeAll();
+        setBorder(null);
+        setLayout(new java.awt.BorderLayout());
+        setOpaque(false);
+        mpv5.ui.modern.ModernTheme.style(Rules);
+        jScrollPane2.setPreferredSize(new java.awt.Dimension(mpv5.ui.modern.ModernTheme.px(300), mpv5.ui.modern.ModernTheme.px(220)));
+        mpv5.ui.modern.Card filters = new mpv5.ui.modern.Card(b.getString("ControlPanel_Massprint.jPanel3.border.title"))
+                .addFull(jScrollPane2, 1)
+                .addFull(mpv5.ui.modern.Applets.hint(jTextArea1.getText()));
+        objects.getComboBox().setPreferredSize(null);
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(mpv5.ui.modern.ModernTheme.px(300), mpv5.ui.modern.ModernTheme.px(140)));
+        javax.swing.JPanel testRow = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
+        testRow.setOpaque(false);
+        testRow.add(jButton3);
+        mpv5.ui.modern.Card test = new mpv5.ui.modern.Card(b.getString("ControlPanel_Massprint.jPanel5.border.title"))
+                .row(mpv5.ui.modern.Card.field(objects.get_Label(), objects.getComboBox()))
+                .row(mpv5.ui.modern.Card.field(Messages.MASSPRINT_RULE.toString(), jScrollPane1))
+                .addFull(testRow);
+        add(mpv5.ui.modern.Applets.page(null, 360, filters, test), java.awt.BorderLayout.CENTER);
+        mpv5.ui.modern.Applets.danger(jButton4);
+        mpv5.ui.modern.PrimaryButton save = new mpv5.ui.modern.PrimaryButton(jButton1.getText(), "/images/16/filesave.png");
+        save.addActionListener(e -> jButton1.doClick());
+        actions = mpv5.ui.modern.Applets.actionBar(new javax.swing.JComponent[]{jButton4}, new javax.swing.JComponent[]{jButton2, save});
     }
 
     public void setValues(PropertyStore values) {
