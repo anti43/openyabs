@@ -66,6 +66,7 @@ public class ControlPanel_Reminder extends javax.swing.JPanel implements DataPan
     /** Creates new form GeneralListPanel */
     public ControlPanel_Reminder() {
         initComponents();
+        modernLayout();
         labeledTextField1.set_ValueClass(Double.class);
 
         labeledCombobox2.setContext(Context.getGroup());
@@ -559,9 +560,42 @@ public class ControlPanel_Reminder extends javax.swing.JPanel implements DataPan
 
     @Override
     public Component getAndRemoveActionPanel() {
-        this.remove(jPanel2);
-        validate();
-        return jPanel2;
+        return actions;
+    }
+
+    private javax.swing.JPanel actions = new javax.swing.JPanel();
+
+    /**
+     * The dunning levels and the chosen level in cards, the buttons in the
+     * action bar
+     */
+    private void modernLayout() {
+        removeAll();
+        setBorder(null);
+        setLayout(new java.awt.BorderLayout());
+        setOpaque(false);
+        mpv5.ui.modern.ModernTheme.style(jTable1);
+        jScrollPane2.setPreferredSize(new java.awt.Dimension(mpv5.ui.modern.ModernTheme.px(260), mpv5.ui.modern.ModernTheme.px(260)));
+        mpv5.ui.modern.Card levels = new mpv5.ui.modern.Card(bundle.getString("ControlPanel_Reminder.jPanel3.border.title"))
+                .addFull(jScrollPane2, 1)
+                .addFull(mpv5.ui.modern.Applets.hint(Messages.REMINDER_LEVELS_HINT.toString()));
+        labeledCombobox2.getComboBox().setPreferredSize(null);
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(mpv5.ui.modern.ModernTheme.px(260), mpv5.ui.modern.ModernTheme.px(180)));
+        mpv5.ui.modern.Card details = new mpv5.ui.modern.Card(bundle.getString("ControlPanel_Reminder.jPanel1.border.title"))
+                .row(mpv5.ui.modern.Applets.field(labeledTextField2, 2), mpv5.ui.modern.Card.field(Messages.REMINDER_FEE.toString(), mpv5.ui.modern.ModernTheme.plain(labeledTextField1), 1))
+                .row(mpv5.ui.modern.Card.field(jLabel1.getText(), labeledCombobox2.getComboBox()))
+                .row(mpv5.ui.modern.Card.field(Messages.REMINDER_TEXT.toString(), jScrollPane1))
+                .addFull(mpv5.ui.modern.Applets.hint(Messages.REMINDER_TEXT_HINT.toString()));
+        add(mpv5.ui.modern.Applets.page(null, 340, levels, details), java.awt.BorderLayout.CENTER);
+
+        jButton3.setToolTipText(Messages.REMINDER_PREVIEW.toString());
+        jButton7.setToolTipText(Messages.REMINDER_PDF.toString());
+        jButton8.setToolTipText(Messages.REMINDER_ODT.toString());
+        mpv5.ui.modern.Applets.danger(jButton6);
+        mpv5.ui.modern.PrimaryButton save = new mpv5.ui.modern.PrimaryButton(jButton2.getText(), "/images/16/filesave.png");
+        save.addActionListener(e -> jButton2.doClick());
+        actions = mpv5.ui.modern.Applets.actionBar(new javax.swing.JComponent[]{jButton6},
+                new javax.swing.JComponent[]{jButton3, jButton7, jButton8, jButton4, save});
     }
 
     @Override

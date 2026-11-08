@@ -129,7 +129,8 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
                 target.setAutoCreateRowSorter(true);
             }
         } catch (NodataFoundException ex) {
-            Log.Debug(ex);
+            //no rows yet: an empty table, not an error
+            Log.Debug(MPTableModel.class, ex.getMessage());
         }
     }
 
