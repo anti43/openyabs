@@ -111,7 +111,7 @@ public enum Messages {
     NOTICE("Notice"),
     FILE_EXISTS("The file already exists, overwrite?"),
     ARE_YOU_SURE("Are you sure?"),
-    FINISH("Finish "),
+    FINISH("Finish"),
     SAVE_AS("Save as.. "),
     CONNECTION_VERIFIED("Database Connection established."),
     CONNECTION_FAILED("The Database Connection failed."),
