@@ -316,6 +316,8 @@ public class User extends DatabaseObject {
                 }
                 defineMailConfig();
                 defineDTAConfig();
+                //German system or locale: German language (once, before the bundle is loaded)
+                LanguageManager.importGermanIfGerman(this);
                 Log.Debug(this, "LanguageManager.getBundle() for: " + this);
                 LanguageManager.getBundle();
             } catch (Exception e) {

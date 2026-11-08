@@ -169,10 +169,22 @@ public class QueryHandler implements Cloneable {
                 double dbversion = Double.valueOf(versionData.getString(1));
                 Log.Debug(this, "Database version found: " + dbversion);
                 if (dbversion >= Constants.DATABASE_MAX_VERSION.doubleValue()) {
-                    throw new UnsupportedOperationException("Database version is too high! Required min version: " + Constants.DATABASE_VERSION + " Required max version: " + Constants.DATABASE_MAX_VERSION);
+                    throw new UnsupportedOperationException("This database was updated by a newer YaBS (database version " + dbversion
+                            + "). YaBS " + Constants.VERSION_NUMBER + " supports database versions " + Constants.DATABASE_VERSION
+                            + " up to " + Constants.DATABASE_MAX_VERSION + ". Please install the current YaBS.");
                 } else if (dbversion < Constants.DATABASE_VERSION.doubleValue()) {
+                    String step = "YaBS " + Constants.VERSION_NUMBER + ": database " + dbversion + " -> " + Constants.DATABASE_VERSION;
+                    Log.Debug(this, "Updating database for " + step);
+                    try {
+                        if (mpv5.Main.splash != null && mpv5.Main.splash.isShowing()) {
+                            mpv5.Main.splash.nextStep(step);
+                        }
+                    } catch (Exception e) {
+                        Log.Debug(this, e);
+                    }
                     new DatabaseUpdater().updateFrom(dbversion);
                 }
+                Log.Debug(this, "Database version " + Math.max(dbversion, Constants.DATABASE_VERSION) + ", YaBS " + Constants.VERSION_NUMBER);
             } else {
                 Log.Debug(this, "Database version info can not be found.");
                 throw new UnsupportedOperationException("Database version cannot be validated! Required version: " + Constants.DATABASE_VERSION + "\n\n"

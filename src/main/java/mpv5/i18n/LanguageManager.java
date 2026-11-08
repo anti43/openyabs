@@ -409,7 +409,9 @@ public class LanguageManager {
                     int id = QueryHandler.instanceOf().clone(Context.getLanguage()).insert(t, "Imported language: " + langname);
                     if (id > 0) {
                         mpv5.YabsViewProxy.instance().addMessage(langname + Messages.INSERTED.toString());
-                        Popup.notice(langname + Messages.INSERTED.toString());
+                        if (!quietImport) {
+                            Popup.notice(langname + Messages.INSERTED.toString());
+                        }
                         cachelanguage(langid, getBundle(langid));
                     } else {
                         mpv5.YabsViewProxy.instance().addMessage(Messages.ERROR_OCCURED.toString());
@@ -761,7 +763,7 @@ public class LanguageManager {
     }
 
     public static void importFromJar(String langid) throws Exception {
-        InputStream s = Main.class.getResourceAsStream("/extra/" + langid + "-" + Constants.VERSION + ".properties");
+        InputStream s = Main.class.getResourceAsStream("/extra/" + langid + "-" + Constants.EXTRA_FILES_VERSION + ".properties");
         File f = FileDirectoryHandler.getTempFile(langid.toLowerCase() + "-" + Constants.VERSION, "properties");
         FileDirectoryHandler.copyFile(s, f);
         Log.Debug(Main.class, "Importing language from: " + f.getCanonicalPath());
@@ -783,5 +785,63 @@ public class LanguageManager {
             }
         }
         return result;
+    }
+
+    /**
+     * @return true if the system or the user's locale is German (de, de_DE,
+     * de_AT, de_CH, ...)
+     */
+    public static boolean isGermanUser(User u) {
+        String system = System.getProperty("user.language");
+        String locale = u == null ? null : u.__getLocale();
+        return (system != null && system.toLowerCase().startsWith("de"))
+                || (locale != null && locale.toLowerCase().startsWith("de"));
+    }
+
+    /**
+     * Imports the German language and switches the user to it, once, if the
+     * system or the user's locale is German and the user still has the
+     * built-in English. A user who switches back to English keeps it.
+     *
+     * @param u the user logging in
+     * @return true if imported
+     */
+    private static volatile boolean quietImport;
+
+    public static boolean importGermanIfGerman(User u) {
+        try {
+            if (System.getProperty("yabs_firststart") != null) {
+                //the first-start wizard asks (preselected for German systems)
+                return false;
+            }
+            if (u.getProperties().getProperty("org.openyabs.languageproperty", "autoimportde")) {
+                return false;
+            }
+            String lang = u.__getLanguage();
+            boolean builtin = lang == null || lang.trim().isEmpty() || lang.startsWith("buildin");
+            if (!builtin) {
+                //a language of the user's own (German or another one)
+                u.getProperties().changeProperty("org.openyabs.languageproperty", "autoimportde", true);
+                u.saveProperties();
+                return false;
+            }
+            if (!isGermanUser(u)) {
+                return false;
+            }
+            //at login: no confirmation dialog
+            quietImport = true;
+            try {
+                importFromJar("DE");
+            } finally {
+                quietImport = false;
+            }
+            u.getProperties().changeProperty("org.openyabs.languageproperty", "autoimportde", true);
+            u.saveProperties();
+            Log.Debug(LanguageManager.class, "German language imported automatically for " + u);
+            return true;
+        } catch (Exception e) {
+            Log.Debug(LanguageManager.class, e);
+            return false;
+        }
     }
 }

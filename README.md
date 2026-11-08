@@ -173,7 +173,7 @@ Invoicing software has to calculate correctly. YaBS calculates with exact decima
 - **Tabs and navigation**: several records open side by side, back and forward like a browser, favourites, a clipboard for records, a search bar.
 - **Keyboard shortcuts** for everything frequent: `Ctrl+S` save, `Ctrl+P` print, `Ctrl+Shift+P` PDF, `Ctrl+E` mail, `Ctrl+F` filter, `Ctrl+C` / `Ctrl+V` copy and paste records, `Ctrl+F1` shows all shortcuts.
 - **Safe deleting**: before deleting, YaBS lists everything that would be deleted with it; deleted records go to a trash bin first.
-- **Your language**: English and German included; further translations can be made inside the application.
+- **Your language**: English and German included – on a German system (or with a German locale) YaBS switches to German by itself; further translations can be made inside the application.
 
 ## Teams: users, groups and rights
 
@@ -231,6 +231,8 @@ Details (German): [docs/Hinweise.md](docs/Hinweise.md).
 ```
 
 The ZIP is created in `build/distributions/`. Java 21 is required. Pushes to `master` and version tags build the ZIP and the installer packages on GitHub Actions.
+
+Versions: builds of `master` are **2.0.&lt;build number&gt;** (shown on the splash screen and in *Help › About*), releases carry the version of their tag (`v2.1.0` → 2.1.0), local builds are `2.0-dev` (`./gradlew distributionZip -PreleaseVersion=2.0.5` sets one).
 
 ## Help, community and license
 

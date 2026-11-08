@@ -3,8 +3,17 @@ plugins {
 }
 
 group = 'org.openyabs'
-// release builds pass -PreleaseVersion=1.2.3 (see .github/workflows/build.yml)
-version = findProperty('releaseVersion') ?: '1.0-SNAPSHOT'
+// builds pass -PreleaseVersion: 2.0.<build number>, or the version of the tag
+// (see .github/workflows/build.yml); local builds are 2.0-dev
+version = findProperty('releaseVersion') ?: '2.0-dev'
+
+// the version shown in the application (splash screen, About, database update)
+processResources {
+    inputs.property('version', project.version)
+    filesMatching('mpv5/version.properties') {
+        expand(version: project.version)
+    }
+}
 
 repositories {
     mavenCentral()
@@ -37,6 +46,8 @@ jar {
     archiveFileName = 'openyabs.jar'
     manifest {
         attributes 'Main-Class' : 'mpv5.Main'
+        attributes 'Implementation-Title' : 'YaBS'
+        attributes 'Implementation-Version' : project.version
         attributes 'Class-Path' : configurations.compileClasspath.collect { 'lib/' + it.getName() }.join(' ')
         attributes 'Add-Opens' : 'java.base/java.lang=ALL-UNNAMED'
     }

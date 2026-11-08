@@ -3,7 +3,8 @@
 # runtime (.deb, .rpm, .msi, .dmg; src/packaging/build-installer.sh):
 # - every run: as workflow artifacts (Actions > run > Artifacts); installers
 #   not for pull requests
-# - builds of master: as pre-release "latest-master" (replaced on every build)
+# - builds of master: as pre-release "latest-master" (replaced on every build),
+#   version 2.0.<build number>
 # - version tags (v1.2.3): as GitHub release "YaBS 1.2.3"
 name: Build
 
@@ -34,12 +35,14 @@ jobs:
       - name: Install fonts
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends fonts-liberation
 
+      # version: the tag (v2.1.0 -> 2.1.0), else 2.0.<build number>; shown on
+      # the splash screen and in About, part of the zip and installer names
       - name: Test and build distribution zip
         run: |
           if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
             ./gradlew --no-daemon test distributionZip -PreleaseVersion="${GITHUB_REF_NAME#v}"
           else
-            ./gradlew --no-daemon test distributionZip
+            ./gradlew --no-daemon test distributionZip -PreleaseVersion="2.0.${GITHUB_RUN_NUMBER}"
           fi
 
       # the artifact download is itself a zip which contains openyabs-<version>.zip;
@@ -106,8 +109,8 @@ jobs:
           }
           "$($wix.FullName)\bin" | Out-File -FilePath $env:GITHUB_PATH -Append -Encoding utf8
 
-      # installer versions are numbers only: the tag (v1.2.3 -> 1.2.3), else
-      # 1.0.<run> (macOS does not allow 0 as first number; lower than releases)
+      # installer versions are numbers only: the tag (v2.1.0 -> 2.1.0), else
+      # 2.0.<build number> (as the application)
       - name: Build installers
         shell: bash
         run: |
@@ -115,7 +118,7 @@ jobs:
             version="${GITHUB_REF_NAME#v}"
             version="${version%%-*}"
           else
-            version="1.0.${GITHUB_RUN_NUMBER}"
+            version="2.0.${GITHUB_RUN_NUMBER}"
           fi
           mkdir -p dist
           for type in ${{ matrix.types }}; do
