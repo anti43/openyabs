@@ -125,4 +125,33 @@ public final class Applets {
         p.add(grid, BorderLayout.CENTER);
         return p;
     }
+
+    /**
+     * A page with a tree (or list) card on the left and the details card on
+     * the right
+     *
+     * @param treeTitle
+     * @param tree the scroll pane of the tree
+     * @param treeHint may be null
+     * @param details
+     * @return the page
+     */
+    public static JPanel treePage(String treeTitle, JComponent tree, String treeHint, Card details) {
+        JPanel p = new JPanel(new BorderLayout(ModernTheme.px(12), 0));
+        p.setBackground(ModernTheme.background());
+        p.setBorder(ModernTheme.padding(12, 14));
+        Card left = new Card(Card.clean(treeTitle));
+        tree.setPreferredSize(new java.awt.Dimension(ModernTheme.px(260), ModernTheme.px(320)));
+        left.addFull(tree, 1);
+        if (treeHint != null && !treeHint.isEmpty()) {
+            left.addFull(hint(treeHint));
+        }
+        left.setPreferredSize(new java.awt.Dimension(ModernTheme.px(300), ModernTheme.px(400)));
+        p.add(left, BorderLayout.WEST);
+        JPanel right = new JPanel(new BorderLayout());
+        right.setOpaque(false);
+        right.add(details, BorderLayout.NORTH);
+        p.add(right, BorderLayout.CENTER);
+        return p;
+    }
 }

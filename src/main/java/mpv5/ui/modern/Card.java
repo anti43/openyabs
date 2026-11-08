@@ -64,7 +64,14 @@ public class Card extends JPanel {
      * @return a field with weight 1
      */
     public static Field field(String label, Component component) {
-        return new Field(label, component, 1);
+        return new Field(clean(label), component, 1);
+    }
+
+    /**
+     * @return the label without the colon of classic forms ("Name:")
+     */
+    static String clean(String label) {
+        return label == null ? null : label.replaceAll("\\s*:\\s*$", "");
     }
 
     /**
@@ -74,7 +81,7 @@ public class Card extends JPanel {
      * @return the field
      */
     public static Field field(String label, Component component, double weight) {
-        return new Field(label, component, weight);
+        return new Field(clean(label), component, weight);
     }
 
     /**
