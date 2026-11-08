@@ -21,9 +21,24 @@ along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
  */
 package mpv5.ui.dialogs.subcomponents;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Font;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import mpv5.data.PropertyStore;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -31,192 +46,135 @@ import mpv5.db.common.NodataFoundException;
 import mpv5.db.objects.Tax;
 import mpv5.globals.Messages;
 import mpv5.i18n.LanguageManager;
+import mpv5.logging.Log;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.Popup;
+import mpv5.ui.misc.RichList;
+import mpv5.ui.modern.Applets;
+import mpv5.ui.modern.Card;
+import mpv5.ui.modern.ModernTheme;
+import mpv5.ui.modern.PrimaryButton;
 import mpv5.ui.panels.DataPanel;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.numberformat.FormatNumber;
 import mpv5.utils.ui.TextFieldUtils;
 
 /**
- *
- * 
+ * The tax rates: a list on the left, the chosen rate on the right
  */
-public class ControlPanel_Taxes extends javax.swing.JPanel implements ControlApplet, DataPanel {
+public class ControlPanel_Taxes extends JPanel implements ControlApplet, DataPanel {
 
     private static final long serialVersionUID = 1L;
     private ControlPanel_Taxes insta;
     private Tax dataOwner;
+    private final DefaultListModel<Object> model = new DefaultListModel<Object>();
+    private final JList<Object> list = new JList<Object>(model);
+    private final JTextField cname = ModernTheme.roomy(new JTextField());
+    private final JTextField value = ModernTheme.roomy(new JTextField());
+    private final JComboBox<Object> countries = new JComboBox<Object>();
+    private final JLabel title = new JLabel();
+    private final JButton delete = Applets.danger(new JButton(Messages.TAXES_DELETE.toString()));
+    private JPanel actions = new JPanel();
+    private boolean listing;
 
-    /** Creates new form ContactPanel
+    /**
+     * Creates the tax rates panel (administrators only)
      */
     public ControlPanel_Taxes() {
-        if (MPSecurityManager.checkAdminAccess()) {
-            initComponents();
-            value.set_ValueClass(Double.class);
-            value.setText(0);
-            selecttax.setContext(Context.getTaxes());
-            selecttax.setReceiver(this);
-            selecttax.getComboBox().setEditable(false);
-            selecttax.setSearchEnabled(false);
-            refresh();
+        super(new BorderLayout(ModernTheme.px(12), 0));
+        setOpaque(false);
+        setBorder(ModernTheme.padding(12, 14));
+        if (!MPSecurityManager.checkAdminAccess()) {
+            return;
         }
+        java.util.ResourceBundle bundle = LanguageManager.getBundle();
+
+        JPanel left = new JPanel(new BorderLayout(0, ModernTheme.px(8)));
+        left.setOpaque(false);
+        JButton add = new JButton("+ " + Messages.TAXES_NEW);
+        add.addActionListener(e -> newTax());
+        left.add(add, BorderLayout.NORTH);
+        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        list.setCellRenderer(new RichList.Renderer());
+        list.addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting() && !listing && list.getSelectedValue() instanceof RichList.Row) {
+                setDataOwner((Tax) ((RichList.Row) list.getSelectedValue()).data, true);
+            }
+        });
+        JScrollPane sp = new JScrollPane(list);
+        sp.setBorder(BorderFactory.createLineBorder(ModernTheme.border()));
+        left.add(sp, BorderLayout.CENTER);
+        left.setPreferredSize(new java.awt.Dimension(ModernTheme.px(280), ModernTheme.px(300)));
+        add(left, BorderLayout.WEST);
+
+        title.setFont(ModernTheme.font(4, Font.BOLD));
+        Card card = new Card(null)
+                .row(Card.field(bundle.getString("ControlPanel_Taxes.cname._Label"), cname, 2),
+                        Card.field(Messages.TAXES_RATE.toString(), value, 1))
+                .row(Card.field(bundle.getString("ControlPanel_Taxes.countries._Label"), countries))
+                .addFull(Applets.hint(Messages.TAXES_HINT.toString()));
+        JPanel right = new JPanel(new BorderLayout(0, ModernTheme.px(8)));
+        right.setOpaque(false);
+        right.add(title, BorderLayout.NORTH);
+        JPanel top = new JPanel(new BorderLayout());
+        top.setOpaque(false);
+        top.add(card, BorderLayout.NORTH);
+        right.add(top, BorderLayout.CENTER);
+        add(right, BorderLayout.CENTER);
+
+        delete.addActionListener(e -> deleteTax());
+        PrimaryButton save = new PrimaryButton(bundle.getString("ControlPanel_Taxes.jButton2.text"), "/images/16/filesave.png");
+        save.addActionListener(e -> save());
+        actions = Applets.actionBar(new JComponent[]{delete}, new JComponent[]{save});
+        refresh();
+        newTax();
     }
 
-    public void showRequiredFields() {
-        TextFieldUtils.blinkerRed(cname);
-
+    private void newTax() {
+        dataOwner = null;
+        listing = true;
+        list.clearSelection();
+        listing = false;
+        cname.setText("");
+        value.setText(FormatNumber.formatDezimal(0d));
+        title.setText(Messages.TAXES_NEW.toString());
+        delete.setEnabled(false);
+        cname.requestFocusInWindow();
     }
 
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
-     */
-    @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
-
-        buttonGroup1 = new javax.swing.ButtonGroup();
-        jPanel6 = new javax.swing.JPanel();
-        jButton2 = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jPanel1 = new javax.swing.JPanel();
-        selecttax = new mpv5.ui.beans.LabeledCombobox();
-        cname = new mpv5.ui.beans.LabeledTextField();
-        value = new mpv5.ui.beans.LabeledTextField();
-        countries = new mpv5.ui.beans.LabeledCombobox();
-
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
-        setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Taxes.border.title"))); // NOI18N
-        setName("Form"); // NOI18N
-        setLayout(new java.awt.BorderLayout());
-
-//$2java.awt.Color(255, 255, 255));
-        jPanel6.setName("jPanel6"); // NOI18N
-        jPanel6.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
-
-        jButton2.setText(bundle.getString("ControlPanel_Taxes.jButton2.text")); // NOI18N
-        jButton2.setName("jButton2"); // NOI18N
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-        jPanel6.add(jButton2);
-
-        jButton1.setText(bundle.getString("ControlPanel_Taxes.jButton1.text")); // NOI18N
-        jButton1.setName("jButton1"); // NOI18N
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-        jPanel6.add(jButton1);
-
-        jButton3.setText(bundle.getString("ControlPanel_Taxes.jButton3.text")); // NOI18N
-        jButton3.setName("jButton3"); // NOI18N
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
-        jPanel6.add(jButton3);
-
-        add(jPanel6, java.awt.BorderLayout.PAGE_END);
-
-        jPanel1.setName("jPanel1"); // NOI18N
-
-        selecttax.set_Label(bundle.getString("ControlPanel_Taxes.selecttax._Label")); // NOI18N
-        selecttax.setName("selecttax"); // NOI18N
-
-        cname.set_Label(bundle.getString("ControlPanel_Taxes.cname._Label")); // NOI18N
-        cname.setName("cname"); // NOI18N
-
-        value.set_Label(bundle.getString("ControlPanel_Taxes.value._Label")); // NOI18N
-        value.setName("value"); // NOI18N
-
-        countries.set_Label(bundle.getString("ControlPanel_Taxes.countries._Label")); // NOI18N
-        countries.setName("countries"); // NOI18N
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(value, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cname, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(selecttax, javax.swing.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE)
-                    .addComponent(countries, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(43, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(selecttax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(cname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(value, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(countries, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        add(jPanel1, java.awt.BorderLayout.CENTER);
-    }// </editor-fold>//GEN-END:initComponents
-
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        collectData();
-        Tax t = new Tax();
-        if (dataOwner != null) {
-            t = dataOwner;
-        } else {
+    private void save() {
+        if (!collectData() || cname_ == null || cname_.trim().isEmpty()) {
+            showRequiredFields();
+            return;
+        }
+        Tax t = dataOwner != null ? dataOwner : new Tax();
+        if (dataOwner == null) {
             t.setIdentifier(cname_);
         }
         t.setCname(cname_);
         t.setCountry(country_);
         t.setTaxvalue(taxvalue_);
-        t.save();
-        actionAfterSave();
-}//GEN-LAST:event_jButton2ActionPerformed
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        collectData();
-        Tax t = new Tax();
-        t.setCountry(country_);
-        t.setIdentifier(cname_);
-        t.setCname(cname_);
-        t.setTaxvalue(taxvalue_);
-        t.save();
-        actionAfterCreate();
-
-}//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        if (dataOwner != null && dataOwner.isExisting()) {
-            if(!dataOwner.delete())
-                Popup.notice(Messages.IN_USE);
+        if (t.save()) {
+            dataOwner = t;
+            actionAfterSave();
         }
-        refresh();
+    }
 
-    }//GEN-LAST:event_jButton3ActionPerformed
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.ButtonGroup buttonGroup1;
-    private mpv5.ui.beans.LabeledTextField cname;
-    private mpv5.ui.beans.LabeledCombobox countries;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel6;
-    private mpv5.ui.beans.LabeledCombobox selecttax;
-    private mpv5.ui.beans.LabeledTextField value;
-    // End of variables declaration//GEN-END:variables
+    private void deleteTax() {
+        if (dataOwner != null && dataOwner.isExisting()
+                && Popup.Y_N_dialog(String.format(Messages.TAXES_REALLY_DELETE.toString(), dataOwner.__getCname()))) {
+            if (!dataOwner.delete()) {
+                Popup.notice(Messages.IN_USE);
+            }
+            refresh();
+            newTax();
+        }
+    }
+
+    @Override
+    public void showRequiredFields() {
+        TextFieldUtils.blinkerRed(cname);
+    }
     public String cname_;
     public int intaddedby_;
     public int ids_;
@@ -226,15 +184,22 @@ public class ControlPanel_Taxes extends javax.swing.JPanel implements ControlApp
     public String identifier_ = "";
     public String country_ = "";
 
+    @Override
     public void setValues(PropertyStore values) {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
     public String getUname() {
         return "Taxes";
     }
 
+    @Override
     public void reset() {
+        if (dataOwner != null) {
+            setDataOwner(dataOwner, true);
+        } else {
+            newTax();
+        }
     }
 
     public ControlApplet instanceOf() {
@@ -244,77 +209,130 @@ public class ControlPanel_Taxes extends javax.swing.JPanel implements ControlApp
         return insta;
     }
 
+    @Override
     public void refresh() {
+        countries.setModel(new javax.swing.DefaultComboBoxModel<Object>(toArray(LanguageManager.getCountriesAsComboBoxModel())));
+        Object sel = dataOwner;
+        listing = true;
         try {
-            selecttax.setModel(DatabaseObject.getObjects(Context.getTaxes()));
-        } catch (NodataFoundException ex) {
+            model.clear();
+            List<DatabaseObject> taxes = new ArrayList<DatabaseObject>();
+            try {
+                taxes = DatabaseObject.getObjects(Context.getTaxes());
+            } catch (NodataFoundException ex) {
+                Log.Debug(this, ex.getMessage());
+            }
+            for (DatabaseObject o : taxes) {
+                Tax t = (Tax) o;
+                RichList.Row r = new RichList.Row();
+                r.badge = "%";
+                r.color = RichList.GREEN;
+                r.title = t.__getCname();
+                r.detail = t.__getCountry();
+                r.right = FormatNumber.formatDezimal(t.__getTaxvalue()) + " %";
+                r.strong = true;
+                r.data = t;
+                model.addElement(r);
+                if (sel != null && ((Tax) sel).__getIDS().equals(t.__getIDS())) {
+                    list.setSelectedIndex(model.size() - 1);
+                }
+            }
+        } finally {
+            listing = false;
         }
-        countries.setModel(LanguageManager.getCountriesAsComboBoxModel());
     }
 
+    private static Object[] toArray(javax.swing.ComboBoxModel<?> m) {
+        Object[] a = new Object[m.getSize()];
+        for (int i = 0; i < a.length; i++) {
+            a[i] = m.getElementAt(i);
+        }
+        return a;
+    }
+
+    @Override
     public Component getAndRemoveActionPanel() {
-        this.remove(jPanel6);
-        validate();
-        return jPanel6;
+        return actions;
     }
 
+    @Override
     public boolean collectData() {
         try {
             cname_ = cname.getText();
-            taxvalue_ = FormatNumber.parseDezimal(value.getText(true, "0"));
-            country_ = countries.getComboBox().getSelectedItem().toString();
+            taxvalue_ = FormatNumber.parseDezimal(value.getText().trim().isEmpty() ? "0" : value.getText());
+            country_ = countries.getSelectedItem() == null ? "" : countries.getSelectedItem().toString();
             return true;
         } catch (Exception e) {
+            Popup.notice(Messages.TAXES_RATE_INVALID.toString());
             return false;
         }
     }
 
+    @Override
     public DatabaseObject getDataOwner() {
         return dataOwner;
     }
 
+    @Override
     public void setDataOwner(DatabaseObject object, boolean populateData) {
         this.dataOwner = (Tax) object;
         if (populateData) {
             dataOwner.setPanelData(this);
             this.exposeData();
         }
+        title.setText(dataOwner.__getCname());
+        delete.setEnabled(dataOwner.isExisting());
     }
 
+    @Override
     public void exposeData() {
         cname.setText(cname_);
-        value.setText(taxvalue_);
-        countries.setSelectedItem(country_);
+        value.setText(taxvalue_ == null ? "0" : FormatNumber.formatDezimal(taxvalue_));
+        for (int i = 0; i < countries.getItemCount(); i++) {
+            if (String.valueOf(countries.getItemAt(i)).equals(country_)) {
+                countries.setSelectedIndex(i);
+            }
+        }
     }
 
+    @Override
     public void paste(DatabaseObject... dbos) {
         for (DatabaseObject dbo : dbos) {
             setDataOwner(dbo, true);
         }
     }
 
+    @Override
     public void showSearchBar(boolean show) {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
     public void actionAfterSave() {
         refresh();
+        if (dataOwner != null) {
+            title.setText(dataOwner.__getCname());
+            delete.setEnabled(true);
+        }
     }
 
+    @Override
     public void actionAfterCreate() {
         refresh();
     }
 
+    @Override
     public void actionBeforeCreate() {
     }
 
+    @Override
     public void actionBeforeSave() {
     }
 
+    @Override
     public void mail() {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
     public void print() {
         mpv5.utils.export.Export.print(this);
     }

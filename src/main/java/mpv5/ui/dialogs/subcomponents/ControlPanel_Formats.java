@@ -44,6 +44,7 @@ public final class ControlPanel_Formats extends javax.swing.JPanel implements Co
     public ControlPanel_Formats() {
         if (MPSecurityManager.checkAdminAccess()) {
             initComponents();
+            modernLayout();
             refresh();
             setTable();
             setVisible(true);
@@ -54,6 +55,7 @@ public final class ControlPanel_Formats extends javax.swing.JPanel implements Co
     public ControlPanel_Formats(User user) {
         if (MPSecurityManager.checkAdminAccess()) {
             initComponents();
+            modernLayout();
             refresh();
             setdata(user);
             setVisible(true);
@@ -395,11 +397,54 @@ public final class ControlPanel_Formats extends javax.swing.JPanel implements Co
 
     }
 
+    private javax.swing.JPanel actions = new javax.swing.JPanel();
+
+    /**
+     * The fields of the form in cards: the format (user, type, pattern,
+     * variables), the numbering, the date and the formats of the user
+     */
+    private void modernLayout() {
+        removeAll();
+        setLayout(new java.awt.BorderLayout());
+        setOpaque(false);
+        jComboBox1.setPreferredSize(null);
+        locales.setPreferredSize(null);
+        mpv5.ui.modern.Card format = new mpv5.ui.modern.Card(Messages.FORMATS_CARD_FORMAT.toString())
+                .row(mpv5.ui.modern.Card.field(Messages.FORMATS_USER.toString(), jComboBox1),
+                        mpv5.ui.modern.Card.field(labeledCombobox3.get_Label(), labeledCombobox3.getComboBox()))
+                .row(mpv5.ui.modern.Applets.field(labeledTextField1, 2),
+                        mpv5.ui.modern.Card.field(labeledCombobox2.get_Label(), labeledCombobox2.getComboBox(), 1))
+                .row(mpv5.ui.modern.Card.field(Messages.FORMATS_EXISTING.toString(), labeledCombobox1.getComboBox()))
+                .addFull(mpv5.ui.modern.Applets.hint(Messages.FORMATS_HINT.toString()));
+        minstart.getSpinner().setPreferredSize(null);
+        positionstart.getSpinner().setPreferredSize(null);
+        mpv5.ui.modern.Card numbering = new mpv5.ui.modern.Card(Messages.FORMATS_CARD_NUMBERING.toString())
+                .row(mpv5.ui.modern.Card.field(minstart.get_Label(), minstart.getSpinner()))
+                .addFull(mpv5.ui.modern.Applets.hint(jLabel2.getText()))
+                .row(mpv5.ui.modern.Card.field(positionstart.get_Label(), positionstart.getSpinner()))
+                .addFull(mpv5.ui.modern.Applets.hint(jLabel4.getText()));
+        mpv5.ui.modern.Card date = new mpv5.ui.modern.Card(Messages.FORMATS_CARD_DATE.toString())
+                .row(mpv5.ui.modern.Card.field(Messages.FORMATS_DATE_LOCALE.toString(), locales))
+                .addFull(mpv5.ui.modern.Applets.hint(jLabel3.getText()));
+        mpv5.ui.modern.ModernTheme.style(jTable1);
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(mpv5.ui.modern.ModernTheme.px(300), mpv5.ui.modern.ModernTheme.px(160)));
+        mpv5.ui.modern.Card list = new mpv5.ui.modern.Card(Messages.FORMATS_CARD_LIST.toString()).addFull(jScrollPane1, 1);
+        add(mpv5.ui.modern.Applets.page(null, 360, format, numbering, date, list), java.awt.BorderLayout.CENTER);
+
+        javax.swing.JButton test = new javax.swing.JButton(bundle.getString("ControlPanel_Formats.jButton3.text"));
+        test.addActionListener(e -> test());
+        mpv5.ui.modern.PrimaryButton save = new mpv5.ui.modern.PrimaryButton(bundle.getString("ControlPanel_Formats.jButton1.text"), "/images/16/filesave.png");
+        save.addActionListener(e -> {
+            if (test()) {
+                save();
+            }
+        });
+        actions = mpv5.ui.modern.Applets.actionBar(new javax.swing.JComponent[]{}, new javax.swing.JComponent[]{test, save});
+    }
+
     @Override
     public Component getAndRemoveActionPanel() {
-        this.remove(jPanel6);
-        validate();
-        return jPanel6;
+        return actions;
     }
 
     private void save() {

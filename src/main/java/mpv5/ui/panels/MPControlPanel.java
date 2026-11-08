@@ -558,7 +558,7 @@ public class MPControlPanel extends JPanel {
             if (a != null) {
                 actions.add(a, BorderLayout.CENTER);
             }
-            scroller.setViewportView((Component) panel);
+            scroller.setViewportView(new WidthTracking((Component) panel));
             cards.show(right, "detail");
             revalidate();
             repaint();
@@ -612,6 +612,46 @@ public class MPControlPanel extends JPanel {
     }
 
     // ------------------------------------------------------------------ parts
+    /**
+     * Takes the width of the view (the panel wraps and its cards reflow),
+     * unless the panel needs more: then it scrolls sideways
+     */
+    private static final class WidthTracking extends JPanel implements javax.swing.Scrollable {
+
+        private static final long serialVersionUID = 1L;
+
+        WidthTracking(Component c) {
+            super(new BorderLayout());
+            setOpaque(false);
+            add(c, BorderLayout.CENTER);
+        }
+
+        @Override
+        public Dimension getPreferredScrollableViewportSize() {
+            return getPreferredSize();
+        }
+
+        @Override
+        public int getScrollableUnitIncrement(java.awt.Rectangle r, int o, int d) {
+            return ModernTheme.px(16);
+        }
+
+        @Override
+        public int getScrollableBlockIncrement(java.awt.Rectangle r, int o, int d) {
+            return o == SwingConstants.VERTICAL ? r.height : r.width;
+        }
+
+        @Override
+        public boolean getScrollableTracksViewportWidth() {
+            return getParent() != null && getParent().getWidth() >= getMinimumSize().width;
+        }
+
+        @Override
+        public boolean getScrollableTracksViewportHeight() {
+            return getParent() != null && getParent().getHeight() >= getPreferredSize().height;
+        }
+    }
+
     /**
      * A setting in the overview
      */
