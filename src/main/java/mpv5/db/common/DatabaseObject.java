@@ -836,6 +836,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             uncacheObject(this);
 
             onBeforeSave();
+            final boolean created = ids <= 0;
             
             List<DatabaseObjectModifier> mods = null;
             if (Context.getModifiableContexts().contains(getContext())) {
@@ -923,6 +924,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                         }
                     };
                     new Thread(runnable).start();
+                }
+                if (message != null) {
+                    mpv5.handler.Activity.record(this, created ? mpv5.handler.Activity.Kind.CREATED : mpv5.handler.Activity.Kind.CHANGED, message);
                 }
                 if (mods != null) {
                     for (int ik = 0; ik < mods.size(); ik++) {
@@ -1043,6 +1047,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             }
 
             ValueProperty.deleteProperty(this, null);
+            if (result && message != null) {
+                mpv5.handler.Activity.record(this, mpv5.handler.Activity.Kind.DELETED, message);
+            }
 
             final String fmessage = message;
             final String fdbid = this.getDbIdentity();
