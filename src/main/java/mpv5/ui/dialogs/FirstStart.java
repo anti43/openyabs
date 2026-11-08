@@ -89,33 +89,33 @@ public final class FirstStart extends JFrame {
     private final CardLayout pages = new CardLayout();
     private final JPanel content = new JPanel(pages);
     //where
-    private final Tile local = new Tile(Messages.FIRSTSTART_LOCAL.toString(), "");
-    private final Tile server = new Tile(Messages.FIRSTSTART_SERVER.toString(), Messages.FIRSTSTART_SERVER_HINT.toString());
+    private final Tile local = new Tile(tr(Messages.FIRSTSTART_LOCAL), "");
+    private final Tile server = new Tile(tr(Messages.FIRSTSTART_SERVER), tr(Messages.FIRSTSTART_SERVER_HINT));
     private final JLabel folderLabel = new JLabel();
     private File folder = new File(Main.MPPATH == null ? System.getProperty("user.home") : Main.MPPATH);
     //server
     private final JComboBox<String> type = new JComboBox<String>(new String[]{
-        Messages.FIRSTSTART_TYPE_MYSQL.toString(), Messages.FIRSTSTART_TYPE_DERBY.toString(), Messages.FIRSTSTART_TYPE_OTHER.toString()});
+        tr(Messages.FIRSTSTART_TYPE_MYSQL), tr(Messages.FIRSTSTART_TYPE_DERBY), tr(Messages.FIRSTSTART_TYPE_OTHER)});
     private final JTextField address = ModernTheme.roomy(new JTextField("localhost:3306"));
     private final JTextField dbname = ModernTheme.roomy(new JTextField());
     private final JTextField user = ModernTheme.roomy(new JTextField());
     private final JPasswordField password = ModernTheme.roomy(new JPasswordField());
     private final JTextField prefix = ModernTheme.roomy(new JTextField());
-    private final JCheckBox shared = new JCheckBox(Messages.FIRSTSTART_SHARED.toString(), true);
-    private final JCheckBox existing = new JCheckBox(Messages.FIRSTSTART_EXISTING.toString());
+    private final JCheckBox shared = new JCheckBox(tr(Messages.FIRSTSTART_SHARED), true);
+    private final JCheckBox existing = new JCheckBox(tr(Messages.FIRSTSTART_EXISTING));
     private final Card serverCard = new Card(null);
     //progress
     private final Step[] steps = {
-        new Step(Messages.FIRSTSTART_CONNECTING.toString()),
-        new Step(Messages.FIRSTSTART_CREATING.toString()),
-        new Step(Messages.FIRSTSTART_COUNTRIES.toString()),
-        new Step(Messages.FIRSTSTART_LANGUAGES.toString()),
-        new Step(Messages.FIRSTSTART_TEMPLATES.toString()),
-        new Step(Messages.FIRSTSTART_LAUNCH.toString())};
+        new Step(tr(Messages.FIRSTSTART_CONNECTING)),
+        new Step(tr(Messages.FIRSTSTART_CREATING)),
+        new Step(tr(Messages.FIRSTSTART_COUNTRIES)),
+        new Step(tr(Messages.FIRSTSTART_LANGUAGES)),
+        new Step(tr(Messages.FIRSTSTART_TEMPLATES)),
+        new Step(tr(Messages.FIRSTSTART_LAUNCH))};
     private final JProgressBar bar = new JProgressBar();
     private final JTextArea error = text("");
     private final JPanel errorButtons = new JPanel(new FlowLayout(FlowLayout.RIGHT, ModernTheme.px(8), 0));
-    private final PrimaryButton start = new PrimaryButton(Messages.FIRSTSTART_START.toString(), null);
+    private final PrimaryButton start = new PrimaryButton(tr(Messages.FIRSTSTART_START), null);
 
     /**
      * Shows the first start
@@ -170,15 +170,15 @@ public final class FirstStart extends JFrame {
         p.setBorder(ModernTheme.padding(26, 30));
 
         JPanel head = column();
-        JLabel title = new JLabel(Messages.FIRSTSTART_TITLE.toString());
+        JLabel title = new JLabel(tr(Messages.FIRSTSTART_TITLE));
         title.setFont(ModernTheme.font(11, Font.BOLD));
         head.add(title);
         head.add(Box.createVerticalStrut(ModernTheme.px(6)));
-        head.add(text(Messages.FIRSTSTART_INTRO.toString()));
+        head.add(text(tr(Messages.FIRSTSTART_INTRO)));
         p.add(head, BorderLayout.NORTH);
 
         JPanel where = column();
-        JLabel q = new JLabel(Messages.FIRSTSTART_WHERE.toString());
+        JLabel q = new JLabel(tr(Messages.FIRSTSTART_WHERE));
         q.setFont(ModernTheme.font(1, Font.BOLD));
         where.add(q);
         where.add(Box.createVerticalStrut(ModernTheme.px(8)));
@@ -186,7 +186,7 @@ public final class FirstStart extends JFrame {
         g.add(local.radio);
         g.add(server.radio);
 
-        JButton change = ModernTheme.actionButton(new JButton(Messages.FIRSTSTART_CHANGE.toString()), null);
+        JButton change = ModernTheme.actionButton(new JButton(tr(Messages.FIRSTSTART_CHANGE)), null);
         change.addActionListener(e -> chooseFolder());
         JPanel folderRow = new JPanel(new BorderLayout(ModernTheme.px(8), 0));
         folderRow.setOpaque(false);
@@ -199,14 +199,14 @@ public final class FirstStart extends JFrame {
         where.add(Box.createVerticalStrut(ModernTheme.px(8)));
 
         serverCard.flat();
-        serverCard.row(Card.field(Messages.FIRSTSTART_TYPE.toString(), type, 1), Card.field(Messages.FIRSTSTART_ADDRESS.toString(), address, 2));
-        serverCard.row(Card.field(Messages.FIRSTSTART_DBNAME.toString(), dbname), Card.field(Messages.FIRSTSTART_PREFIX.toString(), prefix));
-        serverCard.row(Card.field(Messages.FIRSTSTART_USER.toString(), user), Card.field(Messages.FIRSTSTART_PASSWORD.toString(), password));
+        serverCard.row(Card.field(tr(Messages.FIRSTSTART_TYPE), type, 1), Card.field(tr(Messages.FIRSTSTART_ADDRESS), address, 2));
+        serverCard.row(Card.field(tr(Messages.FIRSTSTART_DBNAME), dbname), Card.field(tr(Messages.FIRSTSTART_PREFIX), prefix));
+        serverCard.row(Card.field(tr(Messages.FIRSTSTART_USER), user), Card.field(tr(Messages.FIRSTSTART_PASSWORD), password));
         shared.setOpaque(false);
         existing.setOpaque(false);
         serverCard.addFull(shared);
         serverCard.addFull(existing);
-        JButton more = link(Messages.FIRSTSTART_MORE.toString());
+        JButton more = link(tr(Messages.FIRSTSTART_MORE));
         more.addActionListener(e -> advanced());
         JPanel moreRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         moreRow.setOpaque(false);
@@ -222,7 +222,7 @@ public final class FirstStart extends JFrame {
 
         JPanel foot = new JPanel(new BorderLayout(ModernTheme.px(16), 0));
         foot.setOpaque(false);
-        JTextArea auto = text(Messages.FIRSTSTART_AUTO.toString());
+        JTextArea auto = text(tr(Messages.FIRSTSTART_AUTO));
         auto.setForeground(ModernTheme.muted());
         auto.setFont(ModernTheme.font(-1, Font.PLAIN));
         foot.add(auto, BorderLayout.CENTER);
@@ -274,7 +274,7 @@ public final class FirstStart extends JFrame {
     }
 
     private void showFolder() {
-        folderLabel.setText(String.format(Messages.FIRSTSTART_LOCAL_HINT.toString(), folder.getAbsolutePath()));
+        folderLabel.setText(String.format(tr(Messages.FIRSTSTART_LOCAL_HINT), folder.getAbsolutePath()));
         folderLabel.setToolTipText(folder.getAbsolutePath());
     }
 
@@ -290,7 +290,7 @@ public final class FirstStart extends JFrame {
         JPanel p = new JPanel(new BorderLayout(0, ModernTheme.px(18)));
         p.setOpaque(false);
         p.setBorder(ModernTheme.padding(30, 34));
-        JLabel title = new JLabel(Messages.FIRSTSTART_WORKING.toString());
+        JLabel title = new JLabel(tr(Messages.FIRSTSTART_WORKING));
         title.setFont(ModernTheme.font(9, Font.BOLD));
         p.add(title, BorderLayout.NORTH);
 
@@ -311,7 +311,7 @@ public final class FirstStart extends JFrame {
         p.add(list, BorderLayout.CENTER);
 
         errorButtons.setOpaque(false);
-        JButton log = ModernTheme.actionButton(new JButton(Messages.FIRSTSTART_LOG.toString()), null);
+        JButton log = ModernTheme.actionButton(new JButton(tr(Messages.FIRSTSTART_LOG)), null);
         log.addActionListener(e -> {
             try {
                 Desktop.getDesktop().open(YConsole.getLogfile());
@@ -319,7 +319,7 @@ public final class FirstStart extends JFrame {
                 Log.Debug(this, ex);
             }
         });
-        PrimaryButton back = new PrimaryButton(Messages.FIRSTSTART_BACK.toString(), null);
+        PrimaryButton back = new PrimaryButton(tr(Messages.FIRSTSTART_BACK), null);
         back.addActionListener(e -> {
             pages.show(content, "form");
             start.setEnabled(true);
@@ -379,7 +379,7 @@ public final class FirstStart extends JFrame {
                     at(0);
                     DatabaseConnection conn = connect(s);
                     if (conn == null) {
-                        problem = Messages.CONNECTION_FAILED.toString();
+                        problem = tr(Messages.CONNECTION_FAILED);
                         return false;
                     }
                     boolean exists;
@@ -389,7 +389,7 @@ public final class FirstStart extends JFrame {
                         exists = false;
                     }
                     if (s.onlyConnect && !exists) {
-                        problem = Messages.FIRSTSTART_NO_YABS.toString();
+                        problem = tr(Messages.FIRSTSTART_NO_YABS);
                         return false;
                     }
                     boolean created = false;
@@ -398,7 +398,7 @@ public final class FirstStart extends JFrame {
                         conn.setProgressbar(bar);
                         if (!(conn.runQueries(new DatabaseInstallation().getStructure())
                                 && conn.runQueries(new DatabaseInstallation().getInitialData()))) {
-                            problem = Messages.CREATING_DATABASE_FAILED.toString();
+                            problem = tr(Messages.CREATING_DATABASE_FAILED);
                             return false;
                         }
                         created = true;
@@ -411,7 +411,7 @@ public final class FirstStart extends JFrame {
                     return true;
                 } catch (Throwable e) {
                     Log.Debug(FirstStart.class, e);
-                    problem = Messages.CONNECTION_FAILED + "\n" + e.getMessage();
+                    problem = tr(Messages.CONNECTION_FAILED) + "\n" + e.getMessage();
                     return false;
                 }
             }
@@ -471,7 +471,7 @@ public final class FirstStart extends JFrame {
                         }
                     }
                     bar.setVisible(false);
-                    error.setText(Messages.FIRSTSTART_FAILED + "\n" + (problem == null ? Messages.CONNECTION_FAILED : problem));
+                    error.setText(tr(Messages.FIRSTSTART_FAILED) + "\n" + (problem == null ? tr(Messages.CONNECTION_FAILED) : problem));
                     error.setVisible(true);
                     errorButtons.setVisible(true);
                 }
@@ -511,6 +511,39 @@ public final class FirstStart extends JFrame {
 
         String driver, url, user, password, dbname, prefix;
         boolean network, onlyConnect;
+    }
+
+    // ---------------------------------------------------------------- texts
+    private static java.util.Properties german;
+
+    /**
+     * Before there is a database (and a user) the texts come from the bundled
+     * German language file on German systems, else from the default
+     *
+     * @param m
+     * @return the text
+     */
+    static String tr(Messages m) {
+        if (LanguageManager.isGermanUser(null)) {
+            synchronized (FirstStart.class) {
+                if (german == null) {
+                    german = new java.util.Properties();
+                    try (java.io.InputStream in = Main.class.getResourceAsStream(
+                            "/extra/DE-" + Constants.EXTRA_FILES_VERSION + ".properties")) {
+                        if (in != null) {
+                            german.load(in);
+                        }
+                    } catch (Exception e) {
+                        Log.Debug(FirstStart.class, e);
+                    }
+                }
+            }
+            String s = german.getProperty(m.name());
+            if (s != null && !s.isEmpty()) {
+                return s;
+            }
+        }
+        return m.toString();
     }
 
     // ---------------------------------------------------------------- parts
