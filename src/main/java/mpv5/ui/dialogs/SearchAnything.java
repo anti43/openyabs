@@ -83,12 +83,16 @@ public final class SearchAnything extends JDialog {
 
         final String title;
         final String path;
-        final AbstractButton button;
+        final Runnable run;
 
         Command(String title, String path, AbstractButton button) {
+            this(title, path, (Runnable) button::doClick);
+        }
+
+        Command(String title, String path, Runnable run) {
             this.title = title;
             this.path = path;
-            this.button = button;
+            this.run = run;
         }
     }
 
@@ -282,9 +286,15 @@ public final class SearchAnything extends JDialog {
                 try {
                     List<SearchService.Hit> hits = get();
                     show(commands, hits, needle);
-                    status.setText(hits.size() + commands.size() == 0
+                    int found = 0;
+                    for (int i = 0; i < model.size(); i++) {
+                        if (!(model.get(i) instanceof Heading)) {
+                            found++;
+                        }
+                    }
+                    status.setText(found == 0
                             ? Messages.SEARCH_ANYTHING_NOTHING.toString()
-                            : (hits.size() + commands.size()) + " " + Messages.SEARCH_ANYTHING_RESULTS + "  ·  " + Messages.SEARCH_ANYTHING_TIP);
+                            : found + " " + Messages.SEARCH_ANYTHING_RESULTS + "  ·  " + Messages.SEARCH_ANYTHING_TIP);
                 } catch (Exception e) {
                     Log.Debug(SearchAnything.this, e);
                     status.setText(Messages.ERROR_OCCURED.toString());
@@ -302,6 +312,13 @@ public final class SearchAnything extends JDialog {
                 model.addElement(new Heading(kind));
             }
             model.addElement(h);
+        }
+        List<Command> settings = settings(needle);
+        if (!settings.isEmpty()) {
+            model.addElement(new Heading(Messages.SEARCH_KIND_SETTINGS.toString()));
+            for (Command c : settings) {
+                model.addElement(c);
+            }
         }
         if (!commands.isEmpty()) {
             model.addElement(new Heading(Messages.SEARCH_KIND_COMMANDS.toString()));
@@ -353,6 +370,26 @@ public final class SearchAnything extends JDialog {
         return l;
     }
 
+    /**
+     * The settings whose name or description matches
+     */
+    private static List<Command> settings(String needle) {
+        List<Command> l = new ArrayList<Command>();
+        if (needle.trim().length() < 2) {
+            return l;
+        }
+        try {
+            for (final mpv5.ui.panels.MPControlPanel.Entry e : mpv5.ui.panels.MPControlPanel.entries()) {
+                if (e.matches(needle) && l.size() < 8) {
+                    l.add(new Command(e.title, e.description, () -> mpv5.ui.panels.MPControlPanel.show(e)));
+                }
+            }
+        } catch (Exception ex) {
+            Log.Debug(SearchAnything.class, ex);
+        }
+        return l;
+    }
+
     private static void menu(JMenu m, String path, String needle, List<Command> l) {
         for (Component c : m.getMenuComponents()) {
             if (c instanceof JMenu) {
@@ -374,7 +411,7 @@ public final class SearchAnything extends JDialog {
         }
         close();
         if (o instanceof Command) {
-            ((Command) o).button.doClick();
+            ((Command) o).run.run();
         } else if (o instanceof SearchService.Hit) {
             SearchService.Hit h = (SearchService.Hit) o;
             try {
