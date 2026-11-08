@@ -1763,7 +1763,8 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
                 jButton9ActionPerformed(evt);
             }
         });
-        nav_extras.add(jButton9);
+        //conversations are hidden for now (unused)
+        jButton9.setVisible(false);
         jButton9.getAccessibleContext().setAccessibleDescription(bundle.getString("MPView.jButton9.AccessibleContext.accessibleDescription")); // NOI18N
 
         parent_nav_extras.add(nav_extras);

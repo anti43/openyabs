@@ -75,7 +75,7 @@ public final class SearchService {
      *
      * @param needle
      * @return the hits, grouped by kind (contacts, documents, products,
-     * positions, conversations, appointments)
+     * positions, appointments)
      */
     public static List<Hit> search(String needle) {
         List<Hit> hits = new ArrayList<Hit>();
@@ -93,7 +93,7 @@ public final class SearchService {
         }
         products(n, hits);
         positions(n, hits);
-        simple(Context.getConversation(), Messages.SEARCH_KIND_CONVERSATIONS.toString(), n, hits);
+        //conversations are hidden for now
         simple(Context.getSchedule(), Messages.SEARCH_KIND_SCHEDULE.toString(), n, hits);
         return hits;
     }
