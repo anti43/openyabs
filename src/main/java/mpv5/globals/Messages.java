@@ -845,6 +845,8 @@ public enum Messages {
     LOCALE_CARD_FORMAT("Currency and number format"),
     LOCALE_CARD_IMPORT("Import a language"),
     LOCALE_CARD_COUNTRIES("Countries"),
+    WEBSHOPS_CARD_SHOPS("Web shops"),
+    WEBSHOPS_CARD_DETAILS("Connection"),
     ZOOM_IN("Zoom in"),
     LANGUAGE_MENU("Language"),
     LANGUAGE_CHANGED_RESTART("The new language is used when YaBS starts again.\n\nRestart YaBS now?"),

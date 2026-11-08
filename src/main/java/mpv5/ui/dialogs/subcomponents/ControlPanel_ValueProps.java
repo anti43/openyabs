@@ -30,6 +30,7 @@ public class ControlPanel_ValueProps extends javax.swing.JPanel implements Contr
 
     public ControlPanel_ValueProps() {
         initComponents();
+        modernLayout();
         setVisible(true);
         labeledCombobox1.setEditable(false);
         labeledCombobox1.setContext(Context.getValueProperties());
@@ -328,9 +329,22 @@ public class ControlPanel_ValueProps extends javax.swing.JPanel implements Contr
 
     @Override
     public Component getAndRemoveActionPanel() {
-        this.remove(jPanel1);
-        validate();
-        return jPanel1;
+        return actions;
+    }
+
+    private javax.swing.JPanel actions = new javax.swing.JPanel();
+
+    /**
+     * The parts of the form as cards, the buttons in the action bar
+     */
+    private void modernLayout() {
+        java.util.ResourceBundle b = mpv5.i18n.LanguageManager.getBundle();
+        removeAll();
+        setBorder(null);
+        setLayout(new java.awt.BorderLayout());
+        setOpaque(false);
+        add(mpv5.ui.modern.Applets.page(null, 420, mpv5.ui.modern.Applets.cardsOf(jPanel3.getParent() == null ? jPanel3 : jScrollPane6)), java.awt.BorderLayout.CENTER);
+        actions = mpv5.ui.modern.Applets.actionBar(new javax.swing.JComponent[]{}, mpv5.ui.modern.Applets.buttonsOf(jPanel1, b.getString("ControlPanel_ValueProps.jButton4.text")));
     }
 
     private void refresh() {

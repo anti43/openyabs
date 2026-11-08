@@ -58,6 +58,7 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
 
     public ControlPanel_WebShopManager() {
         initComponents();
+        modernLayout();
         addPopupMenu();
 
         groupselect.setSearchEnabled(true);
@@ -513,9 +514,24 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
 
     @Override
     public Component getAndRemoveActionPanel() {
-        this.remove(jPanel2);
-        validate();
-        return jPanel2;
+        return actions;
+    }
+
+    private javax.swing.JPanel actions = new javax.swing.JPanel();
+
+    /**
+     * The parts of the form as cards, the buttons in the action bar
+     */
+    private void modernLayout() {
+        java.util.ResourceBundle b = mpv5.i18n.LanguageManager.getBundle();
+        removeAll();
+        setBorder(null);
+        setLayout(new java.awt.BorderLayout());
+        setOpaque(false);
+        add(mpv5.ui.modern.Applets.page(null, 420,
+                mpv5.ui.modern.Applets.wrap(Messages.WEBSHOPS_CARD_SHOPS.toString(), jPanel3),
+                mpv5.ui.modern.Applets.wrap(Messages.WEBSHOPS_CARD_DETAILS.toString(), jPanel5)), java.awt.BorderLayout.CENTER);
+        actions = mpv5.ui.modern.Applets.actionBar(new javax.swing.JComponent[]{}, mpv5.ui.modern.Applets.buttonsOf(jPanel2, b.getString("ControlPanel_WebShopManager.jButton1.text")));
     }
 
     private void save(WebShop ws) throws MalformedURLException {
