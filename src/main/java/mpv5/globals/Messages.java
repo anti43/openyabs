@@ -824,6 +824,8 @@ public enum Messages {
     REMINDER_PREVIEW("Preview"),
     REMINDER_PDF("Create PDF"),
     REMINDER_ODT("Create ODT"),
+    MAILTEMPLATES_HINT("The text of e-mails sent with documents; fields like [CNAME] are filled in. Choose a template on the left to edit it."),
+    MASSPRINT_RULE("Rule (SQL)"),
     ZOOM_IN("Zoom in"),
     LANGUAGE_MENU("Language"),
     LANGUAGE_CHANGED_RESTART("The new language is used when YaBS starts again.\n\nRestart YaBS now?"),
