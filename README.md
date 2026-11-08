@@ -208,6 +208,7 @@ YaBS runs on **Windows, Linux and macOS**.
 | Windows | `.msi` | double-click |
 | Debian, Ubuntu, Linux Mint | `.deb` | `sudo apt install ./yabs_*.deb` |
 | Fedora, openSUSE, RHEL | `.rpm` | `sudo dnf install ./yabs-*.rpm` |
+| macOS (Apple silicon: `arm64`, Intel: `x86_64`) | `.dmg` | open, drag YaBS into *Applications*; the first time right-click › *Open* (the package is not signed) |
 
 **ZIP for all systems** (needs **Java 21** or newer, e.g. from [adoptium.net](https://adoptium.net)): unpack and start `yabs.bat` (Windows) or `yabs.sh` (Linux, macOS) – or `java -jar openyabs.jar`.
 

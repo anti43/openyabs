@@ -1,6 +1,6 @@
 # Builds YaBS, runs the tests and publishes the distribution zip
 # (openyabs.jar, lib/, start scripts) and installers with their own Java
-# runtime (.deb, .rpm, .msi; src/packaging/build-installer.sh):
+# runtime (.deb, .rpm, .msi, .dmg; src/packaging/build-installer.sh):
 # - every run: as workflow artifacts (Actions > run > Artifacts); installers
 #   not for pull requests
 # - builds of master: as pre-release "latest-master" (replaced on every build)
@@ -72,6 +72,11 @@ jobs:
           # jpackage of Java 21 needs WiX Toolset 3
           - os: windows-2022
             types: msi
+          # macOS: Apple silicon and Intel (not signed)
+          - os: macos-14
+            types: dmg
+          - os: macos-15-intel
+            types: dmg
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -101,7 +106,8 @@ jobs:
           }
           "$($wix.FullName)\bin" | Out-File -FilePath $env:GITHUB_PATH -Append -Encoding utf8
 
-      # installer versions are numbers only: the tag (v1.2.3 -> 1.2.3), else 0.0.<run>
+      # installer versions are numbers only: the tag (v1.2.3 -> 1.2.3), else
+      # 1.0.<run> (macOS does not allow 0 as first number; lower than releases)
       - name: Build installers
         shell: bash
         run: |
@@ -109,7 +115,7 @@ jobs:
             version="${GITHUB_REF_NAME#v}"
             version="${version%%-*}"
           else
-            version="0.0.${GITHUB_RUN_NUMBER}"
+            version="1.0.${GITHUB_RUN_NUMBER}"
           fi
           mkdir -p dist
           for type in ${{ matrix.types }}; do
@@ -161,4 +167,4 @@ jobs:
           gh release delete latest-master --cleanup-tag --yes || true
           gh release create latest-master dist/* --prerelease --target "$GITHUB_SHA" \
             --title "Latest build (master)" \
-            --notes "Automatic build of master, commit $GITHUB_SHA ($(date -u '+%Y-%m-%d %H:%M UTC')). Replaced by every new build. Installers with their own Java: .msi (Windows), .deb (Debian, Ubuntu: sudo apt install ./yabs_*.deb), .rpm (Fedora, openSUSE: sudo dnf install ./yabs-*.rpm). Or unzip the zip and start with yabs.sh / yabs.bat (Java 21 or newer)."
+            --notes "Automatic build of master, commit $GITHUB_SHA ($(date -u '+%Y-%m-%d %H:%M UTC')). Replaced by every new build. Installers with their own Java: .msi (Windows), .dmg (macOS, arm64 = Apple silicon, x86_64 = Intel; not signed: open with right-click > Open), .deb (Debian, Ubuntu: sudo apt install ./yabs_*.deb), .rpm (Fedora, openSUSE: sudo dnf install ./yabs-*.rpm). Or unzip the zip and start with yabs.sh / yabs.bat (Java 21 or newer)."

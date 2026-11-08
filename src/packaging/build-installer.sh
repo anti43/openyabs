@@ -2,14 +2,16 @@
 # Builds an installer with its own Java runtime (jpackage, Java 21) from the
 # distribution zip (./gradlew distributionZip).
 #
-#   src/packaging/build-installer.sh <deb|rpm|msi> <version>
+#   src/packaging/build-installer.sh <deb|rpm|msi|dmg> <version>
 #
-# version: numbers only, e.g. 1.3.2 (MSI: each part at most 255.255.65535).
-# Needs: deb - dpkg-deb, fakeroot; rpm - rpmbuild; msi - WiX Toolset 3 on the PATH.
+# version: numbers only, e.g. 1.3.2 (MSI: each part at most 255.255.65535;
+# macOS: the first number must not be 0).
+# Needs: deb - dpkg-deb, fakeroot; rpm - rpmbuild; msi - WiX Toolset 3 on the
+# PATH; dmg - macOS (sips, iconutil, hdiutil). The dmg is not signed.
 # Result: build/installer/out/
 set -euo pipefail
 
-type="${1:?type: deb, rpm or msi}"
+type="${1:?type: deb, rpm, msi or dmg}"
 version="${2:?version, e.g. 1.3.2}"
 root="$(cd "$(dirname "$0")/../.." && pwd)"
 work="$root/build/installer"
@@ -69,11 +71,37 @@ case "$type" in
       --win-upgrade-uuid "6f1d3a52-9c0e-4b7a-8f3e-2d5b9a7c4e11"
     )
     ;;
+  dmg)
+    # the icon as .icns, made from the png
+    iconset="$work/YaBS.iconset"
+    mkdir -p "$iconset"
+    png="$root/src/main/resources/images/icon2_128.png"
+    for size in 16 32 64 128 256 512; do
+      sips -z "$size" "$size" "$png" --out "$iconset/icon_${size}x${size}.png" >/dev/null
+    done
+    for size in 16 32 128 256; do
+      cp "$iconset/icon_$((size * 2))x$((size * 2)).png" "$iconset/icon_${size}x${size}@2x.png"
+    done
+    rm -f "$iconset/icon_64x64.png"
+    iconutil -c icns "$iconset" -o "$work/YaBS.icns"
+    extra=(
+      --icon "$work/YaBS.icns"
+      --mac-package-name YaBS
+      --mac-package-identifier org.openyabs.yabs
+      --mac-app-category public.app-category.business
+    )
+    ;;
   *)
-    echo "unknown type: $type (deb, rpm or msi)" >&2
+    echo "unknown type: $type (deb, rpm, msi or dmg)" >&2
     exit 1
     ;;
 esac
 
 jpackage "${common[@]}" "${extra[@]}"
+if [ "$type" = dmg ]; then
+  # one dmg per processor (arm64 = Apple silicon, x86_64 = Intel)
+  for f in "$work/out/"*.dmg; do
+    mv "$f" "${f%.dmg}-$(uname -m).dmg"
+  done
+fi
 ls -l "$work/out"
