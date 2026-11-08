@@ -78,7 +78,7 @@ looks-2.0.1.jar;JGoodies Looks;BSD License;JGoodies
 metadata-fixer-jakarta-1.30.2.jar;veraPDF PDF/A validation (metadata-fixer-jakarta);GNU General Public License Version 3 / Mozilla Public License 2.0;veraPDF Consortium
 microba-0.4.4.2.jar;Microba Calendar Components;Microba license;Michael Baranov
 microsoft-translator-java-api-0.6.1-jar-with-dependencies.jar;Microsoft Translator client (translation tool);see project;Jonathan Griggs
-MPCalendar.jar;YaBS calendar component;GNU General Public License Version 3;openyabs.org
+MPCalendar.jar;YaBS calendar component;GNU General Public License Version 3;https://github.com/andreasweberd/openyabs/
 mysql-connector-java-5.1.23-bin.jar;MySQL JDBC driver;GNU General Public License Version 2 with FOSS exception;Oracle
 noa-libre.jar;NOA libre: OpenOffice / LibreOffice access;GNU Lesser General Public License;IOn AG / noa-libre project
 odfdom-java-0.8.7.jar;ODFDOM OpenDocument library;Apache License Version 2.0;ODF Toolkit project
@@ -140,4 +140,4 @@ xmlrpc-client-3.1.2.jar;Apache XML-RPC Client;Apache License Version 2.0;The Apa
 xmlrpc-common-3.1.2.jar;Apache XML-RPC Commons;Apache License Version 2.0;The Apache Software Foundation
 xmlrpc-server-3.1.2.jar;Apache XML-RPC Server;Apache License Version 2.0;The Apache Software Foundation
 xmpbox-3.0.8.jar;Apache XmpBox (PDF metadata);Apache License Version 2.0;The Apache Software Foundation
-ybsaf.jar;YaBS application framework (based on the Swing Application Framework);GNU Lesser General Public License;openyabs.org
+ybsaf.jar;YaBS application framework (based on the Swing Application Framework);GNU Lesser General Public License;https://github.com/andreasweberd/openyabs/

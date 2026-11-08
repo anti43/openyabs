@@ -5,7 +5,7 @@ Release: 3
 License: GPL
 Group: Applications/Office
 BuildRoot: %{_builddir}/%{name}-root
-URL: http://openyabs.org
+URL: https://github.com/andreasweberd/openyabs/
 Vendor: anti43
 Packager: Andreas Weber
 Prefix: %{install_dir}

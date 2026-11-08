@@ -122,6 +122,7 @@ public final class Zoom {
             if (w.isDisplayable()) {
                 scale(w, ratio);
                 SwingUtilities.updateComponentTreeUI(w);
+                fitAll(w);
                 w.validate();
                 w.repaint();
             }
@@ -130,6 +131,74 @@ public final class Zoom {
             mpv5.YabsViewProxy.instance().addMessage("Zoom " + Math.round(next * 100) + " %");
         } catch (Exception e) {
             Log.Debug(Zoom.class, e);
+        }
+    }
+
+    private static boolean fitting;
+
+    /**
+     * Fields with a fixed size from the forms (dropdowns, date pickers, text
+     * fields, spinners) grow to fit their font when they are shown, so the
+     * text stays readable when zoomed
+     */
+    static synchronized void installFit() {
+        if (fitting) {
+            return;
+        }
+        fitting = true;
+        java.awt.Toolkit.getDefaultToolkit().addAWTEventListener(e -> {
+            if (e instanceof java.awt.event.HierarchyEvent) {
+                java.awt.event.HierarchyEvent h = (java.awt.event.HierarchyEvent) e;
+                if ((h.getChangeFlags() & java.awt.event.HierarchyEvent.SHOWING_CHANGED) != 0
+                        && h.getComponent() == h.getChanged() && h.getComponent().isShowing()) {
+                    fitAll(h.getComponent());
+                }
+            }
+        }, java.awt.AWTEvent.HIERARCHY_EVENT_MASK);
+    }
+
+    private static void fitAll(java.awt.Component c) {
+        if (c instanceof java.awt.Container && !(c instanceof javax.swing.JComboBox) && !(c instanceof mpv5.ui.beans.DateChooser)) {
+            for (java.awt.Component x : ((java.awt.Container) c).getComponents()) {
+                fitAll(x);
+            }
+        }
+        fit(c);
+    }
+
+    private static void fit(java.awt.Component c) {
+        if (!(c instanceof JComponent) || !c.isPreferredSizeSet()) {
+            return;
+        }
+        boolean field = c instanceof javax.swing.JComboBox || c instanceof mpv5.ui.beans.DateChooser
+                || c instanceof javax.swing.JSpinner
+                || (c instanceof javax.swing.JTextField && !(c.getParent() instanceof javax.swing.JSpinner.DefaultEditor))
+                || c.getClass().getName().startsWith("mpv5.ui.beans.Labeled");
+        if (!field) {
+            return;
+        }
+        JComponent j = (JComponent) c;
+        java.awt.Dimension set = j.getPreferredSize();
+        j.setPreferredSize(null);
+        java.awt.Dimension natural = j.getPreferredSize();
+        int h = Math.max(set.height, natural.height);
+        //a dropdown or date picker needs the room for its text and button
+        int w = j instanceof javax.swing.JTextField || j.getClass().getName().startsWith("mpv5.ui.beans.Labeled") ? set.width : Math.max(set.width, Math.min(natural.width, set.width * 2));
+        j.setPreferredSize(new java.awt.Dimension(w, h));
+        if (j.isMinimumSizeSet() && j.getMinimumSize().height < h) {
+            j.setMinimumSize(new java.awt.Dimension(j.getMinimumSize().width, h));
+        }
+        if (j.isMaximumSizeSet() && j.getMaximumSize().height < h) {
+            j.setMaximumSize(new java.awt.Dimension(j.getMaximumSize().width, h));
+        }
+        if (set.height != h || set.width != w) {
+            java.awt.Container p = j.getParent();
+            if (p != null) {
+                p.invalidate();
+                if (p instanceof JComponent) {
+                    ((JComponent) p).revalidate();
+                }
+            }
         }
     }
 
@@ -174,6 +243,7 @@ public final class Zoom {
      * @param root
      */
     public static void install(JRootPane root) {
+        installFit();
         javax.swing.InputMap in = root.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         int ctrl = InputEvent.CTRL_DOWN_MASK;
         for (int key : new int[]{KeyEvent.VK_PLUS, KeyEvent.VK_ADD, KeyEvent.VK_EQUALS}) {

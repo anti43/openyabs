@@ -105,7 +105,7 @@ public interface Constants {
     public static String SPLASH_IMAGE = "/images/background_f.png";
     public static String ABOUT_IMAGE = "/images/about1.png";
     public static String ICON = "/images/icon.png";
-    public static String WEBSITE = "http://openyabs.org";
+    public static String WEBSITE = "https://github.com/andreasweberd/openyabs/";
     public static final String[] CONTRIBUTORS = new String[]{
         "Andreas Weber",
         "Jan Hahnisch",

@@ -2373,7 +2373,6 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
         });
         helpmenu.add(jMenuItem10);
 
-        jMenuItem27.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
         jMenuItem27.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/16/info.png"))); // NOI18N
         jMenuItem27.setText(bundle.getString("MPView.jMenuItem27.text")); // NOI18N
         jMenuItem27.setName("jMenuItem27"); // NOI18N
@@ -2382,7 +2381,7 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
                 jMenuItem27ActionPerformed(evt);
             }
         });
-        helpmenu.add(jMenuItem27);
+        //the online help (F1) is gone: the old website does not exist anymore
 
         jMenuItem30.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/about.gif"))); // NOI18N
         jMenuItem30.setText(bundle.getString("MPView.jMenuItem30.text")); // NOI18N
@@ -2564,7 +2563,7 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
                 calculatorButtonActionPerformed(evt);
             }
         });
-        mainToolbar.add(calculatorButton);
+        //no calculator button in the toolbar anymore
 
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/22/printer1.png"))); // NOI18N
         jButton2.setText(bundle.getString("MPView.jButton2.text")); // NOI18N
