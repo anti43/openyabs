@@ -114,9 +114,13 @@ public final class Zoom {
         }
         LocalSettings.setProperty(SETTING, String.valueOf(next));
         applyStoredFont();
-        //open windows take the new fonts; views opened from now on fully
+        //open windows: the fonts of the look and feel are replaced by updateComponentTreeUI,
+        //fonts set by the program (headings, labels of the forms, the modern views) are
+        //scaled by the same factor, the row heights of tables too
+        float ratio = next / now;
         for (Window w : Window.getWindows()) {
             if (w.isDisplayable()) {
+                scale(w, ratio);
                 SwingUtilities.updateComponentTreeUI(w);
                 w.validate();
                 w.repaint();
@@ -126,6 +130,40 @@ public final class Zoom {
             mpv5.YabsViewProxy.instance().addMessage("Zoom " + Math.round(next * 100) + " %");
         } catch (Exception e) {
             Log.Debug(Zoom.class, e);
+        }
+    }
+
+    private static void scale(java.awt.Component c, float ratio) {
+        Font f = c.getFont();
+        //only fonts of the component itself, not inherited from the parent
+        if (f != null && c.isFontSet() && !(f instanceof javax.swing.plaf.UIResource)) {
+            c.setFont(f.deriveFont(Math.max(6f, Math.round(f.getSize2D() * ratio * 2f) / 2f)));
+        }
+        if (c instanceof JComponent && ((JComponent) c).getBorder() instanceof javax.swing.border.TitledBorder) {
+            javax.swing.border.TitledBorder b = (javax.swing.border.TitledBorder) ((JComponent) c).getBorder();
+            Font tf = b.getTitleFont();
+            if (tf != null && !(tf instanceof javax.swing.plaf.UIResource)) {
+                b.setTitleFont(tf.deriveFont(Math.max(6f, Math.round(tf.getSize2D() * ratio * 2f) / 2f)));
+            }
+        }
+        if (c instanceof javax.swing.JTable) {
+            javax.swing.JTable t = (javax.swing.JTable) c;
+            t.setRowHeight(Math.max(8, Math.round(t.getRowHeight() * ratio)));
+        } else if (c instanceof javax.swing.JTree) {
+            javax.swing.JTree t = (javax.swing.JTree) c;
+            if (t.getRowHeight() > 0) {
+                t.setRowHeight(Math.max(8, Math.round(t.getRowHeight() * ratio)));
+            }
+        }
+        if (c instanceof javax.swing.JMenu) {
+            for (java.awt.Component x : ((javax.swing.JMenu) c).getMenuComponents()) {
+                scale(x, ratio);
+            }
+        }
+        if (c instanceof java.awt.Container) {
+            for (java.awt.Component x : ((java.awt.Container) c).getComponents()) {
+                scale(x, ratio);
+            }
         }
     }
 
