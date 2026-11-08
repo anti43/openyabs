@@ -611,6 +611,7 @@ public class ZugpferdFile implements Waitable {
         provider.setProfile(Profiles.getByName(Format.XRECHNUNG.getProfile()));
         provider.generateXML(invoice);
         Files.write(target.toPath(), provider.getXML());
+        mpv5.handler.Activity.file(target, null);
     }
 
     /**
@@ -635,6 +636,7 @@ public class ZugpferdFile implements Waitable {
         } finally {
             exporter.close();
         }
+        mpv5.handler.Activity.file(target, null);
     }
 
     /**

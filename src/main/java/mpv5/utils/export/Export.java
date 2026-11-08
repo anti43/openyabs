@@ -625,8 +625,10 @@ public final class Export extends HashMap<String, Object> implements Waitable {
                 if (exceptions == null) {
                     if (object instanceof Export) {
                         FileDirectoryHandler.copyFile2(((Export) object).getTargetFile(), targetFile);
+                        mpv5.handler.Activity.file(targetFile, ((Export) object).getDob());
                     } else if (object instanceof File) {
                         FileDirectoryHandler.copyFile2((File) object, targetFile);
+                        mpv5.handler.Activity.file(targetFile, null);
                     } else {
                         Log.Debug(this, "Not a file: " + String.valueOf(object));
                     }
@@ -709,6 +711,9 @@ public final class Export extends HashMap<String, Object> implements Waitable {
             fromFile.setEmbedAllFonts(embedAllFonts);
             fromFile.run();//dont call this on another thread; Exportable is _NOT_ threadsafe
             fromFile.reset();
+        }
+        if (toFile.exists()) {
+            mpv5.handler.Activity.file(toFile, dob);
         }
     }
 

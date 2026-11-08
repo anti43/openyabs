@@ -188,6 +188,7 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
      * @param color
      */
     public static synchronized void addMessage(final String message, final Color color) {
+        mpv5.handler.Activity.message(message, Color.RED.equals(color) || Color.YELLOW.equals(color) || Color.ORANGE.equals(color));
         if (loaded && messagelabel != null) {//dont do anything if main frame is not constructed
             Runnable runnable = new Runnable() {
                 @Override
@@ -587,6 +588,12 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
         staterrorlabel = errorlabel;
         history = xhistory;
         history.setRenderer(new ComboBoxRendererForTooltip());
+        //the activity of the session (files, records, messages) instead of the message list
+        int at = java.util.Arrays.asList(statusPanel.getComponents()).indexOf(xhistory);
+        if (at >= 0) {
+            statusPanel.remove(at);
+            statusPanel.add(mpv5.ui.misc.ActivityButton.create(), at);
+        }
         modernizeFrame();
 
         favMenu = favouritesMenu;
