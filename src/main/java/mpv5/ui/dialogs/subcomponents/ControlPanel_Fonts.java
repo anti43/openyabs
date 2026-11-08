@@ -38,6 +38,11 @@ public class ControlPanel_Fonts extends javax.swing.JPanel implements ControlApp
      * @param font
      */
     public static void applyFont(Font font) {
+        //as a UI resource: then a later change (zoom, other font) replaces the font of
+        //existing components too (a plain Font counts as set by the program and stays)
+        if (!(font instanceof javax.swing.plaf.UIResource)) {
+            font = new javax.swing.plaf.FontUIResource(font);
+        }
         UIManager.put("Button.font", font);
         UIManager.put("ToggleButton.font", font);
         UIManager.put("RadioButton.font", font);
