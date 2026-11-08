@@ -36,6 +36,7 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
 
     public ControlPanel_External() {
         initComponents();
+        modernLayout();
         setValues(null);
         setVisible(true);
     }
@@ -402,8 +403,40 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
 
     @Override
     public Component getAndRemoveActionPanel() {
-        this.remove(jPanel1);
-        validate();
-        return jPanel1;
+        return actions;
+    }
+
+    private javax.swing.JPanel actions = new javax.swing.JPanel();
+
+    /**
+     * The parts of the form as cards, the buttons in the action bar
+     */
+    private void modernLayout() {
+        java.util.ResourceBundle b = mpv5.i18n.LanguageManager.getBundle();
+        removeAll();
+        setBorder(null);
+        setLayout(new java.awt.BorderLayout());
+        setOpaque(false);
+        javax.swing.JPanel searchRow = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
+        searchRow.setOpaque(false);
+        searchRow.add(jButton5);
+        for (javax.swing.JCheckBox c : new javax.swing.JCheckBox[]{auto, jCheckBox2, alternate, jCheckBox3}) {
+            c.setOpaque(false);
+        }
+        mpv5.ui.modern.Card office = new mpv5.ui.modern.Card(Messages.EXTERNAL_OFFICE.toString())
+                .addFull(labeledTextChooser2)
+                .addFull(searchRow)
+                .addFull(auto)
+                .addFull(jCheckBox2)
+                .addFull(alternate)
+                .addFull(mpv5.ui.modern.Applets.hint(Messages.EXTERNAL_OFFICE_HINT.toString()));
+        mpv5.ui.modern.Card remote = new mpv5.ui.modern.Card(Messages.EXTERNAL_REMOTE.toString())
+                .addFull(jCheckBox3)
+                .row(mpv5.ui.modern.Applets.field(labeledTextField1, 2), mpv5.ui.modern.Applets.field(labeledTextField2, 1))
+                .addFull(mpv5.ui.modern.Applets.hint(Messages.EXTERNAL_REMOTE_HINT.toString()));
+        add(mpv5.ui.modern.Applets.page(null, 380, office, remote), java.awt.BorderLayout.CENTER);
+        mpv5.ui.modern.PrimaryButton save = new mpv5.ui.modern.PrimaryButton(jButton1.getText(), "/images/16/filesave.png");
+        save.addActionListener(e -> jButton1.doClick());
+        actions = mpv5.ui.modern.Applets.actionBar(new javax.swing.JComponent[]{}, new javax.swing.JComponent[]{jButton3, jButton2, save});
     }
 }

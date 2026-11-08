@@ -34,6 +34,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
 
     public ControlPanel_Userproperties() {
         initComponents();
+        modernLayout();
         //modern views (see YabsViewProxy), the system property yabs.ui overrides it
         modernui.setText(Messages.MODERN_UI.toString());
         modernui.setName("modernui");
@@ -961,9 +962,22 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
 
     @Override
     public Component getAndRemoveActionPanel() {
-        this.remove(jPanel6);
-        validate();
-        return jPanel6;
+        return actions;
+    }
+
+    private javax.swing.JPanel actions = new javax.swing.JPanel();
+
+    /**
+     * The parts of the form as cards, the buttons in the action bar
+     */
+    private void modernLayout() {
+        java.util.ResourceBundle b = mpv5.i18n.LanguageManager.getBundle();
+        removeAll();
+        setBorder(null);
+        setLayout(new java.awt.BorderLayout());
+        setOpaque(false);
+        add(mpv5.ui.modern.Applets.page(null, 600, mpv5.ui.modern.Applets.cardsOf(jPanel1)), java.awt.BorderLayout.CENTER);
+        actions = mpv5.ui.modern.Applets.actionBar(new javax.swing.JComponent[]{}, mpv5.ui.modern.Applets.buttonsOf(jPanel6, b.getString("ControlPanel_Userproperties.jButton1.text")));
     }
 
     private void loadSettings() {

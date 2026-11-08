@@ -47,6 +47,7 @@ public class ControlPanel_AdvancedGlobalProperties extends javax.swing.JPanel im
     public ControlPanel_AdvancedGlobalProperties() {
         if (MPSecurityManager.checkAdminAccess()) {
             initComponents();
+        modernLayout();
             setData(GlobalSettings.getPropertyStore());
         }
     }
@@ -169,9 +170,29 @@ public class ControlPanel_AdvancedGlobalProperties extends javax.swing.JPanel im
 
     @Override
     public Component getAndRemoveActionPanel() {
-        remove(jPanel1);
-        validate();
-        return jPanel1;
+        return actions;
+    }
+
+    private javax.swing.JPanel actions = new javax.swing.JPanel();
+
+    /**
+     * The parts of the form as cards, the buttons in the action bar
+     */
+    private void modernLayout() {
+        java.util.ResourceBundle b = mpv5.i18n.LanguageManager.getBundle();
+        removeAll();
+        setBorder(null);
+        setLayout(new java.awt.BorderLayout());
+        setOpaque(false);
+        mpv5.ui.modern.ModernTheme.style(jTable1);
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(mpv5.ui.modern.ModernTheme.px(400), mpv5.ui.modern.ModernTheme.px(380)));
+        mpv5.ui.modern.Card card = new mpv5.ui.modern.Card(b.getString("ControlPanel_AdvancedGlobalProperties.border.title"))
+                .addFull(mpv5.ui.modern.Applets.hint(Messages.GLOBAL_HINT.toString()))
+                .addFull(jScrollPane1, 1);
+        add(mpv5.ui.modern.Applets.page(null, 300, card), java.awt.BorderLayout.CENTER);
+        mpv5.ui.modern.PrimaryButton save = new mpv5.ui.modern.PrimaryButton(jButton1.getText(), "/images/16/filesave.png");
+        save.addActionListener(e -> jButton1.doClick());
+        actions = mpv5.ui.modern.Applets.actionBar(new javax.swing.JComponent[]{}, new javax.swing.JComponent[]{jButton3, jButton2, save});
     }
 
     @Override

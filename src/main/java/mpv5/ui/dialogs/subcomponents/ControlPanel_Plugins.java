@@ -50,6 +50,7 @@ public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlA
 
     public ControlPanel_Plugins() {
         initComponents();
+        modernLayout();
         addPopupMenu();
         refresh();
         setVisible(true);
@@ -418,8 +419,26 @@ public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlA
     }
 
     public Component getAndRemoveActionPanel() {
-        this.remove(jPanel2);
-        validate();
-        return jPanel2;
+        return actions;
+    }
+
+    private javax.swing.JPanel actions = new javax.swing.JPanel();
+
+    /**
+     * The parts of the form as cards, the buttons in the action bar
+     */
+    private void modernLayout() {
+        java.util.ResourceBundle b = mpv5.i18n.LanguageManager.getBundle();
+        removeAll();
+        setBorder(null);
+        setLayout(new java.awt.BorderLayout());
+        setOpaque(false);
+        jLabel3.setVisible(false);
+        jLabel8.setVisible(false);
+        add(mpv5.ui.modern.Applets.page(null, 420,
+                mpv5.ui.modern.Applets.wrap(jLabel3.getText(), jPanel3), mpv5.ui.modern.Applets.wrap(jLabel8.getText(), jPanel5)), java.awt.BorderLayout.CENTER);
+        mpv5.ui.modern.PrimaryButton save = new mpv5.ui.modern.PrimaryButton(jButton1.getText(), "/images/16/filesave.png");
+        save.addActionListener(e -> jButton1.doClick());
+        actions = mpv5.ui.modern.Applets.actionBar(new javax.swing.JComponent[]{}, new javax.swing.JComponent[]{jButton2, save});
     }
 }

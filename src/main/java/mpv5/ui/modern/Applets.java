@@ -154,4 +154,82 @@ public final class Applets {
         p.add(right, BorderLayout.CENTER);
         return p;
     }
+
+    /**
+     * A panel of a classic form as a card: its border (a title) goes, the
+     * panels in it become transparent
+     *
+     * @param title the title of the card, null: the title of its border
+     * @param panel
+     * @return the card
+     */
+    public static Card wrap(String title, JComponent panel) {
+        if (title == null && panel.getBorder() instanceof javax.swing.border.TitledBorder) {
+            title = ((javax.swing.border.TitledBorder) panel.getBorder()).getTitle();
+        }
+        panel.setBorder(null);
+        transparent(panel);
+        return new Card(Card.clean(title)).addFull(panel);
+    }
+
+    private static void transparent(java.awt.Component c) {
+        if (c instanceof JPanel) {
+            ((JPanel) c).setOpaque(false);
+            for (java.awt.Component k : ((JPanel) c).getComponents()) {
+                transparent(k);
+            }
+        } else if (c instanceof javax.swing.JCheckBox || c instanceof javax.swing.JRadioButton) {
+            ((JComponent) c).setOpaque(false);
+        }
+    }
+
+    /**
+     * @param root a classic form
+     * @return a card for every titled panel of the form that is not inside
+     * another titled panel, in the order of the form
+     */
+    public static Card[] cardsOf(java.awt.Container root) {
+        java.util.List<JComponent> found = new java.util.ArrayList<JComponent>();
+        collectTitled(root, found);
+        Card[] cards = new Card[found.size()];
+        for (int i = 0; i < cards.length; i++) {
+            JComponent c = found.get(i);
+            if (c.getParent() != null) {
+                c.getParent().remove(c);
+            }
+            cards[i] = wrap(null, c);
+        }
+        return cards;
+    }
+
+    private static void collectTitled(java.awt.Container c, java.util.List<JComponent> found) {
+        for (java.awt.Component k : c.getComponents()) {
+            if (k instanceof JPanel && ((JPanel) k).getBorder() instanceof javax.swing.border.TitledBorder) {
+                found.add((JComponent) k);
+            } else if (k instanceof java.awt.Container) {
+                collectTitled((java.awt.Container) k, found);
+            }
+        }
+    }
+
+    /**
+     * @param bar the button bar of a classic form
+     * @return its buttons, the one with the text of save as the main action
+     */
+    public static JComponent[] buttonsOf(java.awt.Container bar, String saveText) {
+        java.util.List<JComponent> l = new java.util.ArrayList<JComponent>();
+        for (java.awt.Component k : bar.getComponents()) {
+            if (k instanceof JButton) {
+                final JButton b = (JButton) k;
+                if (saveText != null && saveText.equals(b.getText())) {
+                    PrimaryButton p = new PrimaryButton(b.getText(), "/images/16/filesave.png");
+                    p.addActionListener(e -> b.doClick());
+                    l.add(p);
+                } else {
+                    l.add(b);
+                }
+            }
+        }
+        return l.toArray(new JComponent[0]);
+    }
 }

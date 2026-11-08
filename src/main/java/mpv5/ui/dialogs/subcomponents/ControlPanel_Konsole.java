@@ -41,6 +41,7 @@ public class ControlPanel_Konsole extends javax.swing.JPanel implements ControlA
     public ControlPanel_Konsole() {
         if (MPSecurityManager.checkAdminAccess()) {
             initComponents();
+        modernLayout();
             new CopyPasteMenu(jTextArea1);
             setVisible(true);
         }
@@ -169,9 +170,32 @@ public class ControlPanel_Konsole extends javax.swing.JPanel implements ControlA
 
     @Override
     public Component getAndRemoveActionPanel() {
-        this.remove(jPanel2);
-        validate();
-        return jPanel2;
+        return actions;
+    }
+
+    private javax.swing.JPanel actions = new javax.swing.JPanel();
+
+    /**
+     * The parts of the form as cards, the buttons in the action bar
+     */
+    private void modernLayout() {
+        java.util.ResourceBundle b = mpv5.i18n.LanguageManager.getBundle();
+        removeAll();
+        setBorder(null);
+        setLayout(new java.awt.BorderLayout());
+        setOpaque(false);
+        jTextArea1.setFont(new java.awt.Font(java.awt.Font.MONOSPACED, java.awt.Font.PLAIN, mpv5.ui.modern.ModernTheme.baseFont().getSize()));
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(mpv5.ui.modern.ModernTheme.px(400), mpv5.ui.modern.ModernTheme.px(160)));
+        jScrollPane2.setPreferredSize(new java.awt.Dimension(mpv5.ui.modern.ModernTheme.px(400), mpv5.ui.modern.ModernTheme.px(220)));
+        mpv5.ui.modern.Card query = new mpv5.ui.modern.Card(Messages.KONSOLE_QUERY.toString())
+                .addFull(jScrollPane1, 1)
+                .addFull(mpv5.ui.modern.Applets.hint(Messages.KONSOLE_HINT.toString()));
+        mpv5.ui.modern.Card result = new mpv5.ui.modern.Card(jTextArea2.getText().replaceAll("\\s*:\\s*$", "")).addFull(jScrollPane2, 1);
+        jTextArea2.setText("");
+        add(mpv5.ui.modern.Applets.page(null, 560, query, result), java.awt.BorderLayout.CENTER);
+        mpv5.ui.modern.PrimaryButton run = new mpv5.ui.modern.PrimaryButton(jButton1.getText(), null);
+        run.addActionListener(e -> jButton1.doClick());
+        actions = mpv5.ui.modern.Applets.actionBar(new javax.swing.JComponent[]{jButton2}, new javax.swing.JComponent[]{jButton3, run});
     }
 
     private void process() {

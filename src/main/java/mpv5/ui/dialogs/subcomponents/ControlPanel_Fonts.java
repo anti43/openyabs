@@ -26,6 +26,7 @@ public class ControlPanel_Fonts extends javax.swing.JPanel implements ControlApp
 
     public ControlPanel_Fonts() {
         initComponents();
+        modernLayout();
 
         font.setText(LocalSettings.getProperty(LocalSettings.DEFAULT_FONT));
         jFontChooser1.setSelectedFont(Font.decode(LocalSettings.getProperty(LocalSettings.DEFAULT_FONT)));
@@ -249,7 +250,30 @@ public class ControlPanel_Fonts extends javax.swing.JPanel implements ControlApp
 
 
     public Component getAndRemoveActionPanel() {
-         this.remove(jPanel6);validate();
-        return jPanel6;
+        return actions;
+    }
+
+    private javax.swing.JPanel actions = new javax.swing.JPanel();
+
+    /**
+     * The parts of the form as cards, the buttons in the action bar
+     */
+    private void modernLayout() {
+        java.util.ResourceBundle b = mpv5.i18n.LanguageManager.getBundle();
+        removeAll();
+        setBorder(null);
+        setLayout(new java.awt.BorderLayout());
+        setOpaque(false);
+        font.setEditable(false);
+        jFontChooser1.setPreferredSize(new java.awt.Dimension(mpv5.ui.modern.ModernTheme.px(420), mpv5.ui.modern.ModernTheme.px(320)));
+        jFontChooser1.setMinimumSize(new java.awt.Dimension(mpv5.ui.modern.ModernTheme.px(280), mpv5.ui.modern.ModernTheme.px(200)));
+        mpv5.ui.modern.Card card = new mpv5.ui.modern.Card(b.getString("ControlPanel_Fonts.jPanel1.border.title"))
+                .row(mpv5.ui.modern.Card.field(jLabel2.getText(), mpv5.ui.modern.ModernTheme.roomy(font)))
+                .addFull(mpv5.ui.modern.Applets.hint(jLabel1.getText() + " \u00b7 " + Messages.FONTS_HINT))
+                .addFull(jFontChooser1, 1);
+        add(mpv5.ui.modern.Applets.page(null, 300, card), java.awt.BorderLayout.CENTER);
+        mpv5.ui.modern.PrimaryButton save = new mpv5.ui.modern.PrimaryButton(jButton1.getText(), "/images/16/filesave.png");
+        save.addActionListener(e -> jButton1.doClick());
+        actions = mpv5.ui.modern.Applets.actionBar(new javax.swing.JComponent[]{}, new javax.swing.JComponent[]{jButton2, save});
     }
 }
