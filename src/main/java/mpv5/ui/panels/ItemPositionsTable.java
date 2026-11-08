@@ -569,7 +569,17 @@ public class ItemPositionsTable extends JPanel {
                     null,
                     e -> getModel().addRow(1),
                     e -> removeSelected()});
+        //positions are the main content: larger than the default table font
+        Font font = ModernTheme.font(2, Font.PLAIN);
+        itemtable.setFont(font);
+        for (int i = 0; i < itemtable.getColumnModel().getColumnCount(); i++) {
+            javax.swing.table.TableCellEditor ed = itemtable.getColumnModel().getColumn(i).getCellEditor();
+            if (ed instanceof javax.swing.DefaultCellEditor) {
+                ((javax.swing.DefaultCellEditor) ed).getComponent().setFont(font);
+            }
+        }
         ModernTheme.style(itemtable);
+        itemtable.getTableHeader().setFont(ModernTheme.font(1, Font.BOLD));
     }
 
     private static BigDecimal cell(Map<Integer, BigDecimal> values, int column) {

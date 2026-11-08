@@ -369,7 +369,9 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
         center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
         displayname.setFont(ModernTheme.font(8, Font.BOLD));
         displayname.setForeground(ModernTheme.foreground());
-        meta.setFont(ModernTheme.font(-1, Font.PLAIN));
+        //contact / date / user in the title line, readable (there is room for it)
+        meta.setFont(ModernTheme.font(3, Font.PLAIN));
+        meta.setBorder(BorderFactory.createEmptyBorder(0, ModernTheme.px(20), 0, 0));
         meta.setForeground(ModernTheme.muted());
         JPanel chips = new JPanel(new FlowLayout(FlowLayout.LEFT, ModernTheme.px(6), 0));
         chips.setOpaque(false);
@@ -381,10 +383,9 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
         displayname.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, ModernTheme.px(14)));
         titleRow.add(displayname);
         titleRow.add(chips);
+        titleRow.add(meta);
         titleRow.setAlignmentX(LEFT_ALIGNMENT);
-        meta.setAlignmentX(LEFT_ALIGNMENT);
         center.add(titleRow);
-        center.add(meta);
         header.add(center, BorderLayout.CENTER);
         return header;
     }

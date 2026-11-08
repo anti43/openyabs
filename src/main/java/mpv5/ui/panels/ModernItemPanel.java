@@ -352,16 +352,17 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         displayname.setFont(ModernTheme.font(8, Font.BOLD));
         displayname.setForeground(ModernTheme.foreground());
         displayname.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, ModernTheme.px(14)));
-        meta.setFont(ModernTheme.font(-1, Font.PLAIN));
+        //contact / date / user in the title line, readable (there is room for it)
+        meta.setFont(ModernTheme.font(3, Font.PLAIN));
+        meta.setBorder(BorderFactory.createEmptyBorder(0, ModernTheme.px(20), 0, 0));
         meta.setForeground(ModernTheme.muted());
         JPanel titleRow = new JPanel(new WrapLayout(FlowLayout.LEFT, 0, ModernTheme.px(2)));
         titleRow.setOpaque(false);
         titleRow.add(displayname);
         titleRow.add(statusPill);
+        titleRow.add(meta);
         titleRow.setAlignmentX(LEFT_ALIGNMENT);
-        meta.setAlignmentX(LEFT_ALIGNMENT);
         center.add(titleRow);
-        center.add(meta);
         header.add(center, BorderLayout.CENTER);
         return header;
     }
