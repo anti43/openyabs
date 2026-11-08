@@ -751,7 +751,10 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
         String fs = System.getProperty("yabs_firststart");
         if (fs != null) {
             wizard_FirstSettings1.build(getIdentifierFrame());
-        }else{
+        } else if (System.getProperty("yabs_welcome") != null) {
+            System.clearProperty("yabs_welcome");
+            Notificator.raiseNotification(Messages.FIRSTSTART_WELCOME, false);
+        } else {
              if(Constants.VERSION.equals(System.getProperty("yabsFirstStartVersion"))){
                  try {
                      if (LanguageManager.checkAndReplaceLangFiles()) {
