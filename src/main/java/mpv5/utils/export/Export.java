@@ -130,8 +130,23 @@ public final class Export extends HashMap<String, Object> implements Waitable {
                             }
                             pr.setSubject(VariablesHandler.parse(m.__getCname(), dataOwner, hm1));
                             pr.setText(VariablesHandler.parse(m.__getDescription(), dataOwner, hm1));
-                            if(log==null)
-                                new Job(attachments, (Waiter) pr).execute();
+                            if(log==null) {
+                                //single mail: shown before it is sent (recipient, subject,
+                                //text, the attached files); nothing goes out without "Send"
+                                final SimpleMail mail = pr;
+                                new Job(attachments, new Waiter() {
+                                    @Override
+                                    public void set(Object object, Exception exception) throws Exception {
+                                        if (exception != null) {
+                                            mail.set(object, exception);
+                                        } else if (mpv5.ui.dialogs.MailPreviewDialog.confirm(mail, attachmentFiles(object))) {
+                                            mail.set(object, null);
+                                        } else {
+                                            mpv5.YabsViewProxy.instance().addMessage(Messages.MAIL_PREVIEW_CANCELED.toString());
+                                        }
+                                    }
+                                }).execute();
+                            }
                             else{
                                 new Job(attachments, (Waiter) pr).executeSync();
                             }
@@ -163,6 +178,21 @@ public final class Export extends HashMap<String, Object> implements Waitable {
         } finally {
             mpv5.YabsViewProxy.instance().setWaiting(false);
         }
+    }
+
+    /**
+     * @return the files a finished attachment job produced
+     */
+    static List<File> attachmentFiles(Object object) {
+        List<File> files = new java.util.ArrayList<File>();
+        if (object instanceof mpv5.mail.MailAttachments) {
+            files.addAll(((mpv5.mail.MailAttachments) object).getAttachments());
+        } else if (object instanceof Export) {
+            files.add(((Export) object).getTargetFile());
+        } else if (object instanceof File) {
+            files.add((File) object);
+        }
+        return files;
     }
 
     /**

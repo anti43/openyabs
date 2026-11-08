@@ -42,14 +42,7 @@ public class ResourceBundleUtf8 {
             for (Enumeration<String> keys = pBundle.getKeys(); keys.hasMoreElements();) {
                 String key = keys.nextElement();
                 String valueRaw = pBundle.getString(key);
-                String value = null;
-
-                try {
-                    value = new String(valueRaw.getBytes("ISO-8859-1"), "UTF-8");
-
-                } catch (UnsupportedEncodingException e) {
-                    Log.Debug(this, "could not load UTF- property resource bundle [" + pBundle + "]");
-                }
+                String value = repair(valueRaw);
 
                 if (pValueByKey.put(key, value) != null) {
                     Log.Debug(this, "duplicate key [" + key + "] in UTF- property resource bundle [" + pBundle + "]");
@@ -72,6 +65,42 @@ public class ResourceBundleUtf8 {
                     return pKey;
                 }
             }
+        }
+    }
+
+    /**
+     * Repairs a text whose UTF-8 bytes were read as ISO-8859-1 ("ZurÃ¼ck" ->
+     * "Zur\u00fcck"; old language files and Java 8 read them so). A text that is
+     * already correct ("gem\u00e4\u00df") stays as it is: since Java 9 property
+     * files are read as UTF-8, and decoding every text again broke the umlauts.
+     *
+     * @param raw the text as read
+     * @return the repaired text
+     */
+    public static String repair(String raw) {
+        if (raw == null) {
+            return null;
+        }
+        boolean candidate = false;
+        for (int i = 0; i < raw.length(); i++) {
+            char c = raw.charAt(i);
+            if (c > 0xFF) {
+                return raw;//real characters beyond Latin-1: not misread bytes
+            }
+            if (c >= 0x80) {
+                candidate = true;
+            }
+        }
+        if (!candidate) {
+            return raw;
+        }
+        java.nio.charset.CharsetDecoder d = java.nio.charset.StandardCharsets.UTF_8.newDecoder()
+                .onMalformedInput(java.nio.charset.CodingErrorAction.REPORT)
+                .onUnmappableCharacter(java.nio.charset.CodingErrorAction.REPORT);
+        try {
+            return d.decode(java.nio.ByteBuffer.wrap(raw.getBytes(java.nio.charset.StandardCharsets.ISO_8859_1))).toString();
+        } catch (java.nio.charset.CharacterCodingException e) {
+            return raw;//not UTF-8 bytes: the text is correct
         }
     }
 

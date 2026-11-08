@@ -657,6 +657,13 @@ public class SimpleMail implements Waiter {
         cc.add(ccc);
     }
 
+    /**
+     * @return the CC recipient(s) as set, may be null
+     */
+    public String getCCAddress() {
+        return ccAddress;
+    }
+
     public void setCCAddress(String cc) {
         this.ccAddress = cc;
         split(cc, this.cc);
