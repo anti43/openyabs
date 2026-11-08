@@ -406,32 +406,36 @@ public class ModernContactPanel extends ModernDataPanel {
     private JComponent createHeader() {
         JPanel header = new JPanel(new BorderLayout(ModernTheme.px(14), 0));
         header.setOpaque(false);
-        header.setBorder(ModernTheme.padding(12, 16));
+        header.setBorder(ModernTheme.padding(8, 16));
 
         header.add(avatar, BorderLayout.WEST);
 
         JPanel center = new JPanel();
         center.setOpaque(false);
         center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
-        displayname.setFont(ModernTheme.font(8, Font.BOLD));
+        //the main information of the view: large
+        displayname.setFont(ModernTheme.font(13, Font.BOLD));
         displayname.setForeground(ModernTheme.foreground());
-        meta.setFont(ModernTheme.font(-1, Font.PLAIN));
+        //contact / date / user in the title line, readable (there is room for it)
+        meta.setFont(ModernTheme.font(5, Font.PLAIN));
+        meta.setBorder(BorderFactory.createEmptyBorder(0, ModernTheme.px(20), 0, 0));
         meta.setForeground(ModernTheme.muted());
         //the roles; the actions are in the command bar
-        JPanel chips = new JPanel(new WrapLayout(FlowLayout.LEFT, ModernTheme.px(6), ModernTheme.px(4)));
+        JPanel chips = new JPanel(new FlowLayout(FlowLayout.LEFT, ModernTheme.px(6), 0));
         chips.setOpaque(false);
         chips.add(company);
         chips.add(customer);
         chips.add(supplier);
         chips.add(manufacturer);
-        displayname.setAlignmentX(LEFT_ALIGNMENT);
-        meta.setAlignmentX(LEFT_ALIGNMENT);
-        chips.setAlignmentX(LEFT_ALIGNMENT);
-        center.add(displayname);
-        center.add(Box.createVerticalStrut(ModernTheme.px(2)));
-        center.add(meta);
-        center.add(Box.createVerticalStrut(ModernTheme.px(4)));
-        center.add(chips);
+        //name and the buttons in one line (the buttons go below the name if there is no room)
+        JPanel titleRow = new JPanel(new WrapLayout(FlowLayout.LEFT, 0, ModernTheme.px(2)));
+        titleRow.setOpaque(false);
+        displayname.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, ModernTheme.px(14)));
+        titleRow.add(displayname);
+        titleRow.add(chips);
+        titleRow.add(meta);
+        titleRow.setAlignmentX(LEFT_ALIGNMENT);
+        center.add(titleRow);
         header.add(center, BorderLayout.CENTER);
         return header;
     }
@@ -647,7 +651,8 @@ public class ModernContactPanel extends ModernDataPanel {
         boolean isCustomer = customer.isSelected();
         boolean hasProducts = supplier.isSelected() || manufacturer.isSelected();
         for (Map.Entry<Related, ChipToggle> e : relatedButtons.entrySet()) {
-            e.getValue().setVisible(e.getKey().isForCustomers() ? isCustomer : hasProducts);
+            e.getValue().setVisible((e.getKey().isForCustomers() ? isCustomer : hasProducts)
+                    && (e.getKey() != Related.ACTIVITIES || mpv5.globals.Features.activityLists()));
         }
         newOffer.setVisible(isCustomer);
         newOrder.setVisible(isCustomer);

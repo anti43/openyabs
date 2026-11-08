@@ -30,7 +30,17 @@ public interface Constants {
      *
      * Full Version number
      */
-    public static final String VERSION = "Yabs-1.3.2";//ATTENTION: when changing this, add language and template file to resources/extra folder for the new version!
+    public static final String VERSION = "Yabs-" + VersionInfo.number();
+    /**
+     * The version number only, e.g. 2.0.123 (2.0.&lt;build number&gt;)
+     */
+    public static final String VERSION_NUMBER = VersionInfo.number();
+    /**
+     * Name part of the language and template files in resources/extra
+     * (DE-Yabs-2.0.properties, DE-Yabs-2.0.odt). ATTENTION: when changing
+     * this, rename those files!
+     */
+    public static final String EXTRA_FILES_VERSION = "Yabs-" + VersionInfo.LINE;
 
     /**
      * Supported languages build-in

@@ -1371,27 +1371,18 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
                     || dbo.getContext().equals(Context.getOrder())) {
 
                 if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "pasten")) {
-                    ProductOrderSubItem s = new ProductOrderSubItem();
-                    s.setQuantityvalue(BigDecimal.ONE);
-                    s.setInternalvalue(((Item) dbo).__getNetvalue());
-                    s.setExternalvalue(((Item) dbo).__getNetvalue());
-                    s.setTotalnetvalue(((Item) dbo).__getNetvalue());
-                    s.setTotalbrutvalue(((Item) dbo).__getNetvalue().add(((Item) dbo).__getTaxvalue()));
-                    if (s.getTotalnetvalue().doubleValue() > 0d) {
-                        BigDecimal tp = s.getTotalbrutvalue().subtract(s.getTotalnetvalue()).multiply(Constants.BD100).divide(s.getTotalnetvalue(), 9, RoundingMode.HALF_UP);
-                        if (tpvs == null) {
-                            tpvs = tp;
-                        }
-                        if (tpvs.equals(tpvs)) {
-                            s.setTaxpercentvalue(tp);
-                        } else {
-                            Popup.warn(Messages.TAXES_NOT_EQUAL);
-                            break;
-                        }
+                    //the document as position(s): one per VAT rate, net after discount
+                    String text = Messages.GOOSE1 + " " + ((Item) dbo).__getCnumber() + " " + Messages.GOOSE2 + " " + DateConverter.getDefDateString(dbo.__getDateadded());
+                    for (SubItem p : mpv5.handler.ItemService.asPositions((Item) dbo, text)) {
+                        ProductOrderSubItem s = new ProductOrderSubItem();
+                        s.setQuantityvalue(BigDecimal.ONE);
+                        s.setInternalvalue(p.__getExternalvalue());
+                        s.setExternalvalue(p.__getExternalvalue());
+                        s.setTaxpercentvalue(p.__getTaxpercentvalue());
+                        s.setCname(dbo.__getCname());
+                        s.setDescription(p.__getDescription());
+                        ((MPTableModel) itemtable.getModel()).addRow(s.getRowData(((MPTableModel) itemtable.getModel()).getLastValidRow(new int[]{4}) + 1));
                     }
-                    s.setCname(dbo.__getCname());
-                    s.setDescription(Messages.GOOSE1 + " " + ((Item) dbo).__getCnumber() + " " + Messages.GOOSE2 + " " + DateConverter.getDefDateString(dbo.__getDateadded()));
-                    ((MPTableModel) itemtable.getModel()).addRow(s.getRowData(((MPTableModel) itemtable.getModel()).getLastValidRow(new int[]{4}) + 1));
                     ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
                 } else {
                     ProductOrder o = new ProductOrder();
@@ -1403,25 +1394,29 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
                     o.setDatetodo(new Date());
                     o.setDateend(new Date());
 
+                    //the positions as they are (quantity, unit, price, VAT rate, product)
                     SubItem[] sitems = ((Item) dbo).getSubitems();
                     ProductOrderSubItem[] subs = new ProductOrderSubItem[sitems.length];
                     for (int i = 0; i < sitems.length; i++) {
                         SubItem si = sitems[i];
                         ProductOrderSubItem psi = new ProductOrderSubItem();
-                        psi.setQuantityvalue(BigDecimal.ONE);
+                        psi.setQuantityvalue(si.__getQuantityvalue());
+                        psi.setInttype(si.getInttype());
+                        psi.setMeasure(si.__getMeasure());
                         psi.setInternalvalue(si.__getInternalvalue());
                         psi.setExternalvalue(si.__getExternalvalue());
+                        psi.setTaxpercentvalue(si.__getTaxpercentvalue());
                         psi.setTotalnetvalue(si.__getTotalnetvalue());
-                        psi.setTotalbrutvalue(((Item) dbo).__getNetvalue().add(((Item) dbo).__getTaxvalue()));
-                        if (psi.getTotalnetvalue().doubleValue() > 0d) {
-                            BigDecimal tp = psi.getTotalbrutvalue().subtract(psi.getTotalnetvalue()).multiply(Constants.BD100).divide(psi.getTotalnetvalue(), 9, RoundingMode.HALF_UP);
-                            psi.setTaxpercentvalue(tp);
-                        }
+                        psi.setTotalbrutvalue(si.__getTotalbrutvalue());
                         psi.setCname(si.__getCname());
                         psi.setDescription(si.__getDescription());
+                        psi.setLinkurl(si.__getLinkurl());
                         psi.setCountvalue(si.__getCountvalue());
-                        psi.setOrdernr(si.__getCountvalue().intValue());
-                        subs[i]=psi;
+                        psi.setOrdernr(i);
+                        if (si.getProduct() != null) {
+                            psi.setOriginalproduct(si.getProduct());
+                        }
+                        subs[i] = psi;
                     }
                     
                     setDataOwner(o, true);

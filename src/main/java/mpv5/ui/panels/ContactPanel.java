@@ -2108,7 +2108,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         button_offers.setVisible(b);
         button_bills.setVisible(b);
         button_orders.setVisible(b);
-        button_activitylists.setVisible(b);
+        button_activitylists.setVisible(b && mpv5.globals.Features.activityLists());
         button_credits.setVisible(b);
 
         jToolBar1.revalidate();

@@ -409,7 +409,9 @@ public class LanguageManager {
                     int id = QueryHandler.instanceOf().clone(Context.getLanguage()).insert(t, "Imported language: " + langname);
                     if (id > 0) {
                         mpv5.YabsViewProxy.instance().addMessage(langname + Messages.INSERTED.toString());
-                        Popup.notice(langname + Messages.INSERTED.toString());
+                        if (!quietImport) {
+                            Popup.notice(langname + Messages.INSERTED.toString());
+                        }
                         cachelanguage(langid, getBundle(langid));
                     } else {
                         mpv5.YabsViewProxy.instance().addMessage(Messages.ERROR_OCCURED.toString());
@@ -555,10 +557,11 @@ public class LanguageManager {
                         }
                     }
                     if (!found) {
-                        failed = true;
+                        //only a check: a file without the keys of a newer version (e.g. the
+                        //cached copy after an update) is completed from the database copy;
+                        //it must not disable all languages ("failed") for the session
                         Log.Debug(LanguageManager.class, "Key '" + string + "' not found in file " + file);
                         if (!popupOnError) {
-                            mpv5.YabsViewProxy.instance().addMessage(Messages.ERROR_OCCURED.toString());
                             return false;
                         } else {
                             try {
@@ -691,7 +694,8 @@ public class LanguageManager {
             try {
                 ResourceBundle bundle = ResourceBundleUtf8.getBundle(lastfile.getName().substring(0, lastfile.getName().lastIndexOf(".")));
                 if (lastfile.canRead()) {
-                    defLanguageBundle = bundle;
+                    //only cached for its user: the built-in English stays the default
+                    //(it was replaced here, so English could not be chosen again)
                     cachelanguage(lastfile.getName().substring(0, lastfile.getName().lastIndexOf(".")), bundle);
                 }
             } catch (Exception e) {
@@ -761,7 +765,7 @@ public class LanguageManager {
     }
 
     public static void importFromJar(String langid) throws Exception {
-        InputStream s = Main.class.getResourceAsStream("/extra/" + langid + "-" + Constants.VERSION + ".properties");
+        InputStream s = Main.class.getResourceAsStream("/extra/" + langid + "-" + Constants.EXTRA_FILES_VERSION + ".properties");
         File f = FileDirectoryHandler.getTempFile(langid.toLowerCase() + "-" + Constants.VERSION, "properties");
         FileDirectoryHandler.copyFile(s, f);
         Log.Debug(Main.class, "Importing language from: " + f.getCanonicalPath());
@@ -783,5 +787,118 @@ public class LanguageManager {
             }
         }
         return result;
+    }
+
+    /**
+     * @return true if the system or the user's locale is German (de, de_DE,
+     * de_AT, de_CH, ...)
+     */
+    public static boolean isGermanUser(User u) {
+        String system = System.getProperty("user.language");
+        String locale = u == null ? null : u.__getLocale();
+        return (system != null && system.toLowerCase().startsWith("de"))
+                || (locale != null && locale.toLowerCase().startsWith("de"));
+    }
+
+    /**
+     * Imports the German language and switches the user to it, once, if the
+     * system or the user's locale is German and the user still has the
+     * built-in English. A user who switches back to English keeps it.
+     *
+     * @param u the user logging in
+     * @return true if imported
+     */
+    private static volatile boolean quietImport;
+
+    public static boolean importGermanIfGerman(User u) {
+        try {
+            if (System.getProperty("yabs_firststart") != null) {
+                //the first-start wizard asks (preselected for German systems)
+                return false;
+            }
+            if (u.getProperties().getProperty("org.openyabs.languageproperty", "autoimportde")) {
+                return false;
+            }
+            String lang = u.__getLanguage();
+            boolean builtin = lang == null || lang.trim().isEmpty() || lang.startsWith("buildin");
+            if (!builtin) {
+                //a language of the user's own (German or another one)
+                u.getProperties().changeProperty("org.openyabs.languageproperty", "autoimportde", true);
+                u.saveProperties();
+                return false;
+            }
+            if (!isGermanUser(u)) {
+                return false;
+            }
+            //at login: no confirmation dialog
+            quietImport = true;
+            try {
+                importFromJar("DE");
+            } finally {
+                quietImport = false;
+            }
+            u.getProperties().changeProperty("org.openyabs.languageproperty", "autoimportde", true);
+            u.saveProperties();
+            Log.Debug(LanguageManager.class, "German language imported automatically for " + u);
+            return true;
+        } catch (Exception e) {
+            Log.Debug(LanguageManager.class, e);
+            return false;
+        }
+    }
+
+    /**
+     * Languages to choose from: built-in English, German (imported if needed)
+     * and all other imported languages; the newest import of German only
+     *
+     * @return {id or "import:DE", name}; the id of German is null if it is not
+     * imported yet
+     */
+    public static List<String[]> choices() {
+        List<String[]> l = new ArrayList<String[]>();
+        l.add(new String[]{"buildin_en", "English"});
+        String german = null;
+        List<String[]> others = new ArrayList<String[]>();
+        try {
+            Object[][] data = QueryHandler.instanceOf().clone(Context.getLanguage()).select("cname, longname", (String[]) null);
+            for (Object[] d : data == null ? new Object[0][] : data) {
+                String id = String.valueOf(d[0]);
+                String name = String.valueOf(d[1]);
+                if (name.toLowerCase().startsWith("de-") || name.toLowerCase().startsWith("language-de")) {
+                    german = id;//the last one is the newest
+                } else {
+                    others.add(new String[]{id, name});
+                }
+            }
+        } catch (Exception e) {
+            Log.Debug(LanguageManager.class, e);
+        }
+        l.add(new String[]{german == null ? "import:DE" : german, "Deutsch"});
+        l.addAll(others);
+        return l;
+    }
+
+    /**
+     * Switches the current user to the language (imports German first if
+     * needed); takes effect at the next start
+     *
+     * @param id an id of {@link #choices()}
+     */
+    public static void switchTo(String id) throws Exception {
+        User u = User.getCurrentUser();
+        if ("import:DE".equals(id)) {
+            quietImport = true;
+            try {
+                importFromJar("DE");
+            } finally {
+                quietImport = false;
+            }
+        } else {
+            u.setLanguage(id);
+            u.save(true);
+        }
+        //chosen by the user: no automatic switch to German any more
+        u.getProperties().changeProperty("org.openyabs.languageproperty", "autoimportde", true);
+        u.saveProperties();
     }
 }

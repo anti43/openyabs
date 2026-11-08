@@ -605,17 +605,50 @@ public class Product extends DatabaseObject implements Formattable, Templateable
       return Collections.emptyList();
    }
 
+   /**
+    * The staggered price for the given quantity: the price of the tier with
+    * the highest minimum quantity the amount reaches (minimum included), else
+    * the normal price
+    *
+    * @param amount the quantity
+    * @return the net price for one unit
+    */
    public BigDecimal findPriceFor(double amount) {
-      BigDecimal res = BigDecimal.ZERO;
-      BigDecimal am = BigDecimal.valueOf(amount);
-      List<ProductPrice> pp = findProductPrices();
-      Collections.sort(pp);
-      for (ProductPrice p : pp) {
-         if (am.compareTo(p.getMincountvalue()) > 0) {
-            res = p.getExternalnetvalue();
+      return findPriceFor(BigDecimal.valueOf(amount));
+   }
+
+   /**
+    * @param amount the quantity
+    * @return the net price for one unit, see {@link #findPriceFor(double)}
+    */
+   public BigDecimal findPriceFor(BigDecimal amount) {
+      List<BigDecimal[]> tiers = new java.util.ArrayList<BigDecimal[]>();
+      for (ProductPrice p : findProductPrices()) {
+         tiers.add(new BigDecimal[]{p.getMincountvalue(), p.getExternalnetvalue()});
+      }
+      return priceFor(tiers, amount, __getExternalnetvalue());
+   }
+
+   /**
+    * @param tiers {minimum quantity, price} in any order
+    * @param amount the quantity
+    * @param normalPrice the price without tier
+    * @return the price of the tier with the highest minimum the amount
+    * reaches (minimum included), else the normal price
+    */
+   public static BigDecimal priceFor(List<BigDecimal[]> tiers, BigDecimal amount, BigDecimal normalPrice) {
+      BigDecimal am = amount == null ? BigDecimal.ONE : amount.abs();
+      BigDecimal[] best = null;
+      for (BigDecimal[] t : tiers) {
+         if (t[0] == null || t[1] == null || am.compareTo(t[0]) < 0) {
+            continue;
+         }
+         //tiers are stored in any order: the highest reached minimum wins
+         if (best == null || t[0].compareTo(best[0]) > 0) {
+            best = t;
          }
       }
-      return res.compareTo(BigDecimal.ZERO) == 0 ? __getExternalnetvalue() : res;
+      return best != null ? best[1] : normalPrice;
    }
 
    @Persistable(false)

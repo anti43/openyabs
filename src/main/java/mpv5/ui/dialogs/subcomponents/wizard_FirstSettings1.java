@@ -136,6 +136,13 @@ public class wizard_FirstSettings1 extends javax.swing.JPanel implements Wizarda
             Log.Debug(wizard_FirstSettings1.class, ex);
         }
         
+        //decided here: no automatic import of German at a later login
+        try {
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.languageproperty", "autoimportde", true);
+            mpv5.db.objects.User.getCurrentUser().saveProperties();
+        } catch (Exception ex) {
+            Log.Debug(wizard_FirstSettings1.class, ex);
+        }
         if (jCheckBox1.isSelected()) {
             try {
                 importInitialLanguage("DE");
@@ -157,7 +164,8 @@ public class wizard_FirstSettings1 extends javax.swing.JPanel implements Wizarda
     }
 
     public void load() {
-        jCheckBox1.setSelected(true);
+        //German language and template: preselected on German systems
+        jCheckBox1.setSelected(mpv5.i18n.LanguageManager.isGermanUser(null));
     }
 
     private void setModels() {
@@ -169,7 +177,7 @@ public class wizard_FirstSettings1 extends javax.swing.JPanel implements Wizarda
 
     public void importInitialTemplate() throws Exception {
 
-        InputStream s = Main.class.getResourceAsStream("/extra/DE-" + Constants.VERSION + ".odt");
+        InputStream s = Main.class.getResourceAsStream("/extra/DE-" + Constants.EXTRA_FILES_VERSION + ".odt");
         final File f = FileDirectoryHandler.getTempFile("template-de", "odt");
         FileDirectoryHandler.copyFile(s, f);
         Log.Debug(Main.class, "Importing language from: " + f.getCanonicalPath());

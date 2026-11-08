@@ -61,6 +61,8 @@ public class ControlPanel_Fonts extends javax.swing.JPanel implements ControlApp
         UIManager.put("Table.font", font);
         UIManager.put("TableHeader.font", font);
         UIManager.put("TextField.font", font);
+        UIManager.put("FormattedTextField.font", font);
+        UIManager.put("Spinner.font", font);
         UIManager.put("PasswordField.font", font);
         UIManager.put("TextArea.font", font);
         UIManager.put("TextPane.font", font);
@@ -235,7 +237,8 @@ public class ControlPanel_Fonts extends javax.swing.JPanel implements ControlApp
         jFontChooser1.setSelectedFont(Font.decode(LocalSettings.getProperty(LocalSettings.DEFAULT_FONT)));
         font.setText(getFontString(jFontChooser1.getSelectedFont()));
 
-        applyFont(Font.decode(getFontString(font.getText())));
+        //with the zoom factor (Ctrl+Plus / Ctrl+Minus)
+        mpv5.ui.modern.Zoom.applyFont(Font.decode(getFontString(font.getText())));
 
     }
 

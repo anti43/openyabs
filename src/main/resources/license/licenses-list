@@ -1,47 +1,143 @@
+AbsoluteLayout.jar;NetBeans AbsoluteLayout (classic forms);Apache License Version 2.0;Apache NetBeans
+activation.jar;JavaBeans Activation Framework;CDDL 1.0;Sun Microsystems Inc.
+angus-activation-2.0.0.jar;Eclipse Angus Activation;Eclipse Distribution License 1.0 (BSD);Eclipse Foundation
+barbecue-1.5-beta1.jar;Barbecue barcode library;BSD License;Barbecue project
+batik-anim-1.19.jar;Apache Batik SVG toolkit (anim);Apache License Version 2.0;The Apache Software Foundation
+batik-awt-util-1.19.jar;Apache Batik SVG toolkit (awt-util);Apache License Version 2.0;The Apache Software Foundation
+batik-bridge-1.19.jar;Apache Batik SVG toolkit (bridge);Apache License Version 2.0;The Apache Software Foundation
+batik-codec-1.19.jar;Apache Batik SVG toolkit (codec);Apache License Version 2.0;The Apache Software Foundation
+batik-constants-1.19.jar;Apache Batik SVG toolkit (constants);Apache License Version 2.0;The Apache Software Foundation
+batik-css-1.19.jar;Apache Batik SVG toolkit (css);Apache License Version 2.0;The Apache Software Foundation
+batik-dom-1.19.jar;Apache Batik SVG toolkit (dom);Apache License Version 2.0;The Apache Software Foundation
+batik-ext-1.19.jar;Apache Batik SVG toolkit (ext);Apache License Version 2.0;The Apache Software Foundation
+batik-extension-1.19.jar;Apache Batik SVG toolkit (extension);Apache License Version 2.0;The Apache Software Foundation
+batik-gvt-1.19.jar;Apache Batik SVG toolkit (gvt);Apache License Version 2.0;The Apache Software Foundation
+batik-i18n-1.19.jar;Apache Batik SVG toolkit (i18n);Apache License Version 2.0;The Apache Software Foundation
+batik-parser-1.19.jar;Apache Batik SVG toolkit (parser);Apache License Version 2.0;The Apache Software Foundation
+batik-script-1.19.jar;Apache Batik SVG toolkit (script);Apache License Version 2.0;The Apache Software Foundation
+batik-shared-resources-1.19.jar;Apache Batik SVG toolkit (shared-resources);Apache License Version 2.0;The Apache Software Foundation
+batik-svg-dom-1.19.jar;Apache Batik SVG toolkit (svg-dom);Apache License Version 2.0;The Apache Software Foundation
+batik-svggen-1.19.jar;Apache Batik SVG toolkit (svggen);Apache License Version 2.0;The Apache Software Foundation
+batik-transcoder-1.19.jar;Apache Batik SVG toolkit (transcoder);Apache License Version 2.0;The Apache Software Foundation
+batik-util-1.19.jar;Apache Batik SVG toolkit (util);Apache License Version 2.0;The Apache Software Foundation
+batik-xml-1.19.jar;Apache Batik SVG toolkit (xml);Apache License Version 2.0;The Apache Software Foundation
+bcprov-jdk16-145.jar;Bouncy Castle cryptography;Bouncy Castle License (MIT);Legion of the Bouncy Castle
+commons-cli-20070823.jar;Apache Commons CLI (command line options);Apache License Version 2.0;The Apache Software Foundation
+commons-codec-1.3.jar;Apache Commons Codec;Apache License Version 2.0;The Apache Software Foundation
+commons-collections-3.2.1.jar;Apache Commons Collections;Apache License Version 2.0;The Apache Software Foundation
+commons-httpclient-3.1.jar;Apache Commons HttpClient;Apache License Version 2.0;The Apache Software Foundation
+commons-io-2.17.0.jar;Apache Commons IO;Apache License Version 2.0;The Apache Software Foundation
+commons-lang-2.4.jar;Apache Commons Lang;Apache License Version 2.0;The Apache Software Foundation
+commons-logging-1.4.0.jar;Apache Commons Logging;Apache License Version 2.0;The Apache Software Foundation
+core-3.3.0.jar;ZXing QR code library (EPC QR code / GiroCode);Apache License Version 2.0;ZXing authors
+core-jakarta-1.30.2.jar;veraPDF PDF/A validation (core-jakarta);GNU General Public License Version 3 / Mozilla Public License 2.0;veraPDF Consortium
+core-renderer.jar;Apache CoreRenderer;Apache License Version 2.0;The Apache Software Foundation
+darcula.jar;Darcula look and feel;Apache License Version 2.0;Konstantin Bulenkov / JetBrains
+derby.jar;The Apache Derby Database;Apache License Version 2.0;The Apache Software Foundation
+derbyclient.jar;Apache Derby database (client);Apache License Version 2.0;The Apache Software Foundation
+derbyLocale_de_DE.jar;Apache Derby database (German messages);Apache License Version 2.0;The Apache Software Foundation
+derbynet.jar;Apache Derby database (network server);Apache License Version 2.0;The Apache Software Foundation
+derbyshared.jar;Apache Derby database (shared);Apache License Version 2.0;The Apache Software Foundation
+derbytools.jar;Apache Derby database (tools);Apache License Version 2.0;The Apache Software Foundation
+dom4j-2.2.0.jar;dom4j XML library;BSD style (dom4j license);dom4j project
+DTAus.jar;DTAUS direct debit files;see project;DTAus project
+dtdparser121.jar;A Java DTD Parser;GNU Lesser General Public License;Wutka Consulting, Inc.
+en16931-cii2ubl-2.3.1.jar;EN 16931 CII to UBL converter (XRechnung);Apache License Version 2.0;Philip Helger
+feature-reporting-jakarta-1.30.2.jar;veraPDF PDF/A validation (feature-reporting-jakarta);GNU General Public License Version 3 / Mozilla Public License 2.0;veraPDF Consortium
+flatlaf-3.5.4.jar;FlatLaf - Swing Look and Feel;Apache License Version 2.0;FormDev Software GmbH
+fontbox-3.0.8.jar;Apache FontBox (fonts for PDFBox);Apache License Version 2.0;The Apache Software Foundation
+fop-core-2.11.jar;Apache FOP (core);Apache License Version 2.0;The Apache Software Foundation
+fop-events-2.11.jar;Apache FOP (events);Apache License Version 2.0;The Apache Software Foundation
+fop-util-2.11.jar;Apache FOP (util);Apache License Version 2.0;The Apache Software Foundation
+frame4j.jar;Frame4J utilities (used by DTAus);see project;Albrecht Weinert
+freemarker-2.3.20.jar;FreeMarker template engine;BSD style (FreeMarker license);FreeMarker project
+google-api-translate-java-0.92.jar;Google Translate client (translation tool);GNU Lesser General Public License;Richard Midwinter
+groovy-all-1.8.4.jar;Groovy scripting language (scripts, console);Apache License Version 2.0;Groovy project
+httpcore-4.0.1.jar;Apache HttpCore;Apache License Version 2.0;The Apache Software Foundation
+httpcore-nio-4.0.1.jar;Apache HttpCore;Apache License Version 2.0;The Apache Software Foundation
+istack-commons-runtime-4.1.1.jar;istack commons (JAXB runtime);Eclipse Distribution License 1.0 (BSD);Eclipse Foundation
+itext-2.1.7.jar;iText PDF library;Mozilla Public License 1.1 / LGPL;Bruno Lowagie and Paulo Soares
+iText-rtf-2.1.7.jar;iText RTF export;Mozilla Public License 1.1 / LGPL;Bruno Lowagie and Paulo Soares
+itext-rtf-2.1.7.jar;iText RTF export;Mozilla Public License 1.1 / LGPL;Bruno Lowagie and Paulo Soares
+jackson-annotations-2.22.jar;Jackson JSON (annotations);Apache License Version 2.0;FasterXML
+jackson-core-2.22.2.jar;Jackson JSON (core);Apache License Version 2.0;FasterXML
+jackson-databind-2.22.2.jar;Jackson JSON (databind);Apache License Version 2.0;FasterXML
+jakarta.activation-api-2.1.4.jar;Jakarta Activation API;Eclipse Distribution License 1.0 (BSD);Eclipse Foundation
+jakarta.xml.bind-api-4.0.5.jar;Jakarta XML Binding API;Eclipse Distribution License 1.0 (BSD);Eclipse Foundation
+javax.mail-1.5.6.jar;JavaMail (sending e-mails);CDDL 1.1 / GPL 2 with Classpath Exception;Oracle
+jaxb-core-4.0.2.jar;Eclipse Implementation of JAXB (core);Eclipse Distribution License 1.0 (BSD);Eclipse Foundation
+jaxb-runtime-4.0.2.jar;Eclipse Implementation of JAXB (runtime);Eclipse Distribution License 1.0 (BSD);Eclipse Foundation
+jcalendar-1.3.2.jar;JCalendar date chooser;GNU Lesser General Public License;Kai Toedter
+jdom.jar;Java-based "document object model" for XML files;JDOM license;The JDOMTM Project
+jOpenDocument-1.1-jdk5.jar;A pure Java library for OASIS Open Document files manipulation;GNU General Public License Version 2;ILM Informatique
+jox-1.17b3.jar;JOX Java objects to XML;GNU Lesser General Public License;Wutka Consulting, Inc.
+jsr305-3.0.2.jar;JSR 305 annotations;BSD 3-Clause License;FindBugs project
+l2fprod-common-all.jar;L2FProd Common Components;Apache License Version 2.0;L2FProd.com
+library-2.26.0.jar;Mustang: ZUGFeRD / Factur-X / XRechnung library;Apache License Version 2.0;Mustangproject
+looks-2.0.1.jar;JGoodies Looks;BSD License;JGoodies
+metadata-fixer-jakarta-1.30.2.jar;veraPDF PDF/A validation (metadata-fixer-jakarta);GNU General Public License Version 3 / Mozilla Public License 2.0;veraPDF Consortium
+microba-0.4.4.2.jar;Microba Calendar Components;Microba license;Michael Baranov
+microsoft-translator-java-api-0.6.1-jar-with-dependencies.jar;Microsoft Translator client (translation tool);see project;Jonathan Griggs
+MPCalendar.jar;YaBS calendar component;GNU General Public License Version 3;openyabs.org
+mysql-connector-java-5.1.23-bin.jar;MySQL JDBC driver;GNU General Public License Version 2 with FOSS exception;Oracle
+noa-libre.jar;NOA libre: OpenOffice / LibreOffice access;GNU Lesser General Public License;IOn AG / noa-libre project
+odfdom-java-0.8.7.jar;ODFDOM OpenDocument library;Apache License Version 2.0;ODF Toolkit project
+org.json.jar;JSON (JavaScript Object Notation);JSON license;json.org
+org.osgi.core-4.2.0.jar;OSGi core API;Apache License Version 2.0;OSGi Alliance
+oro-2.0.8.jar;Jakarta ORO regular expressions;Apache License Version 2.0;The Apache Software Foundation
+parser-1.30.2.jar;veraPDF PDF/A validation (parser);GNU General Public License Version 3 / Mozilla Public License 2.0;veraPDF Consortium
+pdf-model-1.30.2.jar;veraPDF PDF/A validation (pdf-model);GNU General Public License Version 3 / Mozilla Public License 2.0;veraPDF Consortium
+pdfbox-3.0.8.jar;Apache PDFBox;Apache License Version 2.0;The Apache Software Foundation
+pdfbox-io-3.0.8.jar;Apache PDFBox I/O;Apache License Version 2.0;The Apache Software Foundation
+PDFRenderer.jar;PDF Renderer: a 100% Java PDF renderer and viewer;GNU Lesser General Public License;http://pdf-renderer.dev.java.net/ [javadesktop/swinglabs/pdf-renderer]
+ph-cii-d16b-3.1.0.jar;ph-* e-invoice and XML library (cii-d16b);Apache License Version 2.0;Philip Helger
+ph-commons-11.2.6.jar;ph-* e-invoice and XML library (commons);Apache License Version 2.0;Philip Helger
+ph-datetime-11.2.6.jar;ph-* e-invoice and XML library (datetime);Apache License Version 2.0;Philip Helger
+ph-jaxb-11.2.6.jar;ph-* e-invoice and XML library (jaxb);Apache License Version 2.0;Philip Helger
+ph-jaxb-adapter-11.1.11.jar;ph-* e-invoice and XML library (jaxb-adapter);Apache License Version 2.0;Philip Helger
+ph-schematron-api-8.0.6.jar;ph-* e-invoice and XML library (schematron-api);Apache License Version 2.0;Philip Helger
+ph-schematron-xslt-8.0.6.jar;ph-* e-invoice and XML library (schematron-xslt);Apache License Version 2.0;Philip Helger
+ph-ubl21-9.0.3.jar;ph-* e-invoice and XML library (ubl21);Apache License Version 2.0;Philip Helger
+ph-ubl22-9.0.3.jar;ph-* e-invoice and XML library (ubl22);Apache License Version 2.0;Philip Helger
+ph-ubl23-9.0.3.jar;ph-* e-invoice and XML library (ubl23);Apache License Version 2.0;Philip Helger
+ph-ubl24-9.0.3.jar;ph-* e-invoice and XML library (ubl24);Apache License Version 2.0;Philip Helger
+ph-xml-11.2.6.jar;ph-* e-invoice and XML library (xml);Apache License Version 2.0;Philip Helger
+ph-xsds-ccts-cct-schemamodule-3.0.0.jar;ph-* e-invoice and XML library (xsds-ccts-cct-schemamodule);Apache License Version 2.0;Philip Helger
+ph-xsds-xades132-3.0.0.jar;ph-* e-invoice and XML library (xsds-xades132);Apache License Version 2.0;Philip Helger
+ph-xsds-xades141-3.0.0.jar;ph-* e-invoice and XML library (xsds-xades141);Apache License Version 2.0;Philip Helger
+ph-xsds-xml-3.0.0.jar;ph-* e-invoice and XML library (xsds-xml);Apache License Version 2.0;Philip Helger
+ph-xsds-xmldsig-3.0.0.jar;ph-* e-invoice and XML library (xsds-xmldsig);Apache License Version 2.0;Philip Helger
+ph-xsds-xmldsig11-3.0.0.jar;ph-* e-invoice and XML library (xsds-xmldsig11);Apache License Version 2.0;Philip Helger
+preflight-3.0.8.jar;Apache PDFBox Preflight (PDF/A);Apache License Version 2.0;The Apache Software Foundation
+qdox-1.12.jar;QDox Java source parser;Apache License Version 2.0;QDox project
+resolver.jar;Java XSL processor;Apache License Version 2.0;The Apache Software Foundation
+rhino-1.7.15.1.jar;Rhino JavaScript engine;Mozilla Public License 2.0;Mozilla Foundation
+Saxon-HE-12.10.jar;Saxon XSLT and XQuery processor (e-invoice validation);Mozilla Public License 2.0;Saxonica
+serializer.jar;Apache Xalan Project;Apache License Version 2.0;The Apache Software Foundation
+slf4j-api-2.0.18.jar;SLF4J logging API;MIT License;QOS.ch
+stax-utils-20070216.jar;StAX utilities;BSD License;stax-utils project
 swing-layout-1.0.3.jar;The Swing Layout extensions;GNU General Public License Version 2;Sun Microsystems Inc.
 swing-worker-1.1.jar;Sun SwingWorker;GNU General Public License Version 2;Sun Microsystems Inc.
-derby.jar;The Apache Derby Database;Apache License Version 2.0;The Apache Software Foundation
-l2fprod-common-all.jar;L2FProd Common Components;Apache License Version 2.0;L2FProd.com
-jdom.jar;Java-based "document object model" for XML files;JDOM license;The JDOMTM Project
-mail.jar;JavaMail API;JAVAMAIL license;Sun Microsystems Inc.
-dtdparser121.jar;A Java DTD Parser;GNU Lesser General Public License;Wutka Consulting, Inc.
-resolver.jar;Java XSL processor;Apache License Version 2.0;The Apache Software Foundation
-serializer.jar;Apache Xalan Project;Apache License Version 2.0;The Apache Software Foundation
+tinylaf.jar;TinyLaF look and feel;GNU Lesser General Public License;Hans Bickel
+txw2-4.0.2.jar;TXW2 XML writer (JAXB);Eclipse Distribution License 1.0 (BSD);Eclipse Foundation
+validation-model-jakarta-1.30.2.jar;veraPDF PDF/A validation (validation-model-jakarta);GNU General Public License Version 3 / Mozilla Public License 2.0;veraPDF Consortium
+validator-2.26.0.jar;Mustang validator for e-invoices (EN 16931, XRechnung);Apache License Version 2.0;Mustangproject
+vcard4j-1_1_3.jar;vCard import and export;see project;vcard4j project
+velocity-1.7.jar;Apache Velocity template engine;Apache License Version 2.0;The Apache Software Foundation
+verapdf-xmp-core-jakarta-1.30.2.jar;veraPDF PDF/A validation (verapdf-xmp-core-jakarta);GNU General Public License Version 3 / Mozilla Public License 2.0;veraPDF Consortium
+ws-commons-util-1.0.2.jar;Apache Webservices Common Utilities;Apache License Version 2.0;The Apache Software Foundation
+xalan.jar;Apache Xalan XSLT processor;Apache License Version 2.0;The Apache Software Foundation
+xdocreport-2.0.2-SNAPSHOT.jar;XDocReport: documents from ODT templates, PDF conversion;MIT License;opensagres
+xercesImpl-2.9.1.jar;Apache Xerces XML parser;Apache License Version 2.0;The Apache Software Foundation
 xercesImpl.jar;Apache Xerxes;Apache License Version 2.0;The Apache Software Foundation
+xml-apis-1.3.04.jar;Apache XML Commons APIs;Apache License Version 2.0;The Apache Software Foundation
+xml-apis-ext-1.3.04.jar;Apache XML Commons external APIs;Apache License Version 2.0 / W3C;The Apache Software Foundation
+xml-apis.jar;Apache Xerxes;Apache License Version 2.0;The Apache Software Foundation
+xmlgraphics-commons-2.11.jar;Apache XML Graphics Commons;Apache License Version 2.0;The Apache Software Foundation
+xmlresolver-5.3.3-data.jar;XML Resolver data;Apache License Version 2.0;xmlresolver.org
+xmlresolver-5.3.3.jar;XML Resolver;Apache License Version 2.0;xmlresolver.org
 xmlrpc-client-3.1.2.jar;Apache XML-RPC Client;Apache License Version 2.0;The Apache Software Foundation
 xmlrpc-common-3.1.2.jar;Apache XML-RPC Commons;Apache License Version 2.0;The Apache Software Foundation
 xmlrpc-server-3.1.2.jar;Apache XML-RPC Server;Apache License Version 2.0;The Apache Software Foundation
-xml-apis.jar;Apache Xerxes;Apache License Version 2.0;The Apache Software Foundation
-appframework-1.0.3.jar;Java Application Framework;GNU Lesser General Public License;JDesktop Network Components
-org.json.jar;JSON (JavaScript Object Notation);JSON license;json.org
-microba-0.4.4.2.jar;Microba Calendar Components;Microba license;Michael Baranov
-pdf-renderer.jar;PDF Renderer:Advanced PDF renderer based on the original PDFRenderer by Sun;GNU Lesser General Public License;Sun Microsystems Inc.
-iText-2.1.7.jar;A Free Java-PDF library;GNU Lesser General Public License;Bruno Lowagie and Paulo Soares
-mysql-connector-java-5.0.8-bin.jar;Java MYSQL Connector;GNU General Public License Version 2;MySQL.com/ Sun Microsystems Inc.
-core-renderer.jar;Apache CoreRenderer;Apache License Version 2.0;The Apache Software Foundation
-bootstrapconnector.jar;OpenOffice UNO;GNU Lesser General Public License;OpenOffice.org
-java_uno.jar;OpenOffice UNO;GNU Lesser General Public License;OpenOffice.org
-java_uno_accessbridge.jar;OpenOffice UNO;GNU Lesser General Public License;OpenOffice.org
-juh.jar;OpenOffice UNO;GNU Lesser General Public License;OpenOffice.org
-junit-3.8.1.jar;OpenOffice UNO;GNU Lesser General Public License;OpenOffice.org
-jurt.jar;OpenOffice UNO;GNU Lesser General Public License;OpenOffice.org
-jut.jar;OpenOffice UNO;GNU Lesser General Public License;OpenOffice.org
-noa-mp.jar;NOA (Nice Office Access);GNU Lesser General Public License;IOn AG
-officebean.jar;OpenOffice UNO;GNU Lesser General Public License;OpenOffice.org
-registry-3.1.3.jar;OpenOffice UNO;GNU Lesser General Public License;OpenOffice.org
-ridl.jar;OpenOffice UNO;GNU Lesser General Public License;OpenOffice.org
-sandbox.jar;OpenOffice UNO;GNU Lesser General Public License;OpenOffice.org
-unoil.jar;OpenOffice UNO;GNU Lesser General Public License;OpenOffice.org
-unoloader.jar;OpenOffice UNO;GNU Lesser General Public License;OpenOffice.org
-jOpenDocument-1.1-jdk5.jar;A pure Java library for OASIS Open Document files manipulation;GNU General Public License Version 2;ILM Informatique
-jodconverter-2.2.2.jar;Java OpenDocument Converter;GNU Lesser General Public License;Art of Solving Ltd
-jodconverter-cli-2.2.2.jar;Java OpenDocument Converter;Apache License Version 2.0;Art of Solving Ltd
-ws-commons-util-1.0.2.jar;Apache Webservices Common Utilities;Apache License Version 2.0;The Apache Software Foundation
-commons-logging-1.1.jar;Apache Logging Utilities;Apache License Version 2.0;The Apache Software Foundation
-httpcore-4.0.1.jar;Apache HttpCore;Apache License Version 2.0;The Apache Software Foundation
-httpcore-nio-4.0.1.jar;Apache HttpCore;Apache License Version 2.0;The Apache Software Foundation
-commons-codec-1.3.jar;Apache Commons Codec;Apache License Version 2.0;The Apache Software Foundation
-tinylaf-1_4;A (mostly painted) Look and Feel;GNU Lesser General Public License;Hans Bickel
-vcard4j-1_1_3.jar;vCard4J is a Java toolkit to manipulate vCards;GNU Lesser General Public License;http://vcard4j.sourceforge.net/
-groovy-all-1.8.4.jar;Groovy!;Apache Software License 2 (Open Source);http://groovy.codehaus.org/
-bcprov-jdk16-145;bcprov;bcprov License;The Legion Of The Bouncy Castle (http://www.bouncycastle.org)
+xmpbox-3.0.8.jar;Apache XmpBox (PDF metadata);Apache License Version 2.0;The Apache Software Foundation
+ybsaf.jar;YaBS application framework (based on the Swing Application Framework);GNU Lesser General Public License;openyabs.org

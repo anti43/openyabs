@@ -102,16 +102,19 @@ public class User extends DatabaseObject {
         }
 
         String s2 = LocalSettings.getProperty(LocalSettings.BASE_DIR);
-        File basedir = null;
-        if (s2 != null && !s2.equals("null")) {
-            basedir = new File(s2);
-        } else {
-            basedir = new File(System.getProperty("user.home"));
-        }
-
         File subdirs = null;
-        if (s != null) {
-            subdirs = new File(s); 
+        if (s != null && s.trim().length() > 0 && !s.equals("null")) {
+            subdirs = new File(s);
+        }
+        File basedir = null;
+        if (s2 != null && s2.trim().length() > 0 && !s2.equals("null")) {
+            //configured in the local settings
+            basedir = new File(s2);
+        } else if (subdirs != null) {
+            basedir = new File(System.getProperty("user.home"));
+        } else {
+            //nothing configured: the folder chosen last
+            return mpv5.utils.files.LastDirectory.get();
         }
 
         File savedir = basedir;
@@ -307,12 +310,14 @@ public class User extends DatabaseObject {
             try {
                 Locale.setDefault(TypeConversion.stringToLocale(__getLocale()));
                 Log.Debug(this, "Locale.setDefault() for: " + Locale.getDefault());
-                ControlPanel_Fonts.applyFont(Font.decode(LocalSettings.getProperty(LocalSettings.DEFAULT_FONT)));
+                mpv5.ui.modern.Zoom.applyStoredFont();
                 if (UIManager.getLookAndFeel().getName() == null ? __getLaf() != null : !UIManager.getLookAndFeel().getName().equals(__getLaf())) {
                     Main.setLaF(__getLaf());
                 }
                 defineMailConfig();
                 defineDTAConfig();
+                //German system or locale: German language (once, before the bundle is loaded)
+                LanguageManager.importGermanIfGerman(this);
                 Log.Debug(this, "LanguageManager.getBundle() for: " + this);
                 LanguageManager.getBundle();
             } catch (Exception e) {

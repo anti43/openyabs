@@ -18,6 +18,7 @@ import javax.swing.JProgressBar;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.objects.Contact;
+import mpv5.db.objects.Item;
 import mpv5.db.objects.Product;
 import mpv5.db.objects.User;
 import mpv5.logging.Log;
@@ -342,6 +343,8 @@ public class YabsViewProxy implements YabsView {
         //the views which exist in the modern layout already, all others stay classic
         registerModernView(Contact.class, item -> new ModernContactPanel(item.getContext()));
         registerModernView(Product.class, item -> new ModernProductPanel(item.getContext(), ((Product) item).__getInttype()));
+        registerModernView(Item.class, item -> new mpv5.ui.panels.ModernItemPanel(
+                mpv5.handler.ItemService.contextOf(((Item) item).__getInttype()), ((Item) item).__getInttype()));
     }
 
     /**
@@ -371,6 +374,20 @@ public class YabsViewProxy implements YabsView {
     }
 
     /**
+     * A new, empty view for an offer, order, invoice ...: modern or classic,
+     * as configured
+     *
+     * @param type Item.TYPE_*
+     * @return the view
+     */
+    public JComponent newItemView(int type) {
+        Item i = (Item) DatabaseObject.getObject(mpv5.handler.ItemService.contextOf(type));
+        i.setInttype(type);
+        DataPanel modern = getModernView(i);
+        return modern != null ? (JComponent) modern : new mpv5.ui.panels.ItemPanel2(mpv5.handler.ItemService.contextOf(type), type);
+    }
+
+    /**
      * The view of a product, filled with it: modern or classic, as configured
      *
      * @param p
@@ -386,8 +403,9 @@ public class YabsViewProxy implements YabsView {
     }
 
     /**
-     * @return true if the modern views are used: the system property
-     * {@value #UI_PROPERTY} if set, else the setting of the current user
+     * @return true if the modern views and look are used: the system property
+     * {@value #UI_PROPERTY} if set, else the setting of the current user -
+     * modern unless the user switched to classic (View &gt; Layout)
      */
     public boolean isModernUi() {
         String p = System.getProperty(UI_PROPERTY);
@@ -395,11 +413,27 @@ public class YabsViewProxy implements YabsView {
             return p.trim().equalsIgnoreCase("modern");
         }
         try {
-            return User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", MODERN_UI_SETTING);
+            return User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty$" + MODERN_UI_SETTING, Boolean.TRUE);
         } catch (Exception e) {
             Log.Debug(this, e);
-            return false;
+            return true;
         }
+    }
+
+    /**
+     * Switches the current user to the modern or the classic views and look
+     * (saved with the user); open tabs keep their view
+     *
+     * @param modern
+     */
+    public void setModernUi(boolean modern) {
+        User u = User.getCurrentUser();
+        u.getProperties().changeProperty("org.openyabs.uiproperty", MODERN_UI_SETTING, modern);
+        u.saveProperties();
+        //no look and feel of the user's own: the one belonging to modern / classic
+        u.setLaf("");
+        u.save();
+        mpv5.Main.setLaF("");
     }
 
     /**

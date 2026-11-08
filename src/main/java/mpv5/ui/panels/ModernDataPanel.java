@@ -143,6 +143,16 @@ public abstract class ModernDataPanel extends JPanel implements DataPanel, Scrol
      * @return a split pane which starts with 60% for the data
      */
     protected static JSplitPane split(JComponent top, JComponent bottom) {
+        return split(top, bottom, 0.6);
+    }
+
+    /**
+     * @param top
+     * @param bottom
+     * @param ratio the part of the height the top gets initially
+     * @return the split pane
+     */
+    protected static JSplitPane split(JComponent top, JComponent bottom, final double ratio) {
         final JSplitPane split = new JSplitPane(JSplitPane.VERTICAL_SPLIT, top, bottom);
         split.setResizeWeight(0.62);
         split.setBorder(BorderFactory.createEmptyBorder(0, ModernTheme.px(8), ModernTheme.px(8), ModernTheme.px(8)));
@@ -153,7 +163,7 @@ public abstract class ModernDataPanel extends JPanel implements DataPanel, Scrol
             public void componentResized(java.awt.event.ComponentEvent e) {
                 if (split.getHeight() > 0) {
                     split.removeComponentListener(this);
-                    split.setDividerLocation(0.6);
+                    split.setDividerLocation(ratio);
                 }
             }
         });
@@ -240,8 +250,8 @@ public abstract class ModernDataPanel extends JPanel implements DataPanel, Scrol
             protected void setValue(Object value) {
                 setHorizontalAlignment(RIGHT);
                 if (value instanceof Number) {
-                    super.setValue(mpv5.utils.numberformat.FormatNumber.formatDezimal(
-                            java.math.BigDecimal.valueOf(((Number) value).doubleValue())));
+                    //formatDezimal rounds exactly (BigDecimal as is, others via their decimal string)
+                    super.setValue(mpv5.utils.numberformat.FormatNumber.formatDezimal((Number) value));
                 } else {
                     super.setValue(value);
                 }
@@ -305,20 +315,24 @@ public abstract class ModernDataPanel extends JPanel implements DataPanel, Scrol
      * @param title
      */
     protected void setTabTitle(String title) {
-        if (title == null || !(getParent() instanceof JViewport || getParent() instanceof JTabbedPane)) {
+        if (title == null) {
             return;
         }
-        JTabbedPane tabs = null;
-        //this->viewport->scrollpane->tabbedpane
-        if (getParent().getParent() != null && getParent().getParent().getParent() instanceof JTabbedPane) {
-            tabs = (JTabbedPane) getParent().getParent().getParent();
-        } else if (getParent() instanceof JTabbedPane) {
-            tabs = (JTabbedPane) getParent();
+        //the tab which holds this view (not the selected one: the view may be filled later)
+        Component child = this;
+        Component parent = getParent();
+        while (parent != null && !(parent instanceof JTabbedPane)) {
+            child = parent;
+            parent = parent.getParent();
+        }
+        if (parent != null) {
+            JTabbedPane tabs = (JTabbedPane) parent;
+            int i = tabs.indexOfComponent(child);
+            if (i >= 0) {
+                tabs.setTitleAt(i, title);
+            }
         } else if (getRootPane() != null && getRootPane().getParent() instanceof JFrame) {
             ((JFrame) getRootPane().getParent()).setTitle(title);
-        }
-        if (tabs != null && tabs.getSelectedIndex() >= 0) {
-            tabs.setTitleAt(tabs.getSelectedIndex(), title);
         }
     }
 

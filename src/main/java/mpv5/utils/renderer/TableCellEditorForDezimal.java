@@ -36,6 +36,8 @@ import mpv5.utils.numberformat.FormatNumber;
  */
 public class TableCellEditorForDezimal extends LazyCellEditor {
 
+    private NumberFormat columnFormat;
+
     private static final long serialVersionUID = 1L;
 
     /**
@@ -53,6 +55,7 @@ public class TableCellEditorForDezimal extends LazyCellEditor {
      */
     public TableCellEditorForDezimal(final JFormattedTextField tf, final NumberFormat format) {
         super(tf);
+        this.columnFormat = format;
         super.setClickCountToStart(1);
         tf.setFocusLostBehavior(JFormattedTextField.COMMIT);
         tf.setHorizontalAlignment(SwingConstants.LEFT);
@@ -60,9 +63,14 @@ public class TableCellEditorForDezimal extends LazyCellEditor {
         delegate = new EditorDelegate() {
 
             boolean isMousePressed = false;
+            /**
+             * the value before editing: kept if the input is not a number
+             */
+            Object original;
 
             @Override
             public void setValue(Object param) {
+                original = param;
                 if (isMousePressed
                         && param != null && (param.getClass() == Double.class || param.getClass() == BigDecimal.class)) {
                     SwingUtilities.invokeLater(new Runnable() {
@@ -72,7 +80,8 @@ public class TableCellEditorForDezimal extends LazyCellEditor {
                         }
                     });
                     try {
-                        tf.setText(format == null ? FormatNumber.formatDezimal((Number) param) : format.format((Number) param));
+                        //all decimals: a price of 12.345 must not become 12.35 by clicking into it
+                        tf.setText(editFormat().format(new BigDecimal(String.valueOf(param))));
                     } catch (Exception e) {
                         try {
                             param = new BigDecimal(String.valueOf(param));
@@ -91,21 +100,30 @@ public class TableCellEditorForDezimal extends LazyCellEditor {
             public Object getCellEditorValue() {
                 try {
                     String _field = tf.getText();
-                    Number _number = (format == null ? FormatNumber.parseDezimal(_field) : format.parse(_field));
-                    if (_number != null) {
-                        double _parsed = _number.doubleValue();
-                        BigDecimal d = BigDecimal.valueOf(_parsed);
-//$2white);
-                        return d;
-                    } else {
-//$2white);
+                    if (_field == null || _field.trim().length() == 0) {
                         return BigDecimal.ZERO;
+                    }
+                    Number _number;
+                    if (format instanceof java.text.DecimalFormat) {
+                        //exact, not via double
+                        java.text.DecimalFormat f = (java.text.DecimalFormat) format.clone();
+                        f.setParseBigDecimal(true);
+                        _number = f.parse(_field.trim());
+                    } else if (format != null) {
+                        _number = format.parse(_field.trim());
+                    } else {
+                        _number = FormatNumber.parseDezimal(_field);
+                    }
+                    if (_number != null) {
+                        return _number instanceof BigDecimal ? _number : new BigDecimal(_number.toString());
                     }
                 } catch (ParseException e) {
                     Log.Debug(this, e);
-//$2red);
-                    return BigDecimal.ZERO;
+                } catch (NumberFormatException e) {
+                    Log.Debug(this, e);
                 }
+                //not a number: keep the value it had
+                return original instanceof Number ? FormatNumber.getBigDecimal(original) : BigDecimal.ZERO;
             }
 
             @Override
@@ -118,5 +136,15 @@ public class TableCellEditorForDezimal extends LazyCellEditor {
                 return true;
             }
         };
+    }
+
+    /**
+     * @return the format of the column, but with all decimals of the value
+     */
+    private NumberFormat editFormat() {
+        NumberFormat f = columnFormat == null ? FormatNumber.getDefaultDecimalFormat() : (NumberFormat) columnFormat.clone();
+        f.setMaximumFractionDigits(Math.max(f.getMaximumFractionDigits(), 10));
+        f.setGroupingUsed(false);
+        return f;
     }
 }

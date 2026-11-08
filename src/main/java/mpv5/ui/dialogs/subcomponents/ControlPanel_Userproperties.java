@@ -968,7 +968,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
 
     private void loadSettings() {
         tabs.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "norecycletabs"));
-        modernui.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", mpv5.YabsViewProxy.MODERN_UI_SETTING));
+        modernui.setSelected(mpv5.YabsViewProxy.instance().isModernUi());
         nowarnings.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "nowarnings"));
         views.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "avoidmultipleviews"));
         unpaidbills.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hideunpaidbills"));

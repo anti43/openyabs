@@ -521,21 +521,19 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
      * @return
      */
     public DataPanel getTabAt(int position) {
-        if (getTabPane().getComponent(position) instanceof DataPanel) {
-            return (DataPanel) getTabPane().getComponent(position);
-        } else if (getTabPane().getComponent(position) instanceof JScrollPane) {
-            try {
-                return (DataPanel) ((JScrollPane) getTabPane().getComponent(position)).getComponent(0);
-            } catch (ClassCastException e) {
-                try {
-                    return (DataPanel) ((JViewport) ((JScrollPane) getTabPane().getComponent(position)).getComponent(0)).getComponent(0);
-                } catch (Exception et) {
-                    return null;
-                }
-            }
-        } else {
+        //the content of the tab: with scrolling tabs the tab pane has further children
+        //(arrows, viewport), so getComponent(i) is not the i-th tab
+        if (position < 0 || position >= getTabPane().getTabCount()) {
             return null;
         }
+        Component c = getTabPane().getComponentAt(position);
+        if (c instanceof DataPanel) {
+            return (DataPanel) c;
+        } else if (c instanceof JScrollPane) {
+            Component view = ((JScrollPane) c).getViewport().getView();
+            return view instanceof DataPanel ? (DataPanel) view : null;
+        }
+        return null;
     }
 
     @Override
@@ -601,6 +599,86 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
         shortcuts.setAccelerator(mpv5.ui.toolbars.ModernCommandBar.HELP);
         shortcuts.addActionListener(e -> mpv5.ui.dialogs.ShortcutsDialog.show(getFrame().getRootPane()));
         helpmenu.add(shortcuts, 0);
+        //View > Layout > Modern look: modern views and look (default) or classic
+        final javax.swing.JCheckBoxMenuItem modernLook = new javax.swing.JCheckBoxMenuItem(Messages.LAF_MODERN.toString());
+        modernLook.setToolTipText(Messages.LAF_MODERN_TIP.toString());
+        modernLook.addActionListener(e -> {
+            mpv5.YabsViewProxy.instance().setModernUi(modernLook.isSelected());
+            mpv5.YabsViewProxy.instance().addMessage(Messages.LAF_MODERN_CHANGED.toString());
+            Popup.notice(Messages.LAF_MODERN_CHANGED.toString());
+        });
+        jMenu2.add(modernLook, 0);
+        //View > Language: built-in English, German and imported languages
+        final javax.swing.JMenu languages = new javax.swing.JMenu(Messages.LANGUAGE_MENU.toString());
+        languages.addMenuListener(new javax.swing.event.MenuListener() {
+            @Override
+            public void menuSelected(javax.swing.event.MenuEvent e) {
+                languages.removeAll();
+                javax.swing.ButtonGroup g = new javax.swing.ButtonGroup();
+                String current = User.getCurrentUser().__getLanguage();
+                for (final String[] l : mpv5.i18n.LanguageManager.choices()) {
+                    javax.swing.JRadioButtonMenuItem i = new javax.swing.JRadioButtonMenuItem(l[1]);
+                    i.setSelected(l[0].equals(current) || (current == null && l[0].equals("buildin_en")));
+                    g.add(i);
+                    i.addActionListener(ev -> {
+                        if (l[0].equals(User.getCurrentUser().__getLanguage())) {
+                            return;
+                        }
+                        try {
+                            mpv5.i18n.LanguageManager.switchTo(l[0]);
+                            if (Popup.Y_N_dialog(Messages.LANGUAGE_CHANGED_RESTART.toString(), l[1])) {
+                                Main.restart();
+                            }
+                        } catch (Exception ex) {
+                            Log.Debug(this, ex);
+                            Popup.error(ex);
+                        }
+                    });
+                    languages.add(i);
+                }
+            }
+
+            @Override
+            public void menuDeselected(javax.swing.event.MenuEvent e) {
+            }
+
+            @Override
+            public void menuCanceled(javax.swing.event.MenuEvent e) {
+            }
+        });
+        languages.add(new javax.swing.JMenuItem(" "));//filled when opened
+        viewMenu.add(languages, 0);
+        //View > Zoom in / out / 100 % (also Ctrl+= and the number pad, see Zoom.install)
+        javax.swing.JMenuItem zoomIn = new javax.swing.JMenuItem(Messages.ZOOM_IN.toString());
+        zoomIn.setAccelerator(mpv5.ui.modern.Zoom.IN);
+        zoomIn.addActionListener(e -> mpv5.ui.modern.Zoom.step(1));
+        javax.swing.JMenuItem zoomOut = new javax.swing.JMenuItem(Messages.ZOOM_OUT.toString());
+        zoomOut.setAccelerator(mpv5.ui.modern.Zoom.OUT);
+        zoomOut.addActionListener(e -> mpv5.ui.modern.Zoom.step(-1));
+        javax.swing.JMenuItem zoomReset = new javax.swing.JMenuItem(Messages.ZOOM_RESET.toString());
+        zoomReset.setAccelerator(mpv5.ui.modern.Zoom.RESET);
+        zoomReset.addActionListener(e -> mpv5.ui.modern.Zoom.step(0));
+        viewMenu.addSeparator();
+        viewMenu.add(zoomIn);
+        viewMenu.add(zoomOut);
+        viewMenu.add(zoomReset);
+        //the other key variants (the menu handles the ones shown there)
+        mpv5.ui.modern.Zoom.install(getFrame().getRootPane());
+        jMenu2.add(new javax.swing.JPopupMenu.Separator(), 1);
+        jMenu2.addMenuListener(new javax.swing.event.MenuListener() {
+            @Override
+            public void menuSelected(javax.swing.event.MenuEvent e) {
+                modernLook.setSelected(mpv5.YabsViewProxy.instance().isModernUi());
+            }
+
+            @Override
+            public void menuDeselected(javax.swing.event.MenuEvent e) {
+            }
+
+            @Override
+            public void menuCanceled(javax.swing.event.MenuEvent e) {
+            }
+        });
 //        jMenuItem24.setEnabled(!LocalSettings.getBooleanProperty(LocalSettings.OFFICE_REMOTE));
 
         nav_outlookbar.setAnimated(navBarAnimated);
@@ -615,7 +693,7 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
         ActionListener l = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                addTab(new ItemPanel2(Context.getInvoice(), Item.TYPE_INVOICE), Messages.NEW_INVOICE);
+                addTab(mpv5.YabsViewProxy.instance().newItemView(Item.TYPE_INVOICE), Messages.NEW_INVOICE);
             }
         };
         ddb1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/32/folder_blue.png")));
@@ -628,7 +706,7 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
                 new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                addTab(new ItemPanel2(Context.getDeposit(), Item.TYPE_DEPOSIT), Messages.NEW_DEPOSIT);
+                addTab(mpv5.YabsViewProxy.instance().newItemView(Item.TYPE_DEPOSIT), Messages.NEW_DEPOSIT);
             }
         });
         ddb1.add(
@@ -637,7 +715,7 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
                 new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                addTab(new ItemPanel2(Context.getPartPayment(), Item.TYPE_PART_PAYMENT), Messages.NEW_PART_PAYMENT);
+                addTab(mpv5.YabsViewProxy.instance().newItemView(Item.TYPE_PART_PAYMENT), Messages.NEW_PART_PAYMENT);
             }
         });
 
@@ -696,6 +774,12 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
         int gap = mpv5.ui.modern.ModernTheme.px(6);
         java.awt.Color bg = mpv5.ui.modern.ModernTheme.background();
         java.awt.Color line = mpv5.ui.modern.ModernTheme.border();
+        //colors and borders follow the look and feel (set again after it changed)
+        UIManager.addPropertyChangeListener(e -> {
+            if ("lookAndFeel".equals(e.getPropertyName())) {
+                javax.swing.SwingUtilities.invokeLater(this::applyFrameStyle);
+            }
+        });
 
         naviPanel.removeAll();
         naviPanel.setLayout(new BorderLayout());
@@ -719,31 +803,87 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
         java.awt.Dimension screen = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
         mainPanel.setPreferredSize(new java.awt.Dimension(screen.width * 85 / 100, screen.height * 75 / 100));
 
-        //navigation buttons: flat, highlighted under the mouse
-        for (javax.swing.JPanel nav : new javax.swing.JPanel[]{nav_contacts, nav_accounting, nav_products, nav_extras, nav_simple_inner}) {
-            nav.setBackground(mpv5.ui.modern.ModernTheme.cardBackground());
-            flatButtons(nav);
+        //activity lists are hidden (see Features)
+        if (!mpv5.globals.Features.activityLists()) {
+            nav_accounting.remove(jButton21);
         }
 
-        //toolbar: no fixed height, flat, separated by a line
+        //navigation buttons: flat, full width, a line between the entries, highlighted under the mouse
+        javax.swing.JPanel[] navs = {nav_contacts, nav_accounting, nav_products, nav_extras, nav_simple_inner};
+        javax.swing.JPanel[] parents = {parent_nav_contacts, parent_nav_accounting, parent_nav_products, parent_nav_extras, parent_nav_simple};
+        for (int i = 0; i < navs.length; i++) {
+            javax.swing.JPanel nav = navs[i];
+            if (nav.getLayout() instanceof java.awt.GridLayout) {
+                ((java.awt.GridLayout) nav.getLayout()).setVgap(0);
+                ((java.awt.GridLayout) nav.getLayout()).setHgap(0);
+            }
+            hoverButtons(nav);
+            //the buttons take the width of the navigation instead of a fixed width in the middle
+            if (parents[i] != null && nav.getParent() == parents[i]) {
+                parents[i].removeAll();
+                parents[i].setLayout(new BorderLayout());
+                parents[i].add(nav, BorderLayout.NORTH);
+            }
+        }
         mainToolbar.setPreferredSize(null);
         mainToolbar.setOpaque(true);
-        mainToolbar.setBackground(mpv5.ui.modern.ModernTheme.cardBackground());
-        mainToolbar.setBorder(javax.swing.BorderFactory.createCompoundBorder(
-                javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, line),
-                javax.swing.BorderFactory.createEmptyBorder(gap / 2, gap, gap / 2, gap)));
         for (java.awt.Component c : mainToolbar.getComponents()) {
             if (c instanceof javax.swing.AbstractButton) {
                 ((javax.swing.AbstractButton) c).setMargin(new java.awt.Insets(gap / 2, gap, gap / 2, gap));
             }
         }
         statusPanel.setOpaque(true);
+        statusPanel.setPreferredSize(null);
+        statusPanel.setMaximumSize(null);
+        applyFrameStyle();
+    }
+
+    /**
+     * Colors and borders of the main window, from the current look and feel
+     */
+    private void applyFrameStyle() {
+        int gap = mpv5.ui.modern.ModernTheme.px(6);
+        java.awt.Color bg = mpv5.ui.modern.ModernTheme.background();
+        java.awt.Color line = mpv5.ui.modern.ModernTheme.border();
+        naviPanel.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 0, 1, line));
+        tabpanePanel.setBackground(bg);
+        mainPanel.setBackground(bg);
+        javax.swing.JPanel[] navs = {nav_contacts, nav_accounting, nav_products, nav_extras, nav_simple_inner};
+        javax.swing.JPanel[] parents = {parent_nav_contacts, parent_nav_accounting, parent_nav_products, parent_nav_extras, parent_nav_simple};
+        for (int i = 0; i < navs.length; i++) {
+            navs[i].setBackground(mpv5.ui.modern.ModernTheme.cardBackground());
+            if (parents[i] != null) {
+                parents[i].setBackground(mpv5.ui.modern.ModernTheme.cardBackground());
+            }
+            flatButtons(navs[i]);
+        }
+
+        //toolbar: no fixed height, flat, separated by a line
+        mainToolbar.setBackground(mpv5.ui.modern.ModernTheme.cardBackground());
+        mainToolbar.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, line),
+                javax.swing.BorderFactory.createEmptyBorder(gap / 2, gap, gap / 2, gap)));
         statusPanel.setBackground(mpv5.ui.modern.ModernTheme.cardBackground());
         statusPanel.setBorder(javax.swing.BorderFactory.createCompoundBorder(
                 javax.swing.BorderFactory.createMatteBorder(1, 0, 0, 0, line),
                 javax.swing.BorderFactory.createEmptyBorder(2, gap, 2, gap)));
-        statusPanel.setPreferredSize(null);
-        statusPanel.setMaximumSize(null);
+    }
+
+    /**
+     * Highlights the navigation buttons under the mouse (once)
+     */
+    private static void hoverButtons(java.awt.Container c) {
+        for (java.awt.Component x : c.getComponents()) {
+            if (x instanceof javax.swing.AbstractButton && !(x instanceof javax.swing.JToggleButton)) {
+                final javax.swing.AbstractButton b = (javax.swing.AbstractButton) x;
+                b.setRolloverEnabled(true);
+                b.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
+                b.getModel().addChangeListener(e -> b.setBackground(b.getModel().isRollover()
+                        ? mpv5.ui.modern.ModernTheme.accentSoft() : mpv5.ui.modern.ModernTheme.cardBackground()));
+            } else if (x instanceof java.awt.Container) {
+                hoverButtons((java.awt.Container) x);
+            }
+        }
     }
 
     private static void flatButtons(java.awt.Container c) {
@@ -751,15 +891,18 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
             if (x instanceof javax.swing.AbstractButton && !(x instanceof javax.swing.JToggleButton)) {
                 final javax.swing.AbstractButton b = (javax.swing.AbstractButton) x;
                 b.setContentAreaFilled(false);
-                b.setBorderPainted(false);
+                b.setBorderPainted(true);
+                //a line under every entry separates them
+                b.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                        javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, mpv5.ui.modern.ModernTheme.border()),
+                        javax.swing.BorderFactory.createEmptyBorder(mpv5.ui.modern.ModernTheme.px(6), mpv5.ui.modern.ModernTheme.px(8),
+                                mpv5.ui.modern.ModernTheme.px(6), mpv5.ui.modern.ModernTheme.px(8))));
+                b.setPreferredSize(null);
+                b.setMaximumSize(null);
                 b.setFocusPainted(false);
                 b.setOpaque(true);
                 b.setBackground(mpv5.ui.modern.ModernTheme.cardBackground());
                 b.setForeground(mpv5.ui.modern.ModernTheme.foreground());
-                b.setRolloverEnabled(true);
-                b.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
-                b.getModel().addChangeListener(e -> b.setBackground(b.getModel().isRollover()
-                        ? mpv5.ui.modern.ModernTheme.accentSoft() : mpv5.ui.modern.ModernTheme.cardBackground()));
             } else if (x instanceof java.awt.Container) {
                 flatButtons((java.awt.Container) x);
             }
@@ -823,7 +966,7 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
             for (int i = 0; i < count; i++) {
                 if (getTabAt(i) != null) {
                     DataPanel panel = getTabAt(i);
-                    if (item.equals(panel.getDataOwner())) {
+                    if (sameRecord(item, panel.getDataOwner())) {
                         getTabPane().setSelectedIndex(i);
                         if (tabTitle == null) {
                             getTabPane().setTitleAt(i, item.__getCname());
@@ -938,26 +1081,13 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
      */
     @Override
     public void addOrShowTab(JComponent instanceOf, Object label) {
-        Component[] tabs = getTabPane().getComponents();
         boolean found = false;
-        JScrollPane scroll = null;
-        for (int i = 0; i < tabs.length; i++) {
-            JComponent component = (JComponent) tabs[i];
-            if (component instanceof JScrollPane) {
-                scroll = (JScrollPane) component;
-                component = (JComponent) ((JScrollPane) component).getComponent(0);
-            }
-            try {
-                if (component.getComponent(0).equals(instanceOf)) {
-                    if (scroll == null) {
-                        getTabPane().setSelectedComponent(instanceOf);
-                    } else {
-                        getTabPane().setSelectedComponent(scroll);
-                    }
-                    found = true;
-                }
-            } catch (Exception e) {
-                Log.Debug(this, e.getMessage());
+        for (int i = 0; i < getTabPane().getTabCount() && !found; i++) {
+            Component c = getTabPane().getComponentAt(i);
+            Component view = c instanceof JScrollPane ? ((JScrollPane) c).getViewport().getView() : c;
+            if (view != null && view.equals(instanceOf)) {
+                getTabPane().setSelectedIndex(i);
+                found = true;
             }
         }
 
@@ -975,6 +1105,7 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
      */
     @Override
     public int addTab(JComponent tab, String name) {
+        mpv5.ui.modern.ClassicPolish.applyLater(tab);
         JScrollPane spane = new JScrollPane(tab);
         //flat: the tab pane draws the frame
         spane.setBorder(javax.swing.BorderFactory.createEmptyBorder());
@@ -2485,8 +2616,8 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
     }//GEN-LAST:event_jButton18ActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        Main.setLaF(null);
-        User.getCurrentUser().setLaf(UIManager.getSystemLookAndFeelClassName());
+        Main.setLaF(Main.SYSTEM_LAF);
+        User.getCurrentUser().setLaf(Main.SYSTEM_LAF);
         User.getCurrentUser().save();
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
@@ -2680,11 +2811,11 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
 
-        addTab(new ItemPanel2(Context.getOffer(), Item.TYPE_OFFER), Messages.NEW_OFFER);
+        addTab(mpv5.YabsViewProxy.instance().newItemView(Item.TYPE_OFFER), Messages.NEW_OFFER);
     }//GEN-LAST:event_jButton10ActionPerformed
 
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
-        addTab(new ItemPanel2(Context.getOrder(), Item.TYPE_ORDER), Messages.NEW_ORDER);
+        addTab(mpv5.YabsViewProxy.instance().newItemView(Item.TYPE_ORDER), Messages.NEW_ORDER);
     }//GEN-LAST:event_jButton11ActionPerformed
 
     private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
@@ -2717,7 +2848,8 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
     }//GEN-LAST:event_jButton16ActionPerformed
 
     private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton17ActionPerformed
-        addOrShowTab(JournalPanel.instanceOf(), Messages.OVERVIEW);
+        //the name of the entry as tab title ("Overview" was used for two different views)
+        addOrShowTab(JournalPanel.instanceOf(), jButton17.getText());
     }//GEN-LAST:event_jButton17ActionPerformed
 
     private void helpmenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_helpmenuActionPerformed
@@ -2971,11 +3103,11 @@ private void jMenuItem51ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
 
 private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton23ActionPerformed
 
-    addOrShowTab(new ReceiptLookup(), Messages.OVERVIEW);
+    addOrShowTab(new ReceiptLookup(), jButton23.getText());
 }//GEN-LAST:event_jButton23ActionPerformed
 
     private void jButton30ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton30ActionPerformed
-        addTab(new ItemPanel2(Context.getCredit(), Item.TYPE_CREDIT), Messages.NEW_CREDIT);
+        addTab(mpv5.YabsViewProxy.instance().newItemView(Item.TYPE_CREDIT), Messages.NEW_CREDIT);
     }//GEN-LAST:event_jButton30ActionPerformed
 
     private void scustomersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_scustomersActionPerformed
@@ -2989,7 +3121,8 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     }//GEN-LAST:event_scustomersActionPerformed
 
     private void sjournalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sjournalActionPerformed
-        addOrShowTab(JournalPanel.instanceOf(), Messages.OVERVIEW);
+        //the name of the entry as tab title ("Overview" was used for two different views)
+        addOrShowTab(JournalPanel.instanceOf(), jButton17.getText());
     }//GEN-LAST:event_sjournalActionPerformed
 
     private void sproductsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sproductsActionPerformed
@@ -2997,7 +3130,7 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     }//GEN-LAST:event_sproductsActionPerformed
 
     private void sinvoicesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sinvoicesActionPerformed
-        addTab(new ItemPanel2(Context.getInvoice(), Item.TYPE_INVOICE), Messages.NEW_INVOICE);
+        addTab(mpv5.YabsViewProxy.instance().newItemView(Item.TYPE_INVOICE), Messages.NEW_INVOICE);
     }//GEN-LAST:event_sinvoicesActionPerformed
 
     private void simplenavActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_simplenavActionPerformed
@@ -3594,13 +3727,10 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 
     @Override
     public void removeTab(DataPanel t) {
-        int count = getTabPane().getTabCount();
-        for (int i = 0; i < count; i++) {
-            Component c = getTabPane().getComponent(i);
-            if (c == t) {
-                getTabPane().remove(c);
-            } else if (c instanceof JScrollPane && ((JScrollPane) c).getViewport().getView() == t) {
-                getTabPane().remove(c);
+        for (int i = getTabPane().getTabCount() - 1; i >= 0; i--) {
+            Component c = getTabPane().getComponentAt(i);
+            if (c == t || (c instanceof JScrollPane && ((JScrollPane) c).getViewport().getView() == t)) {
+                getTabPane().removeTabAt(i);
             }
         }
         getTabPane().validate();
@@ -3647,8 +3777,35 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     @Override
     public void showPreviousDatabaseObject() {
         if (hasPreviousDatabaseObject()) {
-            addOrShowTab(FLOW.get(pif - 1));
+            showInFlow(pif - 1);
         }
+    }
+
+    /**
+     * @return true if both are the same row of the database, also if they
+     * were loaded in different contexts (e.g. a contact as customer and as
+     * contact)
+     */
+    private static boolean sameRecord(DatabaseObject a, DatabaseObject b) {
+        return a != null && b != null && a.isExisting() && b.isExisting()
+                && a.__getIDS().equals(b.__getIDS()) && a.getDbIdentity().equals(b.getDbIdentity());
+    }
+
+    /**
+     * Back / forward: shows the record of the history, in its open tab if
+     * there is one (instead of opening it again)
+     */
+    private void showInFlow(int index) {
+        DatabaseObject d = FLOW.get(index);
+        for (int i = 0; i < getTabPane().getTabCount(); i++) {
+            DataPanel p = getTabAt(i);
+            if (p != null && sameRecord(d, p.getDataOwner())) {
+                getTabPane().setSelectedIndex(i);
+                setPointInFlow(index);
+                return;
+            }
+        }
+        addOrShowTab(d);
     }
 
     @Override
@@ -3659,7 +3816,7 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     @Override
     public void showNextDatabaseObject() {
         if (hasNextDatabaseObject()) {
-            addOrShowTab(FLOW.get(pif + 1));
+            showInFlow(pif + 1);
         }
     }
 

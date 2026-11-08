@@ -431,6 +431,11 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
 
     @Override
     public JComponent getView() {
+        //modern or classic view, as chosen by the user
+        mpv5.ui.panels.DataPanel modern = mpv5.YabsViewProxy.instance().getModernView(this);
+        if (modern != null) {
+            return (JComponent) modern;
+        }
         ItemPanel2 p = null;
         switch (__getInttype()) {
             case Item.TYPE_INVOICE:
@@ -704,38 +709,41 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
         map.put("netnodiscvalue", FormatNumber.formatDezimal(__getNetvalue())); //Netto Listenpreis
         map.put("netvalue", FormatNumber.formatDezimal(__getNetvalue().subtract(__getDiscountvalue()))); //Netto Listenpreis mit Rabatt
         map.put("taxvalue", FormatNumber.formatDezimal(__getTaxvalue()));
-        map.put("grosnodiscvalue", FormatNumber.formatDezimal(__getTaxvalue().add(__getNetvalue()))); //Brutto Listenpreis
-        map.put("grosvalue", FormatNumber.formatDezimal(__getTaxvalue().add(__getNetvalue().subtract(__getNetvalue())))); //Brutto Listenpreis mit Rabatt
+        //net/discount are before tax, the tax is after discount (per VAT rate)
+        map.put("grosnodiscvalue", FormatNumber.formatDezimal(getGrossAmount().add(__getDiscountGrosvalue()))); //Brutto Listenpreis
+        map.put("grosvalue", FormatNumber.formatDezimal(getGrossAmount())); //Brutto Listenpreis mit Rabatt
         map.put("discountvalue", FormatNumber.formatDezimal(__getDiscountvalue()));
         map.put("discounttax", FormatNumber.formatDezimal(__getDiscountGrosvalue().subtract(__getDiscountvalue())));
 
         map.put("netnodiscvaluef", FormatNumber.formatLokalCurrency(__getNetvalue()));
         map.put("netvaluef", FormatNumber.formatLokalCurrency(__getNetvalue().subtract(__getDiscountvalue())));
         map.put("taxvaluef", FormatNumber.formatLokalCurrency(__getTaxvalue()));
-        map.put("grosnodiscvaluef", FormatNumber.formatLokalCurrency(__getTaxvalue().add(__getNetvalue()).add(__getDiscountGrosvalue()).subtract(__getDiscountvalue())));
+        map.put("grosnodiscvaluef", FormatNumber.formatLokalCurrency(getGrossAmount().add(__getDiscountGrosvalue())));
         map.put("grosvaluef", FormatNumber.formatLokalCurrency(getGrossAmount()));
         map.put("discountvaluef", FormatNumber.formatLokalCurrency(__getDiscountvalue()));
         map.put("discounttaxf", FormatNumber.formatLokalCurrency(__getDiscountGrosvalue().subtract(__getDiscountvalue())));
 
         map.put("discountgrosvaluef", FormatNumber.formatLokalCurrency(__getDiscountGrosvalue()));
 
-        Map<Integer, BigDecimal> taxGroups = new HashMap<Integer, BigDecimal>();
+        //tax per VAT rate as on the invoice (EN 16931: rounded once per rate, so the
+        //groups add up to the tax total); rates with decimals (7.7 %) are kept apart
+        Map<String, BigDecimal> taxGroups = new java.util.LinkedHashMap<String, BigDecimal>();
+        java.util.List<mpv5.utils.numberformat.InvoiceMath.Line> lines = new java.util.ArrayList<mpv5.utils.numberformat.InvoiceMath.Line>();
         for (SubItem s : getSubitems()) {
-            Integer taxPercentValue = s.__getTaxpercentvalue().intValue();
-            if (!taxGroups.containsKey(taxPercentValue)) {
-                taxGroups.put(taxPercentValue, BigDecimal.ZERO);
-            }
-            taxGroups.put(taxPercentValue, taxGroups.get(taxPercentValue).add(s.getTotalTaxValue()));
+            lines.add(new mpv5.utils.numberformat.InvoiceMath.Line(s.effectiveQuantity(), s.__getExternalvalue(), s.__getDiscount(), s.__getTaxpercentvalue()));
+        }
+        for (Map.Entry<BigDecimal, BigDecimal[]> rate : mpv5.utils.numberformat.InvoiceMath.totals(lines).byRate.entrySet()) {
+            taxGroups.put(rate.getKey().stripTrailingZeros().toPlainString(), rate.getValue()[1]);
         }
 
         if (taxGroups.size() > 0) {
             //backwards compatibility
-            map.put("tax", FormatNumber.formatPercent(taxGroups.keySet().iterator().next()));
+            map.put("tax", FormatNumber.formatPercent(new BigDecimal(taxGroups.keySet().iterator().next())));
         }
 
         int index = 0;
         String taxGroupsText = "";
-        for (Map.Entry<Integer, BigDecimal> taxGroup : taxGroups.entrySet()) {
+        for (Map.Entry<String, BigDecimal> taxGroup : taxGroups.entrySet()) {
             index++;
             map.put("taxgroupvalue" + index, FormatNumber.formatDezimal(taxGroup.getValue()));
             map.put("taxgroup" + index, taxGroup.getKey());
@@ -765,8 +773,8 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
                 Log.Debug(this, "Error while using default.date.format: " + e);
             }
         }
-        map.put("dateend", df.format(__getDateend()));
-        map.put("datetodo", df.format(__getDatetodo()));
+        map.put("dateend", __getDateend() == null ? "" : df.format(__getDateend()));
+        map.put("datetodo", __getDatetodo() == null ? "" : df.format(__getDatetodo()));
         map.put("description", evaluateAll(__getDescription()));
         map.put("reference", getReferenceOrder());
         putPaymentFields(map, df);
@@ -836,9 +844,9 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     public void createRevenue() {
         Revenue r = new Revenue();
         r.setAccountsids(accountsids);
-        r.setNetvalue(netvalue);
-//        r.setTaxpercentvalue(taxvalue);
-        r.setBrutvalue(netvalue.add(taxvalue).subtract(discountvalue));
+        //net after discount, so that gross - net is the tax
+        r.setNetvalue(netvalue.subtract(discountvalue));
+        r.setBrutvalue(getGrossAmount());
         if (description != null && description.length() > 0) {
             r.setDescription(description);
         } else {

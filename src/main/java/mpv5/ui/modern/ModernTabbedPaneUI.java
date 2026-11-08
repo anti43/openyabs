@@ -66,9 +66,24 @@ public class ModernTabbedPaneUI extends BasicTabbedPaneUI {
         return super.calculateTabHeight(tabPlacement, tabIndex, fontHeight) + ModernTheme.px(2);
     }
 
+    /**
+     * @return the color of the strip behind the tabs: a bit darker than the
+     * view, so the tab row stands out from the bars above and below
+     */
+    static Color stripColor() {
+        return ModernTheme.blend(ModernTheme.background(), ModernTheme.foreground(), ModernTheme.isDark() ? 0.12f : 0.07f);
+    }
+
+    /**
+     * @return the color of tabs which are not selected
+     */
+    static Color tabColor() {
+        return ModernTheme.blend(stripColor(), ModernTheme.cardBackground(), 0.55f);
+    }
+
     @Override
     protected void paintTabArea(Graphics g, int tabPlacement, int selectedIndex) {
-        g.setColor(ModernTheme.background());
+        g.setColor(stripColor());
         Rectangle clip = g.getClipBounds();
         if (clip != null) {
             g.fillRect(clip.x, clip.y, clip.width, clip.height);
@@ -81,27 +96,39 @@ public class ModernTabbedPaneUI extends BasicTabbedPaneUI {
         Graphics2D g2 = (Graphics2D) g.create();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         int arc = ModernTheme.px(8);
+        int gap = ModernTheme.px(2);
         if (isSelected) {
             g2.setColor(ModernTheme.cardBackground());
-            //rounded at the top, straight at the bottom (joins the content)
-            g2.fillRoundRect(x, y, w, h + arc, arc, arc);
-        } else if (tabIndex == getRolloverTab()) {
-            g2.setColor(ModernTheme.blend(ModernTheme.background(), ModernTheme.cardBackground(), 0.6f));
-            g2.fillRoundRect(x + 1, y + 2, w - 2, h - 2, arc, arc);
+            //rounded at the top, open at the bottom (joins the content)
+            g2.fillRoundRect(x + gap, y, w - 2 * gap, h + arc, arc, arc);
+        } else {
+            g2.setColor(tabIndex == getRolloverTab() ? ModernTheme.blend(tabColor(), ModernTheme.cardBackground(), 0.6f) : tabColor());
+            g2.fillRoundRect(x + gap, y + gap, w - 2 * gap, h - 2 * gap, arc, arc);
         }
         g2.dispose();
     }
 
     @Override
     protected void paintTabBorder(Graphics g, int tabPlacement, int tabIndex, int x, int y, int w, int h, boolean isSelected) {
+        Graphics2D g2 = (Graphics2D) g.create();
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        int arc = ModernTheme.px(8);
+        int gap = ModernTheme.px(2);
         if (isSelected) {
-            Graphics2D g2 = (Graphics2D) g.create();
+            //outline open at the bottom, accent line on top
+            g2.setColor(ModernTheme.border());
+            g2.setClip(x, y, w, h);
+            g2.drawRoundRect(x + gap, y, w - 2 * gap - 1, h + arc, arc, arc);
+            g2.setClip(null);
             g2.setColor(ModernTheme.accent());
-            g2.setStroke(new BasicStroke(ModernTheme.px(3)));
+            g2.setStroke(new BasicStroke(ModernTheme.px(3), BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
             int ly = y + ModernTheme.px(1);
-            g2.drawLine(x + ModernTheme.px(4), ly, x + w - ModernTheme.px(4), ly);
-            g2.dispose();
+            g2.drawLine(x + gap + ModernTheme.px(4), ly, x + w - gap - ModernTheme.px(4), ly);
+        } else {
+            g2.setColor(ModernTheme.blend(ModernTheme.border(), stripColor(), 0.2f));
+            g2.drawRoundRect(x + gap, y + gap, w - 2 * gap - 1, h - 2 * gap - 1, arc, arc);
         }
+        g2.dispose();
     }
 
     @Override
@@ -115,6 +142,13 @@ public class ModernTabbedPaneUI extends BasicTabbedPaneUI {
         Insets in = tabPane.getInsets();
         g.setColor(ModernTheme.border());
         g.drawLine(in.left, in.top + y, tabPane.getWidth() - in.right, in.top + y);
+        //no line under the selected tab: it joins the content
+        if (selectedIndex >= 0) {
+            Rectangle r = getTabBounds(tabPane, selectedIndex);
+            int gap = ModernTheme.px(2);
+            g.setColor(ModernTheme.cardBackground());
+            g.drawLine(r.x + gap + 1, in.top + y, r.x + r.width - gap - 2, in.top + y);
+        }
     }
 
     @Override

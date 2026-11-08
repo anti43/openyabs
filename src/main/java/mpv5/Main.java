@@ -245,12 +245,18 @@ public class Main implements Runnable {
         checkSingleInstance();
 
         Log.Debug(this, "Startup procedure... ");
-        getApplication().getContext().getLocalStorage().setDirectory(new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR)));
+        //a relative cache dir (default "Cache", before the first-start wizard) is in the
+        //user's YaBS folder, not in the working dir (read-only for installed packages)
+        File cache = new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR));
+        if (!cache.isAbsolute() && MPPATH != null) {
+            cache = new File(MPPATH, cache.getPath());
+        }
+        getApplication().getContext().getLocalStorage().setDirectory(cache);
 
         splash.nextStep(Messages.FIRST_INSTANCE.toString());
         splash.nextStep(Messages.DB_CHECK.toString());
 
-        ControlPanel_Fonts.applyFont(Font.decode(LocalSettings.getProperty(LocalSettings.DEFAULT_FONT)));
+        mpv5.ui.modern.Zoom.applyStoredFont();
         if (FORCE_INSTALLER == null) {
             Log.Debug(this, "Probing database connection... ");
             if (probeDatabaseConnection()) {
@@ -691,6 +697,45 @@ public class Main implements Runnable {
     }
 
     /**
+     * Restarts YaBS: the same program (java with its arguments, or the
+     * launcher of an installed package) is started again when this one has
+     * shut down (database closed, settings saved)
+     */
+    public static void restart() {
+        try {
+            java.util.List<String> cmd = new java.util.ArrayList<String>();
+            String launcher = System.getProperty("jpackage.app-path");
+            if (launcher != null && launcher.length() > 0) {
+                //installed package: its launcher sets the Java options itself
+                cmd.add(launcher);
+            } else {
+                //java [JVM options] (-jar openyabs.jar | -cp <class path> <main class>) [arguments]
+                cmd.add(System.getProperty("java.home") + File.separator + "bin" + File.separator + "java");
+                cmd.addAll(java.lang.management.ManagementFactory.getRuntimeMXBean().getInputArguments());
+                String[] command = System.getProperty("sun.java.command", Main.class.getName()).trim().split("\\s+");
+                if (command[0].endsWith(".jar")) {
+                    cmd.add("-jar");
+                } else {
+                    cmd.add("-cp");
+                    cmd.add(System.getProperty("java.class.path"));
+                }
+                cmd.addAll(java.util.Arrays.asList(command));
+            }
+            final ProcessBuilder pb = new ProcessBuilder(cmd).directory(new File(System.getProperty("user.dir"))).inheritIO();
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                try {
+                    pb.start();
+                } catch (Exception e) {
+                    System.err.println("Restart failed: " + e);
+                }
+            }));
+            getApplication().exit();
+        } catch (Exception e) {
+            Log.Debug(Main.class, e);
+        }
+    }
+
+    /**
      * Redirect derby log file
      */
     public static void setDerbyLog() {
@@ -708,11 +753,48 @@ public class Main implements Runnable {
     }
 
     /**
-     *
-     * @param lafname
+     * The user explicitly chose the look and feel of the system (View &gt;
+     * Layout &gt; System)
      */
-    public static void setLaF(final String lafname) {
+    public static final String SYSTEM_LAF = "system";
+
+    /**
+     * The look and feel to use: the user's choice; if the user did not choose
+     * one (or only the default of the platform), the modern look and feel when
+     * the modern views are enabled. {@link #SYSTEM_LAF} always means the look
+     * and feel of the system.
+     *
+     * @param lafname the user's look and feel (class name), may be empty
+     * @return the class name of the look and feel to use, or null for the
+     * system look and feel
+     */
+    public static String effectiveLaF(String lafname) {
+        if (SYSTEM_LAF.equals(lafname)) {
+            return null;
+        }
+        //no choice (or only the default of the platform): modern if enabled
+        if (lafname == null || lafname.trim().length() == 0
+                || lafname.equals(UIManager.getSystemLookAndFeelClassName())
+                || lafname.equals(UIManager.getCrossPlatformLookAndFeelClassName())) {
+            try {
+                if (YabsViewProxy.instance().isModernUi()) {
+                    return mpv5.ui.modern.YabsLookAndFeel.class.getName();
+                }
+            } catch (Exception e) {
+                Log.Debug(Main.class, e);
+            }
+        }
+        return lafname;
+    }
+
+    /**
+     *
+     * @param lafname0
+     */
+    public static void setLaF(final String lafname0) {
         if (!Main.nolf && !HEADLESS) {
+            mpv5.ui.modern.YabsLookAndFeel.register();
+            final String lafname = effectiveLaF(lafname0);
             try {
                 if (lafname != null && lafname.trim().length() > 0) {
                     try {
@@ -729,6 +811,9 @@ public class Main implements Runnable {
                     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                 }
                 LookAndFeelAddons.setAddon(LookAndFeelAddons.getBestMatchAddonClassName());
+                if (mpv5.ui.modern.YabsLookAndFeel.isActive()) {
+                    mpv5.ui.modern.ClassicPolish.hookWindows();
+                }
 
             } catch (Exception exe) {
                 try {

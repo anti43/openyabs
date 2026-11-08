@@ -111,7 +111,19 @@ public final class ShortcutsDialog {
         info.setAlignmentX(Component.LEFT_ALIGNMENT);
         p.add(info);
 
+        int ctrl0 = InputEvent.CTRL_DOWN_MASK;
+        List<Object[]> general = new ArrayList<Object[]>();
+        general.add(new Object[]{keys(k(KeyEvent.VK_PLUS, ctrl0), k(KeyEvent.VK_EQUALS, ctrl0), k(KeyEvent.VK_ADD, ctrl0)), Messages.ZOOM_IN.toString()});
+        general.add(new Object[]{keys(k(KeyEvent.VK_MINUS, ctrl0), k(KeyEvent.VK_SUBTRACT, ctrl0)), Messages.ZOOM_OUT.toString()});
+        general.add(new Object[]{keys(k(KeyEvent.VK_0, ctrl0), k(KeyEvent.VK_NUMPAD0, ctrl0)), Messages.ZOOM_RESET.toString()});
+        general.add(new Object[]{keys(k(KeyEvent.VK_ESCAPE, 0)), Messages.SHORTCUT_ESCAPE.toString()});
+        add(p, Messages.SHORTCUTS_GENERAL.toString(), general);
         add(p, Messages.SHORTCUTS_RECORD.toString(), ModernCommandBar.shortcuts());
+        List<Object[]> positions = new ArrayList<Object[]>();
+        positions.add(new Object[]{keys(k(KeyEvent.VK_F, ctrl0)), Messages.SHORTCUT_POSITIONS_FIND.toString()});
+        positions.add(new Object[]{keys(k(KeyEvent.VK_TAB, 0), k(KeyEvent.VK_TAB, InputEvent.SHIFT_DOWN_MASK)), Messages.SHORTCUT_POSITIONS_TAB.toString()});
+        positions.add(new Object[]{keys(k(KeyEvent.VK_F2, 0)), Messages.SHORTCUT_POSITIONS_EDIT.toString()});
+        add(p, Messages.SHORTCUTS_POSITIONS.toString(), positions);
         add(p, Messages.SHORTCUTS_MENU.toString(), menuShortcuts(menuBar));
         List<Object[]> text = new ArrayList<Object[]>();
         int ctrl = InputEvent.CTRL_DOWN_MASK;
@@ -120,7 +132,7 @@ public final class ShortcutsDialog {
         text.add(new Object[]{keys(k(KeyEvent.VK_BACK_SPACE, ctrl), k(KeyEvent.VK_DELETE, ctrl)), Messages.SHORTCUT_TEXT_WORD.toString()});
         text.add(new Object[]{keys(k(KeyEvent.VK_TAB, 0), k(KeyEvent.VK_TAB, InputEvent.SHIFT_DOWN_MASK)), Messages.SHORTCUT_TEXT_FIELDS.toString()});
         text.add(new Object[]{keys(k(KeyEvent.VK_ENTER, 0)), Messages.SHORTCUT_TEXT_SEARCH.toString()});
-        text.add(new Object[]{keys(k(KeyEvent.VK_C, ctrl)), Messages.SHORTCUT_TABLE_COPY.toString()});
+        text.add(new Object[]{keys(k(KeyEvent.VK_C, ctrl), k(KeyEvent.VK_V, ctrl)), Messages.SHORTCUT_TABLE_COPY.toString()});
         add(p, Messages.SHORTCUTS_TEXT.toString(), text);
         return p;
     }

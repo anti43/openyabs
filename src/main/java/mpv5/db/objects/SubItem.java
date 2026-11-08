@@ -134,6 +134,15 @@ public final class SubItem extends DatabaseObject implements Triggerable {
     }
 
     public static LinkedList<SubItem> saveModelMinus(Item dataOwner, MPTableModel model, boolean deleteRemovedSubitems, boolean cloneSubitems, Item item) {
+        return saveModelMinus(dataOwner, model, deleteRemovedSubitems, cloneSubitems, item, 0);
+    }
+
+    /**
+     * Saves the positions of the model negated (e.g. a deposit deducted in the
+     * final invoice), numbered from firstOrdernr on (after the positions
+     * already saved)
+     */
+    public static LinkedList<SubItem> saveModelMinus(Item dataOwner, MPTableModel model, boolean deleteRemovedSubitems, boolean cloneSubitems, Item item, int firstOrdernr) {
         List<Object[]> rowsl = model.getValidRows(new int[]{4});
         LinkedList<SubItem> items = new LinkedList<SubItem>();
         Log.Debug(SubItem.class, "Rows found: " + rowsl.size());
@@ -145,7 +154,7 @@ public final class SubItem extends DatabaseObject implements Triggerable {
                 }
             }
             SubItem it = new SubItem();
-            it.setOrdernr(i);
+            it.setOrdernr(firstOrdernr + i);
             Log.Print(Arrays.asList(row));
             try {
                 if (!cloneSubitems && row[0] != null && Integer.valueOf(row[0].toString()) > 0) {
@@ -186,7 +195,7 @@ public final class SubItem extends DatabaseObject implements Triggerable {
                 it.setGroupsids(dataOwner.__getGroupsids());
             }
             it.save(true);
-            items.add(it.getOrdernr(), it);
+            items.add(it);
         }
 
         if (deleteRemovedSubitems) {
@@ -370,7 +379,7 @@ public final class SubItem extends DatabaseObject implements Triggerable {
 
         if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("defcount")) {
             Double defcount = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("defcount", 0d);
-            i.setQuantityvalue(new BigDecimal(defcount));
+            i.setQuantityvalue(BigDecimal.valueOf(defcount));
         } else {
             i.setQuantityvalue(BigDecimal.ONE);
         }
@@ -480,7 +489,7 @@ public final class SubItem extends DatabaseObject implements Triggerable {
         Double defcount = 1d;
         if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("defcount")) {
             defcount = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("defcount", 0d);
-            i.setQuantityvalue(new BigDecimal(defcount));
+            i.setQuantityvalue(BigDecimal.valueOf(defcount));
         }
         return i;
     }
@@ -600,8 +609,11 @@ public final class SubItem extends DatabaseObject implements Triggerable {
      * @param quantity the quantity to set
      */
     public void setQuantityvalue(BigDecimal quantity) {
+        if (quantity == null) {
+            quantity = BigDecimal.ZERO;
+        }
         this.quantityvalue = quantity;
-        if (quantity.compareTo(BigDecimal.ZERO) == 0) {
+        if (quantity.signum() == 0) {
             setInttype(TYPE_TEXT);
         }
     }
@@ -690,6 +702,11 @@ public final class SubItem extends DatabaseObject implements Triggerable {
     public JComponent getView() {
         try {
             Item dos = (Item) DatabaseObject.getObject(Context.getInvoice(), __getItemsids());
+            //the view of the document, modern or classic
+            mpv5.ui.panels.DataPanel modern = mpv5.YabsViewProxy.instance().getModernView(dos);
+            if (modern != null) {
+                return (JComponent) modern;
+            }
             ItemPanel2 ip = null;
             switch (dos.__getInttype()) {
                 case Constants.TYPE_OFFER:
@@ -968,9 +985,53 @@ public final class SubItem extends DatabaseObject implements Triggerable {
         this.totalbrutvalue = totalbrutvalue;
     }
 
+    /**
+     * @return true if the user multiplies the quantity with the number in the
+     * optional column (setting "itempanel.calculateoptionalcol")
+     */
+    public static boolean isOptionalColumnCalculated() {
+        try {
+            return mpv5.db.objects.User.getCurrentUser().getProperty("org.openyabs.uiproperty", "itempanel.calculateoptionalcol");
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * The factor of the optional column: its number ("3", "2,5", "3 months"),
+     * 1 if it is empty or not a number
+     *
+     * @param value the cell / the stored text
+     * @return the factor
+     */
+    public static BigDecimal optionalFactor(Object value) {
+        if (value instanceof Number) {
+            return getBigDecimal(value);
+        }
+        if (value == null || String.valueOf(value).trim().length() == 0) {
+            return BigDecimal.ONE;
+        }
+        try {
+            BigDecimal v = parseDezimal(String.valueOf(value).trim());
+            return v == null ? BigDecimal.ONE : v;
+        } catch (Exception e) {
+            return BigDecimal.ONE;
+        }
+    }
+
+    /**
+     * @return the quantity the amounts are computed with: the quantity, times
+     * the optional column if the user calculates it (as in the table, so the
+     * saved line, the totals and the e-invoice agree)
+     */
+    public BigDecimal effectiveQuantity() {
+        BigDecimal q = quantityvalue == null ? BigDecimal.ZERO : quantityvalue;
+        return isOptionalColumnCalculated() ? q.multiply(optionalFactor(getCname())) : q;
+    }
+
     static void calculate(SubItem s) {
         //EN 16931 arithmetic, rounded per line like the item table and the e-invoice
-        BigDecimal q = s.quantityvalue, p = s.externalvalue, d = s.__getDiscount(), t = s.taxpercentvalue;
+        BigDecimal q = s.effectiveQuantity(), p = s.externalvalue, d = s.__getDiscount(), t = s.taxpercentvalue;
         BigDecimal tax = mpv5.utils.numberformat.InvoiceMath.lineTax(q, p, d, t);
         s.setTotalnetvalue(mpv5.utils.numberformat.InvoiceMath.lineAmount(q, p));
         s.defDiscvalue(mpv5.utils.numberformat.InvoiceMath.lineDiscount(q, p, d));
@@ -1102,7 +1163,8 @@ public final class SubItem extends DatabaseObject implements Triggerable {
      * @return the line or null if this is a text only / empty row
      */
     public IZUGFeRDExportableItem asZugpferdSubitem(String taxExemptionReason) {
-        BigDecimal quantity = quantityvalue == null ? BigDecimal.ZERO : quantityvalue;
+        //with the factor of the optional column if the user calculates it
+        BigDecimal quantity = effectiveQuantity();
         BigDecimal price = externalvalue == null ? BigDecimal.ZERO : externalvalue;
         //2 decimals: hidden decimals would split the VAT breakdown (BR-S-08)
         BigDecimal tax = mpv5.utils.numberformat.InvoiceMath.rate(taxpercentvalue);

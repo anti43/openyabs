@@ -2168,7 +2168,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
                             boolean hasFocus, int row, int col) {
                         try {
-                            if (table.getValueAt(row, 0).equals(BigDecimal.ZERO) && col == 4) {
+                            if ((table.getValueAt(row, 0) instanceof BigDecimal && ((BigDecimal) table.getValueAt(row, 0)).signum() == 0) && col == 4) {
                                 this.setText("---");
                             } else {
                                 this.setText(value.toString());
@@ -2176,7 +2176,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                         } catch (Exception e) {
                         }
 
-                        if ((float) table.getValueAt(row, 5) > 1 || table.getValueAt(row, 0).equals(BigDecimal.ZERO)) {
+                        if ((float) table.getValueAt(row, 5) > 1 || (table.getValueAt(row, 0) instanceof BigDecimal && ((BigDecimal) table.getValueAt(row, 0)).signum() == 0)) {
                             this.setBackground(Color.RED);
                         } else {
                             this.setBackground(Color.WHITE);
@@ -2693,34 +2693,8 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                 Item o = (Item) dbo.clone();
 
                 if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "pasten")) {
-                    SubItem s = new SubItem();
-                    s.setQuantityvalue(BigDecimal.ONE);
-//                    s.setItemsids(o.__getIDS());
-                    s.setInternalvalue(((Item) dbo).__getNetvalue());
-                    s.setExternalvalue(((Item) dbo).__getNetvalue());
-                    s.setTotalnetvalue(((Item) dbo).__getNetvalue());
-                    s.setTotalbrutvalue(((Item) dbo).__getNetvalue().add(((Item) dbo).__getTaxvalue()));
-                    if (s.__getTotalnetvalue().doubleValue() > 0d) {
-                        BigDecimal tp = s.__getTotalbrutvalue().subtract(s.__getTotalnetvalue()).multiply(Constants.BD100).divide(s.__getTotalnetvalue(), 9, RoundingMode.HALF_UP);
-                        if (tpvs == null) {
-                            tpvs = tp;
-                        }
-//                        if (tpvs.equals(tpvs)) {
-                        s.setTaxpercentvalue(tp);
-//                        } else {
-//                            Popup.warn(Messages.TAXES_NOT_EQUAL);
-//                            break;
-//                        }
-                    }
-                    s.setCname(((Item) dbo).__getCname());
-                    s.setDescription(Messages.GOOSE1 + " " + ((Item) dbo).__getCnumber() + " " + Messages.GOOSE2 + " " + DateConverter.getDefDateString(o.__getDateadded()));
-//                   if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("deftax")) {
-//                        int taxid = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("deftax", new Integer(0));
-//                        BigDecimal deftax = Tax.getTaxValue(taxid);
-//                        s.setTaxpercentvalue(deftax);
-//                    }
-
-//                    Log.PrintArray(s.toStringArray());
+                    //the document as position(s): one per VAT rate, net after discount
+                    String text = Messages.GOOSE1 + " " + ((Item) dbo).__getCnumber() + " " + Messages.GOOSE2 + " " + DateConverter.getDefDateString(o.__getDateadded());
                     afterSaveRunnables.add(new Runnable() {
 
                         @Override
@@ -2731,7 +2705,9 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                     });
 
                     omodel = (MPTableModel) itemtable.getModel();
-                    omodel.addRow(s.getRowData(omodel.getRowCount() + 1));
+                    for (SubItem s : mpv5.handler.ItemService.asPositions((Item) dbo, text)) {
+                        omodel.addRow(s.getRowData(omodel.getRowCount() + 1));
+                    }
                     ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
 
                 } else {
@@ -2743,26 +2719,8 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                     o.setDatetodo(new Date());
                     o.setDateend(new Date());
 
-                    SubItem[] sitems = ((Item) dbo).getSubitems();
-                    SubItem[] subs = new SubItem[sitems.length];
-                    for (int i = 0; i < sitems.length; i++) {
-                        SubItem si = sitems[i];
-                        SubItem psi = new SubItem();
-                        psi.setQuantityvalue(BigDecimal.ONE);
-                        psi.setInternalvalue(si.__getInternalvalue());
-                        psi.setExternalvalue(si.__getExternalvalue());
-                        psi.setTotalnetvalue(si.__getTotalnetvalue());
-                        psi.setTotalbrutvalue(((Item) dbo).__getNetvalue().add(((Item) dbo).__getTaxvalue()));
-                        if (psi.__getTotalnetvalue().doubleValue() > 0d) {
-                            BigDecimal tp = psi.__getTotalbrutvalue().subtract(psi.__getTotalnetvalue()).multiply(Constants.BD100).divide(psi.__getTotalnetvalue(), 9, RoundingMode.HALF_UP);
-                            psi.setTaxpercentvalue(tp);
-                        }
-                        psi.setCname(si.__getCname());
-                        psi.setDescription(si.__getDescription());
-                        psi.setCountvalue(si.__getCountvalue());
-                        psi.setOrdernr(si.__getCountvalue().intValue());
-                        subs[i] = psi;
-                    }
+                    //the positions as they are (quantity, unit, price, VAT rate, discount, product)
+                    SubItem[] subs = mpv5.handler.ItemService.copyPositions((Item) dbo);
                     o.setIDS(-1);
                     setDataOwner(o, true);
 
@@ -3016,6 +2974,14 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         taxcalculator.setRowFunction(v -> mpv5.utils.numberformat.InvoiceMath.lineTax(quantity(v, optional), cell(v, 5), cell(v, 15), cell(v, 6)));
         itemMultiplier.setRowFunction(v -> mpv5.utils.numberformat.InvoiceMath.lineNet(quantity(v, optional), cell(v, 5), cell(v, 15))
                 .add(mpv5.utils.numberformat.InvoiceMath.lineTax(quantity(v, optional), cell(v, 5), cell(v, 15), cell(v, 6))));
+        //the optional column holds text ("3", "3 months"): its number is the factor
+        if (optional) {
+            for (DynamicTableCalculator c : new DynamicTableCalculator[]{netCalculator, discnetcalculator, discbrutcalculator, taxcalculator, itemMultiplier}) {
+                c.setColumnParser(14, SubItem::optionalFactor);
+            }
+        }
+        //the price of a product follows its staggered prices when the quantity changes
+        mpv5.handler.ItemService.followStaggeredPrices((MPTableModel) itemtable.getModel());
         taxcalculator.setSumFunction(m -> invoiceTotals(m, optional).tax);
         itemMultiplier.setSumFunction(m -> invoiceTotals(m, optional).gross);
 
@@ -3053,18 +3019,20 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                 if (!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "ordersoverproducts")) {
                     ProductSelectDialog.instanceOf((MPTableModel) itemtable.getModel(), itemtable.getSelectedRow(), e, 0, null, null);
                 } else {
-                    SubItem s = new SubItem();
                     Item o = (Item) Popup.SelectValue(Context.getOrder());
                     if (o != null) {
-                        s.setQuantityvalue(BigDecimal.ONE);
-                        s.setItemsids(o.__getIDS());
-                        s.setExternalvalue(o.__getNetvalue().add(o.__getTaxvalue()));
-                        s.setTotalnetvalue(o.__getNetvalue());
-                        s.setCname(o.__getCname());
-                        s.setDescription(Messages.TYPE_ORDER + " " + o.__getCnumber() + " " + DateConverter.getDefDateString(o.__getDateadded()));
-
-                        ((MPTableModel) itemtable.getModel()).setRowAt(s.getRowData(itemtable.getSelectedRow()), itemtable.getSelectedRow(), 1);
-
+                        //the order as position(s): one per VAT rate, net after discount
+                        //(before: the gross amount as net price without VAT)
+                        int row = itemtable.getSelectedRow();
+                        MPTableModel m = ((MPTableModel) itemtable.getModel());
+                        java.util.List<SubItem> ps = mpv5.handler.ItemService.asPositions(o,
+                                Messages.TYPE_ORDER + " " + o.__getCnumber() + " " + DateConverter.getDefDateString(o.__getDateadded()));
+                        for (int k = 0; k < ps.size(); k++) {
+                            if (k > 0) {
+                                m.insertRow(row + k);
+                            }
+                            m.setRowAt(ps.get(k).getRowData(row + k), row + k, 1);
+                        }
                         usedOrders.add(o);
                     }
                 }
@@ -3314,107 +3282,19 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
 
     private void toInvoice(int itemType) {
         dataOwner.getPanelData(this);
-        dataOwner.setIntstatus(Item.STATUS_FINISHED);
-        dataOwner.save();
-        ArrayList<ActivityList> data;
-        Object[] row;
-        Item i2;
-        switch (itemType) {
-            case Item.TYPE_INVOICE:
-                i2 = (Item) dataOwner.clone(Context.getInvoice());
-                break;
-            case Item.TYPE_PART_PAYMENT:
-                i2 = (Item) dataOwner.clone(Context.getPartPayment());
-                break;
-            case Item.TYPE_DEPOSIT:
-                i2 = (Item) dataOwner.clone(Context.getDeposit());
-                break;
-            case Item.TYPE_CREDIT:
-                i2 = (Item) dataOwner.clone(Context.getCredit());
-                break;
-            default:
-                return;
-        }
-        i2.setIntstatus(Item.STATUS_QUEUED);
-        i2.setInttype(itemType);
-        i2.setIDS(-1);
-        i2.defineFormatHandler(new FormatHandler(i2));
-        boolean test = i2.save();
         if (itemtable.getCellEditor() != null) {
             try {
                 itemtable.getCellEditor().stopCellEditing();
             } catch (Exception e) {
             }
         }
-        try {
-            data = DatabaseObject.getObjects(Context.getActivityList(), new QueryCriteria("orderids", dataOwner.__getIDS()));
-            if (Popup.Y_N_dialog(Messages.ActivityList_Existing.toString())) {
-                MPTableModel model = (MPTableModel) itemtable.getModel();
-                Iterator<ActivityList> it = data.iterator();
-                while (it.hasNext()) {
-                    SubItem s = it.next().getDataForInvoice();
-                    s.setOrdernr(model.getRowCount());
-                    s.setItemsids(i2.__getIDS());
-                    model.insertRow(model.getRowCount(), s.getRowData(model.getRowCount()));
-                }
-            }
-        } catch (NodataFoundException ex) {
-            Log.Debug(this, ex.getMessage());
+        //same as the modern view: final invoices from deposits contain the order's
+        //positions, all earlier deposits are deducted, totals from the positions
+        Item i2 = mpv5.handler.ItemService.toInvoice(dataOwner, itemType, (MPTableModel) itemtable.getModel(), q -> Popup.Y_N_dialog(q));
+        if (i2 != null) {
+            setDataOwner(i2, true);
+            Popup.notice(i2 + Messages.INSERTED.getValue());
         }
-        if (itemType == Item.TYPE_INVOICE
-                && (dataOwner.__getInttype() == Item.TYPE_DEPOSIT
-                || dataOwner.__getInttype() == Item.TYPE_PART_PAYMENT)) {
-            SubItem.saveModelMinus(i2, (MPTableModel) itemtable.getModel(), true, true, dataOwner);
-        } else {
-            SubItem.saveModel(i2, (MPTableModel) itemtable.getModel(), true, true);
-        }
-
-        if (itemType == Item.TYPE_INVOICE && dataOwner.__getRefOrderIDS() != null) {
-            ArrayList<Item> data2 = null;
-            int orderIDS = 0;
-            if (dataOwner.__getInttype() == Item.TYPE_PART_PAYMENT
-                    || dataOwner.__getInttype() == Item.TYPE_DEPOSIT) {
-                orderIDS = dataOwner.__getRefOrderIDS();
-            } else if (dataOwner.__getInttype() == Item.TYPE_ORDER) {
-                orderIDS = dataOwner.__getIDS();
-            }
-            ArrayList<Item> d1 = null;
-            try {
-                d1 = DatabaseObject.getObjects(Context.getDeposit(), new QueryCriteria("reforderids", orderIDS));
-            } catch (NodataFoundException ex) {
-                Log.Debug(this, ex.getMessage());
-            }
-            ArrayList<Item> d2 = null;
-            try {
-                d2 = DatabaseObject.getObjects(Context.getPartPayment(), new QueryCriteria("reforderids", orderIDS));
-            } catch (NodataFoundException ex) {
-                Log.Debug(this, ex.getMessage());
-            }
-
-            if (d1 != null && d2 != null) {
-                data2 = ArrayUtilities.merge(d1, d2);
-            } else if (d1 != null) {
-                data2 = d1;
-            } else if (d2 != null) {
-                data2 = d2;
-            }
-            if (data2 != null && data2.size() > 1 && Popup.Y_N_dialog(Messages.PartPayment_Existing.toString())) {
-                MPTableModel model = (MPTableModel) itemtable.getModel();
-                Iterator<Item> it = data2.iterator();
-                while (it.hasNext()) {
-                    Item i = it.next();
-                    if (Objects.equals(i.__getIDS(), dataOwner.__getIDS())) {
-                        continue;
-                    }
-                    SubItem.saveModelMinus(i2, SubItem.toModel(i.getSubitems()), true, true, i);
-                }
-            }
-        }
-        
-        i2.setReforderids(dataOwner.__getIDS());
-        
-        setDataOwner(i2, true);
-        Popup.notice(i2 + Messages.INSERTED.getValue());
     }
 
     private static BigDecimal cell(java.util.Map<Integer, BigDecimal> values, int column) {
@@ -3441,10 +3321,13 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         java.util.List<mpv5.utils.numberformat.InvoiceMath.Line> lines = new java.util.ArrayList<mpv5.utils.numberformat.InvoiceMath.Line>();
         for (int r = 0; r < m.getRowCount(); r++) {
             java.util.Map<Integer, BigDecimal> v = new java.util.HashMap<Integer, BigDecimal>();
-            for (int c : new int[]{2, 5, 6, 14, 15}) {
+            for (int c : new int[]{2, 5, 6, 15}) {
                 if (c < m.getColumnCount() && m.getValueAt(r, c) instanceof Number) {
                     v.put(c, FormatNumber.getBigDecimal(m.getValueAt(r, c)));
                 }
+            }
+            if (optional && 14 < m.getColumnCount()) {
+                v.put(14, SubItem.optionalFactor(m.getValueAt(r, 14)));
             }
             lines.add(new mpv5.utils.numberformat.InvoiceMath.Line(quantity(v, optional), cell(v, 5), cell(v, 15), cell(v, 6)));
         }
@@ -3514,7 +3397,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         }
 
         private void calcStatus() {
-            if (!this.ordered.equals(BigDecimal.ZERO)) {
+            if (this.ordered.signum() != 0) {
                 this.status = this.used.divide(this.ordered, 2, RoundingMode.HALF_UP).floatValue();
             }
             this.percent = Math.round(((Float) this.status) * 100f);

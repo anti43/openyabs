@@ -30,11 +30,13 @@ public class FormatNumber {
      * Represents a short decimal format
      */
     public static final String FORMAT_DECIMAL_SHORT = "#0.0#";
-    private static final DecimalFormat ShortDecimalFormat = new DecimalFormat(FORMAT_DECIMAL_SHORT);
-    private static final DecimalFormat DefaultDecimalFormat = new DecimalFormat(FORMAT_DECIMAL);
-
+    /**
+     * @return a new short decimal format in the current default locale
+     * (DecimalFormat is mutable and not thread safe, and the locale is set at
+     * login - so no shared instance)
+     */
     public static NumberFormat getShortDecimalFormat() {
-        return ShortDecimalFormat;
+        return new DecimalFormat(FORMAT_DECIMAL_SHORT, java.text.DecimalFormatSymbols.getInstance());
     }
 
     /**
@@ -53,7 +55,7 @@ public class FormatNumber {
      * @return
      */
     public static NumberFormat getDefaultDecimalFormat() {
-        return DefaultDecimalFormat;
+        return new DecimalFormat(FORMAT_DECIMAL, java.text.DecimalFormatSymbols.getInstance());
     }
 
     /**
@@ -90,9 +92,9 @@ public class FormatNumber {
      * @return
      */
     public static BigDecimal round(Number number) {
-        BigDecimal b = new BigDecimal(number.toString());
-        b = b.setScale(2, BigDecimal.ROUND_HALF_UP);
-        return b;
+        //toString: the decimal the user sees (0.1, not the binary 0.1000000000000000055...)
+        BigDecimal b = number instanceof BigDecimal ? (BigDecimal) number : new BigDecimal(number.toString());
+        return b.setScale(2, java.math.RoundingMode.HALF_UP);
     }
 
     /**
@@ -108,9 +110,10 @@ public class FormatNumber {
         }
         number = number.replace("%", "");//Remove percent symbol
         java.text.DecimalFormat n = (DecimalFormat) getDefaultDecimalFormat();
-        n.setMaximumFractionDigits(2);
+        //exact: parse to BigDecimal, not via double
+        n.setParseBigDecimal(true);
         try {
-            return new BigDecimal(n.parse(number).toString());
+            return asBigDecimal(n.parse(number.trim()));
         } catch (ParseException ex) {
             Log.Debug(FormatNumber.class, ex.getMessage());
             Locale[] Locales = Locale.getAvailableLocales();
@@ -126,8 +129,7 @@ public class FormatNumber {
             }
             try {
                 //Try to parse the String with the default locale, but with removed currency signs
-                Number result = NumberFormat.getNumberInstance().parse(number);
-                return new BigDecimal(result.toString());
+                return asBigDecimal(n.parse(number.trim()));
             } catch (ParseException parseException) {
             }
             return null;
@@ -145,7 +147,7 @@ public class FormatNumber {
             Float number) {
         java.text.DecimalFormat n = (DecimalFormat) getDefaultDecimalFormat();
         n.setMaximumFractionDigits(2);
-        return n.format(round(Double.valueOf(number)));
+        return n.format(round(new BigDecimal(number.toString())));
     }
 
     /**
@@ -214,7 +216,8 @@ public class FormatNumber {
         } else if (val instanceof Long) {
             return BigDecimal.valueOf((Long) val);
         } else if (val instanceof Float) {
-            return BigDecimal.valueOf((Float) val);
+            //not valueOf(double): 0.1f would become 0.10000000149011612
+            return new BigDecimal(val.toString());
         } else if (val instanceof Double) {
             return BigDecimal.valueOf((Double) val);
         } else {
@@ -222,6 +225,10 @@ public class FormatNumber {
         }
 
         return new BigDecimal(val.toString());
+    }
+
+    private static BigDecimal asBigDecimal(Number n) {
+        return n instanceof BigDecimal ? (BigDecimal) n : new BigDecimal(n.toString());
     }
 
     public static BigDecimal getBigDecimal(TableModel m, int row, int col) {

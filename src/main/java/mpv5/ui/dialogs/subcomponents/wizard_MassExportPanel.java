@@ -242,6 +242,10 @@ public class wizard_MassExportPanel extends javax.swing.JPanel implements Wizard
         final javax.swing.JProgressBar bar = master.getProgressbar();
         final java.util.HashMap<String, Object> mails = new java.util.HashMap<String, Object>();
         final int total = data.size();
+        //files written from now on (in the folders of the new invoices) are listed at the end;
+        //a little earlier because of the time resolution of some file systems
+        final long started = System.currentTimeMillis() - 2000;
+        final List<Item> createdItems = new java.util.ArrayList<Item>();
         running = true;
         onEdt(() -> {
             setControlsEnabled(false);
@@ -264,6 +268,7 @@ public class wizard_MassExportPanel extends javax.swing.JPanel implements Wizard
                 if (created[0] == null) {
                     continue;
                 }
+                createdItems.add(created[0]);
                 if (createEInvoice) {
                     //creating and checking takes a few seconds (the first check longer: the rules are loaded)
                     progress(bar, number, total, created[0].__getCnumber() + ": " + mpv5.globals.Messages.MASSEXPORT_EINVOICE_CHECKING, true);
@@ -304,9 +309,75 @@ public class wizard_MassExportPanel extends javax.swing.JPanel implements Wizard
                         }
                     }, "Emails: " + mpv5.globals.Messages.DONE).execute();
                 }
+                showResults(createdItems, started);
                 master.isEnd(true);
             });
         }
+    }
+
+    /**
+     * The log with the created files as links: a click opens the file (or the
+     * folder) with the program of the system
+     */
+    private void showResults(List<Item> items, long since) {
+        java.util.LinkedHashSet<java.io.File> dirs = new java.util.LinkedHashSet<java.io.File>();
+        for (Item i : items) {
+            try {
+                dirs.add(mpv5.db.objects.User.getSaveDir(i));
+            } catch (Exception e) {
+                mpv5.logging.Log.Debug(this, e);
+            }
+        }
+        final List<java.io.File> files = new java.util.ArrayList<java.io.File>();
+        for (java.io.File d : dirs) {
+            java.io.File[] in = d.listFiles();
+            if (in == null) {
+                continue;
+            }
+            java.util.Arrays.sort(in);
+            for (java.io.File f : in) {
+                if (f.isFile() && f.lastModified() >= since) {
+                    files.add(f);
+                }
+            }
+        }
+        final List<java.io.File> folders = new java.util.ArrayList<java.io.File>(dirs);
+        StringBuilder h = new StringBuilder("<html><body style='font-family:sans-serif'>");
+        h.append("<pre style='font-family:sans-serif'>").append(html(jTextArea2.getText())).append("</pre>");
+        h.append("<p><b>").append(html(mpv5.globals.Messages.MASSEXPORT_FILES.toString())).append(" (").append(files.size()).append(")</b></p>");
+        if (files.isEmpty()) {
+            h.append("<p>").append(html(mpv5.globals.Messages.MASSEXPORT_NO_FILES.toString())).append("</p>");
+        }
+        for (int i = 0; i < files.size(); i++) {
+            h.append("<p><a href='f:").append(i).append("'>").append(html(files.get(i).getName())).append("</a>")
+                    .append(" &nbsp; <font color='#6b7280'>").append(html(files.get(i).getParent())).append("</font></p>");
+        }
+        for (int i = 0; i < folders.size(); i++) {
+            h.append("<p><a href='d:").append(i).append("'>").append(html(mpv5.globals.Messages.MASSEXPORT_OPEN_FOLDER.toString()))
+                    .append(": ").append(html(folders.get(i).getPath())).append("</a></p>");
+        }
+        h.append("</body></html>");
+        javax.swing.JEditorPane pane = new javax.swing.JEditorPane("text/html", h.toString());
+        pane.setEditable(false);
+        pane.addHyperlinkListener(e -> {
+            if (e.getEventType() != javax.swing.event.HyperlinkEvent.EventType.ACTIVATED || e.getDescription() == null) {
+                return;
+            }
+            String ref = e.getDescription();
+            try {
+                int n = Integer.parseInt(ref.substring(2));
+                mpv5.utils.files.FileDirectoryHandler.open(ref.startsWith("f:") ? files.get(n) : folders.get(n));
+            } catch (Exception ex) {
+                mpv5.logging.Log.Debug(this, ex);
+            }
+        });
+        jScrollPane2.setViewportView(pane);
+        //the list of files is what the user wants to see now
+        javax.swing.SwingUtilities.invokeLater(() -> pane.scrollRectToVisible(new java.awt.Rectangle(0, pane.getHeight() - 1, 1, 1)));
+    }
+
+    private static String html(String s) {
+        return s == null ? "" : s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
     }
 
     /**

@@ -171,10 +171,12 @@ public class ProductlistSubItem extends DatabaseObject {
             it.setCname(row[14].toString());
             it.setCountvalue(Double.valueOf(row[1].toString()));
             it.setDescription(row[4].toString());
-            it.setExternalvalue(Double.valueOf(row[5].toString()) * (((Double.valueOf(percentValue) / 100) + 1)));
-            it.setInternalvalue(Double.valueOf(row[5].toString()) * (((Double.valueOf(percentValue) / 100) + 1)));//not supported yet
+            //price +/- percent, exact and rounded to cents (not 11.000000000000002)
+            double price = withPercent(row[5], percentValue);
+            it.setExternalvalue(price);
+            it.setInternalvalue(price);//not supported yet
             it.setMeasure(row[3].toString());
-            it.setOriginalproductsids(Integer.valueOf(row[10].toString()));
+            it.setOriginalproductsids(productId(row[10]));
             it.setQuantityvalue(Double.valueOf(row[2].toString()));
             it.setTaxpercentvalue(Double.valueOf(row[6].toString()));
             it.setLinkurl((row[12 + 1].toString()));
@@ -567,9 +569,39 @@ public class ProductlistSubItem extends DatabaseObject {
     }
 
     private static void calculate(ProductlistSubItem s) {
-        s.setTotalbrutvalue(s.quantityvalue * s.externalvalue * ((s.taxpercentvalue / 100) + 1));
-        s.defTotaltaxvalue(s.quantityvalue * s.externalvalue * (s.taxpercentvalue / 100));
-        s.setTotalnetvalue(s.quantityvalue * s.externalvalue);
+        //as positions of documents (EN 16931): rounded per line
+        java.math.BigDecimal q = java.math.BigDecimal.valueOf(s.quantityvalue);
+        java.math.BigDecimal p = java.math.BigDecimal.valueOf(s.externalvalue);
+        java.math.BigDecimal t = java.math.BigDecimal.valueOf(s.taxpercentvalue);
+        java.math.BigDecimal net = mpv5.utils.numberformat.InvoiceMath.lineAmount(q, p);
+        java.math.BigDecimal tax = mpv5.utils.numberformat.InvoiceMath.lineTax(q, p, null, t);
+        s.setTotalnetvalue(net.doubleValue());
+        s.defTotaltaxvalue(tax.doubleValue());
+        s.setTotalbrutvalue(net.add(tax).doubleValue());
+    }
+
+    /**
+     * @return the price plus the percentage (minus if negative), rounded to
+     * cents
+     */
+    public static double withPercent(Object price, Integer percent) {
+        java.math.BigDecimal p = new java.math.BigDecimal(String.valueOf(price).trim());
+        java.math.BigDecimal factor = java.math.BigDecimal.valueOf(100L + (percent == null ? 0 : percent)).movePointLeft(2);
+        return mpv5.utils.numberformat.InvoiceMath.round2(p.multiply(factor)).doubleValue();
+    }
+
+    /**
+     * @return the id of the product of a row (a Product or its id), 0 if none
+     */
+    private static int productId(Object o) {
+        if (o instanceof Product) {
+            return ((Product) o).__getIDS();
+        }
+        try {
+            return Integer.parseInt(String.valueOf(o).trim());
+        } catch (NumberFormatException e) {
+            return 0;
+        }
     }
 
     @Override

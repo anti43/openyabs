@@ -108,17 +108,16 @@ public class DTAFile extends Exportable implements Waitable {
 
                 BigDecimal value = null;
 
-                value = //netvalue
-                            dbo.__getTaxvalue().add(dbo.__getNetvalue());
+                //the amount to collect: gross after discount
+                value = dbo.getGrossAmount().setScale(2, RoundingMode.HALF_UP);
 
-                if (value.doubleValue() > 0.15) {
-                    value.setScale(2, RoundingMode.HALF_UP);
-                    DecimalFormat f = new DecimalFormat("##,###0.00");
+                if (value.compareTo(new BigDecimal("0.15")) > 0) {
+                    //1234,56 - no grouping, exact
+                    DecimalFormat f = new DecimalFormat("0.00");
                     DecimalFormatSymbols sym = new DecimalFormatSymbols();
                     sym.setDecimalSeparator(',');
-                    sym.setGroupingSeparator('.');
                     f.setDecimalFormatSymbols(sym);
-                    t.setValue(f.format(value.doubleValue()));
+                    t.setValue(f.format(value));
                     dta.addEntry(t);
                     control.add(c.__getCname() + "\t" + c.__getBankaccount() + "\t" + c.__getBankname() + "\t" + dbo.__getCnumber() + "\t" + value.toPlainString());
                 }

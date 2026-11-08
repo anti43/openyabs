@@ -312,20 +312,19 @@ public class StartPage extends javax.swing.JPanel {
             public void run() {
                try {
                   try {
-                     File licenses = new File("licenses-list.txt");
-                     if (!licenses.exists()) {
-                        InputStream inputStream = Main.class.getResourceAsStream("/license/licenses-list");
-                        OutputStream out = new FileOutputStream(licenses);
-                        byte buf[] = new byte[1024];
-                        int len;
-                        while ((len = inputStream.read(buf)) > 0) {
-                           out.write(buf, 0, len);
+                     //the list of this build (in the jar): no copy in the working dir,
+                     //which is read-only for installed packages and would get stale
+                     java.util.List<String> lines = new java.util.ArrayList<String>();
+                     try (java.io.BufferedReader r = new java.io.BufferedReader(new java.io.InputStreamReader(
+                             Main.class.getResourceAsStream("/license/licenses-list"), java.nio.charset.StandardCharsets.UTF_8))) {
+                        String line;
+                        while ((line = r.readLine()) != null) {
+                           if (line.trim().length() > 0) {
+                              lines.add(line.trim());
+                           }
                         }
-                        out.close();
-                        inputStream.close();
                      }
-
-                     String[] data = (new FileReaderWriter(licenses).readLines());
+                     String[] data = lines.toArray(new String[0]);
                      Arrays.sort(data);
                      String[][] model = new String[data.length][];
                      for (int i = 0; i < data.length; i++) {
