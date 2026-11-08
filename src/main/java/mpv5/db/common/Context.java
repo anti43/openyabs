@@ -797,8 +797,17 @@ public class Context implements Serializable, Comparable<Context> {
      * {@link DatabaseObject} child to be used with this
      * Context
      */
+    /**
+     * @return a random id far above the ids of the predefined contexts (a
+     * random digit text overflowed int and broke e.g. restoring from the
+     * trash)
+     */
+    private static int randomId() {
+        return 1000000 + java.util.concurrent.ThreadLocalRandom.current().nextInt(Integer.MAX_VALUE - 1000000);
+    }
+
     public Context(String tablename, Class targetObjectClass) {
-        setId(Integer.valueOf(RandomText.getNumberText()));
+        setId(randomId());
         this.setSubID(DEFAULT_SUBID);
         this.setDbIdentity(tablename);
         this.setIdentityClass(targetObjectClass);
@@ -822,7 +831,7 @@ public class Context implements Serializable, Comparable<Context> {
      * @param targetObject
      */
     public Context(DatabaseObject targetObject) {
-        setId(Integer.valueOf(RandomText.getNumberText()));
+        setId(randomId());
         this.setSubID(DEFAULT_SUBID);
         this.setDbIdentity(targetObject.getClass().getSimpleName());
         this.setIdentityClass(targetObject.getClass());
