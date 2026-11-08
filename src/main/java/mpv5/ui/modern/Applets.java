@@ -154,4 +154,32 @@ public final class Applets {
         p.add(right, BorderLayout.CENTER);
         return p;
     }
+
+    /**
+     * A panel of a classic form as a card: its border (a title) goes, the
+     * panels in it become transparent
+     *
+     * @param title the title of the card, null: the title of its border
+     * @param panel
+     * @return the card
+     */
+    public static Card wrap(String title, JComponent panel) {
+        if (title == null && panel.getBorder() instanceof javax.swing.border.TitledBorder) {
+            title = ((javax.swing.border.TitledBorder) panel.getBorder()).getTitle();
+        }
+        panel.setBorder(null);
+        transparent(panel);
+        return new Card(Card.clean(title)).addFull(panel);
+    }
+
+    private static void transparent(java.awt.Component c) {
+        if (c instanceof JPanel) {
+            ((JPanel) c).setOpaque(false);
+            for (java.awt.Component k : ((JPanel) c).getComponents()) {
+                transparent(k);
+            }
+        } else if (c instanceof javax.swing.JCheckBox || c instanceof javax.swing.JRadioButton) {
+            ((JComponent) c).setOpaque(false);
+        }
+    }
 }

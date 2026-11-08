@@ -39,6 +39,7 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
 
     public ControlPanel_Locale() {
         initComponents();
+        modernLayout();
         locales.setModel(getLocales());
         locales.setSelectedIndex(MPComboBoxModelItem.getItemID(Locale.getDefault().toString(),
                 locales.getModel()));
@@ -637,9 +638,32 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
 
     @Override
     public java.awt.Component getAndRemoveActionPanel() {
-        this.remove(jPanel6);
-        validate();
-        return jPanel6;
+        return actions;
+    }
+
+    private javax.swing.JPanel actions = new javax.swing.JPanel();
+
+    /**
+     * The parts of the form as cards, the buttons in the action bar
+     */
+    private void modernLayout() {
+        java.util.ResourceBundle b = mpv5.i18n.LanguageManager.getBundle();
+        removeAll();
+        setBorder(null);
+        setLayout(new java.awt.BorderLayout());
+        setOpaque(false);
+        jLabel3.setVisible(false);
+        jLabel2.setVisible(false);
+        jLabel5.setVisible(false);
+        jLabel8.setVisible(false);
+        add(mpv5.ui.modern.Applets.page(null, 420,
+                mpv5.ui.modern.Applets.wrap(mpv5.globals.Messages.LOCALE_CARD_LANGUAGE.toString(), jPanel3),
+                mpv5.ui.modern.Applets.wrap(mpv5.globals.Messages.LOCALE_CARD_FORMAT.toString(), jPanel2),
+                mpv5.ui.modern.Applets.wrap(mpv5.globals.Messages.LOCALE_CARD_IMPORT.toString(), jPanel4),
+                mpv5.ui.modern.Applets.wrap(mpv5.globals.Messages.LOCALE_CARD_COUNTRIES.toString(), jPanel5)), java.awt.BorderLayout.CENTER);
+        mpv5.ui.modern.PrimaryButton save = new mpv5.ui.modern.PrimaryButton(jButton1.getText(), "/images/16/filesave.png");
+        save.addActionListener(e -> jButton1.doClick());
+        actions = mpv5.ui.modern.Applets.actionBar(new javax.swing.JComponent[]{}, new javax.swing.JComponent[]{jButton2, save});
     }
 
     private void cleanup() {
