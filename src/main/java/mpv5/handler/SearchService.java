@@ -1,0 +1,234 @@
+/*
+ This file is part of YaBS.
+
+ YaBS is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ YaBS is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package mpv5.handler;
+
+import java.text.Normalizer;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import mpv5.db.common.Context;
+import mpv5.db.common.DatabaseSearch;
+import mpv5.db.objects.Item;
+import mpv5.globals.Messages;
+import mpv5.logging.Log;
+import mpv5.utils.date.DateConverter;
+
+/**
+ * "Search anything": finds contacts, documents, products, positions,
+ * conversations and appointments by any text, without Swing
+ */
+public final class SearchService {
+
+    /**
+     * Hits per kind of record
+     */
+    public static final int PER_KIND = 8;
+
+    private SearchService() {
+    }
+
+    /**
+     * A record found
+     */
+    public static final class Hit {
+
+        public final String kind;
+        public final String title;
+        public final String detail;
+        /**
+         * the context and id to open (for a position: its document)
+         */
+        public final Context context;
+        public final int id;
+
+        public Hit(String kind, String title, String detail, Context context, int id) {
+            this.kind = kind;
+            this.title = title;
+            this.detail = detail;
+            this.context = context;
+            this.id = id;
+        }
+
+        @Override
+        public String toString() {
+            return title;
+        }
+    }
+
+    /**
+     * Searches all kinds of records; every word of the needle must occur in
+     * one of the text columns
+     *
+     * @param needle
+     * @return the hits, grouped by kind (contacts, documents, products,
+     * positions, conversations, appointments)
+     */
+    public static List<Hit> search(String needle) {
+        List<Hit> hits = new ArrayList<Hit>();
+        String n = needle == null ? "" : needle.trim();
+        if (n.length() < 2) {
+            return hits;
+        }
+        contacts(n, hits);
+        Context[] docs = {Context.getInvoice(), Context.getOffer(), Context.getOrder(),
+            Context.getDeposit(), Context.getPartPayment(), Context.getCredit()};
+        int[] types = {Item.TYPE_INVOICE, Item.TYPE_OFFER, Item.TYPE_ORDER,
+            Item.TYPE_DEPOSIT, Item.TYPE_PART_PAYMENT, Item.TYPE_CREDIT};
+        for (int i = 0; i < docs.length; i++) {
+            documents(docs[i], types[i], n, hits);
+        }
+        products(n, hits);
+        positions(n, hits);
+        simple(Context.getConversation(), Messages.SEARCH_KIND_CONVERSATIONS.toString(), n, hits);
+        simple(Context.getSchedule(), Messages.SEARCH_KIND_SCHEDULE.toString(), n, hits);
+        return hits;
+    }
+
+    private static Object[][] find(Context c, String fields, String needle) {
+        try {
+            return new DatabaseSearch(c, PER_KIND).getValuesFor2(fields, needle, null, true, true);
+        } catch (Exception e) {
+            Log.Debug(SearchService.class, e);
+            return new Object[0][];
+        }
+    }
+
+    private static void contacts(String n, List<Hit> hits) {
+        Context c = Context.getContact();
+        String t = c.getDbIdentity() + ".";
+        for (Object[] r : find(c, t + "ids," + t + "cname," + t + "prename," + t + "company," + t + "cnumber," + t + "city", n)) {
+            String name = join(" ", s(r[2]), s(r[1]));
+            String company = s(r[3]);
+            String title = company.isEmpty() || company.equals(s(r[1])) ? name : (name.isEmpty() ? company : company + " (" + name + ")");
+            hits.add(new Hit(Messages.SEARCH_KIND_CONTACTS.toString(), title, join(" · ", s(r[4]), s(r[5])), c, id(r[0])));
+        }
+    }
+
+    private static void documents(Context c, int itemType, String n, List<Hit> hits) {
+        String t = c.getDbIdentity() + ".";
+        String fields = t + "ids," + t + "cnumber," + t + "cname," + t + "description," + t + "dateadded," + t + "inttype";
+        Object[][] rows = find(c, fields, n);
+        String typeName = Item.getTypeString(itemType);
+        if (rows.length == 0 && !typeName.isEmpty()
+                && (matches(typeName, n) || (!n.contains(" ") && matches(n, typeName)))) {
+            //"Rechnung" lists the latest invoices
+            try {
+                rows = new DatabaseSearch(c, PER_KIND).getValuesFor(fields);
+            } catch (Exception e) {
+                Log.Debug(SearchService.class, e);
+            }
+        }
+        for (Object[] r : rows) {
+            String type;
+            try {
+                type = Item.getTypeString(Integer.valueOf(s(r[5])));
+            } catch (Exception e) {
+                type = "";
+            }
+            String number = s(r[1]).isEmpty() ? s(r[2]) : s(r[1]);
+            hits.add(new Hit(Messages.SEARCH_KIND_DOCUMENTS.toString(), join(" ", type, number),
+                    join(" · ", date(r[4]), shorten(s(r[3]))), c, id(r[0])));
+        }
+    }
+
+    private static void products(String n, List<Hit> hits) {
+        Context c = Context.getProduct();
+        String t = c.getDbIdentity() + ".";
+        for (Object[] r : find(c, t + "ids," + t + "cname," + t + "cnumber," + t + "description", n)) {
+            hits.add(new Hit(Messages.SEARCH_KIND_PRODUCTS.toString(), s(r[1]), join(" · ", s(r[2]), shorten(s(r[3]))), c, id(r[0])));
+        }
+    }
+
+    private static void positions(String n, List<Hit> hits) {
+        Context c = Context.getSubItem();
+        String t = c.getDbIdentity() + ".";
+        for (Object[] r : find(c, t + "ids," + t + "itemsids," + t + "description," + t + "cname", n)) {
+            String text = shorten(s(r[2]).isEmpty() ? s(r[3]) : s(r[2]));
+            //opens the document of the position
+            hits.add(new Hit(Messages.SEARCH_KIND_POSITIONS.toString(), text, Messages.SEARCH_IN_DOCUMENT.toString(),
+                    Context.getInvoice(), id(r[1])));
+        }
+    }
+
+    private static void simple(Context c, String kind, String n, List<Hit> hits) {
+        String t = c.getDbIdentity() + ".";
+        for (Object[] r : find(c, t + "ids," + t + "cname," + t + "dateadded", n)) {
+            hits.add(new Hit(kind, s(r[1]), date(r[2]), c, id(r[0])));
+        }
+    }
+
+    /**
+     * @return true if every word of the needle occurs in the text, ignoring
+     * case and accents ("Rechnung neu" matches "Neue Rechnung")
+     */
+    public static boolean matches(String text, String needle) {
+        String t = fold(text);
+        for (String w : fold(needle).split("\\s+")) {
+            if (!w.isEmpty() && !t.contains(w)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static String fold(String s) {
+        String n = Normalizer.normalize(s == null ? "" : s, Normalizer.Form.NFD).replaceAll("\\p{M}", "");
+        return n.toLowerCase(Locale.ROOT).replace("ß", "ss");
+    }
+
+    private static String plain(String s) {
+        return s.replaceAll("<[^>]*>", " ").replace("&nbsp;", " ").replace("&amp;", "&").replaceAll("\\s+", " ").trim();
+    }
+
+    private static String shorten(String s) {
+        String p = plain(s);
+        return p.length() > 90 ? p.substring(0, 87) + "..." : p;
+    }
+
+    private static String date(Object o) {
+        try {
+            return DateConverter.getDefDateString(DateConverter.getDate(o));
+        } catch (Exception e) {
+            return s(o);
+        }
+    }
+
+    private static String join(String sep, String... parts) {
+        StringBuilder b = new StringBuilder();
+        for (String p : parts) {
+            if (p != null && !p.trim().isEmpty()) {
+                if (b.length() > 0) {
+                    b.append(sep);
+                }
+                b.append(p.trim());
+            }
+        }
+        return b.toString();
+    }
+
+    private static String s(Object o) {
+        return o == null || "null".equals(String.valueOf(o)) ? "" : String.valueOf(o).trim();
+    }
+
+    private static int id(Object o) {
+        try {
+            return Integer.parseInt(String.valueOf(o).trim());
+        } catch (Exception e) {
+            return -1;
+        }
+    }
+}

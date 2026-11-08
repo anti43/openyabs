@@ -378,6 +378,24 @@ public class LanguageManager {
      * @throws java.lang.Exception
      * @throws UnsupportedOperationException
      */
+    /**
+     * Imports a language without any message box
+     *
+     * @param langname
+     * @param file
+     * @return the id of the language
+     * @throws Exception
+     */
+    public static String importLanguageQuietly(String langname, File file) throws Exception {
+        boolean before = quietImport;
+        quietImport = true;
+        try {
+            return importLanguage(langname, file);
+        } finally {
+            quietImport = before;
+        }
+    }
+
     public static String importLanguage(String langname, File file, Boolean ignoreErrors) throws Exception {
         try {
             String langid = RandomText.getText();

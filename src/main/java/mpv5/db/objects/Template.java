@@ -219,7 +219,7 @@ public class Template extends DatabaseObject {
                         new File(FileDirectoryHandler.getTempDir() + "~" + RandomText.getText() + "_" + getCname()));
                 file.deleteOnExit();
             } catch (Exception e) {
-                delete();
+                //never delete the template because its file could not be read (once)
                 Log.Debug(e);
                 throw e;
             }

@@ -664,6 +664,9 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
         viewMenu.add(zoomReset);
         //the other key variants (the menu handles the ones shown there)
         mpv5.ui.modern.Zoom.install(getFrame().getRootPane());
+        //Search anything: double Shift (like IntelliJ), Edit > Search anything (Ctrl+F)
+        mpv5.ui.dialogs.SearchAnything.installDoubleShift();
+        jMenuItem17.setText(Messages.SEARCH_ANYTHING + "...   (Shift Shift)");
         jMenu2.add(new javax.swing.JPopupMenu.Separator(), 1);
         jMenu2.addMenuListener(new javax.swing.event.MenuListener() {
             @Override
@@ -748,7 +751,10 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
         String fs = System.getProperty("yabs_firststart");
         if (fs != null) {
             wizard_FirstSettings1.build(getIdentifierFrame());
-        }else{
+        } else if (System.getProperty("yabs_welcome") != null) {
+            System.clearProperty("yabs_welcome");
+            Notificator.raiseNotification(Messages.FIRSTSTART_WELCOME, false);
+        } else {
              if(Constants.VERSION.equals(System.getProperty("yabsFirstStartVersion"))){
                  try {
                      if (LanguageManager.checkAndReplaceLangFiles()) {
@@ -2763,7 +2769,8 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
 
     private void jMenuItem17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem17ActionPerformed
 
-        Search.instanceOf();
+        //"Search anything" (also double Shift)
+        mpv5.ui.dialogs.SearchAnything.open();
 
     }//GEN-LAST:event_jMenuItem17ActionPerformed
 

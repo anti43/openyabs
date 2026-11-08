@@ -295,14 +295,11 @@ public class Main implements Runnable {
                 }
                 go(false);
 
-            } else if (Popup.Y_N_dialog(splash, Messages.NO_DB_CONNECTION, Messages.FIRST_START.toString())) {
-                Log.Debug(this, "Loading database config wizard...");
-                splash.setVisible(false);
-
-                showDbWiz(null);
             } else {
-                Log.Debug(this, "Cancelled by user.");
-                System.exit(1);
+                //no database yet: the first start (an existing database is never overwritten)
+                Log.Debug(this, "Loading the first start...");
+                splash.setVisible(false);
+                showDbWiz(null);
             }
         } else {
             Log.Debug(this, "Forced to start the database config wiz... ");
@@ -1001,9 +998,7 @@ public class Main implements Runnable {
             Log.Debug(e);
         }
 
-        Wizard w = new Wizard(true);
-        w.addPanel(new wizard_DBSettings_simple_1(w, forConnId));
-        w.showWiz();
+        mpv5.ui.dialogs.FirstStart.open(forConnId);
     }
 
     /**
