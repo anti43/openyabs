@@ -951,10 +951,8 @@ public class Main implements Runnable {
                 f.repaint();
             }
         };
-        SwingUtilities.invokeLater(() -> {
-            paint.run();
-            f.toFront();
-        });
+        //no toFront(): FrameView's frame answers it with setVisible(true), which calls toFront() again
+        SwingUtilities.invokeLater(paint);
         //once more when the window manager has mapped the window
         for (int ms : new int[]{300, 1200}) {
             javax.swing.Timer t = new javax.swing.Timer(ms, e -> paint.run());
