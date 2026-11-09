@@ -196,8 +196,8 @@ public class ModernContactPanel extends ModernDataPanel {
      * The files of a contact are not used currently, the tab is hidden
      */
     private static final boolean SHOW_FILES = false;
-    private final JTable proptable = new MPTable(this);
-    private final JTable filetable = new MPTable(this);
+    private final JTable proptable = ModernTheme.tabLeaves(new MPTable(this));
+    private final JTable filetable = ModernTheme.tabLeaves(new MPTable(this));
     //documents of the contact
     private final JTable dataTable = tooltipTable(this);
     private final JPopupMenu itemTablePopup;
@@ -362,8 +362,7 @@ public class ModernContactPanel extends ModernDataPanel {
         notes.setLineWrap(true);
         notes.setWrapStyleWord(true);
         //tab moves on to the next field instead of inserting a tab
-        notes.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, null);
-        notes.setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, null);
+        ModernTheme.tabLeaves(notes);
 
         java.awt.event.ItemListener roles = e -> updateRoleControls();
         customer.addItemListener(roles);

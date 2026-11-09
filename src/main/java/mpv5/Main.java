@@ -282,6 +282,8 @@ public class Main implements Runnable {
                         enableOSXFullscreen(view.getFrame());
 
                         getApplication().setMainView(view);
+                        //no splash over the new window (Linux leaves its area grey)
+                        splash.setVisible(false);
                         getApplication().show(view);
 
                         requestToggleFullScreen(view.getFrame());
@@ -879,6 +881,9 @@ public class Main implements Runnable {
             });
         }
         splash.dispose();
+        if (!HEADLESS) {
+            repaintMainFrame();
+        }
 
         if (!HEADLESS) {
 //            if (START_SERVER) {
@@ -923,6 +928,46 @@ public class Main implements Runnable {
         if (!HEADLESS) {
            // checkTpls();
         }
+    }
+
+    /**
+     * Linux (X11/XWayland): the area of the closed splash screen and the
+     * frame shown while the event queue was busy stay grey until the next
+     * input. Paint the main window again once the start is done.
+     */
+    private void repaintMainFrame() {
+        final java.awt.Frame f;
+        try {
+            f = getApplication().getMainFrame();
+        } catch (Exception e) {
+            return;
+        }
+        Runnable paint = () -> {
+            if (f.isShowing()) {
+                if (f instanceof javax.swing.JFrame) {
+                    ((javax.swing.JFrame) f).getRootPane().revalidate();
+                }
+                f.validate();
+                f.repaint();
+            }
+        };
+        SwingUtilities.invokeLater(() -> {
+            paint.run();
+            f.toFront();
+        });
+        //once more when the window manager has mapped the window
+        for (int ms : new int[]{300, 1200}) {
+            javax.swing.Timer t = new javax.swing.Timer(ms, e -> paint.run());
+            t.setRepeats(false);
+            t.start();
+        }
+        f.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowActivated(java.awt.event.WindowEvent e) {
+                paint.run();
+                f.removeWindowListener(this);
+            }
+        });
     }
 
     private void loadPlugins() {

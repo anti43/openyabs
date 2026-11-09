@@ -296,4 +296,24 @@ public final class ModernTheme {
     public static void transparent(JComponent c) {
         c.setOpaque(false);
     }
+
+    /**
+     * Tab and Shift+Tab move the focus on instead of moving inside the
+     * component (tables, text areas); Ctrl+Tab too
+     *
+     * @param <T>
+     * @param c
+     * @return c
+     */
+    public static <T extends javax.swing.JComponent> T tabLeaves(T c) {
+        java.util.Set<java.awt.AWTKeyStroke> fw = new java.util.HashSet<>();
+        fw.add(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_TAB, 0));
+        fw.add(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_TAB, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        java.util.Set<java.awt.AWTKeyStroke> bw = new java.util.HashSet<>();
+        bw.add(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_TAB, java.awt.event.InputEvent.SHIFT_DOWN_MASK));
+        bw.add(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_TAB, java.awt.event.InputEvent.SHIFT_DOWN_MASK | java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        c.setFocusTraversalKeys(java.awt.KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, fw);
+        c.setFocusTraversalKeys(java.awt.KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, bw);
+        return c;
+    }
 }

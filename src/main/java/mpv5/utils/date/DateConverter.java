@@ -47,7 +47,7 @@ public class DateConverter {
      * The date formatter with the short formatting style
      * for the default locale.
      */
-    public static DateFormat DEF_DATE_FORMAT = DateFormat.getDateInstance(DateFormat.MEDIUM);
+    public static DateFormat DEF_DATE_FORMAT = numericFormat(Locale.getDefault());
     /**
      * "EEE, dd MMM yyyy HH:mm:ss z"
      */
@@ -645,6 +645,44 @@ public class DateConverter {
      *
      * @param df
      */
+    /**
+     * A numeric date format with a four digit year for the locale, e.g. dd.MM.yyyy (German), MM/dd/yyyy (US)
+     *
+     * @param locale
+     * @return
+     */
+    public static DateFormat numericFormat(Locale locale) {
+        String p = "dd.MM.yyyy";
+        try {
+            DateFormat f = DateFormat.getDateInstance(DateFormat.SHORT, locale);
+            if (f instanceof SimpleDateFormat) {
+                p = ((SimpleDateFormat) f).toPattern()
+                        .replaceAll("y+", "yyyy")
+                        .replaceAll("M+", "MM")
+                        .replaceAll("d+", "dd");
+            }
+        } catch (Exception e) {
+        }
+        SimpleDateFormat f = new SimpleDateFormat(p, locale);
+        f.setLenient(false);
+        return f;
+    }
+
+    /**
+     * Applies the (new) default locale to the default date format
+     */
+    public static synchronized void applyLocale() {
+        DateFormat old = DEF_DATE_FORMAT;
+        DEF_DATE_FORMAT = numericFormat(Locale.getDefault());
+        int i = DATE_FORMATS.indexOf(old);
+        if (i < 0) {
+            DATE_FORMATS.add(0, DEF_DATE_FORMAT);
+        } else {
+            DATE_FORMATS.set(i, DEF_DATE_FORMAT);
+        }
+        months = DateFormatSymbols.getInstance().getMonths();
+    }
+
     public static synchronized void setDefaultFormat(DateFormat df) {
         DEF_DATE_FORMAT = df;
     }

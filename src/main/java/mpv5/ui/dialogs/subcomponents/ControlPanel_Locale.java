@@ -621,6 +621,7 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
         mpv5.db.objects.User.getCurrentUser().setLocale(localestring);
         mpv5.db.objects.User.getCurrentUser().setLanguage(languagestring);
         Locale.setDefault(TypeConversion.stringToLocale(localestring));
+        mpv5.utils.date.DateConverter.applyLocale();
 
     }
 

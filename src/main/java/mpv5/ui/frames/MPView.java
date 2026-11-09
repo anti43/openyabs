@@ -674,6 +674,14 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
         //Search anything: double Shift (like IntelliJ), Edit > Search anything (Ctrl+F)
         mpv5.ui.dialogs.SearchAnything.installDoubleShift();
         mpv5.plugin.PluginMenu.install(getMenuBar());
+        //File > Import > Fakturama 2 (migration from Fakturama)
+        javax.swing.JMenuItem fakturama = new javax.swing.JMenuItem("Fakturama 2...");
+        fakturama.addActionListener(e -> {
+            Wizard w = new Wizard(false);
+            w.addPanel(new mpv5.ui.dialogs.subcomponents.wizard_Fakturama2_Import(w));
+            w.showWiz();
+        });
+        jMenu8.add(fakturama, jMenu8.getMenuComponentCount() > 0 ? java.util.Arrays.asList(jMenu8.getMenuComponents()).indexOf(jMenu12) + 1 : 0);
         jMenuItem17.setText(Messages.SEARCH_ANYTHING + "...   (Shift Shift)");
         jMenu2.add(new javax.swing.JPopupMenu.Separator(), 1);
         jMenu2.addMenuListener(new javax.swing.event.MenuListener() {

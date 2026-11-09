@@ -54,6 +54,27 @@ public class MiniCalendarDialog extends javax.swing.JDialog {
 
         this.t = t;
         this.jPanel1.add(xc, BorderLayout.CENTER);
+        //keyboard: Escape closes, Enter takes the date
+        getRootPane().registerKeyboardAction(e -> setVisible(false),
+                javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ESCAPE, 0), javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW);
+        getRootPane().registerKeyboardAction(e -> go(),
+                javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ENTER, 0), javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW);
+    }
+
+    /**
+     * Shows the calendar at the given date, focused for the keyboard
+     *
+     * @param date
+     */
+    public void open(Date date) {
+        try {
+            if (date != null) {
+                xc.setDate(date);
+            }
+        } catch (PropertyVetoException ex) {
+        }
+        setVisible(true);
+        xc.requestFocusInWindow();
     }
 
     /** This method is called from within the constructor to
