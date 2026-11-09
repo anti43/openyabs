@@ -795,6 +795,70 @@ public class LanguageManager {
         Log.Debug(LanguageManager.class, "\n\n\n#####################################\nLanguage updated: " + langid + "\n#####################################\n\n");
     }
 
+    private static java.util.Properties bundledGerman;
+    private static ResourceBundle lastChecked;
+    private static boolean lastIsGerman;
+
+    /**
+     * A text missing in the language of the database (e.g. a German language
+     * imported before the text existed): taken from the German file bundled
+     * with YaBS when the language is German, so new texts are not English
+     *
+     * @param key
+     * @return the German text or null
+     */
+    public static synchronized String fallback(String key) {
+        try {
+            ResourceBundle b = getBundle();
+            if (b != lastChecked) {
+                lastChecked = b;
+                java.util.Properties de = bundledGerman();
+                //German: a known text is the German one
+                lastIsGerman = de.getProperty("INSERTED") != null && b.containsKey("INSERTED")
+                        && de.getProperty("INSERTED").equals(b.getString("INSERTED"));
+            }
+            return lastIsGerman ? bundledGerman().getProperty(key) : null;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * @param key
+     * @param value the text found in the language of the database
+     * @return the text; the German one of the bundled file when the language
+     * is German but the text is still the English default (the language was
+     * imported before the text existed)
+     */
+    public static String localize(String key, String value) {
+        try {
+            String english = ResourceBundle.getBundle(defLanguageBundleName).getString(key);
+            if (value != null && value.equals(english)) {
+                String de = fallback(key);
+                if (de != null && !de.isEmpty()) {
+                    return de;
+                }
+            }
+        } catch (Exception e) {
+            //no default text
+        }
+        return value;
+    }
+
+    private static synchronized java.util.Properties bundledGerman() {
+        if (bundledGerman == null) {
+            bundledGerman = new java.util.Properties();
+            try (java.io.InputStream in = Main.class.getResourceAsStream("/extra/DE-" + Constants.EXTRA_FILES_VERSION + ".properties")) {
+                if (in != null) {
+                    bundledGerman.load(in);
+                }
+            } catch (Exception e) {
+                Log.Debug(LanguageManager.class, e);
+            }
+        }
+        return bundledGerman;
+    }
+
     public static boolean checkAndReplaceLangFiles() {
         boolean result = false;
         for (String l : Constants.LANGUAGES) {

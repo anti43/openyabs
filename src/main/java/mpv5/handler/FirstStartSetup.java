@@ -76,19 +76,37 @@ public final class FirstStartSetup {
      * @throws Exception
      */
     public static boolean importTemplate(final User owner, long wait) throws Exception {
-        InputStream s = Main.class.getResourceAsStream("/extra/DE-" + Constants.EXTRA_FILES_VERSION + ".odt");
-        final File f = FileDirectoryHandler.getTempFile("template-de", "odt");
+        return importTemplate(owner, "/extra/DE-" + Constants.EXTRA_FILES_VERSION + ".odt", "template-de",
+                "1,2,4,5,7,9", Constants.TYPE_INVOICE, wait) != null;
+    }
+
+    /**
+     * Imports a bundled template and assigns it to the user
+     *
+     * @param owner
+     * @param resource the template in the jar, e.g. /extra/Kassenbon.odt
+     * @param name the name of the template
+     * @param format the columns of the positions (e.g. "2,4,9")
+     * @param type the kind of documents (Constants.TYPE_...)
+     * @param wait how long to wait for the import
+     * @return the template, null if it was not imported in time
+     * @throws Exception
+     */
+    public static Template importTemplate(final User owner, String resource, final String name, final String format, final int type, long wait) throws Exception {
+        InputStream s = Main.class.getResourceAsStream(resource);
+        final File f = FileDirectoryHandler.getTempFile(name, "odt");
         FileDirectoryHandler.copyFile(s, f);
         final CountDownLatch done = new CountDownLatch(1);
+        final Template[] made = new Template[1];
         TemplateHandler.importTemplateAndAssign(f, new FutureCallback<Template>() {
             @Override
             public void call(Template t) {
                 try {
                     if (t != null) {
                         t.setGroupsids(1);
-                        t.setCname(f.getName());
-                        t.setMimetype(String.valueOf(Constants.TYPE_INVOICE));
-                        t.setFormat("1,2,4,5,7,9");
+                        t.setCname("template-de".equals(name) ? f.getName() : name);
+                        t.setMimetype(String.valueOf(type));
+                        t.setFormat(format);
                         t.setDescription("Wizard insert");
                         t.save(true);
                         QueryData c = new QueryData();
@@ -98,6 +116,7 @@ public final class FirstStartSetup {
                         c.add("cname", t.__getIDS() + "@" + owner.__getIDS() + "@" + 1);
                         QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).insert(c, null);
                         TemplateHandler.clearCache();
+                        made[0] = t;
                     }
                 } catch (Exception e) {
                     Log.Debug(FirstStartSetup.class, e);
@@ -106,7 +125,10 @@ public final class FirstStartSetup {
                 }
             }
         });
-        return wait <= 0 || done.await(wait, TimeUnit.MILLISECONDS);
+        if (wait > 0) {
+            done.await(wait, TimeUnit.MILLISECONDS);
+        }
+        return made[0];
     }
 
     /**

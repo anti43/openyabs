@@ -40,11 +40,19 @@ public final class Applets {
      * @param text
      * @return a gray, wrapping explanation
      */
-    public static JLabel hint(String text) {
-        JLabel l = new JLabel("<html>" + text.replace("\n", "<br>") + "</html>");
-        l.setFont(ModernTheme.font(-1, Font.PLAIN));
-        l.setForeground(ModernTheme.muted());
-        return l;
+    public static JComponent hint(String text) {
+        //a wrapping text: as wide as its place, as high as its lines
+        javax.swing.JTextArea t = new javax.swing.JTextArea(text.replaceAll("<br\\s*/?>", "\n").replaceAll("<[^>]+>", ""));
+        t.setLineWrap(true);
+        t.setWrapStyleWord(true);
+        t.setEditable(false);
+        t.setFocusable(false);
+        t.setOpaque(false);
+        t.setBorder(null);
+        t.setFont(ModernTheme.font(-1, Font.PLAIN));
+        t.setForeground(ModernTheme.muted());
+        t.setColumns(10);
+        return t;
     }
 
     /**
