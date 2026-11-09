@@ -1,0 +1,14 @@
+# Jekyll configuration for OpenYABS documentation
+title: "YaBS – Yet another Business Software"
+description: "Invoices, quotes, e-invoices (XRechnung & ZUGFeRD), and CRM for small business"
+theme: jekyll-theme-primer
+plugins:
+  - jekyll-relative-links
+relative_links:
+  enabled: true
+  collections: true
+include:
+  - README.de.md
+  - E-Rechnung.md
+  - Hinweise.md
+  - Plugins.md
