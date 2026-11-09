@@ -273,15 +273,7 @@ public class MPControlPanel extends JPanel {
         l.add(panel(system, "jButton24", Messages.SETTINGS_D_SCRIPTS, "konsole", ControlPanel_ValueProps.class, ControlPanel_ValueProps::new));
         l.add(panel(system, "jButton14", Messages.SETTINGS_D_SQL, "konsole", ControlPanel_Konsole.class, ControlPanel_Konsole::new));
         l.add(action(system, "jButton26", Messages.SETTINGS_D_GROOVY, "konsole", MPControlPanel::groovy));
-        l.add(action(system, "jButton8", Messages.SETTINGS_D_WIPE, "draw-eraser", () -> {
-            if (Popup.Y_N_dialog(Messages.REALLY_WIPE)) {
-                try {
-                    FileDirectoryHandler.deleteDirectoryContent(new File(FileDirectoryHandler.getTempDir2()));
-                } catch (IOException ex) {
-                    Popup.error(ex);
-                }
-            }
-        }));
+        //"delete local files" is part of the local options now
         synchronized (MPControlPanel.class) {
             if (cpanel != null) {
                 l.addAll(cpanel.plugins);
