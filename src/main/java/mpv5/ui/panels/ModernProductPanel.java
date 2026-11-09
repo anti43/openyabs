@@ -294,8 +294,7 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
         description.setWrapStyleWord(true);
         ModernTheme.roomy(description);
         //tab moves on to the next field instead of inserting a tab
-        description.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, null);
-        description.setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, null);
+        ModernTheme.tabLeaves(description);
 
         inventoryDisabled.setOpaque(false);
         inventoryDisabled.addItemListener(e -> {

@@ -189,6 +189,8 @@ public abstract class ModernDataPanel extends JPanel implements DataPanel, Scrol
             }
         };
         ModernTheme.style(t);
+        //keyboard: Tab leaves the table
+        ModernTheme.tabLeaves(t);
         return t;
     }
 

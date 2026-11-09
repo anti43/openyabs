@@ -309,6 +309,7 @@ public class User extends DatabaseObject {
             setProperties();
             try {
                 Locale.setDefault(TypeConversion.stringToLocale(__getLocale()));
+                mpv5.utils.date.DateConverter.applyLocale();
                 Log.Debug(this, "Locale.setDefault() for: " + Locale.getDefault());
                 mpv5.ui.modern.Zoom.applyStoredFont();
                 if (UIManager.getLookAndFeel().getName() == null ? __getLaf() != null : !UIManager.getLookAndFeel().getName().equals(__getLaf())) {

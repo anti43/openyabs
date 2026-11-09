@@ -23,7 +23,7 @@ public class DateChooser extends javax.swing.JPanel {
     /** Creates new form LabeledTextField */
     public DateChooser() {
         initComponents();
-        jSpinner1.setEditor(new DateEditor(jSpinner1, DateConverter.getDefaultFormatString()));
+        keyboard();
     }
 
     /**
@@ -39,8 +39,38 @@ public class DateChooser extends javax.swing.JPanel {
      */
     public DateChooser(boolean asAPopup) {
         initComponents();
-        jSpinner1.setEditor(new DateEditor(jSpinner1, DateConverter.getDefaultFormatString()));
+        keyboard();
         this.asAPopup = asAPopup;
+    }
+
+    /**
+     * Date typed by keyboard, Alt+Down/F4 opens the calendar, the calendar
+     * button is skipped by Tab
+     */
+    private void keyboard() {
+        DateInput.install(jSpinner1);
+        jButton1.setFocusable(false);
+        javax.swing.JComponent f = ((DateEditor) jSpinner1.getEditor()).getTextField();
+        javax.swing.Action open = new javax.swing.AbstractAction() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                try {
+                    jSpinner1.commitEdit();
+                } catch (ParseException ex) {
+                }
+                if (d == null) {
+                    d = new MiniCalendarDialog(jSpinner1, asAPopup);
+                }
+                java.awt.Point p = jSpinner1.getLocationOnScreen();
+                d.setLocation(p.x, p.y + jSpinner1.getHeight());
+                d.open(DateConverter.getDate(jSpinner1.getValue()));
+            }
+        };
+        f.getActionMap().put("yabs.calendar", open);
+        f.getInputMap().put(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DOWN, java.awt.event.InputEvent.ALT_DOWN_MASK), "yabs.calendar");
+        f.getInputMap().put(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, 0), "yabs.calendar");
     }
 
     /**

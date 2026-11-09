@@ -176,6 +176,8 @@ Invoicing software has to calculate correctly. YaBS calculates with exact decima
 - **History and trash**: the history of all records grouped by day, searchable and filterable, opens the records; the trash restores records or deletes them for good.
 - **Settings in one place**: a searchable list with an overview of all settings, each page in clear cards.
 - **Tabs and navigation**: several records open side by side, back and forward like a browser, favourites, a clipboard for records.
+- **Fully usable by keyboard**: `Tab` / `Shift+Tab` walk through all fields, also past notes, file and document lists (in the positions of a document `Tab` moves through the cells and leaves at the last one, `Ctrl+Tab` leaves at once).
+- **Date fields you can type into** in the format of your region (German: `dd.MM.yyyy`). Short forms work: `1.2.` (this year), `1.2.26`, `010226`, `5` (5th of this month), `+7` / `-1` (days from today), `h` / `heute` / `t` / `today`; arrow keys change the day, month or year under the cursor, `Alt+↓` or `F4` opens the calendar (`Enter` takes the date, `Esc` closes it).
 - **Keyboard shortcuts** for everything frequent: `Ctrl+S` save, `Ctrl+P` print, `Ctrl+Shift+P` PDF, `Ctrl+E` mail, `Shift Shift` / `Ctrl+F` search anything, `Ctrl+C` / `Ctrl+V` copy and paste records, `Ctrl+F1` shows all shortcuts.
 - **Safe deleting**: before deleting, YaBS lists everything that would be deleted with it; deleted records go to a trash bin first.
 - **Your language**: English and German included – on a German system (or with a German locale) YaBS switches to German by itself, and *View › Language* switches at any time (YaBS restarts itself); further translations can be made inside the application.
@@ -207,7 +209,7 @@ YaBS can serve a **cash register as a web page** to a touch screen device at the
 
 - **Import** contacts and products from CSV, vCard and XML.
 - **Export** contacts, documents and lists to CSV, XML, vCard, HTML and PDF.
-- **Migration tools**: from older YaBS versions and MP 4.5, and from the local Derby database to a MySQL server.
+- **Migration tools**: from **Fakturama 2** (*File › Import › Fakturama 2*: contacts, products, documents, vouchers and tax rates from the `.script` database), from older YaBS versions and MP 4.5, and from the local Derby database to a MySQL server.
 - **Web shop interface** to exchange contacts and orders with a shop.
 
 ## For power users: scripts, plugins and SQL

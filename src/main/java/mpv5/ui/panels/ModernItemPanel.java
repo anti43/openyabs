@@ -300,8 +300,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         notes.setLineWrap(true);
         notes.setWrapStyleWord(true);
         ModernTheme.roomy(notes);
-        notes.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, null);
-        notes.setFocusTraversalKeys(KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, null);
+        ModernTheme.tabLeaves(notes);
         positions.setTabTargets(notes, date3.getDateChooser());
 
         refOrderShow.addActionListener(e -> {
