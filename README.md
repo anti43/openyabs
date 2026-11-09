@@ -209,7 +209,7 @@ YaBS can serve a **cash register as a web page** to a touch screen device at the
 
 - **Import** contacts and products from CSV, vCard and XML.
 - **Export** contacts, documents and lists to CSV, XML, vCard, HTML and PDF.
-- **Migration tools**: from **Fakturama 2** (*File › Import › Fakturama 2*: contacts, products, documents, vouchers and tax rates from the `.script` database), from older YaBS versions and MP 4.5, and from the local Derby database to a MySQL server.
+- **Migration tools**: from **Fakturama 2** (*File › Import › Fakturama 2*: choose `Database.script` of your Fakturama workspace; tax rates, product categories, contacts with address and bank account, products with block prices, invoices/offers/orders/delivery notes/credit notes with positions and shipping, and expense vouchers are taken over with their numbers and dates. Fakturama's files are not changed, and records already imported are skipped, so the import can be repeated), from older YaBS versions and MP 4.5, and from the local Derby database to a MySQL server.
 - **Web shop interface** to exchange contacts and orders with a shop.
 
 ## For power users: scripts, plugins and SQL
