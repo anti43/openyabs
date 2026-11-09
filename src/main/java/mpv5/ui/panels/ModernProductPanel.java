@@ -405,12 +405,24 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
                 .row(Card.field(text("ProductPanel.url._Label_1"), withLinkButtons(url, false)))
                 .row(Card.field(Messages.PRODUCT_DATASHEET.toString(), withLinkButtons(datasheet, true))));
 
+        //prices and staggered prices in one card
+        tiers.setOpaque(false);
+        tiers.setLayout(new BoxLayout(tiers, BoxLayout.Y_AXIS));
+        JButton addTier = link(Messages.PRODUCT_ADD_TIER.toString(), "/images/16/add.png");
+        addTier.addActionListener(e -> addTierRow(BigDecimal.ZERO, BigDecimal.ZERO));
+        JButton removeTiers = link(text("ProductPanel.jButton2.text"), null);
+        removeTiers.addActionListener(e -> removeAllTiers());
+        JPanel tierButtons = leftAligned(addTier);
+        tierButtons.add(removeTiers);
         grid.add(new Card(Messages.PRODUCT_SECTION_PRICES.toString())
                 .row(Card.field(text("ProductPanel.netvalue._Label_1"), netvalue, 1),
                         Card.field(Messages.PRODUCT_MARKUP.toString(), markup, 1))
                 .row(Card.field(text("ProductPanel.extvalue._Label"), extvalue, 1),
                         Card.field(text("ProductPanel.selecttax._Label_1"), selecttax, 1))
-                .row(Card.field(Messages.PRODUCT_GROSS.toString(), grossvalue)));
+                .row(Card.field(Messages.PRODUCT_GROSS.toString(), grossvalue))
+                .section(Messages.PRODUCT_SECTION_TIERS.toString())
+                .addFull(tiers)
+                .addFull(tierButtons));
 
         JButton groupAdmin = link("+", null);
         groupAdmin.setToolTipText(text("ProductPanel.jLabel4.text"));
@@ -419,10 +431,15 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
         group.setOpaque(false);
         group.add(groupnameselect, BorderLayout.CENTER);
         group.add(groupAdmin, BorderLayout.EAST);
+        //groups and stock in one card
         grid.add(new Card(Messages.PRODUCT_SECTION_CLASSIFICATION.toString())
                 .row(Card.field(text("ProductPanel.familyselect._Label"), familyselect))
                 .addFull(path)
-                .row(Card.field(text("ProductPanel.jLabel4.text").replace(":", ""), group)));
+                .row(Card.field(text("ProductPanel.jLabel4.text").replace(":", ""), group))
+                .section(Messages.PRODUCT_SECTION_STOCK.toString())
+                .row(Card.field(text("ProductPanel.stack._Label_1"), stack),
+                        Card.field(text("ProductPanel.threshold._Label_1"), threshold))
+                .row(Card.field(null, inventoryDisabled)));
 
         grid.add(new Card(Messages.PRODUCT_SECTION_DESCRIPTION.toString())
                 .addFull(new JScrollPane(description), 1));
@@ -437,22 +454,7 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
                 .addFull(suppliers)
                 .addFull(leftAligned(addSupplier)));
 
-        grid.add(new Card(Messages.PRODUCT_SECTION_STOCK.toString())
-                .row(Card.field(text("ProductPanel.stack._Label_1"), stack),
-                        Card.field(text("ProductPanel.threshold._Label_1"), threshold))
-                .row(Card.field(null, inventoryDisabled)));
 
-        tiers.setOpaque(false);
-        tiers.setLayout(new BoxLayout(tiers, BoxLayout.Y_AXIS));
-        JButton addTier = link(Messages.PRODUCT_ADD_TIER.toString(), "/images/16/add.png");
-        addTier.addActionListener(e -> addTierRow(BigDecimal.ZERO, BigDecimal.ZERO));
-        JButton removeTiers = link(text("ProductPanel.jButton2.text"), null);
-        removeTiers.addActionListener(e -> removeAllTiers());
-        JPanel tierButtons = leftAligned(addTier);
-        tierButtons.add(removeTiers);
-        grid.add(new Card(Messages.PRODUCT_SECTION_TIERS.toString())
-                .addFull(tiers)
-                .addFull(tierButtons));
 
         return grid;
     }
