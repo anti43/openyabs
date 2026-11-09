@@ -105,6 +105,7 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
                 .row(Applets.field(account))
                 .row(Applets.field(banknumber, 1), Applets.field(bankname, 2))
                 .row(Applets.field(payterm), Applets.field(skontopercent), Applets.field(skontodays))
+                .addFull(Applets.hint(Messages.COMPANY_BANK_HINT.toString()))
                 .addFull(accountsRow);
         Card tax = new Card(Messages.COMPANY_CARD_TAX.toString())
                 .row(Applets.field(account1))
