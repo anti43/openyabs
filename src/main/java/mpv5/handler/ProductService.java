@@ -257,6 +257,82 @@ public final class ProductService {
     }
 
     /**
+     * Property: the datasheet of a product (web address or file)
+     */
+    public static final String DATASHEET = "product.datasheet";
+    /**
+     * Property per supplier: link to the product at the supplier
+     */
+    public static final String SUPPLIER_URL = "url";
+    /**
+     * Property per supplier: purchase price at the supplier
+     */
+    public static final String SUPPLIER_PRICE = "price";
+
+    /**
+     * @param product
+     * @param key
+     * @return the stored value (product property), "" if none
+     */
+    public static String value(Product product, String key) {
+        if (product == null || !product.isExisting()) {
+            return "";
+        }
+        try {
+            Object v = mpv5.db.objects.ValueProperty.getProperty(product, key).getValue();
+            return v == null ? "" : String.valueOf(v);
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
+    /**
+     * Stores a value as product property, removes it if empty
+     *
+     * @param product
+     * @param key
+     * @param value
+     */
+    public static void setValue(Product product, String key, String value) {
+        if (product == null || !product.isExisting()) {
+            return;
+        }
+        if (value == null || value.trim().isEmpty()) {
+            if (mpv5.db.objects.ValueProperty.hasProperty(product, key)) {
+                mpv5.db.objects.ValueProperty.deleteProperty(product, key);
+            }
+        } else if (!value.trim().equals(value(product, key))) {
+            mpv5.db.objects.ValueProperty.addOrUpdateProperty(key, value.trim(), product);
+        }
+    }
+
+    private static String supplierKey(Contact supplier, String what) {
+        return "supplier." + supplier.__getIDS() + "." + what;
+    }
+
+    /**
+     * @param product
+     * @param supplier
+     * @param what {@link #SUPPLIER_URL} or {@link #SUPPLIER_PRICE}
+     * @return the link or price of the product at the supplier, "" if none
+     */
+    public static String supplierValue(Product product, Contact supplier, String what) {
+        return supplier == null ? "" : value(product, supplierKey(supplier, what));
+    }
+
+    /**
+     * @param product
+     * @param supplier
+     * @param what {@link #SUPPLIER_URL} or {@link #SUPPLIER_PRICE}
+     * @param value empty removes it
+     */
+    public static void setSupplierValue(Product product, Contact supplier, String what, String value) {
+        if (supplier != null) {
+            setValue(product, supplierKey(supplier, what), value);
+        }
+    }
+
+    /**
      * @return all tax rates: id, name
      */
     public static Object[][] loadTaxes() {

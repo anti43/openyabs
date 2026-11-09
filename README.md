@@ -142,11 +142,11 @@ Invoicing software has to calculate correctly. YaBS calculates with exact decima
 
 ![A product with prices, classification, description, manufacturer and suppliers, stock and the documents it was used in](docs/images/product.png)
 
-- **Products and services** with number, unit, EAN, manufacturer reference, description, URL and image.
+- **Products and services** with number, unit, EAN, manufacturer reference, description, URL and a **large product image** at the top of the page (so you see at once that it is the right part), plus a **datasheet link**: a web address or a file, also on the network (e.g. `\\nas\docs\part.pdf`), opened with one click.
 - **Prices that calculate themselves**: enter cost and markup, sale price or gross price – the other values follow while you type.
 - **Staggered prices**: price per minimum quantity; in a document the price follows the quantity automatically (unless you typed a price yourself).
 - **Product groups and product lists** (e.g. a standard package you add to a quote with one click, optionally with a percentage surcharge).
-- **Manufacturers and suppliers** per product.
+- **Manufacturers and several suppliers** per product, each with a **link to the product in the supplier's shop** and its **purchase price**; the cheapest supplier is marked.
 - **Where was it sold?** Every product shows the quotes, orders, invoices and credit notes it appears in, with quantities and amounts.
 - **Stock**: stock level and threshold, automatic reduction when invoicing, stock manager, purchase orders to suppliers.
 

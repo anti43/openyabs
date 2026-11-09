@@ -140,6 +140,7 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
     private final LabeledTextField ean = field();
     private final LabeledTextField reference = field();
     private final LabeledTextField url = field();
+    private final LabeledTextField datasheet = field();
     //prices
     private final LabeledTextField netvalue = field();
     private final LabeledTextField markup = field();
@@ -392,6 +393,8 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
 
     private JComponent createOverview() {
         ResponsiveGrid grid = new ResponsiveGrid(340, 3);
+        //the image first: you see at once that it is the right product
+        grid.add(createImageCard());
 
         grid.add(new Card(Messages.PRODUCT_SECTION_GENERAL.toString())
                 .row(Card.field(text("ProductPanel.cname._Label_1"), cname))
@@ -399,7 +402,8 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
                         Card.field(text("ProductPanel.unit._Label"), unit, 1))
                 .row(Card.field(text("ProductPanel.ean._Label_1"), ean, 1),
                         Card.field(text("ProductPanel.reference._Label"), reference, 1))
-                .row(Card.field(text("ProductPanel.url._Label_1"), url)));
+                .row(Card.field(text("ProductPanel.url._Label_1"), withLinkButtons(url, false)))
+                .row(Card.field(Messages.PRODUCT_DATASHEET.toString(), withLinkButtons(datasheet, true))));
 
         grid.add(new Card(Messages.PRODUCT_SECTION_PRICES.toString())
                 .row(Card.field(text("ProductPanel.netvalue._Label_1"), netvalue, 1),
@@ -450,8 +454,72 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
                 .addFull(tiers)
                 .addFull(tierButtons));
 
-        grid.add(createImageCard());
         return grid;
+    }
+
+    /**
+     * The field with a button which opens the link (web address, file or
+     * network path) and optionally one to choose a file
+     */
+    private JComponent withLinkButtons(LabeledTextField field, boolean chooser) {
+        JPanel p = new JPanel(new BorderLayout(ModernTheme.px(4), 0));
+        p.setOpaque(false);
+        p.add(field, BorderLayout.CENTER);
+        JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT, ModernTheme.px(2), 0));
+        buttons.setOpaque(false);
+        if (chooser) {
+            field.getTextField().setToolTipText(Messages.PRODUCT_DATASHEET_TIP.toString());
+            JButton choose = link(null, "/images/16/folder_open.png");
+            if (choose.getIcon() == null) {
+                choose.setText("...");
+            }
+            choose.setToolTipText(Messages.PRODUCT_CHOOSE_FILE.toString());
+            choose.addActionListener(e -> {
+                javax.swing.JFileChooser fc = new javax.swing.JFileChooser();
+                String cur = field.getText();
+                if (cur != null && !cur.isEmpty() && new File(cur).getParentFile() != null) {
+                    fc.setCurrentDirectory(new File(cur).getParentFile());
+                }
+                if (fc.showOpenDialog(this) == javax.swing.JFileChooser.APPROVE_OPTION) {
+                    field.setText(fc.getSelectedFile().getPath());
+                }
+            });
+            buttons.add(choose);
+        }
+        JButton open = link(Messages.PRODUCT_OPEN_LINK.toString(), null);
+        open.addActionListener(e -> openLink(field.getText()));
+        buttons.add(open);
+        p.add(buttons, BorderLayout.EAST);
+        return p;
+    }
+
+    /**
+     * Opens a web address in the browser, a file or network path (\\nas\x,
+     * smb://, file:) with its program
+     *
+     * @param link
+     */
+    static void openLink(String link) {
+        if (link == null || link.trim().isEmpty()) {
+            return;
+        }
+        String l = link.trim();
+        try {
+            java.awt.Desktop d = java.awt.Desktop.getDesktop();
+            File f = new File(l);
+            if (f.exists()) {
+                d.open(f);
+            } else if (l.matches("(?i)^(https?|ftp|smb|file|mailto):.*")) {
+                d.browse(new java.net.URI(l.replace(" ", "%20")));
+            } else if (l.matches("(?i)^www\\..*|^[\\w-]+(\\.[\\w-]+)+(/.*)?$")) {
+                d.browse(new java.net.URI("https://" + l.replace(" ", "%20")));
+            } else {
+                Popup.notice(Messages.PRODUCT_LINK_NOT_FOUND + "\n" + l);
+            }
+        } catch (Exception e) {
+            Log.Debug(ModernProductPanel.class, e);
+            Popup.notice(Messages.PRODUCT_LINK_NOT_FOUND + "\n" + l);
+        }
     }
 
     private static JPanel leftAligned(JComponent c) {
@@ -471,6 +539,8 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
             public void mouseClicked(MouseEvent e) {
                 if (currentImageFile != null) {
                     FileDirectoryHandler.open(currentImageFile);
+                } else if (dataOwner.isExisting()) {
+                    addFile();
                 }
             }
         });
@@ -569,6 +639,9 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
         private static final long serialVersionUID = 1L;
         final LabeledCombobox contact = ModernTheme.plain(new LabeledCombobox());
         final JRadioButton isDefault = new JRadioButton(Messages.PRODUCT_DEFAULT_SUPPLIER.toString());
+        final LabeledTextField link = field();
+        final LabeledTextField price = field();
+        final javax.swing.JLabel cheapest = new javax.swing.JLabel();
 
         SupplierRow(Contact c, boolean def) {
             super(new BorderLayout(ModernTheme.px(6), 0));
@@ -592,8 +665,52 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
             east.setOpaque(false);
             east.add(isDefault);
             east.add(remove);
-            add(contact, BorderLayout.CENTER);
-            add(east, BorderLayout.EAST);
+            JPanel top = new JPanel(new BorderLayout(ModernTheme.px(6), 0));
+            top.setOpaque(false);
+            top.add(contact, BorderLayout.CENTER);
+            top.add(east, BorderLayout.EAST);
+            add(top, BorderLayout.NORTH);
+            //the product at this supplier: link and purchase price
+            link.getTextField().setToolTipText(Messages.PRODUCT_SUPPLIER_LINK.toString());
+            link.getTextField().putClientProperty("JTextField.placeholderText", Messages.PRODUCT_SUPPLIER_LINK.toString());
+            price.getTextField().setToolTipText(Messages.PRODUCT_SUPPLIER_PRICE.toString());
+            price.getTextField().putClientProperty("JTextField.placeholderText", Messages.PRODUCT_SUPPLIER_PRICE.toString());
+            price.getTextField().setColumns(7);
+            price.getTextField().setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+            price.getTextField().addFocusListener(new java.awt.event.FocusAdapter() {
+                @Override
+                public void focusLost(java.awt.event.FocusEvent e) {
+                    markCheapest();
+                }
+            });
+            JButton open = link(Messages.PRODUCT_OPEN_LINK.toString(), null);
+            open.addActionListener(e -> openLink(link.getText()));
+            cheapest.setForeground(new java.awt.Color(0x2E7D32));
+            cheapest.setFont(ModernTheme.font(-2, Font.BOLD));
+            JPanel right = new JPanel(new FlowLayout(FlowLayout.RIGHT, ModernTheme.px(4), 0));
+            right.setOpaque(false);
+            right.add(cheapest);
+            right.add(price);
+            right.add(open);
+            JPanel bottom = new JPanel(new BorderLayout(ModernTheme.px(6), 0));
+            bottom.setOpaque(false);
+            bottom.setBorder(BorderFactory.createEmptyBorder(ModernTheme.px(2), ModernTheme.px(14), 0, 0));
+            bottom.add(link, BorderLayout.CENTER);
+            bottom.add(right, BorderLayout.EAST);
+            add(bottom, BorderLayout.CENTER);
+            if (c != null && c.isExisting()) {
+                link.setText(ProductService.supplierValue(dataOwner, c, ProductService.SUPPLIER_URL));
+                price.setText(ProductService.supplierValue(dataOwner, c, ProductService.SUPPLIER_PRICE));
+            }
+        }
+
+        BigDecimal getPrice() {
+            try {
+                String t = price.getText();
+                return t == null || t.trim().isEmpty() ? null : FormatNumber.parseDezimal(t.trim());
+            } catch (Exception e) {
+                return null;
+            }
         }
 
         Contact getContact() {
@@ -661,7 +778,30 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
 
     private void addSupplierRow(Contact c, boolean def) {
         suppliers.add(new SupplierRow(c, def));
+        markCheapest();
         relayout(suppliers);
+    }
+
+    /**
+     * Marks the supplier with the lowest purchase price (with two or more
+     * prices)
+     */
+    private void markCheapest() {
+        SupplierRow best = null;
+        int priced = 0;
+        for (SupplierRow r : supplierRows()) {
+            r.cheapest.setText("");
+            BigDecimal p = r.getPrice();
+            if (p != null) {
+                priced++;
+                if (best == null || p.compareTo(best.getPrice()) < 0) {
+                    best = r;
+                }
+            }
+        }
+        if (best != null && priced > 1) {
+            best.cheapest.setText("\u2713 " + Messages.PRODUCT_CHEAPEST);
+        }
     }
 
     private void removeSupplierRow(SupplierRow row) {
@@ -997,7 +1137,7 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
             image.setIcon(null);
             image.setText(Messages.PRODUCT_NO_IMAGE.toString());
         } else {
-            int max = ModernTheme.px(180);
+            int max = ModernTheme.px(300);
             double f = Math.min(1d, Math.min((double) max / img.getWidth(null), (double) max / img.getHeight(null)));
             image.setText(null);
             image.setIcon(new ImageIcon(img.getScaledInstance((int) Math.max(1, img.getWidth(null) * f),
@@ -1015,6 +1155,16 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
             }
         }
         ProductService.saveFurtherSuppliers(dataOwner, further);
+        //link and price per supplier, the datasheet
+        for (SupplierRow r : supplierRows()) {
+            Contact c = r.getContact();
+            if (c != null) {
+                ProductService.setSupplierValue(dataOwner, c, ProductService.SUPPLIER_URL, r.link.getText());
+                BigDecimal p = r.getPrice();
+                ProductService.setSupplierValue(dataOwner, c, ProductService.SUPPLIER_PRICE, p == null ? null : FormatNumber.formatDezimal(p));
+            }
+        }
+        ProductService.setValue(dataOwner, ProductService.DATASHEET, datasheet.getText());
         List<Tier> list = new ArrayList<Tier>();
         for (Component c : tiers.getComponents()) {
             list.add(((TierRow) c).getTier());
@@ -1132,6 +1282,7 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
             description.setCaretPosition(0);
             unit.setText(measure_);
             url.setText(url_);
+            datasheet.setText(ProductService.value(dataOwner, ProductService.DATASHEET));
             ean.setText(ean_);
             reference.setText(reference_);
             netvalue.setText(FormatNumber.formatDezimal(internalnetvalue_ == null ? BigDecimal.ZERO : internalnetvalue_));
