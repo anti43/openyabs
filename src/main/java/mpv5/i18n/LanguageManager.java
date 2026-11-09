@@ -788,7 +788,8 @@ public class LanguageManager {
         FileDirectoryHandler.copyFile(s, f);
         Log.Debug(Main.class, "Importing language from: " + f.getCanonicalPath());
 
-        String ref = LanguageManager.importLanguage(f.getName() + " (" + new Date() + ")", f);
+        //no message box: this runs at the start (language update) and on request
+        String ref = LanguageManager.importLanguageQuietly(f.getName() + " (" + new Date() + ")", f);
         User.getCurrentUser().setLanguage(ref);
         User.getCurrentUser().save(true);
         Log.Debug(LanguageManager.class, "\n\n\n#####################################\nLanguage updated: " + langid + "\n#####################################\n\n");

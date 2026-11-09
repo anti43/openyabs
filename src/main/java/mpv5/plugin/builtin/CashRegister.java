@@ -45,6 +45,7 @@ public final class CashRegister implements YabsExtension {
 
     private ExtensionContext ctx;
     private PosServer server;
+    private PosService service;
 
     @Override
     public String id() {
@@ -102,7 +103,9 @@ public final class CashRegister implements YabsExtension {
         if (server != null && server.isRunning()) {
             return true;
         }
-        server = new PosServer(new PosService(ctx.settings().get("customer", Messages.POS_CASH_CUSTOMER.toString())), port());
+        service = new PosService(ctx.settings().get("customer", Messages.POS_CASH_CUSTOMER.toString()));
+        service.setGroups(PosService.parseGroups(ctx.settings().get("groups", "")));
+        server = new PosServer(service, port());
         try {
             String shop = mpv5.db.objects.User.getCurrentUser().getProperty("companyinfo.business");
             server.setShopName(shop == null || shop.equals("null") ? "YaBS" : shop);
@@ -160,17 +163,55 @@ public final class CashRegister implements YabsExtension {
         auto.addActionListener(e -> ctx.settings().setBoolean("autostart", auto.isSelected()));
         p.add(auto);
 
+        p.add(javax.swing.Box.createVerticalStrut(ModernTheme.px(10)));
+        p.add(groupsChooser());
+
         JLabel state = new JLabel();
         state.setFont(ModernTheme.font(1, Font.BOLD));
-        JLabel urls = new JLabel();
+        JPanel urls = new JPanel();
+        urls.setOpaque(false);
+        urls.setLayout(new BoxLayout(urls, BoxLayout.Y_AXIS));
+        urls.setAlignmentX(LEFT_ALIGNMENT_);
         JButton toggle = new JButton();
         JButton open = new JButton(Messages.POS_OPEN.toString());
-        Runnable show = () -> {
+        Runnable[] show = new Runnable[1];
+        show[0] = () -> {
             boolean on = server != null && server.isRunning();
             state.setText(on ? Messages.POS_RUNNING.toString() : Messages.POS_STOPPED.toString());
             state.setForeground(on ? mpv5.ui.misc.RichList.GREEN : ModernTheme.muted());
-            urls.setText(on ? "<html>" + Messages.POS_ADDRESSES + "<br>" + String.join("<br>", server.urls()) + "</html>" : " ");
             toggle.setText(on ? Messages.POS_STOP.toString() : Messages.POS_START.toString());
+            //the addresses with the IP of this computer, a click opens the register
+            urls.removeAll();
+            JLabel title = new JLabel(Messages.POS_ADDRESSES.toString());
+            title.setFont(ModernTheme.font(0, Font.BOLD));
+            urls.add(title);
+            for (final String u : PosServer.urls(port())) {
+                JButton link = new JButton("<html><u>" + u + "</u></html>");
+                link.setBorderPainted(false);
+                link.setContentAreaFilled(false);
+                link.setFocusPainted(false);
+                link.setMargin(new java.awt.Insets(2, 0, 2, 0));
+                link.setForeground(ModernTheme.accent());
+                link.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
+                link.setToolTipText(Messages.POS_LINK_TIP.toString());
+                link.addActionListener(e -> {
+                    if (startServer()) {
+                        browse(u);
+                    }
+                    show[0].run();
+                });
+                JButton copy = new JButton(Messages.ACTIVITY_COPY_PATH.toString().replace("Pfad", "Adresse").replace("path", "address"));
+                copy.addActionListener(e -> java.awt.Toolkit.getDefaultToolkit().getSystemClipboard()
+                        .setContents(new java.awt.datatransfer.StringSelection(u), null));
+                JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, ModernTheme.px(8), 0));
+                row.setOpaque(false);
+                row.setAlignmentX(LEFT_ALIGNMENT_);
+                row.add(link);
+                row.add(copy);
+                urls.add(row);
+            }
+            urls.revalidate();
+            urls.repaint();
         };
         toggle.addActionListener(e -> {
             ctx.settings().set("port", port.getText().trim());
@@ -180,7 +221,7 @@ public final class CashRegister implements YabsExtension {
             } else {
                 startServer();
             }
-            show.run();
+            show[0].run();
         });
         open.addActionListener(e -> {
             ctx.settings().set("port", port.getText().trim());
@@ -188,19 +229,70 @@ public final class CashRegister implements YabsExtension {
             if (startServer()) {
                 browse("http://localhost:" + server.port() + "/");
             }
-            show.run();
+            show[0].run();
         });
         JPanel buttons = new JPanel(new FlowLayout(FlowLayout.LEFT, ModernTheme.px(8), 0));
         buttons.setOpaque(false);
+        buttons.setAlignmentX(LEFT_ALIGNMENT_);
         buttons.add(state);
         buttons.add(toggle);
         buttons.add(open);
         p.add(javax.swing.Box.createVerticalStrut(ModernTheme.px(10)));
         p.add(buttons);
-        p.add(javax.swing.Box.createVerticalStrut(ModernTheme.px(6)));
+        p.add(javax.swing.Box.createVerticalStrut(ModernTheme.px(8)));
         p.add(urls);
-        show.run();
-        return p;
+        show[0].run();
+        //rows keep their height, the space goes below
+        JPanel top = new JPanel(new java.awt.BorderLayout());
+        top.setOpaque(false);
+        top.add(p, java.awt.BorderLayout.NORTH);
+        return top;
+    }
+
+    /**
+     * The product groups sold at the register (none checked: all products);
+     * applied at once, also while the register runs
+     */
+    private JComponent groupsChooser() {
+        JPanel box = new JPanel();
+        box.setOpaque(false);
+        box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
+        box.setAlignmentX(LEFT_ALIGNMENT_);
+        JLabel title = new JLabel(Messages.POS_GROUPS.toString());
+        title.setFont(ModernTheme.font(0, Font.BOLD));
+        box.add(title);
+        box.add(Applets.hint(Messages.POS_GROUPS_HINT.toString()));
+        final java.util.Set<Integer> chosen = PosService.parseGroups(ctx.settings().get("groups", ""));
+        JPanel list = new JPanel(new mpv5.ui.modern.WrapLayout(FlowLayout.LEFT, ModernTheme.px(8), ModernTheme.px(2)));
+        list.setOpaque(false);
+        list.setAlignmentX(LEFT_ALIGNMENT_);
+        try {
+            for (mpv5.db.common.DatabaseObject g : mpv5.db.common.DatabaseObject.getObjects(mpv5.db.common.Context.getProductGroup())) {
+                final int id = g.__getIDS();
+                final JCheckBox c = new JCheckBox(g.__getCname(), chosen.contains(id));
+                c.setOpaque(false);
+                c.addActionListener(e -> {
+                    if (c.isSelected()) {
+                        chosen.add(id);
+                    } else {
+                        chosen.remove(id);
+                    }
+                    StringBuilder b = new StringBuilder();
+                    for (Integer x : chosen) {
+                        b.append(b.length() == 0 ? "" : ",").append(x);
+                    }
+                    ctx.settings().set("groups", b.toString());
+                    if (service != null) {
+                        service.setGroups(chosen);
+                    }
+                });
+                list.add(c);
+            }
+        } catch (Exception e) {
+            Log.Debug(CashRegister.class, e);
+        }
+        box.add(list);
+        return box;
     }
 
     private static final float LEFT_ALIGNMENT_ = java.awt.Component.LEFT_ALIGNMENT;
