@@ -185,7 +185,8 @@ Invoicing software has to calculate correctly. YaBS calculates with exact decima
 
 YaBS can serve a **cash register as a web page** to a touch screen device at the counter (tablet, all-in-one PC). The device only needs a browser.
 
-- Start it in *Settings › Cash register* (or *Plugins › Open cash register*). The page shows the addresses to open on the device. Optionally the register starts together with YaBS.
+- Start it in *Settings › Cash register* (or *Plugins › Open cash register*). The settings page lists the **addresses of this computer with its IP** (e.g. `http://192.168.1.20:8090/`) as links: a click starts the register and opens it, a button copies the address for the touch device. Optionally the register starts together with YaBS.
+- **Choose the product groups** offered at the register (nothing chosen: all products); changes apply immediately, even while the register runs.
 - Sellers **sign in with their YaBS user**, tap product tiles (with groups and search), see net, VAT and total, and pay **cash** with quick amounts and a keypad; the **change** is shown.
 - Every sale is booked as a **paid invoice for the cash customer** ("Barverkauf", created automatically), so it shows up in journals, revenue and reports like every other invoice.
 - First draft: cash only, no receipt printer and no cash book yet. The server runs in your network without encryption, so use it only in a trusted network.
@@ -234,6 +235,7 @@ On the first start one window asks where your data should be stored: **on this c
 ## Updating and your existing data
 
 - Older YaBS databases are opened and updated automatically on the first start; an interrupted update continues where it stopped.
+- The German language file is brought up to date after an update without asking (a short note in the status bar), so new texts appear in German too.
 - If a database is damaged, YaBS offers to copy all data into a newly created database and keeps the old one as a backup next to it.
 - Tip: make a copy of the database folder before every update – it's just a folder.
 
