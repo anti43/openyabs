@@ -200,4 +200,50 @@ class ExtensionManagerTest {
         }
         return jar;
     }
+
+    @Test
+    void groovyScriptsArePlugins() throws Exception {
+        File plugins = dir.resolve("plugins").toFile();
+        plugins.mkdirs();
+        File script = new File(dir.toFile(), "hello.groovy");
+        Files.write(script.toPath(), ("// @name Hello Groovy\n"
+                + "// @description Says hello\n"
+                + "def count = 0\n"
+                + "yabs.addCommand('Say hello', 'greets', { count++; yabs.notify('Hello ' + count) })\n"
+                + "yabs.addSearchProvider({ n -> [new mpv5.plugin.api.SearchResult('Groovy ' + n, '', {})] })\n"
+                + "onStop = { yabs.notify('bye') }\n").getBytes(StandardCharsets.UTF_8));
+        TestHost h = new TestHost();
+        ExtensionManager m = new ExtensionManager(plugins, h);
+        ExtensionManager.Installed i = m.install(script).get(0);
+        assertEquals("groovy.hello", i.id());
+        assertEquals("Hello Groovy", i.extension.name());
+        assertEquals("Says hello", i.extension.description());
+        assertEquals(ExtensionManager.State.RUNNING, i.getState());
+        m.commands().get(0).action.run();
+        m.commands().get(0).action.run();
+        assertEquals("Hello 2", h.messages.get(1));
+        assertEquals("Groovy abc", ((SearchResult) m.search("abc").get(0)[1]).title);
+        //edit and reload
+        Files.write(new File(plugins, "hello.groovy").toPath(), ("// @name Hello Groovy\n"
+                + "yabs.addCommand('Say hello again', '', { })\n").getBytes(StandardCharsets.UTF_8));
+        ExtensionManager.Installed again = m.reload(i);
+        assertEquals("bye", h.messages.get(h.messages.size() - 1));
+        assertEquals(ExtensionManager.State.RUNNING, again.getState());
+        assertEquals("Say hello again", m.commands().get(0).title);
+        assertTrue(m.search("abc").isEmpty());
+        assertTrue(m.uninstall(again));
+        assertFalse(new File(plugins, "hello.groovy").exists());
+    }
+
+    @Test
+    void aBrokenGroovyScriptFails() throws Exception {
+        File plugins = dir.resolve("plugins").toFile();
+        File script = new File(dir.toFile(), "broken.groovy");
+        Files.write(script.toPath(), "yabs.addCommand('x', '', { }\n this is not groovy (".getBytes(StandardCharsets.UTF_8));
+        ExtensionManager m = new ExtensionManager(plugins, new TestHost());
+        ExtensionManager.Installed i = m.install(script).get(0);
+        assertEquals(ExtensionManager.State.FAILED, i.getState());
+        assertNotNull(i.getError());
+        assertTrue(m.commands().isEmpty());
+    }
 }

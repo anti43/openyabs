@@ -236,11 +236,11 @@ public final class ExtensionManager {
         for (YabsExtension e : safe(builtIn)) {
             add(e, null, null);
         }
-        File[] jars = folder.listFiles((d, n) -> n.toLowerCase().endsWith(".jar"));
-        if (jars != null) {
-            Arrays.sort(jars);
-            for (File jar : jars) {
-                loadJar(jar);
+        File[] files = folder.listFiles((d, n) -> n.toLowerCase().endsWith(".jar") || n.toLowerCase().endsWith(".groovy"));
+        if (files != null) {
+            Arrays.sort(files);
+            for (File f : files) {
+                loadFile(f);
             }
         }
     }
@@ -260,6 +260,28 @@ public final class ExtensionManager {
             }
         }
         return list;
+    }
+
+    /**
+     * Loads the plugins of a jar or a Groovy script (without starting them)
+     *
+     * @param f
+     * @return the plugins found
+     */
+    public synchronized List<Installed> loadFile(File f) {
+        if (f.getName().toLowerCase().endsWith(".groovy")) {
+            List<Installed> l = new ArrayList<Installed>();
+            try {
+                Installed i = add(new GroovyExtension(f), f, null);
+                if (i != null) {
+                    l.add(i);
+                }
+            } catch (Throwable t) {
+                Log.Debug(ExtensionManager.class, t);
+            }
+            return l;
+        }
+        return loadJar(f);
     }
 
     /**
@@ -464,7 +486,7 @@ public final class ExtensionManager {
         }
         close(i.loader);
         Installed again = null;
-        for (Installed x : loadJar(jar)) {
+        for (Installed x : loadFile(jar)) {
             if (x.state == State.STOPPED) {
                 start(x);
             }
@@ -497,7 +519,7 @@ public final class ExtensionManager {
         if (!jar.getCanonicalFile().equals(target.getCanonicalFile())) {
             Files.copy(jar.toPath(), target.toPath(), StandardCopyOption.REPLACE_EXISTING);
         }
-        List<Installed> found = loadJar(target);
+        List<Installed> found = loadFile(target);
         if (found.isEmpty()) {
             Files.deleteIfExists(target.toPath());
             throw new IOException("No YaBS plugin in " + jar.getName()
