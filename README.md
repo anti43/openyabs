@@ -178,7 +178,7 @@ Invoicing software has to calculate correctly. YaBS calculates with exact decima
 - **Tabs and navigation**: several records open side by side, back and forward like a browser, favourites, a clipboard for records.
 - **Fully usable by keyboard**: `Tab` / `Shift+Tab` walk through all fields, also past notes, file and document lists (in the positions of a document `Tab` moves through the cells and leaves at the last one, `Ctrl+Tab` leaves at once).
 - **Date fields you can type into** in the format of your region (German: `dd.MM.yyyy`). Short forms work: `1.2.` (this year), `1.2.26`, `010226`, `5` (5th of this month), `+7` / `-1` (days from today), `h` / `heute` / `t` / `today`; arrow keys change the day, month or year under the cursor, `Alt+↓` or `F4` opens the calendar (`Enter` takes the date, `Esc` closes it).
-- **Create copy** (*More › Create copy*, `Ctrl+Shift+S`): opens a copy of the contact, product or document as a new record, **not saved yet** (a yellow note says so, *Discard copy* goes back to the original). Only saving creates it.
+- **Create copy** (*More › Create copy*, `Ctrl+Shift+S`): opens a copy of the contact, product or document **in a new tab** (the original stays open) as a new record, **not saved yet** (a yellow note says so, *Discard copy* goes back to the original). Only saving creates it.
 - **Bank details explained on the pages**: *Settings › Company info* holds **your own** account (printed on your invoices) and the default payment term and Skonto for all contacts. At a contact, *Payment terms* overrides these defaults for this contact only (also which of your accounts the customer pays to), while *Bank account of this contact* is the contact's **own** account (direct debits, refunds, paying a supplier).
 - **Keyboard shortcuts** for everything frequent: `Ctrl+S` save, `Ctrl+P` print, `Ctrl+Shift+P` PDF, `Ctrl+E` mail, `Shift Shift` / `Ctrl+F` search anything, `Ctrl+C` / `Ctrl+V` copy and paste records, `Ctrl+F1` shows all shortcuts.
 - **Safe deleting**: before deleting, YaBS lists everything that would be deleted with it; deleted records go to a trash bin first.
@@ -216,7 +216,7 @@ YaBS can serve a **cash register as a web page** to a touch screen device at the
 
 ## For power users: scripts, plugins and SQL
 
-- **Plugins** in **Groovy** (one file, no build) or **Java** (a jar): add commands, results in Search anything, settings pages and reactions to new invoices, created PDFs and more. Drop them into the `plugins` folder or install them in *Settings › Plugin Manager* – enable, disable, reload and edit them without restarting. **[How to write a plugin](docs/Plugins.md)**.
+- **Plugins** in **Groovy** (one file, no build) or **Java** (a jar): add commands, results in Search anything, settings pages and reactions to new invoices, created PDFs and more. Drop them into the `plugins` folder or install them in *Settings › Plugin Manager* – enable, disable, reload and edit them without restarting. Groovy plugins are written in the **built-in editor** (Groovy highlighting, line numbers, working examples to insert, syntax check with the line of the error, `Ctrl+S` saves and starts the plugin at once). **[How to write a plugin](docs/Plugins.md)**.
 - **Groovy console and script manager** (Groovy 4): automate recurring tasks or add your own calculations and document labels.
 - **SQL query window** for your own evaluations – your data is a normal SQL database.
 - **Add your own actions** to the toolbar.

@@ -29,6 +29,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import javax.swing.JToggleButton;
@@ -127,9 +128,9 @@ public class ModernCommandBar extends JPanel {
      * Shows the record as copy (new, not saved yet)
      */
     private void createCopy() {
-        if (RecordActions.createCopy(view)) {
-            updateCopyBanner();
-        }
+        //the record stays open here, the copy opens in a new tab
+        RecordActions.copyInNewTab(view);
+        updateCopyBanner();
     }
 
     /**
@@ -266,6 +267,13 @@ public class ModernCommandBar extends JPanel {
         copyBanner.add(discard, BorderLayout.EAST);
         copyBanner.setVisible(false);
         add(copyBanner, BorderLayout.SOUTH);
+        //the view became a copy (also when made from another tab)
+        viewComponent.addPropertyChangeListener("yabs.copyOf", e -> SwingUtilities.invokeLater(() -> {
+            updateCopyBanner();
+            if (RecordActions.isPendingCopy(view)) {
+                setEditable(true);
+            }
+        }));
 
         //all elements of the bar in one height
         uniformHeight(left);

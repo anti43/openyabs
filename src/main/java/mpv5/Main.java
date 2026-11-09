@@ -375,6 +375,7 @@ public class Main implements Runnable {
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
+        linuxPaintFix();
 
         classLoader = new Java10UrlClassloader(new URL[0], Main.class.getClassLoader());
 
@@ -935,6 +936,19 @@ public class Main implements Runnable {
      * frame shown while the event queue was busy stay grey until the next
      * input. Paint the main window again once the start is done.
      */
+    /**
+     * Linux (X11/XWayland): with one back buffer per window ("swing.bufferPerWindow"),
+     * the first frame can stay grey until the window is resized. Without it Swing
+     * paints straight into the window. Set before any AWT class is loaded; a value
+     * given on the command line (-Dswing.bufferPerWindow=...) wins.
+     */
+    private static void linuxPaintFix() {
+        String os = System.getProperty("os.name", "").toLowerCase();
+        if (os.contains("linux") && System.getProperty("swing.bufferPerWindow") == null) {
+            System.setProperty("swing.bufferPerWindow", "false");
+        }
+    }
+
     private void repaintMainFrame() {
         final java.awt.Frame f;
         try {
@@ -951,11 +965,21 @@ public class Main implements Runnable {
                 f.repaint();
             }
         };
+        //what helps by hand: a resize. Once, when the window is mapped (not when maximized)
+        Runnable nudge = () -> {
+            if (f.isShowing() && (f.getExtendedState() & java.awt.Frame.MAXIMIZED_BOTH) == 0) {
+                java.awt.Dimension d = f.getSize();
+                f.setSize(d.width, d.height + 1);
+                f.setSize(d);
+            }
+            paint.run();
+            java.awt.Toolkit.getDefaultToolkit().sync();
+        };
         //no toFront(): FrameView's frame answers it with setVisible(true), which calls toFront() again
         SwingUtilities.invokeLater(paint);
         //once more when the window manager has mapped the window
         for (int ms : new int[]{300, 1200}) {
-            javax.swing.Timer t = new javax.swing.Timer(ms, e -> paint.run());
+            javax.swing.Timer t = new javax.swing.Timer(ms, e -> (ms == 300 ? nudge : paint).run());
             t.setRepeats(false);
             t.start();
         }
