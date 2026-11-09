@@ -32,6 +32,11 @@ test {
 dependencies {
     // relative to the project; the Mustang library and validator (e-invoices) are in lib/ as well
     implementation fileTree(dir: 'lib', include: ['*.jar'])
+    // Groovy: scripts, the Groovy console and plugins written in Groovy
+    implementation 'org.apache.groovy:groovy:4.0.24'
+    implementation('org.apache.groovy:groovy-console:4.0.24') {
+        exclude group: 'org.apache.ivy' // no @Grab downloads; the console works without it
+    }
 }
 
 // Java 21 is the minimum (Apache Derby 10.17 needs it); --release also
@@ -73,5 +78,7 @@ tasks.register('distributionZip', Zip) {
         from('lib') {
             exclude 'docs/**' // API docs, not needed at runtime
         }
+        // the libraries from Maven (Groovy)
+        from(configurations.runtimeClasspath.filter { !it.path.contains(file('lib').path) })
     }
 }

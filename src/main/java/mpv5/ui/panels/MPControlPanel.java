@@ -1,6 +1,6 @@
 package mpv5.ui.panels;
 
-import groovy.ui.Console;
+import groovy.console.ui.Console;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
