@@ -221,7 +221,16 @@ public final class ExtensionManager {
      * @param r told when plugins or their contributions change (any thread)
      */
     public void addChangeListener(Runnable r) {
-        changeListeners.add(r);
+        if (!changeListeners.contains(r)) {
+            changeListeners.add(r);
+        }
+    }
+
+    /**
+     * @param r no longer told
+     */
+    public void removeChangeListener(Runnable r) {
+        changeListeners.remove(r);
     }
 
     // ------------------------------------------------------------------ discovery
