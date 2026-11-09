@@ -170,11 +170,15 @@ Invoicing software has to calculate correctly. YaBS calculates with exact decima
 
 - **Modern look by default**: clean cards, rounded controls, clear tabs – and the **classic views are one click away** (*View › Layout › Modern look*).
 - **Responsive layout**: the data cards arrange themselves in one to three columns depending on the window size; it scales with large fonts and HiDPI screens.
-- **Tabs and navigation**: several records open side by side, back and forward like a browser, favourites, a clipboard for records, a search bar.
-- **Keyboard shortcuts** for everything frequent: `Ctrl+S` save, `Ctrl+P` print, `Ctrl+Shift+P` PDF, `Ctrl+E` mail, `Ctrl+F` filter, `Ctrl+C` / `Ctrl+V` copy and paste records, `Ctrl+F1` shows all shortcuts.
+- **Search anything** (`Shift Shift`, like in IntelliJ, or `Ctrl+F`): one field finds contacts, quotes, invoices (also by number or type, e.g. "Rechnung"), products, positions, appointments, settings, menu commands and plugin results – `Enter` opens the hit.
+- **Activity at the bottom right**: everything of the session in one list – created PDFs and documents (open them, show them in their folder), created, changed and deleted records (open them) and the messages; searchable and filterable.
+- **History and trash**: the history of all records grouped by day, searchable and filterable, opens the records; the trash restores records or deletes them for good.
+- **Settings in one place**: a searchable list with an overview of all settings, each page in clear cards.
+- **Tabs and navigation**: several records open side by side, back and forward like a browser, favourites, a clipboard for records.
+- **Keyboard shortcuts** for everything frequent: `Ctrl+S` save, `Ctrl+P` print, `Ctrl+Shift+P` PDF, `Ctrl+E` mail, `Shift Shift` / `Ctrl+F` search anything, `Ctrl+C` / `Ctrl+V` copy and paste records, `Ctrl+F1` shows all shortcuts.
 - **Safe deleting**: before deleting, YaBS lists everything that would be deleted with it; deleted records go to a trash bin first.
 - **Your language**: English and German included – on a German system (or with a German locale) YaBS switches to German by itself, and *View › Language* switches at any time (YaBS restarts itself); further translations can be made inside the application.
-- **Zoom like in a browser**: `Ctrl +` / `Ctrl −` / `Ctrl 0` make the whole application larger or smaller (80 – 200 %), remembered on each computer.
+- **Zoom like in a browser**: `Ctrl +` / `Ctrl −` / `Ctrl 0` make the whole application – menus, texts, tables, date pickers and drop-downs – larger or smaller (80 – 200 %), remembered on each computer.
 
 ## Teams: users, groups and rights
 
@@ -193,8 +197,8 @@ Invoicing software has to calculate correctly. YaBS calculates with exact decima
 
 ## For power users: scripts, plugins and SQL
 
-- **Groovy console and script manager**: automate recurring tasks or add your own calculations and document labels.
-- **Plugins** extend YaBS with your own functions.
+- **Plugins** in **Groovy** (one file, no build) or **Java** (a jar): add commands, results in Search anything, settings pages and reactions to new invoices, created PDFs and more. Drop them into the `plugins` folder or install them in *Settings › Plugin Manager* – enable, disable, reload and edit them without restarting. **[How to write a plugin](docs/Plugins.md)**.
+- **Groovy console and script manager** (Groovy 4): automate recurring tasks or add your own calculations and document labels.
 - **SQL query window** for your own evaluations – your data is a normal SQL database.
 - **Add your own actions** to the toolbar.
 
@@ -215,7 +219,7 @@ YaBS runs on **Windows, Linux and macOS**.
 
 All downloads: **[Releases](https://github.com/andreasweberd/openyabs/releases)** – `latest-master` is the current development build.
 
-On the first start an assistant creates the local database and asks for your company data. That's it – no account, no internet connection needed.
+On the first start one window asks where your data should be stored: **on this computer** (one click) or on a **database server** (MySQL / MariaDB, Derby). The setup runs in the background; languages, countries and an invoice template are set up automatically, German systems start in German, and you are signed in as `admin` (password `password` – change it under *Settings › Users*). Your company data goes to *Settings › Company Info*. No account, no internet connection needed.
 
 ## Updating and your existing data
 
@@ -237,6 +241,7 @@ Versions: builds of `master` are **2.0.&lt;build number&gt;** (shown on the spla
 
 ## Help, community and license
 
+- Plugins: [docs/Plugins.md](docs/Plugins.md)
 - Questions (English and German): mailing list [openyabs@googlegroups.com](mailto:openyabs@googlegroups.com) · [archive](https://groups.google.com/forum/#!forum/openyabs)
 - German documentation: [Handbuch](https://docs.google.com/document/d/1VhUi0wS-EJgfV-o89Hl-2wux810mJnqUV1wPxpgVIs4/pub) · [Hinweise und Neuerungen](docs/Hinweise.md) · [E-Rechnung](docs/E-Rechnung.md)
 - Original project: [anti43/openyabs](https://github.com/anti43/openyabs) · [heise download](http://www.heise.de/download/yabs-yet-another-business-software-1149250.html) · [ubuntuusers wiki](http://wiki.ubuntuusers.de/Yabs)
