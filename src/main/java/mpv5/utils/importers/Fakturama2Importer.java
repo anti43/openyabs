@@ -76,7 +76,6 @@ public class Fakturama2Importer {
                             Tax t = new Tax();
                             t.setCname(name);
                             t.setTaxvalue(new BigDecimal(taxVal <= 1 ? taxVal * 100 : taxVal));
-                            if (vals.size() > 3) t.setDescription(vals.get(3));
                             t.save();
                             taxIdMap.put(fktId, t.__getIDS());
                             result.taxesImported++;
@@ -143,13 +142,13 @@ public class Fakturama2Importer {
                     if (vals.size() >= 6) {
                         try {
                             Product p = new Product();
-                            p.setCNumber(vals.get(1));
+                            p.setCnumber(vals.get(1));
                             p.setCname(vals.get(2));
                             p.setDescription(vals.get(3));
-                            p.setNetprice(new BigDecimal(vals.get(4)));
-                            if (vals.size() > 5) p.setCostprice(new BigDecimal(vals.get(5)));
-                            if (vals.size() > 6) p.setStockquantity(new BigDecimal(vals.get(6)));
-                            if (vals.size() > 7) p.setMeasureunit(vals.get(7));
+                            p.setExternalnetvalue(new BigDecimal(vals.get(4)));
+                            if (vals.size() > 5) p.setInternalnetvalue(new BigDecimal(vals.get(5)));
+                            if (vals.size() > 6) p.setStockvalue(new BigDecimal(vals.get(6)));
+                            if (vals.size() > 7) p.setMeasure(vals.get(7));
                             if (vals.size() > 9) p.setEan(vals.get(9));
 
                             if (vals.size() > 10) {

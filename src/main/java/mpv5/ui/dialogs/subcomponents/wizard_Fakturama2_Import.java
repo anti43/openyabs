@@ -7,6 +7,7 @@ import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import mpv5.globals.Messages;
 import mpv5.i18n.LanguageManager;
 import mpv5.logging.Log;
@@ -50,7 +51,7 @@ public class wizard_Fakturama2_Import extends javax.swing.JPanel implements Wiza
         // File Chooser for Fakturama.script
         scriptFilePathChooser = new LabeledTextChooser();
         scriptFilePathChooser.set_Label("Fakturama.script File:");
-        scriptFilePathChooser.setFilter(DialogForFile.FILES);
+        scriptFilePathChooser.setFilter(new FileNameExtensionFilter("Fakturama script files (*.script)", "script"));
         scriptFilePathChooser.setModalityParent(this);
         mainPanel.add(scriptFilePathChooser);
 
