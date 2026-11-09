@@ -443,8 +443,9 @@ public class FormatHandler {
                     throw new IllegalArgumentException(f.toPattern());
                 }
             } catch (Exception e) {
-                Log.Debug(this, e);
-                Popup.error(YabsViewProxy.instance().getIdentifierFrame(), Messages.ERROR_OCCURED + "\n" + "Pattern: " + format.toPattern() + " for String: " + string + " Starting at " + startindex);
+                //a number in another format (e.g. imported from other software): count from the start,
+                //the numbers in use are skipped
+                Log.Debug(this, "Pattern: " + format.toPattern() + " does not match: " + string + " (" + e + ")");
             }
             if (n == null) {
                 n = 0;

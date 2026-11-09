@@ -37,6 +37,8 @@ dependencies {
     implementation('org.apache.groovy:groovy-console:4.0.24') {
         exclude group: 'org.apache.ivy' // no @Grab downloads; the console works without it
     }
+    // reads Fakturama 2 databases (HSQLDB) for the import
+    implementation 'org.hsqldb:hsqldb:2.7.4'
 }
 
 // Java 21 is the minimum (Apache Derby 10.17 needs it); --release also
