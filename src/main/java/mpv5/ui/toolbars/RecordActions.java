@@ -45,6 +45,10 @@ public final class RecordActions {
      * @param view
      */
     public static void save(DataPanel view) {
+        if (isPendingCopy(view)) {
+            saveCopy(view);
+            return;
+        }
         try {
             DatabaseObject dato = view.getDataOwner();
             view.actionBeforeSave();
@@ -85,6 +89,77 @@ public final class RecordActions {
         }
     }
 
+    private static final String COPY_OF = "yabs.copyOf";
+
+    /**
+     * Turns the shown record into a copy: a new record, not saved yet. Saving
+     * creates it, {@link #revert(DataPanel)} shows the original again.
+     *
+     * @param view
+     * @return true if the view shows a copy now
+     */
+    public static boolean createCopy(DataPanel view) {
+        DatabaseObject dato = view.getDataOwner();
+        if (dato == null || !dato.isExisting() || !(view instanceof javax.swing.JComponent)) {
+            return false;
+        }
+        //the fields as shown (also not yet saved changes) go into the copy
+        if (!dato.getPanelData(view)) {
+            view.showRequiredFields();
+            return false;
+        }
+        int original = dato.__getIDS();
+        String name = dato.__getCname();
+        dato.setIDS(-1);
+        view.actionBeforeCreate();
+        ((javax.swing.JComponent) view).putClientProperty(COPY_OF, new Object[]{original, name, dato});
+        return true;
+    }
+
+    /**
+     * @param view
+     * @return true if the view shows a copy which is not saved yet
+     */
+    public static boolean isPendingCopy(DataPanel view) {
+        if (!(view instanceof javax.swing.JComponent)) {
+            return false;
+        }
+        Object o = ((javax.swing.JComponent) view).getClientProperty(COPY_OF);
+        if (o != null && (view.getDataOwner() == null || view.getDataOwner().isExisting()
+                || view.getDataOwner() != ((Object[]) o)[2])) {
+            //saved meanwhile (e.g. by adding a file), or another record is shown
+            ((javax.swing.JComponent) view).putClientProperty(COPY_OF, null);
+            return false;
+        }
+        return o != null;
+    }
+
+    /**
+     * @param view
+     * @return the name of the original of a pending copy, else null
+     */
+    public static String copyOf(DataPanel view) {
+        if (!isPendingCopy(view)) {
+            return null;
+        }
+        return String.valueOf(((Object[]) ((javax.swing.JComponent) view).getClientProperty(COPY_OF))[1]);
+    }
+
+    private static void saveCopy(DataPanel view) {
+        DatabaseObject dato = view.getDataOwner();
+        if (dato.getPanelData(view) && dato.save()) {
+            ((javax.swing.JComponent) view).putClientProperty(COPY_OF, null);
+            try {
+                view.actionAfterCreate();
+                view.setDataOwner(dato, true);
+            } catch (Exception e) {
+                Log.Debug(RecordActions.class, e);
+            }
+        } else {
+            view.showRequiredFields();
+        }
+    }
+
     /**
      * Discards the changes: shows the saved record again
      *
@@ -92,6 +167,17 @@ public final class RecordActions {
      */
     public static void revert(DataPanel view) {
         DatabaseObject dato = view.getDataOwner();
+        if (isPendingCopy(view)) {
+            //discard the copy: the original again
+            Object[] o = (Object[]) ((javax.swing.JComponent) view).getClientProperty(COPY_OF);
+            ((javax.swing.JComponent) view).putClientProperty(COPY_OF, null);
+            try {
+                view.setDataOwner(DatabaseObject.getObject(dato.getContext(), (Integer) o[0]), true);
+            } catch (Exception e) {
+                Log.Debug(RecordActions.class, e);
+            }
+            return;
+        }
         if (dato.isExisting()) {
             dato.getPanelData(view);
             dato.reset();

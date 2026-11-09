@@ -120,6 +120,31 @@ public class ModernCommandBar extends JPanel {
     private boolean isFavourite;
     private boolean editable = true;
     private Runnable findAction;
+    private final JPanel copyBanner = new JPanel(new BorderLayout(ModernTheme.px(8), 0));
+    private final javax.swing.JLabel copyText = new javax.swing.JLabel();
+
+    /**
+     * Shows the record as copy (new, not saved yet)
+     */
+    private void createCopy() {
+        if (RecordActions.createCopy(view)) {
+            updateCopyBanner();
+        }
+    }
+
+    /**
+     * Shows or hides the note about a copy which is not saved yet
+     */
+    public void updateCopyBanner() {
+        String original = RecordActions.copyOf(view);
+        copyBanner.setVisible(original != null);
+        if (original != null) {
+            copyText.setText("<html>" + String.format(Messages.COPY_PENDING.toString(),
+                    original.replace("&", "&amp;").replace("<", "&lt;")) + "</html>");
+        }
+        revalidate();
+        repaint();
+    }
 
     /**
      * Creates the bar and the shortcuts. Create it after the rest of the view:
@@ -151,9 +176,15 @@ public class ModernCommandBar extends JPanel {
 
         save = new PrimaryButton(text("MPV5View.jButton25.toolTipText"), "/images/16/filesave.png");
         save.setToolTipText(tip(text("MPV5View.jButton25.toolTipText"), SAVE));
-        save.addActionListener(e -> RecordActions.save(view));
+        save.addActionListener(e -> {
+            RecordActions.save(view);
+            updateCopyBanner();
+        });
         JButton revert = button(null, "/images/22/revert.png", tip(text("MPV5View.jButton22.toolTipText"), REVERT));
-        revert.addActionListener(e -> RecordActions.revert(view));
+        revert.addActionListener(e -> {
+            RecordActions.revert(view);
+            updateCopyBanner();
+        });
         mail = button(text("DataPanelTB.mailButton.toolTipText"), "/images/22/mail_send.png", tip(text("DataPanelTB.mailButton.toolTipText"), MAIL));
         mail.addActionListener(e -> RecordActions.mail(view));
         JButton print = button(text("MPV5View.jButton23.toolTipText"), "/images/22/fileprint.png", tip(text("MPV5View.jButton23.toolTipText"), PRINT));
@@ -175,8 +206,9 @@ public class ModernCommandBar extends JPanel {
 
         //rarely used actions in a menu
         JPopupMenu more = new JPopupMenu();
-        JMenuItem saveAsNew = item(more, text("MPV5View.jButton4.toolTipText"), "/images/16/filesaveas.png", SAVE_AS_NEW);
-        saveAsNew.addActionListener(e -> RecordActions.saveAsNew(view));
+        JMenuItem saveAsNew = item(more, Messages.ACTION_CREATE_COPY.toString(), "/images/16/filesaveas.png", SAVE_AS_NEW);
+        saveAsNew.setToolTipText(Messages.ACTION_CREATE_COPY_TIP.toString());
+        saveAsNew.addActionListener(e -> createCopy());
         JMenuItem copy = item(more, text("DataPanelTB.but10.toolTipText"), "/images/16/editcopy.png", COPY);
         copy.addActionListener(e -> copy());
         JMenuItem paste = item(more, Messages.ACTION_PASTE.toString(), "/images/16/editpaste.png", PASTE);
@@ -219,6 +251,22 @@ public class ModernCommandBar extends JPanel {
         right.add(delete);
         add(right, BorderLayout.EAST);
 
+        //a copy which is not saved yet: say so, with a way back
+        copyBanner.setOpaque(true);
+        copyBanner.setBackground(new java.awt.Color(0xFFF4CE));
+        copyBanner.setBorder(BorderFactory.createEmptyBorder(ModernTheme.px(6), ModernTheme.px(10), ModernTheme.px(6), ModernTheme.px(10)));
+        copyText.setForeground(new java.awt.Color(0x5C4400));
+        JButton discard = new JButton(Messages.COPY_DISCARD.toString());
+        discard.setFocusable(false);
+        discard.addActionListener(e -> {
+            RecordActions.revert(view);
+            updateCopyBanner();
+        });
+        copyBanner.add(copyText, BorderLayout.CENTER);
+        copyBanner.add(discard, BorderLayout.EAST);
+        copyBanner.setVisible(false);
+        add(copyBanner, BorderLayout.SOUTH);
+
         //all elements of the bar in one height
         uniformHeight(left);
         uniformHeight(right);
@@ -226,10 +274,14 @@ public class ModernCommandBar extends JPanel {
         shortcut(SAVE, () -> {
             if (editable) {
                 RecordActions.save(view);
+                updateCopyBanner();
             }
         });
-        shortcut(SAVE_AS_NEW, () -> RecordActions.saveAsNew(view));
-        shortcut(REVERT, () -> RecordActions.revert(view));
+        shortcut(SAVE_AS_NEW, this::createCopy);
+        shortcut(REVERT, () -> {
+            RecordActions.revert(view);
+            updateCopyBanner();
+        });
         shortcut(PRINT, () -> RecordActions.print(view));
         shortcut(PDF, () -> RecordActions.pdf(view));
         shortcut(MAIL, () -> {
@@ -430,6 +482,8 @@ public class ModernCommandBar extends JPanel {
             this.favourite.setIcon(new javax.swing.ImageIcon(url));
         }
         this.favourite.setToolTipText(tip(text("MPV5View.jButton24.toolTipText"), FAVOURITE));
+        //another record shown: no note about a copy
+        updateCopyBanner();
     }
 
     /**

@@ -484,14 +484,16 @@ public class ModernContactPanel extends ModernDataPanel {
                 .row(Card.field(text("ContactPanel.number._Label"), number, 1),
                         Card.field(text("ContactPanel.groupnameselect._Label"), groupnameselect, 2))
                 .row(Card.field(text("ContactPanel.taxnumber._Label"), taxnumber))
-                .section(Messages.CONTACT_SECTION_BANK.toString())
+                .section(Messages.CONTACT_SECTION_OWN_BANK.toString())
+                .addFull(mpv5.ui.modern.Applets.hint(Messages.CONTACT_OWN_BANK_HINT.toString()))
                 .row(Card.field(text("ContactPanel.bankaccount._Label"), bankaccount))
                 .row(Card.field(text("ContactPanel.bankid._Label"), bankid, 1),
                         Card.field(text("ContactPanel.bankname._Label"), bankname, 2))
                 .row(Card.field(text("ContactPanel.bankcurrency._Label"), bankcurrency),
                         Card.field(text("ContactPanel.bankcountry._Label"), bankcountry)));
 
-        grid.add(new Card(Messages.CONTACT_SECTION_PAYMENT.toString())
+        grid.add(new Card(Messages.CONTACT_SECTION_TERMS.toString())
+                .addFull(mpv5.ui.modern.Applets.hint(Messages.CONTACT_TERMS_HINT.toString()))
                 .row(Card.field(Messages.EINVOICE_PAYTERM.toString(), payterm, 1),
                         Card.field(null, einvoiceImmediate, 2))
                 .row(Card.field(Messages.EINVOICE_ACCOUNT.toString(), einvoiceAccount))
