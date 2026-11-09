@@ -226,7 +226,11 @@ public class TextAreaCellEditor extends DefaultCellEditor implements ActionListe
         Rectangle windowBounds          = dialog.getBounds();
         int       dx                    = invokerScreenLocation.x;
         int       dy                    = invokerScreenLocation.y;
-        Rectangle ss                    = root.getGraphicsConfiguration().getBounds();
+        //the editor may no longer be in a window (editing ended before this ran):
+        //then the screen of the dialog or the default screen
+        java.awt.GraphicsConfiguration gc = root != null ? root.getGraphicsConfiguration() : dialog.getGraphicsConfiguration();
+        Rectangle ss = gc != null ? gc.getBounds()
+                : java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().getBounds();
 
         ss.grow(-32, -32);
 

@@ -32,6 +32,11 @@ test {
 dependencies {
     // relative to the project; the Mustang library and validator (e-invoices) are in lib/ as well
     implementation fileTree(dir: 'lib', include: ['*.jar'])
+    // Groovy: scripts, the Groovy console and plugins written in Groovy
+    implementation 'org.apache.groovy:groovy:4.0.24'
+    implementation('org.apache.groovy:groovy-console:4.0.24') {
+        exclude group: 'org.apache.ivy' // no @Grab downloads; the console works without it
+    }
 }
 
 // Java 21 is the minimum (Apache Derby 10.17 needs it); --release also
@@ -53,6 +58,14 @@ jar {
     }
 }
 
+// "java -jar build/libs/openyabs.jar" works right after a build: the manifest
+// points to lib/ next to the jar, so all runtime libraries are copied there
+tasks.register('copyRuntimeLibs', Copy) {
+    from configurations.runtimeClasspath
+    into layout.buildDirectory.dir('libs/lib')
+}
+tasks.named('jar') { finalizedBy 'copyRuntimeLibs' }
+
 // Zip for distribution: openyabs/openyabs.jar, openyabs/lib/ and start scripts (src/dist).
 // Start with yabs.sh / yabs.bat or "java -jar openyabs.jar" (Java 21+).
 tasks.register('distributionZip', Zip) {
@@ -73,5 +86,7 @@ tasks.register('distributionZip', Zip) {
         from('lib') {
             exclude 'docs/**' // API docs, not needed at runtime
         }
+        // the libraries from Maven (Groovy)
+        from(configurations.runtimeClasspath.filter { !it.path.contains(file('lib').path) })
     }
 }

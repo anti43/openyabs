@@ -267,6 +267,7 @@ public final class SearchAnything extends JDialog {
         final int search = ++searches;
         final List<Command> commands = commands(needle);
         if (needle.length() < 2) {
+            pluginHits = new ArrayList<Command>();
             show(commands, new ArrayList<SearchService.Hit>(), needle);
             status.setText(Messages.SEARCH_ANYTHING_TIP.toString());
             return;
@@ -275,6 +276,14 @@ public final class SearchAnything extends JDialog {
         new SwingWorker<List<SearchService.Hit>, Void>() {
             @Override
             protected List<SearchService.Hit> doInBackground() {
+                //the results of plugins (their search providers)
+                List<Command> fromPlugins = new ArrayList<Command>();
+                for (Object[] r : mpv5.plugin.ExtensionManager.instance().search(needle)) {
+                    final mpv5.plugin.api.SearchResult sr = (mpv5.plugin.api.SearchResult) r[1];
+                    String path = sr.detail.isEmpty() ? String.valueOf(r[0]) : sr.detail + "  \u00b7  " + r[0];
+                    fromPlugins.add(new Command(sr.title, path, sr.open));
+                }
+                pluginHits = fromPlugins;
                 return SearchService.search(needle);
             }
 
@@ -303,8 +312,16 @@ public final class SearchAnything extends JDialog {
         }.execute();
     }
 
+    private volatile List<Command> pluginHits = new ArrayList<Command>();
+
     private void show(List<Command> commands, List<SearchService.Hit> hits, String needle) {
         model.clear();
+        if (!needle.isEmpty() && !pluginHits.isEmpty()) {
+            model.addElement(new Heading(Messages.SETTINGS_GROUP_PLUGINS.toString()));
+            for (Command c : pluginHits.subList(0, Math.min(pluginHits.size(), 12))) {
+                model.addElement(c);
+            }
+        }
         String kind = null;
         for (SearchService.Hit h : hits) {
             if (!h.kind.equals(kind)) {

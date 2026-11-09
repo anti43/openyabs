@@ -1,6 +1,6 @@
 package mpv5.ui.panels;
 
-import groovy.ui.Console;
+import groovy.console.ui.Console;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -156,9 +156,59 @@ public class MPControlPanel extends JPanel {
             return SearchService.matches(title + " " + description + " " + group, needle);
         }
 
+        /**
+         * @param c
+         * @return true if this setting shows a panel of the class
+         */
+        public boolean isPanel(Class<?> c) {
+            return panelClass == c;
+        }
+
         @Override
         public String toString() {
             return title;
+        }
+    }
+
+    /**
+     * A settings page of a plugin
+     */
+    public static final class PluginPage extends JPanel implements ControlApplet {
+
+        private static final long serialVersionUID = 1L;
+        private final JPanel actions = new JPanel();
+
+        PluginPage(mpv5.plugin.ExtensionManager.Page page) {
+            super(new BorderLayout());
+            setOpaque(false);
+            setBorder(ModernTheme.padding(12, 14));
+            JComponent c;
+            try {
+                c = page.page.get();
+            } catch (Throwable t) {
+                Log.Debug(MPControlPanel.class, t);
+                c = new JLabel(String.format(Messages.PLUGINS_FAILED.toString(), page.title) + " " + t);
+            }
+            add(c, BorderLayout.CENTER);
+            actions.setOpaque(false);
+        }
+
+        @Override
+        public Component getAndRemoveActionPanel() {
+            return actions;
+        }
+
+        @Override
+        public void setValues(mpv5.data.PropertyStore values) {
+        }
+
+        @Override
+        public String getUname() {
+            return "pluginpage";
+        }
+
+        @Override
+        public void reset() {
         }
     }
 
@@ -223,19 +273,16 @@ public class MPControlPanel extends JPanel {
         l.add(panel(system, "jButton24", Messages.SETTINGS_D_SCRIPTS, "konsole", ControlPanel_ValueProps.class, ControlPanel_ValueProps::new));
         l.add(panel(system, "jButton14", Messages.SETTINGS_D_SQL, "konsole", ControlPanel_Konsole.class, ControlPanel_Konsole::new));
         l.add(action(system, "jButton26", Messages.SETTINGS_D_GROOVY, "konsole", MPControlPanel::groovy));
-        l.add(action(system, "jButton8", Messages.SETTINGS_D_WIPE, "draw-eraser", () -> {
-            if (Popup.Y_N_dialog(Messages.REALLY_WIPE)) {
-                try {
-                    FileDirectoryHandler.deleteDirectoryContent(new File(FileDirectoryHandler.getTempDir2()));
-                } catch (IOException ex) {
-                    Popup.error(ex);
-                }
-            }
-        }));
+        //"delete local files" is part of the local options now
         synchronized (MPControlPanel.class) {
             if (cpanel != null) {
                 l.addAll(cpanel.plugins);
             }
+        }
+        //the settings pages of the running plugins
+        for (final mpv5.plugin.ExtensionManager.Page pg : mpv5.plugin.ExtensionManager.instance().pages()) {
+            l.add(new Entry(Messages.SETTINGS_GROUP_PLUGINS.toString(), pg.title, pg.description, "preferences_plugin",
+                    PluginPage.class, () -> new PluginPage(pg), null, null));
         }
         return l;
     }
@@ -413,6 +460,7 @@ public class MPControlPanel extends JPanel {
         add(right, BorderLayout.CENTER);
 
         reload();
+        mpv5.plugin.ExtensionManager.instance().addChangeListener(() -> SwingUtilities.invokeLater(this::reload));
     }
 
     private void reload() {

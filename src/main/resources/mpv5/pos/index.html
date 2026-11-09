@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<title>YaBS Kasse</title>
+<style>
+:root {
+  --bg: #eef1f6; --card: #ffffff; --text: #16202e; --muted: #6b7686; --line: #dfe4ec;
+  --accent: #2563eb; --accent-soft: #e7eefc; --ok: #15803d; --bad: #b91c1c; --radius: 14px;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #11161f; --card: #1b2230; --text: #e8edf5; --muted: #95a0b2; --line: #2b3444; --accent-soft: #1e2b45; }
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; height: 100%; }
+body { background: var(--bg); color: var(--text); font: 17px/1.35 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; user-select: none; }
+button { font: inherit; color: inherit; border: 0; cursor: pointer; }
+input { font: inherit; }
+.hidden { display: none !important; }
+
+/* sign in */
+#login { height: 100%; display: grid; place-items: center; padding: 16px; }
+#login form { background: var(--card); padding: 28px; border-radius: var(--radius); width: min(420px, 100%); box-shadow: 0 8px 30px rgba(0,0,0,.08); }
+#login h1 { margin: 0 0 4px; font-size: 26px; }
+#login p { margin: 0 0 20px; color: var(--muted); }
+#login input { width: 100%; padding: 14px; margin: 6px 0 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--text); }
+.primary { background: var(--accent); color: #fff; border-radius: 12px; padding: 16px 20px; font-weight: 600; width: 100%; }
+.primary:disabled { opacity: .45; }
+#loginError { color: var(--bad); min-height: 22px; }
+
+/* register */
+#pos { height: 100%; display: grid; grid-template-rows: auto 1fr; }
+header { display: flex; align-items: center; gap: 12px; padding: 10px 16px; background: var(--card); border-bottom: 1px solid var(--line); }
+header .shop { font-weight: 700; font-size: 20px; }
+header .seller { margin-left: auto; color: var(--muted); }
+header button { padding: 10px 14px; border-radius: 10px; background: var(--bg); }
+main { display: grid; grid-template-columns: 1fr minmax(320px, 34%); min-height: 0; }
+@media (max-width: 760px) { main { grid-template-columns: 1fr; grid-template-rows: 1fr 45%; } }
+
+.left { display: flex; flex-direction: column; min-height: 0; padding: 12px; gap: 10px; }
+#search { padding: 14px 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--card); color: var(--text); }
+#groups { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; }
+#groups button { padding: 10px 16px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); white-space: nowrap; }
+#groups button.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+#products { flex: 1; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; align-content: start; }
+.tile { background: var(--card); border-radius: var(--radius); padding: 14px; min-height: 104px; text-align: left; display: flex; flex-direction: column; justify-content: space-between; border: 2px solid transparent; transition: transform .05s; }
+.tile:active { transform: scale(.97); border-color: var(--accent); }
+.tile .n { font-weight: 600; }
+.tile .p { font-size: 20px; font-weight: 700; color: var(--accent); }
+.tile .g { color: var(--muted); font-size: 13px; }
+.empty { color: var(--muted); padding: 24px; }
+
+.right { background: var(--card); border-left: 1px solid var(--line); display: flex; flex-direction: column; min-height: 0; }
+#cart { flex: 1; overflow-y: auto; padding: 8px 12px; }
+.line { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; padding: 10px 4px; border-bottom: 1px solid var(--line); }
+.line .q { display: flex; align-items: center; gap: 8px; }
+.line .q button { width: 44px; height: 44px; border-radius: 10px; background: var(--bg); font-size: 22px; }
+.line .sum { font-weight: 700; align-self: center; }
+.line .unit { color: var(--muted); font-size: 14px; }
+.totals { padding: 14px 16px; border-top: 1px solid var(--line); }
+.totals .row { display: flex; justify-content: space-between; color: var(--muted); }
+.totals .big { font-size: 30px; font-weight: 800; color: var(--text); margin: 6px 0 12px; }
+.actions { display: grid; grid-template-columns: 1fr 2fr; gap: 10px; }
+.secondary { background: var(--bg); border-radius: 12px; padding: 16px; }
+
+/* pay, receipt */
+.overlay { position: fixed; inset: 0; background: rgba(10,15,25,.55); display: grid; place-items: center; padding: 16px; }
+.sheet { background: var(--card); border-radius: 18px; padding: 22px; width: min(520px, 100%); }
+.sheet h2 { margin: 0 0 6px; }
+.due { font-size: 34px; font-weight: 800; margin-bottom: 10px; }
+#given { width: 100%; font-size: 28px; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg); color: var(--text); text-align: right; }
+.quick { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 12px 0; }
+.quick button, .pad button { padding: 16px 0; border-radius: 12px; background: var(--bg); font-size: 20px; font-weight: 600; }
+.pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+#change { font-size: 22px; margin: 6px 0 14px; color: var(--ok); font-weight: 700; min-height: 30px; }
+#payError { color: var(--bad); min-height: 22px; }
+.receipt .ok { font-size: 54px; color: var(--ok); text-align: center; }
+.receipt .num { text-align: center; color: var(--muted); }
+.receipt .chg { text-align: center; font-size: 34px; font-weight: 800; margin: 10px 0 18px; }
+</style>
+</head>
+<body>
+
+<section id="login">
+  <form id="loginForm" autocomplete="off">
+    <h1 id="shopTitle">YaBS</h1>
+    <p data-t="signin">Anmelden mit Ihrem YaBS-Benutzer</p>
+    <label data-t="user">Benutzer</label>
+    <input id="user" autocapitalize="off" required>
+    <label data-t="password">Passwort</label>
+    <input id="password" type="password" required>
+    <div id="loginError"></div>
+    <button class="primary" data-t="login">Anmelden</button>
+  </form>
+</section>
+
+<section id="pos" class="hidden">
+  <header>
+    <span class="shop" id="shopName">YaBS</span>
+    <span class="seller" id="seller"></span>
+    <button id="logout" data-t="logout">Abmelden</button>
+  </header>
+  <main>
+    <div class="left">
+      <input id="search" data-tp="search" placeholder="Artikel suchen ..." autocomplete="off">
+      <div id="groups"></div>
+      <div id="products"></div>
+    </div>
+    <div class="right">
+      <div id="cart"></div>
+      <div class="totals">
+        <div class="row"><span data-t="net">Netto</span><span id="net">0</span></div>
+        <div class="row"><span data-t="tax">MwSt.</span><span id="tax">0</span></div>
+        <div class="big" id="total">0</div>
+        <div class="actions">
+          <button class="secondary" id="clear" data-t="clear">Leeren</button>
+          <button class="primary" id="pay" data-t="pay">Bezahlen</button>
+        </div>
+      </div>
+    </div>
+  </main>
+</section>
+
+<div class="overlay hidden" id="payOverlay">
+  <div class="sheet">
+    <h2 data-t="cash">Barzahlung</h2>
+    <div class="due" id="due"></div>
+    <input id="given" inputmode="decimal" data-tp="given" placeholder="Gegeben">
+    <div class="quick" id="quick"></div>
+    <div class="pad" id="pad"></div>
+    <div id="change"></div>
+    <div id="payError"></div>
+    <div class="actions">
+      <button class="secondary" id="payCancel" data-t="back">Zurück</button>
+      <button class="primary" id="payOk" data-t="book">Buchen</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay hidden" id="receiptOverlay">
+  <div class="sheet receipt">
+    <div class="ok">&#10003;</div>
+    <div class="num" id="rNumber"></div>
+    <div class="chg" id="rChange"></div>
+    <button class="primary" id="next" data-t="next">Nächster Verkauf</button>
+  </div>
+</div>
+
+<script>
+"use strict";
+const de = (navigator.language || "de").toLowerCase().startsWith("de");
+const T = de ? {} : {
+  signin: "Sign in with your YaBS user", user: "User", password: "Password", login: "Sign in", logout: "Sign out",
+  search: "Search products ...", net: "Net", tax: "VAT", clear: "Clear", pay: "Pay", cash: "Cash payment",
+  given: "Given", back: "Back", book: "Book", next: "Next sale", all: "All", empty: "Tap a product",
+  nothing: "No products found", wrong: "User or password wrong", notEnough: "Not enough money", change: "Change",
+  receipt: "Invoice", error: "Could not book: "
+};
+const t = (k, de) => T[k] || de;
+document.querySelectorAll("[data-t]").forEach(e => { if (T[e.dataset.t]) e.textContent = T[e.dataset.t]; });
+document.querySelectorAll("[data-tp]").forEach(e => { if (T[e.dataset.tp]) e.placeholder = T[e.dataset.tp]; });
+
+const money = new Intl.NumberFormat(navigator.language || "de-DE", { style: "currency", currency: "EUR" });
+const $ = id => document.getElementById(id);
+let token = sessionStorage.getItem("yabsPosToken");
+let products = [], cart = new Map(), group = "";
+
+async function api(path, data) {
+  const opt = { method: data ? "POST" : "GET", headers: { "X-Token": token || "" } };
+  if (data) {
+    opt.headers["Content-Type"] = "application/x-www-form-urlencoded";
+    opt.body = new URLSearchParams(data).toString();
+  }
+  const r = await fetch(path, opt);
+  const body = await r.json().catch(() => ({}));
+  if (r.status === 401 && path !== "/api/login") { signOut(); }
+  return { ok: r.ok, status: r.status, body };
+}
+
+fetch("/api/info").then(r => r.json()).then(i => { $("shopTitle").textContent = i.shop; $("shopName").textContent = i.shop; });
+
+$("loginForm").addEventListener("submit", async ev => {
+  ev.preventDefault();
+  $("loginError").textContent = "";
+  const r = await api("/api/login", { user: $("user").value, password: $("password").value });
+  if (!r.ok) { $("loginError").textContent = t("wrong", "Benutzer oder Passwort falsch"); return; }
+  token = r.body.token;
+  sessionStorage.setItem("yabsPosToken", token);
+  sessionStorage.setItem("yabsPosName", r.body.name || $("user").value);
+  $("password").value = "";
+  start();
+});
+
+function signOut() {
+  if (token) { fetch("/api/logout", { method: "POST", headers: { "X-Token": token } }); }
+  token = null;
+  sessionStorage.removeItem("yabsPosToken");
+  cart.clear();
+  $("pos").classList.add("hidden");
+  $("login").classList.remove("hidden");
+}
+$("logout").onclick = signOut;
+
+async function start() {
+  const r = await api("/api/products");
+  if (!r.ok) { return; }
+  products = r.body;
+  $("seller").textContent = sessionStorage.getItem("yabsPosName") || "";
+  $("login").classList.add("hidden");
+  $("pos").classList.remove("hidden");
+  renderGroups();
+  renderProducts();
+  renderCart();
+}
+
+function renderGroups() {
+  const groups = [...new Set(products.map(p => p.group).filter(g => g))];
+  const box = $("groups");
+  box.innerHTML = "";
+  [""].concat(groups).forEach(g => {
+    const b = document.createElement("button");
+    b.textContent = g || t("all", "Alle");
+    b.className = g === group ? "on" : "";
+    b.onclick = () => { group = g; renderGroups(); renderProducts(); };
+    box.appendChild(b);
+  });
+  box.classList.toggle("hidden", groups.length === 0);
+}
+
+function renderProducts() {
+  const words = $("search").value.toLowerCase().split(/\s+/).filter(w => w);
+  const box = $("products");
+  box.innerHTML = "";
+  const list = products.filter(p => (!group || p.group === group)
+    && words.every(w => (p.name + " " + p.number + " " + p.group).toLowerCase().includes(w)));
+  list.forEach(p => {
+    const b = document.createElement("button");
+    b.className = "tile";
+    b.innerHTML = `<span class="n"></span><span class="g"></span><span class="p"></span>`;
+    b.querySelector(".n").textContent = p.name;
+    b.querySelector(".g").textContent = p.number;
+    b.querySelector(".p").textContent = money.format(p.gross);
+    b.onclick = () => add(p.id, 1);
+    box.appendChild(b);
+  });
+  if (!list.length) { box.innerHTML = `<div class="empty">${t("nothing", "Keine Artikel gefunden")}</div>`; }
+}
+$("search").addEventListener("input", renderProducts);
+
+function add(id, n) {
+  const q = (cart.get(id) || 0) + n;
+  if (q <= 0) { cart.delete(id); } else { cart.set(id, q); }
+  renderCart();
+}
+
+function lines() {
+  return [...cart.entries()].map(([id, q]) => ({ p: products.find(x => x.id === id), q })).filter(l => l.p);
+}
+
+function sums() {
+  let gross = 0, net = 0;
+  lines().forEach(l => {
+    const g = Math.round(l.p.gross * l.q * 100) / 100;
+    gross += g;
+    net += g / (1 + l.p.tax / 100);
+  });
+  gross = Math.round(gross * 100) / 100;
+  net = Math.round(net * 100) / 100;
+  return { gross, net, tax: Math.round((gross - net) * 100) / 100 };
+}
+
+function renderCart() {
+  const box = $("cart");
+  box.innerHTML = "";
+  const ls = lines();
+  if (!ls.length) { box.innerHTML = `<div class="empty">${t("empty", "Artikel antippen")}</div>`; }
+  ls.forEach(l => {
+    const d = document.createElement("div");
+    d.className = "line";
+    d.innerHTML = `<div><div class="nm"></div><div class="unit"></div></div><div class="sum"></div>
+      <div class="q"><button>&minus;</button><b></b><button>+</button></div>`;
+    d.querySelector(".nm").textContent = l.p.name;
+    d.querySelector(".unit").textContent = money.format(l.p.gross) + (l.p.measure ? " / " + l.p.measure : "");
+    d.querySelector(".sum").textContent = money.format(l.p.gross * l.q);
+    d.querySelector("b").textContent = l.q;
+    const [minus, plus] = d.querySelectorAll(".q button");
+    minus.onclick = () => add(l.p.id, -1);
+    plus.onclick = () => add(l.p.id, 1);
+    box.appendChild(d);
+  });
+  const s = sums();
+  $("net").textContent = money.format(s.net);
+  $("tax").textContent = money.format(s.tax);
+  $("total").textContent = money.format(s.gross);
+  $("pay").disabled = !ls.length;
+}
+$("clear").onclick = () => { cart.clear(); renderCart(); };
+
+/* payment */
+function given() { const v = parseFloat($("given").value.replace(",", ".")); return isNaN(v) ? null : v; }
+function showChange() {
+  const g = given(), due = sums().gross;
+  $("change").textContent = g === null ? "" : (g >= due ? t("change", "Rückgeld") + ": " + money.format(g - due) : "");
+}
+$("pay").onclick = () => {
+  const due = sums().gross;
+  $("due").textContent = money.format(due);
+  $("given").value = "";
+  $("payError").textContent = "";
+  const quick = $("quick");
+  quick.innerHTML = "";
+  const amounts = [due, ...[5, 10, 20, 50, 100].filter(a => a > due)].slice(0, 6);
+  amounts.forEach(a => {
+    const b = document.createElement("button");
+    b.textContent = money.format(a);
+    b.onclick = () => { $("given").value = a.toFixed(2); showChange(); };
+    quick.appendChild(b);
+  });
+  const pad = $("pad");
+  pad.innerHTML = "";
+  ["7","8","9","4","5","6","1","2","3",",","0","⌫"].forEach(k => {
+    const b = document.createElement("button");
+    b.textContent = k;
+    b.onclick = () => {
+      const v = $("given").value;
+      $("given").value = k === "⌫" ? v.slice(0, -1) : v + k;
+      showChange();
+    };
+    pad.appendChild(b);
+  });
+  showChange();
+  $("payOverlay").classList.remove("hidden");
+};
+$("given").addEventListener("input", showChange);
+$("payCancel").onclick = () => $("payOverlay").classList.add("hidden");
+$("payOk").onclick = async () => {
+  const g = given(), due = sums().gross;
+  if (g !== null && g < due) { $("payError").textContent = t("notEnough", "Zu wenig Geld"); return; }
+  $("payOk").disabled = true;
+  const items = lines().map(l => l.p.id + ":" + l.q).join(",");
+  const r = await api("/api/sale", { items, given: g === null ? "" : g.toFixed(2) });
+  $("payOk").disabled = false;
+  if (!r.ok) { $("payError").textContent = t("error", "Buchen nicht möglich: ") + (r.body.error || r.status); return; }
+  $("payOverlay").classList.add("hidden");
+  $("rNumber").textContent = t("receipt", "Rechnung") + " " + r.body.number + " · " + money.format(r.body.gross);
+  $("rChange").textContent = g === null ? "" : t("change", "Rückgeld") + ": " + money.format(r.body.change);
+  $("receiptOverlay").classList.remove("hidden");
+  cart.clear();
+  renderCart();
+};
+$("next").onclick = () => { $("receiptOverlay").classList.add("hidden"); $("search").value = ""; renderProducts(); };
+
+if (token) { start(); }
+</script>
+</body>
+</html>

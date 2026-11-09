@@ -1,444 +1,378 @@
+/*
+ This file is part of YaBS.
+
+ YaBS is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ YaBS is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package mpv5.ui.dialogs.subcomponents;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.Desktop;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.datatransfer.DataFlavor;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.DefaultListModel;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
+import javax.swing.TransferHandler;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import mpv5.data.PropertyStore;
-import mpv5.db.common.Context;
-import mpv5.db.common.DatabaseObject;
-import mpv5.db.common.NodataFoundException;
-import mpv5.db.common.QueryHandler;
-import mpv5.db.objects.User;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
-import mpv5.pluginhandling.MP5Plugin;
-import mpv5.pluginhandling.YabsPluginLoader;
-import mpv5.pluginhandling.Plugin;
+import mpv5.plugin.ExtensionManager;
+import mpv5.plugin.ExtensionManager.Installed;
+import mpv5.plugin.ExtensionManager.State;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.Popup;
-import mpv5.ui.frames.MPView;
-import mpv5.usermanagement.MPSecurityManager;
-import mpv5.pluginhandling.UserPlugin;
-import mpv5.pluginhandling.YabsPlugin;
-import mpv5.utils.files.FileDirectoryHandler;
-import mpv5.utils.files.UnZip;
+import mpv5.ui.misc.RichList;
+import mpv5.ui.modern.Applets;
+import mpv5.ui.modern.Card;
+import mpv5.ui.modern.ModernTheme;
+import mpv5.ui.modern.PrimaryButton;
 
 /**
- *
- * 
+ * The plugin manager: the plugins of YaBS and of the plugins folder (jars and
+ * Groovy scripts) with their state; enable, disable, reload, remove, install
+ * (also by drag and drop) and a new Groovy plugin from a template. The classic
+ * plugins of the database are below.
  */
-public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlApplet {
+public final class ControlPanel_Plugins extends JPanel implements ControlApplet {
 
     private static final long serialVersionUID = 1L;
-    /**
-     * This unique name identifies this control applet
-     */
     public final String UNAME = "plugins";
-    private PropertyStore oldvalues;
-    private static ControlPanel_Plugins ident;
-    private JPopupMenu popup;
+    private final JPanel list = new JPanel();
+    private final JPanel actions;
+    private final ExtensionManager manager = ExtensionManager.instance();
+    private final Runnable refresh = () -> SwingUtilities.invokeLater(this::refresh);
 
     public ControlPanel_Plugins() {
-        initComponents();
-        modernLayout();
-        addPopupMenu();
+        super(new BorderLayout());
+        setOpaque(false);
+        manager.discover();
+
+        list.setLayout(new BoxLayout(list, BoxLayout.Y_AXIS));
+        list.setOpaque(false);
+        JLabel folder = new JLabel(String.format(Messages.PLUGINS_FOLDER.toString(), manager.folder().getAbsolutePath()));
+        folder.setForeground(ModernTheme.muted());
+        Card plugins = new Card(Messages.PLUGINS_TITLE.toString())
+                .addFull(Applets.hint(Messages.PLUGINS_HINT.toString()))
+                .addFull(folder)
+                .addFull(list);
+        Card classic;
+        ControlPanel_ClassicPlugins old = null;
+        try {
+            old = new ControlPanel_ClassicPlugins();
+        } catch (Throwable t) {
+            Log.Debug(this, t);
+        }
+        JPanel page = Applets.page(null, 520, plugins);
+        if (old != null) {
+            JPanel oldPage = new JPanel(new BorderLayout());
+            oldPage.setOpaque(false);
+            oldPage.add(old, BorderLayout.CENTER);
+            Component oldActions = old.getAndRemoveActionPanel();
+            if (oldActions != null) {
+                oldPage.add(oldActions, BorderLayout.SOUTH);
+            }
+            classic = new Card(Messages.PLUGINS_CLASSIC.toString())
+                    .addFull(Applets.hint(Messages.PLUGINS_CLASSIC_HINT.toString()))
+                    .addFull(oldPage);
+            JPanel both = new JPanel(new BorderLayout(0, ModernTheme.px(12)));
+            both.setOpaque(false);
+            both.add(page, BorderLayout.NORTH);
+            JPanel c = new JPanel(new BorderLayout());
+            c.setOpaque(false);
+            c.setBorder(ModernTheme.padding(0, 14));
+            c.add(classic, BorderLayout.NORTH);
+            both.add(c, BorderLayout.CENTER);
+            add(both, BorderLayout.CENTER);
+        } else {
+            add(page, BorderLayout.CENTER);
+        }
+
+        //drop a jar or a .groovy file to install it
+        setTransferHandler(new TransferHandler() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public boolean canImport(TransferSupport s) {
+                return s.isDataFlavorSupported(DataFlavor.javaFileListFlavor);
+            }
+
+            @Override
+            @SuppressWarnings("unchecked")
+            public boolean importData(TransferSupport s) {
+                try {
+                    for (File f : (List<File>) s.getTransferable().getTransferData(DataFlavor.javaFileListFlavor)) {
+                        install(f);
+                    }
+                    return true;
+                } catch (Exception e) {
+                    Log.Debug(this, e);
+                    return false;
+                }
+            }
+        });
+
+        JButton openFolder = new JButton(Messages.PLUGINS_OPEN_FOLDER.toString());
+        openFolder.addActionListener(e -> open(manager.folder()));
+        JButton newGroovy = new JButton(Messages.PLUGINS_NEW_GROOVY.toString());
+        newGroovy.addActionListener(e -> newGroovy());
+        PrimaryButton install = new PrimaryButton(Messages.PLUGINS_INSTALL.toString(), null);
+        install.addActionListener(e -> chooseAndInstall());
+        actions = Applets.actionBar(new JComponent[]{openFolder}, new JComponent[]{newGroovy, install});
+
         refresh();
-        setVisible(true);
+    }
+
+    @Override
+    public void addNotify() {
+        super.addNotify();
+        manager.addChangeListener(refresh);
+        refresh();
+    }
+
+    private void refresh() {
+        list.removeAll();
+        List<Installed> all = manager.list();
+        if (all.isEmpty()) {
+            JLabel none = new JLabel(Messages.PLUGINS_NONE.toString());
+            none.setForeground(ModernTheme.muted());
+            list.add(none);
+        }
+        for (Installed i : all) {
+            list.add(row(i));
+            list.add(Box.createVerticalStrut(ModernTheme.px(8)));
+        }
+        list.revalidate();
+        list.repaint();
+    }
+
+    private JComponent row(final Installed i) {
+        JPanel r = new JPanel(new BorderLayout(ModernTheme.px(12), 0));
+        r.setOpaque(true);
+        r.setBackground(ModernTheme.cardBackground());
+        r.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(ModernTheme.border()), ModernTheme.padding(10, 12)));
+        r.setAlignmentX(LEFT_ALIGNMENT);
+        boolean groovy = i.jar != null && i.jar.getName().endsWith(".groovy");
+        String kind = i.isBuiltIn() ? "Y" : groovy ? "G" : "J";
+        Color kc = i.isBuiltIn() ? ModernTheme.accent() : groovy ? RichList.GREEN : RichList.PURPLE;
+        r.add(new JLabel(new RichList.Badge(kind, kc, ModernTheme.px(32))), BorderLayout.WEST);
+
+        JPanel text = new JPanel();
+        text.setOpaque(false);
+        text.setLayout(new BoxLayout(text, BoxLayout.Y_AXIS));
+        JLabel title = new JLabel(safe(() -> i.extension.name()) + "   " + safe(() -> i.extension.version()));
+        title.setFont(ModernTheme.font(1, Font.BOLD));
+        text.add(title);
+        String desc = safe(() -> i.extension.description());
+        if (!desc.isEmpty()) {
+            text.add(Applets.hint(desc));
+        }
+        String author = safe(() -> i.extension.author());
+        String source = i.isBuiltIn() ? Messages.PLUGINS_BUILTIN.toString() : i.jar.getName();
+        JLabel meta = new JLabel((author.isEmpty() ? "" : author + "  ·  ") + source + "  ·  " + i.id()
+                + (i.getState() == State.RUNNING ? "  ·  " + String.format(Messages.PLUGINS_CONTRIBUTIONS.toString(), manager.contributions(i.id())) : ""));
+        meta.setFont(ModernTheme.font(-1, Font.PLAIN));
+        meta.setForeground(ModernTheme.muted());
+        text.add(meta);
+        if (i.getState() == State.FAILED && i.getError() != null) {
+            JLabel err = new JLabel(i.getError());
+            err.setForeground(RichList.RED);
+            text.add(err);
+        }
+        r.add(text, BorderLayout.CENTER);
+
+        JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT, ModernTheme.px(6), 0));
+        buttons.setOpaque(false);
+        JLabel state = new JLabel(stateText(i.getState()));
+        state.setForeground(i.getState() == State.RUNNING ? RichList.GREEN : i.getState() == State.FAILED ? RichList.RED : ModernTheme.muted());
+        state.setFont(ModernTheme.font(-1, Font.BOLD));
+        buttons.add(state);
+        JToggleButton on = new JToggleButton(i.getState() == State.DISABLED ? Messages.PLUGINS_ENABLE.toString() : Messages.PLUGINS_DISABLE.toString());
+        on.addActionListener(e -> manager.setEnabled(i, i.getState() == State.DISABLED));
+        buttons.add(on);
+        if (i.getState() != State.DISABLED) {
+            JButton reload = new JButton(Messages.PLUGINS_RELOAD.toString());
+            reload.addActionListener(e -> manager.reload(i));
+            buttons.add(reload);
+        }
+        if (groovy) {
+            JButton edit = new JButton(Messages.PLUGINS_EDIT.toString());
+            edit.addActionListener(e -> edit(i.jar));
+            buttons.add(edit);
+        }
+        if (!i.isBuiltIn()) {
+            JButton remove = Applets.danger(new JButton(Messages.PLUGINS_REMOVE.toString()));
+            remove.addActionListener(e -> {
+                if (Popup.Y_N_dialog(String.format(Messages.PLUGINS_REALLY_REMOVE.toString(), i.jar.getName()))) {
+                    manager.uninstall(i);
+                }
+            });
+            buttons.add(remove);
+        }
+        r.add(buttons, BorderLayout.EAST);
+        r.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, r.getPreferredSize().height));
+        return r;
+    }
+
+    private static String stateText(State s) {
+        switch (s) {
+            case RUNNING:
+                return Messages.PLUGINS_RUNNING.toString();
+            case FAILED:
+                return Messages.PLUGINS_STATE_FAILED.toString();
+            case DISABLED:
+                return Messages.PLUGINS_DISABLED.toString();
+            default:
+                return Messages.PLUGINS_STOPPED.toString();
+        }
+    }
+
+    private static String safe(java.util.function.Supplier<String> s) {
+        try {
+            String v = s.get();
+            return v == null ? "" : v;
+        } catch (Throwable t) {
+            return "";
+        }
+    }
+
+    private void chooseAndInstall() {
+        JFileChooser c = new JFileChooser();
+        c.setFileFilter(new FileNameExtensionFilter(Messages.PLUGINS_FILES.toString(), "jar", "groovy"));
+        if (c.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            install(c.getSelectedFile());
+        }
+    }
+
+    private void install(File f) {
+        try {
+            List<Installed> l = manager.install(f);
+            mpv5.YabsViewProxy.instance().addMessage(String.format(Messages.PLUGINS_INSTALLED.toString(), l.size(), f.getName()));
+        } catch (Exception e) {
+            Log.Debug(this, e);
+            Popup.notice(Messages.NOT_POSSIBLE + ": " + e.getMessage());
+        }
+    }
+
+    private void newGroovy() {
+        String name = Popup.Enter_Value(Messages.PLUGINS_NEW_GROOVY_NAME.toString());
+        if (name == null || name.trim().isEmpty()) {
+            return;
+        }
+        String base = name.trim().replaceAll("[^A-Za-z0-9_-]", "_");
+        File f = new File(manager.folder(), base + ".groovy");
+        if (f.exists()) {
+            Popup.notice(Messages.NOT_POSSIBLE + ": " + f.getName());
+            return;
+        }
+        try {
+            manager.folder().mkdirs();
+            Files.write(f.toPath(), template(name.trim()).getBytes(StandardCharsets.UTF_8));
+            install(f);
+            edit(f);
+        } catch (Exception e) {
+            Log.Debug(this, e);
+            Popup.error(e);
+        }
     }
 
     /**
-     * Import a plugin
-     * @param file
-     * @throws FileNotFoundException
+     * @param name
+     * @return a small working Groovy plugin to start from
      */
-    public void importf(File file) throws FileNotFoundException {
-        String s = file.getName();
-        if(s.endsWith(".zip")){
-            file = FileDirectoryHandler.unzipFile(file);
-        }
-        YabsPluginLoader.importPlugin(s, file);
-        refresh();
+    static String template(String name) {
+        return "// @name " + name + "\n"
+                + "// @description What this plugin does\n"
+                + "// @version 1.0\n"
+                + "// @author \n"
+                + "//\n"
+                + "// 'yabs' offers: addCommand, addSearchProvider, onActivity, addSettingsPage,\n"
+                + "// openTab, notify, settings(), dataFolder(), background(...), addRecordModifier.\n"
+                + "// Save the file and click Reload in Settings > Plugins.\n\n"
+                + "// a command in the menu Plugins and in Search anything (Shift Shift)\n"
+                + "yabs.addCommand('Say hello', 'A first command', {\n"
+                + "    yabs.notify('Hello from " + name.replace("'", "") + "!')\n"
+                + "})\n\n"
+                + "// told about new and changed records and created files\n"
+                + "yabs.onActivity({ entry ->\n"
+                + "    if (entry.kind == mpv5.handler.Activity.Kind.CREATED) {\n"
+                + "        // e.g. react to a new invoice: entry.text, entry.context, entry.id\n"
+                + "    }\n"
+                + "})\n\n"
+                + "// called when the plugin stops\n"
+                + "onStop = { }\n";
     }
 
-    private void addPopupMenu() {
-        popup = new JPopupMenu();
-        JMenuItem jmi1;
-        popup.add(jmi1 = new JMenuItem(Messages.ACTION_DELETE.toString()));
-        popup.add(new JPopupMenu.Separator());
-        JMenuItem jmi2;
-        popup.add(jmi2 = new JMenuItem(Messages.ACTION_OPEN.toString()));
-        popup.add(new JPopupMenu.Separator());
-
-        jmi1.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                if (MPSecurityManager.checkAdminAccess()) {
-                    Plugin gin = (Plugin) list.getSelectedValue();
-                    gin.delete();
-                    refresh();
-                }
-            }
-        });
-
-        jmi2.addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                Plugin gin = (Plugin) list.getSelectedValue();
-                try {
-                    mpv5.YabsViewProxy.instance().getPluginLoader().loadPlugin(gin);
-                } catch (Exception ex) {
-                    Popup.error(ex);
-                } catch (Throwable ex) {
-                    Popup.error(new Exception(ex));
-                }
-            }
-        });
-    }
-
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
-
-        jPanel3 = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        list = new javax.swing.JList();
-        jPanel5 = new javax.swing.JPanel();
-        jLabel8 = new javax.swing.JLabel();
-        jLabel9 = new javax.swing.JLabel();
-        labeledTextChooser2 = new mpv5.ui.beans.LabeledTextChooser();
-        jButton4 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jPanel2 = new javax.swing.JPanel();
-        jButton2 = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
-
-        //\$2java.awt.Color(255, 255, 255));
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
-        setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Plugins.border.title"))); // NOI18N
-        setName("Form"); // NOI18N
-        setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.PAGE_AXIS));
-
-        jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jPanel3.setName("jPanel3"); // NOI18N
-
-        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 12));
-        jLabel3.setText(bundle.getString("ControlPanel_Plugins.jLabel3.text")); // NOI18N
-        jLabel3.setName("jLabel3"); // NOI18N
-
-        jLabel4.setFont(new java.awt.Font("Dialog", 0, 11));
-        jLabel4.setText(bundle.getString("ControlPanel_Plugins.jLabel4.text")); // NOI18N
-        jLabel4.setName("jLabel4"); // NOI18N
-
-        jScrollPane1.setName("jScrollPane1"); // NOI18N
-
-        list.setToolTipText(bundle.getString("ControlPanel_Plugins.list.toolTipText")); // NOI18N
-        list.setName("list"); // NOI18N
-        list.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                listMouseClicked(evt);
-            }
-        });
-        jScrollPane1.setViewportView(list);
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 425, Short.MAX_VALUE)
-                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jLabel3)
-                        .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 22, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        add(jPanel3);
-
-        jPanel5.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jPanel5.setMaximumSize(new java.awt.Dimension(32767, 150));
-        jPanel5.setName("jPanel5"); // NOI18N
-        jPanel5.setPreferredSize(new java.awt.Dimension(453, 100));
-
-        jLabel8.setFont(new java.awt.Font("Tahoma", 1, 12));
-        jLabel8.setText(bundle.getString("ControlPanel_Plugins.jLabel8.text")); // NOI18N
-        jLabel8.setName("jLabel8"); // NOI18N
-
-        jLabel9.setFont(new java.awt.Font("Dialog", 0, 11));
-        jLabel9.setText(bundle.getString("ControlPanel_Plugins.jLabel9.text")); // NOI18N
-        jLabel9.setName("jLabel9"); // NOI18N
-
-        labeledTextChooser2.set_Label(bundle.getString("ControlPanel_Plugins.labeledTextChooser2._Label")); // NOI18N
-        labeledTextChooser2.set_LabelFont(new java.awt.Font("Tahoma", 0, 11));
-        labeledTextChooser2.setName("labeledTextChooser2"); // NOI18N
-
-        jButton4.setText(bundle.getString("ControlPanel_Plugins.jButton4.text")); // NOI18N
-        jButton4.setName("jButton4"); // NOI18N
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
-            }
-        });
-
-        jButton3.setText(bundle.getString("ControlPanel_Plugins.jButton3.text")); // NOI18N
-        jButton3.setName("jButton3"); // NOI18N
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel8)
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(labeledTextChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton3))
-                    .addComponent(jLabel9))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jButton4)
-                        .addComponent(jButton3))
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(jLabel8)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel9)
-                        .addGap(9, 9, 9)
-                        .addComponent(labeledTextChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(276, 276, 276))
-        );
-
-        add(jPanel5);
-
-//$2java.awt.Color(255, 255, 255));
-        jPanel2.setName("jPanel2"); // NOI18N
-        jPanel2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
-
-        jButton2.setText(bundle.getString("ControlPanel_Plugins.jButton2.text")); // NOI18N
-        jButton2.setName("jButton2"); // NOI18N
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-        jPanel2.add(jButton2);
-
-        jButton1.setText(bundle.getString("ControlPanel_Plugins.jButton1.text")); // NOI18N
-        jButton1.setName("jButton1"); // NOI18N
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-        jPanel2.add(jButton1);
-
-        add(jPanel2);
-    }// </editor-fold>//GEN-END:initComponents
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-
+    private void edit(File f) {
         try {
-            List data = DatabaseObject.getReferencedObjects(mpv5.db.objects.User.getCurrentUser(), Context.getPluginsToUsers());
-            for (int i = 0; i < data.size(); i++) {
-                ((UserPlugin) data.get(i)).delete();
-            }
-        } catch (NodataFoundException ex) {
-            Log.Debug(ex);
-        }
-
-        Object[] plugs = list.getSelectedValues();
-
-        for (int i = 0; i < plugs.length; i++) {
-            Plugin gin = (Plugin) plugs[i];
-
-            UserPlugin up = new UserPlugin();
-            up.setUsersids(mpv5.db.objects.User.getCurrentUser().__getIDS());
-            up.setPluginsids(gin.__getIDS());
-            up.setCname(gin.__getCname());
-            up.save();
-        }
-}//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-
-        Object[] plugs = list.getSelectedValues();
-        for (int i = 0; i < plugs.length; i++) {
-            Plugin gin = (Plugin) plugs[i];
-            try {
-                mpv5.YabsViewProxy.instance().getPluginLoader().loadPlugin(gin);
-            } catch (Exception ex) {
-                Popup.error(ex);
-            } catch (Throwable ex) {
-                Popup.error(new Exception(ex));
-            }
-        }
-    }//GEN-LAST:event_jButton2ActionPerformed
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        YabsPlugin p = null;
-        try {
-            if (YabsPluginLoader.checkPlugin(new File(labeledTextChooser2.get_Text(true))) != null) {
-                p = YabsPluginLoader.checkPlugin(new File(labeledTextChooser2.get_Text(true)));
-                try {
-                    YabsPluginLoader.loadPlugin(p);
-                } catch (Exception ex) {
-                    Popup.error(ex);
-                } catch (Throwable ex) {
-                    Popup.error(new Exception(ex));
-                }
+            if (Desktop.getDesktop().isSupported(Desktop.Action.EDIT)) {
+                Desktop.getDesktop().edit(f);
             } else {
-                Popup.notice(Messages.ERROR_OCCURED);
+                Desktop.getDesktop().open(f);
             }
         } catch (Exception e) {
-            Popup.notice(Messages.ERROR_OCCURED);
+            Log.Debug(this, e);
+            Popup.notice(f.getAbsolutePath());
         }
-}//GEN-LAST:event_jButton3ActionPerformed
-
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        if (labeledTextChooser2.hasText()) {
-            try {
-                importf(new File(labeledTextChooser2.get_Text(true)));
-            } catch (FileNotFoundException ex) {
-                Popup.error(ex);
-            }
-        }
-}//GEN-LAST:event_jButton4ActionPerformed
-
-    private void listMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listMouseClicked
-
-        if (SwingUtilities.isRightMouseButton(evt) && !list.isSelectionEmpty() && list.locationToIndex(evt.getPoint()) == list.getSelectedIndex()) {
-            popup.show(list, evt.getX(), evt.getY());
-        }
-}//GEN-LAST:event_listMouseClicked
-
-    public void setValues(PropertyStore values) {
-        oldvalues = values;
     }
 
-    public String getUname() {
-        return UNAME;
-    }
-
-    public void reset() {
-        setValues(oldvalues);
-    }
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel5;
-    private javax.swing.JScrollPane jScrollPane1;
-    private mpv5.ui.beans.LabeledTextChooser labeledTextChooser2;
-    private javax.swing.JList list;
-    // End of variables declaration//GEN-END:variables
-
-    private void refresh() {
-        DefaultListModel xl = new DefaultListModel();
-
-        ArrayList<Plugin> data = new ArrayList<Plugin>();
+    private void open(File dir) {
         try {
-            data = DatabaseObject.getObjects(Context.getPlugins());
-        } catch (NodataFoundException ex) {
-            Log.Debug(this, ex.getMessage());
+            dir.mkdirs();
+            Desktop.getDesktop().open(dir);
+        } catch (Exception e) {
+            Log.Debug(this, e);
+            Popup.notice(dir.getAbsolutePath());
         }
-        ArrayList<UserPlugin> udata = new ArrayList<UserPlugin>();
-        try {
-            udata = DatabaseObject.getObjects(Context.getPluginsToUsers());
-        } catch (NodataFoundException ex) {
-            Log.Debug(this, ex.getMessage());
-        }
-        ArrayList<Integer> selected = new ArrayList<Integer>();
-
-        Log.Debug(this, "Plugins found: " + data.size());
-
-        for (int i = 0; i < data.size(); i++) {
-            Plugin lugin = data.get(i);
-            xl.addElement(lugin);
-
-            for (int ij = 0; ij < udata.size(); ij++) {
-                UserPlugin userPlugin = udata.get(ij);
-                if (lugin.__getIDS().intValue() == userPlugin.__getPluginsids()) {
-                    selected.add(ij);
-                }
-            }
-        }
-
-        int[] sel = new int[selected.size()];
-
-        for (int i = 0; i < selected.size(); i++) {
-            Integer integer = selected.get(i);
-            sel[i] = integer.intValue();
-        }
-
-        list.setModel(xl);
-        list.setSelectedIndices(sel);
     }
 
+    @Override
     public Component getAndRemoveActionPanel() {
         return actions;
     }
 
-    private javax.swing.JPanel actions = new javax.swing.JPanel();
+    @Override
+    public void setValues(PropertyStore values) {
+    }
 
-    /**
-     * The parts of the form as cards, the buttons in the action bar
-     */
-    private void modernLayout() {
-        java.util.ResourceBundle b = mpv5.i18n.LanguageManager.getBundle();
-        removeAll();
-        setBorder(null);
-        setLayout(new java.awt.BorderLayout());
-        setOpaque(false);
-        jLabel3.setVisible(false);
-        jLabel8.setVisible(false);
-        add(mpv5.ui.modern.Applets.page(null, 420,
-                mpv5.ui.modern.Applets.wrap(jLabel3.getText(), jPanel3), mpv5.ui.modern.Applets.wrap(jLabel8.getText(), jPanel5)), java.awt.BorderLayout.CENTER);
-        mpv5.ui.modern.PrimaryButton save = new mpv5.ui.modern.PrimaryButton(jButton1.getText(), "/images/16/filesave.png");
-        save.addActionListener(e -> jButton1.doClick());
-        actions = mpv5.ui.modern.Applets.actionBar(new javax.swing.JComponent[]{}, new javax.swing.JComponent[]{jButton2, save});
+    @Override
+    public String getUname() {
+        return UNAME;
+    }
+
+    @Override
+    public void reset() {
+        refresh();
+    }
+
+    @Override
+    public void removeNotify() {
+        manager.removeChangeListener(refresh);
+        super.removeNotify();
     }
 }

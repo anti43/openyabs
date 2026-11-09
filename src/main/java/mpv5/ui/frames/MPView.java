@@ -673,6 +673,7 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
         mpv5.ui.modern.Zoom.install(getFrame().getRootPane());
         //Search anything: double Shift (like IntelliJ), Edit > Search anything (Ctrl+F)
         mpv5.ui.dialogs.SearchAnything.installDoubleShift();
+        mpv5.plugin.PluginMenu.install(getMenuBar());
         jMenuItem17.setText(Messages.SEARCH_ANYTHING + "...   (Shift Shift)");
         jMenu2.add(new javax.swing.JPopupMenu.Separator(), 1);
         jMenu2.addMenuListener(new javax.swing.event.MenuListener() {
