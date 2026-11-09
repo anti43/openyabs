@@ -1094,10 +1094,45 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
     private void fillFiles() {
         filetable.setModel(ProductService.loadFiles(dataOwner));
         TableFormat.stripFirstColumn(filetable);
-        if (filetable.getModel().getRowCount() == 1 && defaultimage_ == null) {
-            defaultimage_ = filetable.getModel().getValueAt(0, 0).toString();
+        //no product image (or its file is gone): the first image file becomes the product image
+        javax.swing.table.TableModel m = filetable.getModel();
+        boolean known = false;
+        String firstImage = null;
+        for (int r = 0; r < m.getRowCount(); r++) {
+            String id = String.valueOf(m.getValueAt(r, 0));
+            if (id.equals(defaultimage_)) {
+                known = true;
+            }
+            if (firstImage == null && isImage(m, r)) {
+                firstImage = id;
+            }
+        }
+        if (!known && firstImage != null && dataOwner.isExisting()) {
+            defaultimage_ = firstImage;
+            //store it right away, without touching the other (maybe edited) fields
+            try {
+                Product p = (Product) DatabaseObject.getObject(Context.getProduct(), dataOwner.__getIDS());
+                p.setDefaultimage(firstImage);
+                p.save(true);
+                dataOwner.setDefaultimage(firstImage);
+            } catch (Exception e) {
+                Log.Debug(this, e.getMessage());
+            }
             updateImage();
         }
+    }
+
+    /**
+     * @return true if a cell of the row names an image file (name or type)
+     */
+    private static boolean isImage(javax.swing.table.TableModel m, int row) {
+        for (int c = 0; c < m.getColumnCount(); c++) {
+            Object v = m.getValueAt(row, c);
+            if (v != null && String.valueOf(v).toLowerCase().matches("(.*\\.)?(png|jpe?g|gif|bmp)")) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

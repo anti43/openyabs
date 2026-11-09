@@ -566,8 +566,11 @@ public class Product extends DatabaseObject implements Formattable, Templateable
    @Override
    public boolean save(boolean silent) {
 
+      //only with a minimum stock (threshold) set: no threshold, no reorder warning
       if (__getInttype() == TYPE_PRODUCT && __getIntinventorytype() == 1
-            && __getStockvalue().intValue() <= __getThresholdvalue().intValue()) {
+            && __getThresholdvalue() != null && __getThresholdvalue().signum() > 0
+            && __getStockvalue() != null
+            && __getStockvalue().compareTo(__getThresholdvalue()) <= 0) {
          Notificator.raiseNotification(Messages.INVENTORY_STOCK_TRESHOLD + toString(), true, true, this);
       }
       return super.save(silent);
