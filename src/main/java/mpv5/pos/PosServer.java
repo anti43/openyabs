@@ -47,6 +47,49 @@ public final class PosServer {
     private final int port;
     private HttpServer server;
     private String shopName = "YaBS";
+    private String defaultUser = "";
+
+    /**
+     * Where the receipts come from (set by the plugin)
+     */
+    public interface ReceiptSource {
+
+        /**
+         * @param invoiceId
+         * @return the receipt as PDF
+         * @throws Exception
+         */
+        java.io.File receipt(int invoiceId) throws Exception;
+
+        /**
+         * Prints the receipt on the YaBS computer
+         *
+         * @param invoiceId
+         * @throws Exception
+         */
+        void print(int invoiceId) throws Exception;
+
+        /**
+         * @return true: print after every sale
+         */
+        boolean autoPrint();
+    }
+
+    private ReceiptSource receipts;
+
+    /**
+     * @param r makes and prints receipts, null: no receipts
+     */
+    public void setReceipts(ReceiptSource r) {
+        this.receipts = r;
+    }
+
+    /**
+     * @param user filled in on the sign-in page
+     */
+    public void setDefaultUser(String user) {
+        this.defaultUser = user == null ? "" : user;
+    }
 
     public PosServer(PosService service, int port) {
         this.service = service;
@@ -69,7 +112,7 @@ public final class PosServer {
         }
         server = HttpServer.create(new InetSocketAddress(port), 0);
         server.createContext("/", this::page);
-        server.createContext("/api/info", e -> json(e, 200, "{\"shop\":" + q(shopName) + "}"));
+        server.createContext("/api/info", e -> json(e, 200, "{\"shop\":" + q(shopName) + ",\"user\":" + q(defaultUser) + "}"));
         server.createContext("/api/login", this::login);
         server.createContext("/api/logout", e -> {
             service.logout(e.getRequestHeaders().getFirst("X-Token"));
@@ -77,6 +120,8 @@ public final class PosServer {
         });
         server.createContext("/api/products", this::products);
         server.createContext("/api/sale", this::sale);
+        server.createContext("/api/receipt", this::receipt);
+        server.createContext("/api/print", this::print);
         server.setExecutor(Executors.newSingleThreadExecutor(r -> {
             Thread t = new Thread(r, "pos-server");
             t.setDaemon(true);
@@ -208,7 +253,24 @@ public final class PosServer {
         }
         try {
             PosService.Receipt r = service.sell(token, lines, PosService.amount(f.get("given")));
-            json(e, 200, "{\"number\":" + q(r.number) + ",\"net\":" + r.net.toPlainString() + ",\"tax\":" + r.tax.toPlainString()
+            final ReceiptSource rs = receipts;
+            boolean printed = false;
+            if (rs != null && rs.autoPrint()) {
+                //printing must not delay the answer
+                final int id = r.invoiceId;
+                Thread t = new Thread(() -> {
+                    try {
+                        rs.print(id);
+                    } catch (Exception ex) {
+                        Log.Debug(PosServer.class, ex);
+                    }
+                }, "pos-print");
+                t.setDaemon(true);
+                t.start();
+                printed = true;
+            }
+            json(e, 200, "{\"id\":" + r.invoiceId + ",\"printed\":" + printed + ",\"receipts\":" + (rs != null) + ","
+                    +  "\"number\":" + q(r.number) + ",\"net\":" + r.net.toPlainString() + ",\"tax\":" + r.tax.toPlainString()
                     + ",\"gross\":" + r.gross.toPlainString() + ",\"change\":" + r.change.toPlainString() + "}");
         } catch (IllegalArgumentException ex) {
             json(e, 400, "{\"error\":" + q(ex.getMessage()) + "}");
@@ -216,6 +278,55 @@ public final class PosServer {
             Log.Debug(PosServer.class, ex);
             json(e, 500, "{\"error\":" + q(String.valueOf(ex.getMessage())) + "}");
         }
+    }
+
+    private void receipt(HttpExchange e) throws IOException {
+        Map<String, String> qs = query(e);
+        String token = e.getRequestHeaders().getFirst("X-Token");
+        if (token == null) {
+            token = qs.get("token");
+        }
+        if (service.user(token) == null || receipts == null) {
+            json(e, 401, "{\"error\":\"login\"}");
+            return;
+        }
+        try {
+            java.io.File pdf = receipts.receipt(Integer.parseInt(qs.getOrDefault("id", "0")));
+            e.getResponseHeaders().set("Content-Disposition", "inline; filename=\"" + pdf.getName() + "\"");
+            send(e, 200, "application/pdf", java.nio.file.Files.readAllBytes(pdf.toPath()));
+        } catch (Exception ex) {
+            Log.Debug(PosServer.class, ex);
+            json(e, 500, "{\"error\":" + q(String.valueOf(ex.getMessage())) + "}");
+        }
+    }
+
+    private void print(HttpExchange e) throws IOException {
+        if (service.user(e.getRequestHeaders().getFirst("X-Token")) == null || receipts == null) {
+            json(e, 401, "{\"error\":\"login\"}");
+            return;
+        }
+        try {
+            receipts.print(Integer.parseInt(form(e).getOrDefault("id", "0")));
+            json(e, 200, "{}");
+        } catch (Exception ex) {
+            Log.Debug(PosServer.class, ex);
+            json(e, 500, "{\"error\":" + q(String.valueOf(ex.getMessage())) + "}");
+        }
+    }
+
+    static Map<String, String> query(HttpExchange e) {
+        Map<String, String> m = new HashMap<String, String>();
+        String q = e.getRequestURI().getRawQuery();
+        if (q != null) {
+            for (String pair : q.split("&")) {
+                int i = pair.indexOf('=');
+                if (i > 0) {
+                    m.put(URLDecoder.decode(pair.substring(0, i), StandardCharsets.UTF_8),
+                            URLDecoder.decode(pair.substring(i + 1), StandardCharsets.UTF_8));
+                }
+            }
+        }
+        return m;
     }
 
     // ------------------------------------------------------------------ helpers

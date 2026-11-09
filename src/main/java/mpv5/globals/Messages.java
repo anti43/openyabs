@@ -907,6 +907,23 @@ public enum Messages {
     POS_GROUPS("Product groups at the register"),
     POS_GROUPS_HINT("Only products of the checked groups are offered; nothing checked: all products. Changes apply at once."),
     POS_LINK_TIP("Starts the cash register if needed and opens it in the browser"),
+    POS_SIGNIN("Sign-in at the register"),
+    POS_USER("User"),
+    POS_PASSWORD("Password"),
+    POS_PASSWORD_UNKNOWN("set in Settings > Users"),
+    POS_NEW_PASSWORD("New password"),
+    POS_NEW_PASSWORD_ASK("Give the user of the cash register a new password? The old one no longer works."),
+    POS_USER_CREATED("User \"%s\" created for the cash register (password in Settings > Cash register)"),
+    POS_COPY("Copy"),
+    POS_ADDRESSES_HINT("Open one of these addresses in the browser of the touch device in the same network. A click here starts the register and opens it on this computer."),
+    POS_SETTINGS("Connection"),
+    POS_SIGNIN_HINT("Sign in at the register with this user. It may create documents; change its rights in Settings > Users."),
+    POS_RECEIPT("Receipt"),
+    POS_RECEIPT_TEMPLATE("Receipt (cash register)"),
+    POS_RECEIPT_TEMPLATE_LABEL("Template"),
+    POS_NO_RECEIPT("No receipt"),
+    POS_AUTOPRINT("Print a receipt after every sale (printer of the template or default printer of this computer)"),
+    POS_RECEIPT_HINT("The receipt is a YaBS template (edit it in the Template Manager); the demo template is for 80 mm receipt printers. At the register the receipt can also be shown and printed in the browser. Note: in Germany a cash register needs a certified security device (TSE) and receipts with its data (KassenSichV, section 146a AO) - this draft has none, so do not use it for real cash sales there."),
     ZOOM_IN("Zoom in"),
     LANGUAGE_MENU("Language"),
     LANGUAGE_CHANGED_RESTART("The new language is used when YaBS starts again.\n\nRestart YaBS now?"),
@@ -944,13 +961,19 @@ public enum Messages {
     public String toString() {
 
         if(missing.contains(name())) {
-            return message;
+            String de = LanguageManager.fallback(name());
+            return de != null ? de : message;
         }
         try {
-            return LanguageManager.getBundle().getString(name());
+            return LanguageManager.localize(name(), LanguageManager.getBundle().getString(name()));
         } catch (Exception e) {
             Log.Debug(this, e.getMessage());
             addMessage(name());
+            //a new text, not yet in the language of the database
+            String de = LanguageManager.fallback(name());
+            if (de != null) {
+                return de;
+            }
         }
 
         if (message == null) {

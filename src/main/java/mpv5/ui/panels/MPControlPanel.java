@@ -441,6 +441,9 @@ public class MPControlPanel extends JPanel {
                 ModernTheme.padding(10, 16)));
         detailTitle.setFont(ModernTheme.font(5, Font.BOLD));
         detailText.setForeground(ModernTheme.muted());
+        //a long description is shortened, the whole text is the tooltip
+        detailText.setMinimumSize(new Dimension(ModernTheme.px(60), detailText.getPreferredSize().height));
+        detailTitle.setMinimumSize(new Dimension(ModernTheme.px(60), detailTitle.getPreferredSize().height));
         JPanel texts = new JPanel();
         texts.setOpaque(false);
         texts.setLayout(new BoxLayout(texts, BoxLayout.Y_AXIS));
@@ -620,6 +623,11 @@ public class MPControlPanel extends JPanel {
             }
             detailTitle.setText(e == null ? ((Component) panel).getClass().getSimpleName().replace("ControlPanel_", "") : e.title);
             detailText.setText(e == null ? "" : e.description);
+            detailText.setToolTipText(e == null || e.description.isEmpty() ? null : e.description);
+            //a long description must not widen the tab: it takes the width there is
+            detailText.setPreferredSize(null);
+            Dimension pd = detailText.getPreferredSize();
+            detailText.setPreferredSize(new Dimension(Math.min(pd.width, ModernTheme.px(300)), pd.height));
             detailText.setVisible(e != null && !e.description.isEmpty());
             detailIcon.setIcon(e == null ? null : e.icon(32));
             actions.removeAll();

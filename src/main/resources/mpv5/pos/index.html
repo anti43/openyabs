@@ -90,7 +90,7 @@ main { display: grid; grid-template-columns: 1fr minmax(320px, 34%); min-height:
     <label data-t="user">Benutzer</label>
     <input id="user" autocapitalize="off" required>
     <label data-t="password">Passwort</label>
-    <input id="password" type="password" required>
+    <input id="password" type="password" inputmode="numeric" required>
     <div id="loginError"></div>
     <button class="primary" data-t="login">Anmelden</button>
   </form>
@@ -144,6 +144,11 @@ main { display: grid; grid-template-columns: 1fr minmax(320px, 34%); min-height:
     <div class="ok">&#10003;</div>
     <div class="num" id="rNumber"></div>
     <div class="chg" id="rChange"></div>
+    <div class="actions" id="receiptButtons" style="margin-bottom:10px">
+      <button class="secondary" id="showReceipt" data-t="showReceipt">Bon anzeigen</button>
+      <button class="secondary" id="printReceipt" data-t="printReceipt">Bon drucken</button>
+    </div>
+    <div id="receiptInfo" class="num" style="min-height:22px"></div>
     <button class="primary" id="next" data-t="next">Nächster Verkauf</button>
   </div>
 </div>
@@ -156,7 +161,8 @@ const T = de ? {} : {
   search: "Search products ...", net: "Net", tax: "VAT", clear: "Clear", pay: "Pay", cash: "Cash payment",
   given: "Given", back: "Back", book: "Book", next: "Next sale", all: "All", empty: "Tap a product",
   nothing: "No products found", wrong: "User or password wrong", notEnough: "Not enough money", change: "Change",
-  receipt: "Invoice", error: "Could not book: "
+  receipt: "Invoice", error: "Could not book: ", showReceipt: "Show receipt", printReceipt: "Print receipt",
+  printing: "Receipt is printed", printed: "Receipt printed", printError: "Printing failed: "
 };
 const t = (k, de) => T[k] || de;
 document.querySelectorAll("[data-t]").forEach(e => { if (T[e.dataset.t]) e.textContent = T[e.dataset.t]; });
@@ -179,7 +185,10 @@ async function api(path, data) {
   return { ok: r.ok, status: r.status, body };
 }
 
-fetch("/api/info").then(r => r.json()).then(i => { $("shopTitle").textContent = i.shop; $("shopName").textContent = i.shop; });
+fetch("/api/info").then(r => r.json()).then(i => {
+  $("shopTitle").textContent = i.shop; $("shopName").textContent = i.shop;
+  if (i.user && !$("user").value) { $("user").value = i.user; }
+});
 
 $("loginForm").addEventListener("submit", async ev => {
   ev.preventDefault();
@@ -346,9 +355,21 @@ $("payOk").onclick = async () => {
   $("payOverlay").classList.add("hidden");
   $("rNumber").textContent = t("receipt", "Rechnung") + " " + r.body.number + " · " + money.format(r.body.gross);
   $("rChange").textContent = g === null ? "" : t("change", "Rückgeld") + ": " + money.format(r.body.change);
+  lastSale = r.body.id;
+  $("receiptButtons").classList.toggle("hidden", !r.body.receipts);
+  $("receiptInfo").textContent = r.body.printed ? t("printing", "Bon wird gedruckt") : "";
   $("receiptOverlay").classList.remove("hidden");
   cart.clear();
   renderCart();
+};
+let lastSale = 0;
+$("showReceipt").onclick = () => {
+  window.open("/api/receipt?id=" + lastSale + "&token=" + encodeURIComponent(token), "_blank");
+};
+$("printReceipt").onclick = async () => {
+  $("receiptInfo").textContent = t("printing", "Bon wird gedruckt");
+  const r = await api("/api/print", { id: lastSale });
+  $("receiptInfo").textContent = r.ok ? t("printed", "Bon gedruckt") : t("printError", "Drucken fehlgeschlagen: ") + (r.body.error || r.status);
 };
 $("next").onclick = () => { $("receiptOverlay").classList.add("hidden"); $("search").value = ""; renderProducts(); };
 

@@ -189,7 +189,11 @@ YaBS can serve a **cash register as a web page** to a touch screen device at the
 - **Choose the product groups** offered at the register (nothing chosen: all products); changes apply immediately, even while the register runs.
 - Sellers **sign in with their YaBS user**, tap product tiles (with groups and search), see net, VAT and total, and pay **cash** with quick amounts and a keypad; the **change** is shown.
 - Every sale is booked as a **paid invoice for the cash customer** ("Barverkauf", created automatically), so it shows up in journals, revenue and reports like every other invoice.
-- First draft: cash only, no receipt printer and no cash book yet. The server runs in your network without encryption, so use it only in a trusted network.
+- On first enable YaBS creates the **register user `kasse`** with a random 6-digit PIN; user name and PIN are shown on the settings page (a new PIN can be generated there).
+- **Receipts from a template**: a demo template *Kassenbon (Kasse)* (80 mm receipt paper) is imported for the register. After a sale the receipt can be shown as PDF or printed on the template's printer (or the default printer), optionally automatically. Edit the template like every other YaBS template; extra fields are `pos.time` and `pos.seller`.
+- Texts of the register and its settings are translated (German texts are also used when an older German language file is installed).
+- **Legal note (Germany):** a cash register used for real cash sales must have a certified technical security device (TSE, KassenSichV / § 146a AO) and print its data (transaction number, signature counter, check value, serial numbers) on every receipt. This draft has **no TSE yet**; the demo receipt says so. Use it only for testing or where no TSE is required.
+- First draft: cash only, no cash book yet. The server runs in your network without encryption, so use it only in a trusted network.
 
 ## Teams: users, groups and rights
 
