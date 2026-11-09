@@ -44,6 +44,41 @@ public class Popup {
     /**
      * This identifier is the parent container opf popups, to keep them all in one screen
      */
+    private static final ThreadLocal<Boolean> SILENT = ThreadLocal.withInitial(() -> Boolean.FALSE);
+
+    /**
+     * Runs work without message boxes on this thread (e.g. a request of a web
+     * server): messages go to the log and the status bar, questions are
+     * answered with no
+     *
+     * @param <T>
+     * @param work
+     * @return the result of the work
+     * @throws Exception of the work
+     */
+    public static <T> T silently(java.util.concurrent.Callable<T> work) throws Exception {
+        boolean before = SILENT.get();
+        SILENT.set(Boolean.TRUE);
+        try {
+            return work.call();
+        } finally {
+            SILENT.set(before);
+        }
+    }
+
+    private static boolean silent(Object text) {
+        if (!SILENT.get()) {
+            return false;
+        }
+        mpv5.logging.Log.Debug(Popup.class, "(no message box) " + text);
+        try {
+            mpv5.YabsViewProxy.instance().addMessage(String.valueOf(text), java.awt.Color.YELLOW);
+        } catch (Exception e) {
+            //no view
+        }
+        return true;
+    }
+
     public static Component identifier = new Frame(GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration());
 
     /**
@@ -52,6 +87,9 @@ public class Popup {
      * @return
      */
     public static String Enter_Value(Object... message) {
+        if (silent(message)) {
+            return null;
+        }
         String text = "";
         for (int i = 0; i < message.length; i++) {
             if (message[i] != null) {
@@ -77,6 +115,9 @@ public class Popup {
      * @return
      */
     public static boolean Y_N_dialog(Object text, Object label) {
+        if (silent(text)) {
+            return false;
+        }
         if (JOptionPane.showConfirmDialog(identifier, prepareText(String.valueOf(text)), label.toString(), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, new javax.swing.ImageIcon(new Popup().getClass().getResource("/images/32/warning.png"))) == JOptionPane.YES_OPTION) {
             return true;
         } else {
@@ -92,6 +133,9 @@ public class Popup {
      * @return
      */
     public static boolean Y_N_dialog(Component parent, Object text, Object label) {
+        if (silent(text)) {
+            return false;
+        }
         if (JOptionPane.showConfirmDialog(parent, prepareText(String.valueOf(text)), label.toString(), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, new javax.swing.ImageIcon(new Popup().getClass().getResource("/images/32/warning.png"))) == JOptionPane.YES_OPTION) {
             return true;
         } else {
@@ -106,6 +150,9 @@ public class Popup {
      * @return
      */
     public static boolean OK_dialog(Object text, String label) {
+        if (silent(text)) {
+            return false;
+        }
         if (JOptionPane.showConfirmDialog(identifier, prepareText(String.valueOf(text)), label, JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, new javax.swing.ImageIcon(new Popup().getClass().getResource("/images/32/warning.png"))) == JOptionPane.OK_OPTION) {
             return true;
         } else {
@@ -119,6 +166,9 @@ public class Popup {
      * @param text
      */
     public static void notice(Component parent, Object text) {
+        if (silent(text)) {
+            return;
+        }
         JOptionPane.showMessageDialog(parent, prepareText(String.valueOf(text)), Popup.NOTICE, JOptionPane.INFORMATION_MESSAGE);
     }
 
@@ -128,6 +178,9 @@ public class Popup {
      * @param text
      */
     public static void warn(Component parent, Object text) {
+        if (silent(text)) {
+            return;
+        }
         JOptionPane.showMessageDialog(parent, prepareText(String.valueOf(text)), Popup.WARN, JOptionPane.WARNING_MESSAGE);
     }
 
@@ -137,6 +190,9 @@ public class Popup {
      * @param text
      */
     public static void error(Component parent, Object text) {
+        if (silent(text)) {
+            return;
+        }
         JOptionPane.showMessageDialog(parent, prepareText(String.valueOf(text)), Popup.ERROR, JOptionPane.ERROR_MESSAGE);
     }
 
@@ -146,6 +202,9 @@ public class Popup {
      * @param text
      */
     public static void warn(Object text) {
+        if (silent(text)) {
+            return;
+        }
         JOptionPane.showMessageDialog(identifier, prepareText(String.valueOf(text)), Popup.WARN, JOptionPane.INFORMATION_MESSAGE);
     }
 
@@ -155,6 +214,9 @@ public class Popup {
      * @param text
      */
     public static void notice(Object text) {
+        if (silent(text)) {
+            return;
+        }
         JOptionPane.showMessageDialog(identifier, prepareText(String.valueOf(text)), Popup.NOTICE, JOptionPane.INFORMATION_MESSAGE);
     }
 
@@ -166,6 +228,9 @@ public class Popup {
      * @param boxLength
      */
     public static void notice(Object text, int boxWidth, int boxLength) {
+        if (silent(text)) {
+            return;
+        }
         JOptionPane.showMessageDialog(identifier, prepareText(String.valueOf(text), boxWidth, boxLength), Popup.NOTICE, JOptionPane.INFORMATION_MESSAGE);
     }
 

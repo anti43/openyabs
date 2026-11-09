@@ -25,6 +25,7 @@ Free and open source (GPL v3) · Windows, Linux and macOS · No cloud, no accoun
 - [Bookkeeping: journal, expenses and revenues](#bookkeeping-journal-expenses-and-revenues)
 - [Scheduling and recurring invoices](#scheduling-and-recurring-invoices)
 - [A modern, fast user interface](#a-modern-fast-user-interface)
+- [Cash register for the shop counter (first draft)](#cash-register-for-the-shop-counter-first-draft)
 - [Teams: users, groups and rights](#teams-users-groups-and-rights)
 - [Import, export and moving from other software](#import-export-and-moving-from-other-software)
 - [For power users: scripts, plugins and SQL](#for-power-users-scripts-plugins-and-sql)
@@ -180,6 +181,15 @@ Invoicing software has to calculate correctly. YaBS calculates with exact decima
 - **Your language**: English and German included – on a German system (or with a German locale) YaBS switches to German by itself, and *View › Language* switches at any time (YaBS restarts itself); further translations can be made inside the application.
 - **Zoom like in a browser**: `Ctrl +` / `Ctrl −` / `Ctrl 0` make the whole application – menus, texts, tables, date pickers and drop-downs – larger or smaller (80 – 200 %), remembered on each computer.
 
+## Cash register for the shop counter (first draft)
+
+YaBS can serve a **cash register as a web page** to a touch screen device at the counter (tablet, all-in-one PC). The device only needs a browser.
+
+- Start it in *Settings › Cash register* (or *Plugins › Open cash register*). The page shows the addresses to open on the device. Optionally the register starts together with YaBS.
+- Sellers **sign in with their YaBS user**, tap product tiles (with groups and search), see net, VAT and total, and pay **cash** with quick amounts and a keypad; the **change** is shown.
+- Every sale is booked as a **paid invoice for the cash customer** ("Barverkauf", created automatically), so it shows up in journals, revenue and reports like every other invoice.
+- First draft: cash only, no receipt printer and no cash book yet. The server runs in your network without encryption, so use it only in a trusted network.
+
 ## Teams: users, groups and rights
 
 - **Several users** with their own settings, signatures, templates and default values.
@@ -235,7 +245,7 @@ Details (German): [docs/Hinweise.md](docs/Hinweise.md).
 ./gradlew test distributionZip
 ```
 
-The ZIP is created in `build/distributions/`. Java 21 is required. Pushes to `master` and version tags build the ZIP and the installer packages on GitHub Actions.
+The ZIP is created in `build/distributions/`. Java 21 is required. After `./gradlew build` (or `jar`), the libraries are copied to `build/libs/lib/`, so `java -jar build/libs/openyabs.jar` starts right away (a `-cp` option is ignored by `java -jar`). Pushes to `master` and version tags build the ZIP and the installer packages on GitHub Actions.
 
 Versions: builds of `master` are **2.0.&lt;build number&gt;** (shown on the splash screen and in *Help › About*), releases carry the version of their tag (`v2.1.0` → 2.1.0), local builds are `2.0-dev` (`./gradlew distributionZip -PreleaseVersion=2.0.5` sets one).
 

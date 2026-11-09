@@ -58,6 +58,14 @@ jar {
     }
 }
 
+// "java -jar build/libs/openyabs.jar" works right after a build: the manifest
+// points to lib/ next to the jar, so all runtime libraries are copied there
+tasks.register('copyRuntimeLibs', Copy) {
+    from configurations.runtimeClasspath
+    into layout.buildDirectory.dir('libs/lib')
+}
+tasks.named('jar') { finalizedBy 'copyRuntimeLibs' }
+
 // Zip for distribution: openyabs/openyabs.jar, openyabs/lib/ and start scripts (src/dist).
 // Start with yabs.sh / yabs.bat or "java -jar openyabs.jar" (Java 21+).
 tasks.register('distributionZip', Zip) {
