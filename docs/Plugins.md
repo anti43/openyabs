@@ -10,7 +10,7 @@ Plugins add **commands**, **search results**, **settings pages** and **reactions
 
 ## A plugin in Groovy – 30 seconds
 
-*Settings › Plugin Manager › New Groovy plugin…* creates a working plugin from a template and opens it in your editor. Or create `plugins/hello.groovy` yourself:
+*Settings › Plugin Manager › New Groovy plugin…* creates a working plugin from a template and opens it in the **plugin editor of YaBS**: Groovy highlighting, line numbers, *Insert example* (command, search results, reacting to new records, settings page, own tab, record modifier, stored values, background work), *Check* (F5) shows the line of an error, *Save and start* (`Ctrl+S`) reloads the plugin at once. *Edit* opens existing Groovy plugins there; *Other editor* opens the file in your own editor. Or create `plugins/hello.groovy` yourself:
 
 ```groovy
 // @name Hello

@@ -303,42 +303,15 @@ public final class ControlPanel_Plugins extends JPanel implements ControlApplet 
 
     /**
      * @param name
-     * @return a small working Groovy plugin to start from
+     * @return a working Groovy plugin to start from
      */
     static String template(String name) {
-        return "// @name " + name + "\n"
-                + "// @description What this plugin does\n"
-                + "// @version 1.0\n"
-                + "// @author \n"
-                + "//\n"
-                + "// 'yabs' offers: addCommand, addSearchProvider, onActivity, addSettingsPage,\n"
-                + "// openTab, notify, settings(), dataFolder(), background(...), addRecordModifier.\n"
-                + "// Save the file and click Reload in Settings > Plugins.\n\n"
-                + "// a command in the menu Plugins and in Search anything (Shift Shift)\n"
-                + "yabs.addCommand('Say hello', 'A first command', {\n"
-                + "    yabs.notify('Hello from " + name.replace("'", "") + "!')\n"
-                + "})\n\n"
-                + "// told about new and changed records and created files\n"
-                + "yabs.onActivity({ entry ->\n"
-                + "    if (entry.kind == mpv5.handler.Activity.Kind.CREATED) {\n"
-                + "        // e.g. react to a new invoice: entry.text, entry.context, entry.id\n"
-                + "    }\n"
-                + "})\n\n"
-                + "// called when the plugin stops\n"
-                + "onStop = { }\n";
+        return mpv5.plugin.GroovyPluginEditor.skeleton(name);
     }
 
     private void edit(File f) {
-        try {
-            if (Desktop.getDesktop().isSupported(Desktop.Action.EDIT)) {
-                Desktop.getDesktop().edit(f);
-            } else {
-                Desktop.getDesktop().open(f);
-            }
-        } catch (Exception e) {
-            Log.Debug(this, e);
-            Popup.notice(f.getAbsolutePath());
-        }
+        //the editor inside YaBS (it can also open another editor)
+        mpv5.plugin.GroovyPluginEditor.open(this, f);
     }
 
     private void open(File dir) {

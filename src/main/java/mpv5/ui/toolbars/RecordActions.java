@@ -111,9 +111,61 @@ public final class RecordActions {
         int original = dato.__getIDS();
         String name = dato.__getCname();
         dato.setIDS(-1);
+        //a new record: never locked
+        dato.ReadOnly(false);
         view.actionBeforeCreate();
         ((javax.swing.JComponent) view).putClientProperty(COPY_OF, new Object[]{original, name, dato});
         return true;
+    }
+
+    /**
+     * Opens a copy of the (saved) record in a new tab, as new record not
+     * saved yet; the record stays open in its own tab
+     *
+     * @param view
+     */
+    public static void copyInNewTab(DataPanel view) {
+        DatabaseObject dato = view.getDataOwner();
+        if (dato == null || !dato.isExisting()) {
+            return;
+        }
+        DataPanel copy = null;
+        try {
+            //an own instance (getObject may return the cached one, which the open tab uses)
+            DatabaseObject fresh = DatabaseObject.getObject(dato.getContext());
+            fresh.fetchDataOf(dato.__getIDS());
+            copy = mpv5.YabsViewProxy.instance().addTab(fresh, true);
+        } catch (Exception e) {
+            Log.Debug(RecordActions.class, e);
+        }
+        if (copy == null || copy == view) {
+            //no main window (e.g. a view in its own window): copy in place
+            createCopy(view);
+            return;
+        }
+        final DataPanel target = copy;
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            if (createCopy(target)) {
+                tabTitle((java.awt.Component) target, String.format(mpv5.globals.Messages.COPY_TAB.toString(), dato.__getCname()));
+            }
+        });
+    }
+
+    private static void tabTitle(java.awt.Component view, String title) {
+        java.awt.Component child = view;
+        java.awt.Container parent = view.getParent();
+        while (parent != null && !(parent instanceof javax.swing.JTabbedPane)) {
+            child = parent;
+            parent = parent.getParent();
+        }
+        if (parent != null) {
+            javax.swing.JTabbedPane tabs = (javax.swing.JTabbedPane) parent;
+            int i = tabs.indexOfComponent(child);
+            if (i >= 0) {
+                tabs.setTitleAt(i, title);
+                tabs.setSelectedIndex(i);
+            }
+        }
     }
 
     /**
