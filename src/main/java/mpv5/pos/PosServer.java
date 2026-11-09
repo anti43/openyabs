@@ -104,6 +104,15 @@ public final class PosServer {
      * @return the addresses to open on a device in the network
      */
     public List<String> urls() {
+        return urls(port);
+    }
+
+    /**
+     * @param port
+     * @return the addresses of this computer for the port (network first,
+     * localhost last)
+     */
+    public static List<String> urls(int port) {
         List<String> l = new ArrayList<String>();
         try {
             for (NetworkInterface n : Collections.list(NetworkInterface.getNetworkInterfaces())) {

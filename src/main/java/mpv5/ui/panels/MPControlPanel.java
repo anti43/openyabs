@@ -567,8 +567,29 @@ public class MPControlPanel extends JPanel {
             }
             return;
         }
-        select(e.panelClass);
+        if (e.panelClass == PluginPage.class) {
+            //plugin pages share their class: select the entry by its title
+            selectTitle(e.title);
+        } else {
+            select(e.panelClass);
+        }
         show(e.panel.get(), e);
+    }
+
+    private void selectTitle(String title) {
+        listing = true;
+        try {
+            list.clearSelection();
+            for (int i = 0; i < model.size(); i++) {
+                if (model.get(i) instanceof Entry && ((Entry) model.get(i)).title.equals(title)) {
+                    list.setSelectedIndex(i);
+                    list.ensureIndexIsVisible(i);
+                    break;
+                }
+            }
+        } finally {
+            listing = false;
+        }
     }
 
     private void select(Class<?> c) {

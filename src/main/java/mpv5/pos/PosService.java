@@ -113,6 +113,32 @@ public final class PosService {
     private final Map<String, User> sessions = new ConcurrentHashMap<String, User>();
     private final SecureRandom random = new SecureRandom();
     private final String cashCustomerName;
+    private volatile java.util.Set<Integer> groups = java.util.Collections.emptySet();
+
+    /**
+     * @param ids the product groups sold at the register, empty: all products
+     */
+    public void setGroups(java.util.Set<Integer> ids) {
+        this.groups = ids == null ? java.util.Collections.<Integer>emptySet() : new java.util.HashSet<Integer>(ids);
+    }
+
+    /**
+     * @param csv e.g. "3,5" (as stored in the settings)
+     * @return the ids
+     */
+    public static java.util.Set<Integer> parseGroups(String csv) {
+        java.util.Set<Integer> s = new java.util.LinkedHashSet<Integer>();
+        if (csv != null) {
+            for (String x : csv.split(",")) {
+                try {
+                    s.add(Integer.valueOf(x.trim()));
+                } catch (NumberFormatException ignore) {
+                    //skip
+                }
+            }
+        }
+        return s;
+    }
 
     /**
      * @param cashCustomerName the name of the contact all sales go to
@@ -175,6 +201,10 @@ public final class PosService {
             for (DatabaseObject o : DatabaseObject.getObjects(Context.getProduct())) {
                 Product p = (Product) o;
                 if (p.__getCname() == null || p.__getCname().trim().isEmpty()) {
+                    continue;
+                }
+                java.util.Set<Integer> only = this.groups;
+                if (!only.isEmpty() && !only.contains(p.__getProductgroupsids())) {
                     continue;
                 }
                 BigDecimal tax;

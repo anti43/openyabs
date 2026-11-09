@@ -766,7 +766,8 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
              if(Constants.VERSION.equals(System.getProperty("yabsFirstStartVersion"))){
                  try {
                      if (LanguageManager.checkAndReplaceLangFiles()) {
-                         Notificator.raiseNotification(Messages.LANGUAGE_UPDATED, true);
+                         //a message in the status bar, no dialog at the start
+                         Notificator.raiseNotification(Messages.LANGUAGE_UPDATED, false);
                      } else {
                          Log.Debug(this, "Language file up to date");
                      }
