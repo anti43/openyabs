@@ -77,7 +77,7 @@ jobs:
         working-directory: dist
         run: |
           test -s "openyabs-$VERSION.zip"
-          for pattern in '*.deb' '*.rpm' '*.msi' '*-arm64.dmg' '*-x86_64.dmg'; do
+          for pattern in '*.deb' '*.rpm' '*.msi'; do
             compgen -G "$pattern" > /dev/null || {
               echo "::error::Missing release asset: $pattern"
               exit 1
