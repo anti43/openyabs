@@ -1,11 +1,8 @@
 # Builds YaBS, runs the tests and publishes the distribution zip
 # (openyabs.jar, lib/, start scripts) and installers with their own Java
 # runtime (.deb, .rpm, .msi, .dmg; src/packaging/build-installer.sh):
-# - every run: as workflow artifacts (Actions > run > Artifacts); installers
-#   not for pull requests
-# - builds of master: as pre-release "latest-master" (replaced on every build),
-#   version 2.0.<build number>
-# - version tags (v1.2.3): as GitHub release "YaBS 1.2.3"
+# Published as workflow artifacts (Actions > run > Artifacts); installers
+# not for pull requests. GitHub releases are published only by release.yml.
 name: Build
 
 on:
@@ -14,6 +11,12 @@ on:
     tags: ['v*']
   pull_request:
   workflow_dispatch:
+  workflow_call:
+    inputs:
+      release-version:
+        description: Version selected by the Release workflow
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -35,11 +38,14 @@ jobs:
       - name: Install fonts
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends fonts-liberation
 
-      # version: the tag (v2.1.0 -> 2.1.0), else 2.0.<build number>; shown on
-      # the splash screen and in About, part of the zip and installer names
+      # Use the release version, tag version or development build number.
       - name: Test and build distribution zip
+        env:
+          RELEASE_VERSION: ${{ inputs.release-version }}
         run: |
-          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+          if [[ -n "$RELEASE_VERSION" ]]; then
+            ./gradlew --no-daemon test distributionZip -PreleaseVersion="$RELEASE_VERSION"
+          elif [[ "$GITHUB_REF" == refs/tags/v* ]]; then
             ./gradlew --no-daemon test distributionZip -PreleaseVersion="${GITHUB_REF_NAME#v}"
           else
             ./gradlew --no-daemon test distributionZip -PreleaseVersion="2.0.${GITHUB_RUN_NUMBER}"
@@ -113,8 +119,12 @@ jobs:
       # 2.0.<build number> (as the application)
       - name: Build installers
         shell: bash
+        env:
+          RELEASE_VERSION: ${{ inputs.release-version }}
         run: |
-          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+          if [[ -n "$RELEASE_VERSION" ]]; then
+            version="$RELEASE_VERSION"
+          elif [[ "$GITHUB_REF" == refs/tags/v* ]]; then
             version="${GITHUB_REF_NAME#v}"
             version="${version%%-*}"
           else
@@ -132,42 +142,3 @@ jobs:
           name: installers-${{ matrix.os }}-${{ github.run_number }}
           path: dist/*
           if-no-files-found: error
-
-  release:
-    needs: [build, installers]
-    # not for pull requests, only for master and version tags; the zip is
-    # published even if an installer could not be built
-    if: always() && needs.build.result == 'success' && github.event_name != 'pull_request' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/v'))
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    concurrency: release-${{ github.ref }}
-    env:
-      GH_TOKEN: ${{ github.token }}
-      GH_REPO: ${{ github.repository }}
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: openyabs-${{ github.run_number }}
-          path: dist
-
-      - uses: actions/download-artifact@v4
-        continue-on-error: true
-        with:
-          pattern: installers-*-${{ github.run_number }}
-          path: dist
-          merge-multiple: true
-
-      - name: Release for version tag
-        if: startsWith(github.ref, 'refs/tags/v')
-        run: |
-          gh release create "$GITHUB_REF_NAME" dist/* \
-            --title "YaBS ${GITHUB_REF_NAME#v}" --generate-notes
-
-      - name: Pre-release latest-master
-        if: github.ref == 'refs/heads/master'
-        run: |
-          gh release delete latest-master --cleanup-tag --yes || true
-          gh release create latest-master dist/* --prerelease --target "$GITHUB_SHA" \
-            --title "Latest build (master)" \
-            --notes "Automatic build of master, commit $GITHUB_SHA ($(date -u '+%Y-%m-%d %H:%M UTC')). Replaced by every new build. Installers with their own Java: .msi (Windows), .dmg (macOS, arm64 = Apple silicon, x86_64 = Intel; not signed: open with right-click > Open), .deb (Debian, Ubuntu: sudo apt install ./yabs_*.deb), .rpm (Fedora, openSUSE: sudo dnf install ./yabs-*.rpm). Or unzip the zip and start with yabs.sh / yabs.bat (Java 21 or newer)."
