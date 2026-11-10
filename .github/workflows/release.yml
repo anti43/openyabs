@@ -1,0 +1,102 @@
+name: Release
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Select the next version only after the previous release has finished.
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Select next patch version
+        id: version
+        shell: python
+        run: |
+          import os
+          import re
+          import subprocess
+
+          tags = subprocess.check_output(["git", "tag", "--list"], text=True).splitlines()
+          versions = [
+              tuple(map(int, tag[1:].split(".")))
+              for tag in tags
+              if re.fullmatch(r"v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)", tag)
+          ]
+          major, minor, patch = max(versions) if versions else (2, 0, -1)
+          patch += 1
+          if not (1 <= major <= 255 and minor <= 255 and patch <= 65535):
+              raise SystemExit("Next version exceeds the supported MSI/macOS version range.")
+          version = f"{major}.{minor}.{patch}"
+          with open(os.environ["GITHUB_OUTPUT"], "a") as output:
+              output.write(f"version={version}\n")
+          print(f"Release version: {version}")
+
+  build:
+    needs: version
+    uses: ./.github/workflows/build.yml
+    with:
+      release-version: ${{ needs.version.outputs.version }}
+
+  release:
+    needs: [version, build]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      VERSION: ${{ needs.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: openyabs-${{ github.run_number }}
+          path: dist
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: installers-*-${{ github.run_number }}
+          path: dist
+          merge-multiple: true
+
+      - name: Verify release assets and create checksums
+        working-directory: dist
+        run: |
+          test -s "openyabs-$VERSION.zip"
+          for pattern in '*.deb' '*.rpm' '*.msi' '*-arm64.dmg' '*-x86_64.dmg'; do
+            compgen -G "$pattern" > /dev/null || {
+              echo "::error::Missing release asset: $pattern"
+              exit 1
+            }
+          done
+          sha256sum ./* > SHA256SUMS
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-${{ needs.version.outputs.version }}
+          path: dist/*
+          if-no-files-found: error
+
+      - name: Create annotated tag and publish release
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "v$VERSION" "$GITHUB_SHA" -m "YaBS $VERSION"
+          git push origin "refs/tags/v$VERSION"
+          gh release create "v$VERSION" dist/* --verify-tag --draft \
+            --title "YaBS $VERSION" --generate-notes
+          gh release edit "v$VERSION" --draft=false --latest
