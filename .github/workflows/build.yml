@@ -82,10 +82,10 @@ jobs:
           - os: windows-2022
             types: msi
           # macOS: Apple silicon and Intel (not signed)
-          - os: macos-14
-            types: dmg
-          - os: macos-15-intel
-            types: dmg
+          #- os: macos-14
+          #  types: dmg
+          #- os: macos-15-intel
+          #  types: dmg
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
