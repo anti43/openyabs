@@ -34,6 +34,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
 
     public ControlPanel_Userproperties() {
         initComponents();
+        filenameBuilder();
         modernLayout();
         //modern views (see YabsViewProxy), the system property yabs.ui overrides it
         modernui.setText(Messages.MODERN_UI.toString());
@@ -968,6 +969,88 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
     private javax.swing.JPanel actions = new javax.swing.JPanel();
 
     /**
+     * The variables offered for the file name format, with the sample values of the preview
+     */
+    private static String[][] filenameVars() {
+        String year = mpv5.utils.date.DateConverter.getYear();
+        return new String[][]{
+            {"[cname]", "RE-00042"},
+            {"[type]", Messages.TYPE_INVOICE.toString()},
+            {"[contact.cname]", "Smith"},
+            {"[contact.prename]", "John"},
+            {"[contact.company]", "Example Ltd"},
+            {"[contact.cnumber]", "K-00007"},
+            {"[contact.country]", "DE"},
+            {"[YEAR]", year},
+            {"[YEAR_SHORT]", year.substring(2)},
+            {"[MONTH]", mpv5.utils.date.DateConverter.getMonth()},
+            {"[MONTH_NAME]", mpv5.utils.date.DateConverter.getMonthName()},
+            {"[DAY]", mpv5.utils.date.DateConverter.getDayOfMonth()},
+            {"[QUARTER]", String.valueOf(mpv5.utils.date.DateConverter.getQuarter())},
+            {"[DATENUMERIC]", mpv5.utils.date.DateConverter.getDateNumeric()},
+            {"[OBJECT_YEAR]", year},
+            {"[OBJECT_MONTH]", mpv5.utils.date.DateConverter.getMonthName()},
+            {"[GROUP_NAME]", "All"},
+            {"[CURRENT_USER]", User.getCurrentUser().getName()},
+            {"[CREATE_USER]", User.getCurrentUser().getName()}};
+    }
+
+    /**
+     * File name defaults: pick variables from a list, see a preview of the resulting path
+     */
+    private void filenameBuilder() {
+        final String[][] vars = filenameVars();
+        final javax.swing.JTextField field = saveformat.getTextField();
+        final javax.swing.JComboBox<String> insert = new javax.swing.JComboBox<String>();
+        insert.addItem(Messages.FILENAME_INSERT.toString());
+        insert.addItem("/");
+        for (String[] v : vars) {
+            insert.addItem(v[0]);
+        }
+        insert.addActionListener(e -> {
+            if (insert.getSelectedIndex() > 0) {
+                field.replaceSelection(String.valueOf(insert.getSelectedItem()));
+                insert.setSelectedIndex(0);
+                field.requestFocusInWindow();
+            }
+        });
+        final javax.swing.JLabel preview = new javax.swing.JLabel(" ");
+        Runnable update = () -> {
+            String t = field.getText().replace("\\", "/");
+            if (t.trim().isEmpty()) {
+                preview.setText(" ");
+                return;
+            }
+            for (String[] v : vars) {
+                t = t.replaceAll("(?i)" + java.util.regex.Pattern.quote(v[0]), java.util.regex.Matcher.quoteReplacement(v[1]));
+            }
+            preview.setText(Messages.FILENAME_PREVIEW + ": " + t + ".pdf");
+        };
+        field.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            public void insertUpdate(javax.swing.event.DocumentEvent e) {
+                update.run();
+            }
+
+            public void removeUpdate(javax.swing.event.DocumentEvent e) {
+                update.run();
+            }
+
+            public void changedUpdate(javax.swing.event.DocumentEvent e) {
+                update.run();
+            }
+        });
+
+        jPanel4.removeAll();
+        jPanel4.setLayout(new javax.swing.BoxLayout(jPanel4, javax.swing.BoxLayout.PAGE_AXIS));
+        for (javax.swing.JComponent c : new javax.swing.JComponent[]{jScrollPane1, saveformat, insert, preview}) {
+            c.setAlignmentX(Component.LEFT_ALIGNMENT);
+            jPanel4.add(c);
+            jPanel4.add(javax.swing.Box.createVerticalStrut(4));
+        }
+        insert.setMaximumSize(insert.getPreferredSize());
+    }
+
+    /**
      * The parts of the form as cards, the buttons in the action bar
      */
     private void modernLayout() {
@@ -1030,7 +1113,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         if (s1 != null) {
             saveformat.setText(s1);
         } else {
-            format.setText("");
+            saveformat.setText("");
         }
 
 //        String s2 = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("savedir");
