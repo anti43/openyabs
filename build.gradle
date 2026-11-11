@@ -55,7 +55,9 @@ jar {
         attributes 'Main-Class' : 'mpv5.Main'
         attributes 'Implementation-Title' : 'YaBS'
         attributes 'Implementation-Version' : project.version
-        attributes 'Class-Path' : configurations.compileClasspath.collect { 'lib/' + it.getName() }.join(' ')
+        // runtimeClasspath: also the libraries only needed at runtime (JavaParser, ASM, groovy-swing etc.
+        // of the Groovy console); with compileClasspath they were copied to lib/ but not found (NoClassDefFoundError)
+        attributes 'Class-Path' : configurations.runtimeClasspath.collect { 'lib/' + it.getName() }.join(' ')
         attributes 'Add-Opens' : 'java.base/java.lang=ALL-UNNAMED'
     }
 }

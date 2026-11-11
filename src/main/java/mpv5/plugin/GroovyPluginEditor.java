@@ -71,7 +71,7 @@ import mpv5.ui.modern.PrimaryButton;
 public final class GroovyPluginEditor extends JDialog {
 
     private static final long serialVersionUID = 1L;
-    private static final String DOCS = "https://github.com/andreasweberd/openyabs/blob/master/docs/Plugins.md";
+    private static final String DOCS = "https://github.com/anti43/openyabs/blob/master/docs/Plugins.md";
     private final File file;
     private final JTextComponent editor;
     private final UndoManager undo = new UndoManager();
@@ -168,13 +168,71 @@ public final class GroovyPluginEditor extends JDialog {
             groovy.console.ui.text.TextEditor t = new groovy.console.ui.text.TextEditor(true, true, true);
             DefaultStyledDocument doc = new DefaultStyledDocument();
             t.setDocument(doc);
-            doc.setDocumentFilter(new groovy.console.ui.text.SmartDocumentFilter(doc));
+            doc.setDocumentFilter(new SafeFilter(new groovy.console.ui.text.SmartDocumentFilter(doc)));
             return t;
         } catch (Throwable e) {
             Log.Debug(GroovyPluginEditor.class, "Plain editor: " + e);
             JTextArea a = new JTextArea();
             a.setTabSize(4);
             return a;
+        }
+    }
+
+    /**
+     * The highlighting of the Groovy console needs further libraries
+     * (JavaParser, ASM); if one is missing (NoClassDefFoundError), the
+     * highlighting switches itself off instead of breaking the editor
+     */
+    private static final class SafeFilter extends javax.swing.text.DocumentFilter {
+
+        private javax.swing.text.DocumentFilter filter;
+
+        SafeFilter(javax.swing.text.DocumentFilter filter) {
+            this.filter = filter;
+        }
+
+        private void off(LinkageError e) {
+            Log.Debug(GroovyPluginEditor.class, "Highlighting off: " + e);
+            filter = null;
+        }
+
+        @Override
+        public void insertString(FilterBypass fb, int offset, String text, javax.swing.text.AttributeSet attr) throws javax.swing.text.BadLocationException {
+            if (filter != null) {
+                try {
+                    filter.insertString(fb, offset, text, attr);
+                    return;
+                } catch (LinkageError e) {
+                    off(e);
+                }
+            }
+            fb.insertString(offset, text, attr);
+        }
+
+        @Override
+        public void remove(FilterBypass fb, int offset, int length) throws javax.swing.text.BadLocationException {
+            if (filter != null) {
+                try {
+                    filter.remove(fb, offset, length);
+                    return;
+                } catch (LinkageError e) {
+                    off(e);
+                }
+            }
+            fb.remove(offset, length);
+        }
+
+        @Override
+        public void replace(FilterBypass fb, int offset, int length, String text, javax.swing.text.AttributeSet attrs) throws javax.swing.text.BadLocationException {
+            if (filter != null) {
+                try {
+                    filter.replace(fb, offset, length, text, attrs);
+                    return;
+                } catch (LinkageError e) {
+                    off(e);
+                }
+            }
+            fb.replace(offset, length, text, attrs);
         }
     }
 
@@ -246,9 +304,16 @@ public final class GroovyPluginEditor extends JDialog {
             saved = "";
             error(e.getMessage());
         }
+        //a new or empty plugin starts with the skeleton (not saved yet)
+        boolean empty = saved.trim().isEmpty();
         editor.setText(saved);
         //the console editor normalizes line ends: compare with what it holds
         saved = editor.getText();
+        if (empty) {
+            String name = file.getName().replaceAll("\\.groovy$", "");
+            editor.setText(skeleton(name));
+            saved = "";
+        }
         editor.setCaretPosition(0);
         undo.discardAllEdits();
         changed();
