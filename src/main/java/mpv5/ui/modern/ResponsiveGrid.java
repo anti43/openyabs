@@ -45,6 +45,163 @@ public class ResponsiveGrid extends JPanel implements Scrollable {
         setBorder(ModernTheme.padding(12, 12));
     }
 
+    private String layoutKey;
+    private boolean arranged;
+    private final java.util.List<Component> original = new java.util.ArrayList<Component>();
+
+    /**
+     * The cards can be moved by their title (drag onto another card); the
+     * order is saved for the user under this key
+     *
+     * @param key e.g. "contact"
+     * @return this
+     */
+    public ResponsiveGrid arrangeable(String key) {
+        this.layoutKey = key;
+        return this;
+    }
+
+    private String property() {
+        return "org.openyabs.layout.cards." + layoutKey;
+    }
+
+    @Override
+    public void addNotify() {
+        super.addNotify();
+        if (layoutKey != null && !arranged) {
+            arranged = true;
+            original.addAll(java.util.Arrays.asList(getComponents()));
+            restoreOrder();
+            for (Component c : original) {
+                if (c instanceof Card && ((Card) c).getTitle() != null) {
+                    handle((Card) c);
+                }
+            }
+        }
+    }
+
+    private void restoreOrder() {
+        String saved = null;
+        try {
+            saved = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(property());
+        } catch (Exception e) {
+            //no user (tests)
+        }
+        java.util.List<Component> order = new java.util.ArrayList<Component>();
+        if (saved != null) {
+            for (String t : saved.split("\\|")) {
+                for (Component c : original) {
+                    if (!order.contains(c) && c instanceof Card && t.equals(((Card) c).getTitle())) {
+                        order.add(c);
+                    }
+                }
+            }
+        }
+        for (Component c : original) {
+            if (!order.contains(c)) {
+                order.add(c);
+            }
+        }
+        apply(order);
+    }
+
+    private void apply(java.util.List<Component> order) {
+        removeAll();
+        for (Component c : order) {
+            add(c);
+        }
+        revalidate();
+        repaint();
+    }
+
+    private void save() {
+        StringBuilder s = new StringBuilder();
+        for (Component c : getComponents()) {
+            if (c instanceof Card && ((Card) c).getTitle() != null) {
+                s.append(s.length() == 0 ? "" : "|").append(((Card) c).getTitle());
+            }
+        }
+        try {
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(property(), s.toString());
+        } catch (Exception e) {
+            //no user (tests)
+        }
+    }
+
+    /**
+     * Drag the title of a card onto another card: it takes that place.
+     * Right click on a title: back to the original order.
+     */
+    private void handle(final Card card) {
+        JPanel h = card.getHeader();
+        h.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.MOVE_CURSOR));
+        h.setToolTipText(mpv5.globals.Messages.CARDS_MOVE.toString());
+        java.awt.event.MouseAdapter m = new java.awt.event.MouseAdapter() {
+            private boolean dragging;
+
+            @Override
+            public void mousePressed(java.awt.event.MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    menu(e);
+                }
+                dragging = javax.swing.SwingUtilities.isLeftMouseButton(e);
+            }
+
+            @Override
+            public void mouseDragged(java.awt.event.MouseEvent e) {
+                if (dragging) {
+                    setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.MOVE_CURSOR));
+                }
+            }
+
+            @Override
+            public void mouseReleased(java.awt.event.MouseEvent e) {
+                setCursor(null);
+                if (e.isPopupTrigger()) {
+                    menu(e);
+                    return;
+                }
+                if (!dragging) {
+                    return;
+                }
+                dragging = false;
+                java.awt.Point p = javax.swing.SwingUtilities.convertPoint((Component) e.getSource(), e.getPoint(), ResponsiveGrid.this);
+                Component target = getComponentAt(p);
+                while (target != null && target.getParent() != ResponsiveGrid.this) {
+                    target = target.getParent();
+                }
+                if (target != null && target != card) {
+                    java.util.List<Component> order = new java.util.ArrayList<Component>(java.util.Arrays.asList(getComponents()));
+                    int to = order.indexOf(target);
+                    order.remove(card);
+                    order.add(to, card);
+                    apply(order);
+                    save();
+                }
+            }
+
+            private void menu(java.awt.event.MouseEvent e) {
+                javax.swing.JPopupMenu p = new javax.swing.JPopupMenu();
+                javax.swing.JMenuItem reset = new javax.swing.JMenuItem(mpv5.globals.Messages.CARDS_RESET.toString());
+                reset.addActionListener(a -> {
+                    apply(original);
+                    save();
+                });
+                p.add(reset);
+                p.show((Component) e.getSource(), e.getX(), e.getY());
+            }
+        };
+        h.addMouseListener(m);
+        h.addMouseMotionListener(m);
+        for (Component c : h.getComponents()) {
+            c.addMouseListener(m);
+            c.addMouseMotionListener(m);
+            if (c instanceof javax.swing.JComponent) {
+                ((javax.swing.JComponent) c).setToolTipText(mpv5.globals.Messages.CARDS_MOVE.toString());
+            }
+        }
+    }
+
     @Override
     public Dimension getPreferredScrollableViewportSize() {
         return getPreferredSize();

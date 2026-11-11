@@ -280,7 +280,7 @@ public class ModernContactPanel extends ModernDataPanel {
         }
 
         createRelatedPanel();
-        split = split(tabs, relatedPanel);
+        split = split("contact", tabs, relatedPanel, 0.6);
         content.add(split, BorderLayout.CENTER);
 
         add(content, BorderLayout.CENTER);
@@ -440,7 +440,7 @@ public class ModernContactPanel extends ModernDataPanel {
     }
 
     private JComponent createOverview() {
-        ResponsiveGrid grid = new ResponsiveGrid(340, 3);
+        ResponsiveGrid grid = new ResponsiveGrid(340, 3).arrangeable("contact");
 
         JPanel gender = new JPanel(new FlowLayout(FlowLayout.LEFT, ModernTheme.px(8), 0));
         gender.setOpaque(false);

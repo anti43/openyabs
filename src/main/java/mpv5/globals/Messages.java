@@ -542,6 +542,8 @@ public enum Messages {
     TRANSLATE_SAVED("Your translation is saved and in use. Windows opened before show it after a restart."),
     TRANSLATE_COL_KEY("Key"),
     TRANSLATE_COL_TEXT("Translation"),
+    CARDS_MOVE("Drag the title onto another card to move this card; right click: original order"),
+    CARDS_RESET("Original order of the cards"),
     QR_CAPTION("Pay with code"),
     FILENAME_INSERT("Insert at cursor:"),
     FILENAME_CHOOSE("Choose a variable or / ..."),
