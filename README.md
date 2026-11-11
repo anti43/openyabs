@@ -19,6 +19,19 @@ Free and open source (GPL v3) · Windows, Linux and macOS · No cloud, no accoun
 
 All features: **[anti43.github.io/openyabs](https://anti43.github.io/openyabs/)**
 
+## Auf Deutsch
+
+**YaBS ist ein kostenloses Rechnungsprogramm (Open Source, GPL v3) für Selbstständige, Freiberufler und kleine Unternehmen** – für Windows, Linux und macOS, ohne Cloud, ohne Konto, ohne Abo.
+
+- **Angebote, Aufträge, Rechnungen**, Abschlags- und Anzahlungsrechnungen, Gutschriften, Lieferscheine und Mahnungen
+- **E-Rechnung**: XRechnung und ZUGFeRD nach EN 16931, vor dem Versand geprüft – [mehr zur E-Rechnung](docs/E-Rechnung.md)
+- **Kunden, Lieferanten, Artikel und Lager**, Ausgaben und Buchungsjournal mit Umsatzsteuer
+- **Eigene Vorlagen** in LibreOffice / OpenOffice (ODT) mit **GiroCode** (EPC-QR-Code zum Bezahlen per Banking-App)
+- **Umstieg von Fakturama 2**: *Datei › Import › Fakturama 2* – Kontakte, Artikel, Belege und Ausgaben werden mit Belegnummern und Datum übernommen
+- **Datenschutz**: alle Daten bleiben auf Ihrem Rechner oder Ihrem eigenen Datenbankserver
+
+Ausführliche deutsche Beschreibung: [README auf Deutsch](docs/README.de.md) · [Hinweise und Neuerungen](docs/Hinweise.md) · **[Webseite](https://anti43.github.io/openyabs/)** (Sprache oben rechts auf DE umschalten)
+
 ## Installation
 
 YaBS runs on **Windows, Linux and macOS**.
