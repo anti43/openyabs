@@ -234,7 +234,7 @@ public class ListView extends javax.swing.JPanel {
 
             XMLWriter xmlw = new XMLWriter();
             xmlw.newDoc(true);
-            String name = Messages.ACTION_EXPORT.toString() + "-" + DateConverter.getTodayDefDate();
+            String name = Messages.ACTION_EXPORT.toString() + "-" + DateConverter.getTodayFileDate();
             data = jList1.getModel();
             ArrayList<Context> exportable = Context.getImportableContexts();
             for (int i = 0; i < exportable.size(); i++) {
