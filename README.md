@@ -4,7 +4,7 @@
 
 Free and open source (GPL v3) · Windows, Linux and macOS · No cloud, no account, no subscription
 
-**[⬇ Download the latest version](https://github.com/andreasweberd/openyabs/releases)** · [Deutsche Hinweise](docs/Hinweise.md) · [E-Rechnung (XRechnung / ZUGFeRD)](docs/E-Rechnung.md)
+**[⬇ Download the latest version](https://github.com/anti43/openyabs/releases)** · [Deutsche Hinweise](docs/Hinweise.md) · [E-Rechnung (XRechnung / ZUGFeRD)](docs/E-Rechnung.md)
 
 ![An order in YaBS: customer, document data and dates in cards, the positions with net, VAT and total below](docs/images/invoice.png)
 
@@ -236,7 +236,7 @@ YaBS runs on **Windows, Linux and macOS**.
 
 **ZIP for all systems** (needs **Java 21** or newer, e.g. from [adoptium.net](https://adoptium.net)): unpack and start `yabs.bat` (Windows) or `yabs.sh` (Linux, macOS) – or `java -jar openyabs.jar`.
 
-All downloads: **[Releases](https://github.com/andreasweberd/openyabs/releases)** – `latest-master` is the current development build.
+All downloads: **[Releases](https://github.com/anti43/openyabs/releases)** – `latest-master` is the current development build.
 
 On the first start one window asks where your data should be stored: **on this computer** (one click) or on a **database server** (MySQL / MariaDB, Derby). The setup runs in the background; languages, countries and an invoice template are set up automatically, German systems start in German, and you are signed in as `admin` (password `password` – change it under *Settings › Users*). Your company data goes to *Settings › Company Info*. No account, no internet connection needed.
 
