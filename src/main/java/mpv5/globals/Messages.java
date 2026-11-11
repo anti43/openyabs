@@ -481,6 +481,8 @@ public enum Messages {
     LOCALE_EXAMPLE_NUMBER("Number"),
     LOCALE_EXAMPLE_AMOUNT("Amount"),
     LOCALE_EXAMPLE_DATE("Date"),
+    FONTS_RESTART("Restart YaBS after saving: Apply changes the open windows right away, but all windows and dialogs use the font only after a restart. The font is saved for this computer."),
+    FONTS_SAVED_RESTART("Font saved for this computer. Please restart YaBS so that all windows use it."),
     QR_CAPTION("Pay with code"),
     FILENAME_INSERT("Insert at cursor:"),
     FILENAME_CHOOSE("Choose a variable or / ..."),

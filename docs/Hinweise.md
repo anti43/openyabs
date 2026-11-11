@@ -114,6 +114,7 @@ Ausführlich, mit Rechtslage und Checkliste: **[docs/E-Rechnung.md](E-Rechnung.m
 - **Benutzereinstellungen, *Neue Positionen*** (früher „Rechnung Standardwerte“): Einheit, Anzahl und MwSt.-Satz jeder neuen Position; darunter, aus welchen Artikelfeldern der Text einer Position entsteht (Kästchen wirken sofort, mit Vorschau). Das unbenutzte Feld „Ship Tax“ ist entfernt.
 - **Positionen im Beleg:** Die Tabelle nutzt die ganze Breite, Spalten sind so breit wie Überschrift und Inhalt, die Spaltennamen stimmen (Anzahl, Artikel, Einheit, Text, Rabatt %, Nettopreis, MwSt %, Gesamt). Statt der Schaltfläche „A“ gibt es per Rechtsklick: *Artikel wählen…* (bzw. *Auftrag einfügen…*), Zeile darüber/darunter einfügen, Duplizieren, nach oben/unten, Kopieren, Einfügen, Zeile leeren, Entfernen.
 - **Regional und Sprache, *Währung, Zahlen- und Datumsformat*:** Zur Auswahl stehen nur Formate mit Land (das Land bestimmt die Währung); ein Beispiel zeigt Zahl, Betrag und Datum. Das Datumsformat gilt überall, auch für „Zahlbar bis …“ in E-Rechnungen. Neue Benutzer übernehmen das aktuelle Format (früher das ungültige `en_UK`, das ohne Währungssymbol anzeigte).
+- **Standardschriftart** (*Systemsteuerung › Standardschriftart*): *Anwenden* ändert die offenen Fenster sofort; alle Fenster und Dialoge nutzen die Schrift erst **nach einem Neustart**. Darauf weist die Karte hin, und nach *Speichern* erscheint ein Hinweis. Die Schrift gilt für diesen Computer, die Größe ändert *Ansicht › Zoom*.
 - **Umstieg von Fakturama 2:** *Datei › Import › Fakturama 2* – siehe [README](README.de.md#import-export-und-umstieg-von-anderer-software).
 
 ### Settings and usage (EN)
@@ -126,4 +127,5 @@ Ausführlich, mit Rechtslage und Checkliste: **[docs/E-Rechnung.md](E-Rechnung.m
 - **SEPA direct debit** replaces DTAUS (journal, right click); requirements: [SEPA-Lastschrift](SEPA-Lastschrift.md). The user properties' *Account settings* are gone.
 - **User properties:** *Document dates*, *Export* and *New positions* explain every option; unused options removed.
 - **Positions:** full-width table, correct column names, right-click menu instead of the "A" button.
+- **Default font:** *Apply* changes the open windows; all windows use it only after a restart – the card says so, and a message appears after *Save*.
 - **Regional settings:** only formats with a country (currency), an example of number, amount and date; dates follow the format everywhere.

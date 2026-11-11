@@ -198,6 +198,7 @@ public class ControlPanel_Fonts extends javax.swing.JPanel implements ControlApp
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         setSettings();
         LocalSettings.save();
+        Popup.notice(Messages.FONTS_SAVED_RESTART);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jFontChooser1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jFontChooser1MouseClicked
@@ -249,6 +250,16 @@ public class ControlPanel_Fonts extends javax.swing.JPanel implements ControlApp
     }
 
 
+    /**
+     * The font takes full effect only after a restart: said in the card
+     */
+    private static javax.swing.JComponent restartNote() {
+        javax.swing.JLabel l = new javax.swing.JLabel("<html><b>" + Messages.FONTS_RESTART + "</b></html>",
+                new javax.swing.ImageIcon(ControlPanel_Fonts.class.getResource("/images/16/info.png")), javax.swing.SwingConstants.LEFT);
+        l.setForeground(mpv5.ui.modern.ModernTheme.foreground());
+        return l;
+    }
+
     public Component getAndRemoveActionPanel() {
         return actions;
     }
@@ -270,6 +281,7 @@ public class ControlPanel_Fonts extends javax.swing.JPanel implements ControlApp
         mpv5.ui.modern.Card card = new mpv5.ui.modern.Card(b.getString("ControlPanel_Fonts.jPanel1.border.title"))
                 .row(mpv5.ui.modern.Card.field(jLabel2.getText(), mpv5.ui.modern.ModernTheme.roomy(font)))
                 .addFull(mpv5.ui.modern.Applets.hint(jLabel1.getText() + " \u00b7 " + Messages.FONTS_HINT))
+                .addFull(restartNote())
                 .addFull(jFontChooser1, 1);
         add(mpv5.ui.modern.Applets.page(null, 300, card), java.awt.BorderLayout.CENTER);
         mpv5.ui.modern.PrimaryButton save = new mpv5.ui.modern.PrimaryButton(jButton1.getText(), "/images/16/filesave.png");
