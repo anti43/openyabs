@@ -476,6 +476,7 @@ public enum Messages {
     POS_INFO("Every new position of a document starts with this unit, quantity and tax rate."),
     POS_TEXT_HEAD("Text of a position from a product"),
     POS_TEXT_INFO("When you choose a product for a position, its text is made of these product fields. Products are also listed like this when you search them in a position."),
+    JOURNAL_EXPORT_CONFIRM("Save %d %s files - as from the document, with the folders and names of the file name defaults (user properties) - to:"),
     QR_CAPTION("Pay with code"),
     FILENAME_INSERT("Insert at cursor:"),
     FILENAME_CHOOSE("Choose a variable or / ..."),
