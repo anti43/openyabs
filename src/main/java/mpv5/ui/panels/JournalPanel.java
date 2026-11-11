@@ -1579,8 +1579,15 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             Popup.notice(Messages.SEPA_DD_NOTHING);
             return;
         }
+        //check first: without the company's data or a debit, no file and no save dialog
+        mpv5.utils.export.SepaDirectDebit sepa = new mpv5.utils.export.SepaDirectDebit(map);
+        String problem = sepa.check();
+        if (problem != null) {
+            Popup.notice(problem);
+            return;
+        }
         DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY, "sepa-lastschrift-" + java.time.LocalDate.now() + ".xml");
-        new Job(new mpv5.utils.export.SepaDirectDebit(map), d, Messages.SEPA_DD_CREATE + " " + Messages.SAVED).execute();
+        new Job(sepa, d).execute();
     }
 
     private void email() {

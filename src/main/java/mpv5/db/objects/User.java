@@ -333,6 +333,8 @@ public class User extends DatabaseObject {
                     save();
                     DatabaseObject.cacheObjects();//re-cache for user
                     YabsViewProxy.instance().addMessage(Messages.CACHED_OBJECTS);
+                    //no invoice template (e.g. an existing database or a new user): the demo template
+                    mpv5.handler.FirstStartSetup.ensureInvoiceTemplate(t);
                     try {
                         layoutinfo.putAll(ValueProperty.getProperty(t, "layoutinfo").getValue(new HashMap<String, String>()));
                     } catch (Exception ex) {

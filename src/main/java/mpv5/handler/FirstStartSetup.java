@@ -25,6 +25,8 @@ import mpv5.Main;
 import mpv5.db.common.Context;
 import mpv5.db.common.QueryData;
 import mpv5.db.common.QueryHandler;
+import mpv5.db.common.ReturnValue;
+import mpv5.usermanagement.MPSecurityManager;
 import mpv5.db.objects.Template;
 import mpv5.db.objects.User;
 import mpv5.globals.Constants;
@@ -79,6 +81,43 @@ public final class FirstStartSetup {
         return importTemplate(owner, "/extra/DE-" + Constants.EXTRA_FILES_VERSION + ".odt", "template-de",
                 "1,2,4,5,7,9", Constants.TYPE_INVOICE, wait) != null;
     }
+
+    /**
+     * Without an invoice template the user cannot print, create PDFs or send
+     * invoices. At login: if no invoice template is assigned to the user, the
+     * bundled demo template is imported and assigned to "All Groups" - once per
+     * user, so a template deleted on purpose does not come back. Covers
+     * databases not created by the first start (an existing folder, a server)
+     * and new users.
+     *
+     * @param user the user who logs in
+     */
+    public static void ensureInvoiceTemplate(User user) {
+        try {
+            if (user == null || user.__getIDS() <= 0
+                    || user.getProperties().getProperty(DEMO_TEMPLATE, "imported")) {
+                return;
+            }
+            ReturnValue rv = QueryHandler.getConnection().freeQuery(
+                    "SELECT templatesids FROM templatestousers LEFT OUTER JOIN templates AS templates0 ON "
+                    + "templates0.ids = templatestousers.templatesids WHERE templatestousers.usersids = "
+                    + user.__getIDS() + " AND templates0.mimetype = '" + Constants.TYPE_INVOICE + "'",
+                    MPSecurityManager.VIEW, null);
+            if (!rv.hasData()) {
+                Log.Debug(FirstStartSetup.class, "No invoice template for " + user + ": importing the demo template");
+                if (!importTemplate(user, 60000)) {
+                    //not imported (in time): try again at the next login
+                    return;
+                }
+            }
+            user.getProperties().changeProperty(DEMO_TEMPLATE, "imported", true);
+            user.saveProperties();
+        } catch (Exception e) {
+            Log.Debug(FirstStartSetup.class, e);
+        }
+    }
+
+    private static final String DEMO_TEMPLATE = "org.openyabs.templateproperty";
 
     /**
      * Imports a bundled template and assigns it to the user
