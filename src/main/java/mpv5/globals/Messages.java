@@ -443,7 +443,7 @@ public enum Messages {
     FILENAME_CHOOSE("Choose a variable or / ..."),
     FILENAME_PREVIEW("Preview"),
     FILENAME_NO_FORMAT("no format - you choose the folder and file name each time"),
-    FILENAME_WIKI("All variables and examples (documentation)"),
+    FILENAME_WIKI("All variables and examples (wiki)"),
     FILENAME_INFO("Where exported files (e.g. PDF) are saved and how they are named.\n\nEverything before the last / is the folder, below the base directory of the local options (or your home folder); folders are created when needed. The last part is the file name; the extension is added.\n\nText and variables can be combined freely, e.g. [YEAR]/[type]/[cname]_[contact.cname]"),
     MAIL_NOT_SENT("Mail not sent"),
     MAIL_BCC_LABEL("Bcc (all mails)"),
