@@ -1,7 +1,5 @@
 package mpv5.utils.export;
 
-import dtaus.DTAus;
-import dtaus.Konto;
 import mpv5.YabsViewProxy;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;

@@ -937,14 +937,8 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
             mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("smtp.host.usessl", Boolean.toString(smtpssl.isSelected()));
             mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("smtp.host.usesmpts", Boolean.toString(smtps.isSelected()));
 
-            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("dtabankaccount", dtabankaccount.getText());
-            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("dtabankid", dtabankid.getText());
-            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("dtabankname", dtabankname.getText());
-            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("dtabankcountry", dtabankcountry.getText());
-            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("dtausage0", dtausage0.getText());
 
             mpv5.db.objects.User.getCurrentUser().defineMailConfig();
-            mpv5.db.objects.User.getCurrentUser().defineDTAConfig();
         } catch (Exception e) {
             Log.Debug(e);
             Notificator.raiseNotification(e);
@@ -1122,6 +1116,8 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         setBorder(null);
         setLayout(new java.awt.BorderLayout());
         setOpaque(false);
+        //"Account settings" were for the DTAUS export, replaced by SEPA direct debits with the company info's account
+        jPanel10.getParent().remove(jPanel10);
         add(mpv5.ui.modern.Applets.page(null, 600, mpv5.ui.modern.Applets.cardsOf(jPanel1)), java.awt.BorderLayout.CENTER);
         actions = mpv5.ui.modern.Applets.actionBar(new javax.swing.JComponent[]{}, mpv5.ui.modern.Applets.buttonsOf(jPanel6, b.getString("ControlPanel_Userproperties.jButton1.text")));
     }
@@ -1141,11 +1137,6 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         companiesovernames.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "companiesovernames"));
         hidetaxcolumn.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hidetaxcolumn"));
         pasten.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "pasten"));
-        dtabankaccount.setText(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("dtabankaccount"));
-        dtabankid.setText(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("dtabankid"));
-        dtabankname.setText(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("dtabankname"));
-        dtabankcountry.setText(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("dtabankcountry"));
-        dtausage0.setText(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("dtausage0"));
         hidediscountcolumn.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hidediscountcolumn"));
 
         //Settings for Item Date Defaults

@@ -40,7 +40,6 @@ derbynet.jar;Apache Derby database (network server);Apache License Version 2.0;T
 derbyshared.jar;Apache Derby database (shared);Apache License Version 2.0;The Apache Software Foundation
 derbytools.jar;Apache Derby database (tools);Apache License Version 2.0;The Apache Software Foundation
 dom4j-2.2.0.jar;dom4j XML library;BSD style (dom4j license);dom4j project
-DTAus.jar;DTAUS direct debit files;see project;DTAus project
 dtdparser121.jar;A Java DTD Parser;GNU Lesser General Public License;Wutka Consulting, Inc.
 en16931-cii2ubl-2.3.1.jar;EN 16931 CII to UBL converter (XRechnung);Apache License Version 2.0;Philip Helger
 feature-reporting-jakarta-1.30.2.jar;veraPDF PDF/A validation (feature-reporting-jakarta);GNU General Public License Version 3 / Mozilla Public License 2.0;veraPDF Consortium
@@ -49,7 +48,7 @@ fontbox-3.0.8.jar;Apache FontBox (fonts for PDFBox);Apache License Version 2.0;T
 fop-core-2.11.jar;Apache FOP (core);Apache License Version 2.0;The Apache Software Foundation
 fop-events-2.11.jar;Apache FOP (events);Apache License Version 2.0;The Apache Software Foundation
 fop-util-2.11.jar;Apache FOP (util);Apache License Version 2.0;The Apache Software Foundation
-frame4j.jar;Frame4J utilities (used by DTAus);see project;Albrecht Weinert
+frame4j.jar;Frame4J utilities;see project;Albrecht Weinert
 freemarker-2.3.20.jar;FreeMarker template engine;BSD style (FreeMarker license);FreeMarker project
 google-api-translate-java-0.92.jar;Google Translate client (translation tool);GNU Lesser General Public License;Richard Midwinter
 groovy-all-1.8.4.jar;Groovy scripting language (scripts, console);Apache License Version 2.0;Groovy project

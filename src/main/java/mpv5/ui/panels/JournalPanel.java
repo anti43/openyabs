@@ -72,7 +72,6 @@ import mpv5.ui.popups.TablePopUp;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.date.vTimeframe;
-import mpv5.utils.export.DTAFile;
 import mpv5.utils.export.EmailBatch;
 import mpv5.utils.export.Export;
 import mpv5.utils.export.ODTFile2;
@@ -1352,6 +1351,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                 new String[]{Messages.DELETE.toString(),
                     null, Messages.RELOAD.getValue(),
                     null, Messages.EMAIL_SEND.getValue(),
+                    Messages.SEPA_DD_CREATE.getValue(),
                     Messages.PDF_CREATE.getValue(),
                     Messages.ODT_CREATE.getValue(),
                     null, Messages.SET_STATUS_PAID.getValue(),},
@@ -1388,6 +1388,13 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     email();
+                }
+            },
+                    new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    sepa();
                 }
             },
                     new ActionListener() {
@@ -1550,6 +1557,30 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             }
         };
         new Thread(runnable).start();
+    }
+
+    /**
+     * SEPA direct debit file for the selected unpaid invoices
+     */
+    private void sepa() {
+        if (jTable1.getSelectedRowCount() < 1) {
+            Popup.notice(Messages.SELECT_AN_INVOICE);
+            return;
+        }
+        HashMap<String, Object> map = new HashMap<String, Object>();
+        for (int row : jTable1.getSelectedRows()) {
+            DatabaseObject obj = (DatabaseObject) jTable1.getModel().getValueAt(jTable1.convertRowIndexToModel(row), 0);
+            if (obj instanceof Item && obj.getContext().equals(contextInUse)
+                    && ((Item) obj).__getIntstatus() != Item.STATUS_PAID) {
+                map.put(((Item) obj).__getCnumber(), obj);
+            }
+        }
+        if (map.isEmpty()) {
+            Popup.notice(Messages.SEPA_DD_NOTHING);
+            return;
+        }
+        DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY, "sepa-lastschrift-" + java.time.LocalDate.now() + ".xml");
+        new Job(new mpv5.utils.export.SepaDirectDebit(map), d, Messages.SEPA_DD_CREATE + " " + Messages.SAVED).execute();
     }
 
     private void email() {

@@ -45,7 +45,6 @@ import mpv5.mail.MailConfiguration;
 import mpv5.pluginhandling.YabsPluginLoader;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Fonts;
-import dtaus.Konto;
 import javax.swing.UIManager;
 import mpv5.YabsViewProxy;
 import mpv5.db.common.QueryCriteria2;
@@ -152,7 +151,6 @@ public class User extends DatabaseObject {
      */
     public static PropertyStore PROPERTIES_OVERRIDE = new PropertyStore();
     private MailConfiguration mailConfiguration;
-    private DTAConfig dtaconf;
 
     /**
      * Caches all available usernames and IDs, no logins performed
@@ -316,7 +314,6 @@ public class User extends DatabaseObject {
                     Main.setLaF(__getLaf());
                 }
                 defineMailConfig();
-                defineDTAConfig();
                 //German system or locale: German language (once, before the bundle is loaded)
                 LanguageManager.importGermanIfGerman(this);
                 Log.Debug(this, "LanguageManager.getBundle() for: " + this);
@@ -746,36 +743,6 @@ public class User extends DatabaseObject {
         this.mailConfiguration = mailConfiguration;
     }
 
-    /**
-     * The configured banking account
-     * @return
-     */
-    public Konto getDTAAccount() {
-        return dtaconf.getBankAccount();
-    }
-
-    /**
-     * The configured banking account
-     * @return
-     */
-    public List<String> getDTAUsages() {
-        return dtaconf.getUsages();
-    }
-
-    public void defineDTAConfig() {
-        try {
-            Konto acc = new Konto(getProperties().getProperty("dtabankid"),
-                    getProperties().getProperty("dtabankaccount"),
-                    getProperties().getProperty("dtabankname"));
-            acc.name = __getFullname();
-            dtaconf = new DTAConfig();
-            dtaconf.setBankAccount(acc);
-            dtaconf.getUsages().add(getProperties().getProperty("dtausage0"));
-        } catch (Exception e) {
-            Log.Debug(this, "Unable to create DTA info");
-            dtaconf = null;
-        }
-    }
     private HashMap<String, String> layoutinfo = new HashMap<String, String>();
 
     /**
@@ -813,29 +780,3 @@ public class User extends DatabaseObject {
     }
 }
 
-class DTAConfig {
-
-    private Konto bankAccount;
-    private List<String> usages = new Vector<String>();
-
-    /**
-     * @return the bankAccount
-     */
-    public Konto getBankAccount() {
-        return bankAccount;
-    }
-
-    /**
-     * @param bankAccount the bankAccount to set
-     */
-    public void setBankAccount(Konto bankAccount) {
-        this.bankAccount = bankAccount;
-    }
-
-    /**
-     * @return the usages
-     */
-    public List<String> getUsages() {
-        return usages;
-    }
-}
