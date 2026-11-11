@@ -895,15 +895,6 @@ public class Main implements Runnable {
 //            }
         }
 
-        /* Runnable runnable3 = new Runnable() {
-
-            @Override
-            public void run() {
-                WSIManager.instanceOf().start();
-            }
-        };
-
-        new Thread(runnable3).start();*/
         if (!HEADLESS) {
             try {
                 (new Scheduler()).start();
