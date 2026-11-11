@@ -99,6 +99,54 @@ public class Fakturama2Importer {
         this.importVouchers = v;
     }
 
+    /**
+     * The YaBS VAT rate for products, positions and expenses whose VAT rate
+     * cannot be determined from Fakturama (no or an unknown VAT entry)
+     *
+     * @param taxids ids of a YaBS tax, null: 0 %
+     */
+    public void setDefaultTax(Integer taxids) {
+        this.defaultTaxId = taxids;
+        try {
+            this.defaultPercent = taxids == null ? BigDecimal.ZERO : Tax.getTaxValue(taxids);
+        } catch (Exception e) {
+            this.defaultPercent = BigDecimal.ZERO;
+        }
+    }
+
+    private Integer defaultTaxId;
+    private BigDecimal defaultPercent = BigDecimal.ZERO;
+
+    /**
+     * @return the VAT rate (percent) of a Fakturama VAT id; the default rate
+     * if it cannot be determined
+     */
+    private BigDecimal percentOf(long vatId) {
+        BigDecimal p = taxPercent.get(vatId);
+        if (p == null) {
+            result.defaultTaxUsed++;
+            return defaultPercent;
+        }
+        return p;
+    }
+
+    /**
+     * The rate of a VAT entry: its value (0.19 or 19), else a number in its
+     * name ("MwSt. 19 %"); null if neither
+     */
+    static BigDecimal rateOf(BigDecimal value, String name) {
+        if (value != null) {
+            return (value.abs().compareTo(BigDecimal.ONE) < 0 ? value.movePointRight(2) : value).stripTrailingZeros();
+        }
+        if (name != null) {
+            java.util.regex.Matcher m = java.util.regex.Pattern.compile("(\\d+(?:[.,]\\d+)?)\\s*%?").matcher(name);
+            if (m.find()) {
+                return new BigDecimal(m.group(1).replace(',', '.')).stripTrailingZeros();
+            }
+        }
+        return null;
+    }
+
     public void setImportTax(boolean v) {
         this.importTax = v;
     }
@@ -122,6 +170,8 @@ public class Fakturama2Importer {
         public int productsLinked = 0;
         public int inventoryProducts = 0;
         public int deletedSkipped = 0;
+        public int taxesExisting = 0;
+        public int defaultTaxUsed = 0;
         public List<String> warnings = new ArrayList<>();
 
         /**
@@ -129,7 +179,14 @@ public class Fakturama2Importer {
          */
         public String getSummary() {
             StringBuilder b = new StringBuilder();
-            b.append(Messages.FKT_RESULT_TAXES).append(": ").append(taxesImported).append('\n');
+            b.append(Messages.FKT_RESULT_TAXES).append(": ").append(taxesImported);
+            if (taxesExisting > 0) {
+                b.append("  \u00b7  ").append(Messages.FKT_RESULT_TAXES_EXISTING).append(": ").append(taxesExisting);
+            }
+            b.append('\n');
+            if (defaultTaxUsed > 0) {
+                b.append(Messages.FKT_RESULT_DEFAULT_TAX).append(": ").append(defaultTaxUsed).append('\n');
+            }
             b.append(Messages.FKT_RESULT_GROUPS).append(": ").append(groupsImported).append('\n');
             b.append(Messages.FKT_RESULT_CONTACTS).append(": ").append(contactsImported).append('\n');
             b.append(Messages.FKT_RESULT_PRODUCTS).append(": ").append(productsImported).append('\n');
@@ -572,13 +629,15 @@ public class Fakturama2Importer {
         int k = 0;
         for (Row r : vats) {
             tick(Messages.FKT_RESULT_TAXES.toString(), ++k, vats.size());
-            BigDecimal v = r.d("TAXVALUE");
-            if (v == null) {
+            //Fakturama: 0.19 for 19 %; without a value: the rate in the name ("MwSt. 19 %")
+            BigDecimal percent = rateOf(r.d("TAXVALUE"), r.s("NAME"));
+            if (percent == null) {
+                //unknown: products and positions with it get the default rate
+                result.warnings.add("VAT " + r.s("NAME", String.valueOf(r.l("ID"))) + ": " + Messages.FKT_TAX_UNKNOWN);
                 continue;
             }
-            //Fakturama: 0.19 for 19 %
-            BigDecimal percent = (v.abs().compareTo(BigDecimal.ONE) <= 0 ? v.movePointRight(2) : v).stripTrailingZeros();
             taxPercent.put(r.l("ID"), percent);
+            //a rate YaBS has already (same value, else same name) is used, not imported again
             Tax match = null;
             for (Tax t : known) {
                 if (t.__getTaxvalue() != null && t.__getTaxvalue().compareTo(percent) == 0) {
@@ -586,8 +645,15 @@ public class Fakturama2Importer {
                     break;
                 }
             }
+            for (Tax t : known) {
+                if (match == null && r.s("NAME") != null && r.s("NAME").trim().equalsIgnoreCase(String.valueOf(t.__getCname()).trim())) {
+                    match = t;
+                    taxPercent.put(r.l("ID"), t.__getTaxvalue());
+                }
+            }
             if (match != null) {
                 taxIds.put(r.l("ID"), match.__getIDS());
+                result.taxesExisting++;
                 continue;
             }
             if (!importTax || r.deleted()) {
@@ -814,7 +880,12 @@ public class Fakturama2Importer {
                 p.setEan(cut(r.s("GTIN"), 250));
                 p.setReference(cut(r.s("SUPPLIERITEMNUMBER"), 250));
                 Integer tax = taxIds.get(r.l("FK_VAT"));
-                p.setTaxids(tax != null ? tax : 1);
+                if (tax == null) {
+                    //VAT not determined: the default rate of the import
+                    result.defaultTaxUsed++;
+                    tax = defaultTaxId != null ? defaultTaxId : 1;
+                }
+                p.setTaxids(tax);
                 Integer group = groupIds.get(r.l("FK_CATEGORY"));
                 p.setProductgroupsids(group != null ? group : 1);
                 p.setGroupsids(1);
@@ -1110,7 +1181,7 @@ public class Fakturama2Importer {
                 BigDecimal shipping = d.d("SHIPPINGVALUE");
                 if (shipping != null && shipping.signum() != 0) {
                     Row sh = shippings.get(d.l("FK_SHIPPING"));
-                    BigDecimal rate = sh != null && taxPercent.containsKey(sh.l("FK_VAT")) ? taxPercent.get(sh.l("FK_VAT")) : BigDecimal.ZERO;
+                    BigDecimal rate = sh != null ? percentOf(sh.l("FK_VAT")) : defaultPercent;
                     BigDecimal net = shipping.divide(BigDecimal.ONE.add(rate.movePointLeft(2)), 5, RoundingMode.HALF_UP);
                     SubItem s = position(item, sh != null ? sh.s("NAME", Messages.FKT_SHIPPING.toString()) : Messages.FKT_SHIPPING.toString(),
                             BigDecimal.ONE, net, rate, null, pos++);
@@ -1133,7 +1204,7 @@ public class Fakturama2Importer {
     private void addPosition(Item item, Row i, int pos) {
         String name = i.s("NAME", i.s("ITEMNUMBER", ""));
         String description = i.s("DESCRIPTION");
-        BigDecimal rate = taxPercent.getOrDefault(i.l("FK_VAT"), BigDecimal.ZERO);
+        BigDecimal rate = i.b("NOVAT") ? BigDecimal.ZERO : percentOf(i.l("FK_VAT"));
         if (i.b("NOVAT")) {
             rate = BigDecimal.ZERO;
         }
@@ -1244,7 +1315,7 @@ public class Fakturama2Importer {
                 BigDecimal rate = BigDecimal.ZERO;
                 StringBuilder text = new StringBuilder();
                 for (Row i : items.getOrDefault(v.l("ID"), new ArrayList<>())) {
-                    BigDecimal r = taxPercent.getOrDefault(i.l("FK_VAT"), BigDecimal.ZERO);
+                    BigDecimal r = percentOf(i.l("FK_VAT"));
                     BigDecimal price = nz(i.d("PRICE"));
                     net = net.add(price);
                     rate = r;
