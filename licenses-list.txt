@@ -50,7 +50,6 @@ fop-events-2.11.jar;Apache FOP (events);Apache License Version 2.0;The Apache So
 fop-util-2.11.jar;Apache FOP (util);Apache License Version 2.0;The Apache Software Foundation
 frame4j.jar;Frame4J utilities;see project;Albrecht Weinert
 freemarker-2.3.20.jar;FreeMarker template engine;BSD style (FreeMarker license);FreeMarker project
-google-api-translate-java-0.92.jar;Google Translate client (translation tool);GNU Lesser General Public License;Richard Midwinter
 groovy-all-1.8.4.jar;Groovy scripting language (scripts, console);Apache License Version 2.0;Groovy project
 httpcore-4.0.1.jar;Apache HttpCore;Apache License Version 2.0;The Apache Software Foundation
 httpcore-nio-4.0.1.jar;Apache HttpCore;Apache License Version 2.0;The Apache Software Foundation
@@ -76,7 +75,6 @@ library-2.26.0.jar;Mustang: ZUGFeRD / Factur-X / XRechnung library;Apache Licens
 looks-2.0.1.jar;JGoodies Looks;BSD License;JGoodies
 metadata-fixer-jakarta-1.30.2.jar;veraPDF PDF/A validation (metadata-fixer-jakarta);GNU General Public License Version 3 / Mozilla Public License 2.0;veraPDF Consortium
 microba-0.4.4.2.jar;Microba Calendar Components;Microba license;Michael Baranov
-microsoft-translator-java-api-0.6.1-jar-with-dependencies.jar;Microsoft Translator client (translation tool);see project;Jonathan Griggs
 MPCalendar.jar;YaBS calendar component;GNU General Public License Version 3;https://github.com/andreasweberd/openyabs/
 mysql-connector-java-5.1.23-bin.jar;MySQL JDBC driver;GNU General Public License Version 2 with FOSS exception;Oracle
 noa-libre.jar;NOA libre: OpenOffice / LibreOffice access;GNU Lesser General Public License;IOn AG / noa-libre project
