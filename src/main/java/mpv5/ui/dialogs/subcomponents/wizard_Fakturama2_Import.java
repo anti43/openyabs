@@ -184,6 +184,11 @@ public class wizard_Fakturama2_Import extends JPanel implements Wizardable {
             try {
                 Fakturama2Importer.ImportResult r = mpv5.ui.dialogs.Popup.silently(() -> importer.importFrom(f,
                         (msg, pct) -> SwingUtilities.invokeLater(() -> {
+                            if (pct < 0) {
+                                //a line for the log (e.g. what was found)
+                                log.append(msg + "\n");
+                                return;
+                            }
                             progress.setValue(pct);
                             progress.setString(msg);
                         })));
