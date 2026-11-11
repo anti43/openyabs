@@ -6,6 +6,8 @@ Free and open source (GPL v3) · Windows, Linux and macOS · No cloud, no accoun
 
 **[⬇ Download the latest version](https://github.com/anti43/openyabs/releases)** · [Deutsche Hinweise](docs/Hinweise.md) · [E-Rechnung (XRechnung / ZUGFeRD)](docs/E-Rechnung.md)
 
+> **Switching from Fakturama 2?** Bring your data along in a few clicks: *File › Import › Fakturama 2*, choose Fakturama's `Database.script`, done. Contacts, products, invoices and all other documents, expenses and tax rates come along with their numbers and dates – Fakturama itself stays untouched. [More](#import-export-and-moving-from-other-software)
+
 ![An order in YaBS: customer, document data and dates in cards, the positions with net, VAT and total below](docs/images/invoice.png)
 
 ---
@@ -73,7 +75,7 @@ This is what sets YaBS apart from the many online invoicing services:
 | Planning | Calendar, due date overview, recurring invoices, dashboard with open amounts |
 | Working | Modern card layout, tabs, back/forward, favourites, search, keyboard shortcuts, trash bin, undo of unsaved changes |
 | Teams | Several users, groups, rights, record locking, own settings per user |
-| Data | Local Derby database or MySQL server, CSV / XML / vCard / HTML import and export, migration tools |
+| Data | Local Derby database or MySQL server, CSV / XML / vCard / HTML import and export, one-click import from Fakturama 2, migration tools |
 | Extend | Groovy scripts and console, plugins, SQL query window, web shop interface |
 
 ## Customers, suppliers and manufacturers
@@ -211,7 +213,8 @@ YaBS can serve a **cash register as a web page** to a touch screen device at the
 
 - **Import** contacts and products from CSV, vCard and XML.
 - **Export** contacts, documents and lists to CSV, XML, vCard, HTML and PDF.
-- **Migration tools**: from **Fakturama 2** (*File › Import › Fakturama 2*: choose `Database.script` of your Fakturama workspace; tax rates, product categories, contacts (customers, suppliers, manufacturers) with address and bank account, products with their pictures, stock (managed in the inventory) and block prices, invoices/offers/orders/delivery notes/credit notes with positions and shipping, and expense vouchers are taken over with their numbers and dates. Fakturama's files are not changed, and records already imported are skipped, so the import can be repeated; it counts the records first and shows its progress with the time left), from older YaBS versions and MP 4.5, and from the local Derby database to a MySQL server.
+- **Easy switch from Fakturama 2** (*File › Import › Fakturama 2*: choose `Database.script` of your Fakturama workspace; tax rates, product categories, contacts (customers, suppliers, manufacturers) with address and bank account, products with their pictures, stock (managed in the inventory) and block prices, invoices/offers/orders/delivery notes/credit notes with positions and shipping, and expense vouchers are taken over with their numbers and dates. Fakturama's files are not changed, and records already imported are skipped, so the import can be repeated; it counts the records first and shows its progress with the time left).
+- **Migration tools** from older YaBS versions and MP 4.5, and from the local Derby database to a MySQL server.
 - **Web shop interface** to exchange contacts and orders with a shop.
 
 ## For power users: scripts, plugins and SQL

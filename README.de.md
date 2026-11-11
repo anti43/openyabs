@@ -4,7 +4,9 @@
 
 Frei und Open Source (GPL v3) · Windows, Linux und macOS · Keine Cloud, kein Account, kein Abonnement
 
-**[⬇ Neueste Version herunterladen](https://github.com/andreasweberd/openyabs/releases)** · [Hinweise und Neuerungen](docs/Hinweise.md) · [E-Rechnung (XRechnung / ZUGFeRD)](docs/E-Rechnung.md)
+**[⬇ Neueste Version herunterladen](https://github.com/anti43/openyabs/releases)** · [Hinweise und Neuerungen](docs/Hinweise.md) · [E-Rechnung (XRechnung / ZUGFeRD)](docs/E-Rechnung.md)
+
+> **Umstieg von Fakturama 2?** Ihre Daten kommen mit wenigen Klicks mit: *Datei › Import › Fakturama 2*, die `Database.script` von Fakturama auswählen, fertig. Kontakte, Artikel, Rechnungen und alle anderen Belege, Ausgaben und Steuersätze werden mit Belegnummern und Datum übernommen – Fakturama selbst bleibt unverändert. [Mehr](#import-export-und-umstieg-von-anderer-software)
 
 ![Ein Auftrag in YaBS: Kunde, Belegdaten und Termine in Kacheln, darunter die Positionen mit Netto, MwSt. und Gesamt](docs/images/invoice.png)
 
@@ -73,7 +75,7 @@ Das unterscheidet YaBS von webbasierten Cloud-Rechnungsdiensten:
 | **Planung** | Kalender, Fälligkeitsradar, wiederkehrende Dauerrechnungen, Übersichts-Dashboard |
 | **Arbeiten** | Moderne Kachelansicht, Tabs, Vor/Zurück wie im Browser, Favoriten, Volltextsuche, Tastenkürzel, Papierkorb, Rückgängig |
 | **Teams** | Mehrere Benutzer, Mandanten/Gruppen, Datensatz-Sperren gegen gleichzeitiges Überschreiben, Rechteverwaltung |
-| **Daten** | Lokale Derby-Datenbank oder MySQL/MariaDB-Server, CSV/XML/vCard/HTML-Import & Export, Migrationsassistenten |
+| **Daten** | Lokale Derby-Datenbank oder MySQL/MariaDB-Server, CSV/XML/vCard/HTML-Import & Export, Ein-Klick-Import aus Fakturama 2, Migrationsassistenten |
 | **Erweiterungen** | Groovy-Skripte und Konsole, Live-Plugin-Manager, SQL-Abfragefenster, Shop-Schnittstelle |
 
 ## Kunden, Lieferanten und Hersteller
@@ -200,7 +202,7 @@ YaBS stellt auf Wunsch eine **Touch-Kasse als Weboberfläche** für Tablets, Tou
 
 - **Import**: Kontakte und Artikel aus CSV, vCard und XML importieren.
 - **Export**: Stammdaten, Belege und Auswertungen nach CSV, XML, vCard, HTML und PDF exportieren.
-- **Migrations-Assistent für Fakturama 2**: Unter *Datei › Import › Fakturama 2* die `Database.script`-Datei Ihres Fakturama-Arbeitsbereichs auswählen. Steuersätze, Warengruppen, Kontakte mit Bankdaten, Artikel mit Staffelpreisen, Belege und Ausgabenbelege werden mit Belegnummern und Datum übernommen.
+- **Einfacher Umstieg von Fakturama 2**: Unter *Datei › Import › Fakturama 2* die `Database.script`-Datei Ihres Fakturama-Arbeitsbereichs auswählen (Ordner `Database`, Fakturama vorher schließen). Übernommen werden Steuersätze, Warengruppen, Kontakte (Kunden, Lieferanten, Hersteller) mit Anschrift und Bankverbindung, Artikel mit Bildern, Lagerbestand und Staffelpreisen, Rechnungen, Angebote, Aufträge, Lieferscheine und Gutschriften mit Positionen und Versandkosten sowie Ausgabenbelege – jeweils mit Belegnummern und Datum. Fakturamas Dateien werden nicht verändert; bereits übernommene Datensätze werden übersprungen, der Import kann also wiederholt werden. Er zählt die Datensätze vorab und zeigt den Fortschritt mit der Restzeit an.
 - **Webshop-Schnittstelle**: Datenaustausch mit Online-Shops zur automatischen Auftragsübernahme.
 
 ## Für Power-User: Skripte, Plugins und SQL
@@ -225,7 +227,7 @@ YaBS läuft auf **Windows, Linux und macOS**.
 
 **Plattformunabhängiges ZIP** (benötigt **Java 21** oder neuer, z. B. von [adoptium.net](https://adoptium.net)): Entpacken und `yabs.bat` (Windows) oder `yabs.sh` (Linux/macOS) ausführen – oder `java -jar openyabs.jar`.
 
-Alle Downloads: **[Releases auf GitHub](https://github.com/andreasweberd/openyabs/releases)**
+Alle Downloads: **[Releases auf GitHub](https://github.com/anti43/openyabs/releases)**
 
 Beim ersten Programmstart fragt ein Assistent nach dem Speicherort: **Auf diesem Computer** (ein Klick, Standard) oder auf einem **Datenbankserver** (MySQL / MariaDB). Die Einrichtung erfolgt automatisch, deutsche Systeme starten auf Deutsch und Sie sind als `admin` (Passwort `password` – bitte unter *Einstellungen › Benutzer* ändern) angemeldet.
 
