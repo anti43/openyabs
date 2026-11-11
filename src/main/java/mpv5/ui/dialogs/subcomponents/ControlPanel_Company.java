@@ -66,6 +66,10 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
     private final LabeledTextField payterm = new LabeledTextField();
     private final LabeledTextField skontopercent = new LabeledTextField();
     private final LabeledTextField skontodays = new LabeledTextField();
+    /**
+     * SEPA creditor ID (for direct debits), stored as companyinfo.sepacreditorid
+     */
+    private final LabeledTextField creditorid = new LabeledTextField();
     private final JPanel actions;
 
     public ControlPanel_Company() {
@@ -84,6 +88,9 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
         fields.add(payterm);
         fields.add(skontopercent);
         fields.add(skontodays);
+        creditorid.set_Label(Messages.COMPANY_CREDITOR_ID.toString());
+        creditorid.setName(mpv5.utils.export.SepaDirectDebit.KEY_CREDITOR_ID);
+        fields.add(creditorid);
 
         Card company = new Card(Messages.COMPANY_CARD_COMPANY.toString())
                 .row(Applets.field(business))
@@ -105,6 +112,7 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
                 .row(Applets.field(account))
                 .row(Applets.field(banknumber, 1), Applets.field(bankname, 2))
                 .row(Applets.field(payterm), Applets.field(skontopercent), Applets.field(skontodays))
+                .row(Applets.field(creditorid))
                 .addFull(Applets.hint(Messages.COMPANY_BANK_HINT.toString()))
                 .addFull(accountsRow);
         Card tax = new Card(Messages.COMPANY_CARD_TAX.toString())
@@ -122,6 +130,8 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
                 Messages.COMPANY_TAXNUMBER_IS_VATID.toString());
         FieldCheck.attach(account, Iban::isValid, Messages.COMPANY_IBAN_TOOLTIP.toString(),
                 Messages.COMPANY_IBAN_INVALID_HINT.toString());
+        FieldCheck.attach(creditorid, mpv5.utils.export.SepaDirectDebit::isValidCreditorId,
+                Messages.COMPANY_CREDITOR_ID_TOOLTIP.toString(), Messages.COMPANY_CREDITOR_ID_INVALID.toString());
         FieldCheck.attach(banknumber, Iban::isValidBic, Messages.COMPANY_BIC_TOOLTIP.toString(),
                 Messages.COMPANY_BIC_INVALID_HINT.toString());
 

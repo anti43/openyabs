@@ -71,7 +71,7 @@ Das unterscheidet YaBS von webbasierten Cloud-Rechnungsdiensten:
 | **Artikel & Lager** | Artikel und Dienstleistungen, EK/VK-Preise, Margenkalkulation, Staffelpreise, Bildvorschau, EAN-Barcodes, Warengruppen und Stücklisten |
 | **Lagerbestand** | Bestandsführung, Meldeschwellen, Bestellungen an Lieferanten, integrierter Bestandsmanager |
 | **Finanzen** | Exakte Dezimalrechnung, separate MwSt.-Sätze, Rabatte, Skonto (Prozente & Tage), Fälligkeiten, Mahnspesen, Abschlagsverrechnung |
-| **Buchhaltung** | Journal mit Einnahmen, Ausgaben, Gewinn und MwSt., Kontenrahmen, Barauslagen, SEPA-Lastschriften (DTAUS/XML) |
+| **Buchhaltung** | Journal mit Einnahmen, Ausgaben, Gewinn und MwSt., Kontenrahmen, Barauslagen, SEPA-Lastschriftdatei (pain.008) |
 | **Planung** | Kalender, Fälligkeitsradar, wiederkehrende Dauerrechnungen, Übersichts-Dashboard |
 | **Arbeiten** | Moderne Kachelansicht, Tabs, Vor/Zurück wie im Browser, Favoriten, Volltextsuche, Tastenkürzel, Papierkorb, Rückgängig |
 | **Teams** | Mehrere Benutzer, Mandanten/Gruppen, Datensatz-Sperren gegen gleichzeitiges Überschreiben, Rechteverwaltung |
@@ -135,7 +135,7 @@ Eine kaufmännische Software darf nicht runden wie ein Taschenrechner. YaBS rech
 - **Skonto**: Skontosatz in Prozent und Skontofrist in Tagen je Kunde mit automatischer Berechnung des Abzugsbetrags auf der Rechnung.
 - **Überfällige Rechnungen im Blick**: Schnellübersicht auf dem Dashboard.
 - **Mehrstufiges Mahnwesen**: Zahlungserinnerung, 1. Mahnung, 2. Mahnung mit eigenen Fristen, Texten und Mahngebühren.
-- **SEPA-Lastschrift**: Export von DTAUS-/SEPA-Dateien zum automatischen Einzug von Rechnungsbeträgen bei Ihrer Bank.
+- **SEPA-Lastschrift**: Im Journal unbezahlte Rechnungen auswählen, Rechtsklick › *SEPA-Lastschriftdatei erstellen* – die XML-Datei (pain.008, Basislastschrift) laden Sie im Online-Banking hoch. Dafür in der *Firmeninformation* IBAN und Gläubiger-ID eintragen; die IBAN der Kunden steht im Kontakt. Mandatsreferenz ist die Kundennummer, Mandatsdatum das Anlagedatum des Kontakts. Alle Voraussetzungen: [SEPA-Lastschrift](SEPA-Lastschrift.md).
 
 ## Artikel, Dienstleistungen und Lager
 
