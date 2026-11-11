@@ -30,6 +30,7 @@ public class ControlPanel_ValueProps extends javax.swing.JPanel implements Contr
 
     public ControlPanel_ValueProps() {
         initComponents();
+        explain();
         modernLayout();
         setVisible(true);
         labeledCombobox1.setEditable(false);
@@ -344,7 +345,151 @@ public class ControlPanel_ValueProps extends javax.swing.JPanel implements Contr
         setLayout(new java.awt.BorderLayout());
         setOpaque(false);
         add(mpv5.ui.modern.Applets.page(null, 420, mpv5.ui.modern.Applets.cardsOf(jPanel3.getParent() == null ? jPanel3 : jScrollPane6)), java.awt.BorderLayout.CENTER);
-        actions = mpv5.ui.modern.Applets.actionBar(new javax.swing.JComponent[]{}, mpv5.ui.modern.Applets.buttonsOf(jPanel1, b.getString("ControlPanel_ValueProps.jButton4.text")));
+        javax.swing.JButton toolbar = new javax.swing.JButton(mpv5.globals.Messages.SCRIPTS_TOOLBAR.toString());
+        toolbar.setToolTipText(mpv5.globals.Messages.SCRIPTS_TOOLBAR_INFO.toString());
+        toolbar.addActionListener(e -> toolbarActions());
+        javax.swing.JButton docs = new javax.swing.JButton(mpv5.globals.Messages.SCRIPTS_DOCS.toString());
+        docs.addActionListener(e -> {
+            try {
+                java.awt.Desktop.getDesktop().browse(new java.net.URI(DOCS));
+            } catch (Exception ex) {
+                Popup.notice(DOCS);
+            }
+        });
+        actions = mpv5.ui.modern.Applets.actionBar(new javax.swing.JComponent[]{toolbar, docs}, mpv5.ui.modern.Applets.buttonsOf(jPanel1, b.getString("ControlPanel_ValueProps.jButton4.text")));
+    }
+
+    private static final String DOCS = "https://github.com/anti43/openyabs/blob/master/docs/Scripts.md";
+
+    /**
+     * What a name (key) does: hook, display name or template field
+     */
+    private static final String[][] USES = {
+        {"", null}, {"modifyOnSave", null}, {"executeAfterSave", null}, {"executeAfterCreate", null},
+        {"modifyOnDelete", null}, {"IntItemLabel", null}, {"IntRevenueLabel", null}};
+    private final javax.swing.JComboBox<String> use = new javax.swing.JComboBox<String>();
+    private final javax.swing.JLabel keyInfo = new javax.swing.JLabel(" ");
+
+    /**
+     * The explanations, the "use as" choice next to the name, and a line
+     * saying what the name does
+     */
+    private void explain() {
+        mpv5.globals.Messages[] labels = {mpv5.globals.Messages.SCRIPTS_USE_FIELD, mpv5.globals.Messages.SCRIPTS_USE_BEFORESAVE,
+            mpv5.globals.Messages.SCRIPTS_USE_AFTERSAVE, mpv5.globals.Messages.SCRIPTS_USE_AFTERCREATE,
+            mpv5.globals.Messages.SCRIPTS_USE_BEFOREDELETE, mpv5.globals.Messages.SCRIPTS_USE_ITEMLABEL,
+            mpv5.globals.Messages.SCRIPTS_USE_REVENUELABEL};
+        for (int i = 0; i < USES.length; i++) {
+            USES[i][1] = labels[i].toString();
+            use.addItem(USES[i][1]);
+        }
+        use.addActionListener(e -> {
+            int i = use.getSelectedIndex();
+            if (i > 0) {
+                labeledTextField1.setText(USES[i][0]);
+            } else if (isUse(labeledTextField1.getText())) {
+                labeledTextField1.setText("");
+            }
+            showKeyInfo();
+        });
+        labeledTextField1.getTextField().getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            public void insertUpdate(javax.swing.event.DocumentEvent e) {
+                showKeyInfo();
+            }
+
+            public void removeUpdate(javax.swing.event.DocumentEvent e) {
+                showKeyInfo();
+            }
+
+            public void changedUpdate(javax.swing.event.DocumentEvent e) {
+                showKeyInfo();
+            }
+        });
+        keyInfo.setForeground(mpv5.ui.modern.ModernTheme.muted());
+        //the name field had a fixed width of 100 px
+        labeledTextField1.getTextField().setPreferredSize(null);
+        labeledTextField1.getTextField().setColumns(18);
+
+        //name + "use as" + what it does, in place of the name field
+        javax.swing.JPanel row = new javax.swing.JPanel(new java.awt.BorderLayout(mpv5.ui.modern.ModernTheme.px(8), 0));
+        row.setOpaque(false);
+        javax.swing.JPanel usePanel = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 4, 0));
+        usePanel.setOpaque(false);
+        usePanel.add(new javax.swing.JLabel(mpv5.globals.Messages.SCRIPTS_USE_AS + ":"));
+        usePanel.add(use);
+        javax.swing.JPanel wrap = new javax.swing.JPanel();
+        wrap.setOpaque(false);
+        wrap.setLayout(new javax.swing.BoxLayout(wrap, javax.swing.BoxLayout.PAGE_AXIS));
+        java.awt.Container parent = labeledTextField1.getParent();
+        if (parent != null && parent.getLayout() instanceof javax.swing.GroupLayout) {
+            ((javax.swing.GroupLayout) parent.getLayout()).replace(labeledTextField1, wrap);
+        }
+        row.add(labeledTextField1, java.awt.BorderLayout.CENTER);
+        row.add(usePanel, java.awt.BorderLayout.EAST);
+        row.setAlignmentX(LEFT_ALIGNMENT);
+        keyInfo.setAlignmentX(LEFT_ALIGNMENT);
+        wrap.add(row);
+        wrap.add(keyInfo);
+
+        jTextArea1.setText(mpv5.globals.Messages.SCRIPTS_HELP.toString());
+        jTextArea1.setEditable(false);
+        jTextArea1.setWrapStyleWord(true);
+        jTextArea1.setCaretPosition(0);
+        jButton6.setText(mpv5.globals.Messages.SCRIPTS_TEST.toString());
+        jLabel1.setText(mpv5.globals.Messages.SCRIPTS_FOR + ":");
+        showKeyInfo();
+    }
+
+    private static boolean isUse(String key) {
+        for (int i = 1; i < USES.length; i++) {
+            if (USES[i][0].equals(key)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void showKeyInfo() {
+        String key = labeledTextField1.getText() == null ? "" : labeledTextField1.getText().trim();
+        int found = 0;
+        for (int i = 1; i < USES.length; i++) {
+            if (USES[i][0].equals(key)) {
+                found = i;
+            }
+        }
+        if (use.getSelectedIndex() != found && (found > 0 || !isUse(key))) {
+            java.awt.event.ActionListener[] ls = use.getActionListeners();
+            for (java.awt.event.ActionListener l : ls) {
+                use.removeActionListener(l);
+            }
+            use.setSelectedIndex(found);
+            for (java.awt.event.ActionListener l : ls) {
+                use.addActionListener(l);
+            }
+        }
+        String text;
+        if (found == 0) {
+            text = key.isEmpty() ? mpv5.globals.Messages.SCRIPTS_KEY_EMPTY.toString()
+                    : String.format(mpv5.globals.Messages.SCRIPTS_KEY_FIELD.toString(), "<property." + key + ">");
+        } else if (found >= 5) {
+            text = mpv5.globals.Messages.SCRIPTS_KEY_LABEL.toString();
+        } else {
+            text = mpv5.globals.Messages.SCRIPTS_KEY_HOOK.toString();
+        }
+        keyInfo.setText(text);
+    }
+
+    /**
+     * Buttons with a script in a toolbar (was View > Add toolbar action)
+     */
+    private void toolbarActions() {
+        mpv5.ui.dialogs.Wizard w = new mpv5.ui.dialogs.Wizard(false);
+        w.setModalityType(java.awt.Dialog.ModalityType.APPLICATION_MODAL);
+        w.setAlwaysOnTop(false);
+        w.setDefaultCloseOperation(javax.swing.JFrame.DISPOSE_ON_CLOSE);
+        w.setLocationRelativeTo(mpv5.YabsViewProxy.instance().getIdentifierFrame());
+        w.addPanel(new wizard_Toolbar1(w));
+        w.showWizAsChild();
     }
 
     private void refresh() {
