@@ -72,7 +72,6 @@ import mpv5.ui.dialogs.subcomponents.ControlPanel_Templates;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Userproperties;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Users;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_ValueProps;
-import mpv5.ui.dialogs.subcomponents.ControlPanel_WebShopManager;
 import mpv5.ui.modern.ModernTheme;
 import mpv5.ui.modern.ResponsiveGrid;
 import mpv5.usermanagement.MPSecurityManager;
@@ -271,7 +270,9 @@ public class MPControlPanel extends JPanel {
         l.add(panel(system, "jButton1", Messages.SETTINGS_D_LOCAL, "internet", ControlPanel_Local.class, ControlPanel_Local::new));
         l.add(panel(system, "jButton7", Messages.SETTINGS_D_EXTERNAL, "openofficeorg-20", ControlPanel_External.class, ControlPanel_External::new));
         l.add(panel(system, "jButton11", Messages.SETTINGS_D_PLUGINS, "usb", ControlPanel_Plugins.class, ControlPanel_Plugins::new));
-        l.add(panel(system, "jButton19", Messages.SETTINGS_D_WEBSHOPS, "krfb", ControlPanel_WebShopManager.class, ControlPanel_WebShopManager::new));
+        //Shopify instead of the old XML-RPC shop interface
+        l.add(new Entry(system, "Shopify", Messages.SHOPIFY_DESC.toString(), "krfb",
+                mpv5.ui.dialogs.subcomponents.ControlPanel_Shopify.class, mpv5.ui.dialogs.subcomponents.ControlPanel_Shopify::new, null, null));
         l.add(panel(system, "jButton15", Messages.SETTINGS_D_GLOBAL, "advancedsettings", ControlPanel_AdvancedGlobalProperties.class, ControlPanel_AdvancedGlobalProperties::new));
         l.add(panel(system, "jButton24", Messages.SETTINGS_D_SCRIPTS, "konsole", ControlPanel_ValueProps.class, ControlPanel_ValueProps::new));
         l.add(panel(system, "jButton14", Messages.SETTINGS_D_SQL, "konsole", ControlPanel_Konsole.class, ControlPanel_Konsole::new));

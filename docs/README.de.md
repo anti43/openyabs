@@ -76,7 +76,7 @@ Das unterscheidet YaBS von webbasierten Cloud-Rechnungsdiensten:
 | **Arbeiten** | Moderne Kachelansicht, Tabs, Vor/Zurück wie im Browser, Favoriten, Volltextsuche, Tastenkürzel, Papierkorb, Rückgängig |
 | **Teams** | Mehrere Benutzer, Mandanten/Gruppen, Datensatz-Sperren gegen gleichzeitiges Überschreiben, Rechteverwaltung |
 | **Daten** | Lokale Derby-Datenbank oder MySQL/MariaDB-Server, CSV/XML/vCard/HTML-Import & Export, Ein-Klick-Import aus Fakturama 2, Migrationsassistenten |
-| **Erweiterungen** | Groovy-Skripte und Konsole, Live-Plugin-Manager, SQL-Abfragefenster, Shop-Schnittstelle |
+| **Erweiterungen** | Groovy-Skripte und Konsole, Live-Plugin-Manager, SQL-Abfragefenster, Shopify-Bestellimport |
 
 ## Kunden, Lieferanten und Hersteller
 
@@ -203,7 +203,7 @@ YaBS stellt auf Wunsch eine **Touch-Kasse als Weboberfläche** für Tablets, Tou
 - **Import**: Kontakte und Artikel aus CSV, vCard und XML importieren.
 - **Export**: Stammdaten, Belege und Auswertungen nach CSV, XML, vCard, HTML und PDF exportieren.
 - **Einfacher Umstieg von Fakturama 2**: Unter *Datei › Import › Fakturama 2* die `Database.script`-Datei Ihres Fakturama-Arbeitsbereichs auswählen (Ordner `Database`, Fakturama vorher schließen). Übernommen werden Steuersätze, Warengruppen, Kontakte (Kunden, Lieferanten, Hersteller) mit Anschrift und Bankverbindung, Artikel mit Bildern, Lagerbestand und Staffelpreisen, Rechnungen, Angebote, Aufträge, Lieferscheine und Gutschriften mit Positionen und Versandkosten sowie Ausgabenbelege – jeweils mit Belegnummern und Datum. Fakturamas Dateien werden nicht verändert; bereits übernommene Datensätze werden übersprungen, der Import kann also wiederholt werden. Er zählt die Datensätze vorab und zeigt den Fortschritt mit der Restzeit an.
-- **Webshop-Schnittstelle**: Datenaustausch mit Online-Shops zur automatischen Auftragsübernahme.
+- **Shopify**: Neue Bestellungen Ihres Shopify-Shops als Aufträge oder Rechnungen übernehmen, Kunden als Kontakte – siehe [Shopify](Shopify.md).
 
 ## Für Power-User: Skripte, Plugins und SQL
 
