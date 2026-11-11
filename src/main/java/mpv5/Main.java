@@ -375,6 +375,9 @@ public class Main implements Runnable {
      * @throws Exception
      */
     public static void main(String[] args) throws Exception {
+        if (wslRelaunch(args)) {
+            return;
+        }
         linuxPaintFix();
 
         classLoader = new Java10UrlClassloader(new URL[0], Main.class.getClassLoader());
@@ -942,6 +945,52 @@ public class Main implements Runnable {
      * paints straight into the window. Set before any AWT class is loaded; a value
      * given on the command line (-Dswing.bufferPerWindow=...) wins.
      */
+    /**
+     * WSL (WSLg): Java does not detect WSLg's window manager as non-reparenting,
+     * so the main window stays grey until it is resized or moved. The only cure
+     * is the environment variable _JAVA_AWT_WM_NONREPARENTING=1, which must be
+     * set before the JVM starts: start the same command again with it set.
+     *
+     * @param args the arguments of the program
+     * @return true if YaBS ran in a restarted JVM (and has ended there)
+     */
+    private static boolean wslRelaunch(String[] args) {
+        try {
+            if (!System.getProperty("os.name", "").toLowerCase().contains("linux")
+                    || System.getenv("_JAVA_AWT_WM_NONREPARENTING") != null
+                    || java.awt.GraphicsEnvironment.isHeadless()) {
+                return false;
+            }
+            boolean wsl = System.getenv("WSL_DISTRO_NAME") != null;
+            if (!wsl) {
+                java.nio.file.Path rel = java.nio.file.Paths.get("/proc/sys/kernel/osrelease");
+                wsl = java.nio.file.Files.exists(rel)
+                        && new String(java.nio.file.Files.readAllBytes(rel)).toLowerCase().contains("microsoft");
+            }
+            String cmd = ProcessHandle.current().info().command().orElse(null);
+            if (!wsl || cmd == null) {
+                return false;
+            }
+            java.util.List<String> command = new java.util.ArrayList<String>();
+            command.add(cmd);
+            if (new File(cmd).getName().startsWith("java")) {
+                //plain java: same JVM options, class path and main class
+                command.addAll(java.lang.management.ManagementFactory.getRuntimeMXBean().getInputArguments());
+                command.add("-cp");
+                command.add(System.getProperty("java.class.path"));
+                command.add(Main.class.getName());
+            } //else a native launcher (jpackage): it adds its own options
+            command.addAll(java.util.Arrays.asList(args));
+            ProcessBuilder pb = new ProcessBuilder(command).inheritIO();
+            pb.environment().put("_JAVA_AWT_WM_NONREPARENTING", "1");
+            System.exit(pb.start().waitFor());
+            return true;
+        } catch (Exception e) {
+            //start normally
+            return false;
+        }
+    }
+
     private static void linuxPaintFix() {
         String os = System.getProperty("os.name", "").toLowerCase();
         if (os.contains("linux") && System.getProperty("swing.bufferPerWindow") == null) {
