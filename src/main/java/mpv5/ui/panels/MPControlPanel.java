@@ -264,6 +264,15 @@ public class MPControlPanel extends JPanel {
             }
         }));
 
+        //was Tools > Migration in the main menu
+        String database = Messages.SETTINGS_GROUP_DATABASE.toString();
+        l.add(new Entry(database, Messages.DB_BACKUP.toString(), Messages.DB_BACKUP_INFO.toString(), "folder_tar", null, null,
+                () -> mpv5.db.migration.MigrationWB.instanceOf().doExportToDerby(), null));
+        l.add(new Entry(database, Messages.DB_EXPORT_SQL.toString(), Messages.DB_EXPORT_SQL_INFO.toString(), "kwikdisk", null, null,
+                () -> mpv5.db.migration.MigrationWB.instanceOf().doExportToMySQL(), null));
+        l.add(new Entry(database, Messages.DB_RESTORE.toString(), Messages.DB_RESTORE_INFO.toString(), "folder_open", null, null,
+                () -> mpv5.db.migration.MigrationWB.instanceOf().doImport(), null));
+
         String system = Messages.SETTINGS_GROUP_SYSTEM.toString();
         l.add(panel(system, "jButton1", Messages.SETTINGS_D_LOCAL, "internet", ControlPanel_Local.class, ControlPanel_Local::new));
         l.add(panel(system, "jButton7", Messages.SETTINGS_D_EXTERNAL, "openofficeorg-20", ControlPanel_External.class, ControlPanel_External::new));

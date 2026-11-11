@@ -570,6 +570,7 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
         initComponents();
 
         initNav();
+        moveMenus();
 
         try {
             Image icon = Toolkit.getDefaultToolkit().getImage(this.getFrame().getClass().getResource(Constants.ICON));
@@ -3095,6 +3096,27 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
         w.addPanel(new wizard_MP45_Import(w));
         w.showWiz();
     }//GEN-LAST:event_jMenuItem29ActionPerformed
+
+    /**
+     * Tools > Migration is in the Control Panel (group "Database"); the stock
+     * manager is in the products navigation
+     */
+    private void moveMenus() {
+        jMenu3.setVisible(false);
+        jMenuItem48.setVisible(false);
+        javax.swing.JButton stock = new javax.swing.JButton(Messages.STOCK_MANAGER.toString(),
+                new javax.swing.ImageIcon(getClass().getResource("/images/32/ark.png")));
+        stock.setFont(jButton19.getFont());
+        stock.setToolTipText(Messages.STOCK_INFO.toString());
+        stock.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        stock.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        stock.setMaximumSize(jButton19.getMaximumSize());
+        stock.setMinimumSize(jButton19.getMinimumSize());
+        stock.setPreferredSize(jButton19.getPreferredSize());
+        stock.setName("navStockmanager");
+        stock.addActionListener(e -> jMenuItem48ActionPerformed(e));
+        nav_products.add(stock);
+    }
 
     private void jMenuItem48ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem48ActionPerformed
 
