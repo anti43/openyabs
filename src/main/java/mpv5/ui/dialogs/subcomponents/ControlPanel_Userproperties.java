@@ -1002,7 +1002,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         final String[][] vars = filenameVars();
         final javax.swing.JTextField field = saveformat.getTextField();
         final javax.swing.JComboBox<String> insert = new javax.swing.JComboBox<String>();
-        insert.addItem(Messages.FILENAME_INSERT.toString());
+        insert.addItem(Messages.FILENAME_CHOOSE.toString());
         insert.addItem("/");
         for (String[] v : vars) {
             insert.addItem(v[0]);
@@ -1014,18 +1014,24 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
                 field.requestFocusInWindow();
             }
         });
+        String base = mpv5.globals.LocalSettings.getProperty(mpv5.globals.LocalSettings.BASE_DIR);
+        if (base == null || base.trim().isEmpty() || base.equals("null")) {
+            base = System.getProperty("user.home");
+        }
+        final String basedir = base.replace("\\", "/").replaceAll("/+$", "");
         final javax.swing.JLabel preview = new javax.swing.JLabel(" ");
         Runnable update = () -> {
             String t = field.getText().replace("\\", "/");
             if (t.trim().isEmpty()) {
-                preview.setText(" ");
+                preview.setText(Messages.FILENAME_PREVIEW + ": " + Messages.FILENAME_NO_FORMAT);
                 return;
             }
             for (String[] v : vars) {
                 t = t.replaceAll("(?i)" + java.util.regex.Pattern.quote(v[0]), java.util.regex.Matcher.quoteReplacement(v[1]));
             }
-            preview.setText(Messages.FILENAME_PREVIEW + ": " + t + ".pdf");
+            preview.setText(Messages.FILENAME_PREVIEW + ": " + basedir + "/" + t.replaceAll("^/+", "") + ".pdf");
         };
+        update.run();
         field.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
             public void insertUpdate(javax.swing.event.DocumentEvent e) {
                 update.run();
@@ -1040,15 +1046,72 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
             }
         });
 
+        //the description: wrapped over several lines
+        javax.swing.JTextArea info = new javax.swing.JTextArea(Messages.FILENAME_INFO.toString());
+        info.setColumns(40);
+        info.setLineWrap(true);
+        info.setWrapStyleWord(true);
+        info.setEditable(false);
+        info.setFocusable(false);
+        info.setOpaque(false);
+        info.setFont(new javax.swing.JLabel().getFont());
+        info.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 4, 0));
+        //the height of wrapped text is known only once the width is: lay out again then
+        info.addComponentListener(new java.awt.event.ComponentAdapter() {
+            @Override
+            public void componentResized(java.awt.event.ComponentEvent e) {
+                if (info.getPreferredSize().height != info.getHeight()) {
+                    javax.swing.SwingUtilities.invokeLater(jPanel4::revalidate);
+                }
+            }
+        });
+
+        //the variable picker, with a label
+        javax.swing.JPanel insertRow = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
+        insertRow.setOpaque(false);
+        insertRow.add(new javax.swing.JLabel(Messages.FILENAME_INSERT + " "));
+        insertRow.add(insert);
+        insertRow.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, insertRow.getPreferredSize().height));
+
+        //the preview in a colored box
+        preview.setOpaque(true);
+        preview.setBackground(mpv5.ui.modern.ModernTheme.accentSoft());
+        preview.setForeground(mpv5.ui.modern.ModernTheme.foreground());
+        preview.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                javax.swing.BorderFactory.createLineBorder(mpv5.ui.modern.ModernTheme.accent()),
+                javax.swing.BorderFactory.createEmptyBorder(6, 8, 6, 8)));
+        //full width, natural height (the bean's text field has a fixed height of 20px)
+        field.setPreferredSize(null);
+        for (javax.swing.JComponent c : new javax.swing.JComponent[]{saveformat, preview}) {
+            c.setMinimumSize(new java.awt.Dimension(0, c.getPreferredSize().height));
+            c.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, c.getPreferredSize().height));
+        }
+
+        //link to the documentation
+        javax.swing.JLabel wiki = new javax.swing.JLabel("<html><a href=''>" + Messages.FILENAME_WIKI + "</a></html>");
+        wiki.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
+        wiki.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                try {
+                    java.awt.Desktop.getDesktop().browse(new java.net.URI(WIKI_FILENAMES));
+                } catch (Exception ex) {
+                    Log.Debug(ControlPanel_Userproperties.class, ex);
+                }
+            }
+        });
+        wiki.setToolTipText(WIKI_FILENAMES);
+
         jPanel4.removeAll();
         jPanel4.setLayout(new javax.swing.BoxLayout(jPanel4, javax.swing.BoxLayout.PAGE_AXIS));
-        for (javax.swing.JComponent c : new javax.swing.JComponent[]{jScrollPane1, saveformat, insert, preview}) {
+        for (javax.swing.JComponent c : new javax.swing.JComponent[]{info, saveformat, insertRow, preview, wiki}) {
             c.setAlignmentX(Component.LEFT_ALIGNMENT);
             jPanel4.add(c);
-            jPanel4.add(javax.swing.Box.createVerticalStrut(4));
+            jPanel4.add(javax.swing.Box.createVerticalStrut(6));
         }
-        insert.setMaximumSize(insert.getPreferredSize());
     }
+
+    private static final String WIKI_FILENAMES = "https://github.com/anti43/openyabs/blob/master/docs/File-name-defaults.md";
 
     /**
      * The parts of the form as cards, the buttons in the action bar
