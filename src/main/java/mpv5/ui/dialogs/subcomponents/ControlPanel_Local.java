@@ -25,6 +25,7 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
 
     public ControlPanel_Local() {
         initComponents();
+        folderCard();
         modernLayout();
         setVisible(true);
         setValues(LocalSettings.getPropertyStore());
@@ -339,17 +340,56 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
     @Override
     public final void setValues(PropertyStore values) {
         oldvalues = values;
-        proxy.setText(values.getProperty("proxy"));
-        port.setText(values.getProperty("proxy"));
-        auth.setSelected(TypeConversion.stringToBoolean(values.getProperty("useproxy")));
-        user.setText(values.getProperty("username"));
-        password.setText(values.getProperty("password"));
+        //the keys the settings are saved with (before: "proxy" for host and port, "username", "password")
+        proxy.setText(values.getProperty(LocalSettings.PROXYHOST));
+        port.setText(values.getProperty(LocalSettings.PROXYPORT));
+        auth.setSelected(TypeConversion.stringToBoolean(values.getProperty(LocalSettings.PROXYUSE)));
+        user.setText(values.getProperty(LocalSettings.PROXYUSER));
+        password.setText(values.getProperty(LocalSettings.PROXYPASSWORD));
         printdev.setSelected(TypeConversion.stringToBoolean(values.getProperty("devappprint")));
         autolock.setSelected(TypeConversion.stringToBoolean(values.getProperty(LocalSettings.DBAUTOLOCK)));
         escape.setSelected(TypeConversion.stringToBoolean(values.getProperty(LocalSettings.DBESCAPE)));
 
         savebasedir.set_Text(values.getProperty(LocalSettings.BASE_DIR));
         backupbasedir.set_Text(values.getProperty(LocalSettings.BACKUP_DIR));
+        showFolders();
+    }
+
+    private final javax.swing.JLabel baseHint = new javax.swing.JLabel();
+    private final javax.swing.JLabel backupHint = new javax.swing.JLabel();
+
+    /**
+     * The folder fields, each with the folder that is used now (also when the
+     * field is empty)
+     */
+    private void folderCard() {
+        jPanel5.removeAll();
+        jPanel5.setLayout(new javax.swing.BoxLayout(jPanel5, javax.swing.BoxLayout.PAGE_AXIS));
+        for (javax.swing.JComponent c : new javax.swing.JComponent[]{savebasedir, baseHint, backupbasedir, backupHint}) {
+            c.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
+            if (c instanceof javax.swing.JLabel) {
+                c.setForeground(mpv5.ui.modern.ModernTheme.muted());
+                c.setBorder(javax.swing.BorderFactory.createEmptyBorder(2, 4, 10, 0));
+            } else {
+                c.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, c.getPreferredSize().height));
+            }
+            jPanel5.add(c);
+        }
+    }
+
+    private void showFolders() {
+        String base = savebasedir.get_Text(false);
+        baseHint.setText("<html>" + (base == null || base.trim().isEmpty()
+                ? String.format(mpv5.globals.Messages.FOLDER_BASE_EMPTY.toString(), esc(mpv5.utils.files.LastDirectory.get().getPath()))
+                : mpv5.globals.Messages.FOLDER_BASE_SET.toString()) + "</html>");
+        String backup = backupbasedir.get_Text(false);
+        backupHint.setText("<html>" + (backup == null || backup.trim().isEmpty()
+                ? String.format(mpv5.globals.Messages.FOLDER_BACKUP_EMPTY.toString(), esc(mpv5.utils.files.LastDirectory.get().getPath()))
+                : mpv5.globals.Messages.FOLDER_BACKUP_SET.toString()) + "</html>");
+    }
+
+    private static String esc(String s) {
+        return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
     }
 
     @Override
@@ -406,6 +446,7 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
         LocalSettings.setProperty(LocalSettings.BACKUP_DIR, backupbasedir.get_Text(true));
 
         LocalSettings.apply();
+        showFolders();
     }
 
     @Override
