@@ -35,6 +35,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
     public ControlPanel_Userproperties() {
         initComponents();
         filenameBuilder();
+        describeOptions();
         modernLayout();
         //modern views (see YabsViewProxy), the system property yabs.ui overrides it
         modernui.setText(Messages.MODERN_UI.toString());
@@ -963,6 +964,35 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
     private javax.swing.JPanel actions = new javax.swing.JPanel();
 
     /**
+     * The options of "Document dates" and "Export": a clear name and, below it,
+     * what happens when the option is on or off
+     */
+    private void describeOptions() {
+        describe(transdateX, Messages.OPT_KEEP_WORKEDON, Messages.OPT_KEEP_WORKEDON_INFO);
+        describe(enddateX, Messages.OPT_KEEP_ENDDATE, Messages.OPT_KEEP_ENDDATE_INFO);
+        describe(calcEnddateX, Messages.OPT_CALC_ENDDATE, Messages.OPT_CALC_ENDDATE_INFO);
+        describe(nocount, Messages.OPT_NOCOUNT, Messages.OPT_NOCOUNT_INFO);
+        describe(noblank, Messages.OPT_NOBLANK, Messages.OPT_NOBLANK_INFO);
+        describe(resolv, Messages.OPT_RESOLV, Messages.OPT_RESOLV_INFO);
+        describe(showItemAsDesc, Messages.OPT_ITEMASDESC, Messages.OPT_ITEMASDESC_INFO);
+        //"Load remote office docs by url" had no function
+        remoteurl.setVisible(false);
+    }
+
+    private static void describe(javax.swing.JCheckBox box, Messages title, Messages info) {
+        java.awt.Color m = mpv5.ui.modern.ModernTheme.muted();
+        String grey = String.format("#%02x%02x%02x", m.getRed(), m.getGreen(), m.getBlue());
+        box.setText("<html><div style='width:" + mpv5.ui.modern.ModernTheme.px(340) + "px'>" + esc(title.toString())
+                + "<br><span style='color:" + grey + "'>" + esc(info.toString()) + "</span></div></html>");
+        box.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
+        box.setToolTipText(null);
+    }
+
+    private static String esc(String s) {
+        return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
+    }
+
+    /**
      * The variables offered for the file name format, with the sample values of the preview
      */
     private static String[][] filenameVars() {
@@ -1218,7 +1248,8 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
 
         testadress.setText(User.getCurrentUser().__getMail());
 
-        nocount.setSelected(GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.hidecountfortext"));
+        //on by default (as in the export)
+        nocount.setSelected(GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.hidecountfortext", true));
         showItemAsDesc.setSelected(GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.showitemasdesc"));
         resolv.setSelected(GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.productsresolved"));
         noblank.setSelected(GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.blankunusedfields.disable"));
