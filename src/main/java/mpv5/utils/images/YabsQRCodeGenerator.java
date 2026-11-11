@@ -16,12 +16,6 @@
  */
 package mpv5.utils.images;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import java.util.EnumMap;
-import java.util.Map;
-
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.common.BitMatrix;
@@ -29,98 +23,162 @@ import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import fr.opensagres.xdocreport.document.images.ByteArrayImageProvider;
 import fr.opensagres.xdocreport.document.images.IImageProvider;
-import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Font;
-import java.awt.Stroke;
-import java.awt.geom.AffineTransform;
+import java.awt.FontMetrics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.function.Function;
 import javax.imageio.ImageIO;
+import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.objects.Item;
-import mpv5.db.objects.User;
+import mpv5.globals.Messages;
 import mpv5.logging.Log;
+import mpv5.utils.export.BankAccount;
+import mpv5.utils.export.ZugpferdFile;
 
 /**
- *
- * @author andreas
+ * EPC QR code ("GiroCode", EPC069-12 version 002) for SEPA credit transfers:
+ * scanned by a banking app, it fills in the transfer (IBAN, recipient, amount,
+ * reference). Placeholder in ODT templates: an image named QRCode.img.
  */
 public class YabsQRCodeGenerator {
 
-    static final String CRLF = "\n";
-
+    /**
+     * Pixels per module of the code
+     */
+    private static final int SCALE = 6;
+    private final String text;
     private BufferedImage image;
-    private int size = 125;
-    private String text;
 
+    /**
+     * @param dob the invoice
+     * @throws IllegalStateException if the company info has no IBAN
+     */
     public YabsQRCodeGenerator(DatabaseObject dob) {
-        Item dataOwner = (Item) dob;
-        text = "BCD" + YabsQRCodeGenerator.CRLF;
-        text += "002" + YabsQRCodeGenerator.CRLF;
-        text += "2" + YabsQRCodeGenerator.CRLF;
-        text += "SCT" + YabsQRCodeGenerator.CRLF;
-        text += User.getCurrentUser().getProperty("companyinfo.banknumber") + YabsQRCodeGenerator.CRLF;
-        text += User.getCurrentUser().getProperty("companyinfo.business") + YabsQRCodeGenerator.CRLF;
-        text += User.getCurrentUser().getProperty("companyinfo.account") + YabsQRCodeGenerator.CRLF;
-        text += "EUR" + dataOwner.getGrossAmount().toString() + YabsQRCodeGenerator.CRLF;
-        text += "" + YabsQRCodeGenerator.CRLF;
-        text += "" + YabsQRCodeGenerator.CRLF;
-        text += Item.getTypeString(dataOwner.__getInttype()) + ": " + dataOwner.__getCname() + YabsQRCodeGenerator.CRLF;
-        text += "Bitte prüfen Sie die Angaben nochmals!";
+        Item item = (Item) dob;
+        Function<String, String> company = ZugpferdFile.companySettings();
+        DatabaseObject contact = null;
+        try {
+            contact = DatabaseObject.getObject(Context.getContact(), item.__getContactsids());
+        } catch (Exception e) {
+            Log.Debug(YabsQRCodeGenerator.class, e.getMessage());
+        }
+        BankAccount account = contact == null
+                ? (BankAccount.companyAccounts(company).isEmpty() ? null : BankAccount.companyAccounts(company).get(0))
+                : BankAccount.forContact(contact, company);
+        if (account == null || account.getIban().isEmpty()) {
+            throw new IllegalStateException("No IBAN in the company info");
+        }
+        String person = (ZugpferdFile.nvl(company.apply("firstname")) + " " + ZugpferdFile.nvl(company.apply("name"))).trim();
+        String name = ZugpferdFile.firstNonEmpty(company.apply("business"), person);
+        text = payload(name, account.getIban(), account.getBic(), item.getGrossAmount(),
+                Item.getTypeString(item.__getInttype()) + " " + item.__getCname());
     }
 
+    /**
+     * The content of the code (EPC069-12, version 002, UTF-8)
+     *
+     * @param name recipient, max 70 characters
+     * @param iban
+     * @param bic optional
+     * @param amount in EUR; no amount if null or not between 0.01 and 999999999.99
+     * @param reference text for the recipient, max 140 characters
+     * @return the lines of the code
+     */
+    public static String payload(String name, String iban, String bic, BigDecimal amount, String reference) {
+        String eur = "";
+        if (amount != null) {
+            BigDecimal a = amount.setScale(2, RoundingMode.HALF_UP);
+            if (a.compareTo(new BigDecimal("0.01")) >= 0 && a.compareTo(new BigDecimal("999999999.99")) <= 0) {
+                eur = "EUR" + a.toPlainString();
+            }
+        }
+        return String.join("\n",
+                "BCD", //service tag
+                "002", //version
+                "1", //UTF-8
+                "SCT", //SEPA credit transfer
+                clean(bic, 11),
+                clean(name, 70),
+                clean(iban, 34).replace(" ", ""),
+                eur,
+                "", //purpose
+                "", //structured reference
+                clean(reference, 140));
+    }
+
+    private static String clean(String s, int max) {
+        String v = s == null ? "" : s.replaceAll("[\\r\\n]+", " ").trim();
+        return v.length() > max ? v.substring(0, max) : v;
+    }
+
+    /**
+     * @return the content of the code
+     */
+    public String getText() {
+        return text;
+    }
+
+    /**
+     * Draws the code with a quiet zone and the caption "Pay with code" below it
+     */
     public void generate() {
         try {
-            Map<EncodeHintType, Object> hintMap = new EnumMap<EncodeHintType, Object>(EncodeHintType.class);
-            hintMap.put(EncodeHintType.CHARACTER_SET, "UTF-8");
-
-            hintMap.put(EncodeHintType.MARGIN, 1);
-            hintMap.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.M);
-
-            QRCodeWriter qrCodeWriter = new QRCodeWriter();
-            BitMatrix byteMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, size, size, hintMap);
-            image = new BufferedImage(size + 5, size + 5, BufferedImage.TYPE_INT_RGB);
-            image.createGraphics();
-
-            Graphics2D graphics = (Graphics2D) image.getGraphics();
-            graphics.setColor(Color.WHITE);
-            graphics.fillRect(0, 0, size + 5, size + 5);
-            graphics.setColor(Color.BLACK);
-            double thickness = 2;
-            Stroke oldStroke = graphics.getStroke();
-            graphics.setStroke(new BasicStroke((float) thickness));
-            graphics.drawRoundRect(5, 5, size - 10, size - 10, 30, 30);
-            graphics.setStroke(oldStroke);
-
-            for (int i = 3; i < size; i++) {
-                for (int j = 3; j < size; j++) {
-                    if (byteMatrix.get(i, j)) {
-                        graphics.fillRect(i, j, 1, 1);
+            Map<EncodeHintType, Object> hints = new EnumMap<EncodeHintType, Object>(EncodeHintType.class);
+            hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
+            hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.M);
+            hints.put(EncodeHintType.MARGIN, 0);
+            BitMatrix m = new QRCodeWriter().encode(text, BarcodeFormat.QR_CODE, 0, 0, hints);
+            int quiet = 4 * SCALE;
+            int code = m.getWidth() * SCALE;
+            int w = code + 2 * quiet;
+            Font font = new Font(Font.SANS_SERIF, Font.PLAIN, 3 * SCALE);
+            int captionHeight = 4 * SCALE;
+            image = new BufferedImage(w, w + captionHeight, BufferedImage.TYPE_INT_RGB);
+            Graphics2D g = image.createGraphics();
+            g.setColor(Color.WHITE);
+            g.fillRect(0, 0, image.getWidth(), image.getHeight());
+            g.setColor(Color.BLACK);
+            for (int x = 0; x < m.getWidth(); x++) {
+                for (int y = 0; y < m.getHeight(); y++) {
+                    if (m.get(x, y)) {
+                        g.fillRect(quiet + x * SCALE, quiet + y * SCALE, SCALE, SCALE);
                     }
                 }
             }
-            Font font = new Font(null, Font.PLAIN, 10);
-            AffineTransform affineTransform = new AffineTransform();
-            affineTransform.rotate(Math.toRadians(270), 0, 0);
-            Font rotatedFont = font.deriveFont(affineTransform);
-            graphics.setFont(rotatedFont);
-            graphics.setColor(Color.WHITE);
-            graphics.fillRect(size - 12, 22, 10, size - 40);
-            graphics.setColor(Color.BLACK);
-            graphics.drawString("Zahlen mit Code", size - 2, size - 20);
+            g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+            g.setFont(font);
+            FontMetrics fm = g.getFontMetrics();
+            String caption = Messages.QR_CAPTION.toString();
+            g.drawString(caption, (w - fm.stringWidth(caption)) / 2, w + fm.getAscent() - SCALE);
+            g.dispose();
         } catch (Exception e) {
             Log.Debug(e);
         }
-        Log.Debug(this, "You have successfully created QR Code.");
+    }
+
+    /**
+     * @return the image as PNG
+     * @throws IOException
+     */
+    public byte[] toPng() throws IOException {
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        ImageIO.write(image, "png", os);
+        return os.toByteArray();
     }
 
     public IImageProvider getImageProvider() throws IOException {
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-        ImageIO.write(image, "png", os);
-        InputStream fis = new ByteArrayInputStream(os.toByteArray());
-        IImageProvider qrcode = new ByteArrayImageProvider(fis);
+        IImageProvider qrcode = new ByteArrayImageProvider(new ByteArrayInputStream(toPng()));
         qrcode.setSize((float) image.getWidth(), (float) image.getHeight());
         return qrcode;
     }

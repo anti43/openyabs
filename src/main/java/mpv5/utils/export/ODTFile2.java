@@ -177,16 +177,20 @@ public class ODTFile2 extends Exportable {
 
             DatabaseObject dob = ((Export) templateData).getDob();
 
+            //EPC QR code (GiroCode) for invoices: an image named QRCode.img in the template;
+            //removed for other documents and when the company info has no IBAN
+            metadata.addFieldAsImage("QRCode.img", NullImageBehaviour.RemoveImageTemplate);
             if (dob instanceof Item &&
                     (((Item) dob).__getInttype() == Item.TYPE_INVOICE
                             || ((Item) dob).__getInttype() == Item.TYPE_PART_PAYMENT
                             || ((Item) dob).__getInttype() == Item.TYPE_DEPOSIT)) {
-                YabsQRCodeGenerator QRGen = new YabsQRCodeGenerator(dob);
-                QRGen.generate();
-                context.put("QRCode.img", QRGen.getImageProvider());
-                metadata.addFieldAsImage("QRCode.img");
-                metadata.addFieldAsImage("imageNotExistsAndRemoveImageTemplate", NullImageBehaviour.RemoveImageTemplate);
-                metadata.addFieldAsImage("imageNotExistsAndKeepImageTemplate", NullImageBehaviour.KeepImageTemplate);
+                try {
+                    YabsQRCodeGenerator QRGen = new YabsQRCodeGenerator(dob);
+                    QRGen.generate();
+                    context.put("QRCode.img", QRGen.getImageProvider());
+                } catch (IllegalStateException noIban) {
+                    Log.Debug(this, "No QR code: " + noIban.getMessage());
+                }
             }
 
             report.setFieldsMetadata(metadata);

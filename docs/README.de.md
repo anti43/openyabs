@@ -4,9 +4,11 @@
 
 Frei und Open Source (GPL v3) · Windows, Linux und macOS · Keine Cloud, kein Account, kein Abonnement
 
-**[⬇ Neueste Version herunterladen](https://github.com/andreasweberd/openyabs/releases)** · [Hinweise und Neuerungen](docs/Hinweise.md) · [E-Rechnung (XRechnung / ZUGFeRD)](docs/E-Rechnung.md)
+**[⬇ Neueste Version herunterladen](https://github.com/anti43/openyabs/releases)** · [Hinweise und Neuerungen](Hinweise.md) · [E-Rechnung (XRechnung / ZUGFeRD)](E-Rechnung.md)
 
-![Ein Auftrag in YaBS: Kunde, Belegdaten und Termine in Kacheln, darunter die Positionen mit Netto, MwSt. und Gesamt](docs/images/invoice.png)
+> **Umstieg von Fakturama 2?** Ihre Daten kommen mit wenigen Klicks mit: *Datei › Import › Fakturama 2*, die `Database.script` von Fakturama auswählen, fertig. Kontakte, Artikel, Rechnungen und alle anderen Belege, Ausgaben und Steuersätze werden mit Belegnummern und Datum übernommen – Fakturama selbst bleibt unverändert. [Mehr](#import-export-und-umstieg-von-anderer-software)
+
+![Ein Auftrag in YaBS: Kunde, Belegdaten und Termine in Kacheln, darunter die Positionen mit Netto, MwSt. und Gesamt](images/invoice.png)
 
 ---
 
@@ -73,12 +75,12 @@ Das unterscheidet YaBS von webbasierten Cloud-Rechnungsdiensten:
 | **Planung** | Kalender, Fälligkeitsradar, wiederkehrende Dauerrechnungen, Übersichts-Dashboard |
 | **Arbeiten** | Moderne Kachelansicht, Tabs, Vor/Zurück wie im Browser, Favoriten, Volltextsuche, Tastenkürzel, Papierkorb, Rückgängig |
 | **Teams** | Mehrere Benutzer, Mandanten/Gruppen, Datensatz-Sperren gegen gleichzeitiges Überschreiben, Rechteverwaltung |
-| **Daten** | Lokale Derby-Datenbank oder MySQL/MariaDB-Server, CSV/XML/vCard/HTML-Import & Export, Migrationsassistenten |
+| **Daten** | Lokale Derby-Datenbank oder MySQL/MariaDB-Server, CSV/XML/vCard/HTML-Import & Export, Ein-Klick-Import aus Fakturama 2, Migrationsassistenten |
 | **Erweiterungen** | Groovy-Skripte und Konsole, Live-Plugin-Manager, SQL-Abfragefenster, Shop-Schnittstelle |
 
 ## Kunden, Lieferanten und Hersteller
 
-![Ein Kontakt mit Name, Rollen, Adresse, Kommunikation, Geschäfts- und Zahlungsdaten sowie allen Dokumenten des Kontakts](docs/images/contact.png)
+![Ein Kontakt mit Name, Rollen, Adresse, Kommunikation, Geschäfts- und Zahlungsdaten sowie allen Dokumenten des Kontakts](images/contact.png)
 
 - **Ein Kontakt, mehrere Rollen**: Ein Kontakt kann gleichzeitig Kunde, Lieferant, Hersteller und/oder Partnerfirma sein – dargestellt als Chips neben dem Namen und mit einem Klick umschaltbar.
 - **Alles auf einer Seite**: Name, Anschriften (Haupt-, Rechnungs- und Lieferadresse), Telefon, Mail, Webseite, USt-IdNr., Bankverbindung, Zahlungsbedingungen und Notizen.
@@ -116,7 +118,7 @@ Eine kaufmännische Software darf nicht runden wie ein Taschenrechner. YaBS rech
 - **Pro Kunde einstellbar**: Ausgabeformat wählen (normales PDF, ZUGFeRD, XRechnung oder PDF + XRechnung), Leitweg-ID für Behörden, Zahlungsziele und Skonto.
 - **Versand per E-Mail & Serien-E-Mail**: Jeder Empfänger erhält automatisch das für ihn hinterlegte Format.
 - **Mehrere Bankverbindungen**: Je Kunde festlegen, welches Geschäftskonto auf der Rechnung ausgewiesen wird.
-- Ausführliche Anleitung und rechtliche Hintergründe: **[docs/E-Rechnung.md](docs/E-Rechnung.md)**.
+- Ausführliche Anleitung und rechtliche Hintergründe: **[docs/E-Rechnung.md](E-Rechnung.md)**.
 
 ## Druck, PDF, Vorlagen und E-Mail
 
@@ -137,7 +139,7 @@ Eine kaufmännische Software darf nicht runden wie ein Taschenrechner. YaBS rech
 
 ## Artikel, Dienstleistungen und Lager
 
-![Ein Artikel mit Preisen, Warengruppe, Beschreibung, Hersteller und Lieferanten, Lagerbestand und Belegen, in denen er verwendet wurde](docs/images/product.png)
+![Ein Artikel mit Preisen, Warengruppe, Beschreibung, Hersteller und Lieferanten, Lagerbestand und Belegen, in denen er verwendet wurde](images/product.png)
 
 - **Artikel & Dienstleistungen**: Mit Artikelnummer, Einheit, EAN, Hersteller-Teilenummer, Beschreibung, Web-Link und **großem Artikelbild** im Kopfbereich für sofortige Erkennbarkeit.
 - **Datenblatt-Verknüpfung**: Webadresse oder lokale Datei (z. B. auf dem Server `\\nas\docs\artikel.pdf`), mit einem Klick geöffnet.
@@ -150,7 +152,7 @@ Eine kaufmännische Software darf nicht runden wie ein Taschenrechner. YaBS rech
 
 ## Buchhaltung: Journal, Einnahmen und Ausgaben
 
-![Das Journal mit allen Belegen eines Zeitraums, Filtern und Gesamtsummen für Umsatz, Ausgaben, Gewinn und MwSt.](docs/images/journal.png)
+![Das Journal mit allen Belegen eines Zeitraums, Filtern und Gesamtsummen für Umsatz, Ausgaben, Gewinn und MwSt.](images/journal.png)
 
 - **Journal**: Alle Belege, Einnahmen und Ausgaben eines Zeitraums mit Filtern nach Belegart, Status, Mandant, Bearbeiter und Sachkonto.
 - **Einnahmen-Überschuss-Rechnung (EÜR)**: Einnahmen und Ausgaben werden erst mit tatsächlicher Zahlung gewertet (Zufluss-/Abflussprinzip).
@@ -200,13 +202,13 @@ YaBS stellt auf Wunsch eine **Touch-Kasse als Weboberfläche** für Tablets, Tou
 
 - **Import**: Kontakte und Artikel aus CSV, vCard und XML importieren.
 - **Export**: Stammdaten, Belege und Auswertungen nach CSV, XML, vCard, HTML und PDF exportieren.
-- **Migrations-Assistent für Fakturama 2**: Unter *Datei › Import › Fakturama 2* die `Database.script`-Datei Ihres Fakturama-Arbeitsbereichs auswählen. Steuersätze, Warengruppen, Kontakte mit Bankdaten, Artikel mit Staffelpreisen, Belege und Ausgabenbelege werden mit Belegnummern und Datum übernommen.
+- **Einfacher Umstieg von Fakturama 2**: Unter *Datei › Import › Fakturama 2* die `Database.script`-Datei Ihres Fakturama-Arbeitsbereichs auswählen (Ordner `Database`, Fakturama vorher schließen). Übernommen werden Steuersätze, Warengruppen, Kontakte (Kunden, Lieferanten, Hersteller) mit Anschrift und Bankverbindung, Artikel mit Bildern, Lagerbestand und Staffelpreisen, Rechnungen, Angebote, Aufträge, Lieferscheine und Gutschriften mit Positionen und Versandkosten sowie Ausgabenbelege – jeweils mit Belegnummern und Datum. Fakturamas Dateien werden nicht verändert; bereits übernommene Datensätze werden übersprungen, der Import kann also wiederholt werden. Er zählt die Datensätze vorab und zeigt den Fortschritt mit der Restzeit an.
 - **Webshop-Schnittstelle**: Datenaustausch mit Online-Shops zur automatischen Auftragsübernahme.
 
 ## Für Power-User: Skripte, Plugins und SQL
 
 - **Groovy-Plugins**: Einfache `.groovy`-Dateien (ohne Build-Schritt) in den `plugins`-Ordner legen. Neue Menüpunkte, Felder, Validierungen und Reaktionen auf Belege hinzufügen.
-- **Integrierter Editor**: Groovy-Editor mit Syntax-Highlighting, Zeilennummern, Vorlagen und Sofort-Kompilierung bei `Strg+S`. [Plugin-Anleitung](docs/Plugins.md).
+- **Integrierter Editor**: Groovy-Editor mit Syntax-Highlighting, Zeilennummern, Vorlagen und Sofort-Kompilierung bei `Strg+S`. [Plugin-Anleitung](Plugins.md).
 - **Groovy-4-Konsole**: Automatisierte Datenbereinigung oder Sonderberechnungen.
 - **SQL-Abfragefenster**: Direkte SELECT- und Auswertungsabfragen auf die lokale oder zentrale Datenbank.
 
@@ -225,7 +227,7 @@ YaBS läuft auf **Windows, Linux und macOS**.
 
 **Plattformunabhängiges ZIP** (benötigt **Java 21** oder neuer, z. B. von [adoptium.net](https://adoptium.net)): Entpacken und `yabs.bat` (Windows) oder `yabs.sh` (Linux/macOS) ausführen – oder `java -jar openyabs.jar`.
 
-Alle Downloads: **[Releases auf GitHub](https://github.com/andreasweberd/openyabs/releases)**
+Alle Downloads: **[Releases auf GitHub](https://github.com/anti43/openyabs/releases)**
 
 Beim ersten Programmstart fragt ein Assistent nach dem Speicherort: **Auf diesem Computer** (ein Klick, Standard) oder auf einem **Datenbankserver** (MySQL / MariaDB). Die Einrichtung erfolgt automatisch, deutsche Systeme starten auf Deutsch und Sie sind als `admin` (Passwort `password` – bitte unter *Einstellungen › Benutzer* ändern) angemeldet.
 
@@ -234,7 +236,7 @@ Beim ersten Programmstart fragt ein Assistent nach dem Speicherort: **Auf diesem
 - Bestehende Datenbanken werden beim ersten Start nach einem Update automatisch auf das neue Schema aktualisiert.
 - Die deutsche Sprachdatei wird nach Updates automatisch auf den neuesten Stand gebracht.
 - Vor jedem Update empfiehlt sich eine Sicherheitskopie des Datenbankordners.
-- Weitere Hinweise: [docs/Hinweise.md](docs/Hinweise.md).
+- Weitere Hinweise: [docs/Hinweise.md](Hinweise.md).
 
 ## Aus dem Quellcode bauen
 
@@ -246,9 +248,9 @@ Das ZIP-Paket wird im Ordner `build/distributions/` erstellt. Voraussetzung ist 
 
 ## Hilfe, Community und Lizenz
 
-- Plugins erstellen: [docs/Plugins.md](docs/Plugins.md)
+- Plugins erstellen: [docs/Plugins.md](Plugins.md)
 - Fragen und Support (Deutsch & Englisch): Mailingliste [openyabs@googlegroups.com](mailto:openyabs@googlegroups.com) · [Archiv](https://groups.google.com/forum/#!forum/openyabs)
-- Dokumentation: [Handbuch](https://docs.google.com/document/d/1VhUi0wS-EJgfV-o89Hl-2wux810mJnqUV1wPxpgVIs4/pub) · [Hinweise und Neuerungen](docs/Hinweise.md) · [E-Rechnung](docs/E-Rechnung.md)
+- Dokumentation: [Handbuch](https://docs.google.com/document/d/1VhUi0wS-EJgfV-o89Hl-2wux810mJnqUV1wPxpgVIs4/pub) · [Hinweise und Neuerungen](Hinweise.md) · [E-Rechnung](E-Rechnung.md)
 - Ursprüngliches Projekt: [anti43/openyabs](https://github.com/anti43/openyabs) · [Heise Download](http://www.heise.de/download/yabs-yet-another-business-software-1149250.html) · [Ubuntuusers Wiki](http://wiki.ubuntuusers.de/Yabs)
 
-YaBS ist freie Software unter der **GNU General Public License v3**. Verwendete Bibliotheken und Lizenzen: [licenses-list.txt](licenses-list.txt).
+YaBS ist freie Software unter der **GNU General Public License v3**. Verwendete Bibliotheken und Lizenzen: [licenses-list.txt](https://github.com/anti43/openyabs/blob/master/licenses-list.txt).
