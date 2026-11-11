@@ -3104,6 +3104,8 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
     private void moveMenus() {
         jMenu3.setVisible(false);
         jMenuItem48.setVisible(false);
+        //View > Add toolbar action: in the script manager (Control Panel)
+        jMenuItem49.setVisible(false);
         javax.swing.JButton stock = new javax.swing.JButton(Messages.STOCK_MANAGER.toString(),
                 new javax.swing.ImageIcon(getClass().getResource("/images/32/ark.png")));
         stock.setFont(jButton19.getFont());
