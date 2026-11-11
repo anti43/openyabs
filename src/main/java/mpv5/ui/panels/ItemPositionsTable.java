@@ -106,21 +106,7 @@ public class ItemPositionsTable extends JPanel {
         itemtable.getColumnModel().getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         itemtable.setSelectionBackground(ModernTheme.accentSoft());
         itemtable.setSelectionForeground(ModernTheme.foreground());
-        itemtable.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent evt) {
-                //right click: the position to the clipboard, or new rows
-                MPTableModel m = getModel();
-                if (evt.getButton() != MouseEvent.BUTTON1 && itemtable.getSelectedRow() >= 0) {
-                    SubItem it = m.getRowAt(itemtable.getSelectedRow(), SubItem.getDefaultItem());
-                    if (it != null) {
-                        mpv5.YabsViewProxy.instance().addToClipBoard(it);
-                    } else if (!m.hasEmptyRows(new int[]{4})) {
-                        m.addRow(2);
-                    }
-                }
-            }
-        });
+        //right click: the menu of the positions (see prepareTable)
 
         JButton add = button("/images/16/add.png", Messages.ACTION_ADD.toString());
         add.addActionListener(e -> getModel().addRow(1));
@@ -400,9 +386,7 @@ public class ItemPositionsTable extends JPanel {
      */
     public void formatTable() {
         prepareTable();
-        //"Internal ID", Position, "Count", "Measure", "Text", "Netto Price", "Tax Rate", "Total Price", "Tax value", "Net 2", "Product ID", "", "", "Link", "Optional", "Discount", ??, Discount w. Tax
-        TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 53, 63, 100, 63, 63, 63, 0, 0, 63, 20, 0, 0, 100, 63, 0, 0},
-                new Boolean[]{true, true, true, true, false, true, true, true, true, true, true, true, true, true, false, true, true, true});
+        sizeColumns();
         MPTableModel model = getModel();
         model.setCanEdits(new boolean[]{false, false, true, true, true, true, true, true, false, false, true, true, false, false, true, true, false, false});
         //position number: muted, the selected row in the accent color
@@ -460,6 +444,135 @@ public class ItemPositionsTable extends JPanel {
         itemtable.moveColumn(10, 3);
         itemtable.moveColumn(14, 5);
         itemtable.moveColumn(15, 7);
+    }
+
+    /**
+     * Widths from the font: every column wide enough for its header and a
+     * typical value; the text takes all the remaining width, so the table
+     * always fills the window. Internal columns are hidden.
+     */
+    private void sizeColumns() {
+        java.awt.FontMetrics cell = itemtable.getFontMetrics(itemtable.getFont());
+        java.awt.FontMetrics head = itemtable.getFontMetrics(ModernTheme.font(1, Font.BOLD));
+        //model column -> a typical value
+        Object[][] cols = {{1, "999"}, {2, "9.999,99"}, {3, "Stunden"}, {5, "99.999,99 \u20ac"}, {6, "19,00"},
+            {7, "999.999,99 \u20ac"}, {10, "ART-000001"}, {14, "Optional"}, {15, "100,00"}};
+        int pad = ModernTheme.px(18);
+        for (Object[] c : cols) {
+            int i = (Integer) c[0];
+            javax.swing.table.TableColumn tc = itemtable.getColumnModel().getColumn(i);
+            int w = Math.max(cell.stringWidth((String) c[1]), head.stringWidth(String.valueOf(tc.getHeaderValue()))) + pad;
+            tc.setMinWidth(w);
+            tc.setPreferredWidth(w);
+            tc.setMaxWidth(i == 1 ? w : w * 2);
+        }
+        javax.swing.table.TableColumn text = itemtable.getColumnModel().getColumn(4);
+        text.setMinWidth(ModernTheme.px(160));
+        text.setPreferredWidth(ModernTheme.px(360));
+        text.setMaxWidth(Integer.MAX_VALUE);
+        //internal: id, tax value, net 2, the old buttons, link, discount values
+        for (int i : new int[]{0, 8, 9, SubItem.COLUMNINDEX_ADD, SubItem.COLUMNINDEX_REMOVE, 13, 16, 17}) {
+            TableFormat.stripColumn(itemtable, i);
+        }
+        itemtable.setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
+    }
+
+    /**
+     * The selected row, or -1
+     */
+    private int selectedRow() {
+        return itemtable.getSelectedRow();
+    }
+
+    /**
+     * Choose a product for the row (the product column's picker, next to the
+     * row), or an order if orders are preferred
+     */
+    private void choose(int row) {
+        if (row < 0) {
+            return;
+        }
+        if (!User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "ordersoverproducts")) {
+            itemtable.editCellAt(row, itemtable.convertColumnIndexToView(10));
+            return;
+        }
+        Item o = (Item) Popup.SelectValue(Context.getOrder());
+        if (o != null) {
+            //the order as position(s): one per VAT rate, net after discount
+            MPTableModel m = getModel();
+            java.util.List<SubItem> ps = mpv5.handler.ItemService.asPositions(o,
+                    Messages.TYPE_ORDER + " " + o.__getCnumber() + " " + DateConverter.getDefDateString(o.__getDateadded()));
+            for (int k = 0; k < ps.size(); k++) {
+                if (k > 0) {
+                    m.insertRow(row + k);
+                }
+                m.setRowAt(ps.get(k).getRowData(row + k), row + k, 1);
+            }
+            usedOrders.add(o);
+        }
+        if (getModel().getEmptyRows(new int[]{4}) < 2) {
+            getModel().addRow(1);
+        }
+    }
+
+    /**
+     * A new empty row at the given index
+     */
+    private void insertAt(int row) {
+        int r = Math.max(0, Math.min(row, getModel().getRowCount()));
+        getModel().insertRow(r);
+        getModel().setRowAt(SubItem.getDefaultItem().getRowData(r), r, 1);
+        itemtable.changeSelection(r, itemtable.convertColumnIndexToView(4), false, false);
+    }
+
+    /**
+     * Puts a copy of a position below the given row
+     */
+    private void insertCopy(SubItem it, int row) {
+        Object[] data = it.getRowData(row + 1);
+        data[0] = -1; //a new position
+        getModel().insertRow(row + 1);
+        getModel().setRowAt(data, row + 1, 1);
+        itemtable.changeSelection(row + 1, itemtable.convertColumnIndexToView(4), false, false);
+    }
+
+    private void duplicate() {
+        int row = selectedRow();
+        SubItem it = row < 0 ? null : getModel().getRowAt(row, SubItem.getDefaultItem());
+        if (it != null) {
+            insertCopy(it, row);
+        }
+    }
+
+    private void copy() {
+        int row = selectedRow();
+        SubItem it = row < 0 ? null : getModel().getRowAt(row, SubItem.getDefaultItem());
+        if (it != null) {
+            mpv5.YabsViewProxy.instance().addToClipBoard(it);
+        }
+    }
+
+    /**
+     * The positions of the clipboard below the selected row (or at the end)
+     */
+    private void paste() {
+        int row = selectedRow() < 0 ? getModel().getRowCount() - 1 : selectedRow();
+        for (mpv5.db.common.DatabaseObject o : mpv5.YabsViewProxy.instance().getClipboardItems()) {
+            if (o instanceof SubItem) {
+                insertCopy((SubItem) o, row++);
+            }
+        }
+    }
+
+    /**
+     * Empties the row (the old "C" button)
+     */
+    private void clearRow() {
+        int row = selectedRow();
+        if (row >= 0) {
+            SubItem.addToDeletionQueue(getModel().getValueAt(row, 0));
+            getModel().setRowAt(SubItem.getDefaultItem().getRowData(row), row, 1);
+        }
     }
 
     private void prepareTable() {
@@ -532,7 +645,7 @@ public class ItemPositionsTable extends JPanel {
         taxcalculator.setSumFunction(m -> invoiceTotals(m, optional).tax);
         itemMultiplier.setSumFunction(m -> invoiceTotals(m, optional).gross);
 
-        //"+" in a row: choose a product (or an order), "-": clear the row
+        //the old "+" ("A") and "-" buttons in the rows: now in the menu (columns hidden)
         JButton b1 = new JButton();
         b1.addMouseListener(new MouseAdapter() {
             @Override
@@ -573,23 +686,36 @@ public class ItemPositionsTable extends JPanel {
         itemtable.getColumnModel().getColumn(SubItem.COLUMNINDEX_REMOVE).setCellRenderer(new ButtonRenderer());
         itemtable.getColumnModel().getColumn(SubItem.COLUMNINDEX_REMOVE).setCellEditor(new ButtonEditor(b2));
 
+        boolean orders = User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "ordersoverproducts");
         new TablePopUp(itemtable, new String[]{
+            (orders ? Messages.ITEM_CHOOSE_ORDER : Messages.ITEM_CHOOSE_PRODUCT).getValue(),
+            null,
+            Messages.ITEM_INSERT_ABOVE.getValue(),
+            Messages.ITEM_INSERT_BELOW.getValue(),
+            Messages.ITEM_DUPLICATE.getValue(),
+            null,
+            Messages.ITEM_MOVE_UP.getValue(),
+            Messages.ITEM_MOVE_DOWN.getValue(),
+            null,
             Messages.ACTION_COPY.getValue(),
             Messages.ACTION_PASTE.getValue(),
             null,
-            Messages.ACTION_ADD.getValue(),
+            Messages.ITEM_CLEAR.getValue(),
             Messages.ACTION_REMOVE.getValue()},
                 new ActionListener[]{
-                    e -> {
-                        SubItem it = getModel().getRowAt(itemtable.getSelectedRow(), SubItem.getDefaultItem());
-                        if (it != null) {
-                            mpv5.YabsViewProxy.instance().addToClipBoard(it);
-                        }
-                    },
-                    e -> {
-                    },
+                    e -> choose(selectedRow()),
                     null,
-                    e -> getModel().addRow(1),
+                    e -> insertAt(Math.max(0, selectedRow())),
+                    e -> insertAt(selectedRow() < 0 ? getModel().getRowCount() : selectedRow() + 1),
+                    e -> duplicate(),
+                    null,
+                    e -> move(-1),
+                    e -> move(1),
+                    null,
+                    e -> copy(),
+                    e -> paste(),
+                    null,
+                    e -> clearRow(),
                     e -> removeSelected()});
         //positions are the main content: larger than the default table font
         Font font = ModernTheme.font(2, Font.PLAIN);
