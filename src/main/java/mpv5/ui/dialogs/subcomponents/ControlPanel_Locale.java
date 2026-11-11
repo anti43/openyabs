@@ -43,6 +43,7 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
         locales.setModel(getLocales());
         locales.setSelectedIndex(MPComboBoxModelItem.getItemID(Locale.getDefault().toString(),
                 locales.getModel()));
+        formatCard();
         setLanguageSelection();
         isocode.set_ValueClass(java.lang.Integer.class);
         countryselect.setModel(LanguageManager.getCountriesAsComboBoxModel());
@@ -613,6 +614,47 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
                 languages.getModel()));
     }
     // End of variables declaration
+
+    private final javax.swing.JLabel preview = new javax.swing.JLabel();
+
+    /**
+     * The format card: what the format is used for, and an example of the
+     * selected one (number, amount, date)
+     */
+    private void formatCard() {
+        jLabel1.setText("<html>" + mpv5.globals.Messages.LOCALE_FORMAT_INFO + "</html>");
+        preview.setOpaque(true);
+        preview.setBackground(mpv5.ui.modern.ModernTheme.accentSoft());
+        preview.setForeground(mpv5.ui.modern.ModernTheme.foreground());
+        preview.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                javax.swing.BorderFactory.createLineBorder(mpv5.ui.modern.ModernTheme.accent()),
+                javax.swing.BorderFactory.createEmptyBorder(6, 8, 6, 8)));
+        jPanel2.removeAll();
+        jPanel2.setLayout(new javax.swing.BoxLayout(jPanel2, javax.swing.BoxLayout.PAGE_AXIS));
+        for (javax.swing.JComponent c : new javax.swing.JComponent[]{jLabel1, locales, preview}) {
+            c.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
+            c.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, c.getPreferredSize().height + (c == preview ? 40 : 0)));
+            jPanel2.add(c);
+            jPanel2.add(javax.swing.Box.createVerticalStrut(6));
+        }
+        locales.addActionListener(e -> showExample());
+        showExample();
+    }
+
+    private void showExample() {
+        Object sel = locales.getSelectedItem();
+        if (!(sel instanceof MPComboBoxModelItem)) {
+            return;
+        }
+        Locale l = TypeConversion.stringToLocale(((MPComboBoxModelItem) sel).getId());
+        String number = new java.text.DecimalFormat(mpv5.utils.numberformat.FormatNumber.FORMAT_DECIMAL,
+                java.text.DecimalFormatSymbols.getInstance(l)).format(1234.56);
+        String amount = java.text.NumberFormat.getCurrencyInstance(l).format(1234.56);
+        String date = mpv5.utils.date.DateConverter.numericFormat(l).format(new java.util.Date());
+        preview.setText("<html>" + mpv5.globals.Messages.LOCALE_EXAMPLE_NUMBER + ": <b>" + number + "</b><br>"
+                + mpv5.globals.Messages.LOCALE_EXAMPLE_AMOUNT + ": <b>" + amount + "</b><br>"
+                + mpv5.globals.Messages.LOCALE_EXAMPLE_DATE + ": <b>" + date + "</b></html>");
+    }
 
     private void setSettings() {
 

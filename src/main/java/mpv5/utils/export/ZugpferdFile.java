@@ -353,7 +353,7 @@ public class ZugpferdFile implements Waitable {
      */
     public static String paymentTermsText(int days, Date dueDate) {
         return days == 0 ? Messages.ZUGFERD_PAYABLE_IMMEDIATELY.toString()
-                : Messages.ZUGFERD_PAYABLE_UNTIL + " " + new SimpleDateFormat("dd.MM.yyyy").format(dueDate);
+                : Messages.ZUGFERD_PAYABLE_UNTIL + " " + mpv5.utils.date.DateConverter.getDay(dueDate);
     }
 
     /**

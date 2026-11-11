@@ -185,14 +185,14 @@ public class PrinitingComboBox extends javax.swing.JPanel {
                             }
                             break;
                         case 1:
-                            DialogForFile dialog = new DialogForFile(DialogForFile.FILES_ONLY, "export-" + DateConverter.getTodayDefDate() + ".html");
+                            DialogForFile dialog = new DialogForFile(DialogForFile.FILES_ONLY, "export-" + DateConverter.getTodayFileDate() + ".html");
                             if (dialog.saveFile()) {
                                 File f = new TableHtmlWriter((JTable) dataowner, dialog.getFile(), ((JTable) dataowner).getShowHorizontalLines(), ((JTable) dataowner).getShowVerticalLines()).createHtml();
                                 FileActionHandler.open(f);
                             }
                             break;
                         case 2:
-                            DialogForFile dialog2 = new DialogForFile(DialogForFile.FILES_ONLY, "export-" + DateConverter.getTodayDefDate() + ".csv");
+                            DialogForFile dialog2 = new DialogForFile(DialogForFile.FILES_ONLY, "export-" + DateConverter.getTodayFileDate() + ".csv");
                             if (dialog2.saveFile()) {
                                 FileReaderWriter r = new FileReaderWriter(dialog2.getFile());
                                 String title = "";

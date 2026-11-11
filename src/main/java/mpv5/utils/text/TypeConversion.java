@@ -86,6 +86,10 @@ public class TypeConversion {
         }
 
         if (country != null) {
+            //"UK" is no country code (older default "en_UK"): Great Britain
+            if (country.equalsIgnoreCase("UK")) {
+                country = "GB";
+            }
             return new Locale(lang.toLowerCase(), country.toUpperCase());
         } else {
             return new Locale(lang.toLowerCase());

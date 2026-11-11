@@ -129,7 +129,8 @@ public class User extends DatabaseObject {
     private String password = "";
     private String fullname = "";
     private String laf = "";
-    private String locale = "en_UK";
+    //a new user starts with the format in use (was "en_UK", no valid country: no currency)
+    private String locale = java.util.Locale.getDefault().getLanguage() + "_" + (java.util.Locale.getDefault().getCountry().isEmpty() ? "GB" : java.util.Locale.getDefault().getCountry());
     private String defcountry = "";
     private String mail = "";
     private String language = "buildin_en";

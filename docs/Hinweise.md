@@ -100,3 +100,30 @@ Ausführlich, mit Rechtslage und Checkliste: **[docs/E-Rechnung.md](E-Rechnung.m
   Ohne Skonto sind die Skonto-Felder leer.
 - **Ablage und Dateinamen wie bei den PDFs:** Der Speichern-Dialog der E-Rechnung schlägt denselben Ordner und Dateinamen vor wie der PDF-Export (*Benutzereinstellungen > Filename Defaults*). Mail-Anhänge heißen ebenso.
 - **Tipp: Rechnungen automatisch archivieren (Bcc).** YaBS kann jede versendete E-Mail – einzeln und im Serienversand, mit allen Anhängen (PDF, ZUGFeRD, XRechnung) – zusätzlich als Bcc an ein eigenes Archivpostfach senden. Einrichten unter *Werkzeuge > Einstellungen > Benutzereinstellungen*, Bereich E-Mail, Feld **„Bcc (alle E-Mails)“** (mehrere Adressen mit `;` trennen; gilt für alle Benutzer). Der Kunde sieht diese Adresse nicht. Details: [docs/E-Rechnung.md](E-Rechnung.md#archivierung).
+
+## Einstellungen und Bedienung
+
+- **Linux unter Windows (WSL):** Das Hauptfenster bleibt nicht mehr grau, bis es verschoben wird – YaBS setzt unter WSL automatisch `_JAVA_AWT_WM_NONREPARENTING=1`.
+- **Dateinamengrundeinstellung** (*Benutzereinstellungen*): Variablen und `/` (Unterordner) über die Auswahl *An der Cursorposition einfügen* einsetzen; eine Vorschau zeigt Pfad und Dateinamen. Alle Variablen: [Wiki: File name defaults](https://github.com/anti43/openyabs/wiki/File-name-defaults).
+- **Journal, Rechtsklick *PDF* / *ODT*:** speichert wie der Beleg selbst – Ordner und Dateiname aus der Dateinamengrundeinstellung, Eintrag in der Historie. Eine Abfrage zeigt Anzahl und Zielordner.
+- **EPC-QR-Code (GiroCode)** auf Rechnungen: Bild mit dem Namen `QRCode.img` in der ODT-Vorlage; die mitgelieferte Vorlage enthält es. Details: [QR-Code](QR-Code.md).
+- **Mitgelieferte Rechnungsvorlage:** Hat ein Benutzer bei der Anmeldung keine Rechnungsvorlage, wird die Demo-Vorlage eingelesen und „Alle Gruppen“ zugeordnet (einmal pro Benutzer).
+- **SEPA-Lastschrift statt DTAUS:** Im Journal unbezahlte Rechnungen auswählen, Rechtsklick *SEPA-Lastschriftdatei erstellen*. Fehlen IBAN oder Gläubiger-ID (*Firmeninformation*), erscheint nur der Hinweis, keine Datei. Voraussetzungen: [SEPA-Lastschrift](SEPA-Lastschrift.md). Die früheren *Kontoeinstellungen* der Benutzereinstellungen (nur für DTAUS) sind entfernt.
+- **Journal-Menü:** *Per E-Mail senden* ist jetzt übersetzt.
+- **Benutzereinstellungen, *Datum in Belegen* und *Export (Vorlagen und Journal)*:** Jede Option hat einen klaren Namen und darunter eine Erklärung, was sie an und aus bewirkt. Die wirkungslose Option „Externe Office Dokumente über URL laden“ ist entfernt; „Nur echte Positionen nummerieren“ zeigt den tatsächlichen Stand (Standard: an).
+- **Benutzereinstellungen, *Neue Positionen*** (früher „Rechnung Standardwerte“): Einheit, Anzahl und MwSt.-Satz jeder neuen Position; darunter, aus welchen Artikelfeldern der Text einer Position entsteht (Kästchen wirken sofort, mit Vorschau). Das unbenutzte Feld „Ship Tax“ ist entfernt.
+- **Positionen im Beleg:** Die Tabelle nutzt die ganze Breite, Spalten sind so breit wie Überschrift und Inhalt, die Spaltennamen stimmen (Anzahl, Artikel, Einheit, Text, Rabatt %, Nettopreis, MwSt %, Gesamt). Statt der Schaltfläche „A“ gibt es per Rechtsklick: *Artikel wählen…* (bzw. *Auftrag einfügen…*), Zeile darüber/darunter einfügen, Duplizieren, nach oben/unten, Kopieren, Einfügen, Zeile leeren, Entfernen.
+- **Regional und Sprache, *Währung, Zahlen- und Datumsformat*:** Zur Auswahl stehen nur Formate mit Land (das Land bestimmt die Währung); ein Beispiel zeigt Zahl, Betrag und Datum. Das Datumsformat gilt überall, auch für „Zahlbar bis …“ in E-Rechnungen. Neue Benutzer übernehmen das aktuelle Format (früher das ungültige `en_UK`, das ohne Währungssymbol anzeigte).
+- **Umstieg von Fakturama 2:** *Datei › Import › Fakturama 2* – siehe [README](README.de.md#import-export-und-umstieg-von-anderer-software).
+
+### Settings and usage (EN)
+
+- **WSL:** the main window is no longer grey until moved (`_JAVA_AWT_WM_NONREPARENTING=1` is set automatically).
+- **File name defaults:** insert variables and `/` from a list, with a preview. Variables: [wiki](https://github.com/anti43/openyabs/wiki/File-name-defaults).
+- **Journal PDF/ODT:** saved like from the document – folder and name from the file name defaults, history entry.
+- **EPC QR code (GiroCode):** image named `QRCode.img` in ODT templates – [QR-Code](QR-Code.md).
+- **Demo invoice template:** imported and assigned to "All Groups" at login if a user has no invoice template.
+- **SEPA direct debit** replaces DTAUS (journal, right click); requirements: [SEPA-Lastschrift](SEPA-Lastschrift.md). The user properties' *Account settings* are gone.
+- **User properties:** *Document dates*, *Export* and *New positions* explain every option; unused options removed.
+- **Positions:** full-width table, correct column names, right-click menu instead of the "A" button.
+- **Regional settings:** only formats with a country (currency), an example of number, amount and date; dates follow the format everywhere.

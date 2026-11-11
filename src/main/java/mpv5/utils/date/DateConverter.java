@@ -389,7 +389,16 @@ public class DateConverter {
      * @return
      */
     public static synchronized String getTodayDefDate() {
-        return DE_DATE_FORMAT.format(new Date());
+        return DEF_DATE_FORMAT.format(new Date());
+    }
+
+    /**
+     * The current date for file names: 2026-11-30 (no slashes, sorts by date)
+     *
+     * @return
+     */
+    public static synchronized String getTodayFileDate() {
+        return ENG_DATE_FORMAT.format(new Date());
     }
 
     /**
@@ -489,7 +498,7 @@ public class DateConverter {
      * @return
      */
     public static synchronized String getDay(Date datum) {
-        return DE_DATE_FORMAT.format(datum);
+        return DEF_DATE_FORMAT.format(datum);
     }
 
     /**

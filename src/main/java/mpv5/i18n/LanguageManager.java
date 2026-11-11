@@ -349,19 +349,18 @@ public class LanguageManager {
      * @return A comboBoxModel reflecting the available locales
      */
     public static DefaultComboBoxModel getLocalesAsComboBoxModel() {
-        Locale[] o = Locale.getAvailableLocales();
-        MPComboBoxModelItem[] items = new MPComboBoxModelItem[o.length];
-        for (int i = 0; i < items.length; i++) {
-            String language = o[i].getLanguage();
-            String country = o[i].getCountry();
-            String locale_name = o[i].getDisplayName();
-//            Log.Debug(LanguageManager.class, locale_name);
-            items[i] = new MPComboBoxModelItem(language + "_" + country,
-                    locale_name + "  [" + language + "_" + country + "]");
-//            items[i] = new MPComboBoxModelItem(o[i].toString(), o[i].getDisplayName());
+        //only language + country: the country gives the currency (without it: the symbol \u00a4)
+        java.util.Map<String, MPComboBoxModelItem> unique = new java.util.TreeMap<String, MPComboBoxModelItem>();
+        for (Locale l : Locale.getAvailableLocales()) {
+            String language = l.getLanguage();
+            String country = l.getCountry();
+            if (language.isEmpty() || country.length() != 2 || !l.getVariant().isEmpty() || !l.getScript().isEmpty()) {
+                continue;
+            }
+            String id = language + "_" + country;
+            unique.put(id, new MPComboBoxModelItem(id, l.getDisplayName() + "  [" + id + "]"));
         }
-
-        return new DefaultComboBoxModel(ArrayUtilities.sort(items));
+        return new DefaultComboBoxModel(ArrayUtilities.sort(unique.values().toArray(new MPComboBoxModelItem[0])));
     }
 
     public static String importLanguage(String langname, File file) throws Exception {
