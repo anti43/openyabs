@@ -1634,87 +1634,65 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
     }
 
     private void pdf() {
-        if (jTable1.getSelectedRowCount() < 1) {
-            Popup.notice(Messages.SELECT_AN_INVOICE);
-
-        } else {
-            ArrayList<Templateable> items = new ArrayList<Templateable>();
-            for (int i = 0; i < jTable1.getSelectedRows().length; i++) {
-
-                int index = jTable1.convertRowIndexToModel(jTable1.getSelectedRows()[i]);
-                DatabaseObject obj = (DatabaseObject) jTable1.getModel().getValueAt(index, 0);
-                if (obj instanceof Templateable) {
-                    Templateable item = (Templateable) obj;
-                    items.add(item);
-                }
-
-            }
-
-            List<Waitable> files = new ArrayList<Waitable>();
-            for (int i = 0; i < items.size(); i++) {
-                try {
-                    final Templateable item = items.get(i);
-                    if (TemplateHandler.loadTemplate(item) == null) {
-                        Popup.warn(Messages.NO_TEMPLATE_DEFINDED + "\n" + TemplateHandler.getName(item.templateType())
-                                + "\n" + Messages.IN_GROUP + " " + DatabaseObject.getObject(Context.getGroup(), ((DatabaseObject) item).__getGroupsids())); //NOI18N //NOI18N
-                    } else {
-                        files.add(Export.createFile(item.getFormatHandler().toUserString(), TemplateHandler.loadTemplate(item), ((DatabaseObject) item)));
-                    }
-                } catch (Exception nodataFoundException) {
-                    Log.Debug(nodataFoundException);
-                }
-            }
-
-            if (!files.isEmpty()) {
-                DialogForFile d = new DialogForFile(DialogForFile.DIRECTORIES_ONLY);
-                Job job = new Job(files, d, files.size() + " PDF " + Messages.SAVED); //NOI18N
-                job.execute();
-            }
-        }
+        export(true);
     }
 
     private void odt() {
+        export(false);
+    }
+
+    /**
+     * PDF or ODT of the selected documents, as from the document itself: each
+     * file goes to the folder and gets the name of the file name defaults
+     * (user properties); one question for all instead of a folder dialog
+     *
+     * @param pdf true: PDF, false: ODT
+     */
+    private void export(final boolean pdf) {
         if (jTable1.getSelectedRowCount() < 1) {
             Popup.notice(Messages.SELECT_AN_INVOICE);
-
-        } else {
-            ArrayList<Templateable> items = new ArrayList<Templateable>();
-            for (int i = 0; i < jTable1.getSelectedRows().length; i++) {
-                try {
-                    int index = jTable1.convertRowIndexToModel(jTable1.getSelectedRows()[i]);
-                    DatabaseObject obj = (DatabaseObject) jTable1.getModel().getValueAt(index, 0);
-                    if (obj instanceof Templateable) {
-                        Templateable item = (Templateable) obj;
-                        items.add(item);
-                    }
-                } catch (Exception ex) {
-                    Log.Debug(ex);
-                    throw ex;
-                }
-            }
-
-            List<Waitable> files = new ArrayList<Waitable>();
-            for (int i = 0; i < items.size(); i++) {
-                try {
-                    final Templateable item = items.get(i);
-                    if (TemplateHandler.loadTemplate(item) == null) {
-                        Popup.warn(Messages.NO_TEMPLATE_DEFINDED + "\n" + TemplateHandler.getName(item.templateType())
-                                + "\n" + Messages.IN_GROUP + " " + DatabaseObject.getObject(Context.getGroup(), ((DatabaseObject) item).__getGroupsids())); //NOI18N //NOI18N
-                    } else {
-                        files.add(Export.sourceFile(item.getFormatHandler().toUserString(), TemplateHandler.loadTemplate(item), ((DatabaseObject) item)));
-                    }
-                } catch (Exception nodataFoundException) {
-                    Log.Debug(nodataFoundException);
-                }
-            }
-
-            if (!files.isEmpty()) {
-                DialogForFile d = new DialogForFile(DialogForFile.DIRECTORIES_ONLY);
-
-                Job job = new Job(files, d, files.size() + " ODT " + Messages.SAVED); //NOI18N
-                job.execute();
-            }
+            return;
         }
+        final List<DatabaseObject> docs = new ArrayList<DatabaseObject>();
+        List<String> noTemplate = new ArrayList<String>();
+        java.util.Set<String> dirs = new java.util.TreeSet<String>();
+        for (int row : jTable1.getSelectedRows()) {
+            Object obj = jTable1.getModel().getValueAt(jTable1.convertRowIndexToModel(row), 0);
+            if (!(obj instanceof Templateable)) {
+                continue;
+            }
+            DatabaseObject dob = (DatabaseObject) obj;
+            //loads (and caches) the template; the export checks the cache
+            if (TemplateHandler.loadTemplate((Templateable) dob) == null) {
+                noTemplate.add(dob.__getCname() + " (" + TemplateHandler.getName(((Templateable) dob).templateType()) + ")");
+                continue;
+            }
+            docs.add(dob);
+            dirs.add(User.getSaveDir(dob).getPath());
+        }
+        if (!noTemplate.isEmpty()) {
+            Popup.notice(noTemplate, Messages.NO_TEMPLATE_DEFINDED);
+        }
+        if (docs.isEmpty()) {
+            return;
+        }
+        StringBuilder q = new StringBuilder(String.format(Messages.JOURNAL_EXPORT_CONFIRM.toString(), docs.size(), pdf ? "PDF" : "ODT"));
+        for (String d : dirs) {
+            q.append("\n  ").append(d);
+        }
+        if (!Popup.Y_N_dialog(q.toString())) {
+            return;
+        }
+        new Thread(() -> {
+            for (DatabaseObject dob : docs) {
+                if (pdf) {
+                    dob.toPdf(false);
+                } else {
+                    dob.toOdt(false);
+                }
+            }
+            mpv5.YabsViewProxy.instance().addMessage(docs.size() + (pdf ? " PDF " : " ODT ") + Messages.SAVED);
+        }, "journal-export").start();
     }
 
     private void filter() {

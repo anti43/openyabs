@@ -36,6 +36,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         initComponents();
         filenameBuilder();
         describeOptions();
+        explainPositionDefaults();
         modernLayout();
         //modern views (see YabsViewProxy), the system property yabs.ui overrides it
         modernui.setText(Messages.MODERN_UI.toString());
@@ -977,6 +978,103 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         describe(showItemAsDesc, Messages.OPT_ITEMASDESC, Messages.OPT_ITEMASDESC_INFO);
         //"Load remote office docs by url" had no function
         remoteurl.setVisible(false);
+    }
+
+    /**
+     * "New positions" (was "Position text defaults"): what the defaults are
+     * for, the product fields of a position's text with a live preview
+     */
+    private void explainPositionDefaults() {
+        defunit.set_Label(Messages.POS_UNIT.toString());
+        defcount.set_Label(Messages.POS_COUNT.toString());
+        deftax.set_Label(Messages.POS_TAX.toString());
+        //"Ship Tax" was not used anywhere
+        shiptax.setVisible(false);
+        cname.setText(Messages.POS_FIELD_NAME.toString());
+        cnumber.setText(Messages.POS_FIELD_NUMBER.toString());
+        description.setText(Messages.POS_FIELD_DESCRIPTION.toString());
+        ean.setText(Messages.POS_FIELD_EAN.toString());
+        reference.setText(Messages.POS_FIELD_REFERENCE.toString());
+        format.set_Label(Messages.POS_FORMAT.toString());
+        format.getTextField().setToolTipText(Messages.POS_FORMAT_TOOLTIP.toString());
+        format.getTextField().setPreferredSize(null);
+        //the checkboxes build the format right away ("Generate" is not needed)
+        jButton3.setVisible(false);
+        for (javax.swing.JCheckBox b : new javax.swing.JCheckBox[]{cname, cnumber, description, ean, reference}) {
+            b.addActionListener(e -> generate());
+        }
+
+        final String[][] sample = {{"cname", "Widget 3000"}, {"cnumber", "ART-00042"},
+            {"description", "blue, 10 cm"}, {"ean", "4006381333931"}, {"reference", "W3-B10"}};
+        final javax.swing.JLabel preview = new javax.swing.JLabel(" ");
+        Runnable update = () -> {
+            String t = format.getText();
+            for (String[] v : sample) {
+                t = t.replace("_$" + v[0] + "$_", v[1]);
+            }
+            t = t.replaceAll("_\\$[a-zA-Z0-9]*\\$_", "").trim();
+            preview.setText(Messages.FILENAME_PREVIEW + ": " + (t.isEmpty() ? "-" : t));
+        };
+        format.getTextField().getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            public void insertUpdate(javax.swing.event.DocumentEvent e) {
+                update.run();
+            }
+
+            public void removeUpdate(javax.swing.event.DocumentEvent e) {
+                update.run();
+            }
+
+            public void changedUpdate(javax.swing.event.DocumentEvent e) {
+                update.run();
+            }
+        });
+        preview.setOpaque(true);
+        preview.setBackground(mpv5.ui.modern.ModernTheme.accentSoft());
+        preview.setForeground(mpv5.ui.modern.ModernTheme.foreground());
+        preview.setBorder(javax.swing.BorderFactory.createCompoundBorder(
+                javax.swing.BorderFactory.createLineBorder(mpv5.ui.modern.ModernTheme.accent()),
+                javax.swing.BorderFactory.createEmptyBorder(6, 8, 6, 8)));
+
+        javax.swing.JLabel productHead = new javax.swing.JLabel(Messages.POS_TEXT_HEAD.toString());
+        productHead.setFont(productHead.getFont().deriveFont(java.awt.Font.BOLD));
+        java.util.List<javax.swing.JComponent> parts = java.util.Arrays.asList(
+                infoText(Messages.POS_INFO.toString()), defs,
+                productHead, infoText(Messages.POS_TEXT_INFO.toString()), productstobillsproperties, format, preview);
+        jPanel2.removeAll();
+        jPanel2.setLayout(new javax.swing.BoxLayout(jPanel2, javax.swing.BoxLayout.PAGE_AXIS));
+        for (javax.swing.JComponent c : parts) {
+            c.setAlignmentX(Component.LEFT_ALIGNMENT);
+            if (c == format || c == preview) {
+                c.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, c.getPreferredSize().height));
+            }
+            jPanel2.add(c);
+            jPanel2.add(javax.swing.Box.createVerticalStrut(6));
+        }
+    }
+
+    /**
+     * A wrapped, read-only text for the cards
+     */
+    private javax.swing.JTextArea infoText(String text) {
+        final javax.swing.JTextArea info = new javax.swing.JTextArea(text);
+        info.setColumns(40);
+        info.setLineWrap(true);
+        info.setWrapStyleWord(true);
+        info.setEditable(false);
+        info.setFocusable(false);
+        info.setOpaque(false);
+        info.setFont(new javax.swing.JLabel().getFont());
+        info.setForeground(mpv5.ui.modern.ModernTheme.muted());
+        //the height of wrapped text is known only once the width is: lay out again then
+        info.addComponentListener(new java.awt.event.ComponentAdapter() {
+            @Override
+            public void componentResized(java.awt.event.ComponentEvent e) {
+                if (info.getPreferredSize().height != info.getHeight() && info.getParent() != null) {
+                    javax.swing.SwingUtilities.invokeLater(((javax.swing.JComponent) info.getParent())::revalidate);
+                }
+            }
+        });
+        return info;
     }
 
     private static void describe(javax.swing.JCheckBox box, Messages title, Messages info) {
