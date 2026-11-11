@@ -261,7 +261,7 @@ public enum Messages {
     SELECT_AN_INVOICE("You need to select at least one invoice to export."),
     PROPERTY("Property"),
     VALUE("Value"),
-    EMAIL_SEND("Email"),
+    EMAIL_SEND("Send by e-mail"),
     REALLY_DELETE2("Do you really want to delete all selected datasets?"),
     REALLY_CHANGE2("Do you really want to change all selected datasets?"),
     PRINTED("Printed item: "),

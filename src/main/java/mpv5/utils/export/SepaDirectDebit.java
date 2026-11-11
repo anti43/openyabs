@@ -97,33 +97,59 @@ public class SepaDirectDebit extends Exportable implements Waitable {
         setData(map);
     }
 
+    private final List<Debit> debits = new ArrayList<Debit>();
+    private final List<String> done = new ArrayList<String>();
+    private final List<String> skipped = new ArrayList<String>();
+    private Creditor creditor;
+
+    /**
+     * Collects the debits; call before the file is created (and before asking
+     * where to save it)
+     *
+     * @return null if the file can be created, else what is missing
+     */
+    public String check() {
+        debits.clear();
+        done.clear();
+        skipped.clear();
+        creditor = companyCreditor(ZugpferdFile.companySettings());
+        if (creditor == null) {
+            return Messages.SEPA_DD_NO_CREDITOR.toString();
+        }
+        for (Object o : getData().values()) {
+            Item item = (Item) o;
+            String line = item.__getCnumber();
+            try {
+                Contact c = (Contact) DatabaseObject.getObject(Context.getContact(), item.__getContactsids());
+                line += "  " + c.__getCname();
+                Debit d = debitOf(item, c);
+                if (d != null) {
+                    debits.add(d);
+                    done.add(line + "  " + d.amount.toPlainString() + " EUR");
+                    continue;
+                }
+            } catch (Exception e) {
+                Log.Debug(this, e.getMessage());
+            }
+            skipped.add(line);
+        }
+        if (debits.isEmpty()) {
+            StringBuilder s = new StringBuilder(Messages.SEPA_DD_NOTHING.toString());
+            for (String line : skipped) {
+                s.append("\n").append(line);
+            }
+            return s.toString();
+        }
+        return null;
+    }
+
     @Override
     void run() {
         try {
             mpv5.YabsViewProxy.instance().setWaiting(true);
-            Creditor creditor = companyCreditor(ZugpferdFile.companySettings());
-            if (creditor == null) {
-                Popup.notice(Messages.SEPA_DD_NO_CREDITOR);
-                return;
-            }
-            List<Debit> debits = new ArrayList<Debit>();
-            List<String> done = new ArrayList<String>();
-            List<String> skipped = new ArrayList<String>();
-            for (Object o : getData().values()) {
-                Item item = (Item) o;
-                Contact c = (Contact) DatabaseObject.getObject(Context.getContact(), item.__getContactsids());
-                Debit d = debitOf(item, c);
-                String line = item.__getCnumber() + "  " + c.__getCname();
-                if (d == null) {
-                    skipped.add(line);
-                } else {
-                    debits.add(d);
-                    done.add(line + "  " + d.amount.toPlainString() + " EUR");
-                }
-            }
-            if (debits.isEmpty()) {
-                Popup.notice(Messages.SEPA_DD_NOTHING);
-                return;
+            String problem = creditor == null ? check() : null;
+            if (problem != null) {
+                throw new IllegalStateException(problem);
             }
             String xml = toXml(creditor, debits, nextCollectionDate(LocalDate.now()), LocalDateTime.now());
             Files.write(toPath(), xml.getBytes(StandardCharsets.UTF_8));
@@ -134,8 +160,11 @@ public class SepaDirectDebit extends Exportable implements Waitable {
                 report.addAll(skipped);
             }
             Popup.notice(report, Messages.SEPA_DD_CREATED);
+        } catch (IllegalStateException ex) {
+            throw ex;
         } catch (Exception ex) {
             Log.Debug(ex);
+            throw new IllegalStateException(ex.getMessage(), ex);
         } finally {
             mpv5.YabsViewProxy.instance().setWaiting(false);
         }
