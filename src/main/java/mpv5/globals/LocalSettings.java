@@ -334,15 +334,16 @@ public class LocalSettings {
         if (cookies == null) {
             cookies = new Vector<PropertyStore>();
         }
-        if (forConnId != null) {
-            connectionID = forConnId;
-            cookie.changeProperty("nodeid", forConnId.toString());
-            cookies.add(cookie);
-        } else {
-            connectionID = 0;
-            cookie.changeProperty("nodeid", String.valueOf(connectionID));
-            cookies.add(cookie);
+        connectionID = forConnId != null ? forConnId : 0;
+        cookie.changeProperty("nodeid", String.valueOf(connectionID));
+        //one entry per connection (each save added another copy before)
+        for (java.util.Iterator<PropertyStore> it = cookies.iterator(); it.hasNext();) {
+            PropertyStore p = it.next();
+            if (p == cookie || String.valueOf(connectionID).equals(p.getProperty("nodeid"))) {
+                it.remove();
+            }
         }
+        cookies.add(cookie);
         XMLWriter x = new XMLWriter();
         try {
             x.newDoc("localsettings", false);

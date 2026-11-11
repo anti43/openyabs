@@ -30,7 +30,8 @@ public class MigrationWB {
         df = new DialogForFile(DialogForFile.DIRECTORIES_ONLY);
         df.setDialogTitle(Messages.SAVE_BACKUP.toString());
         if (LocalSettings.getProperty(LocalSettings.BACKUP_DIR) == null) {
-            df.setCurrentDirectory(new File("."));
+            //not the program folder: the folder chosen last, as in all file dialogs
+            df.setCurrentDirectory(mpv5.utils.files.LastDirectory.get());
         } else {
             df.setCurrentDirectory(new File(LocalSettings.getProperty(LocalSettings.BACKUP_DIR)));
         }
