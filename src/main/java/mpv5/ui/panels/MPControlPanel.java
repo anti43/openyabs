@@ -73,7 +73,6 @@ import mpv5.ui.dialogs.subcomponents.ControlPanel_Userproperties;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Users;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_ValueProps;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_WebShopManager;
-import mpv5.ui.frames.MPBabelFish;
 import mpv5.ui.modern.ModernTheme;
 import mpv5.ui.modern.ResponsiveGrid;
 import mpv5.usermanagement.MPSecurityManager;
@@ -255,14 +254,9 @@ public class MPControlPanel extends JPanel {
         l.add(panel(people, "jButton16", Messages.SETTINGS_D_USERPROPERTIES, "preferences_plugin", ControlPanel_Userproperties.class, ControlPanel_Userproperties::new));
         l.add(panel(people, "jButton2", Messages.SETTINGS_D_LOCALE, "locale", ControlPanel_Locale.class, ControlPanel_Locale::new));
         l.add(panel(people, "jButton9", Messages.SETTINGS_D_FONT, "fonts", ControlPanel_Fonts.class, ControlPanel_Fonts::new));
-        l.add(action(people, "jButton5", Messages.SETTINGS_D_TRANSLATE, "babelfish", () -> {
-            YabsViewProxy.instance().setWaiting(true);
-            try {
-                new MPBabelFish();
-            } finally {
-                YabsViewProxy.instance().setWaiting(false);
-            }
-        }));
+        //inline instead of a separate window
+        l.add(panel(people, "jButton5", Messages.SETTINGS_D_TRANSLATE, "babelfish", mpv5.ui.dialogs.subcomponents.ControlPanel_Translate.class,
+                mpv5.ui.dialogs.subcomponents.ControlPanel_Translate::new));
 
         //was Tools > Migration in the main menu
         String database = Messages.SETTINGS_GROUP_DATABASE.toString();

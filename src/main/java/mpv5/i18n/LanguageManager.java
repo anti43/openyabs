@@ -550,6 +550,9 @@ public class LanguageManager {
                     Log.Debug(ex);
                 }
             }
+            //the language itself too (before only its file: the list kept a broken entry)
+            QueryHandler.instanceOf().clone(Context.getLanguage()).delete(new mpv5.db.common.QueryCriteria("cname", langid));
+            cachedLanguages.remove(langid);
         } else {
             Popup.notice(Messages.NOT_POSSIBLE);
         }
@@ -875,6 +878,113 @@ public class LanguageManager {
      * @return true if the system or the user's locale is German (de, de_DE,
      * de_AT, de_CH, ...)
      */
+    /**
+     * @return all keys a language needs, with the English text, sorted
+     */
+    public static java.util.SortedMap<String, String> requiredKeys() {
+        ResourceBundle b = ResourceBundle.getBundle(defLanguageBundleName);
+        java.util.SortedMap<String, String> m = new java.util.TreeMap<String, String>();
+        for (Enumeration<String> e = b.getKeys(); e.hasMoreElements();) {
+            String k = e.nextElement();
+            m.put(k, b.getString(k));
+        }
+        return m;
+    }
+
+    /**
+     * @param langid
+     * @return the texts the language really has (without the English
+     * fallback)
+     */
+    public static java.util.Map<String, String> ownKeys(String langid) {
+        java.util.Map<String, String> m = new java.util.HashMap<String, String>();
+        if ("buildin_en".equals(langid)) {
+            return m;
+        }
+        ResourceBundle b = getBundle(langid);
+        for (Enumeration<String> e = b.getKeys(); e.hasMoreElements();) {
+            String k = e.nextElement();
+            try {
+                m.put(k, b.getString(k));
+            } catch (Exception ex) {
+                Log.Debug(LanguageManager.class, ex.getMessage());
+            }
+        }
+        return m;
+    }
+
+    /**
+     * Writes a language file (.properties, ASCII with \\u escapes: readable
+     * as UTF-8 and ISO-8859-1)
+     *
+     * @param texts key - text
+     * @param file
+     * @throws java.io.IOException
+     */
+    public static void writeLanguageFile(java.util.Map<String, String> texts, File file) throws java.io.IOException {
+        StringBuilder s = new StringBuilder("# YaBS language file\n");
+        for (java.util.Map.Entry<String, String> e : new java.util.TreeMap<String, String>(texts).entrySet()) {
+            s.append(escape(e.getKey(), true)).append('=').append(escape(e.getValue(), false)).append('\n');
+        }
+        java.nio.file.Files.write(file.toPath(), s.toString().getBytes(java.nio.charset.StandardCharsets.US_ASCII));
+    }
+
+    private static String escape(String v, boolean key) {
+        StringBuilder s = new StringBuilder();
+        String t = v == null ? "" : v;
+        for (int i = 0; i < t.length(); i++) {
+            char c = t.charAt(i);
+            switch (c) {
+                case '\\':
+                    s.append("\\\\");
+                    break;
+                case '\n':
+                    s.append("\\n");
+                    break;
+                case '\r':
+                    s.append("\\r");
+                    break;
+                case '\t':
+                    s.append("\\t");
+                    break;
+                default:
+                    if ((key && (c == '=' || c == ':' || c == ' ')) || (i == 0 && c == ' ') || c == '#' && i == 0 || c == '!' && i == 0) {
+                        s.append('\\').append(c);
+                    } else if (c < 0x20 || c > 0x7e) {
+                        s.append(String.format("\\u%04x", (int) c));
+                    } else {
+                        s.append(c);
+                    }
+            }
+        }
+        return s.toString();
+    }
+
+    /**
+     * Reads a language file (.properties; UTF-8 or ISO-8859-1)
+     *
+     * @param file
+     * @return key - text
+     * @throws java.io.IOException
+     */
+    public static java.util.Map<String, String> readLanguageFile(File file) throws java.io.IOException {
+        byte[] bytes = java.nio.file.Files.readAllBytes(file.toPath());
+        String text;
+        try {
+            text = java.nio.charset.StandardCharsets.UTF_8.newDecoder()
+                    .decode(java.nio.ByteBuffer.wrap(bytes)).toString();
+        } catch (java.nio.charset.CharacterCodingException notUtf8) {
+            text = new String(bytes, java.nio.charset.StandardCharsets.ISO_8859_1);
+        }
+        java.util.Properties p = new java.util.Properties();
+        p.load(new java.io.StringReader(text));
+        java.util.Map<String, String> m = new java.util.HashMap<String, String>();
+        for (String k : p.stringPropertyNames()) {
+            m.put(k, p.getProperty(k));
+        }
+        return m;
+    }
+
     public static boolean isGermanUser(User u) {
         String system = System.getProperty("user.language");
         String locale = u == null ? null : u.__getLocale();
