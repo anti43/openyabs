@@ -98,5 +98,10 @@ echo $MSG0
 cd ${PROGRAM_DIR}
 IFS=$SAVEIFS
 
+# WSL (WSLg): without this the window stays grey until it is resized
+if [ -n "$WSL_DISTRO_NAME" ] || grep -qi microsoft /proc/sys/kernel/osrelease 2>/dev/null; then
+  export _JAVA_AWT_WM_NONREPARENTING=1
+fi
+
 ${JAVA_PROGRAM_DIR}java -jar $JARNAME $1 $2 $3 $4 $5 $6
 echo "YABS TERMINATED."
