@@ -4,225 +4,20 @@
 
 Free and open source (GPL v3) · Windows, Linux and macOS · No cloud, no account, no subscription
 
-**[⬇ Download the latest version](https://github.com/anti43/openyabs/releases)** · [Deutsche Hinweise](docs/Hinweise.md) · [E-Rechnung (XRechnung / ZUGFeRD)](docs/E-Rechnung.md)
-
-> **Switching from Fakturama 2?** Bring your data along in a few clicks: *File › Import › Fakturama 2*, choose Fakturama's `Database.script`, done. Contacts, products, invoices and all other documents, expenses and tax rates come along with their numbers and dates – Fakturama itself stays untouched. [More](#import-export-and-moving-from-other-software)
+**[⬇ Download](https://github.com/anti43/openyabs/releases)** · **[Website with all features](https://anti43.github.io/openyabs/)** · [Deutsche Hinweise](docs/Hinweise.md) · [E-Rechnung (XRechnung / ZUGFeRD)](docs/E-Rechnung.md)
 
 ![An order in YaBS: customer, document data and dates in cards, the positions with net, VAT and total below](docs/images/invoice.png)
 
----
+## Highlights
 
-## Contents
+- **Everything in one place**: contacts, quotes, orders, invoices, credit notes, reminders, products, stock, expenses and journal
+- **E-invoices**: XRechnung and ZUGFeRD according to EN 16931, checked before sending
+- **Your own layout**: ODT (LibreOffice / OpenOffice) and PDF templates, with [EPC QR code (GiroCode)](docs/QR-Code.md)
+- **Your data stays with you**: local database or your own MySQL / MariaDB server – no cloud, no account, no tracking
+- **Switching from Fakturama 2?** *File › Import › Fakturama 2*, choose Fakturama's `Database.script` – contacts, products, documents and expenses come along with their numbers and dates
+- **Extendable**: Groovy scripts and [plugins](docs/Plugins.md)
 
-- [Why YaBS](#why-yabs)
-- [Your data stays with you](#your-data-stays-with-you)
-- [Features at a glance](#features-at-a-glance)
-- [Customers, suppliers and manufacturers](#customers-suppliers-and-manufacturers)
-- [Quotes, orders, invoices and more](#quotes-orders-invoices-and-more)
-- [Correct amounts, to the cent](#correct-amounts-to-the-cent)
-- [E-invoicing: XRechnung and ZUGFeRD](#e-invoicing-xrechnung-and-zugferd)
-- [Printing, PDF, templates and e-mail](#printing-pdf-templates-and-e-mail)
-- [Getting paid: due dates, cash discount, reminders](#getting-paid-due-dates-cash-discount-reminders)
-- [Products, services and stock](#products-services-and-stock)
-- [Bookkeeping: journal, expenses and revenues](#bookkeeping-journal-expenses-and-revenues)
-- [Scheduling and recurring invoices](#scheduling-and-recurring-invoices)
-- [A modern, fast user interface](#a-modern-fast-user-interface)
-- [Cash register for the shop counter (first draft)](#cash-register-for-the-shop-counter-first-draft)
-- [Teams: users, groups and rights](#teams-users-groups-and-rights)
-- [Import, export and moving from other software](#import-export-and-moving-from-other-software)
-- [For power users: scripts, plugins and SQL](#for-power-users-scripts-plugins-and-sql)
-- [Installation](#installation)
-- [Updating and your existing data](#updating-and-your-existing-data)
-- [Building from source](#building-from-source)
-- [Help, community and license](#help-community-and-license)
-
----
-
-## Why YaBS
-
-- **Everything in one place**: contacts, quotes, orders, invoices, deposits, credit notes, reminders, products, stock, expenses and a journal – connected to each other.
-- **Your data stays on your computer**: no cloud, no login, no tracking, works offline. See [below](#your-data-stays-with-you).
-- **Ready for the e-invoice obligation**: XRechnung and ZUGFeRD according to EN 16931, checked with the official validator before they leave the house.
-- **Your own layout**: invoices and letters come from your own LibreOffice / OpenOffice templates (ODT) or PDF forms.
-- **Free forever**: open source under the GPL v3. No license fees, no per-user prices, no lock-in.
-- **Runs everywhere**: Windows, Linux and macOS, alone or with several users on a shared database.
-
-## Your data stays with you
-
-This is what sets YaBS apart from the many online invoicing services:
-
-- **No cloud, no account.** YaBS is a desktop application. There is nothing to sign up for, and nobody but you can switch it off, raise the price or read your figures.
-- **All data is local.** Customers, invoices, prices and your bookkeeping are stored in a database on your own computer (embedded Apache Derby) – or, if you want, on your own server in your office (MySQL / MariaDB).
-- **Works offline.** Writing quotes, invoicing and bookkeeping need no internet connection. YaBS only goes online when *you* do something that needs it, such as sending an e-mail through *your* mail server.
-- **No telemetry, no tracking, no ads.**
-- **Your files are normal files.** PDFs, e-invoices and exports go to folders you choose. The database is a plain folder you can back up, copy to a USB stick or put into your existing backup.
-- **Easy for data protection (GDPR).** Customer data is not handed to a third-party processor – it never leaves your machine.
-- **You can always get your data out.** Export contacts and documents to CSV, XML, vCard or HTML at any time – and the source code is open, so the format is never a secret.
-- **It keeps working.** Software on your own computer doesn't disappear when a start-up is bought or a service is discontinued.
-
-## Features at a glance
-
-| Area | What you get |
-|---|---|
-| Contacts | Customers, suppliers, manufacturers and companies; several addresses; bank accounts; notes, phone calls, files and a full history |
-| Documents | Quotes, orders, invoices, deposits, part payments, credit notes, delivery notes, order confirmations, reminders |
-| E-invoice | XRechnung (XML), ZUGFeRD (PDF with embedded XML), validated per EN 16931, delivery format per customer |
-| Output | Print, PDF, ODT from your own templates, e-mail with attachments, serial e-mails, mass printing, EPC QR code (GiroCode) |
-| Products | Products and services, purchase/sale prices, markup, staggered prices, images, EAN, product groups and lists, suppliers |
-| Stock | Inventory, thresholds, purchase orders to suppliers, stock manager |
-| Money | Exact decimal arithmetic, VAT per rate, discounts, cash discount (Skonto), due dates, reminder fees, deposits deducted in the final invoice |
-| Bookkeeping | Journal with revenue, expenses, profit and VAT, accounts, expenses and revenues, direct debit export (DTAUS) |
-| Planning | Calendar, due date overview, recurring invoices, dashboard with open amounts |
-| Working | Modern card layout, tabs, back/forward, favourites, search, keyboard shortcuts, trash bin, undo of unsaved changes |
-| Teams | Several users, groups, rights, record locking, own settings per user |
-| Data | Local Derby database or MySQL server, CSV / XML / vCard / HTML import and export, one-click import from Fakturama 2, migration tools |
-| Extend | Groovy scripts and console, plugins, SQL query window, web shop interface |
-
-## Customers, suppliers and manufacturers
-
-![A contact with name, roles, address, communication, business and payment data and all documents of the contact](docs/images/contact.png)
-
-- **One contact, several roles**: a contact can be customer, supplier, manufacturer and/or company at the same time – shown as chips next to the name and switched with one click.
-- **Everything about a contact on one page**: name, addresses (main, billing and delivery addresses), phone, mail, web, VAT ID, bank account, payment terms and notes.
-- **All documents of a contact** below the data: quotes, orders, invoices, credit notes and products, each with a one-line summary of its positions, a filter and the total.
-- **Create documents from the contact**: new quote, order, invoice, credit note or product with one click.
-- **Payment terms per customer**: due days or "payable immediately", cash discount (% and days), the bank account the customer pays to, and the e-invoice delivery format with Leitweg-ID.
-- **Communication**: phone call / conversation notes, files attached to the contact, mail directly from the contact, website opens in the browser.
-- **History**: every change is recorded – who changed what and when.
-- **Checks while typing**: VAT IDs and IBANs are validated.
-
-## Quotes, orders, invoices and more
-
-- **The whole sales process**: quote → order → deposit / part payment → invoice → credit note, each created from the previous one with one click. The previous document is marked as finished and referenced.
-- **Final invoices with deposits**: the final invoice contains the order's positions and deducts all deposits and part payments – automatically and with the right VAT.
-- **Positions as you need them**: quantity, unit, product, free text (multi-line), net price, VAT rate, discount per line, optional extra column, text-only lines; move lines up and down, paste products, product lists or whole documents.
-- **Live totals**: net, discount, VAT and total update while you type.
-- **Status tracking**: queued, in progress, paused, finished, paid – with the payment date booked automatically.
-- **Document numbers** from your own number formats (e.g. `R-2026-001`), per document type.
-- **Delivery notes and order confirmations** from the same document, optionally printed together.
-- **Combine several invoices** into one collective invoice from the document search.
-- **Compare an invoice with its order** to see what has been delivered and billed.
-- **Find documents** by number, customer, date, status or text.
-
-## Correct amounts, to the cent
-
-Invoicing software has to calculate correctly. YaBS calculates with exact decimal numbers, never with binary floating point:
-
-- Every line is rounded to the cent, the VAT is calculated **once per VAT rate** on the sum of the lines – exactly as EN 16931 (the e-invoice standard) requires. The PDF and the e-invoice always show the same amounts.
-- Several VAT rates on one invoice are listed separately, also rates like 7.7 %.
-- Line discounts, staggered prices, cash discount and reminder fees are calculated the same way everywhere – on screen, in the PDF, in the e-invoice, in the journal and in the direct debit file.
-- Numbers are read and shown in your language's format (e.g. `1.234,56` in German).
-
-## E-invoicing: XRechnung and ZUGFeRD
-
-- **XRechnung** (XML), **ZUGFeRD** (PDF/A-3 with embedded XML) or both, according to **EN 16931**.
-- **Validated with the official validator** before saving or sending – invalid e-invoices are not sent, and YaBS tells you why.
-- **Per customer**: choose the delivery format (normal PDF, ZUGFeRD, XRechnung or PDF + XRechnung), the Leitweg-ID for public authorities, due days and cash discount.
-- **Works with e-mail and serial e-mail**: each customer receives the format they need.
-- **Several bank accounts**: choose per customer which account appears on the invoice.
-- All details, the legal background and a checklist: **[docs/E-Rechnung.md](docs/E-Rechnung.md)** (German).
-
-## Printing, PDF, templates and e-mail
-
-- **Your own layout**: design invoices, quotes, reminders and letters in LibreOffice / OpenOffice Writer (ODT) or as PDF forms, with fields for all data, position tables, VAT groups, payment terms and an **EPC QR code (GiroCode)** for instant bank transfers.
-- **Templates per document type, user and group** – for example different layouts for different companies or departments.
-- **PDF and ODT export** with file names and folders from your own patterns (e.g. by year and customer). File dialogs always open in your configured folder or the last one you used.
-- **E-mail directly from YaBS** through your own mail server (SMTP), with the PDF and/or e-invoice attached, using message templates.
-- **Serial e-mails and mass printing** from the journal – for example all open invoices of a month.
-- **Automatic archive**: every sent e-mail can also go to your own archive mailbox (Bcc).
-- **Auto-PDF**: optionally save a PDF every time a document is saved.
-
-## Getting paid: due dates, cash discount, reminders
-
-- **Due dates** from the customer, the template or your company defaults.
-- **Cash discount (Skonto)**: percent and days per customer, with discount amount and the amount to pay in the template.
-- **Overdue invoices at a glance** on the dashboard.
-- **Reminders in stages** (e.g. payment reminder, 1st and 2nd reminder) with your own texts and fees per stage, printed or mailed.
-- **Direct debit**: export a DTAUS file for collecting invoice amounts.
-
-## Products, services and stock
-
-![A product with prices, classification, description, manufacturer and suppliers, stock and the documents it was used in](docs/images/product.png)
-
-- **Products and services** with number, unit, EAN, manufacturer reference, description, URL and a **large product image** at the top of the page (so you see at once that it is the right part), plus a **datasheet link**: a web address or a file, also on the network (e.g. `\\nas\docs\part.pdf`), opened with one click.
-- **Prices that calculate themselves**: enter cost and markup, sale price or gross price – the other values follow while you type.
-- **Staggered prices**: price per minimum quantity; in a document the price follows the quantity automatically (unless you typed a price yourself).
-- **Product groups and product lists** (e.g. a standard package you add to a quote with one click, optionally with a percentage surcharge).
-- **Manufacturers and several suppliers** per product, each with a **link to the product in the supplier's shop** and its **purchase price**; the cheapest supplier is marked.
-- **Where was it sold?** Every product shows the quotes, orders, invoices and credit notes it appears in, with quantities and amounts.
-- **Stock**: stock level and threshold, automatic reduction when invoicing, stock manager, purchase orders to suppliers.
-
-## Bookkeeping: journal, expenses and revenues
-
-![The journal with all documents of a period, filters and totals for revenue, expenses, profit and VAT](docs/images/journal.png)
-
-- **Journal**: all documents, expenses and revenues of a period, filtered by type, status, group, user and account – with totals for volume, revenue, expenses, profit and VAT.
-- **Cash basis**: revenue and expenses count once they are paid.
-- **Expenses and revenues** outside of invoices (e.g. receipts), with VAT and account.
-- **Accounts** for your chart of accounts; documents and receipts are assigned to them.
-- **Dashboard**: open quotes, orders and invoices, overdue invoices, upcoming events.
-- **Export** the journal to PDF, CSV or your own template – e.g. for your tax advisor.
-
-## Scheduling and recurring invoices
-
-- **Calendar** with events for documents and contacts.
-- **Recurring invoices**: schedule an invoice to be created again every *n* months until an end date – YaBS creates them from the dashboard with one confirmation.
-- **Due date warnings** for invoices.
-
-## A modern, fast user interface
-
-- **Modern look by default**: clean cards, rounded controls, clear tabs – and the **classic views are one click away** (*View › Layout › Modern look*).
-- **Responsive layout**: the data cards arrange themselves in one to three columns depending on the window size; it scales with large fonts and HiDPI screens.
-- **Search anything** (`Shift Shift`, like in IntelliJ, or `Ctrl+F`): one field finds contacts, quotes, invoices (also by number or type, e.g. "Rechnung"), products, positions, appointments, settings, menu commands and plugin results – `Enter` opens the hit.
-- **Activity at the bottom right**: everything of the session in one list – created PDFs and documents (open them, show them in their folder), created, changed and deleted records (open them) and the messages; searchable and filterable.
-- **History and trash**: the history of all records grouped by day, searchable and filterable, opens the records; the trash restores records or deletes them for good.
-- **Settings in one place**: a searchable list with an overview of all settings, each page in clear cards.
-- **Tabs and navigation**: several records open side by side, back and forward like a browser, favourites, a clipboard for records.
-- **Fully usable by keyboard**: `Tab` / `Shift+Tab` walk through all fields, also past notes, file and document lists (in the positions of a document `Tab` moves through the cells and leaves at the last one, `Ctrl+Tab` leaves at once).
-- **Date fields you can type into** in the format of your region (German: `dd.MM.yyyy`). Short forms work: `1.2.` (this year), `1.2.26`, `010226`, `5` (5th of this month), `+7` / `-1` (days from today), `h` / `heute` / `t` / `today`; arrow keys change the day, month or year under the cursor, `Alt+↓` or `F4` opens the calendar (`Enter` takes the date, `Esc` closes it).
-- **Create copy** (*More › Create copy*, `Ctrl+Shift+S`): opens a copy of the contact, product or document **in a new tab** (the original stays open) as a new record, **not saved yet** (a yellow note says so, *Discard copy* goes back to the original). Only saving creates it.
-- **Bank details explained on the pages**: *Settings › Company info* holds **your own** account (printed on your invoices) and the default payment term and Skonto for all contacts. At a contact, *Payment terms* overrides these defaults for this contact only (also which of your accounts the customer pays to), while *Bank account of this contact* is the contact's **own** account (direct debits, refunds, paying a supplier).
-- **Keyboard shortcuts** for everything frequent: `Ctrl+S` save, `Ctrl+P` print, `Ctrl+Shift+P` PDF, `Ctrl+E` mail, `Shift Shift` / `Ctrl+F` search anything, `Ctrl+C` / `Ctrl+V` copy and paste records, `Ctrl+F1` shows all shortcuts.
-- **Safe deleting**: before deleting, YaBS lists everything that would be deleted with it; deleted records go to a trash bin first.
-- **Your language**: English and German included – on a German system (or with a German locale) YaBS switches to German by itself, and *View › Language* switches at any time (YaBS restarts itself); further translations can be made inside the application.
-- **Zoom like in a browser**: `Ctrl +` / `Ctrl −` / `Ctrl 0` make the whole application – menus, texts, tables, date pickers and drop-downs – larger or smaller (80 – 200 %), remembered on each computer.
-
-## Cash register for the shop counter (first draft)
-
-YaBS can serve a **cash register as a web page** to a touch screen device at the counter (tablet, all-in-one PC). The device only needs a browser.
-
-- Start it in *Settings › Cash register* (or *Plugins › Open cash register*). The settings page lists the **addresses of this computer with its IP** (e.g. `http://192.168.1.20:8090/`) as links: a click starts the register and opens it, a button copies the address for the touch device. Optionally the register starts together with YaBS.
-- **Choose the product groups** offered at the register (nothing chosen: all products); changes apply immediately, even while the register runs.
-- Sellers **sign in with their YaBS user**, tap product tiles (with groups and search), see net, VAT and total, and pay **cash** with quick amounts and a keypad; the **change** is shown.
-- Every sale is booked as a **paid invoice for the cash customer** ("Barverkauf", created automatically), so it shows up in journals, revenue and reports like every other invoice.
-- On first enable YaBS creates the **register user `kasse`** with a random 6-digit PIN; user name and PIN are shown on the settings page (a new PIN can be generated there).
-- **Receipts from a template**: a demo template *Kassenbon (Kasse)* (80 mm receipt paper) is imported for the register. After a sale the receipt can be shown as PDF or printed on the template's printer (or the default printer), optionally automatically. Edit the template like every other YaBS template; extra fields are `pos.time` and `pos.seller`.
-- Texts of the register and its settings are translated (German texts are also used when an older German language file is installed).
-- **Legal note (Germany):** a cash register used for real cash sales must have a certified technical security device (TSE, KassenSichV / § 146a AO) and print its data (transaction number, signature counter, check value, serial numbers) on every receipt. This draft has **no TSE yet**; the demo receipt says so. Use it only for testing or where no TSE is required.
-- First draft: cash only, no cash book yet. The server runs in your network without encryption, so use it only in a trusted network.
-
-## Teams: users, groups and rights
-
-- **Several users** with their own settings, signatures, templates and default values.
-- **Groups** (e.g. companies, branches or departments) with their own documents, number formats and templates.
-- **Rights** per user: view, export, edit, create/delete, administrate.
-- **Record locking**: while someone edits a record, others can't overwrite it.
-- **Shared database**: run YaBS on several computers against one MySQL / MariaDB server in your network – still without any cloud.
-
-## Import, export and moving from other software
-
-- **Import** contacts and products from CSV, vCard and XML.
-- **Export** contacts, documents and lists to CSV, XML, vCard, HTML and PDF.
-- **Easy switch from Fakturama 2** (*File › Import › Fakturama 2*: choose `Database.script` of your Fakturama workspace; tax rates, product categories, contacts (customers, suppliers, manufacturers) with address and bank account, products with their pictures, stock (managed in the inventory) and block prices, invoices/offers/orders/delivery notes/credit notes with positions and shipping, and expense vouchers are taken over with their numbers and dates. Fakturama's files are not changed, and records already imported are skipped, so the import can be repeated; it counts the records first and shows its progress with the time left).
-- **Migration tools** from older YaBS versions and MP 4.5, and from the local Derby database to a MySQL server.
-- **Web shop interface** to exchange contacts and orders with a shop.
-
-## For power users: scripts, plugins and SQL
-
-- **Plugins** in **Groovy** (one file, no build) or **Java** (a jar): add commands, results in Search anything, settings pages and reactions to new invoices, created PDFs and more. Drop them into the `plugins` folder or install them in *Settings › Plugin Manager* – enable, disable, reload and edit them without restarting. Groovy plugins are written in the **built-in editor** (Groovy highlighting, line numbers, working examples to insert, syntax check with the line of the error, `Ctrl+S` saves and starts the plugin at once). **[How to write a plugin](docs/Plugins.md)**.
-- **Groovy console and script manager** (Groovy 4): automate recurring tasks or add your own calculations and document labels.
-- **SQL query window** for your own evaluations – your data is a normal SQL database.
-- **Add your own actions** to the toolbar.
+All features: **[anti43.github.io/openyabs](https://anti43.github.io/openyabs/)**
 
 ## Installation
 
@@ -243,14 +38,7 @@ All downloads: **[Releases](https://github.com/anti43/openyabs/releases)** – `
 
 On the first start one window asks where your data should be stored: **on this computer** (one click) or on a **database server** (MySQL / MariaDB, Derby). The setup runs in the background; languages, countries and an invoice template are set up automatically, German systems start in German, and you are signed in as `admin` (password `password` – change it under *Settings › Users*). Your company data goes to *Settings › Company Info*. No account, no internet connection needed.
 
-## Updating and your existing data
-
-- Older YaBS databases are opened and updated automatically on the first start; an interrupted update continues where it stopped.
-- The German language file is brought up to date after an update without asking (a short note in the status bar), so new texts appear in German too.
-- If a database is damaged, YaBS offers to copy all data into a newly created database and keeps the old one as a backup next to it.
-- Tip: make a copy of the database folder before every update – it's just a folder.
-
-Details (German): [docs/Hinweise.md](docs/Hinweise.md).
+Updating: older databases are updated automatically on the first start – make a copy of the database folder before. Details (German): [docs/Hinweise.md](docs/Hinweise.md).
 
 ## Building from source
 
