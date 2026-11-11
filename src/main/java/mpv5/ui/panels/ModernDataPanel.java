@@ -153,6 +153,34 @@ public abstract class ModernDataPanel extends JPanel implements DataPanel, Scrol
      * @return the split pane
      */
     protected static JSplitPane split(JComponent top, JComponent bottom, final double ratio) {
+        return split(null, top, bottom, ratio);
+    }
+
+    /**
+     * @param key the view (e.g. "contact"): the position of the divider is
+     * saved for the user and used again; null: not saved
+     * @param top
+     * @param bottom
+     * @param ratio the part of the height the top gets the first time
+     * @return the split pane
+     */
+    protected static JSplitPane split(final String key, JComponent top, JComponent bottom, final double ratio) {
+        final String prop = "org.openyabs.layout.split." + key;
+        double start = ratio;
+        if (key != null) {
+            try {
+                String s = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(prop);
+                if (s != null) {
+                    double d = Double.parseDouble(s);
+                    if (d >= 0.05 && d <= 0.95) {
+                        start = d;
+                    }
+                }
+            } catch (Exception e) {
+                //default
+            }
+        }
+        final double first = start;
         final JSplitPane split = new JSplitPane(JSplitPane.VERTICAL_SPLIT, top, bottom);
         split.setResizeWeight(0.62);
         split.setBorder(BorderFactory.createEmptyBorder(0, ModernTheme.px(8), ModernTheme.px(8), ModernTheme.px(8)));
@@ -163,7 +191,19 @@ public abstract class ModernDataPanel extends JPanel implements DataPanel, Scrol
             public void componentResized(java.awt.event.ComponentEvent e) {
                 if (split.getHeight() > 0) {
                     split.removeComponentListener(this);
-                    split.setDividerLocation(ratio);
+                    split.setDividerLocation(first);
+                    if (key != null) {
+                        //from now on: moving the divider is remembered
+                        split.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, ev -> {
+                            int h = split.getHeight() - split.getDividerSize();
+                            if (h > 0 && split.isShowing()) {
+                                double r = (double) split.getDividerLocation() / h;
+                                if (r >= 0.05 && r <= 0.95) {
+                                    mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(prop, String.format(java.util.Locale.ROOT, "%.3f", r));
+                                }
+                            }
+                        });
+                    }
                 }
             }
         });

@@ -87,8 +87,25 @@ public class Card extends JPanel {
     /**
      * @param title may be null
      */
+    private final String title;
+
+    /**
+     * @return the title, null if none
+     */
+    public String getTitle() {
+        return title;
+    }
+
+    /**
+     * @return the title bar (for moving the card)
+     */
+    public JPanel getHeader() {
+        return header;
+    }
+
     public Card(String title) {
         super(new BorderLayout(0, ModernTheme.px(8)));
+        this.title = title;
         setOpaque(false);
         setBorder(BorderFactory.createEmptyBorder(ModernTheme.px(12), ModernTheme.px(14), ModernTheme.px(14), ModernTheme.px(14)));
         header.setOpaque(false);
