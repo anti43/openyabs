@@ -441,7 +441,7 @@ public enum Messages {
     SEPA_DD_CREATED("SEPA direct debit file (pain.008) for these invoices - upload it in your online banking:"),
     SEPA_DD_SKIPPED("Skipped (no valid IBAN of the customer, or no amount):"),
     COMPANY_CREDITOR_ID("Creditor ID (SEPA)"),
-    COMPANY_CREDITOR_ID_TOOLTIP("Your SEPA creditor identifier (Gl\u00e4ubiger-ID, e.g. DE98ZZZ09999999999) for direct debits. In Germany you get it from the Deutsche Bundesbank. In the file, the mandate reference is the customer number."),
+    COMPANY_CREDITOR_ID_TOOLTIP("Your SEPA creditor identifier (Gl\u00e4ubiger-ID, e.g. DE98ZZZ09999999999) for direct debits. In Germany you get it from the Deutsche Bundesbank. In the file, the mandate reference is the customer number. Requirements: https://github.com/anti43/openyabs/blob/master/docs/SEPA-Lastschrift.md"),
     COMPANY_CREDITOR_ID_INVALID("Invalid creditor ID (e.g. DE98ZZZ09999999999)"),
     QR_CAPTION("Pay with code"),
     FILENAME_INSERT("Insert at cursor:"),

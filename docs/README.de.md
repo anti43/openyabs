@@ -135,7 +135,7 @@ Eine kaufmännische Software darf nicht runden wie ein Taschenrechner. YaBS rech
 - **Skonto**: Skontosatz in Prozent und Skontofrist in Tagen je Kunde mit automatischer Berechnung des Abzugsbetrags auf der Rechnung.
 - **Überfällige Rechnungen im Blick**: Schnellübersicht auf dem Dashboard.
 - **Mehrstufiges Mahnwesen**: Zahlungserinnerung, 1. Mahnung, 2. Mahnung mit eigenen Fristen, Texten und Mahngebühren.
-- **SEPA-Lastschrift**: Im Journal unbezahlte Rechnungen auswählen, Rechtsklick › *SEPA-Lastschriftdatei erstellen* – die XML-Datei (pain.008, Basislastschrift) laden Sie im Online-Banking hoch. Dafür in der *Firmeninformation* IBAN und Gläubiger-ID eintragen; die IBAN der Kunden steht im Kontakt. Mandatsreferenz ist die Kundennummer, Mandatsdatum das Anlagedatum des Kontakts.
+- **SEPA-Lastschrift**: Im Journal unbezahlte Rechnungen auswählen, Rechtsklick › *SEPA-Lastschriftdatei erstellen* – die XML-Datei (pain.008, Basislastschrift) laden Sie im Online-Banking hoch. Dafür in der *Firmeninformation* IBAN und Gläubiger-ID eintragen; die IBAN der Kunden steht im Kontakt. Mandatsreferenz ist die Kundennummer, Mandatsdatum das Anlagedatum des Kontakts. Alle Voraussetzungen: [SEPA-Lastschrift](SEPA-Lastschrift.md).
 
 ## Artikel, Dienstleistungen und Lager
 
