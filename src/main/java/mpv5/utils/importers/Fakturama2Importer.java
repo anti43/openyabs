@@ -116,6 +116,11 @@ public class Fakturama2Importer {
         public int vouchersImported = 0;
         public int taxesImported = 0;
         public int alreadyThere = 0;
+        public int imagesImported = 0;
+        public int suppliers = 0;
+        public int manufacturers = 0;
+        public int productsLinked = 0;
+        public int inventoryProducts = 0;
         public int deletedSkipped = 0;
         public List<String> warnings = new ArrayList<>();
 
@@ -131,6 +136,13 @@ public class Fakturama2Importer {
             b.append(Messages.FKT_RESULT_DOCUMENTS).append(": ").append(itemsImported)
                     .append(" (").append(subItemsImported).append(' ').append(Messages.FKT_RESULT_POSITIONS).append(")\n");
             b.append(Messages.FKT_RESULT_VOUCHERS).append(": ").append(vouchersImported).append('\n');
+            b.append(Messages.FKT_RESULT_IMAGES).append(": ").append(imagesImported).append('\n');
+            b.append(Messages.FKT_RESULT_SUPPLIERS).append(": ").append(suppliers)
+                    .append("  \u00b7  ").append(Messages.FKT_RESULT_MANUFACTURERS).append(": ").append(manufacturers).append('\n');
+            if (productsLinked > 0) {
+                b.append(Messages.FKT_RESULT_LINKED).append(": ").append(productsLinked).append('\n');
+            }
+            b.append(Messages.FKT_RESULT_INVENTORY).append(": ").append(inventoryProducts).append('\n');
             if (alreadyThere > 0) {
                 b.append(Messages.FKT_RESULT_EXISTING).append(": ").append(alreadyThere).append('\n');
             }
@@ -149,6 +161,19 @@ public class Fakturama2Importer {
     private final Map<Long, Integer> productIds = new HashMap<>();
     private Connection con;
     private ImportResult result;
+    //progress: all records to read, records done
+    private Progress progress = (m, i) -> {
+    };
+    private int total = 1;
+    private int done;
+    private long lastTick;
+    private long started;
+    //records already in YaBS: context -> "number|name" -> ids
+    private final Map<String, Map<String, Integer>> known = new HashMap<>();
+    //products with a stock in Fakturama: managed in the inventory after the import
+    private final Map<Integer, BigDecimal> stock = new LinkedHashMap<>();
+    //contact categories of Fakturama: id -> name
+    private final Map<Long, String> contactCategories = new HashMap<>();
 
     /**
      * Imports from the Fakturama database the file belongs to
@@ -162,7 +187,9 @@ public class Fakturama2Importer {
     public ImportResult importFrom(File databaseFile, Progress progress) throws Exception {
         Progress p = progress != null ? progress : (m, i) -> {
         };
+        this.progress = p;
         result = new ImportResult();
+        started = System.currentTimeMillis();
         File tmp = copyDatabase(databaseFile);
         try {
             Class.forName("org.hsqldb.jdbc.JDBCDriver");
@@ -172,30 +199,34 @@ public class Fakturama2Importer {
             if (!hasTable("FKT_CONTACT") && !hasTable("FKT_PRODUCT")) {
                 throw new IllegalArgumentException(Messages.FKT_NOT_FAKTURAMA.toString());
             }
+            countAll(p);
             if (importTax || importProducts || importDocuments || importVouchers) {
-                p.step(Messages.FKT_RESULT_TAXES.toString(), 5);
+                p.step(Messages.FKT_RESULT_TAXES.toString(), percent());
                 importTaxes();
             }
             if (importProducts) {
-                p.step(Messages.FKT_RESULT_GROUPS.toString(), 10);
+                p.step(Messages.FKT_RESULT_GROUPS.toString(), percent());
                 importGroups();
             }
             if (importContacts || importDocuments) {
-                p.step(Messages.FKT_RESULT_CONTACTS.toString(), 20);
+                p.step(Messages.FKT_RESULT_CONTACTS.toString(), percent());
                 importContacts(importContacts);
             }
             if (importProducts || importDocuments) {
-                p.step(Messages.FKT_RESULT_PRODUCTS.toString(), 45);
+                p.step(Messages.FKT_RESULT_PRODUCTS.toString(), percent());
                 importProducts(importProducts);
             }
             if (importDocuments) {
-                p.step(Messages.FKT_RESULT_DOCUMENTS.toString(), 65);
+                p.step(Messages.FKT_RESULT_DOCUMENTS.toString(), percent());
                 importDocuments(p);
             }
             if (importVouchers) {
-                p.step(Messages.FKT_RESULT_VOUCHERS.toString(), 92);
+                p.step(Messages.FKT_RESULT_VOUCHERS.toString(), percent());
                 importVouchers();
             }
+            //only now: imported old invoices must not reduce the stock
+            p.step(Messages.FKT_STEP_INVENTORY.toString(), 99);
+            applyInventory();
             p.step(Messages.FKT_STEP_DONE.toString(), 100);
         } finally {
             if (con != null) {
@@ -214,6 +245,106 @@ public class Fakturama2Importer {
         }
         return result;
     }
+
+    // <editor-fold defaultstate="collapsed" desc="Progress">
+    /**
+     * Counts the records to import; tells the counts as a line (percent -1)
+     */
+    private void countAll(Progress p) {
+        p.step(Messages.FKT_STEP_COUNT.toString(), 1);
+        Map<String, String> tables = new LinkedHashMap<>();
+        tables.put("FKT_VAT", Messages.FKT_RESULT_TAXES.toString());
+        tables.put("FKT_CATEGORY", Messages.FKT_RESULT_GROUPS.toString());
+        tables.put("FKT_CONTACT", Messages.FKT_RESULT_CONTACTS.toString());
+        tables.put("FKT_PRODUCT", Messages.FKT_RESULT_PRODUCTS.toString());
+        tables.put("FKT_DOCUMENT", Messages.FKT_RESULT_DOCUMENTS.toString());
+        tables.put("FKT_DOCUMENTITEM", Messages.FKT_RESULT_POSITIONS.toString());
+        tables.put("FKT_VOUCHERS", Messages.FKT_RESULT_VOUCHERS.toString());
+        StringBuilder b = new StringBuilder(Messages.FKT_FOUND.toString()).append(' ');
+        int sum = 0;
+        for (Map.Entry<String, String> t : tables.entrySet()) {
+            int n = count(t.getKey());
+            if (!t.getKey().equals("FKT_DOCUMENTITEM")) {
+                sum += n;
+            }
+            if (n > 0) {
+                b.append(String.format(Locale.getDefault(), "%,d", n)).append(' ').append(t.getValue()).append(", ");
+            }
+        }
+        total = Math.max(1, sum);
+        p.step(b.toString().replaceAll(", $", ""), -1);
+    }
+
+    private int count(String table) {
+        if (!hasTable(table)) {
+            return 0;
+        }
+        try (Statement st = con.createStatement(); ResultSet rs = st.executeQuery("SELECT COUNT(*) FROM PUBLIC.\"" + table + "\"")) {
+            return rs.next() ? rs.getInt(1) : 0;
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    private int percent() {
+        return Math.min(98, 2 + 96 * done / total);
+    }
+
+    /**
+     * One record done: tells the progress (at most every 200 ms)
+     *
+     * @param label what is imported
+     * @param i the number of the record
+     * @param n the records of this kind
+     */
+    private void tick(String label, int i, int n) {
+        done++;
+        long now = System.currentTimeMillis();
+        if (now - lastTick < 200 && i < n) {
+            return;
+        }
+        lastTick = now;
+        String eta = "";
+        long spent = now - started;
+        if (done > 20 && spent > 5000) {
+            long left = spent * (total - done) / done / 1000;
+            eta = "  \u00b7  " + String.format(Messages.FKT_ETA.toString(),
+                    left >= 120 ? (left / 60) + " min" : Math.max(1, left) + " s");
+        }
+        progress.step(String.format(Locale.getDefault(), "%s %,d / %,d%s", label, i, n, eta), percent());
+    }
+
+    /**
+     * @return the id of a record with this number and name in YaBS, else null
+     * (all records of the context are read once)
+     */
+    private Integer existing(Context c, String cnumber, String cname) {
+        if (cnumber == null || cname == null) {
+            return null;
+        }
+        Map<String, Integer> m = known.get(c.toString());
+        if (m == null) {
+            m = new HashMap<>();
+            try {
+                Object[][] rows = new mpv5.db.common.DatabaseSearch(c, 0).getValuesFor("ids, cnumber, cname");
+                for (Object[] r : rows == null ? new Object[0][] : rows) {
+                    m.put(r[1] + "|" + r[2], Integer.valueOf(String.valueOf(r[0])));
+                }
+            } catch (Exception e) {
+                Log.Debug(this, e.getMessage());
+            }
+            known.put(c.toString(), m);
+        }
+        return m.get(cnumber + "|" + cname);
+    }
+
+    private void remember(Context c, String cnumber, String cname, int ids) {
+        Map<String, Integer> m = known.get(c.toString());
+        if (m != null && cnumber != null && cname != null) {
+            m.put(cnumber + "|" + cname, ids);
+        }
+    }
+    // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Database access">
     /**
@@ -355,7 +486,10 @@ public class Fakturama2Importer {
                     Object o;
                     try {
                         int type = md.getColumnType(i);
-                        if (type == java.sql.Types.CLOB || type == java.sql.Types.NCLOB) {
+                        if (type == java.sql.Types.BLOB || type == java.sql.Types.LONGVARBINARY || type == java.sql.Types.VARBINARY) {
+                            //pictures of products
+                            o = rs.getBytes(i);
+                        } else if (type == java.sql.Types.CLOB || type == java.sql.Types.NCLOB) {
                             o = rs.getString(i);
                             //Fakturama appends "null" to some texts (text + null)
                             if (o != null && ((String) o).length() > 4 && ((String) o).endsWith("null")) {
@@ -387,27 +521,6 @@ public class Fakturama2Importer {
             m.put(r.l("ID"), r);
         }
         return m;
-    }
-
-    /**
-     * @return an existing record with this number and name, else null
-     */
-    @SuppressWarnings("unchecked")
-    private static <T extends DatabaseObject> T existing(Context c, String cnumber, String cname) {
-        if (cnumber == null || cname == null) {
-            return null;
-        }
-        try {
-            QueryCriteria q = new QueryCriteria("cnumber", cnumber);
-            q.addAndCondition("cname", cname);
-            List<DatabaseObject> l = DatabaseObject.getObjects(c, q);
-            return l.isEmpty() ? null : (T) l.get(0);
-        } catch (NodataFoundException e) {
-            return null;
-        } catch (Exception e) {
-            Log.Debug(Fakturama2Importer.class, e.getMessage());
-            return null;
-        }
     }
 
     /**
@@ -455,7 +568,10 @@ public class Fakturama2Importer {
         } catch (Exception e) {
             //none yet
         }
-        for (Row r : rows("FKT_VAT")) {
+        List<Row> vats = rows("FKT_VAT");
+        int k = 0;
+        for (Row r : vats) {
+            tick(Messages.FKT_RESULT_TAXES.toString(), ++k, vats.size());
             BigDecimal v = r.d("TAXVALUE");
             if (v == null) {
                 continue;
@@ -495,7 +611,10 @@ public class Fakturama2Importer {
 
     private void importGroups() {
         List<Row> cats = new ArrayList<>();
-        for (Row r : rows("FKT_CATEGORY")) {
+        List<Row> all = rows("FKT_CATEGORY");
+        int k = 0;
+        for (Row r : all) {
+            tick(Messages.FKT_RESULT_GROUPS.toString(), ++k, all.size());
             String type = r.s("CATEGORYNAME", r.s("DTYPE", ""));
             if (type.toLowerCase(Locale.ROOT).contains("product") && !r.deleted()) {
                 cats.add(r);
@@ -565,20 +684,32 @@ public class Fakturama2Importer {
                 addressOf.put(owner, a);
             }
         }
-        for (Row r : rows("FKT_CONTACT")) {
+        //contact categories: "Lieferanten", "Hersteller" ... tell the kind of contact
+        for (Row c : rows("FKT_CATEGORY")) {
+            if (c.s("CATEGORYNAME", "").toLowerCase(Locale.ROOT).contains("contact")) {
+                contactCategories.put(c.l("ID"), c.s("NAME", ""));
+            }
+        }
+        List<Row> contacts = rows("FKT_CONTACT");
+        int k = 0;
+        for (Row r : contacts) {
+            tick(Messages.FKT_RESULT_CONTACTS.toString(), ++k, contacts.size());
             long id = r.l("ID");
             if (r.deleted()) {
                 result.deletedSkipped += create ? 1 : 0;
                 continue;
             }
-            boolean supplier = r.s("DTYPE", "").toLowerCase(Locale.ROOT).startsWith("creditor");
+            String category = contactCategories.getOrDefault(r.l("FK_CATEGORY"), "").toLowerCase(Locale.ROOT);
+            boolean manufacturer = category.matches(".*(hersteller|manufactur|produzent|fabrikant|marke|brand).*");
+            boolean supplier = r.s("DTYPE", "").toLowerCase(Locale.ROOT).startsWith("creditor")
+                    || category.matches(".*(lieferant|supplier|kreditor|creditor|vendor|zulieferer).*");
             String number = supplier ? r.s("SUPPLIERNUMBER", r.s("CUSTOMERNUMBER")) : r.s("CUSTOMERNUMBER", r.s("SUPPLIERNUMBER"));
             String company = r.s("COMPANY");
             String name = r.s("NAME");
             String cname = cut(name != null ? name : company != null ? company : "Fakturama " + id, 250);
-            Contact c = existing(Context.getContact(), number, cname);
-            if (c != null) {
-                contactIds.put(id, c.__getIDS());
+            Integer there = existing(Context.getContact(), number, cname);
+            if (there != null) {
+                contactIds.put(id, there);
                 result.alreadyThere += create ? 1 : 0;
                 continue;
             }
@@ -586,7 +717,7 @@ public class Fakturama2Importer {
                 continue;
             }
             try {
-                c = (Contact) DatabaseObject.getObject(Context.getContact());
+                Contact c = (Contact) DatabaseObject.getObject(Context.getContact());
                 c.setCname(cname);
                 if (number != null) {
                     c.setCNumber(cut(number, 250));
@@ -597,7 +728,8 @@ public class Fakturama2Importer {
                 c.setTitle(cut(r.s("TITLE"), 250));
                 c.setisMale(r.l("GENDER") == 1);
                 c.setisSupplier(supplier);
-                c.setisCustomer(!supplier);
+                c.setisManufacturer(manufacturer);
+                c.setisCustomer(!supplier && !manufacturer);
                 c.settaxnumber(cut(r.s("VATNUMBER"), 250));
                 c.setWebsite(cut(r.s("WEBSITE"), 250));
                 c.setNotes(cut(r.s("NOTE"), 100000));
@@ -627,7 +759,10 @@ public class Fakturama2Importer {
                 if (c.save(true)) {
                     keepNumberAndDate(c, number, r.date("DATEADDED"));
                     contactIds.put(id, c.__getIDS());
+                    remember(Context.getContact(), number, cname, c.__getIDS());
                     result.contactsImported++;
+                    result.suppliers += supplier ? 1 : 0;
+                    result.manufacturers += manufacturer ? 1 : 0;
                 }
             } catch (Exception e) {
                 Log.Debug(this, e);
@@ -639,7 +774,11 @@ public class Fakturama2Importer {
 
     // <editor-fold defaultstate="collapsed" desc="Products">
     private void importProducts(boolean create) {
-        for (Row r : rows("FKT_PRODUCT")) {
+        List<Row> products = rows("FKT_PRODUCT");
+        boolean linkColumns = false;
+        int k = 0;
+        for (Row r : products) {
+            tick(Messages.FKT_RESULT_PRODUCTS.toString(), ++k, products.size());
             long id = r.l("ID");
             if (r.deleted()) {
                 result.deletedSkipped += create ? 1 : 0;
@@ -647,9 +786,9 @@ public class Fakturama2Importer {
             }
             String number = r.s("ITEMNUMBER");
             String name = cut(r.s("NAME", number != null ? number : "Fakturama " + id), 250);
-            Product p = existing(Context.getProduct(), number, name);
-            if (p != null) {
-                productIds.put(id, p.__getIDS());
+            Integer there = existing(Context.getProduct(), number, name);
+            if (there != null) {
+                productIds.put(id, there);
                 result.alreadyThere += create ? 1 : 0;
                 continue;
             }
@@ -657,7 +796,7 @@ public class Fakturama2Importer {
                 continue;
             }
             try {
-                p = (Product) DatabaseObject.getObject(Context.getProduct());
+                Product p = (Product) DatabaseObject.getObject(Context.getProduct());
                 p.setCname(name);
                 if (number != null) {
                     p.setCnumber(cut(number, 250));
@@ -680,18 +819,165 @@ public class Fakturama2Importer {
                 p.setProductgroupsids(group != null ? group : 1);
                 p.setGroupsids(1);
                 p.setUrl("");
+                //supplier and manufacturer, if this Fakturama version has them per product
+                Integer supplier = link(r, new String[]{"FK_SUPPLIER", "SUPPLIER_ID", "FK_CREDITOR", "FK_VENDOR"},
+                        new String[]{"SUPPLIER", "SUPPLIERNAME", "VENDOR"}, false);
+                Integer manufacturer = link(r, new String[]{"FK_MANUFACTURER", "MANUFACTURER_ID"},
+                        new String[]{"MANUFACTURER", "MANUFACTURERNAME", "BRAND"}, true);
+                linkColumns |= hasAny(r, "FK_SUPPLIER", "SUPPLIER_ID", "FK_CREDITOR", "FK_VENDOR", "SUPPLIER", "SUPPLIERNAME",
+                        "VENDOR", "FK_MANUFACTURER", "MANUFACTURER_ID", "MANUFACTURER", "MANUFACTURERNAME", "BRAND");
+                if (supplier != null) {
+                    p.setSuppliersids(supplier);
+                }
+                if (manufacturer != null) {
+                    p.setManufacturersids(manufacturer);
+                }
                 if (p.save(true)) {
                     keepNumberAndDate(p, null, r.date("DATEADDED"));
                     productIds.put(id, p.__getIDS());
+                    remember(Context.getProduct(), number, name, p.__getIDS());
                     result.productsImported++;
+                    result.productsLinked += supplier != null || manufacturer != null ? 1 : 0;
                     blockPrices(r, p);
-                    if (r.s("PICTURE") != null) {
-                        result.warnings.add(name + ": " + Messages.FKT_PICTURE_NOT_IMPORTED + " " + r.s("PICTURE"));
+                    if (r.d("QUANTITY") != null) {
+                        stock.put(p.__getIDS(), r.d("QUANTITY"));
+                    }
+                    Object pic = r.v.get("PICTURE");
+                    if (pic instanceof byte[] && ((byte[]) pic).length > 0) {
+                        picture(p, (byte[]) pic, number != null ? number : name);
                     }
                 }
             } catch (Exception e) {
                 Log.Debug(this, e);
                 result.warnings.add(name + ": " + e.getMessage());
+            }
+        }
+        if (create && !linkColumns && result.suppliers > 0) {
+            result.warnings.add(Messages.FKT_NO_PRODUCT_SUPPLIER.toString());
+        }
+    }
+
+    private static boolean hasAny(Row r, String... cols) {
+        for (String c : cols) {
+            if (r.v.containsKey(c)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private final Map<String, Integer> linkedByName = new HashMap<>();
+
+    /**
+     * @return the YaBS contact of a supplier / manufacturer column of a
+     * product (id of a Fakturama contact, or a name), else null
+     */
+    private Integer link(Row r, String[] idColumns, String[] nameColumns, boolean manufacturer) {
+        for (String c : idColumns) {
+            if (r.l(c) > 0 && contactIds.containsKey(r.l(c))) {
+                return contactIds.get(r.l(c));
+            }
+        }
+        for (String c : nameColumns) {
+            String name = r.v.get(c) instanceof Number ? null : r.s(c);
+            if (name == null) {
+                continue;
+            }
+            String key = (manufacturer ? "m|" : "s|") + name.toLowerCase(Locale.ROOT);
+            if (linkedByName.containsKey(key)) {
+                return linkedByName.get(key);
+            }
+            try {
+                Integer id = null;
+                try {
+                    List<DatabaseObject> l = DatabaseObject.getObjects(Context.getContact(), new QueryCriteria("cname", cut(name, 250)));
+                    id = l.isEmpty() ? null : l.get(0).__getIDS();
+                } catch (NodataFoundException e) {
+                    //a new one
+                }
+                if (id == null) {
+                    Contact k = (Contact) DatabaseObject.getObject(Context.getContact());
+                    k.setCname(cut(name, 250));
+                    k.setCompany(cut(name, 250));
+                    k.setisCompany(true);
+                    k.setisManufacturer(manufacturer);
+                    k.setisSupplier(!manufacturer);
+                    k.setisCustomer(false);
+                    k.setGroupsids(1);
+                    if (k.save(true)) {
+                        id = k.__getIDS();
+                        result.contactsImported++;
+                        if (manufacturer) {
+                            result.manufacturers++;
+                        } else {
+                            result.suppliers++;
+                        }
+                    }
+                }
+                linkedByName.put(key, id);
+                return id;
+            } catch (Exception e) {
+                Log.Debug(this, e.getMessage());
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Fakturama keeps the picture of a product in the database: it becomes a
+     * file of the product and its product image
+     */
+    private void picture(Product p, byte[] data, String name) {
+        try {
+            String ext = data.length > 3 && (data[0] & 0xff) == 0x89 && data[1] == 'P' ? "png"
+                    : data.length > 2 && (data[0] & 0xff) == 0xFF && (data[1] & 0xff) == 0xD8 ? "jpg"
+                    : data.length > 3 && data[0] == 'G' && data[1] == 'I' && data[2] == 'F' ? "gif"
+                    : data.length > 2 && data[0] == 'B' && data[1] == 'M' ? "bmp" : "png";
+            File dir = Files.createTempDirectory("yabs-fkt-img").toFile();
+            File f = new File(dir, name.replaceAll("[^A-Za-z0-9_.-]", "_") + "." + ext);
+            Files.write(f.toPath(), data);
+            final java.util.concurrent.CountDownLatch latch = new java.util.concurrent.CountDownLatch(1);
+            final String[] stored = new String[1];
+            mpv5.db.common.QueryHandler.instanceOf().clone(Context.getFiles()).insertFile(f, p,
+                    mpv5.db.common.QueryCriteria.getSaveStringFor(Messages.FKT_PICTURE.toString()), o -> {
+                        if (o instanceof mpv5.db.objects.FileToProduct) {
+                            stored[0] = ((mpv5.db.objects.FileToProduct) o).__getFilename();
+                        }
+                        latch.countDown();
+                    });
+            latch.await(120, java.util.concurrent.TimeUnit.SECONDS);
+            if (stored[0] != null) {
+                p.setDefaultimage(stored[0]);
+                p.save(true);
+                result.imagesImported++;
+            } else {
+                result.warnings.add(name + ": " + Messages.FKT_PICTURE_NOT_IMPORTED);
+            }
+            if (!f.delete()) {
+                f.deleteOnExit();
+            }
+            dir.delete();
+        } catch (Exception e) {
+            Log.Debug(this, e);
+            result.warnings.add(name + ": " + Messages.FKT_PICTURE_NOT_IMPORTED + " " + e.getMessage());
+        }
+    }
+
+    /**
+     * Products with a stock in Fakturama are managed in the inventory; set
+     * after the documents, so that old invoices do not reduce the stock
+     */
+    private void applyInventory() {
+        for (Map.Entry<Integer, BigDecimal> e : stock.entrySet()) {
+            try {
+                Product p = (Product) DatabaseObject.getObject(Context.getProduct(), e.getKey());
+                p.setIntinventorytype(1);
+                p.setStockvalue(e.getValue());
+                if (p.save(true)) {
+                    result.inventoryProducts++;
+                }
+            } catch (Exception ex) {
+                Log.Debug(this, ex.getMessage());
             }
         }
     }
@@ -736,7 +1022,7 @@ public class Fakturama2Importer {
         int n = 0;
         for (Row d : docs) {
             n++;
-            progress.step(Messages.FKT_RESULT_DOCUMENTS + " " + n + "/" + docs.size(), 65 + 25 * n / Math.max(1, docs.size()));
+            tick(Messages.FKT_RESULT_DOCUMENTS.toString(), n, docs.size());
             if (d.deleted()) {
                 result.deletedSkipped++;
                 continue;
@@ -768,7 +1054,7 @@ public class Fakturama2Importer {
                 continue;
             }
             String number = cut(d.s("NAME"), 250);
-            Item existingItem = existing(ctx, number, number);
+            Integer existingItem = existing(ctx, number, number);
             if (existingItem != null) {
                 result.alreadyThere++;
                 continue;
@@ -813,6 +1099,7 @@ public class Fakturama2Importer {
                     continue;
                 }
                 keepNumberAndDate(item, number, date);
+                remember(ctx, number, number, item.__getIDS());
                 int pos = 1;
                 List<Row> items = positions.getOrDefault(d.l("ID"), new ArrayList<>());
                 items.sort((a, b) -> Long.compare(a.l("POSNR"), b.l("POSNR")));
@@ -932,7 +1219,10 @@ public class Fakturama2Importer {
                 items.computeIfAbsent(i.l("FK_VOUCHER"), k -> new ArrayList<>()).add(i);
             }
         }
-        for (Row v : rows("FKT_VOUCHERS")) {
+        List<Row> vouchers = rows("FKT_VOUCHERS");
+        int k = 0;
+        for (Row v : vouchers) {
+            tick(Messages.FKT_RESULT_VOUCHERS.toString(), ++k, vouchers.size());
             if (v.deleted()) {
                 result.deletedSkipped++;
                 continue;
