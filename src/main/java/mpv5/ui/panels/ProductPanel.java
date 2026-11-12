@@ -1474,7 +1474,8 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
     public void changeSelection(MPComboBoxModelItem to, Context c) {
     }
 
-    private void preview() {
+    @Override
+    public void preview() {
         PreviewWaiter pr;
         if (dataOwner != null && dataOwner.isExisting()) {
             if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {

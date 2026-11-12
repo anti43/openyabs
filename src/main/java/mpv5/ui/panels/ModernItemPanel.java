@@ -757,6 +757,13 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         tv.setVisible(true);
     }
 
+    @Override
+    public void preview() {
+        if (dataOwner != null) {
+            preview(dataOwner.__getInttype());
+        }
+    }
+
     private void preview(int templateType) {
         if (dataOwner != null && dataOwner.isExisting()) {
             if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), templateType)) {

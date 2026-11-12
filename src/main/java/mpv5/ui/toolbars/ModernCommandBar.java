@@ -193,6 +193,10 @@ public class ModernCommandBar extends JPanel {
         pdf = button("PDF", "/images/22/fileexport.png", tip(text("DataPanelTB.pdfButton.toolTipText"), PDF));
         pdf.addActionListener(e -> RecordActions.pdf(view));
         pdf.setVisible(view instanceof ExportablePanel);
+        //the preview next to PDF (issue #58), shown inside YaBS
+        JButton preview = button(Messages.ACTION_PREVIEW.toString(), "/images/22/viewmag.png", Messages.ACTION_PREVIEW.toString());
+        preview.addActionListener(e -> RecordActions.preview(view));
+        preview.setVisible(view instanceof ExportablePanel);
 
         left.add(search);
         left.add(separator());
@@ -201,6 +205,7 @@ public class ModernCommandBar extends JPanel {
         left.add(separator());
         left.add(mail);
         left.add(print);
+        left.add(preview);
         left.add(pdf);
         left.add(extras);
         add(left, BorderLayout.CENTER);
