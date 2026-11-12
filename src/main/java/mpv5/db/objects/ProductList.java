@@ -22,6 +22,7 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryHandler;
+import mpv5.db.common.QueryData;
 import mpv5.logging.Log;
 import mpv5.ui.panels.ProductListsPanel;
 import mpv5.utils.images.MPIcon;
@@ -33,7 +34,6 @@ import mpv5.utils.images.MPIcon;
 public class ProductList extends DatabaseObject {
 
     private String description;
-    private boolean asproduct = false;
 
     public ProductList() {
         setContext(Context.getProductList());
@@ -64,28 +64,17 @@ public class ProductList extends DatabaseObject {
     }
 
     /**
-     * @return the asproduct
+     * Deletes the list (and its components); a product made from it stays (it
+     * may be in invoices), without the link to the list
      */
-    public boolean __isAsproduct() {
-        return asproduct;
-    }
-
-    /**
-     * @param asproduct the asproduct to set
-     */
-    public void setAsproduct(boolean asproduct) {
-        this.asproduct = asproduct;
-    }
-
     @Override
     public boolean delete() {
-        QueryCriteria c = new QueryCriteria("productlistsids", __getIDS());
-        if (asproduct) {
-            try {
-                QueryHandler.instanceOf().clone(Context.getProduct()).delete(c);
-            } catch (Exception ex) {
-                Log.Debug(ex);
-            }
+        try {
+            QueryData d = new QueryData();
+            d.add("productlistsids", 0);
+            QueryHandler.instanceOf().clone(Context.getProduct()).update(d, new String[]{"productlistsids", String.valueOf(__getIDS()), ""}, null);
+        } catch (Exception ex) {
+            Log.Debug(ex);
         }
         return super.delete();
     }

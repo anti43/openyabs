@@ -1147,16 +1147,26 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
             } else if (dbo.getContext().equals(Context.getProduct())) {
                 positions.addPosition(new SubItem((Product) dbo));
             } else if (dbo.getContext().equals(Context.getProductList())) {
+                //the components of a bill of materials: one position each, like pasted products,
+                //with the quantity and the price of the list
                 try {
-                    SubItem[] subs = dataOwner != null ? dataOwner.getSubitems() : new SubItem[0];
-                    List<ProductlistSubItem> l = ProductList.getReferencedObjects(dbo, Context.getProductListItems(), new ProductlistSubItem());
-                    MPTableModel t = SubItem.toModel(subs);
-                    int count = t.getRowCount();
-                    for (int i = 0; i < l.size(); i++) {
-                        l.get(i).setIDS(-1);
-                        t.addRow(l.get(i).getRowData(i + count + 1));
+                    for (ProductlistSubItem c : ProductlistSubItem.getList(dbo.__getIDS())) {
+                        SubItem s;
+                        try {
+                            s = new SubItem((Product) DatabaseObject.getObject(Context.getProduct(), c.__getOriginalproductsids()));
+                        } catch (NodataFoundException gone) {
+                            //the product was deleted: the stored values
+                            s = new SubItem();
+                            s.setCname(c.getCname());
+                            s.setDescription(c.__getDescription());
+                            s.setMeasure(c.__getMeasure());
+                            s.setTaxpercentvalue(java.math.BigDecimal.valueOf(c.__getTaxpercentvalue()));
+                        }
+                        s.setQuantityvalue(java.math.BigDecimal.valueOf(c.__getQuantityvalue()));
+                        s.setExternalvalue(java.math.BigDecimal.valueOf(c.__getExternalvalue()));
+                        s.setInternalvalue(java.math.BigDecimal.valueOf(c.__getInternalvalue()));
+                        positions.addPosition(s);
                     }
-                    positions.setModel(t);
                 } catch (NodataFoundException ex) {
                     Log.Debug(this, ex.getMessage());
                 }
