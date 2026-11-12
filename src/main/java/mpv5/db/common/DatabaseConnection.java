@@ -130,7 +130,7 @@ public class DatabaseConnection {
          if (conn != null //&& conn.isValid(10)//does not work with MySQL Connector/J 5.0
                ) {//mysql (and others) need explicit create database, derby does it by itself
             conn.setAutoCommit(true);
-            if (create && ConnectionTypeHandler.getDriverType() != ConnectionTypeHandler.DERBY) {
+            if (create && !ConnectionTypeHandler.isDerbyLike()) {
                stmt = conn.createStatement();
                if (User.PROPERTIES_OVERRIDE.hasProperty("drop_database_on_create")) {
                   try {

@@ -2,7 +2,12 @@
 
 Technische Hinweise zu Datenbank, modernen Ansichten und E-Rechnung. Die Funktionsübersicht steht in der [README](../README.md).
 
-## Datenbank (Apache Derby 10.17, Java 21)
+## Datenbank (H2 und Apache Derby 10.17, Java 21)
+
+**Neue Installationen nutzen H2** (Datei-Datenbank `<Name>.mv.db` im gewählten Ordner), da Apache Derby nicht mehr weiterentwickelt wird. Bestehende Derby-Datenbanken werden weiter unterstützt und bei Bedarf über *Datenbank-Einstellungen* (Treiber `org.apache.derby.jdbc.ClientDriver`) geöffnet; H2 ist dort der erste Treiber (`org.h2.Driver`).
+
+- H2 nutzt die Derby-Struktur und -Updates, umgewandelt: H2 läuft im Derby-Kompatibilitätsmodus, **SMALLINT-Spalten werden BIGINT** (keine Überläufe), `LONG VARCHAR` wird `VARCHAR(32700)`. Derbys SQL-Trigger (Suchindex, Papierkorb) laufen in H2 über die Java-Klasse `H2Trigger`, ihre Anweisungen stehen in der Tabelle `yabstriggers`.
+- **Entwicklermodus:** `java -jar openyabs.jar -devmode` (oder `-Dyabs.devmode=true`) – H2 nur im Arbeitsspeicher, Einstellungen in einem temporären Ordner (außer mit `-appdir`). Nichts wird dauerhaft gespeichert; der Einrichtungsassistent erscheint bei jedem Start.
 
 YaBS nutzt Apache Derby 10.17.1.0, das Java 21 voraussetzt.
 
@@ -128,9 +133,11 @@ Ausführlich, mit Rechtslage und Checkliste: **[docs/E-Rechnung.md](E-Rechnung.m
 - **Lokale Einstellungen, Ordner:** Unter dem Ablage- und dem Sicherungsordner steht, welcher Ordner gerade benutzt wird – auch wenn das Feld leer ist (dann der zuletzt gewählte Ordner). Sicherungen und Datenbank-Exporte beginnen ohne Sicherungsordner nicht mehr im Programmordner. Die Proxy-Felder zeigen die gespeicherten Werte (wurden bisher leer bzw. falsch angezeigt); die Einstellungsdatei enthält jede Verbindung nur noch einmal.
 - **Standardschriftart** (*Systemsteuerung › Standardschriftart*): *Anwenden* ändert die offenen Fenster sofort; alle Fenster und Dialoge nutzen die Schrift erst **nach einem Neustart**. Darauf weist die Karte hin, und nach *Speichern* erscheint ein Hinweis. Die Schrift gilt für diesen Computer, die Größe ändert *Ansicht › Zoom*.
 - **Demo-Vorlagen:** Bei einer neuen Installation werden 18 Demo-Vorlagen (eine je Vorlagenart: Rechnung, Angebot, Mahnung, Kontaktdatenblatt, Bestellung …) mit Platzhalter-Logo importiert und dem Administrator für *Alle Gruppen* zugewiesen (die normale Rechnungsvorlage bleibt die zugewiesene Rechnungsvorlage). Jede Demo-Vorlage hat eine Seite *Verfügbare Felder* mit allen Feldern der Art – zum Kopieren in eigene Vorlagen; die Seite einfach löschen. Erzeugt mit `tools/templates/gen.py`.
+- **H2-Datenbank:** Neue Installationen (*Auf diesem Computer*) legen eine H2-Datenbank an; Derby-Datenbanken funktionieren weiter. Entwicklermodus mit `-devmode` (H2 nur im Speicher). Details unter [Datenbank](#datenbank-h2-und-apache-derby-1017-java-21).
 - **Umstieg von Fakturama 2:** *Datei › Import › Fakturama 2* – siehe [README](README.de.md#import-export-und-umstieg-von-anderer-software).
 
 ### Settings and usage (EN)
+- **H2 database:** new local installations use H2 (SMALLINT columns become BIGINT); Derby databases keep working. `-devmode` runs H2 in memory only.
 - **Demo templates:** a new installation imports 18 demo templates (one per template type) with a dummy logo, assigned to the administrator for all groups; each has a page listing all available fields of its type.
 
 - **WSL:** the main window is no longer grey until moved (`_JAVA_AWT_WM_NONREPARENTING=1` is set automatically).

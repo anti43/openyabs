@@ -640,7 +640,8 @@ public class DatabaseUpdater {
      */
     public void updateFrom(double version) throws Exception {
         Log.Debug(DatabaseUpdater.class, "Updating database from " + version);
-        boolean derby = ConnectionTypeHandler.getDriverType() == ConnectionTypeHandler.DERBY;
+        boolean derby = ConnectionTypeHandler.isDerbyLike();
+        boolean h2 = ConnectionTypeHandler.getDriverType() == ConnectionTypeHandler.H2;
         SchemaUpdate update = new SchemaUpdate(reconnect -> {
             try {
                 DatabaseConnection dc = DatabaseConnection.instanceOf();
@@ -655,11 +656,11 @@ public class DatabaseUpdater {
             }
         }, derby, DatabaseConnection::withPrefix);
         try {
-            double newVersion = update.run(version, derby ? UPDATES_DERBY : UPDATES_MYSQL);
+            double newVersion = update.run(version, h2 ? H2Dialect.convert(UPDATES_DERBY) : derby ? UPDATES_DERBY : UPDATES_MYSQL);
             Log.Debug(DatabaseUpdater.class, "Database updated to " + newVersion);
         } catch (SchemaUpdate.DamagedDatabaseException e) {
             Log.Debug(e);
-            if (!derby) {
+            if (!derby || h2) {
                 throw e;
             }
             rebuild(e);
@@ -706,6 +707,8 @@ public class DatabaseUpdater {
         switch (conType) {
             case ConnectionTypeHandler.DERBY:
                 return UPDATES_DERBY;
+            case ConnectionTypeHandler.H2:
+                return H2Dialect.convert(UPDATES_DERBY);
             case ConnectionTypeHandler.MYSQL:
                 return UPDATES_MYSQL;
             default:

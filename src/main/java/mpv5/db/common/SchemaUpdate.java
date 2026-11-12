@@ -235,6 +235,17 @@ public class SchemaUpdate {
                 case "42Y55"://does not exist (drop table)
                 case "42X94"://does not exist (trigger, index)
                 case "X0X81"://does not exist
+                //H2
+                case "42S21"://duplicate column
+                case "42S01"://table exists
+                case "42S11"://index exists
+                case "42S22"://column not found
+                case "42S02"://table not found
+                case "42S12"://index not found
+                case "90057"://constraint not found
+                case "90042"://trigger not found
+                case "90041"://trigger exists
+                case "90045"://constraint exists
                 case "42X86"://there is no constraint
                     return Outcome.ALREADY_DONE;
                 default:

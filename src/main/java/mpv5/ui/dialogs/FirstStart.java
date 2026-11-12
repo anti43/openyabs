@@ -335,7 +335,7 @@ public final class FirstStart extends JFrame {
     private void go() {
         final Settings s = new Settings();
         if (server.isSelected()) {
-            s.driver = ConnectionTypeHandler.DRIVERS[new int[]{1, 0, 2}[type.getSelectedIndex()]];
+            s.driver = ConnectionTypeHandler.DRIVERS[new int[]{2, 1, 3}[type.getSelectedIndex()]];
             s.url = address.getText().trim();
             s.user = user.getText().trim();
             s.password = new String(password.getPassword());
@@ -344,7 +344,7 @@ public final class FirstStart extends JFrame {
             s.network = shared.isSelected();
             s.onlyConnect = existing.isSelected();
         } else {
-            s.driver = ConnectionTypeHandler.DERBY_DRIVER;
+            s.driver = ConnectionTypeHandler.H2_DRIVER;
             s.url = folder.getAbsolutePath();
             s.user = "";
             s.password = "";
