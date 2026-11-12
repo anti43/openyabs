@@ -61,6 +61,10 @@ public class LocalSettings {
     public static final String CALCULATOR = "calculator";
     public static final String BASE_DIR = "basedir";
     public static final String BACKUP_DIR = "backupdir";
+    /**
+     * the name of a connection (e.g. of a restored backup)
+     */
+    public static final String CONNECTION_NAME = "connectionname";
     public static final String SUPPRESS_UPDATE_CHECK = "noupdate";
     public static final String CMD_PASSWORD = "cmdpassword";
     public static final String CMD_USER = "cmduser";
@@ -357,6 +361,62 @@ public class LocalSettings {
             Popup.warn(Messages.ERROR_SAVING_LOCALSETTINGS);
             Log.Debug(LocalSettings.class, ex);
         }
+    }
+
+    /**
+     * Adds a connection to the settings file, the current connection stays
+     *
+     * @param p the settings of the new connection (nodeid is set here)
+     * @return the id of the new connection
+     * @throws Exception
+     */
+    public static synchronized int addConnection(PropertyStore p) throws Exception {
+        int id = 0;
+        for (Integer i : getConnectionIDs()) {//also reads the connections
+            id = Math.max(id, i + 1);
+        }
+        p.changeProperty("nodeid", String.valueOf(id));
+        Vector<PropertyStore> all = new Vector<PropertyStore>();
+        boolean current = false;
+        for (PropertyStore c : cookies) {
+            boolean me = String.valueOf(connectionID).equals(c.getProperty("nodeid"));
+            current |= me;
+            all.add(me ? cookie : c);
+        }
+        if (!current) {
+            cookie.changeProperty("nodeid", String.valueOf(connectionID));
+            all.add(cookie);
+            id = Math.max(id, connectionID + 1);
+            p.changeProperty("nodeid", String.valueOf(id));
+        }
+        all.add(p);
+        cookies = all;
+        XMLWriter x = new XMLWriter();
+        x.newDoc("localsettings", false);
+        x.parse("connection", cookies);
+        x.createOrReplace(new File(Main.SETTINGS_FILE));
+        return id;
+    }
+
+    /**
+     * @return the connections (id, name): the name of the connection or
+     * "Connection ID n"
+     * @throws Exception
+     */
+    public static Map<Integer, String> getConnectionNames() throws Exception {
+        Map<Integer, String> list = new TreeMap<Integer, String>();
+        XMLReader read = new XMLReader();
+        read.newDoc(new File(Main.SETTINGS_FILE), false);
+        for (PropertyStore p : (Vector<PropertyStore>) read.readInto("localsettings", "connection")) {
+            try {
+                int id = p.getProperty("nodeid", 0);
+                String n = p.getProperty(CONNECTION_NAME);
+                list.put(id, n == null || n.isEmpty() || "null".equals(n) ? "Connection ID " + id : n + " (" + id + ")");
+            } catch (Exception e) {
+                Log.Debug(e);
+            }
+        }
+        return list;
     }
 
     /**
