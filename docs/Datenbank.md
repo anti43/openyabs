@@ -69,6 +69,7 @@ Die Verbindungen stehen in der Einstellungsdatei `~/.yabs/settings<Version>.yabs
 
 *Systemsteuerung › Datenbank › Zip-Sicherung* (nur für lokale H2- und Derby-Datenbanken, nicht im Entwicklermodus):
 
+- Die Karte *Verwendete Datenbank* zeigt Art, Ort und Größe der Datenbank und ob sie hier gesichert werden kann (wenn nicht: warum).
 - **Jetzt sichern:** Die Datenbankverbindung wird geschlossen, die Datenbankdateien werden als `<Name>-<JJJJMMTT-HHMMSS>.zip` in den Sicherungsordner geschrieben, danach wird wieder verbunden.
 - **Sicherungsordner** mit Variablen `[HOME] [APPDIR] [DBNAME] [YEAR] [MONTH] [DAY]`, Standard `[APPDIR]/backups/[DBNAME]`; der aufgelöste Pfad wird angezeigt.
 - **Sicherungen behalten:** Standard 3 – ältere Zip-Dateien mit Zeitstempel werden gelöscht.
