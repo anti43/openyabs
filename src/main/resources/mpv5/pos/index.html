@@ -100,6 +100,7 @@ main { display: grid; grid-template-columns: 1fr minmax(320px, 34%); min-height:
   <header>
     <span class="shop" id="shopName">YaBS</span>
     <span class="seller" id="seller"></span>
+    <button id="storno" data-t="storno">Storno</button>
     <button id="logout" data-t="logout">Abmelden</button>
   </header>
   <main>
@@ -147,6 +148,7 @@ main { display: grid; grid-template-columns: 1fr minmax(320px, 34%); min-height:
     <div class="actions" id="receiptButtons" style="margin-bottom:10px">
       <button class="secondary" id="showReceipt" data-t="showReceipt">Bon anzeigen</button>
       <button class="secondary" id="printReceipt" data-t="printReceipt">Bon drucken</button>
+      <button class="secondary" id="cancelSale" data-t="cancelSale">Stornieren</button>
     </div>
     <div id="receiptInfo" class="num" style="min-height:22px"></div>
     <button class="primary" id="next" data-t="next">Nächster Verkauf</button>
@@ -162,7 +164,10 @@ const T = de ? {} : {
   given: "Given", back: "Back", book: "Book", next: "Next sale", all: "All", empty: "Tap a product",
   nothing: "No products found", wrong: "User or password wrong", notEnough: "Not enough money", change: "Change",
   receipt: "Invoice", error: "Could not book: ", showReceipt: "Show receipt", printReceipt: "Print receipt",
-  printing: "Receipt is printed", printed: "Receipt printed", printError: "Printing failed: "
+  printing: "Receipt is printed", printed: "Receipt printed", printError: "Printing failed: ",
+  storno: "Cancel", cancelSale: "Cancel sale", cancelAsk: "Cancel this sale? A cancellation receipt is booked and signed.",
+  cancelNumber: "Number of the sale to cancel:", cancelled: "Cancellation", cancelError: "Could not cancel: ",
+  alreadyCancelled: "This sale is already cancelled", unknownSale: "Sale not found"
 };
 const t = (k, de) => T[k] || de;
 document.querySelectorAll("[data-t]").forEach(e => { if (T[e.dataset.t]) e.textContent = T[e.dataset.t]; });
@@ -356,13 +361,41 @@ $("payOk").onclick = async () => {
   $("rNumber").textContent = t("receipt", "Rechnung") + " " + r.body.number + " · " + money.format(r.body.gross);
   $("rChange").textContent = g === null ? "" : t("change", "Rückgeld") + ": " + money.format(r.body.change);
   lastSale = r.body.id;
-  $("receiptButtons").classList.toggle("hidden", !r.body.receipts);
+  lastIsStorno = false;
+  $("cancelSale").classList.remove("hidden");
+  $("receiptButtons").classList.remove("hidden");
+  $("printReceipt").classList.toggle("hidden", !r.body.receipts);
+  $("showReceipt").classList.toggle("hidden", !r.body.receipts);
   $("receiptInfo").textContent = r.body.printed ? t("printing", "Bon wird gedruckt") : "";
   $("receiptOverlay").classList.remove("hidden");
   cart.clear();
   renderCart();
 };
-let lastSale = 0;
+let lastSale = 0, lastIsStorno = false;
+async function cancelSale(sale) {
+  const r = await api("/api/cancel", { sale: String(sale) });
+  if (!r.ok) {
+    const e = r.body.error || r.status;
+    alert(e === "already cancelled" ? t("alreadyCancelled", "Dieser Verkauf ist bereits storniert")
+      : e === "unknown" ? t("unknownSale", "Verkauf nicht gefunden") : t("cancelError", "Storno nicht möglich: ") + e);
+    return;
+  }
+  $("rNumber").textContent = t("cancelled", "Storno") + " " + r.body.number + " · " + money.format(-r.body.gross);
+  $("rChange").textContent = "";
+  lastSale = r.body.id;
+  lastIsStorno = true;
+  $("cancelSale").classList.add("hidden");
+  $("receiptButtons").classList.toggle("hidden", !r.body.receipts);
+  $("receiptInfo").textContent = r.body.printed ? t("printing", "Bon wird gedruckt") : "";
+  $("receiptOverlay").classList.remove("hidden");
+}
+$("cancelSale").onclick = () => {
+  if (!lastIsStorno && confirm(t("cancelAsk", "Diesen Verkauf stornieren? Ein Storno-Beleg wird gebucht und signiert."))) { cancelSale(lastSale); }
+};
+$("storno").onclick = () => {
+  const n = prompt(t("cancelNumber", "Nummer des Verkaufs, der storniert werden soll:"));
+  if (n && n.trim()) { cancelSale(n.trim()); }
+};
 $("showReceipt").onclick = () => {
   window.open("/api/receipt?id=" + lastSale + "&token=" + encodeURIComponent(token), "_blank");
 };

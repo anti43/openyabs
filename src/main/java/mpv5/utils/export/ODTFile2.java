@@ -193,6 +193,17 @@ public class ODTFile2 extends Exportable {
                 }
             }
 
+            //receipt QR code of the TSE (DSFinV-K): an image named TSEQRCode.img, removed without TSE data
+            metadata.addFieldAsImage("TSEQRCode.img", NullImageBehaviour.RemoveImageTemplate);
+            Object qr = templateData.get("pos.tse.qrdata");
+            if (qr != null && !String.valueOf(qr).isEmpty()) {
+                try {
+                    context.put("TSEQRCode.img", YabsQRCodeGenerator.plain(String.valueOf(qr)));
+                } catch (Exception e) {
+                    Log.Debug(this, "No TSE QR code: " + e.getMessage());
+                }
+            }
+
             report.setFieldsMetadata(metadata);
             report.extractFields(extractor);
 

@@ -608,6 +608,7 @@ public enum Messages {
     CONNMGR_DENIED("User or password wrong."),
     CONNMGR_SWITCHED("Connected to %s"),
     CONNMGR_CREATED("New database %s created, signed in as administrator (password: password)."),
+    POS_STORNO_OF("CANCELLATION of"),
     SHOPIFY_SAVED("Shopify settings saved"),
     SHOPIFY_IMPORT("Import new orders"),
     SHOPIFY_TEST_OK("Connected to the shop \"%s\"."),

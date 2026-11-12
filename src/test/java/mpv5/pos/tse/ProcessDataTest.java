@@ -21,6 +21,15 @@ class ProcessDataTest {
     }
 
     @Test
+    void cancellationHasNegativeAmounts() {
+        Map<BigDecimal, BigDecimal> m = new LinkedHashMap<BigDecimal, BigDecimal>();
+        m.put(new BigDecimal("19"), new BigDecimal("-11.9"));
+        m.put(new BigDecimal("7"), new BigDecimal("-2.14"));
+        assertEquals("Beleg^-11.90_-2.14_0.00_0.00_0.00^-14.04:Bar",
+                ProcessData.kassenbeleg(m, new BigDecimal("-14.04"), true));
+    }
+
+    @Test
     void averageAndOldRatesGoToTheirSlots() {
         Map<BigDecimal, BigDecimal> m = new LinkedHashMap<BigDecimal, BigDecimal>();
         m.put(new BigDecimal("10.7"), BigDecimal.ONE);

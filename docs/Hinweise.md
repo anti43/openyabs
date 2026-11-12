@@ -138,9 +138,11 @@ Ausführlich, mit Rechtslage und Checkliste: **[docs/E-Rechnung.md](E-Rechnung.m
 - **Kasse, JavaPOS/ADK:** In der TSE-Karte lädt *ADK herunterladen* JavaPOS (Standard: Maven Central) bzw. ein ADK-Archiv in `<Programmordner>/javapos`; *ADK hinzufügen …* übernimmt ein installiertes Epson JavaPOS ADK. Die Jars werden zur Laufzeit geladen, YaBS läuft auch ohne sie – siehe [Kasse und TSE](Kasse-TSE.md).
 - **Verbindungs-Manager** (*Datei › Verbindungs-Manager*, beim Start bei mehreren Verbindungen): neu gestaltet. Liste aller Datenbanken mit Name, Art (H2/Derby/MySQL) und Ort (fehlende Datenbank rot), Anmelden und Verbinden in einem Schritt; *Neue Datenbank …* richtet sie mit dem Einrichtungsassistenten ein (ohne Neustart, angemeldet als Administrator), *Vorhandene hinzufügen …* trägt eine H2- oder Derby-Datenbank ein (Datei `.mv.db` oder Derby-Ordner wählen), *Umbenennen*, *Entfernen* (nur der Eintrag). Bei einem Fehler bleibt die bisherige Verbindung aktiv.
 - **Ausgeblendet bis zum Test mit H2:** *Datenbank sichern* (Derby), *Als SQL exportieren* (MySQL), *Sicherung zurückspielen* in der Systemsteuerung und das alte Menü *Werkzeuge › Migration*. Sichern und Wiederherstellen: *Zip-Sicherung*.
+- **Kasse, Storno und QR-Code:** Verkäufe können storniert werden (Bon-Bildschirm *Stornieren* oder *Storno* mit der Nummer) – als signierte Gutschrift mit negativen TSE-Beträgen; der Kassenbon zeigt den TSE-QR-Code (Bild `TSEQRCode.img`) – siehe [Kasse und TSE](Kasse-TSE.md).
 - **Umstieg von Fakturama 2:** *Datei › Import › Fakturama 2* – siehe [README](README.de.md#import-export-und-umstieg-von-anderer-software).
 
 ### Settings and usage (EN)
+- **POS cancellation and QR code:** sales can be cancelled (signed credit note, negative TSE amounts); the receipt shows the TSE QR code (image `TSEQRCode.img`).
 - **Connection Manager:** redesigned – list with name, type and place, sign in and connect in one step, new database (setup assistant, no restart), add existing H2/Derby database, rename, remove.
 - **Hidden until tested with H2:** Derby backup, MySQL/SQL export, restore and Tools › Migration; use the zip backup.
 - **POS, JavaPOS/ADK:** the TSE card downloads JavaPOS (or an ADK archive) into `<app folder>/javapos` or takes an installed Epson ADK; the jars are linked at runtime, YaBS does not depend on them.

@@ -108,6 +108,16 @@ public final class PosService {
             this.change = given == null ? BigDecimal.ZERO : given.subtract(t.gross).max(BigDecimal.ZERO);
             this.invoiceId = invoiceId;
         }
+
+        Receipt(String number, BigDecimal net, BigDecimal tax, BigDecimal gross, BigDecimal given, BigDecimal change, int invoiceId) {
+            this.number = number;
+            this.net = net;
+            this.tax = tax;
+            this.gross = gross;
+            this.given = given;
+            this.change = change;
+            this.invoiceId = invoiceId;
+        }
     }
 
     private volatile mpv5.pos.tse.Tse tse;
@@ -368,6 +378,149 @@ public final class PosService {
             Log.Debug(this, e);
         }
         return new Receipt(inv.__getCnumber(), t, given, inv.__getIDS());
+    }
+
+    /**
+     * Cancels (storno) a sale of the register: a paid credit note with the
+     * same positions, referencing the sale, signed by the TSE as a receipt
+     * with negative amounts. A sale can be cancelled once.
+     *
+     * @param token the seller
+     * @param sale the id or the number of the sale
+     * @return the receipt of the cancellation (amounts of the sale)
+     * @throws IllegalArgumentException not signed in, unknown or already
+     * cancelled
+     * @throws Exception if it can not be saved
+     */
+    public synchronized Receipt cancel(String token, String sale) throws Exception {
+        return mpv5.ui.dialogs.Popup.silently(() -> storno(token, sale));
+    }
+
+    private Receipt storno(String token, String sale) throws Exception {
+        User seller = user(token);
+        if (seller == null) {
+            throw new IllegalArgumentException("not signed in");
+        }
+        Item inv = findSale(sale);
+        if (inv == null || inv.__getInttype() != Constants.TYPE_INVOICE) {
+            throw new IllegalArgumentException("unknown");
+        }
+        if (cancelledBy(inv.__getIDS()) > 0) {
+            throw new IllegalArgumentException("already cancelled");
+        }
+        SubItem[] positions = inv.getSubitems();
+        final mpv5.pos.tse.Tse device = tse;
+        mpv5.pos.tse.PosTransactions.Record tr = new mpv5.pos.tse.PosTransactions.Record();
+        tr.clientId = clientId;
+        tr.tseType = device == null ? "none" : device.name();
+        mpv5.pos.tse.Tse.Started started = null;
+        if (device != null) {
+            try {
+                started = device.start(clientId, mpv5.pos.tse.Tse.KASSENBELEG, "");
+            } catch (Exception e) {
+                tr.failed = true;
+                tr.failure = String.valueOf(e.getMessage());
+                Log.Debug(this, e);
+            }
+        }
+        Item credit = (Item) DatabaseObject.getObject(Context.getCredit());
+        credit.setInttype(Constants.TYPE_CREDIT);
+        credit.setContactsids(inv.__getContactsids());
+        credit.setIntstatus(Item.STATUS_PAID);
+        credit.setGroupsids(1);
+        credit.setAccountsids(inv.__getAccountsids() > 0 ? inv.__getAccountsids() : 1);
+        credit.setReforderids(inv.__getIDS());
+        Date now = new Date();
+        credit.setDatetodo(now);
+        credit.setDateend(now);
+        credit.setDescription("POS Storno " + inv.__getCnumber() + " · " + seller.__getCname());
+        if (!credit.save()) {
+            throw new IllegalStateException("The cancellation could not be saved");
+        }
+        java.util.Map<BigDecimal, BigDecimal> perRate = new java.util.LinkedHashMap<BigDecimal, BigDecimal>();
+        BigDecimal gross = BigDecimal.ZERO;
+        int n = 1;
+        for (SubItem x : positions) {
+            SubItem c = new SubItem();
+            c.setItemsids(credit.__getIDS());
+            c.setCname(x.__getCname());
+            c.setDescription(x.__getDescription());
+            c.setOriginalproductsids(x.__getOriginalproductsids());
+            c.setQuantityvalue(x.__getQuantityvalue());
+            c.setExternalvalue(x.__getExternalvalue());
+            c.setInternalvalue(x.__getInternalvalue());
+            c.setTaxpercentvalue(x.__getTaxpercentvalue());
+            c.setMeasure(x.__getMeasure());
+            c.setOrdernr(n++);
+            c.setDateadded(now);
+            c.setGroupsids(1);
+            c.save(true);
+            BigDecimal net = x.__getExternalvalue().multiply(x.__getQuantityvalue());
+            BigDecimal g = net.add(net.multiply(x.__getTaxpercentvalue()).movePointLeft(2)).negate();
+            perRate.merge(x.__getTaxpercentvalue().stripTrailingZeros(), g, BigDecimal::add);
+            gross = gross.add(g);
+        }
+        mpv5.handler.ItemService.updateTotals(credit);
+        tr.invoice = credit.__getIDS();
+        tr.processData = mpv5.pos.tse.ProcessData.kassenbeleg(perRate, gross, true);
+        if (device != null && started != null) {
+            try {
+                tr.signed = device.finish(started, clientId, mpv5.pos.tse.Tse.KASSENBELEG, tr.processData);
+            } catch (Exception e) {
+                tr.failed = true;
+                tr.failure = String.valueOf(e.getMessage());
+                Log.Debug(this, e);
+            }
+        }
+        try {
+            mpv5.pos.tse.PosTransactions.save(tr);
+        } catch (Exception e) {
+            Log.Debug(this, e);
+        }
+        BigDecimal net = credit.__getNetvalue() == null ? BigDecimal.ZERO : credit.__getNetvalue();
+        BigDecimal pos = gross.negate();
+        return new Receipt(credit.__getCnumber(), net.setScale(2, RoundingMode.HALF_UP),
+                pos.subtract(net).setScale(2, RoundingMode.HALF_UP), pos.setScale(2, RoundingMode.HALF_UP),
+                null, BigDecimal.ZERO, credit.__getIDS());
+    }
+
+    /**
+     * @param sale id or number of an invoice
+     * @return the invoice, null if not found
+     */
+    private static Item findSale(String sale) {
+        String s = sale == null ? "" : sale.trim();
+        if (s.isEmpty()) {
+            return null;
+        }
+        try {
+            return (Item) DatabaseObject.getObject(Context.getInvoice(), "cnumber", s);
+        } catch (Exception e) {
+            //not a number of an invoice
+        }
+        try {
+            return (Item) DatabaseObject.getObject(Context.getInvoice(), Integer.parseInt(s));
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * @param invoice
+     * @return the id of the credit note cancelling the invoice, 0 if none
+     */
+    public static int cancelledBy(int invoice) {
+        try {
+            mpv5.db.common.ReturnValue rv = mpv5.db.common.QueryHandler.instanceOf().clone(Context.getInvoice()).freeSelectQuery(
+                    "SELECT ids FROM items WHERE reforderids = " + invoice + " AND inttype = " + Constants.TYPE_CREDIT,
+                    MPSecurityManager.VIEW, null);
+            if (rv.hasData()) {
+                return Integer.parseInt(String.valueOf(rv.getData()[0][0]));
+            }
+        } catch (Exception e) {
+            Log.Debug(PosService.class, e);
+        }
+        return 0;
     }
 
     /**
