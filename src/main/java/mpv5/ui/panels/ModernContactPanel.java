@@ -591,7 +591,6 @@ public class ModernContactPanel extends ModernDataPanel {
         newOrder.addActionListener(e -> openNew(ContactService.newItem(dataOwner, Item.TYPE_ORDER)));
         newInvoice.setToolTipText(text("ContactPanel.button_bill.toolTipText"));
         newInvoice.addActionListener(e -> openNew(ContactService.newItem(dataOwner, Item.TYPE_INVOICE)));
-        newInvoice.add(Messages.NEW_DEPOSIT.toString(), e -> openNew(ContactService.newItem(dataOwner, Item.TYPE_DEPOSIT)));
         newInvoice.add(Messages.NEW_PART_PAYMENT.toString(), e -> openNew(ContactService.newItem(dataOwner, Item.TYPE_PART_PAYMENT)));
         newCredit.addActionListener(e -> openNew(ContactService.newItem(dataOwner, Item.TYPE_CREDIT)));
         newProduct.addActionListener(e -> openNew(ContactService.newProduct(dataOwner)));

@@ -678,14 +678,14 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
         mpv5.ui.dialogs.SearchAnything.installDoubleShift();
         mpv5.plugin.PluginMenu.install(getMenuBar());
         //File > Import > Fakturama 2 (migration from Fakturama)
-        javax.swing.JMenuItem fakturama = new javax.swing.JMenuItem("Fakturama 2...");
+        javax.swing.JMenuItem fakturama = new javax.swing.JMenuItem("Fakturama 2 \u2026");
         fakturama.addActionListener(e -> {
             Wizard w = new Wizard(false);
             w.addPanel(new mpv5.ui.dialogs.subcomponents.wizard_Fakturama2_Import(w));
             w.showWiz();
         });
         jMenu8.add(fakturama, jMenu8.getMenuComponentCount() > 0 ? java.util.Arrays.asList(jMenu8.getMenuComponents()).indexOf(jMenu12) + 1 : 0);
-        jMenuItem17.setText(Messages.SEARCH_ANYTHING + "...   (Shift Shift)");
+        jMenuItem17.setText(Messages.SEARCH_ANYTHING + " \u2026   (Shift Shift)");
         jMenu2.add(new javax.swing.JPopupMenu.Separator(), 1);
         jMenu2.addMenuListener(new javax.swing.event.MenuListener() {
             @Override
@@ -719,18 +719,10 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
             }
         };
         ddb1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/32/folder_blue.png")));
-        ddb1.setLabel(Item.getTypeString(Item.TYPE_INVOICE));
+        ddb1.setLabel(Messages.NEW_INVOICE.toString());
         ddb1.addActionListener(l);
 
-        ddb1.add(
-                new javax.swing.ImageIcon(getClass().getResource("/images/32/folder_blue.png")),
-                Item.getTypeString(Item.TYPE_DEPOSIT),
-                new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                addTab(mpv5.YabsViewProxy.instance().newItemView(Item.TYPE_DEPOSIT), Messages.NEW_DEPOSIT);
-            }
-        });
+        //no new deposits: the same as a partial payment, only confusing (existing ones stay readable)
         ddb1.add(
                 new javax.swing.ImageIcon(getClass().getResource("/images/32/folder_blue.png")),
                 Item.getTypeString(Item.TYPE_PART_PAYMENT),
@@ -1714,7 +1706,8 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
                 jButton22ActionPerformed(evt);
             }
         });
-        nav_products.add(jButton22);
+        //product orders (purchase orders to suppliers) are hidden: no use for most users
+        //nav_products.add(jButton22);
 
         parent_nav_products.add(nav_products);
 

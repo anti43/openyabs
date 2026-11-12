@@ -82,7 +82,7 @@ public final class PluginMenu {
             menu.add(none);
         }
         menu.addSeparator();
-        JMenuItem manage = new JMenuItem(Messages.PLUGINS_MANAGE.toString() + "...");
+        JMenuItem manage = new JMenuItem(Messages.PLUGINS_MANAGE.toString() + " \u2026");
         manage.addActionListener(e -> openManager());
         menu.add(manage);
     }
