@@ -49,9 +49,11 @@ YaBS runs on **Windows, Linux and macOS**.
 
 All downloads: **[Releases](https://github.com/anti43/openyabs/releases)** – `latest-master` is the current development build.
 
-On the first start one window asks where your data should be stored: **on this computer** (one click) or on a **database server** (MySQL / MariaDB, Derby). The setup runs in the background; languages, countries and an invoice template are set up automatically, German systems start in German, and you are signed in as `admin` (password `password` – change it under *Settings › Users*). Your company data goes to *Settings › Company Info*. No account, no internet connection needed.
+On the first start one window asks where your data should be stored: **on this computer** (one click) or on a **database server** (MySQL / MariaDB, Derby). On this computer the data goes to `<user home>/.yabs/h2` (H2 database). The setup runs in the background; languages, countries, an invoice template and demo templates for all document types are set up automatically, German systems start in German, and you are signed in as `admin` (password `password` – change it under *Settings › Users*). Your company data goes to *Settings › Company Info*. No account, no internet connection needed.
 
-Updating: older databases are updated automatically on the first start – make a copy of the database folder before. Details (German): [docs/Hinweise.md](docs/Hinweise.md).
+Updating: older databases (also Derby) are updated automatically on the first start – make a copy of the database folder before, or use the zip backup. Details: [Database: H2, Derby, connections and backup](docs/Datenbank.md) · [Hinweise](docs/Hinweise.md).
+
+Trying things out without touching your data: `java -jar openyabs.jar -devmode` (database in memory only, settings in a temporary folder).
 
 ## Building from source
 
@@ -65,7 +67,7 @@ Versions: builds of `master` are **2.0.&lt;build number&gt;** (shown on the spla
 
 ## Help, community and license
 
-- Plugins: [docs/Plugins.md](docs/Plugins.md)
+- Plugins: [docs/Plugins.md](docs/Plugins.md) · Templates and all fields: [docs/Vorlagen.md](docs/Vorlagen.md) · Cash register and TSE: [docs/Kasse-TSE.md](docs/Kasse-TSE.md)
 - Questions (English and German): mailing list [openyabs@googlegroups.com](mailto:openyabs@googlegroups.com) · [archive](https://groups.google.com/forum/#!forum/openyabs)
 - German documentation: [Handbuch](https://docs.google.com/document/d/1VhUi0wS-EJgfV-o89Hl-2wux810mJnqUV1wPxpgVIs4/pub) · [Hinweise und Neuerungen](docs/Hinweise.md) · [E-Rechnung](docs/E-Rechnung.md)
 - Original project: [anti43/openyabs](https://github.com/anti43/openyabs) · [heise download](http://www.heise.de/download/yabs-yet-another-business-software-1149250.html) · [ubuntuusers wiki](http://wiki.ubuntuusers.de/Yabs)

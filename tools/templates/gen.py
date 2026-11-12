@@ -59,7 +59,6 @@ COMPANY = ['companyinfo.' + k for k in ['business', 'firstname', 'name', 'street
            'taxadvsior', 'taxadvjob', 'payterm', 'sepacreditorid']]
 
 # ---- the base template
-base = os.path.join(sys.argv[2])
 z = zipfile.ZipFile(os.path.join(REPO, 'src/main/resources/extra/DE-Yabs-2.0.odt'))
 files = {n: z.read(n) for n in z.namelist()}
 content = files['content.xml'].decode('utf-8')
