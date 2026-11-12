@@ -76,18 +76,86 @@ public final class Export extends HashMap<String, Object> implements Waitable {
      * @param to
      * @param log
      */
+    /**
+     * Mails a document: checks the sender and the recipient first (asks for
+     * an address if the contact has none), then the mail template (one is
+     * used directly, several to choose, none: send with the document name as
+     * subject, if wanted). Nothing is sent without a recipient and a sender.
+     *
+     * @param preloadedTemplate the document template
+     * @param dataOwner the document
+     * @param to the contact
+     * @param log null: interactive, else messages go there (no questions)
+     */
     public static void mail(Template preloadedTemplate, DatabaseObject dataOwner, Contact to, List<String> log) {
-        QueryCriteria c = new QueryCriteria("usersids", mpv5.db.objects.User.getCurrentUser().__getIDS());
-        MailMessage m = null;
+        boolean interactive = log == null;
+        String sender = mpv5.db.objects.User.getCurrentUser().__getMail();
+        if (sender == null || !Pattern.matches(EMAIL_PATTERN, sender.trim())) {
+            report(log, dataOwner, Messages.MAIL_NO_SENDER.toString());
+            return;
+        }
+        if (to == null) {
+            report(log, dataOwner, Messages.NO_MAIL_DEFINED.toString());
+            return;
+        }
+        if (to.__getMailaddress() == null || !Pattern.matches(EMAIL_PATTERN, to.__getMailaddress().trim())) {
+            if (!interactive) {
+                report(log, dataOwner, Messages.NO_MAIL_DEFINED.toString());
+                return;
+            }
+            String address = Popup.Enter_Value(String.format(Messages.MAIL_NO_RECIPIENT.toString(), to.__getCname()));
+            if (address == null || address.trim().isEmpty()) {
+                mpv5.YabsViewProxy.instance().addMessage(Messages.MAIL_CANCELED.toString());
+                return;
+            }
+            address = address.trim();
+            if (!Pattern.matches(EMAIL_PATTERN, address)) {
+                Popup.notice(String.format(Messages.MAIL_INVALID_ADDRESS.toString(), address));
+                return;
+            }
+            to.setMailaddress(address);//used for this mail
+            if (Popup.Y_N_dialog(String.format(Messages.MAIL_SAVE_ADDRESS.toString(), address, to.__getCname()))) {
+                to.save(true);
+            }
+        }
+        MailMessage m;
+        List<DatabaseObject> templates;
         try {
-            m = (MailMessage) Popup.SelectValue(DatabaseObject.getObjects(Context.getMessage(), c), Messages.SELECT_A_TEMPLATE);
-            mail(preloadedTemplate, dataOwner, to, log, m);
+            templates = DatabaseObject.getObjects(Context.getMessage(),
+                    new QueryCriteria("usersids", mpv5.db.objects.User.getCurrentUser().__getIDS()));
         } catch (Exception ex) {
-            Log.Debug(Export.class, ex.getMessage());
-            if (log == null)
-                Popup.notice(Messages.NO_MAIL_TEMPLATE_DEFINED);
-            else
-                log.add(dataOwner.getCname() + "->" + Messages.NO_MAIL_TEMPLATE_DEFINED + "\n");
+            templates = new java.util.ArrayList<DatabaseObject>();
+        }
+        if (templates.isEmpty()) {
+            if (!interactive) {
+                report(log, dataOwner, Messages.MAIL_NO_TEMPLATE_BATCH.toString());
+                return;
+            }
+            if (!Popup.Y_N_dialog(Messages.MAIL_NO_TEMPLATE_ASK.toString())) {
+                mpv5.YabsViewProxy.instance().addMessage(Messages.MAIL_CANCELED.toString());
+                return;
+            }
+            //not saved: subject = the document, no text
+            m = new MailMessage();
+            m.setCname(dataOwner.__getCname());
+            m.setDescription("");
+        } else if (templates.size() == 1 || !interactive) {
+            m = (MailMessage) templates.get(0);
+        } else {
+            m = (MailMessage) Popup.SelectValue(new java.util.ArrayList<DatabaseObject>(templates), Messages.SELECT_A_TEMPLATE);
+            if (m == null) {
+                mpv5.YabsViewProxy.instance().addMessage(Messages.MAIL_CANCELED.toString());
+                return;
+            }
+        }
+        mail(preloadedTemplate, dataOwner, to, log, m);
+    }
+
+    private static void report(List<String> log, DatabaseObject dataOwner, String message) {
+        if (log == null) {
+            Popup.notice(message);
+        } else {
+            log.add(dataOwner.getCname() + "->" + message + "\n");
         }
     }
 
