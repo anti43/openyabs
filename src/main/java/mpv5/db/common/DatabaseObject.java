@@ -1161,6 +1161,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                     } else if (tempval.getClass().isInstance(true)) {
                         boolean c = (Boolean) tempval;
                         data.add(left, c);
+                    } else if (tempval instanceof Date) {
+                        data.add(left, DateConverter.getSQLDateString((Date) tempval));
                     } else if (tempval.getClass().isInstance(new Date())) {
                         data.add(left, DateConverter.getSQLDateString((Date) tempval));
                     } else if (tempval.getClass().isInstance(new RandomDate(null))) {
