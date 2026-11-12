@@ -63,6 +63,89 @@ public final class DatabaseBackup {
         return ConnectionTypeHandler.isDerbyLike() && !ConnectionTypeHandler.DEVMODE && !sources(dbPath(), dbName(), isH2()).isEmpty();
     }
 
+    /**
+     * What is in use, for the backup page
+     */
+    public static final class Status {
+
+        /**
+         * H2, Derby, MySQL, PostgreSQL, other
+         */
+        public String type;
+        /**
+         * the files (local) or server/database
+         */
+        public String location;
+        /**
+         * bytes of the database files, -1 for servers
+         */
+        public long size = -1;
+        public boolean possible;
+        /**
+         * why not, null if possible
+         */
+        public String reason;
+    }
+
+    /**
+     * @return the database in use and whether a zip backup is possible
+     */
+    public static Status status() {
+        Status st = new Status();
+        Integer t = ConnectionTypeHandler.getDriverType();
+        String path = dbPath();
+        String name = dbName();
+        if (t != null && t == ConnectionTypeHandler.H2) {
+            st.type = ConnectionTypeHandler.DEVMODE ? "H2 (" + mpv5.globals.Messages.ZIPBACKUP_IN_MEMORY + ")" : "H2";
+            st.location = ConnectionTypeHandler.DEVMODE ? "-" : new java.io.File(path, name + ".mv.db").getPath();
+        } else if (t != null && t == ConnectionTypeHandler.DERBY) {
+            st.type = "Apache Derby";
+            st.location = new java.io.File(path, name).getPath();
+        } else if (t != null && t == ConnectionTypeHandler.MYSQL) {
+            st.type = "MySQL / MariaDB";
+            st.location = path + " / " + name;
+        } else if (t != null && t == ConnectionTypeHandler.POSTGRES) {
+            st.type = "PostgreSQL";
+            st.location = path + " / " + name;
+        } else {
+            st.type = String.valueOf(LocalSettings.getProperty(LocalSettings.DBDRIVER));
+            st.location = path + " / " + name;
+        }
+        if (ConnectionTypeHandler.DEVMODE) {
+            st.reason = mpv5.globals.Messages.ZIPBACKUP_WHY_DEVMODE.toString();
+        } else if (!ConnectionTypeHandler.isDerbyLike()) {
+            st.reason = t != null && (t == ConnectionTypeHandler.MYSQL || t == ConnectionTypeHandler.POSTGRES)
+                    ? String.format(mpv5.globals.Messages.ZIPBACKUP_WHY_SERVER.toString(), t == ConnectionTypeHandler.MYSQL ? "mysqldump" : "pg_dump")
+                    : mpv5.globals.Messages.ZIPBACKUP_WHY_OTHER.toString();
+        } else {
+            List<File> files = sources(path, name, isH2());
+            if (files.isEmpty()) {
+                st.reason = String.format(mpv5.globals.Messages.ZIPBACKUP_WHY_MISSING.toString(), st.location);
+            } else {
+                st.size = 0;
+                for (File f : files) {
+                    st.size += size(f);
+                }
+            }
+        }
+        st.possible = st.reason == null;
+        return st;
+    }
+
+    private static long size(File f) {
+        if (f.isFile()) {
+            return f.length();
+        }
+        long n = 0;
+        File[] c = f.listFiles();
+        if (c != null) {
+            for (File k : c) {
+                n += size(k);
+            }
+        }
+        return n;
+    }
+
     private static boolean isH2() {
         return ConnectionTypeHandler.getDriverType() == ConnectionTypeHandler.H2;
     }

@@ -87,12 +87,28 @@ public class ControlPanel_Backup extends JPanel implements ControlApplet {
                 .row(Card.field(Messages.ZIPBACKUP_KEEP.toString(), keep))
                 .addFull(onExit)
                 .addFull(last);
+        //the database in use and whether it can be backed up here
+        DatabaseBackup.Status st = DatabaseBackup.status();
+        JLabel possible = new JLabel(st.possible ? "\u2714 " + Messages.ZIPBACKUP_POSSIBLE_YES : "\u2716 " + Messages.ZIPBACKUP_POSSIBLE_NO);
+        possible.setFont(possible.getFont().deriveFont(java.awt.Font.BOLD));
+        possible.setForeground(st.possible ? new java.awt.Color(0x1e, 0x8e, 0x3e) : Applets.DANGER);
+        Card database = new Card(Messages.ZIPBACKUP_CARD_DATABASE.toString())
+                .row(Card.field(Messages.ZIPBACKUP_DB_TYPE.toString(), value(st.type)),
+                        Card.field(Messages.ZIPBACKUP_DB_SIZE.toString(), value(st.size < 0 ? "-" : String.format("%.1f MB", st.size / 1048576.0))))
+                .row(Card.field(Messages.ZIPBACKUP_DB_LOCATION.toString(), value(st.location)))
+                .addFull(possible);
+        if (st.reason != null) {
+            database.addFull(Applets.hint(st.reason));
+        }
+        JButton restoreButton = new JButton(Messages.ZIPBACKUP_RESTORE.toString());
+        restoreButton.addActionListener(e -> restore());
+        JPanel restoreRow = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
+        restoreRow.setOpaque(false);
+        restoreRow.add(restoreButton);
         Card restore = new Card(Messages.ZIPBACKUP_CARD_RESTORE.toString())
-                .addFull(Applets.hint(Messages.ZIPBACKUP_RESTORE_HINT.toString()));
-        JComponent page = DatabaseBackup.isPossible()
-                ? Applets.page(Messages.ZIPBACKUP_INFO.toString(), 420, where, restore)
-                : Applets.page(Messages.ZIPBACKUP_INFO.toString() + "\n\n" + Messages.ZIPBACKUP_NOT_LOCAL, 420, where, restore);
-        add(page, BorderLayout.CENTER);
+                .addFull(Applets.hint(Messages.ZIPBACKUP_RESTORE_HINT.toString()))
+                .addFull(restoreRow);
+        add(Applets.page(Messages.ZIPBACKUP_INFO.toString(), 420, database, where, restore), BorderLayout.CENTER);
 
         JButton open = new JButton(Messages.ZIPBACKUP_OPEN.toString());
         open.addActionListener(e -> {
@@ -104,8 +120,6 @@ public class ControlPanel_Backup extends JPanel implements ControlApplet {
                 Popup.notice(f.getPath());
             }
         });
-        JButton restoreButton = new JButton(Messages.ZIPBACKUP_RESTORE.toString());
-        restoreButton.addActionListener(e -> restore());
         JButton save = new JButton(Messages.ZIPBACKUP_SAVE.toString());
         save.addActionListener(e -> {
             store();
@@ -114,8 +128,16 @@ public class ControlPanel_Backup extends JPanel implements ControlApplet {
         now = new PrimaryButton(Messages.ZIPBACKUP_NOW.toString(), "/images/16/filesave.png");
         now.addActionListener(e -> backupNow());
         now.setEnabled(DatabaseBackup.isPossible());
-        actions = Applets.actionBar(new JComponent[]{open, restoreButton}, new JComponent[]{save, now});
+        actions = Applets.actionBar(new JComponent[]{open}, new JComponent[]{save, now});
         reset();
+    }
+
+    private static JComponent value(String text) {
+        javax.swing.JTextField f = new javax.swing.JTextField(text);
+        f.setEditable(false);
+        f.setBorder(javax.swing.BorderFactory.createEmptyBorder(2, 0, 2, 0));
+        f.setOpaque(false);
+        return f;
     }
 
     private void showFolder() {

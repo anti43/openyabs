@@ -211,6 +211,16 @@ abstract class AppOnDatabase {
             assertTrue(ps.save(true));
             assertEquals("KAFFEE", ((Product) DatabaseObject.getObject(Context.getProduct(), ps.__getIDS())).__getCname(), "changed script ran");
 
+            //backup page: local H2 can be zipped (with its size), servers not (with the reason)
+            mpv5.db.common.DatabaseBackup.Status bs = mpv5.db.common.DatabaseBackup.status();
+            if (ConnectionTypeHandler.H2_DRIVER.equals(driver)) {
+                assertTrue(bs.possible, bs.reason);
+                assertTrue(bs.size > 0, "size of the database files");
+                assertTrue(bs.location.endsWith(dbname + ".mv.db"), bs.location);
+            } else {
+                assertTrue(!bs.possible && bs.reason != null && bs.size < 0, bs.type + " " + bs.reason);
+            }
+
             //number formats (format manager): restart with a new year, keep counting, set the next number
             int year = java.util.Calendar.getInstance().get(java.util.Calendar.YEAR);
             mpv5.handler.NumberFormatBuilder nf = new mpv5.handler.NumberFormatBuilder().setPrefix("GS-")

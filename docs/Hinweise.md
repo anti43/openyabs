@@ -159,9 +159,11 @@ Ausführlich, mit Rechtslage und Checkliste: **[docs/E-Rechnung.md](E-Rechnung.m
 - **Entwicklermodus sendet keine E-Mails:** Mit `-devmode` wird nichts verschickt; die fertige E-Mail wird als `.eml` im Ordner `devmode-mails` des (temporären) Programmordners gespeichert, eine Meldung nennt die Datei.
 - **Skripte schneller:** Die Skripte des Skriptmanagers (`modifyOnSave`, `executeAfterSave`, `executeAfterCreate`, `modifyOnDelete`) werden einmal geladen und zwischengespeichert, statt bei jedem Speichern die Datenbank zu fragen (zwei Abfragen je Haken und Speichern); geänderte Skripte gelten sofort. Skripte für einzelne Datensätze (nach Datensatz-ID, nicht einmal nach Art) werden nicht mehr gesucht.
 - **Kontaktansicht, Kopfzeile:** Name in der ersten Zeile (bei Platzmangel mit „…“ gekürzt, voller Name im Tooltip), Rollen und ID · Datum · Benutzer immer in der zweiten. Vorher wurde diese Zeile bei langen Namen in schmalen Fenstern abgeschnitten. Ein neu geladener Kontakt zeigt die Übersicht von oben.
+- **Zip-Sicherung zeigt die verwendete Datenbank:** Art (H2, Derby, MySQL/MariaDB, PostgreSQL, Entwicklermodus im Arbeitsspeicher), Ort, Größe der Datenbankdateien und ob eine Zip-Sicherung möglich ist – wenn nicht, warum (Server-Datenbanken: auf dem Server sichern, z. B. mit `pg_dump` / `mysqldump`). *Sicherung wiederherstellen …* steht jetzt in der Karte *Wiederherstellen*.
 - **Umstieg von Fakturama 2:** *Datei › Import › Fakturama 2* – siehe [README](README.de.md#import-export-und-umstieg-von-anderer-software).
 
 ### Settings and usage (EN)
+- **Zip backup page shows the database in use:** type, location, size and whether a zip backup is possible (and why not); the restore button is on the restore card.
 - **Contact header:** name on the first line (shortened, full name as tooltip), roles and meta always on the second; the overview starts at the top for a loaded contact.
 - **Scripts cached:** the scripts of the script manager are loaded once instead of queried on every save; a changed script applies at once; per-record scripts are no longer looked up.
 - **Developer mode sends no mail:** with `-devmode` mails are written to `devmode-mails/*.eml` instead of being sent.
