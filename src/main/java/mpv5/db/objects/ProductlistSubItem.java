@@ -142,57 +142,6 @@ public class ProductlistSubItem extends DatabaseObject {
     }
 
     /**
-     * Add some value
-     * @param table 
-     * @param percentValue
-     * @param panel dirty dirty
-     */
-    public static void changeValueFields(JTable table, Integer percentValue, ProductListsPanel panel) {
-        List<Object[]> rowsl = ((MPTableModel) table.getModel()).getValidRows(new int[]{4});
-        Log.Debug(ProductlistSubItem.class, "Rows found: " + rowsl.size());
-        ProductlistSubItem[] items = new ProductlistSubItem[rowsl.size()];
-        for (int i = 0; i < rowsl.size(); i++) {
-            Object[] row = rowsl.get(i);
-            for (int j = 0; j < row.length; j++) {
-                if (row[j] == null) {
-                    row[j] = "";
-                }
-            }
-            ProductlistSubItem it = new ProductlistSubItem();
-            try {
-                if (row[0] != null && Integer.valueOf(row[0].toString()).intValue() > 0) {
-                    it.setIDS(Integer.valueOf(row[0].toString()).intValue());
-                } else {
-                    it.setIDS(-1);
-                }
-            } catch (Exception e) {
-                Log.Debug(ProductlistSubItem.class, e.getMessage());
-            }
-            it.setCname(row[14].toString());
-            it.setCountvalue(Double.valueOf(row[1].toString()));
-            it.setDescription(row[4].toString());
-            //price +/- percent, exact and rounded to cents (not 11.000000000000002)
-            double price = withPercent(row[5], percentValue);
-            it.setExternalvalue(price);
-            it.setInternalvalue(price);//not supported yet
-            it.setMeasure(row[3].toString());
-            it.setOriginalproductsids(productId(row[10]));
-            it.setQuantityvalue(Double.valueOf(row[2].toString()));
-            it.setTaxpercentvalue(Double.valueOf(row[6].toString()));
-            it.setLinkurl((row[12 + 1].toString()));
-            calculate(it);
-            items[i] = it;
-
-        }
-
-        table.setModel(toModel(items));
-
-        if (panel != null) {
-            panel.formatTable();
-        }
-    }
-
-    /**
      * Convert a Product into a Row
      * @param product
      * @return
