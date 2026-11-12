@@ -122,6 +122,9 @@ public final class SearchService {
         String t = c.getDbIdentity() + ".";
         String fields = t + "ids," + t + "cnumber," + t + "cname," + t + "description," + t + "dateadded," + t + "inttype";
         Object[][] rows = find(c, fields, n);
+        if (rows.length == 0) {
+            rows = byLabel(c, fields, n);
+        }
         String typeName = Item.getTypeString(itemType);
         if (rows.length == 0 && !typeName.isEmpty()
                 && (matches(typeName, n) || (!n.contains(" ") && matches(n, typeName)))) {
@@ -143,6 +146,34 @@ public final class SearchService {
             hits.add(new Hit(Messages.SEARCH_KIND_DOCUMENTS.toString(), join(" ", type, number),
                     join(" · ", date(r[4]), shorten(s(r[3]))), c, id(r[0])));
         }
+    }
+
+    /**
+     * Documents are shown as "contact-number" (e.g. "Schmitt-000012", see
+     * Item#toString) although no field holds that: the number, then only the
+     * documents of that contact
+     *
+     * @return the rows, empty if the needle is no such label
+     */
+    static Object[][] byLabel(Context c, String fields, String n) {
+        int dash = n.lastIndexOf('-');
+        if (dash <= 0 || dash == n.length() - 1) {
+            return new Object[0][];
+        }
+        String contact = n.substring(0, dash).trim();
+        String number = n.substring(dash + 1).trim();
+        List<Object[]> out = new ArrayList<Object[]>();
+        for (Object[] r : find(c, fields, number)) {
+            try {
+                Item i = (Item) mpv5.db.common.DatabaseObject.getObject(c, id(r[0]));
+                if (number.equalsIgnoreCase(i.__getCnumber()) && contact.equalsIgnoreCase(i.getContact().__getCname())) {
+                    out.add(r);
+                }
+            } catch (Exception e) {
+                Log.Debug(SearchService.class, e.getMessage());
+            }
+        }
+        return out.toArray(new Object[0][]);
     }
 
     private static void products(String n, List<Hit> hits) {
