@@ -345,12 +345,13 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
     private void setList() {
         try {
-            List<Integer> list = LocalSettings.getConnectionIDs();
-            Object[][] data = new Object[list.size()][2];
-            for (int i = 0; i < list.size(); i++) {
-                Integer integer = list.get(i);
-                data[i][0] = integer;
-                data[i][1] = "Connection ID " + integer;
+            java.util.Map<Integer, String> names = LocalSettings.getConnectionNames();
+            Object[][] data = new Object[names.size()][2];
+            int i = 0;
+            for (java.util.Map.Entry<Integer, String> e : names.entrySet()) {
+                data[i][0] = e.getKey();
+                data[i][1] = e.getValue();
+                i++;
             }
             mPCombobox1.setModel(data);
         } catch (Exception ex) {

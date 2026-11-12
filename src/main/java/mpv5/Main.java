@@ -342,6 +342,9 @@ public class Main implements Runnable {
                 mpv5.db.objects.User.getCurrentUser().logout();
             }
 
+            //zip backup of the local database, if switched on (closes the connection)
+            mpv5.db.common.DatabaseBackup.backupOnExit();
+
             for (int i = 0; i < oap.size(); i++) {
                 Process p = oap.get(i);
                 try {

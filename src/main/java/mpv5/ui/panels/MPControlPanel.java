@@ -259,6 +259,8 @@ public class MPControlPanel extends JPanel {
 
         //was Tools > Migration in the main menu
         String database = Messages.SETTINGS_GROUP_DATABASE.toString();
+        l.add(new Entry(database, Messages.ZIPBACKUP_TITLE.toString(), Messages.ZIPBACKUP_DESC.toString(), "folder_tar",
+                mpv5.ui.dialogs.subcomponents.ControlPanel_Backup.class, mpv5.ui.dialogs.subcomponents.ControlPanel_Backup::new, null, null));
         l.add(new Entry(database, Messages.DB_BACKUP.toString(), Messages.DB_BACKUP_INFO.toString(), "folder_tar", null, null,
                 () -> mpv5.db.migration.MigrationWB.instanceOf().doExportToDerby(), null));
         l.add(new Entry(database, Messages.DB_EXPORT_SQL.toString(), Messages.DB_EXPORT_SQL_INFO.toString(), "kwikdisk", null, null,
