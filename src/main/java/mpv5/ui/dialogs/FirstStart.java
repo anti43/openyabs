@@ -98,7 +98,7 @@ public final class FirstStart extends JFrame {
     private File folder = new File(Main.MPPATH == null ? System.getProperty("user.home") : Main.MPPATH, "h2");
     //server
     private final JComboBox<String> type = new JComboBox<String>(new String[]{
-        tr(Messages.FIRSTSTART_TYPE_MYSQL), tr(Messages.FIRSTSTART_TYPE_DERBY), tr(Messages.FIRSTSTART_TYPE_OTHER)});
+        tr(Messages.FIRSTSTART_TYPE_MYSQL), tr(Messages.FIRSTSTART_TYPE_POSTGRES), tr(Messages.FIRSTSTART_TYPE_DERBY), tr(Messages.FIRSTSTART_TYPE_OTHER)});
     private final JTextField address = ModernTheme.roomy(new JTextField("localhost:3306"));
     private final JTextField dbname = ModernTheme.roomy(new JTextField());
     private final JTextField user = ModernTheme.roomy(new JTextField());
@@ -287,6 +287,10 @@ public final class FirstStart extends JFrame {
                 shared.setSelected(true);
                 break;
             case 1:
+                address.setText("localhost:5432");
+                shared.setSelected(true);
+                break;
+            case 2:
                 address.setText(folder.getAbsolutePath());
                 break;
             default:
@@ -370,7 +374,8 @@ public final class FirstStart extends JFrame {
     private void go() {
         final Settings s = new Settings();
         if (server.isSelected()) {
-            s.driver = ConnectionTypeHandler.DRIVERS[new int[]{2, 1, 3}[type.getSelectedIndex()]];
+            //MySQL, PostgreSQL, Derby, other
+            s.driver = ConnectionTypeHandler.DRIVERS[new int[]{2, 4, 1, 3}[type.getSelectedIndex()]];
             s.url = address.getText().trim();
             s.user = user.getText().trim();
             s.password = new String(password.getPassword());
@@ -501,7 +506,8 @@ public final class FirstStart extends JFrame {
                     if (whenDone != null) {
                         whenDone.run();
                     } else {
-                        Log.setLogLevel(Log.LOGLEVEL_NONE);
+                        //the log level and file of the start options (not NONE: -debug was ignored after the setup)
+                        Main.restoreLogging();
                         Main.start();
                     }
                 } else {

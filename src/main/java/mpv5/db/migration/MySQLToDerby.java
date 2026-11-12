@@ -28,7 +28,7 @@ import mpv5.logging.Log;
  */
 public class MySQLToDerby {
 
-    private final String DRV = "com.mysql.jdbc.Driver";
+    private final String DRV = "com.mysql.cj.jdbc.Driver";
     private String schema = "";
     private Connection con = null;
     private DatabaseMetaData Meta = null;

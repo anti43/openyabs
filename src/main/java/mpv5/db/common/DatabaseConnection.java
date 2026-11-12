@@ -145,14 +145,22 @@ public class DatabaseConnection {
                try {
                   sql = "CREATE DATABASE "
                         + ConnectionTypeHandler.getDBNAME()
-                        + " ;";
+                        + (ConnectionTypeHandler.getDriverType() == ConnectionTypeHandler.MYSQL ? " CHARACTER SET utf8mb4" : "");
                   stmt.execute(sql);
                } catch (SQLException ex) {
                   Log.Debug(ex);
                   result = Popup.Y_N_dialog("Could not create database " + ConnectionTypeHandler.getDBNAME() + ", did you already create it?", "Database Creation");
                }
+               if (ConnectionTypeHandler.getDriverType() == ConnectionTypeHandler.POSTGRES) {
+                  //PostgreSQL can not switch the database of a connection: connect to the new one
+                  conn.close();
+                  conn = DriverManager.getConnection(getCtype().getConnectionString(false), user, password);
+                  conn.setAutoCommit(true);
+               }
             }
-            conn.setCatalog(ConnectionTypeHandler.getDBNAME());
+            if (ConnectionTypeHandler.getDriverType() != ConnectionTypeHandler.POSTGRES) {
+               conn.setCatalog(ConnectionTypeHandler.getDBNAME());
+            }
             connector = this;
             return result;
          } else {

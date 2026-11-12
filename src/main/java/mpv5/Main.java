@@ -1118,8 +1118,32 @@ public class Main implements Runnable {
         return true;
     }
 
+    private static Integer logLevelBeforeSetup;
+    private static File logFileBeforeSetup;
+
+    /**
+     * After the database setup: the log level and log file of the start
+     * options again (-debug, -verbose, -logfile), the setup logs everything to
+     * install.log
+     */
+    public static void restoreLogging() {
+        if (logLevelBeforeSetup != null) {
+            Log.setLogLevel(logLevelBeforeSetup);
+            try {
+                YConsole.setLogFile(logFileBeforeSetup == null ? null : logFileBeforeSetup.getPath());
+            } catch (Exception e) {
+                Log.Debug(Main.class, e);
+            }
+            logLevelBeforeSetup = null;
+        }
+    }
+
     private void showDbWiz(Integer forConnId) {
         try {
+            if (logLevelBeforeSetup == null) {
+                logLevelBeforeSetup = Log.getLoglevel();
+                logFileBeforeSetup = YConsole.getLogfile();
+            }
             Log.setLogLevel(Log.LOGLEVEL_DEBUG);
             YConsole.setLogFile("install.log");
             Log.Debug(this, new Date());

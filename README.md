@@ -49,7 +49,7 @@ YaBS runs on **Windows, Linux and macOS**.
 
 All downloads: **[Releases](https://github.com/anti43/openyabs/releases)** – `latest-master` is the current development build.
 
-On the first start one window asks where your data should be stored: **on this computer** (one click) or on a **database server** (MySQL / MariaDB, Derby). On this computer the data goes to `<user home>/.yabs/h2` (H2 database). The setup runs in the background; languages, countries, an invoice template and demo templates for all document types are set up automatically, German systems start in German, and you are signed in as `admin` (password `password` – change it under *Settings › Users*). Your company data goes to *Settings › Company Info*. No account, no internet connection needed.
+On the first start one window asks where your data should be stored: **on this computer** (one click) or on a **database server** (PostgreSQL, MySQL / MariaDB, Derby). On this computer the data goes to `<user home>/.yabs/h2` (H2 database). The setup runs in the background; languages, countries, an invoice template and demo templates for all document types are set up automatically, German systems start in German, and you are signed in as `admin` (password `password` – change it under *Settings › Users*). Your company data goes to *Settings › Company Info*. No account, no internet connection needed.
 
 Updating: older databases (also Derby) are updated automatically on the first start – make a copy of the database folder before, or use the zip backup. Details: [Database: H2, Derby, connections and backup](docs/Datenbank.md) · [Hinweise](docs/Hinweise.md).
 

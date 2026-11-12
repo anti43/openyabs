@@ -84,8 +84,11 @@ public final class ConnectionManager extends JDialog {
                 return "H2";
             } else if (ConnectionTypeHandler.DERBY_DRIVER.equalsIgnoreCase(driver)) {
                 return "Derby";
-            } else if (ConnectionTypeHandler.MYSQL_DRIVER.equalsIgnoreCase(driver)) {
+            } else if (ConnectionTypeHandler.MYSQL_DRIVER.equalsIgnoreCase(driver)
+                    || ConnectionTypeHandler.MYSQL_DRIVER_CLASS.equalsIgnoreCase(driver)) {
                 return "MySQL";
+            } else if (ConnectionTypeHandler.POSTGRES_DRIVER.equalsIgnoreCase(driver)) {
+                return "PostgreSQL";
             }
             return driver == null || "null".equals(driver) ? "?" : driver;
         }

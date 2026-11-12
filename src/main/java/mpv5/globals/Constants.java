@@ -55,7 +55,7 @@ public interface Constants {
      * The minimal Database Version which is compatible with
      * this release
      */
-    public static final Double DATABASE_VERSION = 1.1985;
+    public static final Double DATABASE_VERSION = 1.1986;
     /**
      * The max Database Version which is compatible with
      * this release

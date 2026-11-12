@@ -27,6 +27,8 @@ dependencies {
 
 test {
     useJUnitPlatform()
+    // the application keeps its database connection in static fields: one JVM per test class
+    forkEvery = 1
 }
 
 dependencies {
@@ -41,6 +43,10 @@ dependencies {
     implementation 'org.hsqldb:hsqldb:2.7.4'
     // H2: the default database of new installations (Derby is still supported)
     implementation 'com.h2database:h2:2.3.232'
+    // PostgreSQL server databases
+    implementation 'org.postgresql:postgresql:42.7.4'
+    // MySQL / MariaDB servers (Connector/J 8.4 LTS; 5.1 can not talk to current servers)
+    implementation 'com.mysql:mysql-connector-j:8.4.0'
 }
 
 // Java 21 is the minimum (Apache Derby 10.17 needs it); --release also
@@ -95,4 +101,15 @@ tasks.register('distributionZip', Zip) {
         // the libraries from Maven (Groovy)
         from(configurations.runtimeClasspath.filter { !it.path.contains(file('lib').path) })
     }
+}
+
+// writes src/main/resources/db/schema.sql (the structure of new databases) from the
+// Derby structure and all updates - run after adding a database update
+tasks.register('generateSchema', JavaExec) {
+    group = 'build'
+    description = 'Writes src/main/resources/db/schema.sql from the database updates'
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'mpv5.db.common.SchemaExport'
+    args = ['src/main/resources/db/schema.sql']
+    systemProperty 'java.awt.headless', 'true'
 }

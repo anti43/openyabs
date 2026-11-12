@@ -2441,13 +2441,15 @@ public class QueryHandler implements Cloneable {
             if (log != null) {
                 log.append("\n " + query);
             }
-            stm.executeUpdate(query, DatabaseConnection.generatedKeys(query));
+            int wantKeys = DatabaseConnection.generatedKeys(query);
+            stm.executeUpdate(query, wantKeys);
             int res = stm.getUpdateCount();
             if (log != null) {
                 log.append("\n " + res + " rows affected.");
             }
 
-            try {
+            //only for INSERT: Connector/J 8 throws if no keys were requested
+            if (wantKeys == Statement.RETURN_GENERATED_KEYS) try {
                 keys = stm.getGeneratedKeys();
 
                 if (keys != null && keys.next()) {
