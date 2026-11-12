@@ -682,7 +682,8 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         dataOwner.getPanelData(this);
         positions.stopEditing();
         Item i2 = ItemService.toOrder(dataOwner, positions.getModel());
-        setDataOwner(i2, true);
+        //the order in a new tab, this one keeps the offer (issue #58)
+        mpv5.YabsViewProxy.instance().addTab(i2, true);
         Popup.notice(i2 + Messages.INSERTED.getValue());
     }
 
@@ -691,7 +692,8 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         positions.stopEditing();
         Item i2 = ItemService.toInvoice(dataOwner, itemType, positions.getModel(), q -> Popup.Y_N_dialog(q));
         if (i2 != null) {
-            setDataOwner(i2, true);
+            //the new document in a new tab, this one keeps the order (issue #58)
+            mpv5.YabsViewProxy.instance().addTab(i2, true);
             Popup.notice(i2 + Messages.INSERTED.getValue());
         }
     }
