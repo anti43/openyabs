@@ -158,7 +158,10 @@ public class ModernTabbedPaneUI extends BasicTabbedPaneUI {
         g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         Font f = isSelected ? font.deriveFont(Font.BOLD) : font;
         g2.setFont(f);
-        g2.setColor(isSelected ? ModernTheme.foreground() : ModernTheme.muted());
+        //a colour set for this tab (e.g. new / unsaved record, TabStateMarker), else the theme
+        java.awt.Color own = tabPane.getForegroundAt(tabIndex);
+        boolean marked = own != null && !(own instanceof javax.swing.plaf.UIResource) && !own.equals(tabPane.getForeground());
+        g2.setColor(marked ? own : isSelected ? ModernTheme.foreground() : ModernTheme.muted());
         FontMetrics m = g2.getFontMetrics(f);
         g2.drawString(title, textRect.x, textRect.y + m.getAscent());
     }
