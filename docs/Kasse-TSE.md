@@ -30,9 +30,15 @@ Umgesetzt (Grundlage aus Issue #29):
 
   Die mitgelieferte Vorlage enthält die Felder (neue Installationen). Bestehende Kassenbon-Vorlagen: die Felder im Vorlagen-Manager ergänzen.
 
+### JavaPOS / ADK (zur Laufzeit geladen)
+
+In der Karte *TSE* der Kasse: **ADK herunterladen** lädt die eingetragenen Adressen (durch Leerzeichen getrennt) in den Ordner `<Programmordner>/javapos`. Standard ist JavaPOS von Maven Central (`javapos-contracts`, `javapos-controls`, `javapos-config-loader`). Jars werden gespeichert, aus `.zip`/`.tar.gz` werden Jars, `jpos.xml` und native Bibliotheken übernommen. Das **Epson JavaPOS ADK** gibt es bei Epson als Installationsprogramm (Windows/Linux): installieren, dann übernimmt **ADK hinzufügen …** die Dateien aus dem Installationsordner (z. B. `/opt/EpsonJavaPOS`, `C:\Program Files\EPSON\JavaPOS`) oder aus einem Archiv.
+
+YaBS hängt nicht davon ab: Die Jars werden mit einem eigenen ClassLoader geladen (`mpv5.pos.javapos.JavaPos.classLoader()` / `load("jpos.POSPrinter")`), Code für die Epson-TSE nutzt sie per Reflection. Die Karte zeigt, ob JavaPOS gefunden wurde. Eine `jpos.xml` im Ordner wird als `jpos.config.populatorFile` gesetzt. Native Bibliotheken brauchen ggf. `-Djava.library.path=<Programmordner>/javapos` beim Start.
+
 Noch offen (siehe Issue #29):
 
-- **Zertifizierte TSE** (Epson TSE über das Epson JavaPOS ADK; Einrichtung mit PIN/PUK, Client-Registrierung, Zeitsynchronisation, Zertifikats- und Speicherwarnungen). Das ADK wird nicht mitgeliefert, sondern beim Einrichten heruntergeladen.
+- **Zertifizierte TSE** (Epson TSE über das Epson JavaPOS ADK; Einrichtung mit PIN/PUK, Client-Registrierung, Zeitsynchronisation, Zertifikats- und Speicherwarnungen). Das ADK wird nicht mitgeliefert; Herunterladen/Übernehmen und Laden zur Laufzeit gibt es (oben), die TSE-Ansteuerung selbst fehlt noch.
 - **Exporte**: TSE-Daten (TAR), DSFinV-K, Z-Bon/Tagesabschluss, Kassenbuch.
 - Stornos und Retouren als eigene signierte Vorgänge, sonstige Vorgänge (Schublade), Trainingsmodus.
 - Beleg-QR-Code als Bild in der Vorlage (die Daten stehen in `pos.tse.qrdata`).

@@ -394,7 +394,87 @@ public final class CashRegister implements YabsExtension {
         return new mpv5.ui.modern.Card(Messages.POS_TSE.toString())
                 .row(mpv5.ui.modern.Card.field(Messages.POS_TSE_TYPE.toString(), type))
                 .row(mpv5.ui.modern.Card.field(Messages.POS_TSE_CLIENT.toString(), client))
-                .addFull(Applets.hint(Messages.POS_TSE_HINT.toString()));
+                .addFull(Applets.hint(Messages.POS_TSE_HINT.toString()))
+                .addFull(javaPos());
+    }
+
+    /**
+     * JavaPOS / vendor ADK: downloaded or copied into the app folder, linked
+     * at runtime ({@link mpv5.pos.javapos.JavaPos})
+     */
+    private javax.swing.JComponent javaPos() {
+        final JTextField urls = ModernTheme.roomy(new JTextField(ctx.settings().get("javaposurls", mpv5.pos.javapos.JavaPos.DEFAULT_URLS), 28));
+        final javax.swing.JLabel state = new javax.swing.JLabel();
+        final Runnable show = () -> state.setText(String.format((mpv5.pos.javapos.JavaPos.available()
+                ? Messages.POS_JAVAPOS_FOUND : Messages.POS_JAVAPOS_MISSING).toString(),
+                mpv5.pos.javapos.JavaPos.jars().size(), mpv5.pos.javapos.JavaPos.folder().getPath()));
+        show.run();
+        final javax.swing.JButton download = new javax.swing.JButton(Messages.POS_JAVAPOS_DOWNLOAD.toString());
+        download.addActionListener(e -> {
+            final String u = urls.getText().trim().isEmpty() ? mpv5.pos.javapos.JavaPos.DEFAULT_URLS : urls.getText().trim();
+            ctx.settings().set("javaposurls", u);
+            download.setEnabled(false);
+            new javax.swing.SwingWorker<java.util.List<java.io.File>, Void>() {
+                @Override
+                protected java.util.List<java.io.File> doInBackground() throws Exception {
+                    return mpv5.pos.javapos.JavaPos.download(u);
+                }
+
+                @Override
+                protected void done() {
+                    download.setEnabled(true);
+                    show.run();
+                    try {
+                        mpv5.YabsViewProxy.instance().addMessage(String.format(Messages.POS_JAVAPOS_DONE.toString(),
+                                get().size(), mpv5.pos.javapos.JavaPos.folder().getPath()));
+                    } catch (Exception ex) {
+                        mpv5.logging.Log.Debug(this, ex);
+                        mpv5.ui.dialogs.Popup.notice(Messages.POS_JAVAPOS_FAILED + "\n" + (ex.getCause() != null ? ex.getCause().getMessage() : ex.getMessage()));
+                    }
+                }
+            }.execute();
+        });
+        javax.swing.JButton add = new javax.swing.JButton(Messages.POS_JAVAPOS_ADD.toString());
+        add.addActionListener(e -> {
+            java.io.File installed = mpv5.pos.javapos.JavaPos.installedAdk();
+            javax.swing.JFileChooser c = new javax.swing.JFileChooser(installed);
+            c.setFileSelectionMode(javax.swing.JFileChooser.FILES_AND_DIRECTORIES);
+            if (installed != null) {
+                c.setSelectedFile(installed);
+            }
+            if (c.showOpenDialog(add) == javax.swing.JFileChooser.APPROVE_OPTION) {
+                try {
+                    int n = mpv5.pos.javapos.JavaPos.importFrom(c.getSelectedFile()).size();
+                    mpv5.YabsViewProxy.instance().addMessage(String.format(Messages.POS_JAVAPOS_DONE.toString(), n,
+                            mpv5.pos.javapos.JavaPos.folder().getPath()));
+                } catch (Exception ex) {
+                    mpv5.logging.Log.Debug(this, ex);
+                    mpv5.ui.dialogs.Popup.notice(Messages.POS_JAVAPOS_FAILED + "\n" + ex.getMessage());
+                }
+                show.run();
+            }
+        });
+        javax.swing.JPanel buttons = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
+        buttons.setOpaque(false);
+        buttons.add(download);
+        buttons.add(javax.swing.Box.createHorizontalStrut(ModernTheme.px(8)));
+        buttons.add(add);
+        javax.swing.JPanel from = new javax.swing.JPanel(new java.awt.BorderLayout(ModernTheme.px(8), 0));
+        from.setOpaque(false);
+        from.add(new javax.swing.JLabel(Messages.POS_JAVAPOS_URLS + ":"), java.awt.BorderLayout.WEST);
+        from.add(urls, java.awt.BorderLayout.CENTER);
+        javax.swing.JPanel p = new javax.swing.JPanel();
+        p.setOpaque(false);
+        p.setLayout(new javax.swing.BoxLayout(p, javax.swing.BoxLayout.PAGE_AXIS));
+        for (javax.swing.JComponent c : new javax.swing.JComponent[]{
+            new javax.swing.JLabel(Messages.POS_JAVAPOS.toString()),
+            from, state, buttons,
+            Applets.hint(Messages.POS_JAVAPOS_HINT.toString())}) {
+            c.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
+            p.add(c);
+            p.add(javax.swing.Box.createVerticalStrut(ModernTheme.px(4)));
+        }
+        return p;
     }
 
     /**
