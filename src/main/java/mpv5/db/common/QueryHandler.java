@@ -1077,7 +1077,7 @@ public class QueryHandler implements Cloneable {
         t.add(column, value);
         return checkUniqueness(t, new int[]{0});
     }
-    private static volatile int RUNNING_JOBS = 0;
+    private static final java.util.concurrent.atomic.AtomicInteger RUNNING_JOBS = new java.util.concurrent.atomic.AtomicInteger();
     private static Thread JOB_WATCHDOG;
 
     /**
@@ -1085,26 +1085,20 @@ public class QueryHandler implements Cloneable {
      */
     protected void stop() {
         if (!runInBackground) {
-            Runnable runnable = new Runnable() {
-
-                @Override
-                public void run() {
-                    try {//Avoid Cursor flickering
-                        Thread.sleep(10);
-                    } catch (InterruptedException ex) {
-                        mpv5.logging.Log.Debug(ex);//Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
+            //10 ms later on the EDT (avoids cursor flickering) - with a timer: the EDT
+            //itself slept 10 ms after every query before (seconds of a blocked UI)
+            javax.swing.Timer later = new javax.swing.Timer(10, e -> {
+                if (RUNNING_JOBS.get() <= 1) {
+                    if (comp != null) {
+                        comp.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
                     }
-                    if (RUNNING_JOBS <= 1) {
-                        if (comp != null) {
-                            comp.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-                        }
-                        progressbar.setValue(0);
-                        mpv5.ui.modern.Edt.setIndeterminate(progressbar, false);
-                    }
-                    RUNNING_JOBS--;
+                    progressbar.setValue(0);
+                    mpv5.ui.modern.Edt.setIndeterminate(progressbar, false);
                 }
-            };
-            SwingUtilities.invokeLater(runnable);
+                RUNNING_JOBS.decrementAndGet();
+            });
+            later.setRepeats(false);
+            later.start();
         }
     }
 
@@ -1114,13 +1108,13 @@ public class QueryHandler implements Cloneable {
             JOB_WATCHDOG.start();
         }
         if (!runInBackground) {
-            RUNNING_JOBS++;
-            if (RUNNING_JOBS > 5) {
+            int jobs = RUNNING_JOBS.incrementAndGet();
+            if (jobs > 5) {
                 if (comp != null) {
-                    comp.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+                    comp.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                 }
             }
-            progressbar.setMaximum(RUNNING_JOBS);
+            progressbar.setMaximum(jobs);
         }
     }
 
@@ -1229,9 +1223,10 @@ public class QueryHandler implements Cloneable {
         public void run() {
             int oldValue = 0;
             while (true) {
-                if (RUNNING_JOBS != oldValue) {
-                    progressbar.setValue(RUNNING_JOBS);
-                    oldValue = RUNNING_JOBS;
+                int jobs = RUNNING_JOBS.get();
+                if (jobs != oldValue) {
+                    progressbar.setValue(jobs);
+                    oldValue = jobs;
                 }
                 try {
                     Thread.sleep(33);

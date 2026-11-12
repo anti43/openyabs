@@ -48,6 +48,9 @@ public class MiniCalendarDialog extends javax.swing.JDialog {
 
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
+                if (presetting) {
+                    return;
+                }
                 jButton1ActionPerformed(evt);
             }
         });
@@ -66,6 +69,25 @@ public class MiniCalendarDialog extends javax.swing.JDialog {
      *
      * @param date
      */
+    private boolean presetting;
+
+    /**
+     * Shows the date in the calendar without writing it into the field (the
+     * field has it already); used when the calendar is created late
+     *
+     * @param date
+     */
+    public void preset(Date date) {
+        presetting = true;
+        try {
+            xc.setDate(date);
+        } catch (PropertyVetoException ex) {
+            mpv5.logging.Log.Debug(ex);
+        } finally {
+            presetting = false;
+        }
+    }
+
     public void open(Date date) {
         try {
             if (date != null) {

@@ -424,10 +424,13 @@ public class ItemPositionsTable extends JPanel {
         }
 
         TextAreaCellEditor r = new TextAreaCellEditor(itemtable);
-        ProductSelectDialog3 productSelectDialog = new ProductSelectDialog3(mpv5.YabsViewProxy.instance().getIdentifierFrame(), true, itemtable);
-        productSelectDialog.okButton.addActionListener(r);
-        productSelectDialog.cancelButton.addActionListener(r);
-        r.setDialog(productSelectDialog, productSelectDialog.getIDTextField());
+        //created when the product cell is edited the first time
+        r.setDialog(() -> {
+            ProductSelectDialog3 productSelectDialog = new ProductSelectDialog3(mpv5.YabsViewProxy.instance().getIdentifierFrame(), true, itemtable);
+            productSelectDialog.okButton.addActionListener(r);
+            productSelectDialog.cancelButton.addActionListener(r);
+            return productSelectDialog;
+        }, d -> ((ProductSelectDialog3) d).getIDTextField());
         r.setEditorTo(10);
 
         if (!User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "showoptionalcolumn")) {
@@ -598,11 +601,14 @@ public class ItemPositionsTable extends JPanel {
         TextAreaCellRenderer textAreaCellRenderer = new TextAreaCellRenderer(itemtable);
         textAreaCellRenderer.setRendererTo(4);
         TextAreaCellEditor r = new TextAreaCellEditor(itemtable);
-        ItemTextAreaDialog itemTextAreaDialog = new ItemTextAreaDialog(mpv5.YabsViewProxy.instance().getIdentifierFrame(), true);
-        itemTextAreaDialog.setParentTable(itemtable);
-        itemTextAreaDialog.okButton.addActionListener(r);
-        itemTextAreaDialog.cancelButton.addActionListener(r);
-        r.setDialog(itemTextAreaDialog, itemTextAreaDialog.textArea);
+        //created when the text cell is edited the first time
+        r.setDialog(() -> {
+            ItemTextAreaDialog itemTextAreaDialog = new ItemTextAreaDialog(mpv5.YabsViewProxy.instance().getIdentifierFrame(), true);
+            itemTextAreaDialog.setParentTable(itemtable);
+            itemTextAreaDialog.okButton.addActionListener(r);
+            itemTextAreaDialog.cancelButton.addActionListener(r);
+            return itemTextAreaDialog;
+        }, d -> ((ItemTextAreaDialog) d).textArea);
         r.setEditorTo(4);
 
         itemtable.getColumnModel().getColumn(3).setCellEditor(new LazyCellEditor(new JTextField()));

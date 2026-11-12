@@ -126,8 +126,33 @@ public class TextAreaCellEditor extends DefaultCellEditor implements ActionListe
         this.dialogsTextComponent = dialogsTextComponent;
     }
 
+    private java.util.function.Supplier<? extends JDialog> dialogFactory;
+    private java.util.function.Function<JDialog, JTextComponent> dialogText;
+
+    /**
+     * The dialog is created when the cell is edited the first time (creating
+     * it for every document made opening documents slow)
+     *
+     * @param factory creates the dialog (and adds this editor as listener)
+     * @param text the text component of the dialog
+     */
+    public void setDialog(java.util.function.Supplier<? extends JDialog> factory, java.util.function.Function<JDialog, JTextComponent> text) {
+        this.dialogFactory = factory;
+        this.dialogText    = text;
+    }
+
+    private void ensureDialog() {
+        if (dialog == null && dialogFactory != null) {
+            JDialog d = dialogFactory.get();
+            setDialog(d, dialogText.apply(d));
+            dialogFactory = null;
+            dialogText    = null;
+        }
+    }
+
     @Override
     public Component getTableCellEditorComponent(final JTable table, Object value, boolean isSelected, final int row, final int column) {
+        ensureDialog();
         if (value != null && dialog instanceof ProductSelectDialog3 && value instanceof  Product){
             MPTableModel m = (MPTableModel) table.getModel();
             SubItem it = m.getRowAt(row, SubItem.getDefaultItem());
@@ -167,14 +192,18 @@ public class TextAreaCellEditor extends DefaultCellEditor implements ActionListe
 
     @Override
     public boolean stopCellEditing() {
-        dialog.setVisible(false);
+        if (dialog != null) {
+            dialog.setVisible(false);
+        }
 
         return super.stopCellEditing();
     }
 
     @Override
     public void cancelCellEditing() {
-        dialog.setVisible(false);
+        if (dialog != null) {
+            dialog.setVisible(false);
+        }
         super.cancelCellEditing();
     }
 

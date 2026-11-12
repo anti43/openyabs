@@ -40,7 +40,15 @@ public class Scheduler extends Thread {
     public void run() {
         checkForOverdueEvents(null);
         checkForCreateBillEvents(null);
-        while (YabsApplication.getApplication().isReady() == false);
+        //wait for the application without burning a CPU core (was an empty busy loop)
+        while (!YabsApplication.getApplication().isReady()) {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                return;
+            }
+        }
         if (User.getCurrentUser().getProperties().getProperty(homescreen, "disable", false)) {
             Log.Debug(this, "Homescreen disabled by configuration");
         } else {
