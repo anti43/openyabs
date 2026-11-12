@@ -31,19 +31,20 @@ class H2SchemaTest {
             new SchemaUpdate(r -> c, true, null).runAll(H2Dialect.convert(DatabaseInstallation.DERBY_STRUCTURE));
             try (Statement s = c.createStatement()) {
                 s.execute("INSERT INTO globalsettings (cname, groupsids, value) VALUES ('yabs_dbversion', 1, '1.0')");
-                s.execute("INSERT INTO groups (cname, description, dateadded) VALUES ('Alle', 'all', '2009-04-03')");
+                s.execute("INSERT INTO groups (cname, description, dateadded) VALUES ('Alle', 'all', TIMESTAMP '2009-04-03 09:31:33')");
                 s.execute("INSERT INTO users (fullname, password, cname, laf, locale, mail, language, inthighestright, datelastlog, isenabled, dateadded)"
-                        + " VALUES ('Administrator', 'x', 'admin', '', 'de_DE', '', 'buildin_en', 0, '2009-04-03', 1, '2009-04-03')");
+                        + " VALUES ('Administrator', 'x', 'admin', '', 'de_DE', '', 'buildin_en', 0, TIMESTAMP '2009-04-03 09:31:33', 1, TIMESTAMP '2009-04-03 09:31:33')");
             }
             double v = new SchemaUpdate(r -> c, true, null).run(1.0,
                     H2Dialect.convert(new DatabaseUpdater().getStructureForMigration(ConnectionTypeHandler.DERBY)));
             assertEquals(Constants.DATABASE_VERSION, v, 0.00001);
+            assertEquals("0", query(c, "SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE DATA_TYPE = 'DATE' AND TABLE_SCHEMA = 'PUBLIC'"));
             assertEquals("0", query(c, "SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS WHERE DATA_TYPE = 'SMALLINT' AND TABLE_SCHEMA = 'PUBLIC'"));
             //the emulated triggers fill the search index and the trash bin
             try (Statement s = c.createStatement()) {
-                s.execute("INSERT INTO contacts (cnumber, cname, dateadded, groupsids) VALUES ('K1', 'Kunde Eins', '2020-01-01', 1)");
+                s.execute("INSERT INTO contacts (cnumber, cname, dateadded, groupsids) VALUES ('K1', 'Kunde Eins', TIMESTAMP '2020-01-01 12:34:56', 1)");
                 s.execute("UPDATE contacts SET invisible = 1 WHERE cnumber = 'K1'");
-                s.execute("INSERT INTO activitylists (cname, cnumber, dateadded) VALUES ('a', 'A1', '2020-01-01')");
+                s.execute("INSERT INTO activitylists (cname, cnumber, dateadded) VALUES ('a', 'A1', TIMESTAMP '2020-01-01 12:34:56')");
             }
             assertEquals("1", query(c, "SELECT COUNT(*) FROM searchindex WHERE dbidentity = 'contacts'"));
             assertEquals("K1 (Kunde Eins)", query(c, "SELECT description FROM trashbin WHERE cname = 'contacts'"));

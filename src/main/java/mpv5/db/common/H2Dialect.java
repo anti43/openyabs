@@ -29,6 +29,7 @@ import java.util.regex.Pattern;
 public final class H2Dialect {
 
     private static final Pattern SMALLINT = Pattern.compile("(?i)\\bSMALLINT\\b");
+    private static final Pattern DATE = Pattern.compile("(?i)\\bDATE\\b");
     private static final Pattern REF_DEFAULT = Pattern.compile(
             "(?i)(REFERENCES\\s+\\w+\\s*\\(\\s*\\w+\\s*\\)(?:\\s+ON\\s+DELETE\\s+(?:CASCADE|RESTRICT|SET\\s+NULL|NO\\s+ACTION))?)\\s+(DEFAULT\\s+[^,)\\s]+)");
     private static final Pattern LONG_VARCHAR = Pattern.compile("(?i)\\bLONG\\s+VARCHAR\\b");
@@ -79,6 +80,7 @@ public final class H2Dialect {
             return "ALTER TABLE " + rename.group(1) + " ALTER COLUMN " + rename.group(2) + " RENAME TO " + rename.group(3);
         }
         String r = SMALLINT.matcher(sql).replaceAll("BIGINT");
+        r = DATE.matcher(r).replaceAll("TIMESTAMP");
         r = LONG_VARCHAR.matcher(r).replaceAll("VARCHAR(32700)");
         r = REF_DEFAULT.matcher(r).replaceAll("$2 $1");
         return IDENTITY.matcher(r).replaceAll("$1 $2");
