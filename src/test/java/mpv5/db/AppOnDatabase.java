@@ -170,6 +170,32 @@ abstract class AppOnDatabase {
             assertTrue(Arrays.stream(trash).anyMatch(r -> "contacts".equalsIgnoreCase(String.valueOf(r[0]))));
             assertTrue(c2.undelete());
 
+            //what YaBS saves on close: user properties (UPDATE, else INSERT) and the layout (binary value property)
+            admin.getProperties().changeProperty("order.alert.days", "7");
+            admin.saveProperties();
+            admin.getProperties().changeProperty("order.alert.days", "8");
+            admin.saveProperties();
+            Object[][] up = QueryHandler.instanceOf().clone("userproperties").select("value", new String[]{"cname", "order.alert.days", "'"});
+            assertEquals("8", String.valueOf(up[0][0]), "user property saved and changed");
+            //updateOrCreate: no row yet -> INSERT with the columns of the criteria (were table-qualified)
+            mpv5.db.common.QueryCriteria2 qc = new mpv5.db.common.QueryCriteria2();
+            qc.and(new mpv5.db.common.QueryParameter(Context.getUserProperties(), "usersids", admin.__getIDS(), mpv5.db.common.QueryParameter.EQUALS),
+                    new mpv5.db.common.QueryParameter(Context.getUserProperties(), "groupsids", 1, mpv5.db.common.QueryParameter.EQUALS),
+                    new mpv5.db.common.QueryParameter(Context.getUserProperties(), "cname", "test.updateorcreate", mpv5.db.common.QueryParameter.EQUALS));
+            mpv5.db.common.QueryData qd = new mpv5.db.common.QueryData();
+            qd.add("value", "x");
+            qd.add("dateadded", mpv5.utils.date.DateConverter.getSQLDateString(new Date()));
+            QueryHandler.instanceOf().clone(Context.getUserProperties()).updateOrCreate(qd, qc, null);
+            Object[][] uoc = QueryHandler.instanceOf().clone("userproperties").select("value", new String[]{"cname", "test.updateorcreate", "'"});
+            assertEquals(1, uoc.length, "updateOrCreate inserted the row");
+            java.util.HashMap<String, String> layout = new java.util.HashMap<String, String>();
+            layout.put("divider", "220");
+            mpv5.db.objects.ValueProperty.addOrUpdateProperty("layoutinfo", layout, admin);
+            layout.put("divider", "240");
+            mpv5.db.objects.ValueProperty.addOrUpdateProperty("layoutinfo", layout, admin);
+            Object v = mpv5.db.objects.ValueProperty.getProperty(admin, "layoutinfo").getValueObj();
+            assertEquals("240", ((java.util.Map<?, ?>) v).get("divider"), "layout (binary) saved and changed");
+
             //number formats (format manager): restart with a new year, keep counting, set the next number
             int year = java.util.Calendar.getInstance().get(java.util.Calendar.YEAR);
             mpv5.handler.NumberFormatBuilder nf = new mpv5.handler.NumberFormatBuilder().setPrefix("GS-")

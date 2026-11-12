@@ -88,7 +88,9 @@ public class QueryData {
         List<QueryParameter> d = criteria.getFields();
         for (int i = 0; i < d.size(); i++) {
             QueryParameter o = d.get(i);
-            add(o.getKey(), o.getValue());
+            //the column without the table: INSERT INTO t (t.col) is an error in PostgreSQL
+            String key = o.getKey();
+            add(key.substring(key.lastIndexOf('.') + 1), o.getValue());
         }
     }
 
