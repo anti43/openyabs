@@ -151,9 +151,11 @@ Ausführlich, mit Rechtslage und Checkliste: **[docs/E-Rechnung.md](E-Rechnung.m
 - **Fortschrittsbalken:** Änderungen an Fortschrittsbalken aus Hintergrund-Threads (Datenbank, Jobs, Mail, Massenexport) laufen jetzt im Swing-Thread – behebt „FlatLaf: Using JProgressBar.setIndeterminate(false) not on AWT thread“ (IllegalStateException / NPE beim Zeichnen).
 - **Umwandeln öffnet einen neuen Reiter:** Rechnung (auch Abschlags-/Anzahlungsrechnung, Gutschrift) aus einem Auftrag und Auftrag aus einem Angebot öffnen sich in einem **neuen Reiter**; der Reiter des Ausgangsbelegs bleibt stehen.
 - **E-Mail-Versand eines Belegs:** Erst werden Absender und Empfänger geprüft: Fehlt die eigene Adresse, sagt YaBS wo sie einzutragen ist; hat der Kontakt keine Adresse, fragt YaBS danach (und bietet an, sie beim Kontakt zu speichern). Danach die E-Mail-Vorlage: eine wird direkt verwendet, mehrere zur Auswahl; ohne Vorlage fragt YaBS, ob mit dem Belegnamen als Betreff gesendet werden soll (Betreff und Text lassen sich in der Vorschau ändern). Abbrechen sendet nichts. Vorher hieß es „wird ohne Text gesendet“, gesendet wurde aber nichts.
+- **Neue und geänderte Belege im Reiter sichtbar:** Der Reitertitel ist orange, solange ein Datensatz neu (noch nie gespeichert) ist oder nach dem Laden bzw. Speichern in einem Eingabefeld getippt oder geklickt wurde; der Tooltip sagt „Neu – noch nicht gespeichert“ bzw. „Ungespeicherte Änderungen“. Nach dem Speichern (oder wenn ein anderer Datensatz geladen wird) ist er wieder normal.
 - **Umstieg von Fakturama 2:** *Datei › Import › Fakturama 2* – siehe [README](README.de.md#import-export-und-umstieg-von-anderer-software).
 
 ### Settings and usage (EN)
+- **New and changed records in the tab bar:** the tab title is orange while a record is new or has unsaved edits (tooltip says which); normal again after saving.
 - **Mailing a document:** sender and recipient are checked first (YaBS asks for a missing contact address and offers to save it); one mail template is used directly, several to choose, none: send with the document name as subject if wanted. Cancel sends nothing.
 - **Converting opens a new tab:** an invoice from an order (and an order from an offer) opens in a new tab; the source stays open.
 - **Docs language order:** every bilingual document starts in German, the English version follows below.

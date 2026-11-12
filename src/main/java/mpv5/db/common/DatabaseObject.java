@@ -476,6 +476,19 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      *
      */
     public Entity<Context, Integer> IDENTITY;
+    private static final List<java.util.function.Consumer<DatabaseObject>> SAVE_LISTENERS
+            = new java.util.concurrent.CopyOnWriteArrayList<java.util.function.Consumer<DatabaseObject>>();
+
+    /**
+     * Told after every successful save (any thread), e.g. to mark the tab of
+     * the object as saved
+     *
+     * @param l
+     */
+    public static void addSaveListener(java.util.function.Consumer<DatabaseObject> l) {
+        SAVE_LISTENERS.add(l);
+    }
+
     /**
      * Setters, getters, relation getters and String getters per class: built
      * once per class (one getMethods() call), read by every load and save
@@ -899,6 +912,13 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                 }
                 if (message != null) {
                     mpv5.handler.Activity.record(this, created ? mpv5.handler.Activity.Kind.CREATED : mpv5.handler.Activity.Kind.CHANGED, message);
+                }
+                for (java.util.function.Consumer<DatabaseObject> l : SAVE_LISTENERS) {
+                    try {
+                        l.accept(this);
+                    } catch (Exception e) {
+                        Log.Debug(DatabaseObject.class, e);
+                    }
                 }
                 if (mods != null) {
                     for (int ik = 0; ik < mods.size(); ik++) {
