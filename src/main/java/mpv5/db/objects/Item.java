@@ -720,6 +720,12 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
         map.put("taxvaluef", FormatNumber.formatLokalCurrency(__getTaxvalue()));
         map.put("grosnodiscvaluef", FormatNumber.formatLokalCurrency(getGrossAmount().add(__getDiscountGrosvalue())));
         map.put("grosvaluef", FormatNumber.formatLokalCurrency(getGrossAmount()));
+        //payments received (part payments) and what is still open
+        if (isExisting()) {
+            java.math.BigDecimal paid = mpv5.handler.Payments.paid(__getIDS());
+            map.put("paidvaluef", FormatNumber.formatLokalCurrency(paid));
+            map.put("openvaluef", FormatNumber.formatLokalCurrency(mpv5.handler.Payments.open(this)));
+        }
         map.put("discountvaluef", FormatNumber.formatLokalCurrency(__getDiscountvalue()));
         map.put("discounttaxf", FormatNumber.formatLokalCurrency(__getDiscountGrosvalue().subtract(__getDiscountvalue())));
 

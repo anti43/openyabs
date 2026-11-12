@@ -55,7 +55,7 @@ public interface Constants {
      * The minimal Database Version which is compatible with
      * this release
      */
-    public static final Double DATABASE_VERSION = 1.1986;
+    public static final Double DATABASE_VERSION = 1.1987;
     /**
      * The max Database Version which is compatible with
      * this release
@@ -150,4 +150,8 @@ public interface Constants {
     public static final int TYPE_CREDIT = 20;
     public static final int TYPE_PART_PAYMENT = 21;
     public static final int TYPE_DEPOSIT = 22;
+    /**
+     * a payment received on an invoice (journal rows, not a template type)
+     */
+    public static final int TYPE_PAYMENT = 23;
 }
