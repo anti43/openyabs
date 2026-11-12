@@ -30,6 +30,11 @@ Umgesetzt (Grundlage aus Issue #29):
 
   Die mitgelieferte Vorlage enthält die Felder (neue Installationen). Bestehende Kassenbon-Vorlagen: die Felder im Vorlagen-Manager ergänzen.
 
+### Beleg-QR-Code und Storno
+
+- **QR-Code auf dem Bon:** Ein Bild namens `TSEQRCode.img` in der Vorlage wird mit dem QR-Code der TSE-Daten (`pos.tse.qrdata`, DSFinV-K-Format `V0;…`) gefüllt und ohne TSE-Daten entfernt. Die mitgelieferte Kassenbon-Vorlage enthält es (3 × 3 cm, zentriert). Eigene Vorlagen: ein Bild einfügen und im Dialog *Bild › Optionen* den Namen `TSEQRCode.img` vergeben.
+- **Storno:** Auf dem Bon-Bildschirm *Stornieren* (letzter Verkauf) oder oben *Storno* mit der Nummer eines Verkaufs. Gebucht wird eine bezahlte Gutschrift mit denselben Positionen, die auf den Verkauf verweist; die TSE signiert sie als eigenen Vorgang (`Kassenbeleg-V1` mit negativen Beträgen, z. B. `Beleg^-11.90_…^-11.90:Bar`). Jeder Verkauf kann einmal storniert werden. Auf dem Storno-Bon steht `STORNO zu <Nummer>` (Feld `pos.storno`).
+
 ### JavaPOS / ADK (zur Laufzeit geladen)
 
 In der Karte *TSE* der Kasse: **ADK herunterladen** lädt die eingetragenen Adressen (durch Leerzeichen getrennt) in den Ordner `<Programmordner>/javapos`. Standard ist JavaPOS von Maven Central (`javapos-contracts`, `javapos-controls`, `javapos-config-loader`). Jars werden gespeichert, aus `.zip`/`.tar.gz` werden Jars, `jpos.xml` und native Bibliotheken übernommen. Das **Epson JavaPOS ADK** gibt es bei Epson als Installationsprogramm (Windows/Linux): installieren, dann übernimmt **ADK hinzufügen …** die Dateien aus dem Installationsordner (z. B. `/opt/EpsonJavaPOS`, `C:\Program Files\EPSON\JavaPOS`) oder aus einem Archiv.
@@ -40,8 +45,7 @@ Noch offen (siehe Issue #29):
 
 - **Zertifizierte TSE** (Epson TSE über das Epson JavaPOS ADK; Einrichtung mit PIN/PUK, Client-Registrierung, Zeitsynchronisation, Zertifikats- und Speicherwarnungen). Das ADK wird nicht mitgeliefert; Herunterladen/Übernehmen und Laden zur Laufzeit gibt es (oben), die TSE-Ansteuerung selbst fehlt noch.
 - **Exporte**: TSE-Daten (TAR), DSFinV-K, Z-Bon/Tagesabschluss, Kassenbuch.
-- Stornos und Retouren als eigene signierte Vorgänge, sonstige Vorgänge (Schublade), Trainingsmodus.
-- Beleg-QR-Code als Bild in der Vorlage (die Daten stehen in `pos.tse.qrdata`).
+- Teil-Retouren (einzelne Positionen), sonstige Vorgänge (Schublade), Trainingsmodus.
 - Verfahrensdokumentation (Vorlage) und Angaben für die ELSTER-Meldung.
 
 Alle Angaben sind vor einem produktiven Einsatz gegen die aktuellen Fassungen von AO, KassenSichV, BSI TR-03153 / TR-03151 und DSFinV-K zu prüfen.

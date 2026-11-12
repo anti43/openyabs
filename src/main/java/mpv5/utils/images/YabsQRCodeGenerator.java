@@ -177,6 +177,43 @@ public class YabsQRCodeGenerator {
         return os.toByteArray();
     }
 
+    /**
+     * A plain QR code without caption (e.g. the TSE data of a receipt)
+     *
+     * @param text
+     * @return the image for a template
+     * @throws Exception
+     */
+    public static IImageProvider plain(String text) throws Exception {
+        Map<EncodeHintType, Object> hints = new EnumMap<EncodeHintType, Object>(EncodeHintType.class);
+        hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
+        hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L);
+        hints.put(EncodeHintType.MARGIN, 0);
+        BitMatrix m = new QRCodeWriter().encode(text, BarcodeFormat.QR_CODE, 0, 0, hints);
+        int scale = 4;
+        int quiet = 4 * scale;
+        int w = m.getWidth() * scale + 2 * quiet;
+        BufferedImage img = new BufferedImage(w, w, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g = img.createGraphics();
+        g.setColor(Color.WHITE);
+        g.fillRect(0, 0, w, w);
+        g.setColor(Color.BLACK);
+        for (int x = 0; x < m.getWidth(); x++) {
+            for (int y = 0; y < m.getHeight(); y++) {
+                if (m.get(x, y)) {
+                    g.fillRect(quiet + x * scale, quiet + y * scale, scale, scale);
+                }
+            }
+        }
+        g.dispose();
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        ImageIO.write(img, "png", os);
+        //keeps the size of the frame in the template
+        IImageProvider p = new ByteArrayImageProvider(new ByteArrayInputStream(os.toByteArray()));
+        p.setUseImageSize(false);
+        return p;
+    }
+
     public IImageProvider getImageProvider() throws IOException {
         IImageProvider qrcode = new ByteArrayImageProvider(new ByteArrayInputStream(toPng()));
         qrcode.setSize((float) image.getWidth(), (float) image.getHeight());

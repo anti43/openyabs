@@ -43,7 +43,7 @@ public final class Receipts {
      */
     public static File pdf(int invoiceId, int templateId) throws Exception {
         return mpv5.ui.dialogs.Popup.silently(() -> {
-            Item inv = (Item) DatabaseObject.getObject(Context.getInvoice(), invoiceId);
+            Item inv = sale(invoiceId);
             Template t = template(templateId);
             File out = FileDirectoryHandler.getTempFile("receipt-" + inv.__getCnumber().replaceAll("[^A-Za-z0-9_-]", "_"), "pdf");
             Export ex = (Export) Export.createFile(t, inv);
@@ -53,6 +53,9 @@ public final class Receipts {
             String d = inv.__getDescription() == null ? "" : inv.__getDescription();
             ex.put("pos.seller", d.contains("·") ? d.substring(d.indexOf('·') + 1).trim() : d);
             tseFields(ex, invoiceId);
+            //a cancellation: "STORNO of <number>" on the receipt
+            ex.put("pos.storno", inv.__getInttype() == mpv5.globals.Constants.TYPE_CREDIT
+                    ? mpv5.globals.Messages.POS_STORNO_OF + " " + referenced(inv) : "");
             ex.setTargetFile(out);
             Exception e = ex.waitFor();
             if (e != null) {
@@ -63,6 +66,27 @@ public final class Receipts {
             }
             return out;
         });
+    }
+
+    /**
+     * @param id a sale (invoice) or a cancellation (credit note)
+     * @return the item
+     * @throws Exception if there is none
+     */
+    private static String referenced(Item credit) {
+        try {
+            return ((Item) DatabaseObject.getObject(Context.getInvoice(), credit.__getRefOrderIDS())).__getCnumber();
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
+    static Item sale(int id) throws Exception {
+        try {
+            return (Item) DatabaseObject.getObject(Context.getInvoice(), id);
+        } catch (mpv5.db.common.NodataFoundException e) {
+            return (Item) DatabaseObject.getObject(Context.getCredit(), id);
+        }
     }
 
     /**

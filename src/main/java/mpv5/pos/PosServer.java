@@ -122,6 +122,7 @@ public final class PosServer {
         server.createContext("/api/sale", this::sale);
         server.createContext("/api/receipt", this::receipt);
         server.createContext("/api/print", this::print);
+        server.createContext("/api/cancel", this::cancel);
         server.setExecutor(Executors.newSingleThreadExecutor(r -> {
             Thread t = new Thread(r, "pos-server");
             t.setDaemon(true);
@@ -272,6 +273,43 @@ public final class PosServer {
             json(e, 200, "{\"id\":" + r.invoiceId + ",\"printed\":" + printed + ",\"receipts\":" + (rs != null) + ","
                     +  "\"number\":" + q(r.number) + ",\"net\":" + r.net.toPlainString() + ",\"tax\":" + r.tax.toPlainString()
                     + ",\"gross\":" + r.gross.toPlainString() + ",\"change\":" + r.change.toPlainString() + "}");
+        } catch (IllegalArgumentException ex) {
+            json(e, 400, "{\"error\":" + q(ex.getMessage()) + "}");
+        } catch (Exception ex) {
+            Log.Debug(PosServer.class, ex);
+            json(e, 500, "{\"error\":" + q(String.valueOf(ex.getMessage())) + "}");
+        }
+    }
+
+    /**
+     * Storno of a sale (id or number): answers like a sale
+     */
+    private void cancel(HttpExchange e) throws IOException {
+        String token = e.getRequestHeaders().getFirst("X-Token");
+        if (service.user(token) == null) {
+            json(e, 401, "{\"error\":\"login\"}");
+            return;
+        }
+        Map<String, String> f = form(e);
+        try {
+            PosService.Receipt r = service.cancel(token, f.getOrDefault("sale", ""));
+            final ReceiptSource rs = receipts;
+            boolean printed = false;
+            if (rs != null && rs.autoPrint()) {
+                final int id = r.invoiceId;
+                Thread t = new Thread(() -> {
+                    try {
+                        rs.print(id);
+                    } catch (Exception ex) {
+                        Log.Debug(PosServer.class, ex);
+                    }
+                }, "pos-print");
+                t.setDaemon(true);
+                t.start();
+                printed = true;
+            }
+            json(e, 200, "{\"id\":" + r.invoiceId + ",\"printed\":" + printed + ",\"receipts\":" + (rs != null) + ","
+                    + "\"number\":" + q(r.number) + ",\"gross\":" + r.gross.toPlainString() + "}");
         } catch (IllegalArgumentException ex) {
             json(e, 400, "{\"error\":" + q(ex.getMessage()) + "}");
         } catch (Exception ex) {
