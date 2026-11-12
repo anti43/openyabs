@@ -4,7 +4,7 @@
 
 *Systemsteuerung › Skriptmanager* – kleine Groovy-Skripte für eine Art von Datensatz (Rechnungen, Angebote, Kontakte, Artikel …) und eine Gruppe.
 
-- **Beliebiger Name**, z.B. `anrede`: Vorlagenfeld **`<property.anrede>`** mit dem Ergebnis des Skripts – die Daten werden **nicht** geändert.
+- **Beliebiger Name**, z.B. `anrede`: Vorlagenfeld **`<item.property.anrede>`** (Belege; bei Kontakten `<contact.property.anrede>`, Artikeln `<product.property.anrede>`) mit dem Ergebnis des Skripts – die Daten werden **nicht** geändert. Dieselben Felder ergeben die Einträge der Tabelle **Eigenschaften** eines einzelnen Datensatzes (Name und Wert, ohne Skript).
 - **`modifyOnSave`**: vor dem Speichern, kann die Daten **ändern**. **`executeAfterSave`** / **`executeAfterCreate`**: nach dem Speichern / Anlegen. **`modifyOnDelete`**: vor dem Löschen (eine Exception verhindert es).
 - **`IntItemLabel`** / **`IntRevenueLabel`**: Name von Belegen / Einnahmen in Listen.
 - Im Skript: `dbo` = der Datensatz, `getObject('contact', 'Name')`, `getFormField('item.netvaluef')`. Der letzte Wert ist das Ergebnis; mehrzeilige Skripte sind möglich.
@@ -21,7 +21,7 @@
 
 | Name ("Use as") | When | What it can do |
 |---|---|---|
-| any name, e.g. `greeting` | when exporting with a template | its result is the template field **`<property.greeting>`** – the data is **not** changed |
+| any name, e.g. `greeting` | when exporting with a template | its result is the template field **`<item.property.greeting>`** (documents; `<contact.property.greeting>` for contacts, `<product.property.greeting>` for products) – the data is **not** changed |
 | `modifyOnSave` | before a record is saved | **change the data**, e.g. clean up a text |
 | `executeAfterSave` | after saving | e.g. a notice, another record |
 | `executeAfterCreate` | after a record is created | e.g. defaults |
@@ -50,7 +50,9 @@ def name = getFormField('item.contact.cname')
 name ? "Dear ${getFormField('item.contact.prename')} ${name}" : "Dear Sir or Madam"
 ```
 
-In the template: `<property.greeting>`.
+In the template: `<item.property.greeting>`.
+
+The **Properties** table of a single record (documents, contacts) gives the same kind of field without a script: name `delivery`, value `2 weeks` → `<item.property.delivery>`; a contact's property in its documents: `<item.contact.property.NAME>`.
 
 `modifyOnSave` for products – no spaces around the name:
 

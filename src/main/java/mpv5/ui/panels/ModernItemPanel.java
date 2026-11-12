@@ -432,7 +432,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
 
         JScrollPane props = new JScrollPane(proptable);
         props.setPreferredSize(new java.awt.Dimension(ModernTheme.px(200), ModernTheme.px(100)));
-        grid.add(new Card(Messages.ITEM_SECTION_PROPERTIES.toString()).addFull(props, 1));
+        grid.add(new Card(Messages.ITEM_SECTION_PROPERTIES.toString()).addFull(propertiesHint("item", "")).addFull(props, 1));
         return grid;
     }
 
