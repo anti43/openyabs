@@ -1370,7 +1370,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
                     || dbo.getContext().equals(Context.getOffer())
                     || dbo.getContext().equals(Context.getOrder())) {
 
-                if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "pasten")) {
+                if (mpv5.db.objects.User.pasteAsSummary()) {
                     //the document as position(s): one per VAT rate, net after discount
                     String text = Messages.GOOSE1 + " " + ((Item) dbo).__getCnumber() + " " + Messages.GOOSE2 + " " + DateConverter.getDefDateString(dbo.__getDateadded());
                     for (SubItem p : mpv5.handler.ItemService.asPositions((Item) dbo, text)) {
