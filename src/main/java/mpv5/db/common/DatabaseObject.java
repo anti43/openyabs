@@ -278,7 +278,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                         Context context = contextArray[f];
                         boolean cacheable = true;
                         if (AUTO_LOCK) {
-                            if (Context.getLockableContexts().contains(context)) {
+                            if (Context.isLockable(context)) {
                                 cacheable = false;
                                 Log.Debug(DatabaseObject.class, "AUTO_LOCK is enabled, not going to cache " + context);
                             }
@@ -381,98 +381,82 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         return l;
     }
 
-    private static void invoke(Method method, Object argument, DatabaseObject dbo, Object valx) {
+    private static void invoke(Method method, Object argument, DatabaseObject dbo) {
         synchronized (dbo) {
+            //called for every column of every loaded row: one lookup of the parameter type, no
+            //throwaway objects for the type checks (isAssignableFrom = the former isInstance(x))
+            final Class<?> type = method.getParameterTypes()[0];
+            final String text = argument instanceof byte[] ? null : String.valueOf(argument);
             try {
-
-                if (!method.getParameterTypes()[0].isPrimitive()) {
-                    if (method.getParameterTypes()[0].isInstance(true)) {
-                        if (String.valueOf(argument).equals("1") || String.valueOf(argument).equalsIgnoreCase("true")) {
-                            method.invoke(dbo, new Object[]{true});
-                        } else {
-                            method.invoke(dbo, new Object[]{false});
-                        }
-                    } else if (method.getParameterTypes()[0].isInstance(0)) {
-                        method.invoke(dbo, new Object[]{Integer.valueOf(String.valueOf(argument))});
-                    } else if (method.getParameterTypes()[0].isInstance(new Date())) {
-                        method.invoke(dbo, new Object[]{DateConverter.getDate(argument)});
-                    } else if (method.getParameterTypes()[0].isInstance(BigDecimal.ONE)) {
-                        method.invoke(dbo, new Object[]{new BigDecimal(String.valueOf(argument))});
-                    } else if (method.getParameterTypes()[0].isInstance(0d)) {
-                        method.invoke(dbo, new Object[]{Double.valueOf(String.valueOf(argument))});
-                    } else if (method.getParameterTypes()[0].isInstance(0l)) {
-                        method.invoke(dbo, new Object[]{Long.valueOf(String.valueOf(argument))});
-                    } else if (method.getParameterTypes()[0].isInstance(0f)) {
-                        method.invoke(dbo, new Object[]{Float.valueOf(String.valueOf(argument))});
-                    } else if (method.getParameterTypes()[0].isInstance(01)) {
-                        method.invoke(dbo, new Object[]{Short.valueOf(String.valueOf(argument))});
-                    } else if (method.getParameterTypes()[0].getCanonicalName().equals(new byte[0].getClass().getCanonicalName())) {//doitbetter
-                        method.invoke(dbo, new Object[]{(byte[]) ((argument instanceof String) ? String.valueOf(argument).getBytes("UTF-8") : argument)});
-                    } else if (DatabaseObject.class.isAssignableFrom(method.getParameterTypes()[0])) {
+                if (!type.isPrimitive()) {
+                    if (type.isAssignableFrom(Boolean.class)) {
+                        method.invoke(dbo, "1".equals(text) || "true".equalsIgnoreCase(text));
+                    } else if (type.isAssignableFrom(Integer.class)) {
+                        method.invoke(dbo, Integer.valueOf(text));
+                    } else if (type.isAssignableFrom(Date.class)) {
+                        method.invoke(dbo, DateConverter.getDate(argument));
+                    } else if (type.isAssignableFrom(BigDecimal.class)) {
+                        method.invoke(dbo, argument instanceof BigDecimal ? argument : new BigDecimal(text));
+                    } else if (type.isAssignableFrom(Double.class)) {
+                        method.invoke(dbo, Double.valueOf(text));
+                    } else if (type.isAssignableFrom(Long.class)) {
+                        method.invoke(dbo, Long.valueOf(text));
+                    } else if (type.isAssignableFrom(Float.class)) {
+                        method.invoke(dbo, Float.valueOf(text));
+                    } else if (type.isAssignableFrom(Short.class)) {
+                        method.invoke(dbo, Short.valueOf(text));
+                    } else if (type == byte[].class) {
+                        method.invoke(dbo, (Object) (argument instanceof String ? ((String) argument).getBytes("UTF-8") : argument));
+                    } else if (DatabaseObject.class.isAssignableFrom(type)) {
                         if (argument instanceof DatabaseObject) {
-                            DatabaseObject d = (DatabaseObject) argument;
-                            method.invoke(dbo, new Object[]{d});
+                            method.invoke(dbo, argument);
                         } else {
-                            Context c = ((DatabaseObject) method.getParameterTypes()[0].newInstance()).getContext();
                             try {
-                                int myId = Integer.valueOf(String.valueOf(argument));
+                                int myId = Integer.parseInt(text);
                                 if (myId > 0) {
-                                    DatabaseObject d = getObject(c, myId);
-                                    method.invoke(dbo, new Object[]{d});
+                                    Context c = ((DatabaseObject) type.getDeclaredConstructor().newInstance()).getContext();
+                                    method.invoke(dbo, getObject(c, myId));
                                 }
                             } catch (NumberFormatException numberFormatException) {
-                                try {
-                                } catch (Exception e) {
-                                    Log.Debug(dbo, "Cannot parse " + argument + " as Ids!" + numberFormatException.getMessage());
-                                }
+                                Log.Debug(dbo, "Cannot parse " + argument + " as Ids!" + numberFormatException.getMessage());
                             }
                         }
-                    } else if (File.class.isAssignableFrom(method.getParameterTypes()[0])) {
+                    } else if (File.class.isAssignableFrom(type)) {
                         //a blob
                         File f = FileDirectoryHandler.getTempFile();
-                        FileOutputStream stream = new FileOutputStream(f);
-                        try {
+                        try (FileOutputStream stream = new FileOutputStream(f)) {
                             stream.write((byte[]) argument);
-                            stream.close();
-                            method.invoke(dbo, new Object[]{f});
-                        } finally {
-                            stream.close();
                         }
+                        method.invoke(dbo, f);
                     } else {
                         try {
                             //defaults to java.lang.String, Object args are not supported.. possibly later via XMLEncoder?
-                            method.invoke(dbo, new Object[]{(argument instanceof byte[])
-                                ? new String((byte[]) argument)
-                                : String.valueOf(argument)});
+                            method.invoke(dbo, argument instanceof byte[] ? new String((byte[]) argument) : text);
                         } catch (Exception uie) {
                             Log.Debug(dbo, new IllegalArgumentException(method + ": " + argument.getClass(), uie));
                         }
                     }
-                } else {
-                    if (int.class.isAssignableFrom(method.getParameterTypes()[0])) {
-                        method.invoke(dbo, new Object[]{Integer.valueOf(String.valueOf(argument))});
-                    } else if (float.class.isAssignableFrom(method.getParameterTypes()[0])) {
-                        method.invoke(dbo, new Object[]{Float.valueOf(String.valueOf(argument))});
-                    } else if (double.class.isAssignableFrom(method.getParameterTypes()[0])) {
-                        method.invoke(dbo, new Object[]{Double.valueOf(String.valueOf(argument))});
-                    } else if (short.class.isAssignableFrom(method.getParameterTypes()[0])) {
-                        method.invoke(dbo, new Object[]{Short.valueOf(String.valueOf(argument))});
-                    } else if (long.class.isAssignableFrom(method.getParameterTypes()[0])) {
-                        method.invoke(dbo, new Object[]{Long.valueOf(String.valueOf(argument))});
-                    } else if (boolean.class.isAssignableFrom(method.getParameterTypes()[0])) {
-                        if (String.valueOf(argument).equals("1") || String.valueOf(argument).equalsIgnoreCase("true")) {
-                            method.invoke(dbo, new Object[]{true});
-                        } else {
-                            method.invoke(dbo, new Object[]{false});
-                        }
-                    }
+                } else if (type == int.class) {
+                    method.invoke(dbo, Integer.valueOf(text));
+                } else if (type == float.class) {
+                    method.invoke(dbo, Float.valueOf(text));
+                } else if (type == double.class) {
+                    method.invoke(dbo, Double.valueOf(text));
+                } else if (type == short.class) {
+                    method.invoke(dbo, Short.valueOf(text));
+                } else if (type == long.class) {
+                    method.invoke(dbo, Long.valueOf(text));
+                } else if (type == boolean.class) {
+                    method.invoke(dbo, "1".equals(text) || "true".equalsIgnoreCase(text));
                 }
             } catch (Exception ex) {
-                Log.Debug(DatabaseObject.class, "Explode: " + method.toGenericString() + " with " + argument + "[" + valx + "]");
+                Log.Debug(DatabaseObject.class, "Explode: " + method.toGenericString() + " with " + argument
+                        + " [" + (argument == null ? "null" : argument.getClass().getName()) + "]");
                 Log.Debug(ex);
             }
         }
     }
+
     /**
      * The unique id, or 0 if it is a new do
      */
@@ -492,9 +476,31 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      *
      */
     public Entity<Context, Integer> IDENTITY;
-    private static final Map<String, Map<String, Method>> setVars_cached = new HashMap<String, Map<String, Method>>();
-    private static final Map<String, Map<String, Method>> getVars_cached = new HashMap<String, Map<String, Method>>();
-    private static final Map<String, List<String>> getStringVars_cached = new HashMap<String, List<String>>();
+    /**
+     * Setters, getters, relation getters and String getters per class: built
+     * once per class (one getMethods() call), read by every load and save
+     */
+    private static final Map<Class<?>, Map<String, Method>> setVars_cached = new java.util.concurrent.ConcurrentHashMap<Class<?>, Map<String, Method>>();
+    private static final Map<Class<?>, Map<String, Method>> getVars_cached = new java.util.concurrent.ConcurrentHashMap<Class<?>, Map<String, Method>>();
+    private static final Map<Class<?>, Map<String, Method>> relationVars_cached = new java.util.concurrent.ConcurrentHashMap<Class<?>, Map<String, Method>>();
+    private static final Map<Class<?>, List<String>> getStringVars_cached = new java.util.concurrent.ConcurrentHashMap<Class<?>, List<String>>();
+
+    /**
+     * @param m a method
+     * @return true for persisted getters: annotated with Persistable(true) or
+     * named __get* (and not Persistable(false))
+     */
+    private static boolean isPersistedGetter(Method m) {
+        Persistable p = m.getAnnotation(Persistable.class);
+        if (p != null && p.value() && m.getParameterCount() == 0) {
+            return true;
+        }
+        return m.getName().startsWith("__get") && (p == null || p.value());
+    }
+
+    private static String getterKey(Method m) {
+        return m.getName().substring(m.getName().startsWith("__") ? 5 : 3).toLowerCase();
+    }
 
     public String __getCname() {
         return getCname();
@@ -510,10 +516,10 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             try {
                 try {
                     if (!method.getParameterTypes()[0].isPrimitive()) {
-                        if (method.getParameterTypes()[0].isInstance(new String())) {
+                        if (method.getParameterTypes()[0].isAssignableFrom(String.class)) {
                             Log.Debug(this, "Set : " + method + " with value: " + "<empty>");
                             method.invoke(this, "<empty>");
-                        } else if (method.getParameterTypes()[0].isInstance(BigDecimal.ZERO)) {
+                        } else if (method.getParameterTypes()[0].isAssignableFrom(BigDecimal.class)) {
                             Log.Debug(this, "Set : " + method + " with value: 0");
                             method.invoke(this, BigDecimal.ZERO);
                         } else {
@@ -705,23 +711,21 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * methods will not recognize newly added methods (eg with groovy or
      * reflection) unless you clear {@code setVars_cached}
      */
-    public synchronized Map<String, Method> setVars() {
-        if (!setVars_cached.containsKey(getClass().getCanonicalName())) {
-            Log.Debug(this, "Caching setVars of " + this.getClass().getCanonicalName());
-
-            setVars_cached.put(this.getClass().getCanonicalName(), new HashMap<String, Method>());
-            for (int i = 0; i < this.getClass().getMethods().length; i++) {
-                Method m = this.getClass().getMethods()[i];
-                if (m.getParameterTypes().length == 1
+    public Map<String, Method> setVars() {
+        return setVars_cached.computeIfAbsent(getClass(), c -> {
+            Log.Debug(this, "Caching setVars of " + c.getName());
+            Map<String, Method> map = new HashMap<String, Method>();
+            for (Method m : c.getMethods()) {
+                if (m.getParameterCount() == 1
                         && m.getName().startsWith("set")
                         && !m.getName().startsWith("setVars")//annotation!!
                         && !m.getName().startsWith("setPanelData")
                         && !m.getName().startsWith("setAutoLock")) {
-                    setVars_cached.get(this.getClass().getCanonicalName()).put(m.getName().substring(3).toLowerCase(), m);
+                    map.put(m.getName().substring(3).toLowerCase(), m);
                 }
             }
-        }
-        return setVars_cached.get(getClass().getCanonicalName());
+            return java.util.Collections.unmodifiableMap(map);
+        });
     }
 
     /**
@@ -729,20 +733,16 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @return A list of all <b>getters with annotation Relation</b> in this do
      */
     public Map<String, Method> getAllRelationGetters() {
-        String key = this.getClass().getCanonicalName() + "_Relation";
-        if (!getVars_cached.containsKey(key)) {
-            Log.Debug(this, "Caching " + key);
-            getVars_cached.put(key, new HashMap<String, Method>());
-            Method[] methods = this.getClass().getMethods();
-            for (int i = 0; i < this.getClass().getMethods().length; i++) {
-                if ((methods[i].isAnnotationPresent(Relation.class)
-                        && methods[i].getAnnotation(Relation.class).value()
-                        && methods[i].getParameterTypes().length == 0)) {
-                    getVars_cached.get(key).put(methods[i].getName().substring(methods[i].getName().startsWith("__") ? 5 : 3).toLowerCase(), methods[i]);
+        return relationVars_cached.computeIfAbsent(getClass(), c -> {
+            Map<String, Method> map = new HashMap<String, Method>();
+            for (Method m : c.getMethods()) {
+                Relation r = m.getAnnotation(Relation.class);
+                if (r != null && r.value() && m.getParameterCount() == 0) {
+                    map.put(getterKey(m), m);
                 }
             }
-        }
-        return getVars_cached.get(key);
+            return java.util.Collections.unmodifiableMap(map);
+        });
     }
 
     /**
@@ -753,26 +753,16 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * persistable DO fields
      */
     public Map<String, Method> getVars() {
-        if (!getVars_cached.containsKey(getClass().getCanonicalName())) {
-            Log.Debug(this, "Caching " + this.getClass().getCanonicalName());
-            getVars_cached.put(this.getClass().getCanonicalName(), new HashMap<String, Method>());
-            Method[] methods = this.getClass().getMethods();
-            for (int i = 0; i < this.getClass().getMethods().length; i++) {
-                if ((methods[i].isAnnotationPresent(Persistable.class)
-                        && methods[i].getAnnotation(Persistable.class).value()
-                        && methods[i].getParameterTypes().length == 0)
-                        /*
-                         * for backwards compatibility
-                         */
-                        || (methods[i].getName().startsWith("__get")
-                        && !(methods[i].isAnnotationPresent(Persistable.class)
-                        && !methods[i].getAnnotation(Persistable.class).value()))) {
-                    getVars_cached.get(this.getClass().getCanonicalName()).put(methods[i].getName().substring(methods[i].getName().startsWith("__") ? 5 : 3).toLowerCase(), methods[i]);
+        return getVars_cached.computeIfAbsent(getClass(), c -> {
+            Log.Debug(this, "Caching " + c.getName());
+            Map<String, Method> map = new HashMap<String, Method>();
+            for (Method m : c.getMethods()) {
+                if (isPersistedGetter(m)) {
+                    map.put(getterKey(m), m);
                 }
             }
-
-        }
-        return getVars_cached.get(this.getClass().getCanonicalName());
+            return java.util.Collections.unmodifiableMap(map);
+        });
     }
 
     /**
@@ -782,35 +772,17 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @return A list of shortened method names (without "get")
      */
     public List<String> getStringVars() {
-        if (!getStringVars_cached.containsKey(getClass().getCanonicalName())) {
-            Log.Debug(this, "Caching " + this.getClass().getCanonicalName());
-            getStringVars_cached.put(this.getClass().getCanonicalName(), new ArrayList<String>());
-            String left = "";
-            Method[] methods = this.getClass().getMethods();
-
-            boolean annotated = false;
-            for (int i = 0; i < this.getClass().getMethods().length; i++) {
-                if ((methods[i].isAnnotationPresent(Persistable.class)
-                        && methods[i].getAnnotation(Persistable.class).value()
-                        && methods[i].getParameterTypes().length == 0)
-                        /*
-                         * for backwards compatibility
-                         */
-                        || (methods[i].getName().startsWith("__get")
-                        && !(methods[i].isAnnotationPresent(Persistable.class)
-                        && !methods[i].getAnnotation(Persistable.class).value()))) {
-                    annotated = methods[i].isAnnotationPresent(Persistable.class);
-
-                    left = annotated
-                            ? methods[i].getName().toLowerCase().substring(3, methods[i].getName().length())
-                            : methods[i].getName().toLowerCase().replace("__get", "");
-                    if (methods[i].getReturnType().getName().equals(String.class.getName())) {
-                        getStringVars_cached.get(this.getClass().getCanonicalName()).add(left);
-                    }
+        return getStringVars_cached.computeIfAbsent(getClass(), c -> {
+            List<String> list = new ArrayList<String>();
+            for (Method m : c.getMethods()) {
+                if (isPersistedGetter(m) && m.getReturnType() == String.class) {
+                    list.add(m.isAnnotationPresent(Persistable.class)
+                            ? m.getName().toLowerCase().substring(3)
+                            : m.getName().toLowerCase().replace("__get", ""));
                 }
             }
-        }
-        return getStringVars_cached.get(this.getClass().getCanonicalName());
+            return java.util.Collections.unmodifiableList(list);
+        });
     }
 
     /**
@@ -839,7 +811,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             final boolean created = ids <= 0;
             
             List<DatabaseObjectModifier> mods = null;
-            if (Context.getModifiableContexts().contains(getContext())) {
+            if (Context.isModifiable(getContext())) {
                 mods = new ArrayList<DatabaseObjectModifier>(YabsPluginLoader.registeredModifiers);
                 mods.add(inlineObjectModifier);
                 for (int ik = 0; ik < mods.size(); ik++) {
@@ -1002,7 +974,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @return
      */
     public boolean delete() {
-        if (Context.getModifiableContexts().contains(getContext())) {
+        if (Context.isModifiable(getContext())) {
             List<DatabaseObjectModifier> mods = new ArrayList<DatabaseObjectModifier>(YabsPluginLoader.registeredModifiers);
             mods.add(inlineObjectModifier);
             for (int ik = 0; ik < mods.size(); ik++) {
@@ -1145,67 +1117,57 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     protected synchronized QueryData collect() {
 
         QueryData data = new QueryData();
-        Map<String, Method> vars = getVars();
-
-        for (String key : vars.keySet()) {
-            Object tempval;
-            String left = key.toLowerCase();
+        final boolean debug = Log.isDebugging();
+        for (Map.Entry<String, Method> e : getVars().entrySet()) {
+            final Method getter = e.getValue();
+            String left = e.getKey().toLowerCase();
             try {
-//                    Log.Debug(this, "Calling: " + methods[i]);
-                tempval = vars.get(key).invoke(this, (Object[]) null);
-                // Log.Debug(this, "On " + methods[i].getName());
+                Object tempval = getter.invoke(this, (Object[]) null);
                 if (tempval != null) {
-                    Log.Debug(this, "Collect: " + tempval.getClass().getName() + " : " + vars.get(key).getName() + " ? " + tempval);
-                    if (tempval.getClass().isInstance(new String())) {
-                        data.add(left, String.valueOf(tempval));
-                    } else if (tempval.getClass().isInstance(true)) {
-                        boolean c = (Boolean) tempval;
-                        data.add(left, c);
+                    if (debug) {
+                        Log.Debug(this, "Collect: " + tempval.getClass().getName() + " : " + getter.getName() + " ? " + tempval);
+                    }
+                    if (tempval instanceof String) {
+                        data.add(left, (String) tempval);
+                    } else if (tempval instanceof Boolean) {
+                        data.add(left, (boolean) (Boolean) tempval);
                     } else if (tempval instanceof Date) {
+                        //java.util.Date, java.sql.Date, Timestamp, RandomDate
                         data.add(left, DateConverter.getSQLDateString((Date) tempval));
-                    } else if (tempval.getClass().isInstance(new Date())) {
-                        data.add(left, DateConverter.getSQLDateString((Date) tempval));
-                    } else if (tempval.getClass().isInstance(new RandomDate(null))) {
-                        data.add(left, DateConverter.getSQLDateString((Date) tempval));
-                    } else if (tempval.getClass().isInstance(new java.sql.Date(0))) {
-                        data.add(left, DateConverter.getSQLDateString((Date) tempval));
-                    } else if (tempval.getClass().isInstance(0)) {
+                    } else if (tempval instanceof Integer) {
                         //if the field is an IDS field an below 0, set it to 0
                         //as integer columns may not allow signed integers (eg. -1)
-                        if (left.toLowerCase().endsWith("ids")) {
-                            if (Integer.valueOf(tempval.toString()).intValue() < 0) {
-                                Log.Debug(this, "Correcting below-zero integer ids in " + left);
-                                data.add(left, 0);
-                            } else {
-                                data.add(left, (Integer) tempval);
-                            }
+                        int v = (Integer) tempval;
+                        if (v < 0 && left.endsWith("ids")) {
+                            Log.Debug(this, "Correcting below-zero integer ids in " + left);
+                            data.add(left, 0);
                         } else {
-                            data.add(left, (Integer) tempval);
+                            data.add(left, v);
                         }
-                    } else if (tempval.getClass().isInstance(0f)) {
+                    } else if (tempval instanceof Float) {
                         data.add(left, (Float) tempval);
-                    } else if (tempval.getClass().isInstance(0d)) {
+                    } else if (tempval instanceof Double) {
                         data.add(left, (Double) tempval);
-                    } else if (tempval.getClass().isInstance(01)) {
+                    } else if (tempval instanceof Short) {
                         data.add(left, (Short) tempval);
-                    } else if (tempval.getClass().isInstance(0l)) {
+                    } else if (tempval instanceof Long) {
                         data.add(left, (Long) tempval);
-                    } else if (tempval.getClass().isInstance(new BigDecimal(0))) {
+                    } else if (tempval instanceof BigDecimal) {
                         data.add(left, (BigDecimal) tempval);
-                    } else if (File.class.isAssignableFrom(tempval.getClass())) {
+                    } else if (tempval instanceof File) {
                         /*NOT supported by following INSERT! insert yourself..data.add(left, (File) tempval);*/
                         throw new IllegalArgumentException("File NOT supported by current INSERT implementation. Override save() method and insert blobs yourself.");
-                    } else if (DatabaseObject.class.isAssignableFrom(tempval.getClass())) {
+                    } else if (tempval instanceof DatabaseObject) {
                         data.add(left + "sids", ((DatabaseObject) tempval).__getIDS());
                     } else {
                         throw new RuntimeException("Unsupported class found: " + tempval.getClass());
                     }
-                } else {
-                    Log.Debug(this, "NULL value on " + vars.get(key).getName());
+                } else if (debug) {
+                    Log.Debug(this, "NULL value on " + getter.getName());
                 }
             } catch (Exception ex) {
-                mpv5.logging.Log.Debug(this, vars.get(key).getName());
-                mpv5.logging.Log.Debug(ex);//Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+                mpv5.logging.Log.Debug(this, getter.getName());
+                mpv5.logging.Log.Debug(ex);
             }
 
         }
@@ -1226,12 +1188,16 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         if (!source.collectData()) {
             return false;
         }
-        for (String key : setVars().keySet()) {
-            String fieldname = key + "_";
+        for (Map.Entry<String, Method> e : setVars().entrySet()) {
+            String fieldname = e.getKey() + "_";
             if (!fieldname.equals("ids_")) {
                 try {
-                    Log.Debug(this, "GetPanelData: " + fieldname + ": " + source.getClass().getField(fieldname).getType().getName() + " [" + source.getClass().getField(fieldname).get(source) + "]");
-                    setVars().get(key).invoke(this, source.getClass().getField(fieldname).get(source));
+                    Field f = source.getClass().getField(fieldname);
+                    Object v = f.get(source);
+                    if (Log.isDebugging()) {
+                        Log.Debug(this, "GetPanelData: " + fieldname + ": " + f.getType().getName() + " [" + v + "]");
+                    }
+                    e.getValue().invoke(this, v);
                 } catch (java.lang.NoSuchFieldException nf) {
                     Log.Debug(this, "The view: " + source.getClass()
                             + " is missing a field: " + nf.getMessage());
@@ -1254,12 +1220,16 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      */
     public void setPanelData(DataPanel target) {
 
-        for (String key : getVars().keySet()) {
+        for (Map.Entry<String, Method> e : getVars().entrySet()) {
+            String key = e.getKey();
             try {
-                Log.Debug(this, key + " [" + getVars().get(key).invoke(this, new Object[0]) + "]");
                 Field fi = target.getClass().getField(key + "_");
-                fi.set(target, getVars().get(key).invoke(this, new Object[0]));
-                Log.Debug(target, fi.get(target));
+                //the getter once (it was called a second time just for the log)
+                Object v = e.getValue().invoke(this, new Object[0]);
+                fi.set(target, v);
+                if (Log.isDebugging()) {
+                    Log.Debug(this, key + " [" + v + "]");
+                }
             } catch (java.lang.NoSuchFieldException nf) {
                 Log.Debug(this, "The view: " + target.getClass() + " is missing a field: " + nf.getMessage());
             } catch (Exception n) {
@@ -1415,21 +1385,17 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                 if (!(m.isAnnotationPresent(Displayable.class)
                         && !m.getAnnotation(Displayable.class).value())) {
                     left = name.toLowerCase();
-                    Log.Debug(this, "Calling: " + m);
                     tempval = m.invoke(this, (Object[]) null);
-                    Log.Debug(this, "Collect: " + tempval.getClass().getName() + " : " + m.getName() + " ? " + tempval);
-                    if (tempval.getClass().isInstance(new String())) {
-                        data.put(left, String.valueOf(tempval));
-                    } else if (tempval.getClass().isInstance(true)) {
-                        boolean c = (Boolean) tempval;
-                        data.put(left, c);
-                    } else if (tempval.getClass().isInstance(new Date())) {
-                        data.put(left, ((Date) tempval));
-                    } else if (tempval.getClass().isInstance(new RandomDate(null))) {
-                        data.put(left, ((Date) tempval));
-                    } else if (tempval.getClass().isInstance(new java.sql.Date(0))) {
-                        data.put(left, ((Date) tempval));
-                    } else if (tempval.getClass().isInstance(0)) {
+                    if (tempval == null) {
+                        continue;
+                    }
+                    if (tempval instanceof String) {
+                        data.put(left, tempval);
+                    } else if (tempval instanceof Boolean) {
+                        data.put(left, tempval);
+                    } else if (tempval instanceof Date) {
+                        data.put(left, tempval);
+                    } else if (tempval instanceof Integer) {
                         //if the field is an IDS field
                         if (left.toLowerCase().endsWith("ids")) {
                             if (Context.getMatchingContext(left) != null) {
@@ -1452,14 +1418,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                         } else {
                             data.put(left, (Integer) tempval);
                         }
-                    } else if (tempval.getClass().isInstance(0f)) {
-                        data.put(left, (Float) tempval);
-                    } else if (tempval.getClass().isInstance(0d)) {
-                        data.put(left, (Double) tempval);
-                    } else if (tempval.getClass().isInstance(01)) {
-                        data.put(left, (Short) tempval);
-                    } else if (tempval.getClass().isInstance(new BigDecimal(0))) {
-                        data.put(left, (BigDecimal) tempval);
+                    } else if (tempval instanceof Float || tempval instanceof Double || tempval instanceof Short
+                            || tempval instanceof BigDecimal) {
+                        data.put(left, tempval);
                     }
                 }
             } catch (Exception n) {
@@ -2041,7 +2002,17 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             dos = new DatabaseObject[1];
         }
 
-        Log.Debug(DatabaseObject.class, "Preparing to explode rows: " + dos.length);
+        if (Log.isDebugging()) {
+            Log.Debug(DatabaseObject.class, "Preparing to explode rows: " + dos.length);
+        }
+        //once per query, not per cell
+        final String[] names = new String[cols.length];
+        for (int j = 0; j < cols.length; j++) {
+            names[j] = cols[j].toLowerCase();
+        }
+        final Object[][] rows = select.getData();
+        final boolean lockable = lock && AUTO_LOCK && Context.isLockable(target.getContext());
+        final boolean modifiable = Context.isModifiable(target.getContext());
         for (int i = 0; i < dos.length; i++) {
 
             DatabaseObject dbo = null;
@@ -2054,55 +2025,42 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             Map<String, Method> vars = dbo.setVars();
             dos[i] = dbo;
             if (select.hasData()) {
-                for (int j = 0; j < select.getData()[i].length; j++) {
-                    String name = cols[j].toLowerCase();
-                    if (vars.containsKey(name)) {
-                        Method m = vars.get(name);
-                        String valx = "";
-                        if (select.getData()[i][j] != null) {
-                            valx = select.getData()[i][j].getClass().getName();
-                        } else {
-                            valx = "NULL VALUE!";
-                        }
-                        if (select.getData()[i][j] != null) {
-                            invoke(m, select.getData()[i][j], dbo, valx);
-                        }
-                    } else if (name.endsWith("ids")
-                            && (vars.containsKey(name + "ids") || vars.containsKey(name + "sids"))) {
-                        Method m = vars.get(name + "ids");
+                final Object[] row = rows[i];
+                for (int j = 0; j < row.length; j++) {
+                    final Object value = row[j];
+                    if (value == null) {
+                        continue;
+                    }
+                    String name = names[j];
+                    Method m = vars.get(name);
+                    if (m == null && name.endsWith("ids")) {
+                        m = vars.get(name + "ids");
                         if (m == null) {
                             m = vars.get(name + "sids");
                         }
-                        if (Log.isDebugging()) {
-                            Log.Debug(DatabaseObject.class, "Explode: " + m.toGenericString() + " with " + select.getData()[i][j] + "[DBO]");
+                        if (m == null && name.length() > 6) {
+                            m = vars.get(name.substring(0, name.length() - 3));
+                            if (m == null) {
+                                m = vars.get(name.substring(0, name.length() - 4));
+                            }
                         }
-                        if (select.getData()[i][j] != null) {
-                            invoke(m, select.getData()[i][j], dbo, "DatabaseObject");
+                        if (m != null && Log.isDebugging()) {
+                            Log.Debug(DatabaseObject.class, "Explode: " + m.toGenericString() + " with " + value + "[DBO]");
                         }
-                    } else if (name.endsWith("ids") && name.length()>6
-                            && (vars.containsKey(name.substring(0, name.length() - 3)) || vars.containsKey(name.substring(0, name.length() - 4)))) {
-                        Method m = vars.get(name.substring(0, name.length() - 3));
-                        if (m == null) {
-                            m = vars.get(name.substring(0, name.length() - 4));
-                        }
-                        if (Log.isDebugging()) {
-                            Log.Debug(DatabaseObject.class, "Explode: " + m.toGenericString() + " with " + select.getData()[i][j] + "[DBO]");
-                        }
-                        if (select.getData()[i][j] != null) {
-                            invoke(m, select.getData()[i][j], dbo, "DatabaseObject");
-                        }
-                    } 
+                    }
+                    if (m != null) {
+                        invoke(m, value, dbo);
+                    }
                 }
             }
 
-            if (lock) {
-                if (AUTO_LOCK && Context.getLockableContexts().contains(dbo.getContext())) {
-                    Log.Debug(DatabaseObject.class, "Preparing to lock: " + dbo);
-                    boolean lck = dbo.lock();
-                    Log.Debug(DatabaseObject.class, "Locking was: " + lck);
+            if (lockable) {
+                boolean lck = dbo.lock();
+                if (Log.isDebugging()) {
+                    Log.Debug(DatabaseObject.class, "Locked " + dbo + ": " + lck);
                 }
             }
-            if (Context.getModifiableContexts().contains(target.getContext())) {
+            if (modifiable && !YabsPluginLoader.registeredModifiers.isEmpty()) {
                 List<DatabaseObjectModifier> mods = new ArrayList<DatabaseObjectModifier>(YabsPluginLoader.registeredModifiers);
                 //mods.add(inlineObjectModifier);
                 for (int ik = 0; ik < mods.size(); ik++) {
@@ -2482,7 +2440,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         }
 
         map.put("dateadded", df.format(__getDateadded()));
-        if (Context.getModifiableContexts().contains(getContext())) {
+        if (Context.isModifiable(getContext())) {
             List<DatabaseObjectModifier> mods = new ArrayList<DatabaseObjectModifier>(YabsPluginLoader.registeredModifiers);
             //not implemented here mods.add(inlineObjectModifier);
             for (int ik = 0; ik < mods.size(); ik++) {
@@ -2532,7 +2490,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 //                Log.Debug(this, name + " ?? : " + vars.get(k).getName() + " = " + data[row][1]);
 //                    Log.Debug(this, name + " ?? : " + vars.get(k).getName() + " = " + data[row][1]);
 //         Log.Debug(this, "Set: " + key + " to: " + value + " [" + value.getClass().getName() + "]");
-            invoke(m, value, this, value);
+            invoke(m, value, this);
         }
     }
 

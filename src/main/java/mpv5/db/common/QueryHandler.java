@@ -107,7 +107,8 @@ public class QueryHandler implements Cloneable {
     private DatabaseConnection conn = null;
     private Connection sqlConn = null;
     private String table = "NOTABLE";
-    private static JFrame comp = new JFrame();
+    //no frame without a display (headless start, tests)
+    private static JFrame comp = java.awt.GraphicsEnvironment.isHeadless() ? null : new JFrame();
     private Context context;
 
     /**
@@ -1094,7 +1095,9 @@ public class QueryHandler implements Cloneable {
                         mpv5.logging.Log.Debug(ex);//Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
                     }
                     if (RUNNING_JOBS <= 1) {
-                        comp.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                        if (comp != null) {
+                            comp.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                        }
                         progressbar.setValue(0);
                         progressbar.setIndeterminate(false);
                     }
@@ -1113,7 +1116,9 @@ public class QueryHandler implements Cloneable {
         if (!runInBackground) {
             RUNNING_JOBS++;
             if (RUNNING_JOBS > 5) {
-                comp.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+                if (comp != null) {
+                    comp.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+                }
             }
             progressbar.setMaximum(RUNNING_JOBS);
         }

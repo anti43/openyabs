@@ -401,6 +401,41 @@ public class Context implements Serializable, Comparable<Context> {
 
 
     /**
+     * The ids of the modifiable and lockable contexts, built once: the lists
+     * below create about 20 new contexts per call, and they were asked for
+     * every loaded row ({@link #equals} compares the ids only)
+     */
+    private static final class Ids {
+
+        static final java.util.Set<Integer> MODIFIABLE = ids(getModifiableContexts());
+        static final java.util.Set<Integer> LOCKABLE = ids(getLockableContexts());
+
+        private static java.util.Set<Integer> ids(List<Context> l) {
+            java.util.Set<Integer> s = new java.util.HashSet<Integer>();
+            for (Context c : l) {
+                s.add(c.getId());
+            }
+            return java.util.Collections.unmodifiableSet(s);
+        }
+    }
+
+    /**
+     * @param c
+     * @return true if c is one of {@link #getModifiableContexts()}
+     */
+    public static boolean isModifiable(Context c) {
+        return c != null && Ids.MODIFIABLE.contains(c.getId());
+    }
+
+    /**
+     * @param c
+     * @return true if c is one of {@link #getLockableContexts()}
+     */
+    public static boolean isLockable(Context c) {
+        return c != null && Ids.LOCKABLE.contains(c.getId());
+    }
+
+    /**
      * Contexts which are protected by the Securitymanager
      *
      * @return
