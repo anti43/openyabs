@@ -1295,7 +1295,8 @@ public class QueryHandler implements Cloneable {
 
             try {
                 start();
-                ivpps.setBlob(1, blobData);
+                //a byte stream, not setBlob: PostgreSQL would use its large object API (needs a transaction, stores an OID)
+                ivpps.setBinaryStream(1, blobData);
                 ivpps.setString(2, data.getValue("cname").toString());
                 ivpps.setString(3, data.getValue("classname").toString());
                 ivpps.setInt(4, Integer.valueOf(data.getValue("objectids").toString()));
@@ -1356,7 +1357,7 @@ public class QueryHandler implements Cloneable {
 
             try {
                 start();
-                uvpps.setBlob(1, blobData);
+                uvpps.setBinaryStream(1, blobData);
                 uvpps.setString(2, data.getValue("cname").toString());
                 uvpps.setString(3, data.getValue("classname").toString());
                 uvpps.setInt(4, Integer.valueOf(data.getValue("objectids").toString()));
