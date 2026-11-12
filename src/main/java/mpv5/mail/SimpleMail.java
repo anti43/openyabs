@@ -311,7 +311,7 @@ public class SimpleMail implements Waiter {
     private static void progress(boolean running) {
         javax.swing.JProgressBar bar = mpv5.YabsViewProxy.instance().getProgressbar();
         if (bar != null) {
-            bar.setIndeterminate(running);
+            mpv5.ui.modern.Edt.setIndeterminate(bar, running);
         }
     }
 

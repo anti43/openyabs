@@ -75,7 +75,7 @@ public class Job extends SwingWorker<Object, Object> {
     @Override
     public Object doInBackground() throws Exception {
         if (bar != null) {
-            bar.setIndeterminate(true);
+            mpv5.ui.modern.Edt.setIndeterminate(bar, true);
         }
         try {
             for (int i = 0; i < objects.size(); i++) {
@@ -84,12 +84,12 @@ public class Job extends SwingWorker<Object, Object> {
             }
         } catch (Exception e) {
             if (bar != null) {
-                bar.setIndeterminate(false);
+                mpv5.ui.modern.Edt.setIndeterminate(bar, false);
             }
             throw e;
         } finally {
             if (bar != null) {
-                bar.setIndeterminate(false);
+                mpv5.ui.modern.Edt.setIndeterminate(bar, false);
             }
         }
         return objects;
@@ -117,7 +117,7 @@ public class Job extends SwingWorker<Object, Object> {
             }
         }
         if (bar != null) {
-            bar.setIndeterminate(false);
+            mpv5.ui.modern.Edt.setIndeterminate(bar, false);
         }
         if (message != null) {
             mpv5.YabsViewProxy.instance().addMessage(message);

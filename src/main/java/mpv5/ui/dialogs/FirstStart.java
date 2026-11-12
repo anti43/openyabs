@@ -341,7 +341,7 @@ public final class FirstStart extends JFrame {
         list.add(Box.createVerticalStrut(ModernTheme.px(6)));
         bar.setAlignmentX(LEFT_ALIGNMENT);
         bar.setMaximumSize(new Dimension(Integer.MAX_VALUE, ModernTheme.px(8)));
-        bar.setIndeterminate(true);
+        mpv5.ui.modern.Edt.setIndeterminate(bar, true);
         list.add(bar);
         list.add(Box.createVerticalStrut(ModernTheme.px(14)));
         error.setForeground(new Color(0xC6, 0x28, 0x28));
@@ -403,7 +403,7 @@ public final class FirstStart extends JFrame {
         }
         error.setVisible(false);
         errorButtons.setVisible(false);
-        bar.setIndeterminate(true);
+        mpv5.ui.modern.Edt.setIndeterminate(bar, true);
         bar.setVisible(true);
         pages.show(content, "progress");
 
@@ -485,7 +485,7 @@ public final class FirstStart extends JFrame {
                     steps[i].set(i < now ? Step.DONE : i == now ? Step.NOW : Step.TODO);
                 }
                 if (now != 1) {
-                    bar.setIndeterminate(true);
+                    mpv5.ui.modern.Edt.setIndeterminate(bar, true);
                 }
             }
 

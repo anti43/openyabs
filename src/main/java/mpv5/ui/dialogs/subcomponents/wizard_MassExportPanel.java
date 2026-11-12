@@ -285,14 +285,14 @@ public class wizard_MassExportPanel extends javax.swing.JPanel implements Wizard
                 }
                 final int done = number;
                 onEdt(() -> {
-                    bar.setIndeterminate(false);
+                    mpv5.ui.modern.Edt.setIndeterminate(bar, false);
                     bar.setValue(done);
                 });
             }
         } finally {
             running = false;
             onEdt(() -> {
-                bar.setIndeterminate(false);
+                mpv5.ui.modern.Edt.setIndeterminate(bar, false);
                 bar.setString(mpv5.globals.Messages.DONE.toString());
                 setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
                 jTextArea2.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -431,7 +431,7 @@ public class wizard_MassExportPanel extends javax.swing.JPanel implements Wizard
     private void progress(final javax.swing.JProgressBar bar, final int number, final int total, final String what,
             final boolean indeterminate) {
         onEdt(() -> {
-            bar.setIndeterminate(indeterminate);
+            mpv5.ui.modern.Edt.setIndeterminate(bar, indeterminate);
             bar.setString(number + " / " + total + "  " + what);
         });
     }

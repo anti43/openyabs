@@ -450,7 +450,7 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
     @Override
     public synchronized void setProgressReset() {
         getProgressbar().setValue(0);
-        getProgressbar().setIndeterminate(false);
+        mpv5.ui.modern.Edt.setIndeterminate(getProgressbar(), false);
     }
 
     /**
@@ -460,7 +460,7 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
      */
     @Override
     public synchronized void setProgressRunning(boolean b) {
-        getProgressbar().setIndeterminate(b);
+        mpv5.ui.modern.Edt.setIndeterminate(getProgressbar(), b);
     }
 
     /**

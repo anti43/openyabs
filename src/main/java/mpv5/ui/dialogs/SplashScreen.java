@@ -167,7 +167,7 @@ public class SplashScreen extends JDialog {
         info.setText("Version info");
 
         jProgressBar1.setForeground(new java.awt.Color(37, 99, 235));
-        jProgressBar1.setIndeterminate(true);
+        mpv5.ui.modern.Edt.setIndeterminate(jProgressBar1, true);
         jProgressBar1.setStringPainted(true);
 
         title.setFont(title.getFont().deriveFont(title.getFont().getStyle() | java.awt.Font.BOLD));
