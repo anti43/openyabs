@@ -79,7 +79,9 @@ public class Popup {
         return true;
     }
 
-    public static Component identifier = new Frame(GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration());
+    //no frame without a display (headless start, tests): dialogs then have no parent
+    public static Component identifier = GraphicsEnvironment.isHeadless() ? null
+            : new Frame(GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration());
 
     /**
      * Prompts the user with a text box
