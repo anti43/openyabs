@@ -1264,7 +1264,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         ordersoverproducts.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "ordersoverproducts"));
         companiesovernames.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "companiesovernames"));
         hidetaxcolumn.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hidetaxcolumn"));
-        pasten.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "pasten"));
+        pasten.setSelected(mpv5.db.objects.User.pasteAsSummary());
         hidediscountcolumn.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hidediscountcolumn"));
 
         //Settings for Item Date Defaults

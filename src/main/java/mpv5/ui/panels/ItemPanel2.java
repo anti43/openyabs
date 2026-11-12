@@ -2692,7 +2692,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                     || dbo.getContext().equals(Context.getOrder())) {
                 Item o = (Item) dbo.clone();
 
-                if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "pasten")) {
+                if (mpv5.db.objects.User.pasteAsSummary()) {
                     //the document as position(s): one per VAT rate, net after discount
                     String text = Messages.GOOSE1 + " " + ((Item) dbo).__getCnumber() + " " + Messages.GOOSE2 + " " + DateConverter.getDefDateString(o.__getDateadded());
                     afterSaveRunnables.add(new Runnable() {

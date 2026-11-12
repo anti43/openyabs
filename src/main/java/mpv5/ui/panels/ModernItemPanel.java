@@ -1310,7 +1310,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
      */
     private void pasteItem(final Item dbo) {
         Item o = (Item) dbo.clone();
-        if (User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "pasten")) {
+        if (mpv5.db.objects.User.pasteAsSummary()) {
             //the document as position(s): one per VAT rate, net after discount
             String text = Messages.GOOSE1 + " " + dbo.__getCnumber() + " " + Messages.GOOSE2 + " " + DateConverter.getDefDateString(o.__getDateadded());
             for (SubItem s : ItemService.asPositions(dbo, text)) {

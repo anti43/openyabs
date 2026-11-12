@@ -62,6 +62,18 @@ public class User extends DatabaseObject {
     private static User currentUser;
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Pasting an offer / order / invoice into a document: as summary lines
+     * (one per document and VAT rate, the pasted documents are set to
+     * Finished) - the default - or as a copy of the document
+     *
+     * @return the setting "org.openyabs.uiproperty" "pasten", on if never set
+     */
+    public static boolean pasteAsSummary() {
+        mpv5.data.PropertyStore p = getCurrentUser().getProperties();
+        return !p.hasProperty("org.openyabs.uiproperty$pasten") || p.getProperty("org.openyabs.uiproperty", "pasten");
+    }
+
     public static User getCurrentUser() {
         if (currentUser == null) {
             Log.Debug(User.class, "There is no user logged in here, using default user.");

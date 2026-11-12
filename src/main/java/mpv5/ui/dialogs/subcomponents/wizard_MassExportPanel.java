@@ -413,8 +413,15 @@ public class wizard_MassExportPanel extends javax.swing.JPanel implements Wizard
                 return null;
             }
             int pos = 0;
+            //like pasting into a document: summary lines (setting, default) or the positions
+            boolean summary = mpv5.db.objects.User.pasteAsSummary();
             for (Item source : value) {
-                for (SubItem s : mpv5.handler.ItemService.copyPositions(source)) {
+                SubItem[] lines = summary
+                        ? mpv5.handler.ItemService.asPositions(source, mpv5.globals.Messages.GOOSE1 + " " + source.__getCnumber() + " "
+                                + mpv5.globals.Messages.GOOSE2 + " " + mpv5.utils.date.DateConverter.getDefDateString(source.__getDateadded()))
+                                .toArray(new SubItem[0])
+                        : mpv5.handler.ItemService.copyPositions(source);
+                for (SubItem s : lines) {
                     s.setItemsids(i.__getIDS());
                     s.setOrdernr(++pos);
                     s.setDateadded(now);
@@ -435,7 +442,8 @@ public class wizard_MassExportPanel extends javax.swing.JPanel implements Wizard
             jTextArea2.append(String.format(mpv5.globals.Messages.MASSEXPORT_CREATED.toString(),
                     Item.getTypeString(Item.TYPE_INVOICE) + " " + i.__getCnumber(), key.__getCname(),
                     mpv5.utils.numberformat.FormatNumber.formatLokalCurrency(i.getGrossAmount()), pos) + "\n");
-            if (jCheckBox2.isSelected()) {
+            //summary lines: the documents are invoiced now (as when pasted)
+            if (jCheckBox2.isSelected() || summary) {
                 for (Item get : value) {
                     get.setIntstatus(Item.STATUS_FINISHED);
                     get.save(true);
