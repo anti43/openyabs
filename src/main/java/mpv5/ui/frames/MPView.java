@@ -581,6 +581,8 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
         }
 
         tabPane = new CloseableTabbedPane(this);
+        //new and changed records: coloured tab title (issue #58)
+        mpv5.ui.misc.TabStateMarker.install(tabPane, this::getTabAt);
         identifierFrame = this.getFrame();
         Popup.identifier = identifierFrame;
         progressbar = this.progressBar;

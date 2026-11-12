@@ -614,6 +614,8 @@ public enum Messages {
     MAIL_NO_TEMPLATE_ASK("You have no mail template yet (Control Panel > Mail templates).\n\nSend anyway, with the document name as subject and an empty text? You can change both in the preview before sending."),
     MAIL_CANCELED("No mail sent."),
     MAIL_NO_TEMPLATE_BATCH("no mail template - not sent"),
+    TAB_NEW("New - not saved yet"),
+    TAB_CHANGED("Unsaved changes"),
     SHOPIFY_SAVED("Shopify settings saved"),
     SHOPIFY_IMPORT("Import new orders"),
     SHOPIFY_TEST_OK("Connected to the shop \"%s\"."),
