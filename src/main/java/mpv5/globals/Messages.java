@@ -680,6 +680,8 @@ public enum Messages {
     JOURNAL_EXPORT_OPEN("Click to open the file"),
     JOURNAL_EXPORT_FAILED("Export failed"),
     JOURNAL_TYPES("Documents:"),
+    TEMPLATE_CHOOSE("Several %s templates are assigned to you for this group. Which one do you want to use?"),
+    TEMPLATE_CHOOSE_TITLE("Choose template"),
     SHOPIFY_SAVED("Shopify settings saved"),
     SHOPIFY_IMPORT("Import new orders"),
     SHOPIFY_TEST_OK("Connected to the shop \"%s\"."),

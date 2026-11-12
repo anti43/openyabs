@@ -23,6 +23,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import mpv5.Main;
 import mpv5.db.common.Context;
+import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.QueryData;
 import mpv5.db.common.QueryHandler;
 import mpv5.db.common.ReturnValue;
@@ -78,8 +79,8 @@ public final class FirstStartSetup {
      * @throws Exception
      */
     public static boolean importTemplate(final User owner, long wait) throws Exception {
-        return importTemplate(owner, "/extra/DE-" + Constants.EXTRA_FILES_VERSION + ".odt", "template-de",
-                "1,2,4,5,7,9", Constants.TYPE_INVOICE, wait) != null;
+        return importTemplate(owner, INVOICE_TEMPLATE, "template-de",
+                ITEM_FORMAT, Constants.TYPE_INVOICE, wait) != null;
     }
 
     /**
@@ -249,11 +250,142 @@ public final class FirstStartSetup {
             int type = (Integer) d[0];
             try {
                 importTemplate(admin, String.format("/extra/templates/demo-%02d.odt", type), "Demo - " + d[1],
-                        "1,2,4,5,7,9", type, 60000, type != Constants.TYPE_INVOICE);
+                        demoFormat(type), type, 60000, type != Constants.TYPE_INVOICE);
             } catch (Exception e) {
                 Log.Debug(FirstStartSetup.class, e);
             }
         }
+    }
+
+    /**
+     * The column format older versions imported every template with: count,
+     * quantity, text, price, tax rate, gross - the 5-column table of the
+     * templates showed the tax rate under "total"
+     */
+    public static final String OLD_FORMAT = "1,2,4,5,7,9";
+    /**
+     * The regular invoice template, imported on the first start
+     */
+    public static final String INVOICE_TEMPLATE = "/extra/templates/invoice.odt";
+    /**
+     * The table columns of the documents: position, quantity, text, price,
+     * net total (the 5-column table of the bundled templates)
+     */
+    public static final String ITEM_FORMAT = "1,2,4,5,6";
+    /**
+     * The activity list: position, quantity, text, price, gross total
+     */
+    public static final String ACTIVITY_FORMAT = "1,2,4,5,9";
+    /**
+     * The table columns of the journal demo: date, number, type, name,
+     * account, status, net, tax, gross, profit (see tools/templates/gen.py)
+     */
+    public static final String JOURNAL_FORMAT = "6,9,10,1,8,11,12,13,14,15";
+
+    /**
+     * @param type
+     * @return the column format of the demo template of the type
+     */
+    public static String demoFormat(int type) {
+        switch (type) {
+            case Constants.TYPE_JOURNAL:
+                return JOURNAL_FORMAT;
+            case Constants.TYPE_ACTIVITY:
+                return ACTIVITY_FORMAT;
+            default:
+                return ITEM_FORMAT;
+        }
+    }
+
+    /**
+     * SHA-256 of the demo templates of older versions, by type
+     */
+    private static final java.util.Map<Integer, String> OLD_DEMOS = new java.util.HashMap<>();
+    /**
+     * SHA-256 of the regular invoice templates of older versions
+     */
+    private static final java.util.Set<String> OLD_INVOICE_TEMPLATES = new java.util.HashSet<>(java.util.Arrays.asList(
+            "797a9cc32dc0b66a38c04e4aa86700a66317d21a41adba9e66278765332e1ea2",
+            "51a57b06204d9827b135e3d6c11b429f4458a473d08186eeaffda23783b1b508"));
+
+    static {
+        OLD_DEMOS.put(0, "653b59c8436659bcae793af1f06ab0c83257a7b4ddbd50144a6e6b558d1ac692");
+        OLD_DEMOS.put(1, "3c7fc4e8bd12fef6c3d70d73a3c9ed952698d021ee0b66888e222c26a32eb198");
+        OLD_DEMOS.put(2, "7366f380e3099f88bdb836504819d41c69d6be5ee8ba79f348266b602b6f2612");
+        OLD_DEMOS.put(3, "e9d2577cc4f3e7832853f3897d4ce0291f7ed9c71b1ec7eab2259c790a2769d9");
+        OLD_DEMOS.put(4, "6110ccf4984b0aac4eae7b2c03aa4b13f5a2f89b8e83aaae41eca4d417887321");
+        OLD_DEMOS.put(5, "123b5316ae73e5f4600bb357d5520e9fc3ab7a864faf2c934aa1a000778a37eb");
+        OLD_DEMOS.put(6, "d54686e37593e3ecc069f6325109c0655f9982ffa2d61df9393f9b6ea1cd7381");
+        OLD_DEMOS.put(7, "587985b5de983c0379f478f4ce1fa2e6068e540f65e40c5171cdc66ac6735a4e");
+        OLD_DEMOS.put(8, "1affeb8b75b3308efbd13f3d70216221ffc45939606a827e1c218226899196ca");
+        OLD_DEMOS.put(9, "83c2d3bb927cb1452d6e58ae282da0343ae49326980dfb8d8c14501a46cb0d5a");
+        OLD_DEMOS.put(10, "935398598f87c28cd14a55836d7c264915901e4fd6b764f05c8a67f775aeda1a");
+        OLD_DEMOS.put(11, "c4fe7d042826eee233abc5f6abc9b3c789e29accb98a46f353c81c942beb2353");
+        OLD_DEMOS.put(12, "32ee1d36b8bd4f2c48fa2b5835024e89da54c41326f143bd5ef9e2ed1106d84a");
+        OLD_DEMOS.put(13, "19a9b20db80e50d44c0e8db1d3ef37adae4f371e96d3a9775e0529cf58683295");
+        OLD_DEMOS.put(14, "41dffd1b9e6b213c7f333f8f853b6a38fa1af87a0e8e3b0b254f256c0bbe66d9");
+        OLD_DEMOS.put(20, "cfdedec98d99d158bd2add46348b7446c32bd3f126577d5af63005c785c42113");
+        OLD_DEMOS.put(21, "babef2c228a1782cda4f48d3865f1e6cb0ef12fe262bfb897abf6a071a9129be");
+        OLD_DEMOS.put(22, "ac5882d94bc44f6c21d7d29b50a221e9fcca0f1eb353b893dbe4240bd0ddbc91");
+    }
+
+    /**
+     * Templates imported by older versions: the demo templates are replaced by
+     * the current ones (with content for every kind of document, the journal in
+     * landscape) and the column format is corrected - but only templates whose
+     * file is still exactly the one shipped; changed templates stay as they are.
+     */
+    public static void upgradeDemoTemplates() {
+        try {
+            ReturnValue rv = QueryHandler.getConnection().freeQuery(
+                    "SELECT ids FROM templates WHERE format = '" + OLD_FORMAT + "' AND description = 'Wizard insert'",
+                    MPSecurityManager.VIEW, null);
+            if (!rv.hasData()) {
+                return;
+            }
+            for (Object[] row : rv.getData()) {
+                try {
+                    Template t = (Template) DatabaseObject.getObject(Context.getTemplate(), Integer.valueOf(row[0].toString()));
+                    int type = Integer.parseInt(t.__getMimetype());
+                    String hash = sha256(t.getFile());
+                    String resource;
+                    if (hash.equals(OLD_DEMOS.get(type))) {
+                        resource = String.format("/extra/templates/demo-%02d.odt", type);
+                    } else if (type == Constants.TYPE_INVOICE && OLD_INVOICE_TEMPLATES.contains(hash)) {
+                        resource = INVOICE_TEMPLATE;
+                    } else {
+                        continue;
+                    }
+                    File f = FileDirectoryHandler.getTempFile("template-" + type, "odt");
+                    FileDirectoryHandler.copyFile(Main.class.getResourceAsStream(resource), f);
+                    QueryHandler.instanceOf().clone(Context.getFiles()).updateFileNow(f, t.__getFilename());
+                    t.setFormat(demoFormat(type));
+                    t.save(true);
+                    Log.Debug(FirstStartSetup.class, "Template updated: " + t + " (" + type + ")");
+                } catch (Exception e) {
+                    Log.Debug(FirstStartSetup.class, e);
+                }
+            }
+            TemplateHandler.clearCache();
+        } catch (Exception e) {
+            Log.Debug(FirstStartSetup.class, e);
+        }
+    }
+
+    static String sha256(File f) throws Exception {
+        java.security.MessageDigest md = java.security.MessageDigest.getInstance("SHA-256");
+        //java.io: the cached file has the template name, toPath() fails on umlauts without an UTF-8 file system encoding
+        try (InputStream in = new java.io.FileInputStream(f)) {
+            byte[] buf = new byte[8192];
+            for (int n; (n = in.read(buf)) > 0;) {
+                md.update(buf, 0, n);
+            }
+        }
+        StringBuilder b = new StringBuilder();
+        for (byte x : md.digest()) {
+            b.append(String.format("%02x", x));
+        }
+        return b.toString();
     }
 
     private static void step(Progress p, Step s) {
