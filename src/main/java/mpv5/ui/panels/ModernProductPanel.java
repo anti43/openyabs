@@ -478,6 +478,9 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
             choose.setToolTipText(Messages.PRODUCT_CHOOSE_FILE.toString());
             choose.addActionListener(e -> {
                 javax.swing.JFileChooser fc = new javax.swing.JFileChooser();
+                //images and PDF first, all files still possible
+                fc.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter(
+                        Messages.PRODUCT_DATASHEET_FILES.toString(), "pdf", "png", "jpg", "jpeg", "gif", "bmp", "tif", "tiff", "webp", "svg"));
                 String cur = field.getText();
                 if (cur != null && !cur.isEmpty() && new File(cur).getParentFile() != null) {
                     fc.setCurrentDirectory(new File(cur).getParentFile());
@@ -492,7 +495,96 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
         open.addActionListener(e -> openLink(field.getText()));
         buttons.add(open);
         p.add(buttons, BorderLayout.EAST);
-        return p;
+        if (!chooser) {
+            return p;
+        }
+        //the datasheet: drop a file onto the field, Enter / double click opens it,
+        //and below the field a link with its name to click
+        final javax.swing.JTextField tf = field.getTextField();
+        tf.setTransferHandler(new javax.swing.TransferHandler() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public boolean canImport(javax.swing.TransferHandler.TransferSupport s) {
+                return s.isDataFlavorSupported(java.awt.datatransfer.DataFlavor.javaFileListFlavor)
+                        || s.isDataFlavorSupported(java.awt.datatransfer.DataFlavor.stringFlavor);
+            }
+
+            @Override
+            @SuppressWarnings("unchecked")
+            public boolean importData(javax.swing.TransferHandler.TransferSupport s) {
+                try {
+                    if (s.isDataFlavorSupported(java.awt.datatransfer.DataFlavor.javaFileListFlavor)) {
+                        java.util.List<File> files = (java.util.List<File>) s.getTransferable().getTransferData(java.awt.datatransfer.DataFlavor.javaFileListFlavor);
+                        if (!files.isEmpty()) {
+                            field.setText(files.get(0).getPath());
+                            return true;
+                        }
+                    }
+                    field.setText(String.valueOf(s.getTransferable().getTransferData(java.awt.datatransfer.DataFlavor.stringFlavor)).trim());
+                    return true;
+                } catch (Exception e) {
+                    Log.Debug(ModernProductPanel.class, e);
+                    return false;
+                }
+            }
+        });
+        tf.addActionListener(e -> openLink(field.getText()));
+        tf.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    openLink(field.getText());
+                }
+            }
+        });
+        final JLabel linkLabel = new JLabel();
+        linkLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        linkLabel.setForeground(ModernTheme.accent());
+        linkLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                openLink(field.getText());
+            }
+        });
+        Runnable show = () -> {
+            String t = field.getText() == null ? "" : field.getText().trim();
+            linkLabel.setVisible(!t.isEmpty());
+            if (!t.isEmpty()) {
+                linkLabel.setText("<html><u>" + linkText(t).replace("&", "&amp;").replace("<", "&lt;") + "</u></html>");
+                linkLabel.setToolTipText(t);
+                linkLabel.setIcon(new javax.swing.ImageIcon(ModernProductPanel.class.getResource("/images/16/attach.png")));
+            }
+        };
+        tf.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            public void insertUpdate(javax.swing.event.DocumentEvent e) {
+                show.run();
+            }
+
+            public void removeUpdate(javax.swing.event.DocumentEvent e) {
+                show.run();
+            }
+
+            public void changedUpdate(javax.swing.event.DocumentEvent e) {
+                show.run();
+            }
+        });
+        show.run();
+        JPanel all = new JPanel(new BorderLayout(0, ModernTheme.px(2)));
+        all.setOpaque(false);
+        all.add(p, BorderLayout.CENTER);
+        all.add(linkLabel, BorderLayout.SOUTH);
+        return all;
+    }
+
+    /**
+     * @return the file name of a path or web address (what the link shows)
+     */
+    static String linkText(String link) {
+        String l = link.trim().replaceAll("[/\\\\]+$", "");
+        int cut = Math.max(l.lastIndexOf('/'), l.lastIndexOf('\\'));
+        String name = cut >= 0 && cut < l.length() - 1 ? l.substring(cut + 1) : l;
+        return name.isEmpty() ? l : name;
     }
 
     /**
