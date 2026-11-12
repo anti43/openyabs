@@ -488,7 +488,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         toCredit.addActionListener(e -> convertToInvoice(Item.TYPE_CREDIT));
         create.add(toOrder);
         create.add(toInvoice);
-        create.add(toDeposit);
+        //no new deposits (the same as a partial payment); existing ones are still deducted
         create.add(toPartPayment);
         create.addSeparator();
         create.add(toCredit);

@@ -230,7 +230,7 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
         add(tb, BorderLayout.NORTH);
         //the actions of a product, next to the record actions
         tb.addAction(previewButton, null);
-        tb.addAction(orderButton, null);
+        //the product order (purchase order) is hidden
         tb.addAction(listButton, null);
         tb.addAction(printing, null);
         //Ctrl+F: find in the documents with the product
