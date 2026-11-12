@@ -1,4 +1,25 @@
-# File name defaults
+# Dateinamengrundeinstellung
+
+*Kurzfassung; ausführlich auf Englisch unten (full English version below).*
+
+*Systemsteuerung → Benutzereinstellungen → Dateinamengrundeinstellung*
+
+Das Format bestimmt, **wo** exportierte Dateien (PDF, ODT, ...) gespeichert werden und **wie sie heißen**. Es gilt für den aktuellen Benutzer.
+
+- Alles **vor dem letzten `/`** ist der Ordner, unterhalb des **Basisverzeichnisses** aus *Systemsteuerung → Lokale Einstellungen* (sonst unterhalb Ihres Benutzerordners). Fehlende Ordner werden angelegt.
+- Der **letzte Teil** ist der Dateiname; die Endung (`.pdf`, ...) wird angehängt. In Dateinamen unzulässige Zeichen werden durch `_` ersetzt.
+- Text und Variablen lassen sich beliebig kombinieren; Groß-/Kleinschreibung der Variablen ist egal.
+- **Leeres Format:** Ordner und Dateiname werden jedes Mal gewählt.
+
+Mit der Auswahl *An der Cursorposition einfügen* fügen Sie eine Variable oder einen `/` ein; der blaue Kasten zeigt eine Vorschau mit Beispielwerten.
+
+Beispiel: `[YEAR]/[type]/[cname]_[contact.cname]` ergibt `…/2026/Rechnung/RE-00042_Meier.pdf`.
+
+Die Variablen sind oben in den Tabellen beschrieben.
+
+---
+
+# File name defaults (EN)
 
 *Control Panel → User properties → Filename Defaults*
 
@@ -56,22 +77,3 @@ Any other field of the document can be used by its name as well, e.g. `[descript
 | `[GROUP_NAME]` | Group of the document |
 | `[CURRENT_USER]` | User who exports |
 | `[CREATE_USER]` | User who created the document |
-
----
-
-# Dateinamengrundeinstellung (DE)
-
-*Systemsteuerung → Benutzereinstellungen → Dateinamengrundeinstellung*
-
-Das Format bestimmt, **wo** exportierte Dateien (PDF, ODT, ...) gespeichert werden und **wie sie heißen**. Es gilt für den aktuellen Benutzer.
-
-- Alles **vor dem letzten `/`** ist der Ordner, unterhalb des **Basisverzeichnisses** aus *Systemsteuerung → Lokale Einstellungen* (sonst unterhalb Ihres Benutzerordners). Fehlende Ordner werden angelegt.
-- Der **letzte Teil** ist der Dateiname; die Endung (`.pdf`, ...) wird angehängt. In Dateinamen unzulässige Zeichen werden durch `_` ersetzt.
-- Text und Variablen lassen sich beliebig kombinieren; Groß-/Kleinschreibung der Variablen ist egal.
-- **Leeres Format:** Ordner und Dateiname werden jedes Mal gewählt.
-
-Mit der Auswahl *An der Cursorposition einfügen* fügen Sie eine Variable oder einen `/` ein; der blaue Kasten zeigt eine Vorschau mit Beispielwerten.
-
-Beispiel: `[YEAR]/[type]/[cname]_[contact.cname]` ergibt `…/2026/Rechnung/RE-00042_Meier.pdf`.
-
-Die Variablen sind oben in den Tabellen beschrieben.

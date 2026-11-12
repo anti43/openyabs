@@ -1,4 +1,17 @@
-# EPC QR code (GiroCode) on invoices
+# EPC-QR-Code (GiroCode) auf Rechnungen
+
+*Kurzfassung; ausführlich auf Englisch unten (full English version below).*
+
+YaBS druckt auf Rechnungen einen **EPC-QR-Code** („GiroCode“, „Zahlen mit Code“). Ihr Kunde scannt ihn mit der Banking-App, die SEPA-Überweisung ist ausgefüllt: Empfänger, IBAN, BIC, Betrag und Verwendungszweck.
+
+- **Inhalt**: Empfänger = Firmenname aus der Firmeninformation; IBAN/BIC = das dem Kontakt zugeordnete Konto, sonst das Konto der Firmeninformation; Betrag = Bruttobetrag der Rechnung; Verwendungszweck = Art und Nummer, z.B. `Rechnung RE-00042`.
+- **Wann**: bei Rechnungen, Abschlags- und Anzahlungsrechnungen, wenn in der Firmeninformation eine **IBAN** eingetragen ist. Sonst wird der Platzhalter aus dem Dokument entfernt.
+- **In eigene Vorlagen einfügen** (ODT): in Writer ein beliebiges Bild einfügen, Rechtsklick → *Eigenschaften* → Register *Optionen* → **Name**: `QRCode.img`, Größe ca. 3 × 3,2 cm. Vorlage speichern und unter *Systemsteuerung → Vorlagen-Manager* neu hochladen.
+- Die mitgelieferte Vorlage `DE-Yabs-2.0.odt` (Neuinstallationen) enthält den Code bereits unter den Zahlungsbedingungen.
+
+---
+
+# EPC QR code (GiroCode) on invoices (EN)
 
 YaBS prints an **EPC QR code** ("GiroCode", "Zahlen mit Code") on invoices. Your customer scans it with a banking app, and the SEPA transfer is filled in: recipient, IBAN, BIC, amount and reference. No typing, no typos.
 
@@ -15,7 +28,6 @@ COBADEFFXXX
 Müller & Söhne GmbH
 DE89370400440532013000
 EUR1234.50
-
 
 Invoice RE-00042
 ```
@@ -47,14 +59,3 @@ Works with ODT templates (LibreOffice / OpenOffice Writer):
 4. Save the template and upload it again in *Control Panel → Template Manager*.
 
 On export, YaBS replaces the picture with the QR code of the invoice. The template `DE-Yabs-2.0.odt` that comes with YaBS (new installations) already contains the code below the payment terms.
-
----
-
-# EPC-QR-Code (GiroCode) auf Rechnungen (DE)
-
-YaBS druckt auf Rechnungen einen **EPC-QR-Code** („GiroCode“, „Zahlen mit Code“). Ihr Kunde scannt ihn mit der Banking-App, die SEPA-Überweisung ist ausgefüllt: Empfänger, IBAN, BIC, Betrag und Verwendungszweck.
-
-- **Inhalt**: Empfänger = Firmenname aus der Firmeninformation; IBAN/BIC = das dem Kontakt zugeordnete Konto, sonst das Konto der Firmeninformation; Betrag = Bruttobetrag der Rechnung; Verwendungszweck = Art und Nummer, z.B. `Rechnung RE-00042`.
-- **Wann**: bei Rechnungen, Abschlags- und Anzahlungsrechnungen, wenn in der Firmeninformation eine **IBAN** eingetragen ist. Sonst wird der Platzhalter aus dem Dokument entfernt.
-- **In eigene Vorlagen einfügen** (ODT): in Writer ein beliebiges Bild einfügen, Rechtsklick → *Eigenschaften* → Register *Optionen* → **Name**: `QRCode.img`, Größe ca. 3 × 3,2 cm. Vorlage speichern und unter *Systemsteuerung → Vorlagen-Manager* neu hochladen.
-- Die mitgelieferte Vorlage `DE-Yabs-2.0.odt` (Neuinstallationen) enthält den Code bereits unter den Zahlungsbedingungen.

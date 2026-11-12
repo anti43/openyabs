@@ -1,8 +1,19 @@
-# Shopify: import orders
+# Shopify: Bestellungen übernehmen
+
+*Kurzfassung; ausführlich auf Englisch unten (full English version below).*
+
+*Systemsteuerung › Shopify* – YaBS übernimmt die neuen Bestellungen Ihres Shopify-Shops.
+
+1. In Shopify: *Einstellungen › Apps und Vertriebskanäle › Apps entwickeln* → **App erstellen**; unter *Admin-API-Integration* **`read_orders`** und **`read_customers`** erlauben; **installieren** und den **Admin-API-Zugriffstoken** (`shpat_…`) kopieren.
+2. In YaBS: **Shop-Adresse** (z.B. `mein-shop.myshopify.com`), **Zugriffstoken**, *Bestellungen werden* **Auftrag** oder **Rechnung** → **Verbindung testen**.
+3. **Neue Bestellungen übernehmen**: jede Bestellung wird ein Auftrag bzw. eine Rechnung mit der nächsten YaBS-Nummer; der Kunde wird per E-Mail wiedergefunden oder aus der Rechnungsadresse angelegt; Positionen mit Artikelnummer (SKU), Titel, Menge, Nettopreis nach Rabatten und MwSt.-Satz; Versand als Position; bezahlte Bestellungen erhalten den Status *bezahlt*.
+4. Die zuletzt übernommene Bestellung wird gespeichert – keine Bestellung wird doppelt übernommen.
+
+---
+
+# Shopify: import orders (EN)
 
 *Control Panel › Shopify* – YaBS imports the new orders of your Shopify shop.
-
-*Deutsche Fassung unten.*
 
 ## Set up (once)
 
@@ -28,14 +39,3 @@ The API version (default `2024-10`) only needs changing when Shopify retires it.
 Prices including VAT (Shopify setting) are converted to net. The id of the last imported order is saved after each order, so an interrupted import continues and **no order is imported twice**. The first import takes all orders of the shop.
 
 The settings are stored in the database (global settings) and apply to all users.
-
----
-
-# Shopify: Bestellungen übernehmen (DE)
-
-*Systemsteuerung › Shopify* – YaBS übernimmt die neuen Bestellungen Ihres Shopify-Shops.
-
-1. In Shopify: *Einstellungen › Apps und Vertriebskanäle › Apps entwickeln* → **App erstellen**; unter *Admin-API-Integration* **`read_orders`** und **`read_customers`** erlauben; **installieren** und den **Admin-API-Zugriffstoken** (`shpat_…`) kopieren.
-2. In YaBS: **Shop-Adresse** (z.B. `mein-shop.myshopify.com`), **Zugriffstoken**, *Bestellungen werden* **Auftrag** oder **Rechnung** → **Verbindung testen**.
-3. **Neue Bestellungen übernehmen**: jede Bestellung wird ein Auftrag bzw. eine Rechnung mit der nächsten YaBS-Nummer; der Kunde wird per E-Mail wiedergefunden oder aus der Rechnungsadresse angelegt; Positionen mit Artikelnummer (SKU), Titel, Menge, Nettopreis nach Rabatten und MwSt.-Satz; Versand als Position; bezahlte Bestellungen erhalten den Status *bezahlt*.
-4. Die zuletzt übernommene Bestellung wird gespeichert – keine Bestellung wird doppelt übernommen.
