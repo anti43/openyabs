@@ -40,6 +40,10 @@ public class ConnectionTypeHandler {
     public static final int MYSQL = 1;
     public static String MYSQL_DRIVER = "com.mysql.jdbc.Driver";
     /**
+     * the class of {@link #MYSQL_DRIVER} in Connector/J 8
+     */
+    public static final String MYSQL_DRIVER_CLASS = "com.mysql.cj.jdbc.Driver";
+    /**
      * Use custom database driver
      */
     public static final int CUSTOM = 2;
@@ -51,8 +55,13 @@ public class ConnectionTypeHandler {
      */
     public static final int H2 = 3;
     public static String H2_DRIVER = "org.h2.Driver";
+    /**
+     * PostgreSQL server (new databases from {@link Schema})
+     */
+    public static final int POSTGRES = 4;
+    public static String POSTGRES_DRIVER = "org.postgresql.Driver";
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public static String[] DRIVERS = {H2_DRIVER, DERBY_DRIVER, MYSQL_DRIVER, CUSTOM_DRIVER};
+    public static String[] DRIVERS = {H2_DRIVER, DERBY_DRIVER, MYSQL_DRIVER, CUSTOM_DRIVER, POSTGRES_DRIVER};
 
     /**
      * Developer mode: H2 runs in memory only, nothing is written to disk
@@ -100,7 +109,7 @@ public class ConnectionTypeHandler {
     public static String getToChar(String column) {
         if (getDriverType() == DERBY) {
             return "CHAR(" + column + ")";
-        } else if (getDriverType() == H2) {
+        } else if (getDriverType() == H2 || getDriverType() == POSTGRES) {
             return "CAST(" + column + " AS VARCHAR)";
         } else if (getDriverType() == MYSQL) {
             return "CAST(" + column + " AS CHAR)";
@@ -119,7 +128,7 @@ public class ConnectionTypeHandler {
         String result = column0;
         for (int i = 0; i < columnNames.length; i++) {
             String column = columnNames[i];
-            if (isDerbyLike()) {
+            if (isDerbyLike() || getDriverType() == POSTGRES) {
                 result += "||" + column;
             } else if (getDriverType() == MYSQL) {
                 result = " CONCAT(" + result + "," + column + ")";
@@ -168,6 +177,10 @@ public class ConnectionTypeHandler {
                 setConnectionString(DEVMODE
                         ? "jdbc:h2:mem:" + DBNAME + ";DB_CLOSE_DELAY=-1;MODE=Derby;DEFAULT_NULL_ORDERING=HIGH;NON_KEYWORDS=" + H2Dialect.NON_KEYWORDS
                         : H2Dialect.url(getURL(), DBNAME, withCreate));
+                break;
+            case POSTGRES:
+                //URL: host[:port]; with create first the server (database postgres), see DatabaseConnection
+                setConnectionString("jdbc:postgresql://" + getURL() + "/" + (withCreate ? "postgres" : DBNAME));
                 break;
             case MYSQL:
                 if (withCreate) {
@@ -262,8 +275,11 @@ public class ConnectionTypeHandler {
                 return DERBY_DRIVER;
             case H2:
                 return H2_DRIVER;
+            case POSTGRES:
+                return POSTGRES_DRIVER;
             case MYSQL:
-                return MYSQL_DRIVER;
+                //the settings keep the old name, Connector/J 8 has the class com.mysql.cj.jdbc.Driver
+                return MYSQL_DRIVER_CLASS;
             case CUSTOM:
                 return CUSTOM_DRIVER;
         }
@@ -281,7 +297,9 @@ public class ConnectionTypeHandler {
                 PREDEFINED_DRVER = DERBY;
             } else if (predefinedDriver.equalsIgnoreCase(H2_DRIVER)) {
                 PREDEFINED_DRVER = H2;
-            } else if (predefinedDriver.equalsIgnoreCase(MYSQL_DRIVER)) {
+            } else if (predefinedDriver.equalsIgnoreCase(POSTGRES_DRIVER)) {
+                PREDEFINED_DRVER = POSTGRES;
+            } else if (predefinedDriver.equalsIgnoreCase(MYSQL_DRIVER) || predefinedDriver.equalsIgnoreCase(MYSQL_DRIVER_CLASS)) {
                 PREDEFINED_DRVER = MYSQL;
             } else {
                 PREDEFINED_DRVER = CUSTOM;

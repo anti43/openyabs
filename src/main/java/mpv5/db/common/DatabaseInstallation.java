@@ -377,11 +377,20 @@ public class DatabaseInstallation {
     };
     public static String[] CUSTOM_STRUCTURE = new String[]{};
 
+    /**
+     * The structure of a new database: H2, MySQL and PostgreSQL from the
+     * neutral {@link Schema} of the current version (no updates needed), Derby
+     * the old structure (updated afterwards)
+     *
+     * @return the statements
+     */
     public String[] getStructure() {
+        SqlDialect d = SqlDialect.of(ConnectionTypeHandler.getDriverType());
+        if (d != null) {
+            return Schema.get().structureFor(d);
+        }
         if (ConnectionTypeHandler.getDriverType() == ConnectionTypeHandler.DERBY) {
             return DERBY_STRUCTURE;
-        } else if (ConnectionTypeHandler.getDriverType() == ConnectionTypeHandler.H2) {
-            return H2Dialect.convert(DERBY_STRUCTURE);
         } else if (ConnectionTypeHandler.getDriverType() == ConnectionTypeHandler.MYSQL) {
             return MYSQL_STRUCTURE;
         } else {
@@ -414,6 +423,13 @@ public class DatabaseInstallation {
      * @return
      */
     public String[] getInitialData() {
-        return INITIAL_DATA;
+        SqlDialect d = SqlDialect.of(ConnectionTypeHandler.getDriverType());
+        if (d == null) {
+            return INITIAL_DATA;
+        }
+        //plus the rows of the updates and the version of the schema
+        java.util.List<String> l = new java.util.ArrayList<String>(java.util.Arrays.asList(INITIAL_DATA));
+        l.addAll(java.util.Arrays.asList(Schema.get().dataFor(d)));
+        return l.toArray(new String[0]);
     }
 }

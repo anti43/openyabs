@@ -107,6 +107,20 @@ public class SchemaUpdate {
         FAILED
     }
 
+    /**
+     * Statements starting with this may fail (e.g. MySQL triggers without the
+     * TRIGGER privilege): the error is logged and kept in {@link #getWarnings()}
+     */
+    public static final String OPTIONAL = "/*optional*/ ";
+    private static final java.util.List<String> WARNINGS = new java.util.concurrent.CopyOnWriteArrayList<String>();
+
+    /**
+     * @return the errors of optional statements since the start
+     */
+    public static java.util.List<String> getWarnings() {
+        return java.util.Collections.unmodifiableList(WARNINGS);
+    }
+
     private final ConnectionSource connections;
     private final boolean derby;
     private final UnaryOperator<String> prefix;
@@ -168,6 +182,11 @@ public class SchemaUpdate {
                 }
                 return;
             } catch (SQLException ex) {
+                if (sql.startsWith(OPTIONAL) && classify(ex, derby) == Outcome.FAILED) {
+                    Log.Debug(SchemaUpdate.class, "Optional statement failed: " + ex.getMessage() + "\n" + sql);
+                    WARNINGS.add(ex.getMessage());
+                    return;
+                }
                 Outcome o = classify(ex, derby);
                 switch (o) {
                     case ALREADY_DONE:
@@ -254,6 +273,18 @@ public class SchemaUpdate {
         }
         if (state.startsWith("08")) {
             return Outcome.CONNECTION_LOST;
+        }
+        switch (state) {
+            //PostgreSQL
+            case "42P07"://table exists
+            case "42701"://column exists
+            case "42710"://object (index, constraint, trigger) exists
+            case "42P01"://table does not exist
+            case "42703"://column does not exist
+            case "42704"://object does not exist
+                return Outcome.ALREADY_DONE;
+            default:
+                break;
         }
         switch (e.getErrorCode()) {
             case 1050://table already exists

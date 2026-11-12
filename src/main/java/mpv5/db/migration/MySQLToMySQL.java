@@ -1,6 +1,6 @@
 package mpv5.db.migration;
 
-import com.mysql.jdbc.Blob;
+import java.sql.Blob;
 import java.io.File;
 import java.sql.DatabaseMetaData;
 import java.sql.Connection;
@@ -26,7 +26,7 @@ import mpv5.utils.files.FileReaderWriter;
  */
 public class MySQLToMySQL {
 
-    private final String DRV = "com.mysql.jdbc.Driver";
+    private final String DRV = "com.mysql.cj.jdbc.Driver";
     private String schema = "";
     private String charset = "";
     private String engine = "";
