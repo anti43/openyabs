@@ -242,6 +242,16 @@ public class Fakturama2Importer {
      * @throws Exception if the database cannot be read
      */
     public ImportResult importFrom(File databaseFile, Progress progress) throws Exception {
+        //one status message per record would flood the message list of the main window
+        mpv5.YabsViewProxy.instance().pauseMessages();
+        try {
+            return importUnpaused(databaseFile, progress);
+        } finally {
+            mpv5.YabsViewProxy.instance().resumeMessages();
+        }
+    }
+
+    private ImportResult importUnpaused(File databaseFile, Progress progress) throws Exception {
         Progress p = progress != null ? progress : (m, i) -> {
         };
         this.progress = p;
