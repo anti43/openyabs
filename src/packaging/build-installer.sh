@@ -22,8 +22,7 @@ mkdir -p "$work/unzipped" "$work/input" "$work/out"
 (cd "$work/unzipped" && jar xf "$zip")
 # the application: openyabs.jar and the libraries of its manifest (lib/*.jar, as
 # with "java -jar"). jpackage puts every jar of the input on the class path, so
-# the old jars in subfolders of lib/ (ooo/, sync/) must stay out: they would
-# shadow newer versions (e.g. slf4j)
+# only the jars directly in lib/ are taken, no subfolders
 mkdir -p "$work/input/lib"
 cp "$work/unzipped/openyabs/openyabs.jar" "$work/input/"
 cp "$work/unzipped/openyabs/lib/"*.jar "$work/input/lib/"
