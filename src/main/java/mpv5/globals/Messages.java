@@ -571,6 +571,7 @@ public enum Messages {
     FKT_RESULT_DEFAULT_TAX("VAT rate not determined, default rate used"),
     FKT_TAX_UNKNOWN("rate unknown, the default rate is used"),
     PRODUCT_DATASHEET_FILES("Images and PDF"),
+    MESSAGES_PAUSED("%d status messages during the import were not shown"),
     QR_CAPTION("Pay with code"),
     FILENAME_INSERT("Insert at cursor:"),
     FILENAME_CHOOSE("Choose a variable or / ..."),

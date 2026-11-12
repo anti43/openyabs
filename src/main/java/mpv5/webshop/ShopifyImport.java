@@ -140,6 +140,15 @@ public final class ShopifyImport {
      * @throws Exception if the shop cannot be reached
      */
     public Result importNew() throws Exception {
+        mpv5.YabsViewProxy.instance().pauseMessages();
+        try {
+            return importNewUnpaused();
+        } finally {
+            mpv5.YabsViewProxy.instance().resumeMessages();
+        }
+    }
+
+    private Result importNewUnpaused() throws Exception {
         Result result = new Result();
         long since = 0;
         try {

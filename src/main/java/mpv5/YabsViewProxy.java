@@ -86,6 +86,10 @@ public class YabsViewProxy implements YabsView {
 
     @Override
     public synchronized void addMessage(Object messages, Color c) {
+        if (paused > 0) {
+            skipped++;
+            return;
+        }
         for (int i = 0; i < views.size(); i++) {
             views.get(i).addMessage(messages, c);
         }
@@ -93,8 +97,43 @@ public class YabsViewProxy implements YabsView {
     
       @Override
     public synchronized void addMessage(Object messages ) {
+        if (paused > 0) {
+            skipped++;
+            return;
+        }
         for (int i = 0; i < views.size(); i++) {
             views.get(i).addMessage(messages );
+        }
+    }
+
+    private int paused;
+    private int skipped;
+
+    /**
+     * Stops showing status messages (e.g. during an import, which would post
+     * one per record and flood the message list); pairs with
+     * {@link #resumeMessages()}
+     */
+    public synchronized void pauseMessages() {
+        if (paused++ == 0) {
+            skipped = 0;
+        }
+    }
+
+    /**
+     * Shows status messages again, with one line about the skipped ones
+     */
+    public void resumeMessages() {
+        int n;
+        synchronized (this) {
+            if (paused == 0 || --paused > 0) {
+                return;
+            }
+            n = skipped;
+            skipped = 0;
+        }
+        if (n > 0) {
+            addMessage(String.format(mpv5.globals.Messages.MESSAGES_PAUSED.toString(), n));
         }
     }
 
