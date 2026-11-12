@@ -7,6 +7,8 @@ package mpv5.ui.dialogs.subcomponents;
 
 import java.awt.Cursor;
 import java.util.List;
+import mpv5.db.objects.SubItem;
+import java.util.Date;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,6 +44,10 @@ public class wizard_MassExportPanel extends javax.swing.JPanel implements Wizard
      */
     public wizard_MassExportPanel(WizardMaster master, final Map<Contact, List<Item>> data) {
         initComponents();
+        //what the status of the new invoices will be, below the options
+        jLabel1.setText("<html><body style='width:" + mpv5.ui.modern.ModernTheme.px(620) + "px'>" + jLabel1.getText()
+                + "<br><br>" + mpv5.globals.Messages.MASSEXPORT_STATUS_HINT + "</body></html>");
+        jCheckBox1.setToolTipText(mpv5.globals.Messages.MASSEXPORT_STATUS_HINT.toString());
         this.master = master;
         this.data = data;
         labeledCombobox1.setSearchEnabled(true);
@@ -109,11 +115,9 @@ public class wizard_MassExportPanel extends javax.swing.JPanel implements Wizard
         jLabel1.setText(bundle.getString("wizard_MassExportPanel.jLabel1.text")); // NOI18N
         jLabel1.setName("jLabel1"); // NOI18N
 
-        jCheckBox1.setSelected(true);
         jCheckBox1.setText(bundle.getString("wizard_MassExportPanel.jCheckBox1.text")); // NOI18N
         jCheckBox1.setName("jCheckBox1"); // NOI18N
 
-        jCheckBox2.setSelected(true);
         jCheckBox2.setText(bundle.getString("wizard_MassExportPanel.jCheckBox2.text")); // NOI18N
         jCheckBox2.setName("jCheckBox2"); // NOI18N
 
@@ -381,42 +385,67 @@ public class wizard_MassExportPanel extends javax.swing.JPanel implements Wizard
     }
 
     /**
-     * Create and save the invoice of one contact (on the EDT: uses the item
-     * panel)
+     * Create and save the invoice of one contact: the positions of all its
+     * selected documents, one after the other (the item panel's paste replaces
+     * the record with a copy of each pasted document, so only the last one
+     * ended up in the invoice). With PDF, e-invoice or email the invoice is
+     * final: status "Finished". Opened in a tab as saved record.
      *
      * @return the saved invoice, null on failure
      */
     private Item createInvoice(Contact key, List<Item> value, boolean createEInvoice) {
         try {
+            Date now = new Date();
             Item i = Item.createFor(key);
             i.setGroup((Group) Group.getObject(Context.getGroup(), Integer.valueOf(labeledCombobox1.getSelectedItem().getId())));
-            DataPanel tab = mpv5.YabsViewProxy.instance().getIdentifierView().addTab(i, true);
-            tab.paste(value.toArray(new DatabaseObject[value.size()]));
-            final DatabaseObject dato = tab.getDataOwner();
-            tab.actionBeforeCreate();
-            if (!(dato.getPanelData(tab) && dato.save())) {
-                jTextArea2.append("\nCreated: " + dato + " ... FAILURE\n");
-                tab.showRequiredFields();
+            i.setDatetodo(now);
+            i.setDateend(now);
+            //the account of the combined documents (required)
+            int account = value.isEmpty() ? 0 : value.get(0).__getAccountsids();
+            i.setAccountsids(account > 0 ? account : 1);
+            boolean issued = jCheckBox1.isSelected() || createEInvoice || email.isSelected();
+            i.setIntstatus(issued ? Item.STATUS_FINISHED : Item.STATUS_QUEUED);
+            if (value.size() == 1 && value.get(0).__getInttype() == Item.TYPE_ORDER) {
+                i.setReforderids(value.get(0).__getIDS());
+            }
+            if (!i.save(true)) {
+                jTextArea2.append(String.format(mpv5.globals.Messages.MASSEXPORT_CREATED_FAILED.toString(), key) + "\n");
                 return null;
             }
-            tab.actionAfterCreate();
-            tab.setDataOwner(dato, true);
+            int pos = 0;
+            for (Item source : value) {
+                for (SubItem s : mpv5.handler.ItemService.copyPositions(source)) {
+                    s.setItemsids(i.__getIDS());
+                    s.setOrdernr(++pos);
+                    s.setDateadded(now);
+                    s.save(true);
+                }
+            }
+            mpv5.handler.ItemService.updateTotals(i);
             //ZUGFeRD: the e-invoice is the PDF (same file name), no plain PDF
             boolean zugferd = createEInvoice && mpv5.utils.export.EInvoiceFiles.replacesPdf(key);
             if (jCheckBox1.isSelected() && !zugferd) {
-                dato.toPdf(false);
+                //toPdf only uses a loaded template (the item panel used to load it)
+                if (mpv5.handler.TemplateHandler.loadTemplate(i) != null) {
+                    i.toPdf(false);
+                } else {
+                    jTextArea2.append(i.__getCnumber() + ": " + mpv5.globals.Messages.NO_TEMPLATE_DEFINDED + "\n");
+                }
             }
-            jTextArea2.append("Created: " + dato + " ... SUCCESS!\n");
-            if (!jCheckBox3.isSelected()) {
-                mpv5.YabsViewProxy.instance().getIdentifierView().removeTab(tab);
-            }
+            jTextArea2.append(String.format(mpv5.globals.Messages.MASSEXPORT_CREATED.toString(),
+                    Item.getTypeString(Item.TYPE_INVOICE) + " " + i.__getCnumber(), key.__getCname(),
+                    mpv5.utils.numberformat.FormatNumber.formatLokalCurrency(i.getGrossAmount()), pos) + "\n");
             if (jCheckBox2.isSelected()) {
                 for (Item get : value) {
                     get.setIntstatus(Item.STATUS_FINISHED);
-                    get.save();
+                    get.save(true);
                 }
             }
-            return (Item) dato;
+            if (jCheckBox3.isSelected()) {
+                //as stored: a saved record, not a "new" one
+                mpv5.YabsViewProxy.instance().getIdentifierView().addTab(DatabaseObject.getObject(Context.getInvoice(), i.__getIDS()), true);
+            }
+            return i;
         } catch (Exception ex) {
             Logger.getLogger(wizard_MassExportPanel.class.getName()).log(Level.SEVERE, null, ex);
             jTextArea2.append(key + ": " + mpv5.globals.Messages.ERROR_OCCURED.toString().trim() + " " + ex.getLocalizedMessage() + "\n");
