@@ -336,6 +336,7 @@ public final class ConnectionManager extends JDialog {
         DatabaseConnection.instanceOf();
         QueryHandler.instanceOf().reset();
         GlobalSettings.read();
+        mpv5.db.objects.ValueProperty.clearScripts();
     }
 
     /**

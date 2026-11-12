@@ -624,6 +624,45 @@ public final class ValueProperty extends DatabaseObject {
         setCname(key);
     }
 
+    /**
+     * The scripts of a kind of record (executeAfterSave, modifyOnSave ...),
+     * looked up once: every save asked the database before
+     */
+    private static final java.util.Map<String, java.util.Optional<String>> SCRIPTS
+            = new java.util.concurrent.ConcurrentHashMap<String, java.util.Optional<String>>();
+
+    /**
+     * @param owner the kind of record
+     * @param key the hook, e.g. executeAfterSave
+     * @return the script, null if there is none
+     */
+    public static String script(final Context owner, final String key) {
+        return SCRIPTS.computeIfAbsent(owner.getId() + "@" + key, k -> {
+            try {
+                if (hasProperty(owner, key)) {
+                    Object v = getProperty(owner, key).getValue();
+                    return java.util.Optional.ofNullable(v == null ? null : String.valueOf(v));
+                }
+            } catch (Exception e) {
+                Log.Debug(ValueProperty.class, e);
+            }
+            return java.util.Optional.empty();
+        }).orElse(null);
+    }
+
+    /**
+     * Forgets the cached scripts (a value property changed, another database)
+     */
+    public static void clearScripts() {
+        SCRIPTS.clear();
+    }
+
+    @Override
+    public boolean delete() {
+        clearScripts();
+        return super.delete();
+    }
+
     @Override
     public boolean save(boolean silent) {
         return save();
@@ -631,7 +670,7 @@ public final class ValueProperty extends DatabaseObject {
 
     @Override
     public boolean save() {
-
+        clearScripts();
         try {
             //            ByteArrayInputStream input = new ByteArrayInputStream(__getValue().getBytes("Utf-8"));
             byte[] bytes = __getValue().getBytes("Utf-8");
