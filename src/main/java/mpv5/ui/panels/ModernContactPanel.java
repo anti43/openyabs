@@ -426,15 +426,21 @@ public class ModernContactPanel extends ModernDataPanel {
         chips.add(customer);
         chips.add(supplier);
         chips.add(manufacturer);
-        //name and the buttons in one line (the buttons go below the name if there is no room)
-        JPanel titleRow = new JPanel(new WrapLayout(FlowLayout.LEFT, 0, ModernTheme.px(2)));
-        titleRow.setOpaque(false);
-        displayname.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, ModernTheme.px(14)));
-        titleRow.add(displayname);
-        titleRow.add(chips);
-        titleRow.add(meta);
-        titleRow.setAlignmentX(LEFT_ALIGNMENT);
-        center.add(titleRow);
+        //two fixed lines: the name (shortened with "..." if there is no room), below the roles
+        //and the meta data. Before, name, roles and meta wrapped in one row whose height was
+        //not recomputed: with a long name in a narrow window the second line was cut off
+        displayname.setAlignmentX(LEFT_ALIGNMENT);
+        displayname.setMinimumSize(new java.awt.Dimension(0, displayname.getPreferredSize().height));
+        displayname.setPreferredSize(new java.awt.Dimension(ModernTheme.px(80), displayname.getFontMetrics(displayname.getFont()).getHeight()));
+        displayname.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, displayname.getFontMetrics(displayname.getFont()).getHeight()));
+        JPanel second = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        second.setOpaque(false);
+        second.add(chips);
+        second.add(meta);
+        second.setAlignmentX(LEFT_ALIGNMENT);
+        center.add(displayname);
+        center.add(javax.swing.Box.createVerticalStrut(ModernTheme.px(4)));
+        center.add(second);
         header.add(center, BorderLayout.CENTER);
         return header;
     }
@@ -627,6 +633,7 @@ public class ModernContactPanel extends ModernDataPanel {
             name = Messages.CONTACT_NEW.toString();
         }
         displayname.setText(name);
+        displayname.setToolTipText(name);
         avatar.setName(name);
 
         StringBuilder m = new StringBuilder();
@@ -993,6 +1000,13 @@ public class ModernContactPanel extends ModernDataPanel {
         if (object.isExisting()) {
             setTabTitle(object.__getCname());
         }
+        //a newly loaded contact starts at the top of the overview
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            java.awt.Component c = tabs.getComponentAt(0);
+            if (c instanceof javax.swing.JScrollPane) {
+                ((javax.swing.JScrollPane) c).getVerticalScrollBar().setValue(0);
+            }
+        });
         printing.init(dataOwner);
         tb.setFavourite(Favourite.isFavourite(object));
         tb.setEditable(!object.isReadOnly());
