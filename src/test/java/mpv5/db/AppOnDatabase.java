@@ -46,6 +46,36 @@ abstract class AppOnDatabase {
      * @param user
      * @param password
      */
+    /**
+     * @param contact
+     * @param lastNumber a credit note with this number is saved first (the
+     * last number), null: none
+     * @return the number of a new credit note
+     */
+    private static String newCredit(int contact, String lastNumber) throws Exception {
+        if (lastNumber != null) {
+            Item old = (Item) DatabaseObject.getObject(Context.getCredit());
+            old.setInttype(Item.TYPE_CREDIT);
+            old.setCnumber(lastNumber);
+            old.setCname(lastNumber);
+            old.setContactsids(contact);
+            old.setDateadded(new Date());
+            old.setAccountsids(1);
+            assertTrue(old.save(true));
+            //a new record gets the next number on its first save: the old number by a second save
+            old.setCnumber(lastNumber);
+            assertTrue(old.save(true));
+        }
+        Item n = (Item) DatabaseObject.getObject(Context.getCredit());
+        n.setInttype(Item.TYPE_CREDIT);
+        n.setCname("Gutschrift");
+        n.setContactsids(contact);
+        n.setDateadded(new Date());
+        n.setAccountsids(1);
+        assertTrue(n.save(true));
+        return ((Item) DatabaseObject.getObject(Context.getCredit(), n.__getIDS())).__getCnumber();
+    }
+
     void newInstallationSaveAndLoad(String driver, String location, String dbname, String user, String password) throws Exception {
         if (System.getenv("YABS_TEST_DEBUG") != null) {
             mpv5.logging.Log.setLogLevel(mpv5.logging.Log.LOGLEVEL_DEBUG);
@@ -139,6 +169,19 @@ abstract class AppOnDatabase {
             Object[][] trash = QueryHandler.instanceOf().clone("trashbin").select("cname, rowid", new String[]{"deleteme", "1", ""});
             assertTrue(Arrays.stream(trash).anyMatch(r -> "contacts".equalsIgnoreCase(String.valueOf(r[0]))));
             assertTrue(c2.undelete());
+
+            //number formats (format manager): restart with a new year, keep counting, set the next number
+            int year = java.util.Calendar.getInstance().get(java.util.Calendar.YEAR);
+            mpv5.handler.NumberFormatBuilder nf = new mpv5.handler.NumberFormatBuilder().setPrefix("GS-")
+                    .setDate(mpv5.handler.NumberFormatBuilder.DatePart.YEAR).setSeparator("-").setDigits(5).setRestart(true);
+            mpv5.handler.FormatHandler.store(Item.TYPE_CREDIT, User.ADMIN_ID, nf.pattern(), nf.parsePosition(), null);
+            assertEquals("GS-" + year + "-00001", newCredit(c.__getIDS(), "GS-" + (year - 1) + "-00007"), "restart with the new year");
+            nf.setRestart(false);
+            mpv5.handler.FormatHandler.store(Item.TYPE_CREDIT, User.ADMIN_ID, nf.pattern(), nf.parsePosition(), null);
+            //(another old number: the app refuses a number that exists already)
+            assertEquals("GS-" + year + "-00010", newCredit(c.__getIDS(), "GS-" + (year - 1) + "-00009"), "keep counting");
+            mpv5.handler.FormatHandler.store(Item.TYPE_CREDIT, User.ADMIN_ID, nf.pattern(), nf.parsePosition(), 100);
+            assertEquals("GS-" + year + "-00100", newCredit(c.__getIDS(), null), "next number set");
 
             //mail (log mode, no questions): nothing is sent without sender, recipient and template
             java.util.List<String> log = new java.util.ArrayList<String>();

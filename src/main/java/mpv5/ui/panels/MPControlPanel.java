@@ -240,8 +240,9 @@ public class MPControlPanel extends JPanel {
                 ControlPanel_MailTemplates.class, ControlPanel_MailTemplates::new, null, null));
         l.add(panel(business, "jButton21", Messages.SETTINGS_D_TAXES, "advancedsettings", ControlPanel_Taxes.class, ControlPanel_Taxes::new));
         l.add(panel(business, "jButton18", Messages.SETTINGS_D_REMINDER, "kxconfig", ControlPanel_Reminder.class, ControlPanel_Reminder::new));
-        l.add(panel(business, "jButton13", Messages.SETTINGS_D_FORMATS, "blockdevice", ControlPanel_Formats.class,
-                () -> new ControlPanel_Formats(User.getCurrentUser())));
+        //number formats made easy (issue #58), instead of ControlPanel_Formats
+        l.add(panel(business, "jButton13", Messages.SETTINGS_D_FORMATS, "blockdevice",
+                mpv5.ui.dialogs.subcomponents.ControlPanel_NumberFormats.class, mpv5.ui.dialogs.subcomponents.ControlPanel_NumberFormats::new));
         l.add(panel(business, "jButton12", Messages.SETTINGS_D_ACCOUNTS, "gkrellm2", ControlPanel_Accounts.class, ControlPanel_Accounts::new));
         l.add(panel(business, "jButton17", Messages.SETTINGS_D_PRODUCTGROUPS, "preferences_system_session_services", ControlPanel_ProductGroups.class, ControlPanel_ProductGroups::new));
         l.add(panel(business, "jButton10", Messages.SETTINGS_D_GROUPS, "flag", ControlPanel_Groups.class, ControlPanel_Groups::new));

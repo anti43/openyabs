@@ -143,6 +143,53 @@ public class FormatHandler {
     private static Map<String, YMessageFormat> formatCache = null;
 
     /**
+     * Forgets the cached formats: a changed format applies at once (no
+     * restart)
+     */
+    public static synchronized void clearCache() {
+        formatCache = null;
+    }
+
+    /**
+     * Stores the number format of a kind of record for a user (the
+     * administrator's format applies to all users without an own one)
+     *
+     * @param type {@link TYPES}
+     * @param usersids the user, {@link User#ADMIN_ID} for all users
+     * @param pattern e.g. RE-[YEAR]-{0,number,00000}
+     * @param position the parse position (0: the counter starts again when
+     * the text before it changes)
+     * @param nextNumber the next number to use once, null or below 1: go on
+     * counting
+     */
+    public static synchronized void store(int type, int usersids, String pattern, int position, Integer nextNumber) {
+        mpv5.db.common.QueryCriteria c = new mpv5.db.common.QueryCriteria("inttype", type);
+        c.addAndCondition("usersids", usersids);
+        QueryHandler.instanceOf().clone(Context.getFormats()).delete(c);
+        mpv5.db.common.QueryData what = new mpv5.db.common.QueryData();
+        what.add("inttype", type);
+        what.add("cname", (nextNumber != null && nextNumber > 0 ? START_VALUE_IDENTIFIER + nextNumber + START_VALUE_IDENTIFIER : "") + pattern);
+        what.add("usersids", usersids);
+        QueryHandler.instanceOf().clone(Context.getFormats()).insert(what, null);
+        mpv5.globals.GlobalSettings.setProperty(new java.text.MessageFormat(pattern).toPattern() + "_startposition", String.valueOf(position));
+        mpv5.globals.GlobalSettings.save();
+        clearCache();
+    }
+
+    /**
+     * @param pattern a stored pattern
+     * @return its parse position (0 if none)
+     */
+    public static int position(String pattern) {
+        try {
+            String p = mpv5.globals.GlobalSettings.getProperty(new java.text.MessageFormat(pattern).toPattern() + "_startposition");
+            return p == null || "null".equals(p) ? 0 : Integer.parseInt(p.trim());
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    /**
      *
      * @return
      */
