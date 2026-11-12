@@ -110,6 +110,20 @@ public final class PosService {
         }
     }
 
+    private volatile mpv5.pos.tse.Tse tse;
+    private volatile String clientId = "YABS-POS";
+
+    /**
+     * @param tse the TSE (null: none - only for tests and demonstrations)
+     * @param clientId the serial / client id of the register
+     */
+    public void setTse(mpv5.pos.tse.Tse tse, String clientId) {
+        this.tse = tse;
+        if (clientId != null && !clientId.trim().isEmpty()) {
+            this.clientId = clientId.trim();
+        }
+    }
+
     private final Map<String, User> sessions = new ConcurrentHashMap<String, User>();
     private final SecureRandom random = new SecureRandom();
     private final String cashCustomerName;
@@ -282,6 +296,21 @@ public final class PosService {
             throw new IllegalArgumentException("not enough");
         }
         Contact cash = cashCustomer();
+        //TSE: the transaction starts before the sale is booked; a failure does not stop the sale
+        final mpv5.pos.tse.Tse device = tse;
+        mpv5.pos.tse.PosTransactions.Record tr = new mpv5.pos.tse.PosTransactions.Record();
+        tr.clientId = clientId;
+        tr.tseType = device == null ? "none" : device.name();
+        mpv5.pos.tse.Tse.Started started = null;
+        if (device != null) {
+            try {
+                started = device.start(clientId, mpv5.pos.tse.Tse.KASSENBELEG, "");
+            } catch (Exception e) {
+                tr.failed = true;
+                tr.failure = String.valueOf(e.getMessage());
+                Log.Debug(this, e);
+            }
+        }
         Item inv = (Item) DatabaseObject.getObject(Context.getInvoice());
         inv.setInttype(Constants.TYPE_INVOICE);
         inv.setContactsids(cash.__getIDS());
@@ -315,6 +344,29 @@ public final class PosService {
             s.save(true);
         }
         mpv5.handler.ItemService.updateTotals(inv);
+        //TSE: finish with the totals per VAT rate and the payment, store with the sale
+        java.util.Map<BigDecimal, BigDecimal> perRate = new java.util.LinkedHashMap<BigDecimal, BigDecimal>();
+        for (Line x : lines) {
+            BigDecimal net = x.article.net.multiply(x.quantity);
+            BigDecimal gross = net.add(net.multiply(x.article.taxPercent).movePointLeft(2));
+            perRate.merge(x.article.taxPercent.stripTrailingZeros(), gross, BigDecimal::add);
+        }
+        tr.invoice = inv.__getIDS();
+        tr.processData = mpv5.pos.tse.ProcessData.kassenbeleg(perRate, t.gross, true);
+        if (device != null && started != null) {
+            try {
+                tr.signed = device.finish(started, clientId, mpv5.pos.tse.Tse.KASSENBELEG, tr.processData);
+            } catch (Exception e) {
+                tr.failed = true;
+                tr.failure = String.valueOf(e.getMessage());
+                Log.Debug(this, e);
+            }
+        }
+        try {
+            mpv5.pos.tse.PosTransactions.save(tr);
+        } catch (Exception e) {
+            Log.Debug(this, e);
+        }
         return new Receipt(inv.__getCnumber(), t, given, inv.__getIDS());
     }
 

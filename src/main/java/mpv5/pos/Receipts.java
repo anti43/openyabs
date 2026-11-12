@@ -52,6 +52,7 @@ public final class Receipts {
             ex.put("pos.time", new java.text.SimpleDateFormat("HH:mm").format(when));
             String d = inv.__getDescription() == null ? "" : inv.__getDescription();
             ex.put("pos.seller", d.contains("·") ? d.substring(d.indexOf('·') + 1).trim() : d);
+            tseFields(ex, invoiceId);
             ex.setTargetFile(out);
             Exception e = ex.waitFor();
             if (e != null) {
@@ -62,6 +63,62 @@ public final class Receipts {
             }
             return out;
         });
+    }
+
+    /**
+     * The TSE fields of a receipt (pos.tse.*): transaction, times, counter,
+     * signature, serials, and a note when the sale is not protected by a
+     * certified TSE (no TSE, test TSE, TSE failed)
+     */
+    static void tseFields(Export ex, int invoiceId) {
+        java.util.Map<String, String> r = mpv5.pos.tse.PosTransactions.of(invoiceId);
+        String type = r.getOrDefault("tsetype", "none");
+        boolean failed = "1".equals(r.get("tsefailed"));
+        String note;
+        if (r.isEmpty() || "none".equals(type) || type.isEmpty()) {
+            note = mpv5.globals.Messages.TSE_NOTE_NONE.toString();
+        } else if (failed) {
+            note = mpv5.globals.Messages.TSE_NOTE_FAILED.toString();
+        } else if ("Dummy".equals(type)) {
+            note = mpv5.globals.Messages.TSE_NOTE_DUMMY.toString();
+        } else {
+            note = "";
+        }
+        ex.put("pos.tse.note", note);
+        ex.put("pos.tse.failed", failed ? mpv5.globals.Messages.TSE_NOTE_FAILED.toString() : "");
+        ex.put("pos.tse.transaction", r.getOrDefault("txnumber", "").equals("0") ? "" : r.getOrDefault("txnumber", ""));
+        ex.put("pos.tse.counter", r.getOrDefault("sigcounter", "").equals("0") ? "" : r.getOrDefault("sigcounter", ""));
+        ex.put("pos.tse.start", local(r.get("starttime")));
+        ex.put("pos.tse.end", local(r.get("endtime")));
+        ex.put("pos.tse.signature", r.getOrDefault("signature", ""));
+        ex.put("pos.tse.serial", r.getOrDefault("tseserial", ""));
+        ex.put("pos.tse.algorithm", r.getOrDefault("algorithm", ""));
+        ex.put("pos.register.serial", r.getOrDefault("clientid", ""));
+        ex.put("pos.tse.processdata", r.getOrDefault("processdata", ""));
+        //content of the receipt QR code (DSFinV-K), for a QR code in the template
+        if (!r.isEmpty() && !failed && !r.getOrDefault("signature", "").isEmpty()) {
+            ex.put("pos.tse.qrdata", String.join(";", "V0", r.get("clientid"), r.get("processtype"), r.get("processdata"),
+                    r.get("txnumber"), r.get("sigcounter"), r.get("starttime"), r.get("endtime"), r.get("algorithm"),
+                    r.get("timeformat"), r.get("signature"), r.getOrDefault("publickey", "")));
+        } else {
+            ex.put("pos.tse.qrdata", "");
+        }
+    }
+
+    /**
+     * @param utc 2026-11-12T09:15:02.123Z
+     * @return 12.11.2026 10:15:02 (local time), "" if none
+     */
+    static String local(String utc) {
+        if (utc == null || utc.isEmpty()) {
+            return "";
+        }
+        try {
+            return java.time.format.DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")
+                    .withZone(java.time.ZoneId.systemDefault()).format(java.time.Instant.parse(utc));
+        } catch (Exception e) {
+            return utc;
+        }
     }
 
     /**

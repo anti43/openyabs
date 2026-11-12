@@ -206,6 +206,7 @@ public final class CashRegister implements YabsExtension {
         }
         service = new PosService(ctx.settings().get("customer", Messages.POS_CASH_CUSTOMER.toString()));
         service.setGroups(PosService.parseGroups(ctx.settings().get("groups", "")));
+        applyTse();
         server = new PosServer(service, port());
         try {
             String shop = mpv5.db.objects.User.getCurrentUser().getProperty("companyinfo.business");
@@ -343,7 +344,57 @@ public final class CashRegister implements YabsExtension {
                         mpv5.ui.modern.Card.field(Messages.POS_CUSTOMER.toString(), customer, 2));
 
         show[0].run();
-        return Applets.page(null, 380, status, signIn(), where, receipt(), groupsChooser(), settings);
+        return Applets.page(null, 380, status, signIn(), where, receipt(), groupsChooser(), settings, tseCard());
+    }
+
+    /**
+     * The TSE of the register: none (demo) or the test TSE; a certified TSE
+     * is still to come (docs/Kasse-TSE.md)
+     */
+    private void applyTse() {
+        if (service != null) {
+            String type = ctx.settings().get("tse", "none");
+            service.setTse("dummy".equals(type) ? new mpv5.pos.tse.DummyTse() : null, clientId());
+        }
+    }
+
+    private String clientId() {
+        String id = ctx.settings().get("clientid", "");
+        if (id.trim().isEmpty()) {
+            try {
+                id = "YABS-" + java.net.InetAddress.getLocalHost().getHostName().toUpperCase(java.util.Locale.ROOT);
+            } catch (Exception e) {
+                id = "YABS-POS";
+            }
+            ctx.settings().set("clientid", id);
+        }
+        return id;
+    }
+
+    private mpv5.ui.modern.Card tseCard() {
+        final javax.swing.JComboBox<String> type = new javax.swing.JComboBox<String>(new String[]{
+            Messages.POS_TSE_NONE.toString(), Messages.POS_TSE_DUMMY.toString()});
+        type.setSelectedIndex("dummy".equals(ctx.settings().get("tse", "none")) ? 1 : 0);
+        type.addActionListener(e -> {
+            ctx.settings().set("tse", type.getSelectedIndex() == 1 ? "dummy" : "none");
+            applyTse();
+        });
+        final JTextField client = ModernTheme.roomy(new JTextField(clientId(), 18));
+        client.addActionListener(e -> {
+            ctx.settings().set("clientid", client.getText().trim());
+            applyTse();
+        });
+        client.addFocusListener(new java.awt.event.FocusAdapter() {
+            @Override
+            public void focusLost(java.awt.event.FocusEvent e) {
+                ctx.settings().set("clientid", client.getText().trim());
+                applyTse();
+            }
+        });
+        return new mpv5.ui.modern.Card(Messages.POS_TSE.toString())
+                .row(mpv5.ui.modern.Card.field(Messages.POS_TSE_TYPE.toString(), type))
+                .row(mpv5.ui.modern.Card.field(Messages.POS_TSE_CLIENT.toString(), client))
+                .addFull(Applets.hint(Messages.POS_TSE_HINT.toString()));
     }
 
     /**

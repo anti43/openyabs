@@ -86,7 +86,8 @@ class DatabaseUpdateTest {
             assertEquals(Constants.DATABASE_VERSION, v, 0.00001);
             assertEquals(String.valueOf(Constants.DATABASE_VERSION), query(c, "SELECT value FROM globalsettings WHERE cname = 'yabs_dbversion'"));
             //the columns of the updates exist
-            exec(c, "SELECT payterm FROM contacts", "SELECT discountgrosvalue, reforderids FROM items", "SELECT eventtype FROM schedule");
+            exec(c, "SELECT payterm FROM contacts", "SELECT discountgrosvalue, reforderids FROM items", "SELECT eventtype FROM schedule",
+                    "SELECT itemsids, txnumber, sigcounter, signature, tseserial, processdata, tsefailed FROM postransactions");
         }
     }
 
