@@ -52,7 +52,7 @@ Frei und Open Source (GPL v3) · Windows, Linux und macOS · Keine Cloud, kein A
 Das unterscheidet YaBS von webbasierten Cloud-Rechnungsdiensten:
 
 - **Keine Cloud, kein Account.** YaBS ist eine echte Desktop-Anwendung. Niemand kann Ihr Konto sperren, Preise erhöhen oder Ihre betriebswirtschaftlichen Zahlen einsehen.
-- **Alle Daten bleiben lokal.** Kunden, Rechnungen, Preise und Buchhaltung lagern in einer Datenbank auf Ihrem eigenen PC (eingebettetes Apache Derby) – oder auf Wunsch auf Ihrem eigenen Büroserver (MySQL / MariaDB).
+- **Alle Daten bleiben lokal.** Kunden, Rechnungen, Preise und Buchhaltung lagern in einer Datenbank auf Ihrem eigenen PC (eingebettete H2-Datenbank in `~/.yabs/h2`; ältere Installationen mit Apache Derby laufen weiter – siehe [Datenbank](Datenbank.md)) – oder auf Wunsch auf Ihrem eigenen Büroserver (MySQL / MariaDB).
 - **Funktioniert komplett offline.** Angebote verfassen, Rechnungen schreiben und Buchhaltung benötigen keine Internetverbindung. YaBS geht nur dann online, wenn *Sie* eine entsprechende Aktion auslösen, wie das Senden einer E-Mail über Ihren eigenen SMTP-Server.
 - **Keine Telemetrie, kein Tracking, keine Werbung.**
 - **Normale Dateien auf Ihrer Festplatte.** PDFs, E-Rechnungen und Exporte landen in Verzeichnissen Ihrer Wahl. Die Datenbank ist ein normaler Ordner, den Sie einfach sichern oder auf einen USB-Stick kopieren können.
@@ -75,7 +75,7 @@ Das unterscheidet YaBS von webbasierten Cloud-Rechnungsdiensten:
 | **Planung** | Kalender, Fälligkeitsradar, wiederkehrende Dauerrechnungen, Übersichts-Dashboard |
 | **Arbeiten** | Moderne Kachelansicht, Tabs, Vor/Zurück wie im Browser, Favoriten, Volltextsuche, Tastenkürzel, Papierkorb, Rückgängig |
 | **Teams** | Mehrere Benutzer, Mandanten/Gruppen, Datensatz-Sperren gegen gleichzeitiges Überschreiben, Rechteverwaltung |
-| **Daten** | Lokale Derby-Datenbank oder MySQL/MariaDB-Server, CSV/XML/vCard/HTML-Import & Export, Ein-Klick-Import aus Fakturama 2, Migrationsassistenten |
+| **Daten** | Lokale H2- oder Derby-Datenbank oder MySQL/MariaDB-Server, Zip-Sicherung, Verbindungs-Manager, CSV/XML/vCard/HTML-Import & Export, Ein-Klick-Import aus Fakturama 2, Migrationsassistenten |
 | **Erweiterungen** | Groovy-Skripte und Konsole, Live-Plugin-Manager, SQL-Abfragefenster, Shopify-Bestellimport |
 
 ## Kunden, Lieferanten und Hersteller

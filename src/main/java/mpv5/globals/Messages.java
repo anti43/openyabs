@@ -895,6 +895,7 @@ public enum Messages {
     FIRSTSTART_INTRO("YaBS keeps your contacts, offers and invoices in a database. For most people it is best kept right on this computer - one click and you are ready."),
     FIRSTSTART_WHERE("Where should your data be stored?"),
     FIRSTSTART_LOCAL("On this computer (recommended)"),
+    FIRSTSTART_DEVMODE("Developer mode (-devmode): the database is in memory only, nothing is saved. Start YaBS without -devmode for a real installation."),
     FIRSTSTART_LOCAL_HINT("Folder: %s"),
     FIRSTSTART_CHANGE("Change..."),
     FIRSTSTART_SERVER("On a database server"),

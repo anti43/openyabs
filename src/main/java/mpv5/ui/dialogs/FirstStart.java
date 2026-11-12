@@ -92,7 +92,10 @@ public final class FirstStart extends JFrame {
     private final Tile local = new Tile(tr(Messages.FIRSTSTART_LOCAL), "");
     private final Tile server = new Tile(tr(Messages.FIRSTSTART_SERVER), tr(Messages.FIRSTSTART_SERVER_HINT));
     private final JLabel folderLabel = new JLabel();
-    private File folder = new File(Main.MPPATH == null ? System.getProperty("user.home") : Main.MPPATH);
+    /**
+     * the H2 database of a new installation: &lt;user home&gt;/.yabs/h2
+     */
+    private File folder = new File(Main.MPPATH == null ? System.getProperty("user.home") : Main.MPPATH, "h2");
     //server
     private final JComboBox<String> type = new JComboBox<String>(new String[]{
         tr(Messages.FIRSTSTART_TYPE_MYSQL), tr(Messages.FIRSTSTART_TYPE_DERBY), tr(Messages.FIRSTSTART_TYPE_OTHER)});
@@ -218,6 +221,8 @@ public final class FirstStart extends JFrame {
         folderLabel.setForeground(ModernTheme.muted());
         folderRow.add(folderLabel, BorderLayout.CENTER);
         folderRow.add(change, BorderLayout.EAST);
+        //developer mode: no folder, the database is in memory
+        change.setVisible(!mpv5.db.common.ConnectionTypeHandler.DEVMODE);
         local.extra(folderRow);
         showFolder();
         where.add(local);
@@ -299,6 +304,11 @@ public final class FirstStart extends JFrame {
     }
 
     private void showFolder() {
+        if (mpv5.db.common.ConnectionTypeHandler.DEVMODE) {
+            folderLabel.setText("<html>" + tr(Messages.FIRSTSTART_DEVMODE));
+            folderLabel.setToolTipText(null);
+            return;
+        }
         folderLabel.setText(String.format(tr(Messages.FIRSTSTART_LOCAL_HINT), folder.getAbsolutePath()));
         folderLabel.setToolTipText(folder.getAbsolutePath());
     }
@@ -371,6 +381,7 @@ public final class FirstStart extends JFrame {
         } else {
             s.driver = ConnectionTypeHandler.H2_DRIVER;
             s.url = folder.getAbsolutePath();
+            folder.mkdirs();
             s.user = "";
             s.password = "";
             s.dbname = dbname.getText().trim();
