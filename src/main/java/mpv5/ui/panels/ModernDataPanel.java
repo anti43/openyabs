@@ -68,6 +68,29 @@ public abstract class ModernDataPanel extends JPanel implements DataPanel, Scrol
 
     // <editor-fold defaultstate="collapsed" desc="Helpers">
     /**
+     * The explanation above a properties table: what the own fields are and
+     * how to use them in templates
+     *
+     * @param prefix the template prefix of the record, e.g. "item"
+     * @param extra more text (e.g. the field in documents of a contact), may be empty
+     * @return a wrapping, muted label
+     */
+    protected static JComponent propertiesHint(String prefix, String extra) {
+        String t = String.format(mpv5.globals.Messages.PROPERTIES_HINT.toString(), prefix,
+                extra == null || extra.trim().isEmpty() ? "" : " " + extra.trim());
+        javax.swing.JTextArea a = new javax.swing.JTextArea(t);
+        a.setEditable(false);
+        a.setFocusable(false);
+        a.setLineWrap(true);
+        a.setWrapStyleWord(true);
+        a.setOpaque(false);
+        a.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+        a.setFont(ModernTheme.baseFont());
+        a.setForeground(ModernTheme.muted());
+        return a;
+    }
+
+    /**
      * @param key
      * @return the text of the language bundle, the key if missing
      */

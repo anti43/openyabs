@@ -518,6 +518,7 @@ public class ModernContactPanel extends ModernDataPanel {
         ((MPTable) proptable).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) proptable, this));
         proptable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         Card card = new Card(text("ContactPanel.propPanel.TabConstraints.tabTitle"));
+        card.addFull(propertiesHint("contact", Messages.PROPERTIES_HINT_CONTACT.toString()));
         card.addFull(new JScrollPane(proptable), 1);
         return padded(card);
     }
