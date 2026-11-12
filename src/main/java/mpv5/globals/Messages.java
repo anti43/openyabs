@@ -657,6 +657,7 @@ public enum Messages {
     NUMFMT_SAVED("Number format of %s saved, next numbers like %s"),
     NUMFMT_INVALID("Invalid pattern:"),
     NUMFMT_NO_COUNTER("the counter {0,number,...} is missing"),
+    MAIL_DEVMODE("Developer mode: the mail was not sent, saved as %s"),
     SHOPIFY_SAVED("Shopify settings saved"),
     SHOPIFY_IMPORT("Import new orders"),
     SHOPIFY_TEST_OK("Connected to the shop \"%s\"."),
