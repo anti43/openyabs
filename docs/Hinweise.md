@@ -149,9 +149,11 @@ Ausführlich, mit Rechtslage und Checkliste: **[docs/E-Rechnung.md](E-Rechnung.m
 - **Webseite, alte Links:** Für jedes Dokument gibt es `docs/<Name>.html`, das auf das Dokument auf GitHub weiterleitet – alte Links, Lesezeichen und zwischengespeicherte Fassungen der Startseite funktionieren damit auch.
 - **Webseite, Dokumentation:** Die Links unter *Dokumentation* auf https://anti43.github.io/openyabs/ führen jetzt auf die Dokumente auf GitHub (vorher tote `.html`-Links: die Seite wird wegen `docs/.nojekyll` ohne Jekyll veröffentlicht, aus den `.md`-Dateien entstehen keine `.html`-Seiten). Logo und Favicon zeigen auf den aktuellen Pfad.
 - **Fortschrittsbalken:** Änderungen an Fortschrittsbalken aus Hintergrund-Threads (Datenbank, Jobs, Mail, Massenexport) laufen jetzt im Swing-Thread – behebt „FlatLaf: Using JProgressBar.setIndeterminate(false) not on AWT thread“ (IllegalStateException / NPE beim Zeichnen).
+- **Umwandeln öffnet einen neuen Reiter:** Rechnung (auch Abschlags-/Anzahlungsrechnung, Gutschrift) aus einem Auftrag und Auftrag aus einem Angebot öffnen sich in einem **neuen Reiter**; der Reiter des Ausgangsbelegs bleibt stehen.
 - **Umstieg von Fakturama 2:** *Datei › Import › Fakturama 2* – siehe [README](README.de.md#import-export-und-umstieg-von-anderer-software).
 
 ### Settings and usage (EN)
+- **Converting opens a new tab:** an invoice from an order (and an order from an offer) opens in a new tab; the source stays open.
 - **Docs language order:** every bilingual document starts in German, the English version follows below.
 - **Progress bars:** changes from background threads run on the Swing thread (FlatLaf IllegalStateException fixed).
 - **Website docs links:** the documentation links on the website open the documents on GitHub (the `.html` links were dead: `docs/.nojekyll` publishes without Jekyll).

@@ -3276,7 +3276,8 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
             }
         }
         SubItem.saveModel(i2, (MPTableModel) itemtable.getModel(), true, true);
-        setDataOwner(i2, true);
+        //the order in a new tab, this one keeps the offer (issue #58)
+        mpv5.YabsViewProxy.instance().addTab(i2, true);
         Popup.notice(i2 + Messages.INSERTED.getValue());
     }
 
@@ -3292,7 +3293,8 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         //positions, all earlier deposits are deducted, totals from the positions
         Item i2 = mpv5.handler.ItemService.toInvoice(dataOwner, itemType, (MPTableModel) itemtable.getModel(), q -> Popup.Y_N_dialog(q));
         if (i2 != null) {
-            setDataOwner(i2, true);
+            //the new document in a new tab, this one keeps the order (issue #58)
+            mpv5.YabsViewProxy.instance().addTab(i2, true);
             Popup.notice(i2 + Messages.INSERTED.getValue());
         }
     }
