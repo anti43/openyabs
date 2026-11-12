@@ -145,9 +145,11 @@ Ausführlich, mit Rechtslage und Checkliste: **[docs/E-Rechnung.md](E-Rechnung.m
 - **Schnelleres Laden und Speichern:** Datensätze werden deutlich schneller geladen (z. B. 2000 Kontakte: 4 statt 27 ms, ein Siebtel des Speichers), Speichern ist schneller. Werte vom Typ Zeitstempel (H2) und kleine Zahlen werden korrekt gespeichert. Die Datenbankschicht läuft ohne Bildschirm (Server, Tests); ein Test spielt eine Neuinstallation auf H2 mit dem echten Programmcode durch.
 - **PostgreSQL und MySQL:** PostgreSQL wird unterstützt; neue Datenbanken entstehen in einem Schritt aus `db/schema.sql` statt aus allen Updates; MySQL bekommt Suche/Papierkorb (Trigger, Update 1.1986), die alten MySQL-Updates sind repariert, Treiber Connector/J 8.4. Grenzen von MySQL: [Datenbank](Datenbank.md#mysql--mariadb-hinweise-und-grenzen).
 - **Protokoll nach der Einrichtung:** `-debug`, `-verbose` und `-logfile` gelten auch nach dem Einrichtungsassistenten wieder (vorher endete jede Ausgabe nach „First instance.. running!“, und alles ging weiter nach `install.log`).
+- **Webseite, Dokumentation:** Die Links unter *Dokumentation* auf https://anti43.github.io/openyabs/ führen jetzt auf die Dokumente auf GitHub (vorher tote `.html`-Links: die Seite wird wegen `docs/.nojekyll` ohne Jekyll veröffentlicht, aus den `.md`-Dateien entstehen keine `.html`-Seiten). Logo und Favicon zeigen auf den aktuellen Pfad.
 - **Umstieg von Fakturama 2:** *Datei › Import › Fakturama 2* – siehe [README](README.de.md#import-export-und-umstieg-von-anderer-software).
 
 ### Settings and usage (EN)
+- **Website docs links:** the documentation links on the website open the documents on GitHub (the `.html` links were dead: `docs/.nojekyll` publishes without Jekyll).
 - **PostgreSQL and MySQL:** PostgreSQL support; new databases from `db/schema.sql` in one step; MySQL gets search/trash bin triggers (update 1.1986), the old MySQL updates were fixed, Connector/J 8.4.
 - **Logging after the setup:** `-debug`/`-verbose`/`-logfile` keep working after the setup assistant (logging stopped after "First instance.. running!").
 - **Faster loading and saving:** objects load about 6× faster with 7× less memory; timestamps (H2) and short values are saved correctly; the database layer runs headless; an end-to-end test covers a new installation on H2.
