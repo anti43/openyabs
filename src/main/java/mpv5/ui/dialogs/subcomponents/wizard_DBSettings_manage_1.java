@@ -90,7 +90,7 @@ public class wizard_DBSettings_manage_1 extends javax.swing.JPanel implements Wi
                     LocalSettings.save(forConnId);
                     LocalSettings.apply();
 
-                    if (ConnectionTypeHandler.getDriverType() != ConnectionTypeHandler.DERBY) {
+                    if (!ConnectionTypeHandler.isDerbyLike()) {
                         Popup.notice("Please run the MySQL/SQL install script manually BEFORE clicking ok now!");
                     }
 
@@ -354,7 +354,7 @@ public class wizard_DBSettings_manage_1 extends javax.swing.JPanel implements Wi
             labeledTextChooser1.set_Text("localhost:3306");
         } else if (jComboBox1.getSelectedItem().toString().contains("custom")) {
             labeledTextChooser1.set_Text("jdbc:sql://<path>:port");
-        } else if (jComboBox1.getSelectedItem().toString().contains("derby")) {
+        } else if ((jComboBox1.getSelectedItem().toString().contains("derby") || jComboBox1.getSelectedItem().toString().contains("h2"))) {
             labeledTextChooser1.set_Text(Main.MPPATH);
         }
 

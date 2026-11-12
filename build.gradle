@@ -39,6 +39,8 @@ dependencies {
     }
     // reads Fakturama 2 databases (HSQLDB) for the import
     implementation 'org.hsqldb:hsqldb:2.7.4'
+    // H2: the default database of new installations (Derby is still supported)
+    implementation 'com.h2database:h2:2.3.232'
 }
 
 // Java 21 is the minimum (Apache Derby 10.17 needs it); --release also

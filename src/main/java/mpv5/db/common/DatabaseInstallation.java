@@ -380,6 +380,8 @@ public class DatabaseInstallation {
     public String[] getStructure() {
         if (ConnectionTypeHandler.getDriverType() == ConnectionTypeHandler.DERBY) {
             return DERBY_STRUCTURE;
+        } else if (ConnectionTypeHandler.getDriverType() == ConnectionTypeHandler.H2) {
+            return H2Dialect.convert(DERBY_STRUCTURE);
         } else if (ConnectionTypeHandler.getDriverType() == ConnectionTypeHandler.MYSQL) {
             return MYSQL_STRUCTURE;
         } else {
@@ -391,6 +393,8 @@ public class DatabaseInstallation {
         switch (conType) {
             case ConnectionTypeHandler.DERBY:
                 return DERBY_STRUCTURE;
+            case ConnectionTypeHandler.H2:
+                return H2Dialect.convert(DERBY_STRUCTURE);
             case ConnectionTypeHandler.MYSQL:
                 return MYSQL_STRUCTURE;
             default:

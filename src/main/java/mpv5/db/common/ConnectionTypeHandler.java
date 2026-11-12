@@ -45,8 +45,34 @@ public class ConnectionTypeHandler {
     public static final int CUSTOM = 2;
     //Available Drivers
     public static String CUSTOM_DRIVER = "custom.driver";// (specify path with type declaration jdbc:sql://<path>:port)
+    /**
+     * Use an H2 file database (the default of new installations); uses the
+     * Derby structure, converted by {@link H2Dialect}
+     */
+    public static final int H2 = 3;
+    public static String H2_DRIVER = "org.h2.Driver";
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public static String[] DRIVERS = {DERBY_DRIVER, MYSQL_DRIVER, CUSTOM_DRIVER};
+    public static String[] DRIVERS = {H2_DRIVER, DERBY_DRIVER, MYSQL_DRIVER, CUSTOM_DRIVER};
+
+    /**
+     * Developer mode: H2 runs in memory only, nothing is written to disk
+     * (start with -devmode or -Dyabs.devmode=true)
+     */
+    public static boolean DEVMODE = Boolean.getBoolean("yabs.devmode");
+
+    /**
+     * @return true for Derby and H2: both use the Derby structure and updates
+     */
+    public static boolean isDerbyLike() {
+        return getDriverType() != null && (getDriverType() == DERBY || getDriverType() == H2);
+    }
+
+    /**
+     * @return true if the database is an embedded file database (Derby or H2), not a server
+     */
+    public static boolean isEmbedded() {
+        return isDerbyLike();
+    }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     public static File DERBY_FILE = null;
     public static File MYSQL_FILE = null;
@@ -56,7 +82,7 @@ public class ConnectionTypeHandler {
         return CONNECTION_STRING;
     }
 
-    public static int getDriverType() {
+    public static Integer getDriverType() {
         return PREDEFINED_DRVER;
     }
     private static String CONNECTION_STRING = null;
@@ -74,6 +100,8 @@ public class ConnectionTypeHandler {
     public static String getToChar(String column) {
         if (getDriverType() == DERBY) {
             return "CHAR(" + column + ")";
+        } else if (getDriverType() == H2) {
+            return "CAST(" + column + " AS VARCHAR)";
         } else if (getDriverType() == MYSQL) {
             return "CAST(" + column + " AS CHAR)";
         } else {
@@ -91,7 +119,7 @@ public class ConnectionTypeHandler {
         String result = column0;
         for (int i = 0; i < columnNames.length; i++) {
             String column = columnNames[i];
-            if (getDriverType() == DERBY) {
+            if (isDerbyLike()) {
                 result += "||" + column;
             } else if (getDriverType() == MYSQL) {
                 result = " CONCAT(" + result + "," + column + ")";
@@ -135,6 +163,11 @@ public class ConnectionTypeHandler {
                     cstring += ConnectionTypeHandler.CREATEDERBY;
                 }
                 setConnectionString(cstring);
+                break;
+            case H2:
+                setConnectionString(DEVMODE
+                        ? "jdbc:h2:mem:" + DBNAME + ";DB_CLOSE_DELAY=-1;MODE=Derby;DEFAULT_NULL_ORDERING=HIGH;NON_KEYWORDS=" + H2Dialect.NON_KEYWORDS
+                        : H2Dialect.url(getURL(), DBNAME, withCreate));
                 break;
             case MYSQL:
                 if (withCreate) {
@@ -227,6 +260,8 @@ public class ConnectionTypeHandler {
         switch (PREDEFINED_DRVER) {
             case DERBY:
                 return DERBY_DRIVER;
+            case H2:
+                return H2_DRIVER;
             case MYSQL:
                 return MYSQL_DRIVER;
             case CUSTOM:
@@ -244,6 +279,8 @@ public class ConnectionTypeHandler {
         if (predefinedDriver != null && !predefinedDriver.equalsIgnoreCase("null")) {
             if (predefinedDriver.equalsIgnoreCase(DERBY_DRIVER)) {
                 PREDEFINED_DRVER = DERBY;
+            } else if (predefinedDriver.equalsIgnoreCase(H2_DRIVER)) {
+                PREDEFINED_DRVER = H2;
             } else if (predefinedDriver.equalsIgnoreCase(MYSQL_DRIVER)) {
                 PREDEFINED_DRVER = MYSQL;
             } else {

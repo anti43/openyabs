@@ -407,7 +407,7 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
              backupDBName.setEnabled(false);
           }
           labeledTextChooser1.set_Text("jdbc:sql://<path>:port");
-       } else if (jComboBox1.getSelectedItem().toString().contains("derby")) {
+       } else if ((jComboBox1.getSelectedItem().toString().contains("derby") || jComboBox1.getSelectedItem().toString().contains("h2"))) {
           labeledTextChooser1.set_Text(Main.MPPATH);
           if (restore.isSelected()) {
              DumpName.setText("");
@@ -456,7 +456,7 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
           if (jComboBox1.getSelectedItem().toString().contains("mysql")) {
              DumpName.setEnabled(true);
              backupDBName.setEnabled(false);
-          } else if (jComboBox1.getSelectedItem().toString().contains("derby")) {
+          } else if ((jComboBox1.getSelectedItem().toString().contains("derby") || jComboBox1.getSelectedItem().toString().contains("h2"))) {
              DumpName.setEnabled(false);
              backupDBName.setEnabled(true);
           } else {

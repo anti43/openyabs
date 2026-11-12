@@ -534,6 +534,7 @@ public class Main implements Runnable {
         org.apache.commons.cli2.Option consolelog = obuilder.withShortName("consolelog").withDescription("enables logging to STDOUT").create();
         org.apache.commons.cli2.Option printtest = obuilder.withShortName("printtest").withDescription("test PDF printing").create();
         org.apache.commons.cli2.Option checkResources = obuilder.withShortName("checkRes").withDescription("checks the base resource file").create();
+        org.apache.commons.cli2.Option devmode = obuilder.withShortName("devmode").withDescription("developer mode: H2 database in memory only, settings in a temporary folder").create();
         org.apache.commons.cli2.Option params = obuilder.withShortName("params").withDescription("optional parameters \"param1:value1;param2:value2..\"").withArgument(option).create();
 
         org.apache.commons.cli2.Group options = gbuilder.withName("options").
@@ -558,6 +559,7 @@ public class Main implements Runnable {
                 withOption(ignoreLibs).
                 withOption(ignoreTpls).
                 withOption(checkResources).
+                withOption(devmode).
                 create();
 
         org.apache.commons.cli2.util.HelpFormatter hf = new org.apache.commons.cli2.util.HelpFormatter();
@@ -572,6 +574,21 @@ public class Main implements Runnable {
         } else {
             if (cl.hasOption(mpdir)) {
                 setEnv(cl.getValue(mpdir).toString());
+            }
+
+            if (cl.hasOption(devmode) || mpv5.db.common.ConnectionTypeHandler.DEVMODE) {
+                //nothing is kept: H2 in memory, settings in a temporary folder (unless -appdir is given)
+                mpv5.db.common.ConnectionTypeHandler.DEVMODE = true;
+                if (!cl.hasOption(mpdir)) {
+                    try {
+                        File tmp = java.nio.file.Files.createTempDirectory("yabs-dev").toFile();
+                        tmp.deleteOnExit();
+                        setEnv(tmp.getPath());
+                    } catch (java.io.IOException ex) {
+                        Log.Debug(ex);
+                    }
+                }
+                Log.Print("Developer mode: H2 in memory, application folder " + MPPATH);
             }
 
             if (cl.hasOption(connectionInstance)) {

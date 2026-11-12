@@ -388,7 +388,7 @@ public class wizard_DBSettings_simple_1 extends javax.swing.JPanel implements Wi
             labeledTextChooser1.set_Text("localhost:3306");
         } else if (jComboBox1.getSelectedItem().toString().contains("custom")) {
             labeledTextChooser1.set_Text("jdbc:sql://<path>:port");
-        } else if (jComboBox1.getSelectedItem().toString().contains("derby")) {
+        } else if ((jComboBox1.getSelectedItem().toString().contains("derby") || jComboBox1.getSelectedItem().toString().contains("h2"))) {
             labeledTextChooser1.set_Text(Main.MPPATH);
         }
 
