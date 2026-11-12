@@ -764,6 +764,86 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         return new BigDecimal(String.valueOf(value)).setScale(2, java.math.RoundingMode.HALF_UP);
     }
 
+    /**
+     * Invoices with payments (part payments): their payments are the income
+     */
+    private java.util.Set<Integer> paidInParts = new java.util.HashSet<Integer>();
+
+    /**
+     * The payments received in the time frame as journal rows (on invoices of
+     * the journal's filters): income on the pay date, net and tax in the
+     * proportion of the invoice
+     */
+    private Object[][] paymentRows(Group forGroup, User forUser) {
+        paidInParts = new java.util.HashSet<Integer>();
+        try {
+            mpv5.db.common.ReturnValue rv = QueryHandler.instanceOf().clone(Context.getInvoice()).freeSelectQuery(
+                    "SELECT DISTINCT itemsids FROM payments", mpv5.usermanagement.MPSecurityManager.VIEW, null);
+            if (rv != null && rv.hasData()) {
+                for (Object[] r : rv.getData()) {
+                    paidInParts.add(Integer.valueOf(String.valueOf(r[0])));
+                }
+            }
+        } catch (Exception e) {
+            Log.Debug(this, e);
+        }
+        Object status = statusc.getComboBox().getSelectedItem();
+        if (!contextInUse.equals(Context.getInvoice()) || paidInParts.isEmpty()
+                || Messages.STATUS_UNPAID.equals(status) || Messages.STATUS_CANCELLED.equals(status)) {
+            return new Object[0][17];
+        }
+        java.util.Set<Integer> groupIds = new java.util.HashSet<Integer>();
+        if (forGroup != null && !forGroup.__getCname().equals("")) { //NOI18N
+            groupIds.add(forGroup.__getIDS());
+            if (includechildgroups.isSelected()) {
+                try {
+                    for (Group g : forGroup.getChildGroups()) {
+                        groupIds.add(g.__getIDS());
+                    }
+                } catch (NodataFoundException e) {
+                    Log.Debug(this, e.getMessage());
+                }
+            }
+        }
+        java.util.Set<Integer> accountIds = new java.util.HashSet<Integer>();
+        for (Object a : jList1.getSelectedValues()) {
+            accountIds.add(((Account) a).__getIDS());
+        }
+        List<Object[]> rows = new ArrayList<Object[]>();
+        vTimeframe t = timeframeChooser1.getTime();
+        for (mpv5.handler.Payments.Payment p : mpv5.handler.Payments.between(t.getStart(), t.getEnd())) {
+            Item inv = mpv5.handler.Payments.invoice(p.invoice);
+            if (inv == null
+                    || (dataOwner != null && inv.__getContactsids() != dataOwner.__getIDS())
+                    || (!groupIds.isEmpty() && !groupIds.contains(inv.__getGroupsids()))
+                    || (!accountIds.isEmpty() && !accountIds.contains(inv.__getAccountsids()))
+                    || (forUser != null && !forUser.__getCname().equals("") && inv.__getIntaddedby() != forUser.__getIDS())) { //NOI18N
+                continue;
+            }
+            BigDecimal gross = inv.getGrossAmount();
+            BigDecimal net = gross.signum() == 0 ? p.amount
+                    : p.amount.multiply(inv.__getNetvalue().subtract(inv.__getDiscountvalue())).divide(gross, 2, java.math.RoundingMode.HALF_UP);
+            Contact k = null;
+            try {
+                k = inv.getContact();
+            } catch (Exception e) {
+                Log.Debug(this, e.getMessage());
+            }
+            String account = "";
+            try {
+                account = inv.getAccount().__getCname();
+            } catch (Exception e) {
+                Log.Debug(this, e.getMessage());
+            }
+            rows.add(new Object[]{inv, k == null ? "" : k.__getCname(), k == null ? "" : k.__getPrename(),
+                k == null ? "" : k.__getStreet(), k == null ? "" : k.__getCity(), k == null ? "" : k.__getCountry(),
+                DateConverter.getDefDateString(p.date), inv.getGroup() == null ? "" : inv.getGroup().__getCname(), account,
+                inv.__getCnumber(), Constants.TYPE_PAYMENT, Item.STATUS_PAID, net, p.amount.subtract(net), p.amount, BigDecimal.ZERO,
+                p.description});
+        }
+        return rows.toArray(new Object[0][]);
+    }
+
     private Object[][] parse(Object[][] data) {
         //#entity date group account number type status value
         BigDecimal profitnet = BigDecimal.ZERO;
@@ -801,6 +881,9 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                     case Constants.TYPE_EXPENSE:
                         d[i][10] = Messages.TYPE_EXPENSE.toString();
                         break;
+                    case Constants.TYPE_PAYMENT:
+                        d[i][10] = Messages.TYPE_PAYMENT.toString();
+                        break;
                     default:
                         d[i][10] = Item.getTypeString(type);
                         break;
@@ -815,7 +898,11 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                 if (null != Integer.valueOf(data[i][11].toString())) {
                     switch (Integer.valueOf(data[i][11].toString())) {
                         case Item.STATUS_PAID:
-                            if (Integer.valueOf(data[i][10].toString()) == Item.TYPE_CREDIT) {
+                            if (type != Constants.TYPE_PAYMENT && data[i][0] instanceof Item
+                                    && paidInParts.contains(((Item) data[i][0]).__getIDS())) {
+                                //paid in parts: the payments are the income (on their pay dates), not the invoice
+                                d[i][15] = FormatNumber.formatLokalCurrency(0d);
+                            } else if (Integer.valueOf(data[i][10].toString()) == Item.TYPE_CREDIT) {
                                 profitnet = profitnet.subtract(netVolume);
                                 profittax = profittax.subtract(taxVal);
                                 expensenet = expensenet.add(netVolume);
@@ -859,6 +946,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                 switch (type) {
                     case Constants.TYPE_REVENUE:
                     case Constants.TYPE_EXPENSE:
+                    case Constants.TYPE_PAYMENT:
                         d[i][17] = data[i][16];
                         break;
                     default:
@@ -869,7 +957,8 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                 //the volume: credit notes and expenses reduce it, cancelled documents do not count
                 int rowType = Integer.valueOf(data[i][10].toString());
                 int rowStatus = Integer.valueOf(data[i][11].toString());
-                if (rowStatus != Item.STATUS_CANCELLED) {
+                //payments: part of the invoice already counted
+                if (rowStatus != Item.STATUS_CANCELLED && rowType != Constants.TYPE_PAYMENT) {
                     if (rowType == Item.TYPE_CREDIT || rowType == Constants.TYPE_EXPENSE) {
                         volumenet = volumenet.subtract(netVolume);
                         volumebrut = volumebrut.subtract(brutVolume);
@@ -1096,6 +1185,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                         throw ex;
                     }
                     d = ArrayUtilities.merge(ArrayUtilities.merge(ArrayUtilities.merge(d, d3), d4), d5);
+                    d = ArrayUtilities.merge(d, paymentRows(forGroup, forUser));
 
                     if (dataOwner == null && additional) {
                         try {

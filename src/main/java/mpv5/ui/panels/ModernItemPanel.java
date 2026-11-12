@@ -167,6 +167,18 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
     private final ItemPositionsTable positions = new ItemPositionsTable();
     private final JTable filetable = tooltipTable(this);
     private final JTable proptable = tooltipTable(this);
+    //payments received (part payments) of invoices
+    private final javax.swing.table.DefaultTableModel paymentsModel = new javax.swing.table.DefaultTableModel(
+            new Object[]{Messages.PAYMENT_DATE.toString(), Messages.PAYMENT_AMOUNT.toString(), Messages.PAYMENT_NOTE.toString()}, 0) {
+        @Override
+        public boolean isCellEditable(int r, int c) {
+            return false;
+        }
+    };
+    private final JTable paymentsTable = tooltipTable(this);
+    private final java.util.List<Integer> paymentIds = new java.util.ArrayList<Integer>();
+    private final JLabel paymentsInfo = new JLabel();
+    private Card paymentsCard;
     //actions
     private final JButton previewButton = new JButton(Messages.ACTION_PREVIEW.toString());
     private final JMenuItem deliveryNote = new JMenuItem(text("ItemPanel2.button_deliverynote.text"));
@@ -433,6 +445,26 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         JScrollPane props = new JScrollPane(proptable);
         props.setPreferredSize(new java.awt.Dimension(ModernTheme.px(200), ModernTheme.px(100)));
         grid.add(new Card(Messages.ITEM_SECTION_PROPERTIES.toString()).addFull(propertiesHint("item", "")).addFull(props, 1));
+
+        paymentsTable.setModel(paymentsModel);
+        ModernTheme.style(paymentsTable);
+        amountColumn(paymentsTable, 1);
+        JButton addPayment = link(null, "/images/16/add.png");
+        addPayment.setToolTipText(Messages.PAYMENT_ADD.toString());
+        addPayment.addActionListener(e -> addPayment());
+        JButton removePayment = link(null, "/images/16/remove.png");
+        removePayment.setToolTipText(Messages.PAYMENT_REMOVE.toString());
+        removePayment.addActionListener(e -> removePayment());
+        JPanel paymentButtons = new JPanel(new FlowLayout(FlowLayout.RIGHT, ModernTheme.px(4), 0));
+        paymentButtons.setOpaque(false);
+        paymentButtons.add(addPayment);
+        paymentButtons.add(removePayment);
+        JScrollPane payments = new JScrollPane(paymentsTable);
+        payments.setPreferredSize(new java.awt.Dimension(ModernTheme.px(200), ModernTheme.px(100)));
+        paymentsInfo.setForeground(ModernTheme.muted());
+        paymentsCard = new Card(Messages.PAYMENT_SECTION.toString()).headerAction(paymentButtons)
+                .addFull(paymentsInfo).addFull(payments, 1);
+        grid.add(paymentsCard);
         return grid;
     }
 
@@ -536,6 +568,9 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         toDeposit.setEnabled(partialAllowed);
         toPartPayment.setEnabled(partialAllowed);
         toCredit.setEnabled(t == Item.TYPE_INVOICE);
+        if (paymentsCard != null) {
+            paymentsCard.setVisible(bill);
+        }
         einvoiceButton.setVisible(ZugpferdFile.supports(dataOwner));
         number.setContext(ItemService.contextOf(t < 0 ? Item.TYPE_INVOICE : t));
     }
@@ -695,6 +730,90 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
             //the new document in a new tab, this one keeps the order (issue #58)
             mpv5.YabsViewProxy.instance().addTab(i2, true);
             Popup.notice(i2 + Messages.INSERTED.getValue());
+        }
+    }
+
+    /**
+     * The payments of the invoice and the amount still open
+     */
+    private void refreshPayments() {
+        paymentsModel.setRowCount(0);
+        paymentIds.clear();
+        if (dataOwner == null || !dataOwner.isExisting() || !ItemService.isBill(dataOwner.__getInttype())) {
+            paymentsInfo.setText(Messages.PAYMENT_HINT.toString());
+            return;
+        }
+        for (mpv5.handler.Payments.Payment p : mpv5.handler.Payments.of(dataOwner.__getIDS())) {
+            paymentIds.add(p.id);
+            paymentsModel.addRow(new Object[]{DateConverter.getDefDateString(p.date), p.amount, p.description});
+        }
+        paymentsInfo.setText(paymentIds.isEmpty() ? Messages.PAYMENT_HINT.toString()
+                : String.format(Messages.PAYMENT_STATE.toString(),
+                        FormatNumber.formatLokalCurrency(mpv5.handler.Payments.paid(dataOwner.__getIDS())),
+                        FormatNumber.formatLokalCurrency(mpv5.handler.Payments.open(dataOwner))));
+    }
+
+    /**
+     * Asks for amount (the open amount), date (today) and a note, records the
+     * payment; complete: the invoice is paid
+     */
+    private void addPayment() {
+        if (dataOwner == null || !dataOwner.isExisting()) {
+            Popup.notice(Messages.PAYMENT_SAVE_FIRST);
+            return;
+        }
+        javax.swing.JTextField amount = new javax.swing.JTextField(FormatNumber.formatDezimal(mpv5.handler.Payments.open(dataOwner)), 12);
+        javax.swing.JTextField date = new javax.swing.JTextField(DateConverter.getDefDateString(new Date()), 12);
+        javax.swing.JTextField note = new javax.swing.JTextField(20);
+        JPanel form = new JPanel(new java.awt.GridLayout(0, 2, ModernTheme.px(8), ModernTheme.px(6)));
+        form.add(new JLabel(Messages.PAYMENT_AMOUNT.toString()));
+        form.add(amount);
+        form.add(new JLabel(Messages.PAYMENT_DATE.toString()));
+        form.add(date);
+        form.add(new JLabel(Messages.PAYMENT_NOTE.toString()));
+        form.add(note);
+        if (javax.swing.JOptionPane.showConfirmDialog(this, form, Messages.PAYMENT_ADD.toString(),
+                javax.swing.JOptionPane.OK_CANCEL_OPTION, javax.swing.JOptionPane.PLAIN_MESSAGE) != javax.swing.JOptionPane.OK_OPTION) {
+            return;
+        }
+        java.math.BigDecimal a;
+        Date d;
+        try {
+            a = FormatNumber.parseDezimal(amount.getText());
+            d = DateConverter.getDate(date.getText().trim());
+        } catch (Exception e) {
+            a = null;
+            d = null;
+        }
+        if (a == null || a.signum() <= 0 || d == null) {
+            Popup.notice(Messages.PAYMENT_INVALID);
+            return;
+        }
+        int before = dataOwner.__getIntstatus();
+        if (mpv5.handler.Payments.add(dataOwner, a, d, note.getText().trim())) {
+            afterPaymentChange(before);
+        }
+    }
+
+    private void removePayment() {
+        int r = paymentsTable.getSelectedRow();
+        if (r < 0 || dataOwner == null) {
+            return;
+        }
+        int before = dataOwner.__getIntstatus();
+        mpv5.handler.Payments.remove(dataOwner, paymentIds.get(paymentsTable.convertRowIndexToModel(r)));
+        afterPaymentChange(before);
+    }
+
+    /**
+     * The status changed (paid / open again): show the stored record
+     */
+    private void afterPaymentChange(int statusBefore) {
+        if (dataOwner.__getIntstatus() != statusBefore) {
+            setDataOwner(dataOwner, true);
+            YabsViewProxy.instance().addMessage(dataOwner + ": " + Item.getStatusString(dataOwner.__getIntstatus()), Color.GREEN);
+        } else {
+            refreshPayments();
         }
     }
 
@@ -1004,6 +1123,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
                     tb.setFavourite(Favourite.isFavourite(object));
                     tb.setEditable(!object.isReadOnly());
                     positions.setPositions(dataOwner.getSubitems());
+                    refreshPayments();
                     if (object.isReadOnly()) {
                         Popup.notice(Messages.LOCKED_BY);
                     }

@@ -162,6 +162,31 @@ abstract class AppOnDatabase {
             assertEquals(c.__getIDS(), inv2.__getContactsids());
             assertEquals(DateConverter.getDefDateString(inv.__getDatetodo()), DateConverter.getDefDateString(inv2.__getDatetodo()));
 
+            //payments on the invoice (60 net + 19 % = 71.40): open amount, paid when complete, open again when removed
+            inv2.setIntstatus(Item.STATUS_FINISHED);
+            assertTrue(inv2.save(true));
+            java.text.SimpleDateFormat ymd = new java.text.SimpleDateFormat("yyyy-MM-dd");
+            Date day1 = ymd.parse("2026-03-01");
+            Date day2 = ymd.parse("2026-03-15");
+            assertTrue(mpv5.handler.Payments.add(inv2, new BigDecimal("30"), day1, "Anzahlung"));
+            assertEquals(0, new BigDecimal("41.40").compareTo(mpv5.handler.Payments.open(inv2)));
+            assertEquals(Item.STATUS_FINISHED, ((Item) DatabaseObject.getObject(Context.getInvoice(), inv2.__getIDS())).__getIntstatus());
+            assertTrue(mpv5.handler.Payments.add(inv2, new BigDecimal("41.40"), day2, "Rest"));
+            Item paid = (Item) DatabaseObject.getObject(Context.getInvoice(), inv2.__getIDS());
+            assertEquals(Item.STATUS_PAID, paid.__getIntstatus(), "paid in full");
+            assertEquals("2026-03-15", ymd.format(paid.__getDateend()), "pay date = last payment");
+            java.util.List<mpv5.handler.Payments.Payment> pl = mpv5.handler.Payments.of(inv2.__getIDS());
+            assertEquals(2, pl.size());
+            assertEquals("Anzahlung", pl.get(0).description);
+            assertEquals("2026-03-01", ymd.format(pl.get(0).date));
+            assertEquals(1, mpv5.handler.Payments.between(day2, day2).size(), "by pay date");
+            java.util.Map<String, Object> ff = paid.getFormFields();
+            assertEquals(mpv5.utils.numberformat.FormatNumber.formatLokalCurrency(new BigDecimal("71.40")), ff.get("item.paidvaluef"));
+            assertEquals(mpv5.utils.numberformat.FormatNumber.formatLokalCurrency(new BigDecimal("0.00")), ff.get("item.openvaluef"));
+            mpv5.handler.Payments.remove(paid, pl.get(1).id);
+            assertEquals(Item.STATUS_FINISHED, ((Item) DatabaseObject.getObject(Context.getInvoice(), inv2.__getIDS())).__getIntstatus(), "open again");
+            inv2 = (Item) DatabaseObject.getObject(Context.getInvoice(), inv2.__getIDS());
+
             //search index and trash bin (database triggers), restore
             Object[][] index = QueryHandler.instanceOf().clone("searchindex").select("dbidentity, rowid", new String[]{"dbidentity", "contacts", "'"});
             assertTrue(index.length > 0, "search index");
