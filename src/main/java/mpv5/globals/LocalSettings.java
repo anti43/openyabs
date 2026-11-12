@@ -3,6 +3,7 @@ package mpv5.globals;
 import java.io.File;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -396,6 +397,46 @@ public class LocalSettings {
         x.parse("connection", cookies);
         x.createOrReplace(new File(Main.SETTINGS_FILE));
         return id;
+    }
+
+    /**
+     * @return the settings of all connections, read from the file
+     * @throws Exception
+     */
+    public static synchronized List<PropertyStore> getConnectionStores() throws Exception {
+        XMLReader read = new XMLReader();
+        read.newDoc(new File(Main.SETTINGS_FILE), false);
+        return new ArrayList<PropertyStore>((Vector<PropertyStore>) read.readInto("localsettings", "connection"));
+    }
+
+    /**
+     * Renames a connection in the settings file
+     *
+     * @param id
+     * @param name
+     * @throws Exception
+     */
+    public static synchronized void renameConnection(int id, String name) throws Exception {
+        if (id == connectionID) {
+            cookie.changeProperty(CONNECTION_NAME, name);
+            save();
+            return;
+        }
+        getConnectionIDs();//reads the connections
+        for (PropertyStore p : cookies) {
+            if (String.valueOf(id).equals(p.getProperty("nodeid"))) {
+                p.changeProperty(CONNECTION_NAME, name);
+            }
+        }
+        Vector<PropertyStore> all = new Vector<PropertyStore>();
+        for (PropertyStore c : cookies) {
+            all.add(String.valueOf(connectionID).equals(c.getProperty("nodeid")) ? cookie : c);
+        }
+        cookies = all;
+        XMLWriter x = new XMLWriter();
+        x.newDoc("localsettings", false);
+        x.parse("connection", cookies);
+        x.createOrReplace(new File(Main.SETTINGS_FILE));
     }
 
     /**

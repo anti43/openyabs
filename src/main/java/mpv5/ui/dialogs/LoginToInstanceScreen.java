@@ -32,10 +32,11 @@ public class LoginToInstanceScreen extends javax.swing.JDialog {
     /**
      * Show the instance login screen, modal
      */
+    /**
+     * Shows the (modern) connection manager
+     */
     public static void load() {
-        LoginToInstanceScreen s = new LoginToInstanceScreen();
-        s.requestFocus();
-        s.dispose();
+        ConnectionManager.open(mpv5.YabsViewProxy.instance().getIdentifierView() == null);
     }
 
     private LoginToInstanceScreen() {
