@@ -127,9 +127,11 @@ Ausführlich, mit Rechtslage und Checkliste: **[docs/E-Rechnung.md](E-Rechnung.m
 - **Datenbank sichern, als SQL exportieren, Sicherung zurückspielen** (früher *Werkzeuge › Migration*): jetzt in der *Systemsteuerung*, Gruppe *Datenbank*, mit Erklärung.
 - **Lokale Einstellungen, Ordner:** Unter dem Ablage- und dem Sicherungsordner steht, welcher Ordner gerade benutzt wird – auch wenn das Feld leer ist (dann der zuletzt gewählte Ordner). Sicherungen und Datenbank-Exporte beginnen ohne Sicherungsordner nicht mehr im Programmordner. Die Proxy-Felder zeigen die gespeicherten Werte (wurden bisher leer bzw. falsch angezeigt); die Einstellungsdatei enthält jede Verbindung nur noch einmal.
 - **Standardschriftart** (*Systemsteuerung › Standardschriftart*): *Anwenden* ändert die offenen Fenster sofort; alle Fenster und Dialoge nutzen die Schrift erst **nach einem Neustart**. Darauf weist die Karte hin, und nach *Speichern* erscheint ein Hinweis. Die Schrift gilt für diesen Computer, die Größe ändert *Ansicht › Zoom*.
+- **Demo-Vorlagen:** Bei einer neuen Installation werden 18 Demo-Vorlagen (eine je Vorlagenart: Rechnung, Angebot, Mahnung, Kontaktdatenblatt, Bestellung …) mit Platzhalter-Logo importiert und dem Administrator für *Alle Gruppen* zugewiesen (die normale Rechnungsvorlage bleibt die zugewiesene Rechnungsvorlage). Jede Demo-Vorlage hat eine Seite *Verfügbare Felder* mit allen Feldern der Art – zum Kopieren in eigene Vorlagen; die Seite einfach löschen. Erzeugt mit `tools/templates/gen.py`.
 - **Umstieg von Fakturama 2:** *Datei › Import › Fakturama 2* – siehe [README](README.de.md#import-export-und-umstieg-von-anderer-software).
 
 ### Settings and usage (EN)
+- **Demo templates:** a new installation imports 18 demo templates (one per template type) with a dummy logo, assigned to the administrator for all groups; each has a page listing all available fields of its type.
 
 - **WSL:** the main window is no longer grey until moved (`_JAVA_AWT_WM_NONREPARENTING=1` is set automatically).
 - **File name defaults:** insert variables and `/` from a list, with a preview. Variables: [wiki](https://github.com/anti43/openyabs/wiki/File-name-defaults).
