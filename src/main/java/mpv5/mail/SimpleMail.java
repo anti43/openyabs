@@ -493,8 +493,10 @@ public class SimpleMail implements Waiter {
             // Put parts in message
             message.setContent(multipart);
 
-            // Send the message
-            Transport.send(message);
+            // Send the message (developer mode: only pretend)
+            if (!pretend(message)) {
+                Transport.send(message);
+            }
             progress(false);
             Log.Debug(this, "Mail sent: " + message);
             if (log == null)
@@ -597,13 +599,11 @@ public class SimpleMail implements Waiter {
             message.saveChanges();
 // transport the message
 // < -- we will send the message over smtps -->
-            transport = (SMTPSSLTransport) session.getTransport("smtps");
-
-// connect to server
-            // < -- fill in email address and password -->
-            transport.connect();
-// send the message
-            transport.sendMessage(message, message.getAllRecipients());
+            if (!pretend(message)) {
+                transport = (SMTPSSLTransport) session.getTransport("smtps");
+                transport.connect();
+                transport.sendMessage(message, message.getAllRecipients());
+            }
             progress(false);
             Log.Debug(this, "Mail sent: " + message);
             if (log == null)
@@ -697,5 +697,31 @@ public class SimpleMail implements Waiter {
         protected PasswordAuthentication getPasswordAuthentication() {
             return new PasswordAuthentication(this.user, this.password);
         }
+    }
+
+    /**
+     * Developer mode (-devmode): nothing is sent, the mail is written to
+     * &lt;app folder&gt;/devmode-mails/*.eml instead
+     *
+     * @param message the finished mail
+     * @return true if it was not sent
+     */
+    static boolean pretend(javax.mail.Message message) {
+        if (!mpv5.db.common.ConnectionTypeHandler.DEVMODE) {
+            return false;
+        }
+        try {
+            java.io.File dir = new java.io.File(mpv5.Main.MPPATH == null ? System.getProperty("java.io.tmpdir") : mpv5.Main.MPPATH, "devmode-mails");
+            dir.mkdirs();
+            java.io.File f = new java.io.File(dir, System.currentTimeMillis() + ".eml");
+            try (java.io.OutputStream out = new java.io.FileOutputStream(f)) {
+                message.writeTo(out);
+            }
+            Log.Print("Developer mode: mail NOT sent, written to " + f);
+            mpv5.YabsViewProxy.instance().addMessage(String.format(Messages.MAIL_DEVMODE.toString(), f.getPath()));
+        } catch (Exception e) {
+            Log.Debug(SimpleMail.class, e);
+        }
+        return true;
     }
 }

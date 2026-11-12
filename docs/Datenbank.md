@@ -51,7 +51,7 @@ Neue Datenbanken (H2, MySQL/MariaDB, PostgreSQL) werden in **einem Schritt** aus
 java -jar openyabs.jar -devmode
 ```
 
-(oder `-Dyabs.devmode=true`): H2 läuft **nur im Arbeitsspeicher**, die Einstellungen liegen in einem **temporären Ordner** (z. B. `/tmp/yabs-dev…`). Nichts wird dauerhaft gespeichert, der Einrichtungsassistent erscheint bei jedem Start und zeigt statt eines Ordners den Hinweis „Entwicklermodus … nur im Arbeitsspeicher“. Mit `-appdir <Ordner>` bleiben die Einstellungen erhalten, die Datenbank bleibt trotzdem im Speicher. Für eine echte Installation YaBS **ohne** `-devmode` starten.
+(oder `-Dyabs.devmode=true`): H2 läuft **nur im Arbeitsspeicher**, die Einstellungen liegen in einem **temporären Ordner** (z. B. `/tmp/yabs-dev…`). E-Mails werden nicht gesendet, sondern als `.eml` in `devmode-mails` abgelegt. Nichts wird dauerhaft gespeichert, der Einrichtungsassistent erscheint bei jedem Start und zeigt statt eines Ordners den Hinweis „Entwicklermodus … nur im Arbeitsspeicher“. Mit `-appdir <Ordner>` bleiben die Einstellungen erhalten, die Datenbank bleibt trotzdem im Speicher. Für eine echte Installation YaBS **ohne** `-devmode` starten.
 
 ## Verbindungs-Manager
 
