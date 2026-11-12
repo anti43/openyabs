@@ -139,6 +139,19 @@ abstract class AppOnDatabase {
             Object[][] trash = QueryHandler.instanceOf().clone("trashbin").select("cname, rowid", new String[]{"deleteme", "1", ""});
             assertTrue(Arrays.stream(trash).anyMatch(r -> "contacts".equalsIgnoreCase(String.valueOf(r[0]))));
             assertTrue(c2.undelete());
+
+            //mail (log mode, no questions): nothing is sent without sender, recipient and template
+            java.util.List<String> log = new java.util.ArrayList<String>();
+            admin.setMail("");
+            mpv5.utils.export.Export.mail(null, inv2, c2, log);
+            assertTrue(log.get(0).contains(mpv5.globals.Messages.MAIL_NO_SENDER.toString()), log.toString());
+            admin.setMail("chef@example.org");
+            c2.setMailaddress("");
+            mpv5.utils.export.Export.mail(null, inv2, c2, log);
+            assertTrue(log.get(1).contains(mpv5.globals.Messages.NO_MAIL_DEFINED.toString()), log.toString());
+            c2.setMailaddress("kunde@example.org");
+            mpv5.utils.export.Export.mail(null, inv2, c2, log);
+            assertTrue(log.get(2).contains(mpv5.globals.Messages.MAIL_NO_TEMPLATE_BATCH.toString()), log.toString());
         } finally {
             DatabaseConnection.shutdown();
         }

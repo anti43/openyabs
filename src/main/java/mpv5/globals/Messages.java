@@ -291,10 +291,7 @@ public enum Messages {
     CHECK_OVERDUES("Show unpaid invoices"),
     NA("N/A"),
     ACTION_ADD("Add"),
-    NO_MAIL_TEMPLATE_DEFINED(
-    "You do not have any mail template definded yet. "
-    + "Create mail templates at Tools->Control Panel->User Properties->Mail Templates. "
-    + "The mail will be send without any text body now."),
+    NO_MAIL_TEMPLATE_DEFINED("You have no mail template yet. Create mail templates in the Control Panel (Mail templates)."),
     ADD_CONTACT("Add contact.."),
     SEARCH_CONTACT("Search contact.."),
     LANGUAGE_FILE("Your language file is not up to date! Visit https://github.com/andreasweberd/openyabs/ for a new language file or edit the existing one via Tools->Control Panel->Babelfish"),
@@ -610,6 +607,13 @@ public enum Messages {
     CONNMGR_CREATED("New database %s created, signed in as administrator (password: password)."),
     POS_STORNO_OF("CANCELLATION of"),
     DB_UPDATE_WARNINGS("The database was updated, but some optional changes failed. MySQL: without the TRIGGER privilege (or with binary logging and log_bin_trust_function_creators = 0) the search and the trash bin do not work - see docs/Datenbank.md."),
+    MAIL_NO_SENDER("You have no valid e-mail address of your own. Enter it in the user settings (Control Panel > Users, field Mail) and set up the mail server."),
+    MAIL_NO_RECIPIENT("%s has no valid e-mail address.\nSend to which address?"),
+    MAIL_INVALID_ADDRESS("Not a valid e-mail address: %s"),
+    MAIL_SAVE_ADDRESS("Save %s as the e-mail address of %s?"),
+    MAIL_NO_TEMPLATE_ASK("You have no mail template yet (Control Panel > Mail templates).\n\nSend anyway, with the document name as subject and an empty text? You can change both in the preview before sending."),
+    MAIL_CANCELED("No mail sent."),
+    MAIL_NO_TEMPLATE_BATCH("no mail template - not sent"),
     SHOPIFY_SAVED("Shopify settings saved"),
     SHOPIFY_IMPORT("Import new orders"),
     SHOPIFY_TEST_OK("Connected to the shop \"%s\"."),
