@@ -145,12 +145,14 @@ Ausführlich, mit Rechtslage und Checkliste: **[docs/E-Rechnung.md](E-Rechnung.m
 - **Schnelleres Laden und Speichern:** Datensätze werden deutlich schneller geladen (z. B. 2000 Kontakte: 4 statt 27 ms, ein Siebtel des Speichers), Speichern ist schneller. Werte vom Typ Zeitstempel (H2) und kleine Zahlen werden korrekt gespeichert. Die Datenbankschicht läuft ohne Bildschirm (Server, Tests); ein Test spielt eine Neuinstallation auf H2 mit dem echten Programmcode durch.
 - **PostgreSQL und MySQL:** PostgreSQL wird unterstützt; neue Datenbanken entstehen in einem Schritt aus `db/schema.sql` statt aus allen Updates; MySQL bekommt Suche/Papierkorb (Trigger, Update 1.1986), die alten MySQL-Updates sind repariert, Treiber Connector/J 8.4. Grenzen von MySQL: [Datenbank](Datenbank.md#mysql--mariadb-hinweise-und-grenzen).
 - **Protokoll nach der Einrichtung:** `-debug`, `-verbose` und `-logfile` gelten auch nach dem Einrichtungsassistenten wieder (vorher endete jede Ausgabe nach „First instance.. running!“, und alles ging weiter nach `install.log`).
+- **Dokumentation, Sprachen:** Alle zweisprachigen Dokumente beginnen auf Deutsch, die englische Fassung folgt darunter (vorher bei Dateinamen, QR-Code, Skripte und Shopify umgekehrt).
 - **Webseite, alte Links:** Für jedes Dokument gibt es `docs/<Name>.html`, das auf das Dokument auf GitHub weiterleitet – alte Links, Lesezeichen und zwischengespeicherte Fassungen der Startseite funktionieren damit auch.
 - **Webseite, Dokumentation:** Die Links unter *Dokumentation* auf https://anti43.github.io/openyabs/ führen jetzt auf die Dokumente auf GitHub (vorher tote `.html`-Links: die Seite wird wegen `docs/.nojekyll` ohne Jekyll veröffentlicht, aus den `.md`-Dateien entstehen keine `.html`-Seiten). Logo und Favicon zeigen auf den aktuellen Pfad.
 - **Fortschrittsbalken:** Änderungen an Fortschrittsbalken aus Hintergrund-Threads (Datenbank, Jobs, Mail, Massenexport) laufen jetzt im Swing-Thread – behebt „FlatLaf: Using JProgressBar.setIndeterminate(false) not on AWT thread“ (IllegalStateException / NPE beim Zeichnen).
 - **Umstieg von Fakturama 2:** *Datei › Import › Fakturama 2* – siehe [README](README.de.md#import-export-und-umstieg-von-anderer-software).
 
 ### Settings and usage (EN)
+- **Docs language order:** every bilingual document starts in German, the English version follows below.
 - **Progress bars:** changes from background threads run on the Swing thread (FlatLaf IllegalStateException fixed).
 - **Website docs links:** the documentation links on the website open the documents on GitHub (the `.html` links were dead: `docs/.nojekyll` publishes without Jekyll).
 - **PostgreSQL and MySQL:** PostgreSQL support; new databases from `db/schema.sql` in one step; MySQL gets search/trash bin triggers (update 1.1986), the old MySQL updates were fixed, Connector/J 8.4.

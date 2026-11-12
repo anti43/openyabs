@@ -1,8 +1,21 @@
-# Scripts (Script manager)
+# Skripte (Skriptmanager)
+
+*Kurzfassung; ausführlich auf Englisch unten (full English version below).*
+
+*Systemsteuerung › Skriptmanager* – kleine Groovy-Skripte für eine Art von Datensatz (Rechnungen, Angebote, Kontakte, Artikel …) und eine Gruppe.
+
+- **Beliebiger Name**, z.B. `anrede`: Vorlagenfeld **`<property.anrede>`** mit dem Ergebnis des Skripts – die Daten werden **nicht** geändert.
+- **`modifyOnSave`**: vor dem Speichern, kann die Daten **ändern**. **`executeAfterSave`** / **`executeAfterCreate`**: nach dem Speichern / Anlegen. **`modifyOnDelete`**: vor dem Löschen (eine Exception verhindert es).
+- **`IntItemLabel`** / **`IntRevenueLabel`**: Name von Belegen / Einnahmen in Listen.
+- Im Skript: `dbo` = der Datensatz, `getObject('contact', 'Name')`, `getFormField('item.netvaluef')`. Der letzte Wert ist das Ergebnis; mehrzeilige Skripte sind möglich.
+- **Mit einem Datensatz testen…** führt das Skript für einen gewählten Datensatz aus.
+- **Werkzeugleisten-Aktionen…** (früher *Ansicht › Werkzeugleiste anpassen*): eigene Schaltflächen, die ein Skript ausführen (`MPView`, `Application`, `QueryHandler`); nach einem Neustart.
+
+---
+
+# Scripts (Script manager) (EN)
 
 *Control Panel › Script manager* – small Groovy scripts for a kind of record (invoices, offers, contacts, products, …) and a group.
-
-*Deutsche Fassung unten.*
 
 ## What a script does: its name
 
@@ -52,16 +65,3 @@ Write the script, then **Test with a record…** – it runs on a record you cho
 ## Toolbar actions
 
 **Toolbar actions…** (button in the script manager; was *View › Add toolbar action*): own buttons in a toolbar that run a Groovy script. In these scripts: `MPView` (the main window), `Application`, `QueryHandler`. Takes effect after a restart.
-
----
-
-# Skripte (Skriptmanager) (DE)
-
-*Systemsteuerung › Skriptmanager* – kleine Groovy-Skripte für eine Art von Datensatz (Rechnungen, Angebote, Kontakte, Artikel …) und eine Gruppe.
-
-- **Beliebiger Name**, z.B. `anrede`: Vorlagenfeld **`<property.anrede>`** mit dem Ergebnis des Skripts – die Daten werden **nicht** geändert.
-- **`modifyOnSave`**: vor dem Speichern, kann die Daten **ändern**. **`executeAfterSave`** / **`executeAfterCreate`**: nach dem Speichern / Anlegen. **`modifyOnDelete`**: vor dem Löschen (eine Exception verhindert es).
-- **`IntItemLabel`** / **`IntRevenueLabel`**: Name von Belegen / Einnahmen in Listen.
-- Im Skript: `dbo` = der Datensatz, `getObject('contact', 'Name')`, `getFormField('item.netvaluef')`. Der letzte Wert ist das Ergebnis; mehrzeilige Skripte sind möglich.
-- **Mit einem Datensatz testen…** führt das Skript für einen gewählten Datensatz aus.
-- **Werkzeugleisten-Aktionen…** (früher *Ansicht › Werkzeugleiste anpassen*): eigene Schaltflächen, die ein Skript ausführen (`MPView`, `Application`, `QueryHandler`); nach einem Neustart.
