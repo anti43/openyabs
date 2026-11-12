@@ -132,6 +132,15 @@ public final class FirstStartSetup {
      * @throws Exception
      */
     public static Template importTemplate(final User owner, String resource, final String name, final String format, final int type, long wait) throws Exception {
+        return importTemplate(owner, resource, name, format, type, wait, true);
+    }
+
+    /**
+     * Imports a template from the jar, optionally without assigning it
+     *
+     * @param assign assign it to the owner for all groups
+     */
+    public static Template importTemplate(final User owner, String resource, final String name, final String format, final int type, long wait, final boolean assign) throws Exception {
         InputStream s = Main.class.getResourceAsStream(resource);
         final File f = FileDirectoryHandler.getTempFile(name, "odt");
         FileDirectoryHandler.copyFile(s, f);
@@ -148,6 +157,10 @@ public final class FirstStartSetup {
                         t.setFormat(format);
                         t.setDescription("Wizard insert");
                         t.save(true);
+                        if (!assign) {
+                            made[0] = t;
+                            return;
+                        }
                         QueryData c = new QueryData();
                         c.add("usersids", owner.__getIDS());
                         c.add("templatesids", t.__getIDS());
@@ -204,6 +217,42 @@ public final class FirstStartSetup {
             importTemplate(admin, 60000);
         } catch (Exception e) {
             Log.Debug(FirstStartSetup.class, e);
+        }
+        importDemoTemplates(admin);
+    }
+
+    /**
+     * The bundled demo templates (type id, name): one per kind of document,
+     * with a dummy logo and a page listing all fields of the kind
+     */
+    public static final Object[][] DEMO_TEMPLATES = {
+        {Constants.TYPE_INVOICE, "Rechnung"}, {Constants.TYPE_ORDER, "Auftrag"}, {Constants.TYPE_OFFER, "Angebot"},
+        {Constants.TYPE_DELIVERY_NOTE, "Lieferschein"}, {Constants.TYPE_ORDER_CONFIRMATION, "Auftragsbestätigung"},
+        {Constants.TYPE_PRODUCT, "Artikeldatenblatt"}, {Constants.TYPE_SERVICE, "Leistungsbeschreibung"},
+        {Constants.TYPE_REMINDER, "Mahnung"}, {Constants.TYPE_CONTACT, "Kontaktdatenblatt"},
+        {Constants.TYPE_JOURNAL, "Journal"}, {Constants.TYPE_PRODUCT_ORDER, "Bestellung"},
+        {Constants.TYPE_CONTRACT, "Vertrag"}, {Constants.TYPE_CONVERSATION, "Gesprächsnotiz"},
+        {Constants.TYPE_MASSPRINT, "Serienbrief"}, {Constants.TYPE_ACTIVITY, "Tätigkeitsliste"},
+        {Constants.TYPE_CREDIT, "Gutschrift"}, {Constants.TYPE_PART_PAYMENT, "Abschlagsrechnung"},
+        {Constants.TYPE_DEPOSIT, "Anzahlungsrechnung"}
+    };
+
+    /**
+     * Imports all demo templates and assigns them to the administrator for
+     * all groups (the invoice demo is imported, but the regular invoice
+     * template stays the assigned one)
+     *
+     * @param admin
+     */
+    public static void importDemoTemplates(User admin) {
+        for (Object[] d : DEMO_TEMPLATES) {
+            int type = (Integer) d[0];
+            try {
+                importTemplate(admin, String.format("/extra/templates/demo-%02d.odt", type), "Demo - " + d[1],
+                        "1,2,4,5,7,9", type, 60000, type != Constants.TYPE_INVOICE);
+            } catch (Exception e) {
+                Log.Debug(FirstStartSetup.class, e);
+            }
         }
     }
 
