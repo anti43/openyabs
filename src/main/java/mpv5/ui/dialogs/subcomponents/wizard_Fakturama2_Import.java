@@ -53,6 +53,7 @@ public class wizard_Fakturama2_Import extends JPanel implements Wizardable {
     private final WizardMaster master;
     private final JTextField file = new JTextField(30);
     private final JCheckBox chkTax = check(Messages.FKT_OPT_TAX);
+    private final javax.swing.JComboBox<mpv5.utils.models.MPComboBoxModelItem> defaultTax = new javax.swing.JComboBox<mpv5.utils.models.MPComboBoxModelItem>();
     private final JCheckBox chkContacts = check(Messages.FKT_OPT_CONTACTS);
     private final JCheckBox chkProducts = check(Messages.FKT_OPT_PRODUCTS);
     private final JCheckBox chkDocuments = check(Messages.FKT_OPT_DOCUMENTS);
@@ -97,6 +98,37 @@ public class wizard_Fakturama2_Import extends JPanel implements Wizardable {
         options.add(chkProducts);
         options.add(chkDocuments);
         options.add(chkVouchers);
+        //VAT rate for everything whose rate Fakturama does not give
+        JPanel taxRow = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, ModernTheme.px(6), 0));
+        taxRow.setOpaque(false);
+        taxRow.add(new javax.swing.JLabel(Messages.FKT_DEFAULT_TAX + ":"));
+        try {
+            java.util.List<mpv5.db.objects.Tax> taxes = mpv5.db.common.DatabaseObject.getObjects(mpv5.db.common.Context.getTaxes());
+            for (mpv5.db.objects.Tax t : taxes) {
+                defaultTax.addItem(new mpv5.utils.models.MPComboBoxModelItem(t.__getIDS(), t.__getCname() + " (" + t.__getTaxvalue().stripTrailingZeros().toPlainString() + " %)"));
+            }
+        } catch (Exception e) {
+            //no VAT rates yet: 0 %
+        }
+        if (defaultTax.getItemCount() == 0) {
+            defaultTax.addItem(new mpv5.utils.models.MPComboBoxModelItem(-1, "0 %"));
+        }
+        //preselected: the highest rate (the usual standard rate)
+        java.math.BigDecimal best = null;
+        for (int i = 0; i < defaultTax.getItemCount(); i++) {
+            try {
+                java.math.BigDecimal v = mpv5.db.objects.Tax.getTaxValue(Integer.valueOf(defaultTax.getItemAt(i).getId()));
+                if (best == null || v.compareTo(best) > 0) {
+                    best = v;
+                    defaultTax.setSelectedIndex(i);
+                }
+            } catch (Exception e) {
+                //keep
+            }
+        }
+        defaultTax.setToolTipText(Messages.FKT_DEFAULT_TAX_HINT.toString());
+        taxRow.add(defaultTax);
+        options.add(taxRow);
 
         JPanel top = new JPanel();
         top.setOpaque(false);
@@ -176,6 +208,8 @@ public class wizard_Fakturama2_Import extends JPanel implements Wizardable {
         master.setCursor(new Cursor(Cursor.WAIT_CURSOR));
         final Fakturama2Importer importer = new Fakturama2Importer();
         importer.setImportTax(chkTax.isSelected());
+        mpv5.utils.models.MPComboBoxModelItem dt = (mpv5.utils.models.MPComboBoxModelItem) defaultTax.getSelectedItem();
+        importer.setDefaultTax(dt == null || "-1".equals(dt.getId()) ? null : Integer.valueOf(dt.getId()));
         importer.setImportContacts(chkContacts.isSelected());
         importer.setImportProducts(chkProducts.isSelected());
         importer.setImportDocuments(chkDocuments.isSelected());
