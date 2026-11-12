@@ -2936,19 +2936,11 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
         private DatabaseObject modify(DatabaseObject object, final String key) {
             try {
-                if (ValueProperty.hasProperty(object.getContext(), key)) {
-                    ValueProperty script = ValueProperty.getProperty(object.getContext(), key);
-                    Object s = script.getValue();
-                    if (s != null) {
-                        object.evaluateAll(String.valueOf(s));
-                    }
-                }
-                if (ValueProperty.hasProperty(object, key)) {
-                    ValueProperty script = ValueProperty.getProperty(object, key);
-                    Object s = script.getValue();
-                    if (s != null) {
-                        object.evaluateAll(String.valueOf(s));
-                    }
+                //the script of the kind of record (script manager), cached; scripts per single
+                //object (objectids, not even per context) are no longer looked up
+                String script = ValueProperty.script(object.getContext(), key);
+                if (script != null) {
+                    object.evaluateAll(script);
                 }
             } catch (Throwable ex) {
                 Notificator.raiseNotification(ex, true, true, object);

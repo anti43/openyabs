@@ -196,6 +196,21 @@ abstract class AppOnDatabase {
             Object v = mpv5.db.objects.ValueProperty.getProperty(admin, "layoutinfo").getValueObj();
             assertEquals("240", ((java.util.Map<?, ?>) v).get("divider"), "layout (binary) saved and changed");
 
+            //scripts of the script manager (stored as #script#, cached): run on save, a changed script applies at once
+            mpv5.db.objects.ValueProperty.addOrUpdateProperty("modifyOnSave", "#dbo.setCname(dbo.__getCname().trim())#",
+                    Context.getProduct(), mpv5.db.objects.Group.getDefault());
+            Product ps = (Product) DatabaseObject.getObject(Context.getProduct());
+            ps.setCname("  Tee  ");
+            ps.setCnumber("T-1");
+            ps.setDateadded(new Date());
+            assertTrue(ps.save(true));
+            assertEquals("Tee", ((Product) DatabaseObject.getObject(Context.getProduct(), ps.__getIDS())).__getCname(), "script ran");
+            mpv5.db.objects.ValueProperty.addOrUpdateProperty("modifyOnSave", "#dbo.setCname(dbo.__getCname().toUpperCase())#",
+                    Context.getProduct(), mpv5.db.objects.Group.getDefault());
+            ps.setCname("kaffee");
+            assertTrue(ps.save(true));
+            assertEquals("KAFFEE", ((Product) DatabaseObject.getObject(Context.getProduct(), ps.__getIDS())).__getCname(), "changed script ran");
+
             //number formats (format manager): restart with a new year, keep counting, set the next number
             int year = java.util.Calendar.getInstance().get(java.util.Calendar.YEAR);
             mpv5.handler.NumberFormatBuilder nf = new mpv5.handler.NumberFormatBuilder().setPrefix("GS-")
