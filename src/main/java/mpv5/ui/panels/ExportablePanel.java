@@ -33,4 +33,13 @@ public interface ExportablePanel {
      * Show a save As... odt dialog
      */
     public void odt();
+
+    /**
+     * Shows the record as PDF inside YaBS (preview window)
+     */
+    default void preview() {
+        if (this instanceof DataPanel && ((DataPanel) this).getDataOwner() != null) {
+            ((DataPanel) this).getDataOwner().preview();
+        }
+    }
 }

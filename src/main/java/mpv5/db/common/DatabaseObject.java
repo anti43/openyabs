@@ -2822,6 +2822,21 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         setGroupsids(g.__getIDS());
     }
 
+    /**
+     * Shows the record as PDF in the preview window (template of the record,
+     * a temporary file)
+     */
+    public void preview() {
+        if (this instanceof Templateable && TemplateHandler.isLoaded((Templateable) this)) {
+            mpv5.ui.panels.PreviewWaiter pr = new mpv5.ui.panels.PreviewWaiter();
+            pr.setDataOwner(this);
+            new Job(Export.createFile(null, TemplateHandler.loadTemplate((Templateable) this), this), pr).execute();
+        } else {
+            YabsViewProxy.instance().addMessage(Messages.NO_TEMPLATE_LOADED + ": " + getClass().getSimpleName()
+                    + " (" + mpv5.db.objects.User.getCurrentUser() + ")", Color.YELLOW);
+        }
+    }
+
     public void toPdf(boolean showDialog) {
         export(true, showDialog);
     }

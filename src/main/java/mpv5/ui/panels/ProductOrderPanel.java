@@ -1816,7 +1816,8 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
         }
     }
 
-    private void preview() {
+    @Override
+    public void preview() {
         PreviewWaiter pr;
         if (dataOwner != null && dataOwner.isExisting()) {
             if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.getInttype())) {

@@ -112,7 +112,9 @@ public class PreviewWaiter implements Waiter {
 
         if (extension.equalsIgnoreCase(".pdf")) {
             try {
-                FileDirectoryHandler.open(file);
+                //inside YaBS (PDFBox); the window has a button for the system viewer
+                final File f = file;
+                javax.swing.SwingUtilities.invokeLater(() -> mpv5.ui.dialogs.PdfPreview.show(f));
             } catch (Exception ex) {
                 Log.Debug(ex);
             }

@@ -314,6 +314,17 @@ public final class RecordActions {
     }
 
     /**
+     * The record as PDF in the preview window
+     *
+     * @param view
+     */
+    public static void preview(DataPanel view) {
+        if (view.getDataOwner().isExisting() && view instanceof ExportablePanel) {
+            ((ExportablePanel) view).preview();
+        }
+    }
+
+    /**
      * @param view
      */
     public static void odt(DataPanel view) {
