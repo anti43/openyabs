@@ -1099,7 +1099,7 @@ public class QueryHandler implements Cloneable {
                             comp.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                         }
                         progressbar.setValue(0);
-                        progressbar.setIndeterminate(false);
+                        mpv5.ui.modern.Edt.setIndeterminate(progressbar, false);
                     }
                     RUNNING_JOBS--;
                 }
@@ -2754,7 +2754,7 @@ public class QueryHandler implements Cloneable {
                     outputStream.close();
                     list.add(f);
                     progressbar.setValue(0);
-                    progressbar.setIndeterminate(false);
+                    mpv5.ui.modern.Edt.setIndeterminate(progressbar, false);
                 }
                 sqlConn.commit();
             } catch (SQLException ex) {
@@ -2989,7 +2989,7 @@ public class QueryHandler implements Cloneable {
                 Popup.error(ex);
             } finally {
                 progressbar.setValue(0);
-                progressbar.setIndeterminate(false);
+                mpv5.ui.modern.Edt.setIndeterminate(progressbar, false);
             }
             return null;
         }
@@ -3019,10 +3019,10 @@ public class QueryHandler implements Cloneable {
                     int progress = (Integer) evt.getNewValue();
                     Log.Debug(this, "Progress changed to: " + progress);
                     if (progress == 0) {
-                        progressbar.setIndeterminate(true);
+                        mpv5.ui.modern.Edt.setIndeterminate(progressbar, true);
                     } else if (progress == 100) {
                         progressbar.setValue(0);
-                        progressbar.setIndeterminate(false);
+                        mpv5.ui.modern.Edt.setIndeterminate(progressbar, false);
                     }
                 }
             }
@@ -3074,7 +3074,7 @@ public class QueryHandler implements Cloneable {
                     sqlConn.commit();
                 } catch (Exception ex) {
                     progressbar.setValue(0);
-                    progressbar.setIndeterminate(false);
+                    mpv5.ui.modern.Edt.setIndeterminate(progressbar, false);
                     Log.Debug(this, "Datenbankfehler: " + query);
                     Log.Debug(this, ex);
                     Popup.error(ex);
@@ -3135,10 +3135,10 @@ public class QueryHandler implements Cloneable {
 
                     Log.Debug(this, "Progress changed to: " + evt.getNewValue());
                     if (StateValue.STARTED == evt.getNewValue()) {
-                        progressbar.setIndeterminate(true);
+                        mpv5.ui.modern.Edt.setIndeterminate(progressbar, true);
                     } else if (StateValue.DONE == evt.getNewValue()) {
                         progressbar.setValue(0);
-                        progressbar.setIndeterminate(false);
+                        mpv5.ui.modern.Edt.setIndeterminate(progressbar, false);
                     }
                 }
             }
@@ -3180,7 +3180,7 @@ public class QueryHandler implements Cloneable {
                     }
                 } catch (Exception ex) {
                     progressbar.setValue(0);
-                    progressbar.setIndeterminate(false);
+                    mpv5.ui.modern.Edt.setIndeterminate(progressbar, false);
                     Log.Debug(this, "Datenbankfehler: " + query);
                     Log.Debug(this, ex);
                     Popup.error(ex);
@@ -3213,10 +3213,10 @@ public class QueryHandler implements Cloneable {
 
                     Log.Debug(this, "Progress changed to: " + evt.getNewValue());
                     if (StateValue.STARTED == evt.getNewValue()) {
-                        progressbar.setIndeterminate(true);
+                        mpv5.ui.modern.Edt.setIndeterminate(progressbar, true);
                     } else if (StateValue.DONE == evt.getNewValue()) {
                         progressbar.setValue(0);
-                        progressbar.setIndeterminate(false);
+                        mpv5.ui.modern.Edt.setIndeterminate(progressbar, false);
                     }
                 }
             }

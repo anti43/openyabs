@@ -549,7 +549,7 @@ public final class GeneralListPanel extends javax.swing.JPanel {
                 l.setFont(mpv5.ui.modern.ModernTheme.font(2, java.awt.Font.PLAIN));
                 l.setForeground(mpv5.ui.modern.ModernTheme.muted());
                 javax.swing.JProgressBar bar = new javax.swing.JProgressBar();
-                bar.setIndeterminate(true);
+                mpv5.ui.modern.Edt.setIndeterminate(bar, true);
                 bar.setPreferredSize(new java.awt.Dimension(mpv5.ui.modern.ModernTheme.px(260), mpv5.ui.modern.ModernTheme.px(8)));
                 box.add(l, java.awt.BorderLayout.NORTH);
                 box.add(bar, java.awt.BorderLayout.CENTER);
