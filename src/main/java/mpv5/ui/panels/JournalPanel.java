@@ -1601,17 +1601,26 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                 }
             }
             try {
-                map.put("journal.user", users.getSelectedValue()); //NOI18N
-                map.put("journal.accounts", Arrays.asList(jList1.getSelectedValues()).toString()); //NOI18N
+                Object user = users.getSelectedValue();
+                map.put("journal.user", user == null || String.valueOf(user).trim().isEmpty() || "null".equals(String.valueOf(user)) ? Messages.ALL.toString() : String.valueOf(user)); //NOI18N
+                List<Object> accounts = Arrays.asList(jList1.getSelectedValues());
+                map.put("journal.accounts", accounts.isEmpty() ? Messages.ALL.toString()
+                        : accounts.toString().substring(1, accounts.toString().length() - 1)); //NOI18N
             } catch (Exception e) {
                 Log.Debug(e);
                 throw e;
             }
 
             journalOrContactTemplate.injectData(map);
+            //rows as sorted on screen, columns in the order of the model (not as moved
+            //on screen): the column format of the template refers to them
             MPTableModel xx = (MPTableModel) jTable1.getModel();
-            xx.setOwner(jTable1);
-            Object[][] xxd = xx.getDataLikeDisplayed();
+            Object[][] xxd = new Object[jTable1.getRowCount()][xx.getColumnCount()];
+            for (int i = 0; i < xxd.length; i++) {
+                for (int j = 0; j < xxd[i].length; j++) {
+                    xxd[i][j] = xx.getValueAt(jTable1.convertRowIndexToModel(i), j);
+                }
+            }
             Object[][] d = new Object[xxd.length][];
             for (int i = 0; i < xxd.length; i++) {
                 Object[] objects = xxd[i];
@@ -1621,7 +1630,8 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                     if (object instanceof Date) {
                         nd[j - 1] = DateConverter.getDefDateString((Date) object);
                     } else {
-                        nd[j - 1] = object;
+                        //empty, not the field name (e.g. the name of an expense)
+                        nd[j - 1] = object == null ? "" : object;
                     }
                 }
                 d[i] = nd;

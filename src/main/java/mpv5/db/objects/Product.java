@@ -426,8 +426,9 @@ public class Product extends DatabaseObject implements Formattable, Templateable
          Log.Debug(numberFormatException);
       }
       map.put("externalnetvalue", FormatNumber.formatDezimal(__getExternalnetvalue()));
-      map.put("externalbrutvalue", FormatNumber.formatDezimal(__getExternalnetvalue().multiply(Tax.getTaxValue(__getTaxids()))));
-      map.put("taxpercentvalue", Tax.getTaxValue(__getTaxids()));
+      //gross = net * (1 + rate / 100), not net * rate
+      map.put("externalbrutvalue", FormatNumber.formatDezimal(__getExternalnetvalue().multiply(Tax.getCalculationValue(__getTaxids()))));
+      map.put("taxpercentvalue", FormatNumber.formatPercent(Tax.getTaxValue(__getTaxids())));
 
       return super.resolveReferences(map);
    }

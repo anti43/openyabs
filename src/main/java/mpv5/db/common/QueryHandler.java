@@ -2911,7 +2911,17 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
-     * Updates an File at the Database
+     * Updates the data of a stored file now, in this thread
+     *
+     * @param file
+     * @param cname the stored name (e.g. the filename of a template)
+     */
+    public void updateFileNow(File file, String cname) {
+        new backgroundFileUpdate(file, cname).doInBackground();
+    }
+
+    /**
+     * Updates an File at the Database (in the background)
      *
      * @param file
      * @param cname

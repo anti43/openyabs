@@ -75,7 +75,7 @@ public class TemplateHandler {
      * @param target
      * @return
      */
-    public static synchronized Template loadTemplate(Templateable target) {
+    public static Template loadTemplate(Templateable target) {
 
         int groupsids;
         if (target != null) {
@@ -91,7 +91,7 @@ public class TemplateHandler {
      * @param t
      * @return
      */
-    public static synchronized Template loadTemplate(Template t) {
+    public static Template loadTemplate(Template t) {
         return loadTemplate(t.__getGroupsids(), Integer.valueOf(t.__getMimetype()));
     }
 
@@ -100,7 +100,7 @@ public class TemplateHandler {
      * @param typ
      * @return
      */
-    public static synchronized Template loadTemplate(int group, int typ) {
+    public static Template loadTemplate(int group, int typ) {
         return loadTemplate(Long.valueOf(group), typ);
     }
 
@@ -111,55 +111,137 @@ public class TemplateHandler {
      * @param typ
      * @return
      */
-    public static synchronized Template loadTemplate(long groupsids, int typ) {
-        ReturnValue data;
-        if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_USE)
-                || LocalSettings.getBooleanProperty(LocalSettings.OFFICE_ALT)) {
-            Integer type = typ;
-
-            if (groupsids < 0) {
-                groupsids = 1;
-            }
-
-            String key = mpv5.db.objects.User.getCurrentUser() + "@" + type + "@" + groupsids;
+    public static Template loadTemplate(long groupsids, int typ) {
+        if (!(LocalSettings.getBooleanProperty(LocalSettings.OFFICE_USE)
+                || LocalSettings.getBooleanProperty(LocalSettings.OFFICE_ALT))) {
+            return null;
+        }
+        Integer type = typ;
+        if (groupsids < 0) {
+            groupsids = 1;
+        }
+        String key = mpv5.db.objects.User.getCurrentUser() + "@" + type + "@" + groupsids;
+        synchronized (TemplateHandler.class) {
             if (TEMPLATE_CACHE.containsKey(key)) {
                 return TEMPLATE_CACHE.get(key);
-            } else {
+            }
+        }
+        ReturnValue data = TemplateHandler.getDefinedTemplatesFor(groupsids, type);
+        if (!data.hasData()) {
+            try {
+                if (!(TEMPLATE_MISSING_NOTIFICATIONS.containsKey(type.toString()) && TEMPLATE_MISSING_NOTIFICATIONS.get(type.toString()).equals(Group.getObject(Context.getGroup(), (int) groupsids)))) {
+                    mpv5.YabsViewProxy.instance().addMessage(Messages.OO_NO_TEMPLATE + ": " + TemplateHandler.getName(type) + " [" + mpv5.db.objects.User.getCurrentUser() + "] [" + Group.getObject(Context.getGroup(), (int) groupsids) + "]", Color.YELLOW);
+                    Log.Debug(Template.class, "No template found for type: " + type + " for user: " + mpv5.db.objects.User.getCurrentUser() + " in GROUP " + Group.getObject(Context.getGroup(), (int) groupsids));
+                    TEMPLATE_MISSING_NOTIFICATIONS.put(type.toString(), (Group) Group.getObject(Context.getGroup(), (int) groupsids));
+                }
+            } catch (NodataFoundException nodataFoundException) {
+                Log.Debug(Template.class, nodataFoundException.getMessage());
+            }
+            return null;
+        }
+        //several templates of the type assigned to the user (for the group): the user chooses
+        java.util.LinkedHashSet<Integer> ids = new java.util.LinkedHashSet<>();
+        for (Object[] row : data.getData()) {
+            ids.add(Integer.valueOf(row[0].toString()));
+        }
+        int id = ids.size() == 1 ? ids.iterator().next() : choose(key, new java.util.ArrayList<>(ids), type);
 
-                data = TemplateHandler.getDefinedTemplatesFor(groupsids, type);
-                Template preloadedTemplate = null;
-                if (data.hasData()) {
-                    try {
-                        preloadedTemplate = (Template) DatabaseObject.getObject(Context.getTemplate(), Integer.valueOf(data.getData()[data.getData().length - 1][0].toString()));
-                        Log.Debug(TemplateHandler.class, preloadedTemplate.getFile());
-                        if (preloadedTemplate.getFile().getName().endsWith("pdf")) {
-                            preloadedTemplate.defineExFile(new PDFFile(preloadedTemplate.getFile().getPath()));
-                        } else {
-                            preloadedTemplate.defineExFile(new ODTFile2(preloadedTemplate.getFile().getPath()));
-                            Log.Debug(Template.class, "Loaded template: " + preloadedTemplate);
-                            mpv5.YabsViewProxy.instance().addMessage(preloadedTemplate + Messages.LOADED.toString(), Color.GREEN);
-                        }
-                        TEMPLATE_CACHE.put(key, preloadedTemplate);
-                    } catch (Exception ex) {
-                        Log.Debug(ex);
-                        Log.Debug(Template.class, "Possibly invalid template: " + data.getData()[data.getData().length - 1][0].toString());
-                        return null;
-                    }
+        synchronized (TemplateHandler.class) {
+            if (TEMPLATE_CACHE.containsKey(key)) {
+                return TEMPLATE_CACHE.get(key);
+            }
+            Template preloadedTemplate;
+            try {
+                preloadedTemplate = (Template) DatabaseObject.getObject(Context.getTemplate(), id);
+                Log.Debug(TemplateHandler.class, preloadedTemplate.getFile());
+                if (preloadedTemplate.getFile().getName().endsWith("pdf")) {
+                    preloadedTemplate.defineExFile(new PDFFile(preloadedTemplate.getFile().getPath()));
                 } else {
-                    try {
-                        if (!(TEMPLATE_MISSING_NOTIFICATIONS.containsKey(type.toString()) && TEMPLATE_MISSING_NOTIFICATIONS.get(type.toString()).equals(Group.getObject(Context.getGroup(), (int) groupsids)))) {
-                            mpv5.YabsViewProxy.instance().addMessage(Messages.OO_NO_TEMPLATE + ": " + TemplateHandler.getName(type) + " [" + mpv5.db.objects.User.getCurrentUser() + "] [" + Group.getObject(Context.getGroup(), (int) groupsids) + "]", Color.YELLOW);
-                            Log.Debug(Template.class, "No template found for type: " + type + " for user: " + mpv5.db.objects.User.getCurrentUser() + " in GROUP " + Group.getObject(Context.getGroup(), (int) groupsids));
-                            TEMPLATE_MISSING_NOTIFICATIONS.put(type.toString(), (Group) Group.getObject(Context.getGroup(), (int) groupsids));
-                        }
-                    } catch (NodataFoundException nodataFoundException) {
-                        Log.Debug(Template.class, nodataFoundException.getMessage());
+                    preloadedTemplate.defineExFile(new ODTFile2(preloadedTemplate.getFile().getPath()));
+                    Log.Debug(Template.class, "Loaded template: " + preloadedTemplate);
+                    mpv5.YabsViewProxy.instance().addMessage(preloadedTemplate + Messages.LOADED.toString(), Color.GREEN);
+                }
+                TEMPLATE_CACHE.put(key, preloadedTemplate);
+            } catch (Exception ex) {
+                Log.Debug(ex);
+                Log.Debug(Template.class, "Possibly invalid template: " + id);
+                return null;
+            }
+            return preloadedTemplate;
+        }
+    }
+
+    /**
+     * The template the user chose (per user, type and group), for this session
+     */
+    private static final HashMap<String, Integer> CHOSEN = new HashMap<String, Integer>();
+    private static final Object ASK_LOCK = new Object();
+    /**
+     * Answers the question in tests: gets the candidates, returns the chosen one (or null for the default)
+     */
+    static java.util.function.Function<java.util.List<Template>, Template> chooser;
+
+    /**
+     * Several templates of the type are assigned: ask which one (once per
+     * session). Without an answer (cancelled, no screen) the last one, as before.
+     *
+     * @param key user@type@group
+     * @param ids the assigned templates
+     * @param type
+     * @return the id of the template to use
+     */
+    private static int choose(String key, java.util.List<Integer> ids, int type) {
+        int fallback = ids.get(ids.size() - 1);
+        //not on the EDT: one question at a time (the EDT never waits for this lock)
+        boolean edt = javax.swing.SwingUtilities.isEventDispatchThread();
+        Object lock = edt ? new Object() : ASK_LOCK;
+        synchronized (lock) {
+            synchronized (CHOSEN) {
+                Integer c = CHOSEN.get(key);
+                if (c != null && ids.contains(c)) {
+                    return c;
+                }
+            }
+            final java.util.List<Template> candidates = new java.util.ArrayList<Template>();
+            for (Integer i : ids) {
+                try {
+                    candidates.add((Template) DatabaseObject.getObject(Context.getTemplate(), i));
+                } catch (NodataFoundException ex) {
+                    Log.Debug(TemplateHandler.class, ex.getMessage());
+                }
+            }
+            if (candidates.size() < 2) {
+                return candidates.isEmpty() ? fallback : candidates.get(0).__getIDS();
+            }
+            final Template[] answer = new Template[1];
+            final String question = String.format(Messages.TEMPLATE_CHOOSE.toString(), getName(type));
+            Runnable ask = new Runnable() {
+                @Override
+                public void run() {
+                    if (chooser != null) {
+                        answer[0] = chooser.apply(candidates);
+                    } else if (!java.awt.GraphicsEnvironment.isHeadless()) {
+                        Object o = javax.swing.JOptionPane.showInputDialog(mpv5.ui.dialogs.Popup.identifier, question,
+                                Messages.TEMPLATE_CHOOSE_TITLE.toString(), javax.swing.JOptionPane.QUESTION_MESSAGE, null,
+                                candidates.toArray(), candidates.get(candidates.size() - 1));
+                        answer[0] = (Template) o;
                     }
                 }
-                return preloadedTemplate;
+            };
+            try {
+                if (edt) {
+                    ask.run();
+                } else {
+                    javax.swing.SwingUtilities.invokeAndWait(ask);
+                }
+            } catch (Exception e) {
+                Log.Debug(TemplateHandler.class, e);
             }
-        } else {
-            return null;
+            int chosen = answer[0] == null ? fallback : answer[0].__getIDS();
+            synchronized (CHOSEN) {
+                CHOSEN.put(key, chosen);
+            }
+            return chosen;
         }
     }
 
@@ -639,7 +721,12 @@ public class TemplateHandler {
      * Clear the template cache
      */
     public static void clearCache() {
-        TEMPLATE_CACHE.clear();
+        synchronized (TemplateHandler.class) {
+            TEMPLATE_CACHE.clear();
+        }
+        synchronized (CHOSEN) {
+            CHOSEN.clear();
+        }
     }
 
     public static boolean importTemplateAndAssign(File file, FutureCallback<Template> f) {
