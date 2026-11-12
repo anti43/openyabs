@@ -261,12 +261,8 @@ public class MPControlPanel extends JPanel {
         String database = Messages.SETTINGS_GROUP_DATABASE.toString();
         l.add(new Entry(database, Messages.ZIPBACKUP_TITLE.toString(), Messages.ZIPBACKUP_DESC.toString(), "folder_tar",
                 mpv5.ui.dialogs.subcomponents.ControlPanel_Backup.class, mpv5.ui.dialogs.subcomponents.ControlPanel_Backup::new, null, null));
-        l.add(new Entry(database, Messages.DB_BACKUP.toString(), Messages.DB_BACKUP_INFO.toString(), "folder_tar", null, null,
-                () -> mpv5.db.migration.MigrationWB.instanceOf().doExportToDerby(), null));
-        l.add(new Entry(database, Messages.DB_EXPORT_SQL.toString(), Messages.DB_EXPORT_SQL_INFO.toString(), "kwikdisk", null, null,
-                () -> mpv5.db.migration.MigrationWB.instanceOf().doExportToMySQL(), null));
-        l.add(new Entry(database, Messages.DB_RESTORE.toString(), Messages.DB_RESTORE_INFO.toString(), "folder_open", null, null,
-                () -> mpv5.db.migration.MigrationWB.instanceOf().doImport(), null));
+        //the Derby-only backup / restore and the MySQL export (Tools > Migration) are switched off
+        //until they are tested with H2; the zip backup above works for H2 and Derby
 
         String system = Messages.SETTINGS_GROUP_SYSTEM.toString();
         l.add(panel(system, "jButton1", Messages.SETTINGS_D_LOCAL, "internet", ControlPanel_Local.class, ControlPanel_Local::new));

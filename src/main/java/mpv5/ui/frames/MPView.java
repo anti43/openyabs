@@ -3098,11 +3098,12 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
     }//GEN-LAST:event_jMenuItem29ActionPerformed
 
     /**
-     * Tools > Migration is in the Control Panel (group "Database"); the stock
-     * manager is in the products navigation
+     * Tools > Migration (Derby backup, MySQL export, restore) is switched off
+     * until it is tested with H2 (removed, so its shortcuts do nothing
+     * either); the stock manager is in the products navigation
      */
     private void moveMenus() {
-        jMenu3.setVisible(false);
+        toolsMenu.remove(jMenu3);
         jMenuItem48.setVisible(false);
         //View > Add toolbar action: in the script manager (Control Panel)
         jMenuItem49.setVisible(false);
@@ -3142,7 +3143,7 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
    }//GEN-LAST:event_jMenuItem50ActionPerformed
 
    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-       LoginToInstanceScreen.load();
+       mpv5.ui.dialogs.ConnectionManager.open(false);
    }//GEN-LAST:event_jMenuItem2ActionPerformed
 
 private void jMenuItem51ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem51ActionPerformed

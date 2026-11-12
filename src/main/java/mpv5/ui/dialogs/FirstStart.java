@@ -126,20 +126,45 @@ public final class FirstStart extends JFrame {
         if (!(javax.swing.UIManager.getLookAndFeel() instanceof mpv5.ui.modern.YabsLookAndFeel)) {
             Main.setLaF("");
         }
-        FirstStart f = new FirstStart(forConnId);
+        FirstStart f = new FirstStart(forConnId, null, null);
         f.setVisible(true);
         f.toFront();
     }
 
-    private FirstStart(Integer forConnId) {
+    /**
+     * Sets up a new database while YaBS runs (connection manager): instead of
+     * starting YaBS at the end, done is run; closing before the start runs
+     * cancelled instead of exiting
+     *
+     * @param forConnId the (new) connection
+     * @param done after the database was created (connected to it)
+     * @param cancelled closed without a database
+     */
+    public static void open(Integer forConnId, Runnable done, Runnable cancelled) {
+        FirstStart f = new FirstStart(forConnId, done, cancelled);
+        f.setVisible(true);
+        f.toFront();
+    }
+
+    private final Runnable whenDone;
+    private final Runnable whenCancelled;
+
+    private FirstStart(Integer forConnId, Runnable done, Runnable cancelled) {
         super(Constants.TITLE);
         this.forConnId = forConnId;
+        this.whenDone = done;
+        this.whenCancelled = cancelled;
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent e) {
                 if (start.isEnabled() || error.isVisible()) {
-                    System.exit(1);
+                    if (whenCancelled != null) {
+                        dispose();
+                        whenCancelled.run();
+                    } else {
+                        System.exit(1);
+                    }
                 }
             }
         });
@@ -461,9 +486,13 @@ public final class FirstStart extends JFrame {
                         st.set(Step.DONE);
                     }
                     System.clearProperty("yabs_firststart");
-                    Log.setLogLevel(Log.LOGLEVEL_NONE);
                     dispose();
-                    Main.start();
+                    if (whenDone != null) {
+                        whenDone.run();
+                    } else {
+                        Log.setLogLevel(Log.LOGLEVEL_NONE);
+                        Main.start();
+                    }
                 } else {
                     for (Step st : steps) {
                         if (st.state == Step.NOW) {

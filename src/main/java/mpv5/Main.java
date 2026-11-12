@@ -1308,7 +1308,7 @@ public class Main implements Runnable {
 
     private void doLoginToInstanceScreen() {
         DatabaseConnection.shutdown();
-        LoginToInstanceScreen.load();
+        mpv5.ui.dialogs.ConnectionManager.open(true);
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
