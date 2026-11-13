@@ -78,12 +78,34 @@ public class Conversation
         this.cnumber = cnumber;
     }
 
+    /**
+     * @return the date of the conversation; stored in the column timestamp
+     * ({@link #__getTimestamp()}), there is no column date
+     */
+    @Persistable(false)
     public Date __getDate() {
         return date;
     }
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    /**
+     * The column of the date is "timestamp" (NOT NULL): without this it was
+     * never written and a conversation could not be saved
+     *
+     * @return the date of the conversation, now if none is set
+     */
+    public Date __getTimestamp() {
+        return date == null ? new Date() : date;
+    }
+
+    /**
+     * @param timestamp the date of the conversation (column timestamp)
+     */
+    public void setTimestamp(Date timestamp) {
+        this.date = timestamp;
     }
 
     public Conversation() {
@@ -126,6 +148,17 @@ public class Conversation
     @Override
     public Map<String, Object> resolveReferences(Map<String, Object> map) {
         resolveValueProperties(map);
+        //the text is stored as RTF (the editor of the conversation): plain text in documents
+        //(they showed the RTF source "{\\rtf1\\ansi ..."); the RTF stays available as contentrtf
+        //the date is stored as timestamp: also as conversation.date for templates
+        if (date != null) {
+            map.put("date", mpv5.utils.date.DateConverter.getDefDateString(date));
+        }
+        Object c = map.get("content");
+        if (c instanceof String && ((String) c).trim().startsWith("{\\rtf")) {
+            map.put("contentrtf", c);
+            map.put("content", plainText((String) c));
+        }
         if (map.containsKey("contactsids")) {
             try {
                 try {
@@ -158,5 +191,21 @@ public class Conversation
     @Persistable(false)
     public void setContact(Contact contact) {
         setContactsids(contact.__getIDS());
+    }
+
+    /**
+     * @param rtf the stored text (older versions stored ' as `)
+     * @return the text without formatting, the RTF itself if it cannot be read
+     */
+    public static String plainText(String rtf) {
+        try {
+            javax.swing.text.rtf.RTFEditorKit kit = new javax.swing.text.rtf.RTFEditorKit();
+            javax.swing.text.Document doc = kit.createDefaultDocument();
+            kit.read(new java.io.StringReader(rtf.replace("`", "'")), doc, 0);
+            return doc.getText(0, doc.getLength()).trim();
+        } catch (Exception e) {
+            Log.Debug(Conversation.class, e);
+            return rtf;
+        }
     }
 }

@@ -473,9 +473,8 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
         map.put("invoiceaddress", map.get("invoice"));
         map.put("deliveryaddress", map.get("delivery"));
 
-        if ("country".matches("\\d+")) {
-            map.put("country", LanguageManager.getCountryName(Integer.valueOf("country")));
-        }
+        //the country is stored as code (276): the name in documents (was never resolved, the documents showed 276)
+        map.put("country", Address.countryName(country));
 
         if (ismale) {
             map.put("gender", Messages.CONTACT_TYPE_MALE.toString());

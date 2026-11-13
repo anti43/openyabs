@@ -114,6 +114,16 @@ public class Job extends SwingWorker<Object, Object> {
                 }
             } catch (Exception ex) {
                 Log.Debug(ex);
+                //a document could not be created from its template: tell the user (was in the log only,
+                //and the preview showed an unreadable file)
+                for (Throwable t = ex; t != null; t = t.getCause() == t ? null : t.getCause()) {
+                    if (t instanceof mpv5.utils.export.ExportFailedException) {
+                        final String text = t.getMessage();
+                        mpv5.YabsViewProxy.instance().addMessage(text, java.awt.Color.RED);
+                        mpv5.ui.dialogs.Popup.notice(text);
+                        break;
+                    }
+                }
             }
         }
         if (bar != null) {

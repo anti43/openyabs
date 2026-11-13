@@ -230,8 +230,30 @@ public class Address extends DatabaseObject {
         this.inttype = inttype;
     }
 
+    /**
+     * @param country as stored: a country code (276) or a name
+     * @return the name of the country ("Deutschland"); anything else as it is
+     */
+    public static String countryName(String country) {
+        if (country != null && country.trim().matches("\\d+")) {
+            try {
+                String name = mpv5.i18n.LanguageManager.getCountryName(Integer.parseInt(country.trim()));
+                if (name != null && !name.equals("---")) {
+                    return name;
+                }
+            } catch (Exception e) {
+                //the country list is not loaded: as stored
+                mpv5.logging.Log.Debug(Address.class, e.getMessage());
+            }
+        }
+        return country == null ? "" : country;
+    }
+
     @Override
     public java.util.Map<String, Object> resolveReferences(java.util.Map<String, Object> map) {
+        if (map.containsKey("country")) {
+            map.put("country", countryName(String.valueOf(map.get("country"))));
+        }
         try {
             if (map.containsKey("inttype")) {
                 // [0 = billing adress, 1 = delivery adress, 2 = both, 3 = undefined]

@@ -499,8 +499,9 @@ public class ProductOrder extends DatabaseObject implements Formattable, Templat
                 Log.Debug(this, "Error while using default.date.format: " + e);
             }
         }
-        map.put("dateend", df.format(getDateend()));
-        map.put("datetodo", df.format(getDatetodo()));
+        //a missing date (e.g. an order saved without) stays empty instead of breaking the export
+        map.put("dateend", getDateend() == null ? "" : df.format(getDateend()));
+        map.put("datetodo", getDatetodo() == null ? "" : df.format(getDatetodo()));
 
         return super.resolveReferences(map);
     }

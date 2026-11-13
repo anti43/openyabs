@@ -438,6 +438,9 @@ public final class Export extends HashMap<String, Object> implements Waitable {
                         try {
                             ex.processData(f2);
                             files.add(f2);
+                        } catch (ExportFailedException failed) {
+                            //not printed: say why, instead of printing an empty file
+                            Popup.notice(failed.getMessage());
                         } catch (NodataFoundException ex1) {
                             Log.Debug(ex1);
                         } catch (FileNotFoundException ex1) {
@@ -777,8 +780,18 @@ public final class Export extends HashMap<String, Object> implements Waitable {
             fromFile.setData(this);
             fromFile.setTemplate(template);
             fromFile.setEmbedAllFonts(embedAllFonts);
+            fromFile.setFailure(null);
             fromFile.run();//dont call this on another thread; Exportable is _NOT_ threadsafe
+            Exception failure = fromFile.getFailure();
             fromFile.reset();
+            if (failure != null) {
+                Throwable root = failure;
+                while (root.getCause() != null && root.getCause() != root) {
+                    root = root.getCause();
+                }
+                String name = template != null ? template.__getCname() : fromFile.getName();
+                throw new ExportFailedException(String.format(Messages.EXPORT_FAILED.toString(), name, root.getMessage()), failure);
+            }
         }
         if (toFile.exists()) {
             mpv5.handler.Activity.file(toFile, dob);

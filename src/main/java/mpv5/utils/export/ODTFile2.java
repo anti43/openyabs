@@ -131,6 +131,12 @@ public class ODTFile2 extends Exportable {
                 Log.Debug(this, "Replaced Fields of odt file: " + this + " to " + f);
                 document = OdfTextDocument.loadDocument(f);
                 Log.Debug(this, "Loaded odt file: " + f);
+                //shapes with text in table cells break the converter ("Insertion of illegal Element: 12")
+                int changed = OdtPdfCompat.shapesInTablesToFrames(document.getContentDom())
+                        + OdtPdfCompat.shapesInTablesToFrames(document.getStylesDom());
+                if (changed > 0) {
+                    Log.Debug(this, "Shapes with text in tables as text frames for the PDF: " + changed);
+                }
                 try (FileOutputStream pdf = new FileOutputStream(target)) {
                     PdfConverter.getInstance().convert(document, pdf, isEmbedAllFonts() ? pdfaOptions : options);
                 }
@@ -144,6 +150,12 @@ public class ODTFile2 extends Exportable {
             }
         } catch (Exception ex) {
             Log.Debug(ex);
+            //no half written, unreadable file: the caller says what went wrong
+            setFailure(ex);
+            File target = getTarget();
+            if (target != null && target.exists()) {
+                target.delete();
+            }
         } finally {
             mpv5.YabsViewProxy.instance().setWaiting(false);
         }
@@ -181,6 +193,16 @@ public class ODTFile2 extends Exportable {
             Object table2 = templateData.remove("item.reference.xtable1");
             if (table2 != null) {
                 filltable(2, cols, table2, metadata, context);
+            }
+            //a table of the template without data (a letter on a template with positions, a journal
+            //without rows): no rows, instead of "$xtable1.C0" ... in the document
+            for (int index = 1; index <= 2; index++) {
+                if (!context.getContextMap().containsKey(KEY_TABLE + index)) {
+                    for (int j = 0; j < 10; j++) {
+                        metadata.addFieldAsList(KEY_TABLE + index + ".C" + j);
+                    }
+                    context.put(KEY_TABLE + index, new ArrayList<Map<String, String>>());
+                }
             }
 
             DatabaseObject dob = ((Export) templateData).getDob();
