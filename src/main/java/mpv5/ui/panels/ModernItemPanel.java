@@ -267,6 +267,8 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
     private void initFields(Context context) {
         contactname.setSearchEnabled(true);
         contactname.setContext(Context.getCustomer());
+        //the last entry of the list: a new customer for this document
+        contactname.setActionEntry(Messages.ITEM_NEW_CUSTOMER_ENTRY.toString(), this::newCustomer);
         contactname.getComboBox().addActionListener(e -> {
             final MPComboBoxModelItem item = contactname.getSelectedItem();
             if (item != null && item.isValid()) {
@@ -1145,8 +1147,122 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         }
     }
 
+    // <editor-fold defaultstate="collapsed" desc="New customer from the customer box">
+    /**
+     * the tab of a new customer opened from the customer box (until saved or closed)
+     */
+    private DataPanel pendingCustomerPanel;
+    private java.util.function.Consumer<DatabaseObject> pendingCustomerListener;
+
+    /**
+     * Opens a new customer (named as typed) in a tab. Saving it sets it as the
+     * customer of this document and saves the document; saving the document
+     * first saves the customer.
+     */
+    private void newCustomer() {
+        dropPendingCustomer();
+        Contact c = (Contact) DatabaseObject.getObject(Context.getCustomer());
+        c.setisCustomer(true);
+        String name = contactname.getTypedText() == null ? "" : contactname.getTypedText().trim();
+        if (!name.isEmpty() && !name.equals(Messages.ITEM_NEW_CUSTOMER_ENTRY.toString())) {
+            c.setCname(name);
+        }
+        final DataPanel p = YabsViewProxy.instance().addTab(c, true);
+        if (p == null) {
+            return;
+        }
+        pendingCustomerPanel = p;
+        pendingCustomerListener = o -> {
+            if (o instanceof Contact && pendingCustomerPanel != null && o == pendingCustomerPanel.getDataOwner()) {
+                SwingUtilities.invokeLater(() -> customerSaved((Contact) o, true));
+            }
+        };
+        DatabaseObject.addSaveListener(pendingCustomerListener);
+        YabsViewProxy.instance().addMessage(Messages.ITEM_NEW_CUSTOMER_HINT.toString(), Color.GREEN);
+    }
+
+    private void dropPendingCustomer() {
+        if (pendingCustomerListener != null) {
+            DatabaseObject.removeSaveListener(pendingCustomerListener);
+        }
+        pendingCustomerListener = null;
+        pendingCustomerPanel = null;
+    }
+
+    /**
+     * The new customer was saved: it is the customer of this document
+     *
+     * @param c
+     * @param saveDocument save this document now (the customer was saved in its tab)
+     */
+    private void customerSaved(Contact c, boolean saveDocument) {
+        if (pendingCustomerPanel == null) {
+            return;
+        }
+        dropPendingCustomer();
+        contactname.setModel(c);
+        setContactData(c);
+        updateHeader();
+        if (saveDocument) {
+            mpv5.ui.toolbars.RecordActions.save(this);
+            if (dataOwner != null && dataOwner.isExisting()) {
+                showThisTab();
+                YabsViewProxy.instance().addMessage(String.format(Messages.ITEM_NEW_CUSTOMER_SAVED.toString(), dataOwner, c), Color.GREEN);
+            }
+        }
+    }
+
+    /**
+     * The new customer's tab is open and not saved yet: save it first (when
+     * this document is saved); a closed tab is forgotten
+     */
+    private void saveNewCustomerFirst() {
+        if (pendingCustomerPanel == null) {
+            return;
+        }
+        if (!((java.awt.Component) pendingCustomerPanel).isDisplayable()) {
+            dropPendingCustomer();
+            return;
+        }
+        DatabaseObject o = pendingCustomerPanel.getDataOwner();
+        if (o != null && !o.isExisting()) {
+            mpv5.ui.toolbars.RecordActions.save(pendingCustomerPanel);
+        }
+        o = pendingCustomerPanel == null ? null : pendingCustomerPanel.getDataOwner();
+        if (o instanceof Contact && o.isExisting()) {
+            customerSaved((Contact) o, false);
+        }
+    }
+
+    private void showThisTab() {
+        javax.swing.JTabbedPane tabs = mpv5.ui.frames.MPView.getTabPane();
+        for (int i = 0; i < tabs.getTabCount(); i++) {
+            java.awt.Component t = tabs.getComponentAt(i);
+            if (t == this || (t instanceof java.awt.Container && SwingUtilities.isDescendingFrom(this, t))) {
+                tabs.setSelectedIndex(i);
+                return;
+            }
+        }
+    }
+
+    /**
+     * Cursor in the customer box, the list open (e.g. after creating a
+     * document from products)
+     */
+    public void focusCustomer() {
+        SwingUtilities.invokeLater(() -> {
+            //the customer card in view (adding positions may have scrolled the overview)
+            //with the title of the card above it
+            int above = ModernTheme.px(56);
+            contactname.scrollRectToVisible(new java.awt.Rectangle(0, -above, contactname.getWidth(), contactname.getHeight() + above));
+            contactname.focusAndOpen();
+        });
+    }
+    // </editor-fold>
+
     @Override
     public boolean collectData() {
+        saveNewCustomerFirst();
         try {
             contactsids_ = Integer.parseInt(String.valueOf(contactname.getSelectedItem().getId()));
         } catch (Exception e) {

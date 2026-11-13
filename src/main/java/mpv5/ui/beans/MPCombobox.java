@@ -88,6 +88,9 @@ public class MPCombobox extends javax.swing.JPanel {
 
             @Override
             public void keyReleased(KeyEvent e) {
+                //what the user typed (the field shows the selected entry later)
+                Object typed = jComboBox1.getEditor().getItem();
+                typedText = typed == null ? "" : String.valueOf(typed);
             }
         });
 
@@ -190,7 +193,7 @@ public class MPCombobox extends javax.swing.JPanel {
                     }
 
                     if (data.length > 0) {
-                        jComboBox1.setModel(MPComboBoxModelItem.toModel(MPComboBoxModelItem.toItems(data, true, true)));
+                        jComboBox1.setModel(withAction(MPComboBoxModelItem.toModel(MPComboBoxModelItem.toItems(data, true, true))));
                
                         if (table != null) {
                             table.editCellAt(table.getSelectedRow(), 4);
@@ -200,6 +203,15 @@ public class MPCombobox extends javax.swing.JPanel {
                         }
                     }
                     
+                    if (data.length == 0 && actionItem != null) {
+                        //nothing found: the action (e.g. "new customer") is still offered
+                        Object typed = jComboBox1.getEditor().getItem();
+                        jComboBox1.setModel(withAction(new MPComboboxModel(new MPComboBoxModelItem[0])));
+                        jComboBox1.getEditor().setItem(typed);
+                        if (!hidePopup) {
+                            jComboBox1.showPopup();
+                        }
+                    }
                     if (data.length == 1) {
                         jComboBox1.setSelectedIndex(0);
                     }
@@ -455,6 +467,64 @@ public class MPCombobox extends javax.swing.JPanel {
     public void setValue(String text) {
         jComboBox1.setSelectedItem(text);
         jComboBox1.setPopupVisible(false);
+    }
+
+    private String typedText = "";
+
+    /**
+     * @return the text last typed into the field (not a selected entry)
+     */
+    public String getTypedText() {
+        return typedText;
+    }
+
+    private MPComboBoxModelItem actionItem;
+    private Runnable action;
+    private Object lastRealSelection;
+
+    /**
+     * An entry at the end of every list (also without results) which runs an
+     * action instead of selecting a record, e.g. "+ New customer ..."; the
+     * previous selection stays
+     *
+     * @param label
+     * @param action run on the EDT
+     */
+    public void setActionEntry(String label, Runnable action) {
+        this.actionItem = new MPComboBoxModelItem(Integer.valueOf(-2), label);
+        this.action = action;
+        jComboBox1.addActionListener(e -> {
+            Object sel = jComboBox1.getSelectedItem();
+            if (sel == actionItem) {
+                final Object restore = lastRealSelection;
+                javax.swing.SwingUtilities.invokeLater(() -> {
+                    jComboBox1.hidePopup();
+                    jComboBox1.setSelectedItem(restore);
+                    this.action.run();
+                });
+            } else if (sel instanceof MPComboBoxModelItem) {
+                lastRealSelection = sel;
+            }
+        });
+        jComboBox1.setModel(withAction(getModel()));
+    }
+
+    /**
+     * @param model
+     * @return the model with the action entry at the end (if there is one)
+     */
+    private javax.swing.ComboBoxModel withAction(javax.swing.ComboBoxModel model) {
+        if (actionItem == null || !(model instanceof javax.swing.MutableComboBoxModel)) {
+            return model;
+        }
+        for (int i = 0; i < model.getSize(); i++) {
+            if (model.getElementAt(i) == actionItem) {
+                return model;
+            }
+        }
+        //insert, not add: addElement selects the first element of an empty model
+        ((javax.swing.MutableComboBoxModel) model).insertElementAt(actionItem, model.getSize());
+        return model;
     }
 
     /**

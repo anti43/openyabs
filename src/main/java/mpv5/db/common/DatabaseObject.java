@@ -490,6 +490,13 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     /**
+     * @param l a listener added with {@link #addSaveListener}
+     */
+    public static void removeSaveListener(java.util.function.Consumer<DatabaseObject> l) {
+        SAVE_LISTENERS.remove(l);
+    }
+
+    /**
      * Setters, getters, relation getters and String getters per class: built
      * once per class (one getMethods() call), read by every load and save
      */

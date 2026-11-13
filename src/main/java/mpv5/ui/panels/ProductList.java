@@ -54,6 +54,16 @@ public class ProductList extends javax.swing.JPanel implements ListPanel {
                 filltable(search.getText(), null);
             }
         });
+        //the list with the preview of the selected product at the right; Enter: new invoice with the selection
+        javax.swing.JPanel wrapper = new javax.swing.JPanel(new java.awt.BorderLayout());
+        java.awt.Container parent = jScrollPane1.getParent();
+        if (parent != null && parent.getLayout() instanceof javax.swing.GroupLayout) {
+            ((javax.swing.GroupLayout) parent.getLayout()).replace(jScrollPane1, wrapper);
+            wrapper.add(jScrollPane1, java.awt.BorderLayout.CENTER);
+            javax.swing.JPanel buttons = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
+            wrapper.add(buttons, java.awt.BorderLayout.NORTH);
+            ProductPreview.attach(listTable, 0, wrapper, buttons);
+        }
     }
 
     /**
@@ -449,13 +459,14 @@ public class ProductList extends javax.swing.JPanel implements ListPanel {
         c.addReference(Context.getContact().getDbIdentity(), "ids", "suppliersids");
         c.addReference(Context.getGroup());
 
+        String[] header = ProductPreview.productColumns();
         try {
-            listTable.setModel(new MPTableModel(QueryHandler.instanceOf().clone(c).select(Context.DETAILS_PRODUCTS, qc).getData()));
+            listTable.setModel(new MPTableModel(QueryHandler.instanceOf().clone(c).select(Context.DETAILS_PRODUCTS, qc).getData(), header));
         } catch (NodataFoundException ex) {
-            listTable.setModel(new MPTableModel());
+            listTable.setModel(new MPTableModel(new Object[0][header.length], header));
         }
-
-        TableFormat.hideHeader(listTable);
+        //the internal id is not shown
+        TableFormat.stripColumn(listTable, 0);
         validate();
     }
 }
