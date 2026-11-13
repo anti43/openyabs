@@ -22,29 +22,32 @@ import javax.swing.JList;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
 /**
- *
- *  
+ * Shows the entries of a combo box and the selected one as tooltip. The colors
+ * are those of the list (look and feel): text and background always match,
+ * also with dark desktop themes (before, the background was always white and
+ * the text color whatever was painted last, e.g. white on white on Linux).
  */
 public class ComboBoxRendererForTooltip extends BasicComboBoxRenderer {
     private static final long serialVersionUID = 2746090194775905713L;
 
     @Override
     public Component getListCellRendererComponent(JList list, Object value,
-        int index, boolean isSelected, boolean cellHasFocus) {
-      if (isSelected) {
-        setBackground(Color.LIGHT_GRAY);
-//        setForeground(list.getSelectionForeground());
-        if (-1 < index) {
-          list.setToolTipText(String.valueOf(value));
+            int index, boolean isSelected, boolean cellHasFocus) {
+        super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+        Color bg = isSelected ? list.getSelectionBackground() : list.getBackground();
+        Color fg = isSelected ? list.getSelectionForeground() : list.getForeground();
+        if (bg != null && fg != null) {
+            setBackground(bg);
+            setForeground(fg);
         }
-      } else {
-            setBackground(Color.white);
+        if (isSelected && -1 < index) {
+            list.setToolTipText(String.valueOf(value));
         }
         try {
             setFont(list.getFont());
             setText((value == null) ? "" : value.toString());
         } catch (Exception e) {
         }
-      return this;
+        return this;
     }
 }
