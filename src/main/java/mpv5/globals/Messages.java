@@ -1523,6 +1523,7 @@ public enum Messages {
     CSV_RESULT_NONE_SKIPPED("No row was skipped."),
     CSV_PROBLEM_EXISTS("number \"%s\" exists already"),
     ACTION_SAVE_AS_NEW("Save as new"),
+    EXPORT_FAILED("The document could not be created from the template \"%s\": %s"),
     MODERN_UI("Modern views for contacts, products and documents (preview, takes effect for newly opened tabs)");
 
 

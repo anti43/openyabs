@@ -368,6 +368,12 @@ abstract class AppOnDatabase {
             assertTrue(DatabaseObject.exists(Context.getProduct(), tea.__getIDS()));
             assertTrue(!DatabaseObject.exists(Context.getProduct(), 987654));
 
+            //a country code is a name in documents (was printed as 276)
+            mpv5.i18n.LanguageManager.getCountriesAsComboBoxModel();
+            String germany = mpv5.db.objects.Address.countryName("276");
+            assertTrue("Deutschland".equals(germany) || "Germany".equals(germany), germany);
+            assertEquals("Atlantis", mpv5.db.objects.Address.countryName("Atlantis"));
+
             //quotes and backslashes are stored as typed (YaBS used to store ' as `)
             Contact quote = (Contact) DatabaseObject.getObject(Context.getContact());
             quote.setCname("O'Brien");

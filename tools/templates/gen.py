@@ -1,4 +1,4 @@
-import re, os, sys, zipfile, shutil, io
+import re, os, sys, zipfile, shutil, io, zlib
 REPO = sys.argv[1]
 OUT = os.path.join(REPO, 'src/main/resources/extra/templates')
 os.makedirs(OUT, exist_ok=True)
@@ -85,7 +85,7 @@ def reference(title, groups):
         if not flist:
             continue
         x.append('<text:p text:style-name="P5"><text:span text:style-name="T6">%s</text:span></text:p>' % esc(gname))
-        x.append('<table:table table:name="Felder_%d" table:style-name="RefT"><table:table-column table:style-name="RefT.A"/><table:table-column table:style-name="RefT.B"/>' % (abs(hash(gname)) % 100000))
+        x.append('<table:table table:name="Felder_%d" table:style-name="RefT"><table:table-column table:style-name="RefT.A"/><table:table-column table:style-name="RefT.B"/>' % (zlib.crc32(gname.encode("utf-8")) % 100000))
         for f in flist:
             x.append('<table:table-row><table:table-cell table:style-name="RefT.C" office:value-type="string"><text:p text:style-name="PRefKey">%s</text:p></table:table-cell>'
                      '<table:table-cell table:style-name="RefT.C" office:value-type="string"><text:p text:style-name="PRefVal">%s</text:p></table:table-cell></table:table-row>' % (esc(f), ph(f)))
@@ -274,7 +274,6 @@ TYPES = [
     (0, 'Rechnung', 'Rechnungsbetrag'), (2, 'Angebot', 'Angebotssumme'), (1, 'Auftrag', 'Auftragssumme'),
     (3, 'Lieferschein', 'Gesamtbetrag'), (4, 'Auftragsbestätigung', 'Auftragssumme'), (20, 'Gutschrift', 'Gutschriftsbetrag'),
     (21, 'Abschlagsrechnung', 'Rechnungsbetrag'), (22, 'Anzahlungsrechnung', 'Rechnungsbetrag'), (11, 'Vertrag', 'Gesamtbetrag'),
-    (13, 'Serienbrief', 'Gesamtbetrag'),
 ]
 made = []
 for tid, title, total in TYPES:
@@ -310,6 +309,10 @@ CONVERSATION = [('t', [('Datum', '{conversation.date}'), ('Betreff', '{conversat
                        ('Gesprächspartner', '{conversation.contact.fullname}'), ('Telefon', '{conversation.contact.mainphone}')]),
                 ('h', 'Inhalt'), ('p', '{conversation.content}')]
 ACTIVITY_TOTAL = [('t', [('Gesamtbetrag (brutto)', '{item.grosvaluef}')])]
+# mass print (Serienbrief): a letter to each chosen contact with the text written in the mass print view
+MASSPRINT = [('p', '{massprint.intro} {contact.fullname},'), ('p', '{massprint.content}'),
+             ('p', 'Mit freundlichen Grüßen'), ('p', '{companyinfo.name}')]
+massprint_fields = ['massprint.' + k for k in ['cname', 'intro', 'gender', 'content', 'dateadded', 'addedby']]
 reminder_fields = [f for f in fields('reminders', 'reminder.') if f != 'reminder.itemsids' and f != 'reminder.stagesids'] + ['reminder.stage', 'reminder.count']
 OTHERS = [
     (7, 'Mahnung zu Rechnung', 'other', [('Mahnung', reminder_fields), ('Rechnung', fields('items', R) + [R + 'grosvaluef', R + 'paymentduedate', R + 'paymentiban']), ('Firma', COMPANY)],
@@ -324,6 +327,8 @@ OTHERS = [
     (14, 'Tätigkeitsliste', 'positions', [('Tätigkeitsliste', fields('activitylists', 'activitylist.') + ['activitylist.grosvaluef', 'activitylist.xtable1']), ('Kontakt', contact_of('activitylist.contact.')), ('Firma', COMPANY)],
      dict(prefix='activitylist.', cprefix='activitylist.contact.', totals=ACTIVITY_TOTAL)),
     (9, 'Journal', 'journal', [('Journal', JOURNAL_FIELDS), ('Firma', COMPANY)], {}),
+    (13, 'Serienbrief', 'other', [('Serienbrief', massprint_fields), ('Kontakt', contact_of('contact.')), ('Firma', COMPANY)],
+     dict(prefix='contact.', cprefix='contact.', blocks=MASSPRINT, date_field='massprint.dateadded')),
 ]
 for tid, title, kind, g, kw in OTHERS:
     made.append((tid, title, 'demo-%02d.odt' % tid, make('demo-%02d.odt' % tid, title, kind, g, **kw)))

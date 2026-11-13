@@ -643,7 +643,15 @@ public class MassPrintPanel
             hm1.put("massprint.intro",
                     Messages.CONTACT_INTRO_FEMALE.toString());
         }
-        hm1.put("massprint.content", rtf);
+        //the text as written (was the RTF source "{\\rtf1\\ansi ..." in the letters); the RTF stays available
+        String text = rtf;
+        try {
+            text = RTF_Text.getDocument().getText(0, RTF_Text.getDocument().getLength());
+        } catch (BadLocationException ex) {
+            Log.Debug(this, ex);
+        }
+        hm1.put("massprint.content", text);
+        hm1.put("massprint.rtf", rtf);
         return hm1;
     }
 

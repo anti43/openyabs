@@ -206,6 +206,18 @@ public class Template extends DatabaseObject {
     }
 
     /**
+     * @param name e.g. "Demo - Auftragsbestätigung"
+     * @return a file name of ASCII letters, digits, - and _ only: names with
+     * umlauts could not be created where the system file name encoding is not
+     * UTF-8 (InvalidPathException, the template did not load)
+     */
+    static String safeName(String name) {
+        String n = java.text.Normalizer.normalize(name == null ? "" : name, java.text.Normalizer.Form.NFD)
+                .replaceAll("\\p{M}", "").replace("ß", "ss").replaceAll("[^A-Za-z0-9._-]+", "_");
+        return n.isEmpty() ? "template" : n;
+    }
+
+    /**
      * Fetches the physical file from db
      *
      * @return
@@ -216,7 +228,7 @@ public class Template extends DatabaseObject {
             try {
                 file = QueryHandler.instanceOf().clone(Context.getFiles()).
                         retrieveFile(filename,
-                        new File(FileDirectoryHandler.getTempDir() + "~" + RandomText.getText() + "_" + getCname()));
+                        new File(FileDirectoryHandler.getTempDir() + "~" + RandomText.getText() + "_" + safeName(getCname())));
                 file.deleteOnExit();
             } catch (Exception e) {
                 //never delete the template because its file could not be read (once)

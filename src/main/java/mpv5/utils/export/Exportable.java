@@ -101,7 +101,25 @@ public abstract class Exportable extends File {
 
     abstract void run();
 
+    private Exception failure;
+
+    /**
+     * @param e why {@link #run()} did not create the file
+     */
+    void setFailure(Exception e) {
+        failure = e;
+    }
+
+    /**
+     * @return why the last {@link #run()} did not create the file, null if it
+     * did
+     */
+    Exception getFailure() {
+        return failure;
+    }
+
     void reset() {
+        failure = null;
         data = null;
         template = null;
         target = null;
