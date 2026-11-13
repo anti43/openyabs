@@ -63,7 +63,7 @@ public class EntitySelection {
     public List<Integer> getRows() {
         List<Integer> rowsi = new ArrayList<Integer>();
         for (int i = 0; i < rows.length; i++) {
-            rowsi.add(new Integer(rows[i]));
+            rowsi.add(Integer.valueOf(rows[i]));
         }
         return Collections.unmodifiableList(rowsi);
     }

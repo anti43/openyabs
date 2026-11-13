@@ -49,7 +49,7 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
      * @return
      */
     public static int getItemID(Integer uid, ComboBoxModel model) {
-        return getItemID((Object) new Integer(uid), model);
+        return getItemID((Object) Integer.valueOf(uid), model);
     }
 
     /**
@@ -277,7 +277,7 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
     public static MPComboBoxModelItem[] toItems(List<DatabaseObject> items, int compareMode) {
         MPComboBoxModelItem[] array = new MPComboBoxModelItem[items.size()];
         for (int i = 0; i < array.length; i++) {
-            array[i] = new MPComboBoxModelItem(new Integer(items.get(i).__getIDS()), items.get(i).__getCname());
+            array[i] = new MPComboBoxModelItem(Integer.valueOf(items.get(i).__getIDS()), items.get(i).__getCname());
             array[i].setCompareMode(compareMode);
         }
         return array;
@@ -305,7 +305,7 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
 //        Log.PrintArray(items);
         MPComboBoxModelItem[] array = new MPComboBoxModelItem[items.length - skip.size()];
         for (int i = 0, z = 0; i < items.length; i++) {
-            if (!skip.contains(new Integer(i))) {
+            if (!skip.contains(Integer.valueOf(i))) {
                 array[z] = new MPComboBoxModelItem(items[i].getId(), items[i].getName());
                 array[z].setCompareMode(compareMode);
                 z++;

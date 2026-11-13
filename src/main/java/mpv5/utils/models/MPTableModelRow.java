@@ -119,7 +119,7 @@ public class MPTableModelRow {
      * @return
      */
     public Object getValueAt(int column) {
-        return values.get(new Integer(column));
+        return values.get(Integer.valueOf(column));
     }
 
     /**
@@ -128,6 +128,6 @@ public class MPTableModelRow {
      * @param column
      */
     public void setValueAt(Object value, int column) {
-        values.put(new Integer(column), value);
+        values.put(Integer.valueOf(column), value);
     }
 }

@@ -90,7 +90,7 @@ public class Log {
     * Produces a huge amount of messages, and error stack traces
     */
    public static final int LOGLEVEL_DEBUG = 2;
-   private static int loglevel = 1;
+   private static volatile int loglevel = 1;
    //the console is a window: not available without a display (headless mode, tests)
    private static List<LogConsole> loggers = Collections.synchronizedList(new ArrayList<LogConsole>(
            java.awt.GraphicsEnvironment.isHeadless() ? Collections.<LogConsole>emptyList()
@@ -125,8 +125,29 @@ public class Log {
     * @param source
     * @param message
     */
-   public static synchronized void Debug(Object source, Object message) {
-     
+   public static void Debug(Object source, Object message) {
+      //the common case without the lock: nothing is written (log level none, or normal
+      //and no error in the message); exceptions and written messages as before
+      java.util.Objects.requireNonNull(source);
+      if (!(message instanceof Throwable)) {
+         int level = loglevel;
+         if (level == LOGLEVEL_NONE) {
+            return;
+         }
+         if (level == LOGLEVEL_NORMAL) {
+            if (message == null) {
+               return;
+            }
+            String m = message.toString();
+            if (!(m.contains("Exception") || m.contains("Error"))) {
+               return;
+            }
+         }
+      }
+      write0(source, message);
+   }
+
+   private static synchronized void write0(Object source, Object message) {
       String sourcen;
       if (source instanceof Class) {
          sourcen = ((Class) source).getName();

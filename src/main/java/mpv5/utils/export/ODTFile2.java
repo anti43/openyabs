@@ -106,7 +106,10 @@ public class ODTFile2 extends Exportable {
         options.fontProvider(reg);
         pdfaOptions = PdfOptions.create();
         pdfaOptions.fontProvider(EmbeddingFontRegistry.getRegistry());
-        report = XDocReportRegistry.getRegistry().loadReport(new FileInputStream(this), TemplateEngineKind.Velocity);
+        //read completely by loadReport: closed afterwards (was left open)
+        try (FileInputStream in = new FileInputStream(this)) {
+            report = XDocReportRegistry.getRegistry().loadReport(in, TemplateEngineKind.Velocity);
+        }
         extractor = FieldsExtractor.create();
         report.removePreprocessor(ODTConstants.CONTENT_XML_ENTRY);
         report.addPreprocessor(ODTConstants.CONTENT_XML_ENTRY, YabsODTPreprocessor.INSTANCE);
@@ -120,8 +123,11 @@ public class ODTFile2 extends Exportable {
             Log.Debug(this, "run odt run: " + this + " to file " + target);
             mpv5.YabsViewProxy.instance().setWaiting(true);
             if (target.getAbsolutePath().endsWith(".pdf")) {
-                outtmp = new FileOutputStream(f = FileDirectoryHandler.getTempFile("odt"));
-                fillFields(outtmp);
+                //closed before the file is read again (was left open)
+                try (FileOutputStream tmp = new FileOutputStream(f = FileDirectoryHandler.getTempFile("odt"))) {
+                    outtmp = tmp;
+                    fillFields(outtmp);
+                }
                 Log.Debug(this, "Replaced Fields of odt file: " + this + " to " + f);
                 document = OdfTextDocument.loadDocument(f);
                 Log.Debug(this, "Loaded odt file: " + f);
@@ -131,7 +137,9 @@ public class ODTFile2 extends Exportable {
                 Log.Debug(this, "Completed pdf file: " + target);
                 Log.Debug(this, "Test access pdf file exists: " + target.exists() + " readable: " + target.canRead());
             } else {
-                fillFields(new FileOutputStream(target));
+                try (FileOutputStream out = new FileOutputStream(target)) {
+                    fillFields(out);
+                }
                 Log.Debug(this, "Replaced Fields of odt file: " + this + " to " + target);
             }
         } catch (Exception ex) {

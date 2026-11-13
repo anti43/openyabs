@@ -72,38 +72,6 @@ public class QueryHandler implements Cloneable {
     private static QueryHandler instance;
     private static JProgressBar progressbar = new JProgressBar();
 
-    private static class SQLWatch extends Thread {
-
-        private final long start;
-        private boolean done;
-        private final String watchedQuery;
-        private long minTime = 1000l;
-
-        public SQLWatch(String query) {
-            start = new Date().getTime();
-            watchedQuery = query;
-        }
-
-        public void done() {
-            done = true;
-        }
-
-        @Override
-        @SuppressWarnings("SleepWhileInLoop")
-        public void run() {
-            while (!done) {
-                try {
-                    Thread.sleep(minTime);
-                } catch (InterruptedException ex) {
-                    Log.Debug(ex);
-                }
-                Log.Debug(this, "SQLWatch " + this + " ["
-                        + (new Date().getTime() - start)
-                        + "]ms for " + watchedQuery);
-
-            }
-        }
-    }
     private DatabaseConnection conn = null;
     private Connection sqlConn = null;
     private String table = "NOTABLE";
@@ -1077,7 +1045,7 @@ public class QueryHandler implements Cloneable {
         t.add(column, value);
         return checkUniqueness(t, new int[]{0});
     }
-    private static volatile int RUNNING_JOBS = 0;
+    private static final java.util.concurrent.atomic.AtomicInteger RUNNING_JOBS = new java.util.concurrent.atomic.AtomicInteger();
     private static Thread JOB_WATCHDOG;
 
     /**
@@ -1085,26 +1053,20 @@ public class QueryHandler implements Cloneable {
      */
     protected void stop() {
         if (!runInBackground) {
-            Runnable runnable = new Runnable() {
-
-                @Override
-                public void run() {
-                    try {//Avoid Cursor flickering
-                        Thread.sleep(10);
-                    } catch (InterruptedException ex) {
-                        mpv5.logging.Log.Debug(ex);//Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
+            //10 ms later on the EDT (avoids cursor flickering) - with a timer: the EDT
+            //itself slept 10 ms after every query before (seconds of a blocked UI)
+            javax.swing.Timer later = new javax.swing.Timer(10, e -> {
+                if (RUNNING_JOBS.get() <= 1) {
+                    if (comp != null) {
+                        comp.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
                     }
-                    if (RUNNING_JOBS <= 1) {
-                        if (comp != null) {
-                            comp.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-                        }
-                        progressbar.setValue(0);
-                        mpv5.ui.modern.Edt.setIndeterminate(progressbar, false);
-                    }
-                    RUNNING_JOBS--;
+                    progressbar.setValue(0);
+                    mpv5.ui.modern.Edt.setIndeterminate(progressbar, false);
                 }
-            };
-            SwingUtilities.invokeLater(runnable);
+                RUNNING_JOBS.decrementAndGet();
+            });
+            later.setRepeats(false);
+            later.start();
         }
     }
 
@@ -1114,13 +1076,13 @@ public class QueryHandler implements Cloneable {
             JOB_WATCHDOG.start();
         }
         if (!runInBackground) {
-            RUNNING_JOBS++;
-            if (RUNNING_JOBS > 5) {
+            int jobs = RUNNING_JOBS.incrementAndGet();
+            if (jobs > 5) {
                 if (comp != null) {
-                    comp.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+                    comp.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                 }
             }
-            progressbar.setMaximum(RUNNING_JOBS);
+            progressbar.setMaximum(jobs);
         }
     }
 
@@ -1229,9 +1191,10 @@ public class QueryHandler implements Cloneable {
         public void run() {
             int oldValue = 0;
             while (true) {
-                if (RUNNING_JOBS != oldValue) {
-                    progressbar.setValue(RUNNING_JOBS);
-                    oldValue = RUNNING_JOBS;
+                int jobs = RUNNING_JOBS.get();
+                if (jobs != oldValue) {
+                    progressbar.setValue(jobs);
+                    oldValue = jobs;
                 }
                 try {
                     Thread.sleep(33);
@@ -2314,11 +2277,13 @@ public class QueryHandler implements Cloneable {
                     columnnames[i - 1] = rsmd.getColumnName(i);
                 }
 
+                //read once per query, not for every value
+                boolean unescape = TypeConversion.stringToBoolean(LocalSettings.getProperty(LocalSettings.DBESCAPE));
                 while (resultSet.next()) {
                     spalten = new ArrayList();
                     for (int i = 1; i <= rsmd.getColumnCount(); i++) {
                         Object object = resultSet.getObject(i);
-                        if (object instanceof String && TypeConversion.stringToBoolean(LocalSettings.getProperty(LocalSettings.DBESCAPE))) {
+                        if (object instanceof String && unescape) {
                             object = rescapeBackslashes((String) object);
                         }
                         spalten.add(object);
@@ -2552,7 +2517,6 @@ public class QueryHandler implements Cloneable {
         String[] fullcolnames = null;
         ArrayList<Object> spalten = new ArrayList<Object>();
         ArrayList<Object> zeilen = new ArrayList<Object>();
-        SQLWatch sqlWatch;
 
         try {
             stm = sqlConn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
@@ -2562,10 +2526,7 @@ public class QueryHandler implements Cloneable {
 
             Log.Debug(this, "freeSelectQuery: limit " + limit + ":" + query);
             try {
-                sqlWatch = new SQLWatch(query);
                 resultSet = stm.executeQuery(query);
-                sqlWatch.done();
-                sqlWatch = null;
             } catch (SQLException sQLException) {
                 Log.Debug(sQLException);
                 throw sQLException;
@@ -2588,11 +2549,13 @@ public class QueryHandler implements Cloneable {
                 fullcolnames[i - 1] = rsmd.getTableName(i) + "." + rsmd.getColumnName(i);
             }
 
+            //read once per query, not for every value
+            boolean unescape = TypeConversion.stringToBoolean(LocalSettings.getProperty(LocalSettings.DBESCAPE));
             while (resultSet.next()) {
                 spalten = new ArrayList<Object>();
                 for (int i = 1; i <= rsmd.getColumnCount(); i++) {
                     Object object = resultSet.getObject(i);
-                    if (object instanceof String && TypeConversion.stringToBoolean(LocalSettings.getProperty(LocalSettings.DBESCAPE))) {
+                    if (object instanceof String && unescape) {
                         object = rescapeBackslashes((String) object);
                     } else if (object instanceof Blob) {
                         try {

@@ -60,9 +60,7 @@ public class DateChooser extends javax.swing.JPanel {
                     jSpinner1.commitEdit();
                 } catch (ParseException ex) {
                 }
-                if (d == null) {
-                    d = new MiniCalendarDialog(jSpinner1, asAPopup);
-                }
+                dialog();
                 java.awt.Point p = jSpinner1.getLocationOnScreen();
                 d.setLocation(p.x, p.y + jSpinner1.getHeight());
                 d.open(DateConverter.getDate(jSpinner1.getValue()));
@@ -82,15 +80,36 @@ public class DateChooser extends javax.swing.JPanel {
     }
 
     public void setDate(Date date) {
-        if (d == null) {
-            d = new MiniCalendarDialog(jSpinner1, asAPopup);
-        }
-
         try {
             jSpinner1.setValue(date);
         } catch (Exception e) {
         }
-        d.setDate(date);
+        if (d == null) {
+            //the calendar is created when it is opened (it was built for every date set: slow views)
+            pendingDate = date;
+            hasPendingDate = true;
+        } else {
+            d.setDate(date);
+        }
+    }
+
+    private Date pendingDate;
+    private boolean hasPendingDate;
+
+    /**
+     * @return the calendar, created on first use with the date last set
+     */
+    private MiniCalendarDialog dialog() {
+        if (d == null) {
+            d = new MiniCalendarDialog(jSpinner1, asAPopup);
+            if (hasPendingDate) {
+                //only the calendar: the field shows this date (or what was typed since)
+                d.preset(pendingDate);
+                pendingDate = null;
+                hasPendingDate = false;
+            }
+        }
+        return d;
     }
 
     public Date getDate() {
@@ -153,17 +172,13 @@ public class DateChooser extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if (d == null) {
-            d = new MiniCalendarDialog(jSpinner1, asAPopup);
-        }
+        dialog();
 
         d.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
-        if (d == null) {
-            d = new MiniCalendarDialog(jSpinner1, asAPopup);
-        }
+        dialog();
         d.setLocation(evt.getLocationOnScreen());
         d.setVisible(true);
     }//GEN-LAST:event_jButton1MouseClicked

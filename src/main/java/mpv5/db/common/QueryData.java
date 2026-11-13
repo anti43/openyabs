@@ -30,16 +30,17 @@ public class QueryData {
     @Override
     public String toString() {
         String[] a = getKeys();
-        String c = "";
+        StringBuilder c = new StringBuilder();
 
         for (int i = 0; i < a.length; i++) {
-            c += a[i] + " = " + getValue(a[i]).getWrapper() + getValue(a[i]).toString() + getValue(a[i]).getWrapper() + ", ";
+            SaveString v = getValue(a[i]);
+            c.append(a[i]).append(" = ").append(v.getWrapper()).append(v.toString()).append(v.getWrapper()).append(", ");
         }
 
         if (c.length() > 2) {
-            c = c.substring(0, c.length() - 2);
+            c.setLength(c.length() - 2);
         }
-        return c;
+        return c.toString();
     }
 
     /**
@@ -139,7 +140,7 @@ public class QueryData {
      * @return An array of keys
      */
     public String[] getKeys() {
-        return list.keySet().toArray(new String[]{});
+        return list.keySet().toArray(new String[0]);
     }
 
     /**
@@ -158,17 +159,16 @@ public class QueryData {
      */
     public String getValuesString() {
         String[] k = getKeys();
-        String s = "";
+        StringBuilder s = new StringBuilder();
 
         for (int i = 0; i < k.length; i++) {
             mpv5.db.common.SaveString v = getValue(k[i]);
-            s += v.getWrapper() + v.toString() + v.getWrapper() + ",";
+            s.append(v.getWrapper()).append(v.toString()).append(v.getWrapper()).append(',');
         }
         if (s.length() > 1) {
-            return s.substring(0, s.length() - 1);
-        } else {
-            return s;
+            s.setLength(s.length() - 1);
         }
+        return s.toString();
     }
 
     /**
@@ -185,16 +185,15 @@ public class QueryData {
      */
     public String getKeysString() {
         String[] k = getKeys();
-        String s = "";
+        StringBuilder s = new StringBuilder();
 
         for (int i = 0; i < k.length; i++) {
-            s += k[i] + ",";
+            s.append(k[i]).append(',');
         }
         if (s.length() > 1) {
-            return s.substring(0, s.length() - 1);
-        } else {
-            return s;
+            s.setLength(s.length() - 1);
         }
+        return s.toString();
     }
 
     /**

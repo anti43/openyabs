@@ -104,7 +104,10 @@ public abstract class VariablesHandler {
      * @deprecated
      */
     public static String[] getSpecialVarsOf(DatabaseObject target) {
-        List<String[]> vars = target.getValues();
+        return specialVarsOf(target, target.getValues());
+    }
+
+    private static String[] specialVarsOf(DatabaseObject target, List<String[]> vars) {
         String[] svars = new String[vars.size()];
         if (!(target instanceof SubItem)) {//No subitems, takes ages
             for (int i = 0; i < vars.size(); i++) {
@@ -178,7 +181,9 @@ public abstract class VariablesHandler {
             }
             vars.add(new String[]{varName, varValue});
         }
-        String[] specs = getSpecialVarsOf(target);//fixme evt remove
+        //the values once: they were read again (all getters by reflection) for every field
+        List<String[]> vals = target.getValues();
+        String[] specs = specialVarsOf(target, vals);//fixme evt remove
         Log.Debug(VariablesHandler.class, "..xxxx>\n\n" + Arrays.asList(specs));
 
         Iterator iterator = preResolvedVars.entrySet().iterator();
@@ -191,8 +196,6 @@ public abstract class VariablesHandler {
             String varName = specs[j];
             String varValue = "";
 
-            List<String[]> vals;
-            vals = target.getValues();
             for (String[] value : vals) {
                 if (value[0].equalsIgnoreCase(varName.substring(1, varName.length() - 1))) {
                     varValue = value[1];
@@ -290,7 +293,8 @@ public abstract class VariablesHandler {
      * @return
      */
     public static synchronized String parse(String text, final DatabaseObject source, Map preResolvedVars) {
-        List<String[]> c = resolveVarsFor(source, preResolvedVars);
+        //every variable is written [NAME]: without "[" only the scripts are left
+        List<String[]> c = text != null && text.indexOf('[') < 0 ? null : resolveVarsFor(source, preResolvedVars);
         if (c != null) {
             for (String[] data : c) {
                 if (data != null) {
@@ -298,8 +302,11 @@ public abstract class VariablesHandler {
                         if (Log.isDebugging()) {
                             Log.Debug(VariablesHandler.class, source + ": replacing key: " + data[0] + " with value: " + data[1]);
                         }
-                        //text = text.replace(data[0], data[1]);
-                        text = text.replaceAll("(?i)" + data[0].replace("[", "\\[").replace("]", "\\]"), data[1]);//.replace(".","\\.") regex escape..
+                        //the same regex as before, compiled once; replaced only where it occurs
+                        java.util.regex.Matcher m = pattern(data[0]).matcher(text);
+                        if (m.find()) {
+                            text = m.replaceAll(data[1]);
+                        }
                     }
                 }
             }
@@ -313,6 +320,10 @@ public abstract class VariablesHandler {
     }
 
     public static synchronized String parseNoScript(String text, DatabaseObject source) {
+        //every variable is written [NAME]: a text without "[" stays as it is
+        if (text != null && text.indexOf('[') < 0) {
+            return text;
+        }
         List<String[]> c = resolveVarsFor(source, Collections.EMPTY_MAP);
         if (c != null) {
             for (String[] data : c) {
@@ -322,11 +333,33 @@ public abstract class VariablesHandler {
                             Log.Debug(VariablesHandler.class, source + ": replacing key: " + data[0] + " with value: " + data[1]);
                         }
                         //text = text.replace(data[0], data[1]);
-                        text = text.replaceAll("(?i)" + data[0].replace("[", "\\[").replace("]", "\\]"), data[1]);//.replace(".","\\.") regex escape..
+                        //the same regex as before, compiled once; replaced only where it occurs
+                        java.util.regex.Matcher m = pattern(data[0]).matcher(text);
+                        if (m.find()) {
+                            text = m.replaceAll(data[1]);
+                        }
                     }
                 }
             }
         }
         return text;
+    }
+
+    /**
+     * the compiled patterns of the variables (by name)
+     */
+    private static final java.util.Map<String, java.util.regex.Pattern> VAR_PATTERNS = new java.util.concurrent.ConcurrentHashMap<>();
+
+    /**
+     * @param name e.g. [YEAR]
+     * @return "(?i)" and the name with [ ] escaped (as before), compiled once
+     */
+    private static java.util.regex.Pattern pattern(String name) {
+        java.util.regex.Pattern p = VAR_PATTERNS.get(name);
+        if (p == null) {
+            p = java.util.regex.Pattern.compile("(?i)" + name.replace("[", "\\[").replace("]", "\\]"));
+            VAR_PATTERNS.put(name, p);
+        }
+        return p;
     }
 }

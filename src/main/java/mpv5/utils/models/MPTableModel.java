@@ -390,12 +390,12 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
 
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
-        new Boolean(getCanEdits()[columnIndex]).toString();//Check for non-null
+        Boolean.toString(getCanEdits()[columnIndex]);//Check for non-null
         return getCanEdits()[columnIndex];
     }
 
     public void setCellEditable(int rowIndex, int columnIndex, boolean editable) {
-        new Boolean(getCanEdits()[columnIndex]).toString();//Check for non-null
+        Boolean.toString(getCanEdits()[columnIndex]);//Check for non-null
         getCanEdits()[columnIndex] = editable;
     }
 
