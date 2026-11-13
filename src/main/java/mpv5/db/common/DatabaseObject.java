@@ -2314,7 +2314,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      */
     public static boolean exists(Context cont, Integer ids) {
         try {
-            if (QueryHandler.instanceOf().clone(cont).selectCount("ids", ids.toString()) > 0) {
+            //"WHERE ids = 5" (it was "WHERE ids 5": never true, imports lost their groups, suppliers ...)
+            if (ids != null && QueryHandler.instanceOf().clone(cont).selectCount("ids", "= " + ids.intValue()) > 0) {
                 return true;
             } else {
                 return false;
