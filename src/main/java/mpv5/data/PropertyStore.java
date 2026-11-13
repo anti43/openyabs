@@ -195,7 +195,7 @@ public final class PropertyStore {
         try {
           return (T) Double.valueOf(t);
         } catch (NumberFormatException numberFormatException) {
-          return (T) new Double(FormatNumber.parseDezimal(t).doubleValue());
+          return (T) Double.valueOf(FormatNumber.parseDezimal(t).doubleValue());
         }
       }
     } else if (desiredClassAndFallbackValue instanceof Integer) {
@@ -205,7 +205,7 @@ public final class PropertyStore {
         try {
           return (T) Integer.valueOf(t);
         } catch (NumberFormatException numberFormatException) {
-          return (T) new Double(FormatNumber.parseDezimal(t).intValue());
+          return (T) Double.valueOf(FormatNumber.parseDezimal(t).intValue());
         }
       }
     } else if (desiredClassAndFallbackValue instanceof Boolean) {

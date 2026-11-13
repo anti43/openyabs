@@ -120,9 +120,9 @@ public class ArrayUtilities {
      */
     public static Object[][] changeToClassValue(Object[][] d, int column, Class aClass) {
         for (int i = 0; i < d.length; i++) {
-            if (aClass.isInstance(new Integer(0))) {
+            if (aClass.isInstance(Integer.valueOf(0))) {
                 d[i][column] = Integer.valueOf(String.valueOf(d[i][column]));
-            } else if (aClass.isInstance(new Double(0d))) {
+            } else if (aClass.isInstance(Double.valueOf(0d))) {
                 d[i][column] = Double.valueOf(String.valueOf(d[i][column]));
             } else if (aClass.isInstance(new Date())) {
                 d[i][column] = DateConverter.getDate(String.valueOf(d[i][column]));

@@ -72,38 +72,6 @@ public class QueryHandler implements Cloneable {
     private static QueryHandler instance;
     private static JProgressBar progressbar = new JProgressBar();
 
-    private static class SQLWatch extends Thread {
-
-        private final long start;
-        private boolean done;
-        private final String watchedQuery;
-        private long minTime = 1000l;
-
-        public SQLWatch(String query) {
-            start = new Date().getTime();
-            watchedQuery = query;
-        }
-
-        public void done() {
-            done = true;
-        }
-
-        @Override
-        @SuppressWarnings("SleepWhileInLoop")
-        public void run() {
-            while (!done) {
-                try {
-                    Thread.sleep(minTime);
-                } catch (InterruptedException ex) {
-                    Log.Debug(ex);
-                }
-                Log.Debug(this, "SQLWatch " + this + " ["
-                        + (new Date().getTime() - start)
-                        + "]ms for " + watchedQuery);
-
-            }
-        }
-    }
     private DatabaseConnection conn = null;
     private Connection sqlConn = null;
     private String table = "NOTABLE";
@@ -2309,11 +2277,13 @@ public class QueryHandler implements Cloneable {
                     columnnames[i - 1] = rsmd.getColumnName(i);
                 }
 
+                //read once per query, not for every value
+                boolean unescape = TypeConversion.stringToBoolean(LocalSettings.getProperty(LocalSettings.DBESCAPE));
                 while (resultSet.next()) {
                     spalten = new ArrayList();
                     for (int i = 1; i <= rsmd.getColumnCount(); i++) {
                         Object object = resultSet.getObject(i);
-                        if (object instanceof String && TypeConversion.stringToBoolean(LocalSettings.getProperty(LocalSettings.DBESCAPE))) {
+                        if (object instanceof String && unescape) {
                             object = rescapeBackslashes((String) object);
                         }
                         spalten.add(object);
@@ -2547,7 +2517,6 @@ public class QueryHandler implements Cloneable {
         String[] fullcolnames = null;
         ArrayList<Object> spalten = new ArrayList<Object>();
         ArrayList<Object> zeilen = new ArrayList<Object>();
-        SQLWatch sqlWatch;
 
         try {
             stm = sqlConn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
@@ -2557,10 +2526,7 @@ public class QueryHandler implements Cloneable {
 
             Log.Debug(this, "freeSelectQuery: limit " + limit + ":" + query);
             try {
-                sqlWatch = new SQLWatch(query);
                 resultSet = stm.executeQuery(query);
-                sqlWatch.done();
-                sqlWatch = null;
             } catch (SQLException sQLException) {
                 Log.Debug(sQLException);
                 throw sQLException;
@@ -2583,11 +2549,13 @@ public class QueryHandler implements Cloneable {
                 fullcolnames[i - 1] = rsmd.getTableName(i) + "." + rsmd.getColumnName(i);
             }
 
+            //read once per query, not for every value
+            boolean unescape = TypeConversion.stringToBoolean(LocalSettings.getProperty(LocalSettings.DBESCAPE));
             while (resultSet.next()) {
                 spalten = new ArrayList<Object>();
                 for (int i = 1; i <= rsmd.getColumnCount(); i++) {
                     Object object = resultSet.getObject(i);
-                    if (object instanceof String && TypeConversion.stringToBoolean(LocalSettings.getProperty(LocalSettings.DBESCAPE))) {
+                    if (object instanceof String && unescape) {
                         object = rescapeBackslashes((String) object);
                     } else if (object instanceof Blob) {
                         try {

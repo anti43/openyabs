@@ -297,7 +297,7 @@ public class TableCalculator implements Runnable {
      * @param sumColumn
      */
     public void addLabel(LabeledTextField value, int sumColumn) {
-        sumcols.put(new Integer(sumColumn), value.getTextField());
+        sumcols.put(Integer.valueOf(sumColumn), value.getTextField());
     }
 
     /**
@@ -306,7 +306,7 @@ public class TableCalculator implements Runnable {
      * @param sumColumn
      */
     public void addLabel(JTextField value, int sumColumn) {
-        sumcols.put(new Integer(sumColumn), value);
+        sumcols.put(Integer.valueOf(sumColumn), value);
     }
 
     /**
@@ -315,7 +315,7 @@ public class TableCalculator implements Runnable {
      * @param sumColumn
      */
     public void addLabel(JLabel value, int sumColumn) {
-        sumcols.put(new Integer(sumColumn), value);
+        sumcols.put(Integer.valueOf(sumColumn), value);
     }
 
     private void sumUp() {
@@ -328,7 +328,7 @@ public class TableCalculator implements Runnable {
         for (int i = 0; i < sumColumn.length; i++) {
             int k = sumColumn[i];
 
-            if (sumcols.containsKey(new Integer(k))) {
+            if (sumcols.containsKey(Integer.valueOf(k))) {
                 Double ovalue = 0d;
 
                 for (int j = 0; j < table.getRowCount(); j++) {
@@ -337,7 +337,7 @@ public class TableCalculator implements Runnable {
                     }
                 }
 
-                JComponent t = sumcols.get(new Integer(k));
+                JComponent t = sumcols.get(Integer.valueOf(k));
 
                 if (t instanceof JLabel) {
                     ((JLabel) t).setText(FormatNumber.formatDezimal(ovalue));

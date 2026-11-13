@@ -414,7 +414,7 @@ public class Calc extends JLabel implements ActionListener,KeyListener {
          * converts that string into a double-precision real number and then
          * gives that number to the variable Result.
          */
-        Result = (new Double(lcdDisplay.getText())).doubleValue();
+        Result = (Double.valueOf(lcdDisplay.getText())).doubleValue();
 
         //If no operator key has been pressed OR a function has been pressed
         if ((OperatorKey == false) || (FunctionKey = true)) {
@@ -567,7 +567,7 @@ public class Calc extends JLabel implements ActionListener,KeyListener {
              * converts that string into a double-precision real number and then
              * gives that number to the variable Result.
              */
-            Result = (new Double(lcdDisplay.getText())).doubleValue();
+            Result = (Double.valueOf(lcdDisplay.getText())).doubleValue();
 
             //divide the double Result by 100, getting the percentage
             Result = Result / 100;
@@ -629,7 +629,7 @@ public class Calc extends JLabel implements ActionListener,KeyListener {
              * converts that string into a double-precision real number and then
              * gives that number to the variable Result.
              */
-            Result = (new Double(lcdDisplay.getText())).doubleValue();
+            Result = (Double.valueOf(lcdDisplay.getText())).doubleValue();
 
             //sets the double Result to it's negative value
             Result = -Result;
@@ -662,7 +662,7 @@ public class Calc extends JLabel implements ActionListener,KeyListener {
              * converts that string into a double-precision real number and then
              * gives that number to the variable Result.
              */
-            Result = (new Double(lcdDisplay.getText())).doubleValue();
+            Result = (Double.valueOf(lcdDisplay.getText())).doubleValue();
 
             /* multiply the double Result by itself, effectively squaring
              * the number */
@@ -699,7 +699,7 @@ public class Calc extends JLabel implements ActionListener,KeyListener {
              * converts that string into a double-precision real number and then
              * gives that number to the variable Result.
              */
-            Result = (new Double(lcdDisplay.getText())).doubleValue();
+            Result = (Double.valueOf(lcdDisplay.getText())).doubleValue();
 
             /* Makes a call to the Math class method "sqrt", which produced the
              * square root and stores the value in Result
@@ -737,7 +737,7 @@ public class Calc extends JLabel implements ActionListener,KeyListener {
              * converts that string into a double-precision real number and then
              * gives that number to the variable Result.
              */
-            Result = (new Double(lcdDisplay.getText())).doubleValue();
+            Result = (Double.valueOf(lcdDisplay.getText())).doubleValue();
 
             //divides one by the double Result
             Result = 1 / Result;
@@ -782,7 +782,7 @@ public class Calc extends JLabel implements ActionListener,KeyListener {
                      * currently on the lcdDisplay label, and then immediately
                      * converts that string into a double-precision real number
                      */
-                    double temp = (new Double(lcdDisplay.getText())).doubleValue();
+                    double temp = (Double.valueOf(lcdDisplay.getText())).doubleValue();
 
                     //set the Mem variable with that the sum of what's currently in
                     //Mem and the temp variable

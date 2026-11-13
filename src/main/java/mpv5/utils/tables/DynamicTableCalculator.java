@@ -76,7 +76,7 @@ public class DynamicTableCalculator implements Runnable {
     private final JTable table;
     private final int[] targetColumns;
     private final String term;
-    private final Double dZero = new Double("0");
+    private final Double dZero = Double.valueOf("0");
 
     /**
      *

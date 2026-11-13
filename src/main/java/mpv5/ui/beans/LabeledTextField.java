@@ -368,7 +368,7 @@ public final class LabeledTextField extends javax.swing.JPanel {
             try {
                 FormatNumber.parseDezimal(jTextField1.getText());
 //$2WHITE);
-                return (T) new Double(FormatNumber.parseDezimal(jTextField1.getText()).doubleValue());
+                return (T) Double.valueOf(FormatNumber.parseDezimal(jTextField1.getText()).doubleValue());
             } catch (Exception numberFormatException) {
                 Log.Debug(this, numberFormatException.getMessage());
                 TextFieldUtils.blinker(jTextField1, Color.gray);

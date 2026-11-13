@@ -103,7 +103,7 @@ private static TableColumn original[];
         jTable1.setAutoCreateRowSorter(true);
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                { new Boolean(true),  new Boolean(true),  new Boolean(true),  new Boolean(true),  new Boolean(true),  new Boolean(true),  new Boolean(true),  new Boolean(true),  new Boolean(true),  new Boolean(true),  new Boolean(true),  new Boolean(true),  new Boolean(true)}
+                { Boolean.TRUE,  Boolean.TRUE,  Boolean.TRUE,  Boolean.TRUE,  Boolean.TRUE,  Boolean.TRUE,  Boolean.TRUE,  Boolean.TRUE,  Boolean.TRUE,  Boolean.TRUE,  Boolean.TRUE,  Boolean.TRUE,  Boolean.TRUE}
             },
             new String [] {
                 "Count", "Quantity", "Measure", "Text", "Net", "Totalnet", "Taxrate", "Tax", "Total", "Link", "Optional", "Discount", "Totalnet - Discount"
