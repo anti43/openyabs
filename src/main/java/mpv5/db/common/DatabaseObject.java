@@ -381,6 +381,55 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         return l;
     }
 
+    /**
+     * @param v a value read from the database (Integer, Long, BigDecimal,
+     * Boolean ... depending on database and column, or a text)
+     * @return it as number, without a detour through text when it is one
+     * already
+     */
+    static Number number(Object v) {
+        if (v instanceof Number) {
+            return (Number) v;
+        }
+        if (v instanceof Boolean) {
+            return ((Boolean) v) ? 1 : 0;
+        }
+        //a text (or something else): "5", " 5 ", "5.0", "1E+1"
+        return new BigDecimal(String.valueOf(v).trim());
+    }
+
+    /**
+     * @param v
+     * @return it as BigDecimal, exactly (a double via its text, 0.1 stays 0.1)
+     */
+    static BigDecimal decimal(Object v) {
+        if (v instanceof BigDecimal) {
+            return (BigDecimal) v;
+        }
+        if (v instanceof Integer || v instanceof Long || v instanceof Short || v instanceof Byte) {
+            return BigDecimal.valueOf(((Number) v).longValue());
+        }
+        if (v instanceof Double || v instanceof Float) {
+            return BigDecimal.valueOf(((Number) v).doubleValue());
+        }
+        return new BigDecimal(String.valueOf(v).trim());
+    }
+
+    /**
+     * @param v
+     * @return true for Boolean true, a number not 0, "1" or "true"
+     */
+    static boolean bool(Object v) {
+        if (v instanceof Boolean) {
+            return (Boolean) v;
+        }
+        if (v instanceof Number) {
+            return ((Number) v).intValue() != 0;
+        }
+        String t = String.valueOf(v).trim();
+        return "1".equals(t) || "true".equalsIgnoreCase(t);
+    }
+
     private static void invoke(Method method, Object argument, DatabaseObject dbo) {
         synchronized (dbo) {
             //called for every column of every loaded row: one lookup of the parameter type, no
@@ -390,21 +439,21 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             try {
                 if (!type.isPrimitive()) {
                     if (type.isAssignableFrom(Boolean.class)) {
-                        method.invoke(dbo, "1".equals(text) || "true".equalsIgnoreCase(text));
+                        method.invoke(dbo, bool(argument));
                     } else if (type.isAssignableFrom(Integer.class)) {
-                        method.invoke(dbo, Integer.valueOf(text));
+                        method.invoke(dbo, number(argument).intValue());
                     } else if (type.isAssignableFrom(Date.class)) {
                         method.invoke(dbo, DateConverter.getDate(argument));
                     } else if (type.isAssignableFrom(BigDecimal.class)) {
-                        method.invoke(dbo, argument instanceof BigDecimal ? argument : new BigDecimal(text));
+                        method.invoke(dbo, decimal(argument));
                     } else if (type.isAssignableFrom(Double.class)) {
-                        method.invoke(dbo, Double.valueOf(text));
+                        method.invoke(dbo, number(argument).doubleValue());
                     } else if (type.isAssignableFrom(Long.class)) {
-                        method.invoke(dbo, Long.valueOf(text));
+                        method.invoke(dbo, number(argument).longValue());
                     } else if (type.isAssignableFrom(Float.class)) {
-                        method.invoke(dbo, Float.valueOf(text));
+                        method.invoke(dbo, number(argument).floatValue());
                     } else if (type.isAssignableFrom(Short.class)) {
-                        method.invoke(dbo, Short.valueOf(text));
+                        method.invoke(dbo, number(argument).shortValue());
                     } else if (type == byte[].class) {
                         method.invoke(dbo, (Object) (argument instanceof String ? ((String) argument).getBytes("UTF-8") : argument));
                     } else if (DatabaseObject.class.isAssignableFrom(type)) {
@@ -412,7 +461,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                             method.invoke(dbo, argument);
                         } else {
                             try {
-                                int myId = Integer.parseInt(text);
+                                int myId = number(argument).intValue();
                                 if (myId > 0) {
                                     Context c = ((DatabaseObject) type.getDeclaredConstructor().newInstance()).getContext();
                                     method.invoke(dbo, getObject(c, myId));
@@ -437,17 +486,17 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                         }
                     }
                 } else if (type == int.class) {
-                    method.invoke(dbo, Integer.valueOf(text));
+                    method.invoke(dbo, number(argument).intValue());
                 } else if (type == float.class) {
-                    method.invoke(dbo, Float.valueOf(text));
+                    method.invoke(dbo, number(argument).floatValue());
                 } else if (type == double.class) {
-                    method.invoke(dbo, Double.valueOf(text));
+                    method.invoke(dbo, number(argument).doubleValue());
                 } else if (type == short.class) {
-                    method.invoke(dbo, Short.valueOf(text));
+                    method.invoke(dbo, number(argument).shortValue());
                 } else if (type == long.class) {
-                    method.invoke(dbo, Long.valueOf(text));
+                    method.invoke(dbo, number(argument).longValue());
                 } else if (type == boolean.class) {
-                    method.invoke(dbo, "1".equals(text) || "true".equalsIgnoreCase(text));
+                    method.invoke(dbo, bool(argument));
                 }
             } catch (Exception ex) {
                 Log.Debug(DatabaseObject.class, "Explode: " + method.toGenericString() + " with " + argument
@@ -1160,7 +1209,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                         data.add(left, (boolean) (Boolean) tempval);
                     } else if (tempval instanceof Date) {
                         //java.util.Date, java.sql.Date, Timestamp, RandomDate
-                        data.add(left, DateConverter.getSQLDateString((Date) tempval));
+                        data.add(left, (Date) tempval);
                     } else if (tempval instanceof Integer) {
                         //if the field is an IDS field an below 0, set it to 0
                         //as integer columns may not allow signed integers (eg. -1)

@@ -1240,8 +1240,131 @@ public class QueryHandler implements Cloneable {
      * @return id of inserted row
      */
     public int insert(QueryData what, String jobmessage) {
-        String query = "INSERT INTO " + table + " (" + what.getKeysString() + " ) VALUES (" + what.getValuesString() + ") ";
-        return freeUpdateQuery(query, mpv5.usermanagement.MPSecurityManager.CREATE_OR_DELETE, jobmessage).getId();
+        //a prepared statement with typed values: nothing to escape
+        java.util.List<Object> params = new java.util.ArrayList<Object>();
+        StringBuilder cols = new StringBuilder();
+        StringBuilder vals = new StringBuilder();
+        for (String key : what.getKeys()) {
+            cols.append(cols.length() == 0 ? "" : ", ").append(key);
+            vals.append(vals.length() == 0 ? "" : ", ").append(placeholder(what, key, params));
+        }
+        String query = "INSERT INTO " + table + " (" + cols + ") VALUES (" + vals + ")";
+        ReturnValue r = preparedUpdate(query, params, mpv5.usermanagement.MPSecurityManager.CREATE_OR_DELETE, jobmessage);
+        return r == null ? -1 : r.getId();
+    }
+
+    /**
+     * @param what
+     * @param params the values of the "?" so far, the value of this key is
+     * added
+     * @return "?" or NULL
+     */
+    private static String placeholder(QueryData what, String key, java.util.List<Object> params) {
+        Object v = what.getTyped(key);
+        if (v == null) {
+            return "NULL";
+        }
+        params.add(v);
+        return "?";
+    }
+
+    /**
+     * @param what
+     * @param params filled with the values
+     * @return "a = ?, b = ?"
+     */
+    private static String setClause(QueryData what, java.util.List<Object> params) {
+        StringBuilder c = new StringBuilder();
+        for (String key : what.getKeys()) {
+            c.append(c.length() == 0 ? "" : ", ").append(key).append(" = ").append(placeholder(what, key, params));
+        }
+        return c.toString();
+    }
+
+    /**
+     * Sets a value of a prepared statement with its type
+     */
+    private static void bind(PreparedStatement ps, int i, Object v) throws SQLException {
+        if (v instanceof String) {
+            if (ConnectionTypeHandler.getDriverType() != null && ConnectionTypeHandler.getDriverType() == ConnectionTypeHandler.POSTGRES) {
+                //like a '...' literal: the server takes it as the type of the column ('5' into a number, a date into a timestamp)
+                ps.setObject(i, v, java.sql.Types.OTHER);
+            } else {
+                ps.setString(i, (String) v);
+            }
+        } else if (v instanceof Integer) {
+            ps.setInt(i, (Integer) v);
+        } else if (v instanceof Long) {
+            ps.setLong(i, (Long) v);
+        } else if (v instanceof Short) {
+            ps.setShort(i, (Short) v);
+        } else if (v instanceof java.math.BigDecimal) {
+            ps.setBigDecimal(i, (java.math.BigDecimal) v);
+        } else if (v instanceof Double || v instanceof Float) {
+            ps.setDouble(i, ((Number) v).doubleValue());
+        } else if (v instanceof Number) {
+            ps.setBigDecimal(i, new java.math.BigDecimal(v.toString()));
+        } else if (v instanceof java.sql.Timestamp) {
+            ps.setTimestamp(i, (java.sql.Timestamp) v);
+        } else {
+            ps.setString(i, String.valueOf(v));
+        }
+    }
+
+    /**
+     * An INSERT, UPDATE ... with "?" for the values: checks the rights like
+     * {@link #freeUpdateQuery(String, int, String)}
+     *
+     * @param query
+     * @param params the values of the "?"
+     * @param action
+     * @param jobmessage
+     * @return the id of an inserted row and the count of changed rows, null on
+     * an error
+     */
+    private ReturnValue preparedUpdate(String query, java.util.List<Object> params, int action, String jobmessage) {
+        if (!mpv5.usermanagement.MPSecurityManager.check(context, action)) {
+            Log.Debug(this, Messages.SECURITYMANAGER_DENIED
+                    + mpv5.usermanagement.MPSecurityManager.getActionName(action) + Messages.CONTEXT + context.getDbIdentity());
+            Popup.warn(Messages.SECURITYMANAGER_DENIED
+                    + mpv5.usermanagement.MPSecurityManager.getActionName(action) + Messages.CONTEXT + context.getDbIdentity());
+            return new ReturnValue(-1, new Object[0][0], new String[0]);
+        }
+        updateStatistics(query);
+        start();
+        ReturnValue retval = null;
+        int wantKeys = DatabaseConnection.generatedKeys(query);
+        try (PreparedStatement ps = sqlConn.prepareStatement(query, wantKeys)) {
+            for (int i = 0; i < params.size(); i++) {
+                bind(ps, i + 1, params.get(i));
+            }
+            if (Log.isDebugging()) {
+                Log.Debug(this, "preparedUpdate::" + query + " " + params);
+            }
+            ps.executeUpdate();
+            int id = -1;
+            if (wantKeys == Statement.RETURN_GENERATED_KEYS) {
+                try (ResultSet keys = ps.getGeneratedKeys()) {
+                    if (keys != null && keys.next()) {
+                        id = keys.getInt(1);
+                    }
+                } catch (SQLException e) {
+                    Log.Debug(e);
+                }
+            }
+            retval = new ReturnValue(id, null, null);
+            retval.setUpdateCount(ps.getUpdateCount());
+        } catch (SQLException ex) {
+            jobmessage = Messages.ERROR_OCCURED.toString();
+            Log.Debug(this, "Database Error (preparedUpdate) :" + ex.getMessage() + "\n" + query + " " + params);
+        } finally {
+            stop();
+        }
+        if (jobmessage != null && retval != null) {
+            mpv5.YabsViewProxy.instance().addMessage(jobmessage);
+            retval.setMessage(jobmessage);
+        }
+        return retval;
     }
     private final Object uvppsLock = new Object();
     private final Object psHistoryLock = new Object();
@@ -1471,21 +1594,9 @@ public class QueryHandler implements Cloneable {
      * @param jobmessage
      */
     public void update(QueryData what, String[] where, String jobmessage) {
-
-        String query;
-        String[] a = what.getKeys();
-        String c = "";
-
-        for (int i = 0; i < a.length; i++) {
-            c += a[i] + " = " + what.getValue(a[i]).getWrapper() + what.getValue(a[i]).toString() + what.getValue(a[i]).getWrapper() + ", ";
-        }
-
-        if (c.length() > 2) {
-            c = c.substring(0, c.length() - 2);
-        }
-
-        query = "UPDATE " + table + " SET " + c + " WHERE " + eq(table + "." + where[0], where);
-        freeUpdateQuery(query, mpv5.usermanagement.MPSecurityManager.EDIT, jobmessage);
+        java.util.List<Object> params = new java.util.ArrayList<Object>();
+        String query = "UPDATE " + table + " SET " + setClause(what, params) + " WHERE " + eq(table + "." + where[0], where);
+        preparedUpdate(query, params, mpv5.usermanagement.MPSecurityManager.EDIT, jobmessage);
     }
 
     /**
@@ -1499,9 +1610,10 @@ public class QueryHandler implements Cloneable {
     public void update(QueryData what, QueryCriteria2 criteria, String jobmessage) throws NodataFoundException {
 
         String checkquery = "select ids from " + table + " WHERE " + criteria.getQuery();
-        String query = "UPDATE " + table + " SET " + what + " WHERE " + criteria.getQuery();
+        java.util.List<Object> params = new java.util.ArrayList<Object>();
+        String query = "UPDATE " + table + " SET " + setClause(what, params) + " WHERE " + criteria.getQuery();
         if (freeSelectQuery(checkquery, mpv5.usermanagement.MPSecurityManager.VIEW, jobmessage).hasData()) {
-            freeUpdateQuery(query, mpv5.usermanagement.MPSecurityManager.EDIT, jobmessage);
+            preparedUpdate(query, params, mpv5.usermanagement.MPSecurityManager.EDIT, jobmessage);
         } else {
             Log.Debug(this, "No data for : " + checkquery);
             throw new NodataFoundException(context);
@@ -1516,8 +1628,10 @@ public class QueryHandler implements Cloneable {
      * @param jobmessage
      */
     public void updateOrCreate(QueryData what, QueryCriteria2 criteria, String jobmessage) {
-        String query = "UPDATE " + table + " SET " + what + " WHERE " + criteria.getQuery();
-        if (freeUpdateQuery(query, mpv5.usermanagement.MPSecurityManager.EDIT, jobmessage).getUpdateCount() > 0) {
+        java.util.List<Object> params = new java.util.ArrayList<Object>();
+        String query = "UPDATE " + table + " SET " + setClause(what, params) + " WHERE " + criteria.getQuery();
+        ReturnValue r = preparedUpdate(query, params, mpv5.usermanagement.MPSecurityManager.EDIT, jobmessage);
+        if (r != null && r.getUpdateCount() > 0) {
         } else {
             Log.Debug(this, "Need to create " + what + " on " + criteria.getQuery());
             what.add(criteria);

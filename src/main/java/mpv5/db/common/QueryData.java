@@ -52,6 +52,11 @@ public class QueryData {
         return new SaveString(s, true);
     }
     private HashMap<String, SaveString> list = new HashMap<String, SaveString>();
+    /**
+     * the values with their types (String, Number, Timestamp, null) for
+     * prepared statements; same keys as list
+     */
+    private HashMap<String, Object> typed = new HashMap<String, Object>();
 
     /**
      * This is a legacy constructor, to speed up the conversion of old style data into new style data
@@ -79,6 +84,7 @@ public class QueryData {
     public <T extends Number> void add(String key, T value) {
         String string = String.valueOf(value);
         list.put(key, new SaveString(string, false));
+        typed.put(key, value);
     }
     
     /**
@@ -106,6 +112,23 @@ public class QueryData {
         } else {
             list.put(key, new SaveString("0", false));
         }
+        //boolean columns are numbers (SMALLINT / BIGINT)
+        typed.put(key, value ? 1 : 0);
+    }
+
+    /**
+     * Adds a key with a date (stored as timestamp)
+     * @param key
+     * @param value
+     */
+    public void add(String key, java.util.Date value) {
+        if (value == null) {
+            list.put(key, new SaveString("null", false));
+            typed.put(key, null);
+        } else {
+            list.put(key, new SaveString(mpv5.utils.date.DateConverter.getSQLDateString(value), true));
+            typed.put(key, new java.sql.Timestamp(value.getTime()));
+        }
     }
 
     /**
@@ -115,6 +138,16 @@ public class QueryData {
      */
     public void add(String key, String value) {
         list.put(key, new SaveString(value, true));
+        typed.put(key, value);
+    }
+
+    /**
+     * @param key
+     * @return the value with its type (String, Number, Timestamp or null) for
+     * a prepared statement
+     */
+    public Object getTyped(String key) {
+        return typed.get(key);
     }
 
     /**
@@ -217,6 +250,8 @@ public class QueryData {
     public void add(String columnName, Object value) {
         if (value instanceof Number) {
             add(columnName, (Number) value);
+        } else if (value instanceof java.util.Date) {
+            add(columnName, (java.util.Date) value);
         } else if (value instanceof Boolean) {
             add(columnName, (Boolean) value);
         } else {
