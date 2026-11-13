@@ -61,6 +61,7 @@ import mpv5.Main;
 import mpv5.db.common.ConnectionTypeHandler;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseConnection;
+import mpv5.db.common.QueryHandler;
 import mpv5.db.common.DatabaseInstallation;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.objects.User;
@@ -445,6 +446,11 @@ public final class FirstStart extends JFrame {
                         created = true;
                     }
                     cacheDir();
+                    //the queries of the setup on this database: the handler of YaBS kept the
+                    //connection opened before (connection manager > new database): the admin,
+                    //countries, languages and templates went into the database open until then -
+                    //or failed at start, where it is closed ("The object is already closed")
+                    QueryHandler.restart();
                     if (created) {
                         prepare();
                     }

@@ -137,7 +137,44 @@ public final class ConnectionManager extends JDialog {
      * @param startup true before YaBS runs: closing exits YaBS
      */
     public static void open(boolean startup) {
-        new ConnectionManager(startup).setVisible(true);
+        ConnectionManager cm = new ConnectionManager(startup);
+        do {
+            cm.reopen = false;
+            cm.setVisible(true);
+            //"new database": the dialog is hidden while the first start assistant runs. Returning
+            //now let the start of YaBS go on with the new, still empty connection ("null/null")
+            java.awt.SecondaryLoop setup = cm.setupRunning;
+            if (setup != null) {
+                setup.enter();
+                cm.setupRunning = null;
+            }
+        } while (cm.reopen);
+    }
+
+    /**
+     * the first start assistant for a new database runs, {@link #open} waits
+     * for it
+     */
+    private java.awt.SecondaryLoop setupRunning;
+    /**
+     * show the dialog again (the new database was cancelled or failed)
+     */
+    private boolean reopen;
+
+    /**
+     * The first start assistant has finished (or was cancelled): {@link #open}
+     * goes on
+     *
+     * @param showAgain true to show the connection manager again
+     */
+    private void setupEnded(boolean showAgain) {
+        reopen = showAgain;
+        java.awt.SecondaryLoop setup = setupRunning;
+        if (setup != null) {
+            setup.exit();
+        } else if (showAgain) {
+            setVisible(true);
+        }
     }
 
     private ConnectionManager(boolean startup) {
@@ -405,6 +442,7 @@ public final class ConnectionManager extends JDialog {
             LocalSettings.save();
             LocalSettings.setConnectionID(id);
             LocalSettings.read();
+            setupRunning = java.awt.Toolkit.getDefaultToolkit().getSystemEventQueue().createSecondaryLoop();
             setVisible(false);
             FirstStart.open(id, () -> {
                 try {
@@ -415,16 +453,17 @@ public final class ConnectionManager extends JDialog {
                     admin.login();
                     LocalSettings.save();
                     dispose();
-                    if (startup) {
-                        Main.start();
-                    } else {
+                    //at start: YaBS goes on starting (signed in, the new database); a second
+                    //Main.start() here started YaBS twice
+                    if (!startup) {
                         mpv5.YabsViewProxy.instance().addMessage(String.format(Messages.CONNMGR_CREATED.toString(), name.trim()));
                     }
+                    setupEnded(false);
                 } catch (Exception e) {
                     Log.Debug(ConnectionManager.class, e);
                     Popup.notice(Messages.CONNMGR_FAILED + "\n" + e.getMessage());
                     load(id);
-                    setVisible(true);
+                    setupEnded(true);
                 }
             }, () -> {
                 //cancelled: back to the previous connection, the empty entry is removed
@@ -437,11 +476,12 @@ public final class ConnectionManager extends JDialog {
                     Log.Debug(ConnectionManager.class, e);
                 }
                 load(before);
-                setVisible(true);
+                setupEnded(true);
             });
         } catch (Exception e) {
             Log.Debug(this, e);
             Popup.notice(Messages.CONNMGR_FAILED + "\n" + e.getMessage());
+            setupEnded(!isVisible());
         }
     }
 
