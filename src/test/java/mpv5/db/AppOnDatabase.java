@@ -160,6 +160,7 @@ abstract class AppOnDatabase {
             assertEquals(3, inv2.getSubitems().length);
             assertEquals(0, new BigDecimal("60").compareTo(inv2.__getNetvalue()));
             assertEquals(c.__getIDS(), inv2.__getContactsids());
+            orderConfirmationHasPositions(c, inv2);
             assertEquals(DateConverter.getDefDateString(inv.__getDatetodo()), DateConverter.getDefDateString(inv2.__getDatetodo()));
 
             //payments on the invoice (60 net + 19 % = 71.40): open amount, paid when complete, open again when removed
@@ -406,6 +407,53 @@ abstract class AppOnDatabase {
             assertEquals("C:\\Daten\\D`Arcy", old.__getCname(), "the placeholder is read as a backslash");
         } finally {
             DatabaseConnection.shutdown();
+        }
+    }
+
+    /**
+     * The positions of the order confirmation (template type 4): XDocReport
+     * prepares a template once; a document without positions first left the
+     * table as plain fields and every later one showed "$xtable1.C0"
+     */
+    private static void orderConfirmationHasPositions(Contact c, Item withPositions) throws Exception {
+        Item empty = (Item) DatabaseObject.getObject(Context.getInvoice());
+        empty.setContactsids(c.__getIDS());
+        empty.setCname("ohne Positionen");
+        empty.setInttype(Item.TYPE_INVOICE);
+        empty.setDatetodo(new Date());
+        empty.setDateend(new Date());
+        empty.setDateadded(new Date());
+        empty.setAccountsids(1);
+        assertTrue(empty.save(true));
+        Template t = null;
+        for (DatabaseObject o : DatabaseObject.getObjects(Context.getTemplate())) {
+            if ("4".equals(((Template) o).__getMimetype())) {
+                t = (Template) o;
+            }
+        }
+        assertNotNull(t, "demo order confirmation");
+        t.defineExFile(new mpv5.utils.export.ODTFile2(t.getFile().getPath()));
+        String first = pdfText(t, empty);
+        assertTrue(!first.contains("$xtable"), first);
+        String second = pdfText(t, withPositions);
+        assertTrue(!second.contains("$xtable"), second);
+        //the three positions (quantity 1, 2, 3), in any locale
+        java.util.regex.Matcher rows = java.util.regex.Pattern.compile("(?m)^\\S+ [123][.,]00 ").matcher(second);
+        int n = 0;
+        while (rows.find()) {
+            n++;
+        }
+        assertEquals(3, n, second);
+    }
+
+    private static String pdfText(Template t, Item item) throws Exception {
+        mpv5.utils.export.Export ex = (mpv5.utils.export.Export) mpv5.utils.export.Export.createFile(t, item);
+        Exception e = ex.waitFor();
+        if (e != null) {
+            throw e;
+        }
+        try (org.apache.pdfbox.pdmodel.PDDocument d = org.apache.pdfbox.Loader.loadPDF(ex.getTargetFile())) {
+            return new org.apache.pdfbox.text.PDFTextStripper().getText(d);
         }
     }
 }

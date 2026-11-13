@@ -78,9 +78,12 @@ STYLES = ('<style:style style:name="PBreak" style:family="paragraph" style:paren
           '<style:style style:name="RefT.C" style:family="table-cell"><style:table-cell-properties fo:padding="0.04cm" fo:border-bottom="0.5pt solid #dddddd" fo:border-top="none" fo:border-left="none" fo:border-right="none"/></style:style>'
           '<style:style style:name="frLogo" style:family="graphic" style:parent-style-name="Graphics"><style:graphic-properties style:vertical-pos="top" style:vertical-rel="baseline" fo:padding="0cm" fo:border="none"/></style:style>')
 
-def reference(title, groups):
-    x = ['<text:p text:style-name="PBreak">%s</text:p>' % esc(title),
-         '<text:p text:style-name="PRefHint">%s</text:p>' % esc('Alle Felder dieser Vorlage: links der Name, rechts der Wert beim Export. Felder in eigene Vorlagen kopieren (Einfügen › Feldbefehl › Platzhalter) und diese Seite löschen.')]
+def reference(title, groups, tid=None, tname=None):
+    x = ['<text:p text:style-name="PBreak">%s</text:p>' % esc(title)]
+    if tid is not None:
+        # the template type, for easier debugging: which kind of document uses this template
+        x.append('<text:p text:style-name="PRefHint">%s</text:p>' % esc('Vorlagentyp: %d – %s' % (tid, tname)))
+    x += ['<text:p text:style-name="PRefHint">%s</text:p>' % esc('Alle Felder dieser Vorlage: links der Name, rechts der Wert beim Export. Felder in eigene Vorlagen kopieren (Einfügen › Feldbefehl › Platzhalter) und diese Seite löschen.')]
     for gname, flist in groups:
         if not flist:
             continue
@@ -206,7 +209,7 @@ SENDER = ('<text:span text:style-name="T7">Firma · Musterstrasse <text:s/>· D-
 DUPLICATE_NAME = re.compile(r'<text:p text:style-name="P12"><text:span text:style-name="T5">\(</text:span>.*?<text:span text:style-name="T5">\)</text:span></text:p>')
 TOTALS = re.compile(r'<table:table table:name="Tabelle3".*?</table:table>')
 
-def make(fname, title, kind, groups, prefix=None, cprefix=None, blocks=None, total_label=None, date_field=None, addressee=True, totals=None):
+def make(fname, title, kind, groups, prefix=None, cprefix=None, blocks=None, total_label=None, date_field=None, addressee=True, totals=None, tid=None):
     c = content
     styles_xml = None
     if kind == 'journal':
@@ -241,7 +244,7 @@ def make(fname, title, kind, groups, prefix=None, cprefix=None, blocks=None, tot
         # keep the head (logo, addresses, title line); the positions and totals are replaced by the body
         cut = c.index('<text:p text:style-name="P7"/><table:table table:name="Tabelle1"')
         body_end = c[:cut]
-    c = body_end + body(blocks or []) + reference('Verfügbare Felder – ' + title, groups) + c[end:]
+    c = body_end + body(blocks or []) + reference('Verfügbare Felder – ' + title, groups, tid, title) + c[end:]
     out = io.BytesIO()
     zo = zipfile.ZipFile(out, 'w')
     zo.writestr(zipfile.ZipInfo('mimetype'), files['mimetype'], compress_type=zipfile.ZIP_STORED)
@@ -278,7 +281,7 @@ TYPES = [
 made = []
 for tid, title, total in TYPES:
     g = [('Beleg', item + positions), ('Kontakt des Belegs', contact_of('item.contact.')), ('Firma', COMPANY)]
-    made.append((tid, title, 'demo-%02d.odt' % tid, make('demo-%02d.odt' % tid, title, 'item', g, total_label=total)))
+    made.append((tid, title, 'demo-%02d.odt' % tid, make('demo-%02d.odt' % tid, title, 'item', g, total_label=total, tid=tid)))
 
 R = 'reminder.item.'
 REMINDER = [('p', 'Sehr geehrte Damen und Herren,'),
@@ -331,7 +334,7 @@ OTHERS = [
      dict(prefix='contact.', cprefix='contact.', blocks=MASSPRINT, date_field='massprint.dateadded')),
 ]
 for tid, title, kind, g, kw in OTHERS:
-    made.append((tid, title, 'demo-%02d.odt' % tid, make('demo-%02d.odt' % tid, title, kind, g, **kw)))
+    made.append((tid, title, 'demo-%02d.odt' % tid, make('demo-%02d.odt' % tid, title, kind, g, tid=tid, **kw)))
 # the regular invoice template (imported on first start): the base with the sender line from the
 # company information and the name only once
 def write_odt(fname, c):
