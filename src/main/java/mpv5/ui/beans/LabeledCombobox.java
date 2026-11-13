@@ -286,6 +286,29 @@ public class LabeledCombobox extends javax.swing.JPanel {
     }
 
     /**
+     * @see MPCombobox#setActionEntry(String, Runnable)
+     */
+    public void setActionEntry(String label, Runnable action) {
+        mPCombobox1.setActionEntry(label, action);
+    }
+
+    /**
+     * @return the text last typed into the field
+     */
+    public String getTypedText() {
+        return mPCombobox1.getTypedText();
+    }
+
+    /**
+     * Shows the list (search with the typed text) and puts the cursor in the
+     * field
+     */
+    public void focusAndOpen() {
+        mPCombobox1.getComboBox().requestFocusInWindow();
+        mPCombobox1.search(false);
+    }
+
+    /**
      * Trigger a search on the combo box
      */
     public void triggerSearch() {

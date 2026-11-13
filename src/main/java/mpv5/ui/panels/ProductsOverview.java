@@ -58,7 +58,11 @@ public class ProductsOverview extends javax.swing.JPanel implements ListPanel {
             }
         });
         ((MPTable) listtable).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) listtable, this));
+        //preview of the selected product, Enter: new invoice with the selection
+        ProductPreview.attach(listtable, 0, jPanel1, jToolBar1);
     }
+
+
 
     private void search() {
         List<ProductGroup> gs = new ArrayList<ProductGroup>();
@@ -338,13 +342,14 @@ public class ProductsOverview extends javax.swing.JPanel implements ListPanel {
         c.addReference(Context.getContact().getDbIdentity(), "ids", "suppliersids");
         c.addReference(Context.getGroup());
 
+        String[] header = ProductPreview.productColumns();
         try {
-            listtable.setModel(new MPTableModel(QueryHandler.instanceOf().clone(c).select(Context.DETAILS_PRODUCTS, qc).getData()));
+            listtable.setModel(new MPTableModel(QueryHandler.instanceOf().clone(c).select(Context.DETAILS_PRODUCTS, qc).getData(), header));
         } catch (NodataFoundException ex) {
-            listtable.setModel(new MPTableModel());
+            listtable.setModel(new MPTableModel(new Object[0][header.length], header));
         }
-
-        TableFormat.hideHeader(listtable);
+        //the internal id is not shown
+        TableFormat.stripColumn(listtable, 0);
     }
 
     public void refresh() {
