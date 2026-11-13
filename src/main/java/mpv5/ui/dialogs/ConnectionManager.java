@@ -121,6 +121,15 @@ public final class ConnectionManager extends JDialog {
     private final JPasswordField password = ModernTheme.roomy(new JPasswordField(18));
     private final JCheckBox remember = new JCheckBox(Messages.CONNMGR_REMEMBER.toString(), true);
     private final JLabel problem = new JLabel(" ");
+    /**
+     * At start: the database used last, or always one of the list
+     */
+    private final JComboBox<Object> startChoice = new JComboBox<Object>();
+    private boolean loading;
+    /**
+     * the connection that opens at start (marked in the list), null: none
+     */
+    private static Integer startId;
 
     /**
      * Shows the connection manager
@@ -183,14 +192,37 @@ public final class ConnectionManager extends JDialog {
         remove.addActionListener(e -> remove());
         JButton create = new JButton(Messages.CONNMGR_NEW.toString());
         create.addActionListener(e -> createNew());
-        JPanel listButtons = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, ModernTheme.px(6), 0));
+        //two rows: in one row the last button was cut off
+        JPanel listButtons = new JPanel(new java.awt.GridLayout(2, 2, ModernTheme.px(6), ModernTheme.px(6)));
         listButtons.setOpaque(false);
         listButtons.add(create);
         listButtons.add(add);
         listButtons.add(rename);
         listButtons.add(remove);
 
-        Card databases = new Card(Messages.CONNMGR_LIST.toString()).addFull(sp, 1).addFull(listButtons);
+        startChoice.setRenderer(new javax.swing.DefaultListCellRenderer() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public Component getListCellRendererComponent(JList<?> l, Object v, int i, boolean sel, boolean focus) {
+                return super.getListCellRendererComponent(l, v instanceof Conn ? ((Conn) v).name : v, i, sel, focus);
+            }
+        });
+        startChoice.addActionListener(e -> {
+            if (loading) {
+                return;
+            }
+            Object v = startChoice.getSelectedItem();
+            mpv5.globals.ConnectionStart.setChoice(v instanceof Conn ? ((Conn) v).id : mpv5.globals.ConnectionStart.LAST);
+            startId = mpv5.globals.ConnectionStart.atStart();
+            list.repaint();
+        });
+        JPanel startRow = new JPanel(new BorderLayout(ModernTheme.px(8), 0));
+        startRow.setOpaque(false);
+        startRow.add(new JLabel(Messages.CONNMGR_START + ":"), BorderLayout.WEST);
+        startRow.add(startChoice, BorderLayout.CENTER);
+
+        Card databases = new Card(Messages.CONNMGR_LIST.toString()).addFull(sp, 1).addFull(listButtons).addFull(startRow);
         remember.setOpaque(false);
         problem.setForeground(Applets.DANGER);
         password.addActionListener(e -> connect());
@@ -246,12 +278,27 @@ public final class ConnectionManager extends JDialog {
 
     private void load(int select) {
         model.clear();
+        loading = true;
+        startChoice.removeAllItems();
+        startChoice.addItem(Messages.CONNMGR_START_LAST.toString());
+        int choice = mpv5.globals.ConnectionStart.getChoice();
         for (Conn c : connections()) {
             model.addElement(c);
+            startChoice.addItem(c);
+            if (c.id == choice) {
+                startChoice.setSelectedItem(c);
+            }
             if (c.id == select) {
                 list.setSelectedIndex(model.size() - 1);
             }
         }
+        if (choice != mpv5.globals.ConnectionStart.LAST && !(startChoice.getSelectedItem() instanceof Conn)) {
+            //the database that opened at start was removed: the one used last again
+            mpv5.globals.ConnectionStart.setChoice(mpv5.globals.ConnectionStart.LAST);
+            startChoice.setSelectedIndex(0);
+        }
+        loading = false;
+        startId = mpv5.globals.ConnectionStart.atStart();
         if (list.getSelectedIndex() < 0 && !model.isEmpty()) {
             list.setSelectedIndex(0);
         }
@@ -300,6 +347,7 @@ public final class ConnectionManager extends JDialog {
             LocalSettings.setProperty(LocalSettings.LAST_USER, remember.isSelected() ? String.valueOf(u.__getIDS()) : "INSTANCE");
             LocalSettings.setProperty(LAST_NAME, remember.isSelected() ? user.getText().trim() : "null");
             LocalSettings.save();
+            mpv5.globals.ConnectionStart.used(c.id);
             dispose();
             if (switched && !startup) {
                 mpv5.YabsViewProxy.instance().addMessage(String.format(Messages.CONNMGR_SWITCHED.toString(), c.name));
@@ -334,7 +382,8 @@ public final class ConnectionManager extends JDialog {
         LocalSettings.apply();
         DatabaseConnection.shutdown();
         DatabaseConnection.instanceOf();
-        QueryHandler.instanceOf().reset();
+        //version check and updates of this database, like at start
+        QueryHandler.restart();
         GlobalSettings.read();
         mpv5.db.objects.ValueProperty.clearScripts();
     }
@@ -359,8 +408,9 @@ public final class ConnectionManager extends JDialog {
             setVisible(false);
             FirstStart.open(id, () -> {
                 try {
-                    QueryHandler.instanceOf().reset();
+                    QueryHandler.restart();
                     GlobalSettings.read();
+                    mpv5.globals.ConnectionStart.used(id);
                     User admin = (User) DatabaseObject.getObject(Context.getUser(), "admin");
                     admin.login();
                     LocalSettings.save();
@@ -538,7 +588,8 @@ public final class ConnectionManager extends JDialog {
         @Override
         public Component getListCellRendererComponent(JList<? extends Conn> l, Conn c, int index, boolean selected, boolean focus) {
             String place = shorten(place(c), 48);
-            title.setText(c.name + (isActive(c) ? "  • " + Messages.CONNMGR_CURRENT : ""));
+            title.setText(c.name + (isActive(c) ? "  • " + Messages.CONNMGR_CURRENT : "")
+                    + (startId != null && startId == c.id ? "  • " + Messages.CONNMGR_DEFAULT_MARK : ""));
             detail.setText(c.type() + "  ·  " + place + (c.exists() ? "" : "  –  ?"));
             setBackground(selected ? ModernTheme.accentSoft() : ModernTheme.cardBackground());
             title.setForeground(ModernTheme.foreground());

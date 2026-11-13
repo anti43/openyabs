@@ -102,6 +102,18 @@ public class QueryHandler implements Cloneable {
      * @param c
      * @return
      */
+    /**
+     * For another database (connection manager): a new handler, which checks
+     * the version and updates the database, creates missing tables and runs
+     * the fixes, like at start. {@link #reset()} only uses the new connection.
+     *
+     * @return the new handler
+     */
+    public static synchronized QueryHandler restart() {
+        instance = null;
+        return instanceOf();
+    }
+
     public static synchronized QueryHandler instanceOf(Context c) {
         return instanceOf().clone(c);
     }
