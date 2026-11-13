@@ -56,7 +56,7 @@ public class QueryCriteria2 {
                     val = "0";
                 }
             } else {
-                val = "'" + p.getValue() + "'";
+                val = "'" + SqlText.literal(String.valueOf(p.getValue())) + "'";
             }
 
             switch (p.getCondition()) {
@@ -67,16 +67,16 @@ public class QueryCriteria2 {
                     query += " AND " + p.getKey() + " <= " + val + " ";
                     break;
                 case QueryParameter.EQUALS:
-                    query += " AND " + p.getKey() + " = " + val + " ";
+                    query += " AND " + equals(p, val) + " ";
                     break;
                 case QueryParameter.NOTEQUAL:
                     query += " AND " + p.getKey() + " <> " + val + " ";
                     break;
                 case QueryParameter.LIKE:
-                    query += " AND UPPER(" + p.getKey() + ") LIKE '%" + val.replace("'", "").toUpperCase() + "%'" + " ";
+                    query += " AND UPPER(" + p.getKey() + ") LIKE '%" + like(p) + "%'" + " ";
                     break;
                 case QueryParameter.NOTLIKE:
-                    query += " AND UPPER(" + p.getKey() + ") NOT LIKE '%" + val.replace("'", "").toUpperCase() + "%'" + " ";
+                    query += " AND UPPER(" + p.getKey() + ") NOT LIKE '%" + like(p) + "%'" + " ";
                     break;
             }
         }
@@ -153,9 +153,9 @@ public class QueryCriteria2 {
                     break;
                 case QueryParameter.EQUALS:
                     if (!firstrun) {
-                        query += " OR " + p.getKey() + " = " + val + " ";
+                        query += " OR " + equals(p, val) + " ";
                     } else {
-                        query += " " + p.getKey() + " = " + val + " ";
+                        query += " " + equals(p, val) + " ";
                     }
                     break;
                 case QueryParameter.NOTEQUAL:
@@ -167,16 +167,16 @@ public class QueryCriteria2 {
                     break;
                 case QueryParameter.LIKE:
                     if (!firstrun) {
-                        query += " OR UPPER(" + p.getKey() + ") LIKE '%" + val.toUpperCase().replace("'", "") + "%'" + " ";
+                        query += " OR UPPER(" + p.getKey() + ") LIKE '%" + like(p) + "%'" + " ";
                     } else {
-                        query += " UPPER(" + p.getKey() + ") LIKE '%" + val.toUpperCase().replace("'", "") + "%'" + " ";
+                        query += " UPPER(" + p.getKey() + ") LIKE '%" + like(p) + "%'" + " ";
                     }
                     break;
                 case QueryParameter.NOTLIKE:
                     if (!firstrun) {
-                        query += " OR UPPER(" + p.getKey() + ") NOT LIKE '%" + val.toUpperCase().replace("'", "") + "%'" + " ";
+                        query += " OR UPPER(" + p.getKey() + ") NOT LIKE '%" + like(p) + "%'" + " ";
                     } else {
-                        query += " UPPER(" + p.getKey() + ") NOT LIKE '%" + val.toUpperCase().replace("'", "") + "%'" + " ";
+                        query += " UPPER(" + p.getKey() + ") NOT LIKE '%" + like(p) + "%'" + " ";
                     }
                     break;
             }
@@ -280,8 +280,25 @@ public class QueryCriteria2 {
                 val = "0";
             }
         } else {
-            val = "'" + p.getValue() + "'";
+            val = "'" + SqlText.literal(String.valueOf(p.getValue())) + "'";
         }
         return val;
+    }
+
+    /**
+     * @return column = value; a text with ' also finds its old form (see SqlText)
+     */
+    private static String equals(QueryParameter p, String val) {
+        if (p.getValue() instanceof String) {
+            return SqlText.equalsText(p.getKey(), (String) p.getValue());
+        }
+        return p.getKey() + " = " + val;
+    }
+
+    /**
+     * @return the upper case value for LIKE '%...%', escaped; a ' matches ' and the old `
+     */
+    private static String like(QueryParameter p) {
+        return SqlText.likeText(String.valueOf(p.getValue()).toUpperCase());
     }
 }

@@ -363,6 +363,37 @@ abstract class AppOnDatabase {
             assertTrue(((Contact) DatabaseObject.getObject(Context.getContact(), tea.__getSuppliersids())).__getIssupplier());
             assertTrue(DatabaseObject.exists(Context.getProduct(), tea.__getIDS()));
             assertTrue(!DatabaseObject.exists(Context.getProduct(), 987654));
+
+            //quotes and backslashes are stored as typed (YaBS used to store ' as `)
+            Contact quote = (Contact) DatabaseObject.getObject(Context.getContact());
+            quote.setCname("O'Brien");
+            quote.setCompany("Bob's \\Shop\\");
+            quote.setNotes("<a href='https://example.org'>x</a> 'quoted' \\' end\\");
+            quote.setisCustomer(true);
+            assertTrue(quote.save(true));
+            Contact quote2 = (Contact) DatabaseObject.getObject(Context.getContact(), quote.__getIDS());
+            assertEquals("O'Brien", quote2.__getCname());
+            assertEquals("Bob's \\Shop\\", quote2.__getCompany());
+            assertEquals("<a href='https://example.org'>x</a> 'quoted' \\' end\\", quote2.__getNotes());
+            quote2.setCity("L'Aquila");
+            assertTrue(quote2.save(true));
+            assertEquals("L'Aquila", ((Contact) DatabaseObject.getObject(Context.getContact(), quote.__getIDS())).__getCity());
+            //lookup by name, and the uniqueness check, with a quote
+            assertEquals(quote.__getIDS(), DatabaseObject.getObject(Context.getContact(), "O'Brien").__getIDS());
+            //a row saved by an older YaBS ("D`Arcy" for D'Arcy) is still found as D'Arcy
+            QueryHandler.instanceOf().clone(Context.getContact()).freeQuery(
+                    "UPDATE contacts SET cname = 'D`Arcy' WHERE ids = " + other.__getIDS(), mpv5.usermanagement.MPSecurityManager.VIEW, null);
+            assertEquals(other.__getIDS(), DatabaseObject.getObject(Context.getContact(), "D'Arcy").__getIDS());
+            Object[][] found = new mpv5.db.common.DatabaseSearch(Context.getContact(), 50).getValuesFor2("ids,cname", "'Br", null, true, true);
+            assertTrue(Arrays.stream(found).anyMatch(r -> String.valueOf(r[1]).equals("O'Brien")), Arrays.deepToString(found));
+            found = new mpv5.db.common.DatabaseSearch(Context.getContact(), 50).getValuesFor2("ids,cname", "D'Ar", null, true, true);
+            assertTrue(Arrays.stream(found).anyMatch(r -> String.valueOf(r[1]).equals("D`Arcy")), "old form found by a search with ': " + Arrays.deepToString(found));
+            //as older versions stored C:\\Daten\\D'Arcy (setting dbescape, ' as `): read as \\, found with the new form
+            QueryHandler.instanceOf().clone(Context.getContact()).freeQuery(
+                    "UPDATE contacts SET cname = 'C:<removedbackslash>Daten<removedbackslash>D`Arcy' WHERE ids = " + other.__getIDS(), mpv5.usermanagement.MPSecurityManager.VIEW, null);
+            Contact old = (Contact) DatabaseObject.getObject(Context.getContact(), "C:\\Daten\\D'Arcy");
+            assertEquals(other.__getIDS(), old.__getIDS());
+            assertEquals("C:\\Daten\\D`Arcy", old.__getCname(), "the placeholder is read as a backslash");
         } finally {
             DatabaseConnection.shutdown();
         }
