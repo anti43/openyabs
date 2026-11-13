@@ -1979,7 +1979,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @throws NodataFoundException
      */
     public Integer getIdOf(String cname) throws NodataFoundException {
-        cname = new SaveString(cname, false).toString();
+        //the select escapes the text and also finds the old form (see SqlText)
         Object[] data = QueryHandler.instanceOf().clone(getContext()).selectLast("ids", new String[]{"cname", cname, "'"});
         if (data != null && data.length > 0) {
             return Integer.valueOf(String.valueOf(data[0]));

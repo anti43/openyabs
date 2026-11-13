@@ -211,6 +211,9 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
 
         escape.setText(bundle.getString("ControlPanel_Local.escape.text")); // NOI18N
         escape.setName("escape"); // NOI18N
+        //texts are escaped properly now, backslashes need no masking (old masked data is still read);
+        //the value stays in the settings file for older versions
+        escape.setVisible(false);
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);

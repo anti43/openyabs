@@ -695,13 +695,14 @@ public class QueryHandler implements Cloneable {
      */
     public ReturnValue select(QueryCriteria criterias) throws NodataFoundException {
         String query = "SELECT * FROM " + table + " " + context.getReferences() + " WHERE ";
-        for (int i = 0; i < criterias.getValues().length; i++) {
+        String[] keys = criterias.getKeys();
+        for (int i = 0; i < keys.length; i++) {
+            String column = keys[i];
+            SaveString v = criterias.getValue(column);
+            //a text: escaped, with a ' also its old form (see SqlText)
+            query += "'".equals(v.getWrapper()) ? SqlText.equalsText(column, v.getRaw()) : column + "=" + v;
 
-            Object object = criterias.getValues()[i];
-            String column = criterias.getKeys()[i];
-            query += column + "=" + String.valueOf(object);
-
-            if ((i + 1) != criterias.getValues().length) {
+            if ((i + 1) != keys.length) {
                 query += " AND ";
             } else {
                 query += " AND " + context.getConditions(criterias.getIncludeInvisible()).substring(6, context.getConditions(criterias.getIncludeInvisible()).length());
@@ -810,7 +811,7 @@ public class QueryHandler implements Cloneable {
         String dateCriterium = datecolumn + " >= '" + DateConverter.getSQLDateString(zeitraum.getStart()) + "' AND " + datecolumn + " <= '" + DateConverter.getSQLDateString(zeitraum.getEnd()) + "'";
         String query;
         if (where != null) {
-            query = "SELECT " + what + " FROM " + table + " WHERE " + where[0] + " = " + where[2] + where[1] + where[2] + " AND " + dateCriterium;
+            query = "SELECT " + what + " FROM " + table + " WHERE " + eq(where[0], where) + " AND " + dateCriterium;
         } else {
             query = "SELECT " + what + " FROM " + table + "  WHERE " + dateCriterium;
         }
@@ -834,7 +835,7 @@ public class QueryHandler implements Cloneable {
             String str = "AND datum BETWEEN '" + DateConverter.getSQLDateString(temdate) + "' AND '" + DateConverter.getSQLDateString(DateConverter.addYear(temdate)) + "'";
 
             if (where != null) {
-                query = "SELECT SUM(" + what + ") FROM " + table + " WHERE " + where[0] + " = " + where[2] + where[1] + where[2] + " " + "  " + str + " " + additionalCondition;
+                query = "SELECT SUM(" + what + ") FROM " + table + " WHERE " + eq(where[0], where) + " " + "  " + str + " " + additionalCondition;
             } else {
                 query = "SELECT SUM(" + what + ") FROM " + table + "  " + str + " " + additionalCondition;
             }
@@ -869,7 +870,7 @@ public class QueryHandler implements Cloneable {
             String str = "AND datum BETWEEN '" + DateConverter.getSQLDateString(temdate) + "' AND '" + DateConverter.getSQLDateString(DateConverter.addMonth(temdate)) + "'";
 
             if (where != null) {
-                query = "SELECT SUM(" + what + ") FROM " + table + " WHERE " + where[0] + " = " + where[2] + where[1] + where[2] + " " + "  " + str + " " + additionalCondition;
+                query = "SELECT SUM(" + what + ") FROM " + table + " WHERE " + eq(where[0], where) + " " + "  " + str + " " + additionalCondition;
             } else {
                 query = "SELECT SUM(" + what + ") FROM " + table + "  " + str + " " + additionalCondition;
             }
@@ -929,7 +930,7 @@ public class QueryHandler implements Cloneable {
 
             query = "SELECT " + what + " FROM " + table
                     + " LEFT OUTER JOIN " + leftJoinTable + " ON " + table + "." + leftJoinKey + " = " + leftJoinTable + ".ids"
-                    + " WHERE " + table + "." + where[0] + " " + k + " " + where[2] + l1 + where[1] + l2 + where[2] + " ORDER BY " + table + "." + order;
+                    + " WHERE " + cond(table + "." + where[0], k, l1, l2, where, false) + " ORDER BY " + table + "." + order;
         } else {
             query = "SELECT " + what + " FROM " + table
                     + " LEFT OUTER JOIN  " + leftJoinTable + " ON "
@@ -1036,9 +1037,9 @@ public class QueryHandler implements Cloneable {
                 int j = uniquecols[i];
                 //qualify the column, the context may join tables with the same column name (e.g. cnumber)
                 String column = values[j].contains(".") ? values[j] : table + "." + values[j];
-                Object[][] val = select(column, new String[]{values[j], vals.getValue(values[j]).toString(), vals.getValue(values[j]).getWrapper()});
+                Object[][] val = select(column, new String[]{values[j], vals.getValue(values[j]).getRaw(), vals.getValue(values[j]).getWrapper()});
                 if (val != null && val.length > 0) {
-                    mpv5.YabsViewProxy.instance().addMessage(Messages.VALUE_ALREADY_EXISTS + vals.getValue(values[j]).toString(), Color.RED);
+                    mpv5.YabsViewProxy.instance().addMessage(Messages.VALUE_ALREADY_EXISTS + vals.getValue(values[j]).getRaw(), Color.RED);
                     return false;
                 }
             }
@@ -1144,12 +1145,12 @@ public class QueryHandler implements Cloneable {
      */
     public final static String BACKSLASH_REPLACEMENT_STRING = "<removedbackslash>";
 
-    private String escapeBackslashes(String query) {
-        return query.replace("\\", BACKSLASH_REPLACEMENT_STRING);
-    }
-
-    private String rescapeBackslashes(String query) {
-        return query.replace(BACKSLASH_REPLACEMENT_STRING, "\\");
+    /**
+     * @param text read from the database
+     * @return the text with the "&lt;removedbackslash&gt;" of older versions as \\
+     */
+    static String rescapeBackslashes(String text) {
+        return text.indexOf('<') < 0 ? text : text.replace(BACKSLASH_REPLACEMENT_STRING, "\\");
     }
 
     /**
@@ -1273,8 +1274,8 @@ public class QueryHandler implements Cloneable {
                 start();
                 //a byte stream, not setBlob: PostgreSQL would use its large object API (needs a transaction, stores an OID)
                 ivpps.setBinaryStream(1, blobData);
-                ivpps.setString(2, data.getValue("cname").toString());
-                ivpps.setString(3, data.getValue("classname").toString());
+                ivpps.setString(2, data.getValue("cname").getRaw());
+                ivpps.setString(3, data.getValue("classname").getRaw());
                 ivpps.setInt(4, Integer.valueOf(data.getValue("objectids").toString()));
                 ivpps.setInt(5, Integer.valueOf(data.getValue("contextids").toString()));
                 ivpps.setInt(6, mpv5.db.objects.User.getCurrentUser().getID());
@@ -1334,8 +1335,8 @@ public class QueryHandler implements Cloneable {
             try {
                 start();
                 uvpps.setBinaryStream(1, blobData);
-                uvpps.setString(2, data.getValue("cname").toString());
-                uvpps.setString(3, data.getValue("classname").toString());
+                uvpps.setString(2, data.getValue("cname").getRaw());
+                uvpps.setString(3, data.getValue("classname").getRaw());
                 uvpps.setInt(4, Integer.valueOf(data.getValue("objectids").toString()));
                 uvpps.setInt(5, Integer.valueOf(data.getValue("contextids").toString()));
                 uvpps.setInt(6, mpv5.db.objects.User.getCurrentUser().getID());
@@ -1483,7 +1484,7 @@ public class QueryHandler implements Cloneable {
             c = c.substring(0, c.length() - 2);
         }
 
-        query = "UPDATE " + table + " SET " + c + " WHERE " + table + "." + where[0] + " = " + where[2] + where[1] + where[2];
+        query = "UPDATE " + table + " SET " + c + " WHERE " + eq(table + "." + where[0], where);
         freeUpdateQuery(query, mpv5.usermanagement.MPSecurityManager.EDIT, jobmessage);
     }
 
@@ -1664,7 +1665,7 @@ public class QueryHandler implements Cloneable {
 //        start();
         String query;
         if (where != null && where[0] != null && where[1] != null) {
-            query = "SELECT " + what + " FROM " + table + " " + context.getReferences() + " WHERE " + table + "." + where[0] + " = " + where[2] + where[1] + where[2] + " AND " + context.getConditions(false).substring(6, context.getConditions(false).length());
+            query = "SELECT " + what + " FROM " + table + " " + context.getReferences() + " WHERE " + eq(table + "." + where[0], where) + " AND " + context.getConditions(false).substring(6, context.getConditions(false).length());
         } else {
             query = "SELECT " + what + " FROM " + table + " " + context.getReferences() + " WHERE " + context.getConditions(false).substring(6, context.getConditions(false).length());
         }
@@ -1685,7 +1686,7 @@ public class QueryHandler implements Cloneable {
 
         String query;
         if (where != null && where[0] != null && where[1] != null) {
-            query = "SELECT " + what + " FROM " + table + " " + context.getReferences() + " WHERE " + table + "." + where[0] + " = " + where[2] + where[1] + where[2] + " AND " + context.getConditions(false).substring(6, context.getConditions(false).length()) + (order != null ? " ORDER BY " + order : "");
+            query = "SELECT " + what + " FROM " + table + " " + context.getReferences() + " WHERE " + eq(table + "." + where[0], where) + " AND " + context.getConditions(false).substring(6, context.getConditions(false).length()) + (order != null ? " ORDER BY " + order : "");
         } else {
             query = "SELECT " + what + " FROM " + table + " " + context.getReferences() + " WHERE " + context.getConditions(false).substring(6, context.getConditions(false).length()) + (order != null ? " ORDER BY " + order : "");
         }
@@ -1724,6 +1725,41 @@ public class QueryHandler implements Cloneable {
      * @return results as multidimensional string array <i><b>Omits trashed
      * datasets implicitly</b></i>
      */
+    /**
+     * @param column
+     * @param where {column, value, wrapper}: wrapper "'" for a text
+     * @return column = value; a text is escaped (and also finds the old form of
+     * a text with ', see {@link SqlText})
+     */
+    private static String eq(String column, String[] where) {
+        if ("'".equals(where[2])) {
+            return SqlText.equalsText(column, where[1]);
+        }
+        return column + " = " + where[2] + where[1] + where[2];
+    }
+
+    /**
+     * @param column
+     * @param condition " = ", " LIKE " or " BETWEEN "
+     * @param l1 "%" for LIKE
+     * @param l2 "%" for LIKE
+     * @param where {column, value, wrapper}
+     * @param upper the value in upper case
+     * @return the condition, a text escaped
+     */
+    private static String cond(String column, String condition, String l1, String l2, String[] where, boolean upper) {
+        String v = upper ? where[1].toUpperCase() : where[1];
+        if ("'".equals(where[2])) {
+            if (condition.trim().equals("=")) {
+                return SqlText.equalsText(column, v);
+            }
+            if (condition.trim().equalsIgnoreCase("LIKE")) {
+                return column + " LIKE '" + l1 + SqlText.likeText(v) + l2 + "'";
+            }
+        }
+        return column + " " + condition + " " + where[2] + l1 + v + l2 + where[2];
+    }
+
     @SuppressWarnings("unchecked")
     public Object[][] select(String what, String[] where, String order, boolean like) {
 //        start();
@@ -1757,9 +1793,9 @@ public class QueryHandler implements Cloneable {
             wher = "  " + context.getConditions(false);
         } else {
             if (!like) {
-                wher = " WHERE " + table + "." + where[0] + " " + condition + " " + where[2] + l1 + where[1] + l2 + where[2] + " AND " + context.getConditions(false).substring(6, context.getConditions(false).length()) + " ";
+                wher = " WHERE " + cond(table + "." + where[0], condition, l1, l2, where, false) + " AND " + context.getConditions(false).substring(6, context.getConditions(false).length()) + " ";
             } else {
-                wher = " WHERE UPPER(" + table + "." + where[0] + ") " + condition + " " + where[2] + l1 + where[1].toUpperCase() + l2 + where[2] + " AND " + context.getConditions(false).substring(6, context.getConditions(false).length()) + " ";
+                wher = " WHERE " + cond("UPPER(" + table + "." + where[0] + ")", condition, l1, l2, where, true) + " AND " + context.getConditions(false).substring(6, context.getConditions(false).length()) + " ";
             }
 
         }
@@ -1823,7 +1859,8 @@ public class QueryHandler implements Cloneable {
         while (set.next()) {
             spalten = new ArrayList();
             for (int i = 1; i <= rsmd.getColumnCount(); i++) {
-                spalten.add(set.getObject(i));
+                Object o = set.getObject(i);
+                spalten.add(o instanceof String ? rescapeBackslashes((String) o) : o);
             }
             zeilen.add(spalten);
         }
@@ -1855,7 +1892,7 @@ public class QueryHandler implements Cloneable {
         ReturnValue retval = null;
 
         if (where != null) {
-            str = str + table + "." + where[0] + " = " + where[2] + where[1] + where[2];
+            str = str + eq(table + "." + where[0], where);
             query = "DELETE FROM " + table + " WHERE " + str;
             retval = freeQuery(query, mpv5.usermanagement.MPSecurityManager.CREATE_OR_DELETE, jobmessage);
         }
@@ -2239,9 +2276,7 @@ public class QueryHandler implements Cloneable {
             return new ReturnValue(-1, new Object[0][0], new String[0]);
         }
 
-        if (TypeConversion.stringToBoolean(LocalSettings.getProperty(LocalSettings.DBESCAPE))) {
-            query = escapeBackslashes(query);
-        }
+        //no more "<removedbackslash>" in the database: texts are escaped (SqlText); old ones are still read
 
         updateStatistics(query);
 
@@ -2291,7 +2326,7 @@ public class QueryHandler implements Cloneable {
                 }
 
                 //read once per query, not for every value
-                boolean unescape = TypeConversion.stringToBoolean(LocalSettings.getProperty(LocalSettings.DBESCAPE));
+                boolean unescape = true;//older versions stored "<removedbackslash>" (setting dbescape): always read back as \\
                 while (resultSet.next()) {
                     spalten = new ArrayList();
                     for (int i = 1; i <= rsmd.getColumnCount(); i++) {
@@ -2398,9 +2433,7 @@ public class QueryHandler implements Cloneable {
         updateStatistics(query);
         start();
 
-        if (TypeConversion.stringToBoolean(LocalSettings.getProperty(LocalSettings.DBESCAPE))) {
-            query = escapeBackslashes(query);
-        }
+        //no more "<removedbackslash>" in the database: texts are escaped (SqlText); old ones are still read
 
         if (table != null) {
             query = query.replace("%%tablename%%", table);
@@ -2515,9 +2548,7 @@ public class QueryHandler implements Cloneable {
         updateStatistics(query);
         start();
 
-        if (TypeConversion.stringToBoolean(LocalSettings.getProperty(LocalSettings.DBESCAPE))) {
-            query = escapeBackslashes(query);
-        }
+        //no more "<removedbackslash>" in the database: texts are escaped (SqlText); old ones are still read
         String message = "Database Error (selectFreeQuery) :";
 
         Statement stm = null;
@@ -2563,7 +2594,7 @@ public class QueryHandler implements Cloneable {
             }
 
             //read once per query, not for every value
-            boolean unescape = TypeConversion.stringToBoolean(LocalSettings.getProperty(LocalSettings.DBESCAPE));
+            boolean unescape = true;//older versions stored "<removedbackslash>" (setting dbescape): always read back as \\
             while (resultSet.next()) {
                 spalten = new ArrayList<Object>();
                 for (int i = 1; i <= rsmd.getColumnCount(); i++) {
@@ -3033,7 +3064,7 @@ public class QueryHandler implements Cloneable {
             this.addPropertyChangeListener(new changeListener());
             this.file = file;
             this.dataOwner = owner;
-            this.descriptiveText = description.toString();
+            this.descriptiveText = description.getRaw();
             this.tcontext = tcontext;
             this.callback = t;
         }
@@ -3090,7 +3121,11 @@ public class QueryHandler implements Cloneable {
                 String filename = file.getName();
                 String fileextension = (filename.lastIndexOf(".") == -1) ? "" : filename.substring(filename.lastIndexOf(".") + 1, filename.length());
 
-                x = new QueryData(new String[]{"cname,filename, description, dateadded", file.getName() + "," + get() + "," + descriptiveText + "," + DateConverter.getTodayDBDate()});
+                x = new QueryData();
+                x.add("cname", file.getName());
+                x.add("filename", String.valueOf(get()));
+                x.add("description", descriptiveText);
+                x.add("dateadded", DateConverter.getTodayDBDate());
                 if (!dataOwner.getContext().equals(Context.getTemplate())) {
                     x.add(dataOwner.getType() + "sids", dataOwner.__getIDS());
                 }
