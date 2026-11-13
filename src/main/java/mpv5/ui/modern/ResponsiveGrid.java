@@ -136,6 +136,18 @@ public class ResponsiveGrid extends JPanel implements Scrollable {
         JPanel h = card.getHeader();
         h.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.MOVE_CURSOR));
         h.setToolTipText(mpv5.globals.Messages.CARDS_MOVE.toString());
+        //a small drag handle before the title: the card can be moved
+        Component title = ((java.awt.BorderLayout) h.getLayout()).getLayoutComponent(java.awt.BorderLayout.WEST);
+        Grip grip = new Grip();
+        if (title != null) {
+            h.remove(title);
+            JPanel left = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, ModernTheme.px(6), 0));
+            left.setOpaque(false);
+            left.add(grip);
+            left.add(title);
+            h.add(left, java.awt.BorderLayout.WEST);
+        }
+        final java.util.List<Component> inner = java.util.Arrays.asList(grip, title);
         java.awt.event.MouseAdapter m = new java.awt.event.MouseAdapter() {
             private boolean dragging;
 
@@ -193,6 +205,15 @@ public class ResponsiveGrid extends JPanel implements Scrollable {
         };
         h.addMouseListener(m);
         h.addMouseMotionListener(m);
+        for (Component c : inner) {
+            if (c != null) {
+                c.addMouseListener(m);
+                c.addMouseMotionListener(m);
+                if (c instanceof javax.swing.JComponent) {
+                    ((javax.swing.JComponent) c).setToolTipText(mpv5.globals.Messages.CARDS_MOVE.toString());
+                }
+            }
+        }
         for (Component c : h.getComponents()) {
             c.addMouseListener(m);
             c.addMouseMotionListener(m);
@@ -225,6 +246,36 @@ public class ResponsiveGrid extends JPanel implements Scrollable {
     @Override
     public boolean getScrollableTracksViewportHeight() {
         return getParent() != null && getParent().getHeight() > getPreferredSize().height;
+    }
+
+    /**
+     * Six dots: the usual sign for "drag here"
+     */
+    private static final class Grip extends javax.swing.JComponent {
+
+        private static final long serialVersionUID = 1L;
+
+        Grip() {
+            setPreferredSize(new Dimension(ModernTheme.px(8), ModernTheme.px(14)));
+            setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.MOVE_CURSOR));
+        }
+
+        @Override
+        protected void paintComponent(java.awt.Graphics g) {
+            java.awt.Graphics2D g2 = (java.awt.Graphics2D) g.create();
+            g2.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.setColor(ModernTheme.muted());
+            int d = Math.max(2, ModernTheme.px(2) + 1);
+            int gap = ModernTheme.px(3);
+            int x0 = (getWidth() - (2 * d + gap)) / 2;
+            int y0 = (getHeight() - (3 * d + 2 * gap)) / 2;
+            for (int r = 0; r < 3; r++) {
+                for (int c = 0; c < 2; c++) {
+                    g2.fillOval(x0 + c * (d + gap), y0 + r * (d + gap), d, d);
+                }
+            }
+            g2.dispose();
+        }
     }
 
     private static final class Layout implements LayoutManager {
