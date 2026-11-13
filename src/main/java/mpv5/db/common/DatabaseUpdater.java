@@ -17,7 +17,9 @@
 package mpv5.db.common;
 
 import java.io.File;
+import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
@@ -686,6 +688,103 @@ public class DatabaseUpdater {
      * @param version
      * @throws java.lang.Exception
      */
+    /**
+     * Tables a database at the current version must have: version -> table.
+     * A database whose version was raised without them (an interrupted or
+     * failed update of an older YaBS) gets them on the next start.
+     */
+    private static final Map<Double, String> REQUIRED_TABLES = new TreeMap<Double, String>(Map.of(1.1987, "payments"));
+
+    /**
+     * Creates missing tables of {@link #REQUIRED_TABLES} with the statements of
+     * their update
+     *
+     * @param c the connection
+     */
+    public static void ensureTables(Connection c) {
+        boolean derby = ConnectionTypeHandler.isDerbyLike();
+        boolean h2 = ConnectionTypeHandler.getDriverType() == ConnectionTypeHandler.H2;
+        boolean postgres = ConnectionTypeHandler.getDriverType() == ConnectionTypeHandler.POSTGRES;
+        DatabaseUpdater u = new DatabaseUpdater();
+        ensureTables(c, postgres ? u.UPDATES_POSTGRES : h2 ? H2Dialect.convert(u.UPDATES_DERBY) : derby ? u.UPDATES_DERBY : u.UPDATES_MYSQL,
+                ConnectionTypeHandler.getDriverType() == ConnectionTypeHandler.MYSQL);
+    }
+
+    /**
+     * @param c
+     * @param updates the updates of the database type
+     * @param mysql
+     */
+    static void ensureTables(Connection c, Map<Double, String[]> updates, boolean mysql) {
+        MISSING_TABLES.clear();
+        for (Map.Entry<Double, String> e : REQUIRED_TABLES.entrySet()) {
+            try {
+                if (tableExists(c, e.getValue(), mysql)) {
+                    continue;
+                }
+                Log.Debug(DatabaseUpdater.class, "Table " + e.getValue() + " is missing, creating it");
+                for (String sql : updates.get(e.getKey())) {
+                    try (Statement s = c.createStatement()) {
+                        s.execute(DatabaseConnection.withPrefix(sql));
+                    } catch (SQLException ex) {
+                        Log.Debug(DatabaseUpdater.class, ex.getMessage());
+                        String plain = sql.replaceAll(" REFERENCES \\w+\\(\\w+\\)( ON DELETE CASCADE)?", "");
+                        if (!plain.equals(sql)) {
+                            //an old table without primary key can not be referenced: without the reference
+                            try (Statement s = c.createStatement()) {
+                                s.execute(DatabaseConnection.withPrefix(plain));
+                            } catch (SQLException ex2) {
+                                Log.Debug(DatabaseUpdater.class, ex2.getMessage());
+                            }
+                        }
+                    }
+                }
+                if (!tableExists(c, e.getValue(), mysql)) {
+                    MISSING_TABLES.add(e.getValue());
+                }
+            } catch (Exception ex) {
+                Log.Debug(DatabaseUpdater.class, ex);
+            }
+        }
+    }
+
+    private static final java.util.Set<String> MISSING_TABLES = java.util.concurrent.ConcurrentHashMap.newKeySet();
+
+    /**
+     * @param table
+     * @return false if the table is missing and could not be created: the
+     * function using it is off
+     */
+    public static boolean hasTable(String table) {
+        return !MISSING_TABLES.contains(table);
+    }
+
+    /**
+     * @param c
+     * @param table
+     * @return true if the table exists (in any letter case)
+     */
+    private static String schema(Connection c, boolean mysql) {
+        try {
+            return mysql ? null : c.getSchema();
+        } catch (Throwable e) {
+            return null;
+        }
+    }
+
+    static boolean tableExists(Connection c, String table, boolean mysql) throws SQLException {
+        java.sql.DatabaseMetaData md = c.getMetaData();
+        for (String name : new String[]{table, table.toUpperCase(Locale.ROOT), table.toLowerCase(Locale.ROOT)}) {
+            //the current database / schema only (MySQL would search all databases)
+            try (java.sql.ResultSet rs = md.getTables(c.getCatalog(), schema(c, mysql), name, new String[]{"TABLE"})) {
+                if (rs.next()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public void updateFrom(double version) throws Exception {
         Log.Debug(DatabaseUpdater.class, "Updating database from " + version);
         boolean derby = ConnectionTypeHandler.isDerbyLike();
