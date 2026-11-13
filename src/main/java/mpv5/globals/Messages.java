@@ -1425,6 +1425,8 @@ public enum Messages {
     CHOOSE_CUSTOMER_ZIP("ZIP"),
     CHOOSE_CUSTOMER_CITY("City"),
     CHOOSE_CUSTOMER_MAIL("E-mail"),
+    MAIL_PREVIEW_RENDERED("Preview"),
+    MAIL_PREVIEW_SOURCE("HTML source"),
     MODERN_UI("Modern views for contacts, products and documents (preview, takes effect for newly opened tabs)");
 
 

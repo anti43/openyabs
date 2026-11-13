@@ -81,6 +81,8 @@ public final class MailPreviewDialog {
         text.setLineWrap(true);
         text.setWrapStyleWord(true);
         text.setCaretPosition(0);
+        //an HTML mail is shown as the customer sees it; its source can be edited
+        JComponent body = SimpleMail.isHtml(text.getText()) ? htmlBody(text) : new JScrollPane(text);
 
         JPanel form = new JPanel(new GridBagLayout());
         form.setOpaque(false);
@@ -112,7 +114,7 @@ public final class MailPreviewDialog {
         JPanel center = new JPanel(new BorderLayout(0, ModernTheme.px(8)));
         center.setOpaque(false);
         center.add(form, BorderLayout.NORTH);
-        center.add(new JScrollPane(text), BorderLayout.CENTER);
+        center.add(body, BorderLayout.CENTER);
 
         JButton cancel = new JButton(Messages.MAIL_PREVIEW_CANCEL.toString());
         cancel.addActionListener(e -> d.dispose());
@@ -149,6 +151,54 @@ public final class MailPreviewDialog {
         SwingUtilities.invokeLater(ok::requestFocusInWindow);
         d.setVisible(true);
         return send[0];
+    }
+
+    /**
+     * The rendered HTML mail and, in a second tab, its source
+     *
+     * @param source the text of the mail (edited there)
+     * @return the tabs
+     */
+    static javax.swing.JTabbedPane htmlBody(JTextArea source) {
+        javax.swing.JEditorPane view = new javax.swing.JEditorPane();
+        view.setName("mailpreview.html");
+        view.setEditable(false);
+        view.setContentType("text/html");
+        view.putClientProperty(javax.swing.JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
+        view.setFont(ModernTheme.font(1, Font.PLAIN));
+        view.addHyperlinkListener(e -> {
+            if (e.getEventType() == javax.swing.event.HyperlinkEvent.EventType.ACTIVATED && e.getURL() != null) {
+                try {
+                    java.awt.Desktop.getDesktop().browse(e.getURL().toURI());
+                } catch (Exception ex) {
+                    mpv5.logging.Log.Debug(MailPreviewDialog.class, ex);
+                }
+            }
+        });
+        render(view, source.getText());
+        source.setFont(new Font(Font.MONOSPACED, Font.PLAIN, ModernTheme.font(0, Font.PLAIN).getSize()));
+        javax.swing.JTabbedPane tabs = new javax.swing.JTabbedPane();
+        tabs.addTab(Messages.MAIL_PREVIEW_RENDERED.toString(), new JScrollPane(view));
+        tabs.addTab(Messages.MAIL_PREVIEW_SOURCE.toString(), new JScrollPane(source));
+        //changes in the source show in the preview
+        tabs.addChangeListener(e -> {
+            if (tabs.getSelectedIndex() == 0) {
+                render(view, source.getText());
+            }
+        });
+        return tabs;
+    }
+
+    private static void render(javax.swing.JEditorPane view, String html) {
+        try {
+            view.setText(html);
+        } catch (Exception e) {
+            //broken HTML: show it as text rather than nothing
+            mpv5.logging.Log.Debug(MailPreviewDialog.class, e);
+            view.setContentType("text/plain");
+            view.setText(html);
+        }
+        view.setCaretPosition(0);
     }
 
     private static int add(JPanel form, int row, String label, JComponent field) {

@@ -336,6 +336,26 @@ public class SimpleMail implements Waiter {
         return text;
     }
 
+    private static final java.util.regex.Pattern HTML = java.util.regex.Pattern.compile(
+            "(?is)<\\s*(!doctype|html|head|body|p|br|div|span|table|tr|td|th|b|i|u|strong|em|a|ul|ol|li|h[1-6]|font|img|hr|blockquote|pre|center|style)\\b[^>]*>");
+
+    /**
+     * @param text a mail text
+     * @return true if it is HTML (has HTML tags), false for plain text
+     */
+    public static boolean isHtml(String text) {
+        return text != null && HTML.matcher(text).find();
+    }
+
+    /**
+     * @param text
+     * @return the content type to send the text with: HTML stays HTML, plain
+     * text is sent as plain text (keeps its line breaks)
+     */
+    public static String contentType(String text) {
+        return isHtml(text) ? "text/html; charset=utf-8" : "text/plain; charset=utf-8";
+    }
+
     /**
      * @param text the text to set
      */
@@ -474,7 +494,7 @@ public class SimpleMail implements Waiter {
 
             // create the message part
             MimeBodyPart messageBodyPart = new MimeBodyPart();
-            messageBodyPart.setContent(text, "text/html; charset=utf-8");
+            messageBodyPart.setContent(text, contentType(text));
             //fill message
             //messageBodyPart.setText(text);
 
@@ -580,7 +600,7 @@ public class SimpleMail implements Waiter {
             MimeBodyPart messageBodyPart = new MimeBodyPart();
 
             //fill message
-            messageBodyPart.setContent(text, "text/html; charset=utf-8");
+            messageBodyPart.setContent(text, contentType(text));
             //messageBodyPart.setText(text);
             Multipart multipart = new MimeMultipart();
             multipart.addBodyPart(messageBodyPart);

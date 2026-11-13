@@ -71,6 +71,20 @@ class SimpleMailTest {
             assertTrue(data.contains("filename=R-2026-0042.xml"), data);
             assertFalse(data.contains("archiv@muster.example"), "BCC must not be visible to the customer");
             assertTrue(log.toString().contains("kunde@example.com"), String.valueOf(log));
+            assertTrue(data.contains("text/plain; charset=utf-8"), "plain text is sent as plain text: " + data);
         }
+    }
+
+    @Test
+    void detectsHtmlBodies() {
+        assertFalse(SimpleMail.isHtml(null));
+        assertFalse(SimpleMail.isHtml("Hallo,\nanbei Ihre Rechnung.\n\nGruß"));
+        assertFalse(SimpleMail.isHtml("Betrag < 100 und > 50, a<b"));
+        assertTrue(SimpleMail.isHtml("<html><body><p>Hallo</p></body></html>"));
+        assertTrue(SimpleMail.isHtml("Hallo<br>Welt"));
+        assertTrue(SimpleMail.isHtml("<P style='color:red'>x</P>"));
+        assertTrue(SimpleMail.isHtml("<!DOCTYPE html><html></html>"));
+        assertEquals("text/plain; charset=utf-8", SimpleMail.contentType("Hallo"));
+        assertEquals("text/html; charset=utf-8", SimpleMail.contentType("<b>Hallo</b>"));
     }
 }
