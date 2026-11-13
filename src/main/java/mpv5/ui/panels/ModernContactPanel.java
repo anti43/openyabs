@@ -121,9 +121,7 @@ public class ModernContactPanel extends ModernDataPanel {
     private final java.util.ResourceBundle bundle = LanguageManager.getBundle();
     private Contact dataOwner;
     private final ModernCommandBar tb;
-    private final SearchPanel sp;
     //search panel on the left
-    private final JPanel leftpane = new JPanel(new BorderLayout());
     //header
     private final Avatar avatar = new Avatar();
     private final JLabel displayname = new JLabel();
@@ -260,7 +258,6 @@ public class ModernContactPanel extends ModernDataPanel {
         super(new BorderLayout());
         setName("contactpanel");
 
-        sp = new SearchPanel(context, this);
         dataOwner = new Contact();
         dataOwner.setCountry(User.getCurrentUser().__getDefcountry());
 
@@ -284,8 +281,6 @@ public class ModernContactPanel extends ModernDataPanel {
         content.add(split, BorderLayout.CENTER);
 
         add(content, BorderLayout.CENTER);
-        add(leftpane, BorderLayout.WEST);
-        //the toolbar calls showSearchBar(), so it is created last
         tb = new ModernCommandBar(this);
         add(tb, BorderLayout.NORTH);
         //the actions of a contact, next to the record actions
@@ -1143,7 +1138,6 @@ public class ModernContactPanel extends ModernDataPanel {
         SwingUtilities.invokeLater(() -> {
             try {
                 groupnameselect.setModel(DatabaseObject.getObject(Context.getGroup(), User.getCurrentUser().__getGroupsids()));
-                sp.refresh();
                 fillFiles();
             } catch (Exception e) {
                 Log.Debug(ModernContactPanel.this, e);
@@ -1171,12 +1165,7 @@ public class ModernContactPanel extends ModernDataPanel {
 
     @Override
     public void showSearchBar(boolean show) {
-        leftpane.removeAll();
-        if (show) {
-            leftpane.add(sp, BorderLayout.CENTER);
-            sp.search();
-        }
-        validate();
+        //no side search panel any more: the search button opens "Search anything"
     }
 
     @Override
@@ -1186,7 +1175,6 @@ public class ModernContactPanel extends ModernDataPanel {
 
     @Override
     public void actionAfterCreate() {
-        sp.refresh();
         saveEInvoiceSettings();
     }
 

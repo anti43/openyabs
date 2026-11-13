@@ -131,8 +131,6 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
     private static final long serialVersionUID = 1L;
     private Item dataOwner;
     private final ModernCommandBar tb;
-    private final SearchPanel sp;
-    private final JPanel leftpane = new JPanel(new BorderLayout());
     private boolean loading = true;
     private final List<Runnable> afterSaveRunnables = new ArrayList<Runnable>();
     //header
@@ -227,7 +225,6 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         super(new BorderLayout());
         setName("itempanel");
         inttype_ = type;
-        sp = new SearchPanel(context, this);
         dataOwner = (Item) DatabaseObject.getObject(context);
         if (type >= 0) {
             dataOwner.setInttype(type);
@@ -242,7 +239,6 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         split.setResizeWeight(0.4);
         content.add(split, BorderLayout.CENTER);
         add(content, BorderLayout.CENTER);
-        add(leftpane, BorderLayout.WEST);
         tb = new ModernCommandBar(this);
         add(tb, BorderLayout.NORTH);
         createActions();
@@ -672,7 +668,6 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         try {
             groupnameselect.setModel(MPComboBoxModelItem.toModel(DatabaseObject.getObject(Context.getGroup(), User.getCurrentUser().__getGroupsids())));
             groupnameselect.setSelectedIndex(0);
-            sp.refresh();
             try {
                 accountselect.setModel(DatabaseObject.getObject(Context.getAccounts(), User.getCurrentUser().__getIntdefaultaccount()));
             } catch (NodataFoundException e) {
@@ -1460,12 +1455,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
 
     @Override
     public void showSearchBar(boolean show) {
-        leftpane.removeAll();
-        if (show) {
-            leftpane.add(sp, BorderLayout.CENTER);
-            sp.search();
-        }
-        validate();
+        //no side search panel any more: the search button opens "Search anything"
     }
 
     @Override
@@ -1481,7 +1471,6 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
 
     @Override
     public void actionAfterCreate() {
-        sp.refresh();
         //the positions are new as well
         ArrayUtilities.replaceColumn(positions.getTable(), 0, null);
         positions.prepareSave();

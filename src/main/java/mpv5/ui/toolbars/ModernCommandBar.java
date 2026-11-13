@@ -32,7 +32,6 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
-import javax.swing.JToggleButton;
 import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import mpv5.db.common.DatabaseObject;
@@ -97,7 +96,7 @@ public class ModernCommandBar extends JPanel {
         l.add(new Object[]{PDF, text("DataPanelTB.pdfButton.toolTipText")});
         l.add(new Object[]{MAIL, text("DataPanelTB.mailButton.toolTipText")});
         l.add(new Object[]{FIND, Messages.SHORTCUT_FIND_LIST.toString()});
-        l.add(new Object[]{SEARCH_PANEL, text("DataPanelTB.but1.toolTipText")});
+        l.add(new Object[]{SEARCH_PANEL, Messages.SEARCH_ANYTHING.toString()});
         l.add(new Object[]{COPY, Messages.SHORTCUT_COPY_RECORD.toString()});
         l.add(new Object[]{PASTE, Messages.SHORTCUT_PASTE_RECORD.toString()});
         l.add(new Object[]{FAVOURITE, text("MPV5View.jButton24.toolTipText")});
@@ -110,7 +109,7 @@ public class ModernCommandBar extends JPanel {
     private final JComponent viewComponent;
     private final JPanel left = new JPanel(new WrapLayout(FlowLayout.LEFT, ModernTheme.px(4), ModernTheme.px(4)));
     private final JPanel extras = new JPanel(new FlowLayout(FlowLayout.LEFT, ModernTheme.px(4), 0));
-    private final JToggleButton search;
+    private final JButton search;
     private final PrimaryButton save;
     private final JButton favourite;
     private final JButton delete;
@@ -148,8 +147,7 @@ public class ModernCommandBar extends JPanel {
     }
 
     /**
-     * Creates the bar and the shortcuts. Create it after the rest of the view:
-     * it shows or hides the search panel of the view.
+     * Creates the bar and the shortcuts.
      *
      * @param view the view, a JComponent
      */
@@ -164,16 +162,11 @@ public class ModernCommandBar extends JPanel {
         left.setOpaque(false);
         extras.setOpaque(false);
 
-        search = ModernTheme.actionButton(new JToggleButton(), "/images/22/viewmag.png");
+        search = ModernTheme.actionButton(new JButton(), "/images/22/viewmag.png");
         search.setMargin(new java.awt.Insets(ModernTheme.px(4), ModernTheme.px(6), ModernTheme.px(4), ModernTheme.px(6)));
-        search.setToolTipText(tip(text("DataPanelTB.but1.toolTipText"), SEARCH_PANEL));
-        //same setting as the classic toolbar
-        search.setSelected(User.getCurrentUser().getProperties().getProperty(DataPanelTB.class.getName(), "jToggleButton1"));
-        search.addActionListener(e -> {
-            User.getCurrentUser().getProperties().changeProperty(DataPanelTB.class.getName(), "jToggleButton1", search.isSelected());
-            view.showSearchBar(search.isSelected());
-        });
-        view.showSearchBar(search.isSelected());
+        search.setToolTipText(tip(Messages.SEARCH_ANYTHING.toString(), SEARCH_PANEL));
+        //opens "Search anything" right at the button (no side search panel any more)
+        search.addActionListener(e -> showSearchPanel());
 
         save = new PrimaryButton(text("MPV5View.jButton25.toolTipText"), "/images/16/filesave.png");
         save.setToolTipText(tip(text("MPV5View.jButton25.toolTipText"), SAVE));
@@ -385,10 +378,11 @@ public class ModernCommandBar extends JPanel {
         }
     }
 
+    /**
+     * Opens "Search anything" below the search button
+     */
     private void showSearchPanel() {
-        if (!search.isSelected()) {
-            search.doClick();
-        }
+        mpv5.ui.dialogs.SearchAnything.openAt(search);
     }
 
     /**
