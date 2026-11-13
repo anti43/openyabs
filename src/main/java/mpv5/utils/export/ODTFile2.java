@@ -181,6 +181,16 @@ public class ODTFile2 extends Exportable {
             String fmt = this.getTemplate().__getFormat();
             String[] cols = fmt.split(",");
 
+            //the cells of both tables are lists, always: XDocReport prepares a template once, at its
+            //first document, and keeps it. Registered only with rows, a document without positions
+            //(e.g. a new order confirmation) left the table as plain fields - and every later
+            //document of the template showed "$xtable1.C0" instead of its positions
+            for (int index = 1; index <= 2; index++) {
+                for (int j = 0; j < 10; j++) {
+                    metadata.addFieldAsList(KEY_TABLE + index + ".C" + j);
+                }
+            }
+
             //I wanted to do this fully dynamic but then the xdocreport shows only keys not values, no idea why
             //https://github.com/opensagres/xdocreport/issues/111
             //the main table is stored as <context>.xtable1: "item" for invoices etc., but e.g.
@@ -198,9 +208,6 @@ public class ODTFile2 extends Exportable {
             //without rows): no rows, instead of "$xtable1.C0" ... in the document
             for (int index = 1; index <= 2; index++) {
                 if (!context.getContextMap().containsKey(KEY_TABLE + index)) {
-                    for (int j = 0; j < 10; j++) {
-                        metadata.addFieldAsList(KEY_TABLE + index + ".C" + j);
-                    }
                     context.put(KEY_TABLE + index, new ArrayList<Map<String, String>>());
                 }
             }
@@ -296,7 +303,6 @@ public class ODTFile2 extends Exportable {
                 Map<String, String> xtable = new HashMap<String, String>();
                 for (int j = 0; j < 10; j++) {
                     xtable.put("C" + j, " ");
-                    metadata.addFieldAsList(KEY_TABLE + index + "." + "C" + j);
                 }
                 for (String s1 : cols) {
                     int col = Integer.parseInt(s1) - 1;
