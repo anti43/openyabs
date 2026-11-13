@@ -137,10 +137,23 @@ public class Main implements Runnable {
 
     private static void readLocalSettings() throws Exception {
         splash.nextStep(Messages.LOCAL_SETTINGS.toString());
+        if (!CONNECTION_GIVEN) {
+            //the database chosen in the connection manager: the one used last or always the same
+            try {
+                Integer start = mpv5.globals.ConnectionStart.atStart();
+                if (start != null && LocalSettings.hasConnectionID(start)) {
+                    Log.Debug(Main.class, "Connection at start: " + start);
+                    LocalSettings.setConnectionID(start);
+                }
+            } catch (Exception ex) {
+                Log.Debug(Main.class, ex);
+            }
+        }
         try {
             LocalSettings.read();
             LocalSettings.apply();
             Log.Print("Done with local settings file: " + LocalSettings.getLocalFile());
+            mpv5.globals.ConnectionStart.used(LocalSettings.getConnectionID());
         } catch (Exception ex) {
             Log.Print(ex);
             Log.Print("Local settings file not readable: " + LocalSettings.getLocalFile());
@@ -424,6 +437,10 @@ public class Main implements Runnable {
      */
     public static String SETTINGS_FILE = null;
     /**
+     * true if the connection was given as argument (-connectionInstance)
+     */
+    private static boolean CONNECTION_GIVEN = false;
+    /**
      * The user home directory
      */
     public static String USER_HOME = null;
@@ -600,6 +617,7 @@ public class Main implements Runnable {
                         FORCE_INSTALLER = Integer.valueOf(String.valueOf(cl.getValue(connectionInstance)));
                     }
                     Log.Debug(Main.class, "Switching connection id to: " + Integer.valueOf(String.valueOf(cl.getValue(connectionInstance))));
+                    CONNECTION_GIVEN = true;
                     LocalSettings.setConnectionID(Integer.valueOf(String.valueOf(cl.getValue(connectionInstance))));
                 } catch (Exception ex) {
                     Log.Debug(ex);

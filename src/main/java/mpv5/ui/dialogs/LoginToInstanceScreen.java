@@ -309,7 +309,8 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                  Popup.error(this, "Local settings file not readable: " + LocalSettings.getLocalFile() + "\n" + ex);
              }
              DatabaseConnection.instanceOf();//reconnect
-             QueryHandler.instanceOf().reset();
+             //version check and updates of this database, like at start
+             QueryHandler.restart();
              User user = mpv5.usermanagement.MPSecurityManager.checkAuth(jTextField1.getText(), new String(jPasswordField1.getPassword()));
              if (user != null) {
                  user.login();
