@@ -2460,7 +2460,8 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
     @Override
     public void print() {
-        Export.print(this);
+        //the contact sheet (template), named after the contact; the view only without a template
+        mpv5.handler.ContactService.printSheet(dataOwner, () -> Export.print(this));
     }
 
     private void properties() {

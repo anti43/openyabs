@@ -685,4 +685,34 @@ public final class ContactService {
         String v = mpv5.utils.export.ContactProperty.get(contact, mpv5.utils.export.ZugpferdFile.KEY_BUYER_REFERENCE);
         return v == null ? "" : v;
     }
+
+    /**
+     * Prints the contact sheet (template type "Contact") of the saved
+     * contact, named e.g. "Kontaktdatenblatt-000001-Muster GmbH"; without
+     * such a template the view itself is printed (fallback, on the Swing
+     * thread)
+     *
+     * @param contact
+     * @param fallback prints the view, may be null
+     */
+    public static void printSheet(final Contact contact, final Runnable fallback) {
+        if (contact == null || !contact.isExisting()) {
+            if (fallback != null) {
+                fallback.run();
+            }
+            return;
+        }
+        //loading the template reads the database and the file: not on the Swing thread
+        new Thread(() -> {
+            mpv5.db.objects.Template t = TemplateHandler.loadTemplate(contact);
+            if (t != null) {
+                mpv5.utils.export.Export.print(t, contact);
+            } else {
+                mpv5.YabsViewProxy.instance().addMessage(Messages.NO_TEMPLATE_LOADED + ": " + Messages.CONTACT_SHEET, java.awt.Color.YELLOW);
+                if (fallback != null) {
+                    javax.swing.SwingUtilities.invokeLater(fallback);
+                }
+            }
+        }, "print contact sheet").start();
+    }
 }

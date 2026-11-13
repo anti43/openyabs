@@ -16,14 +16,9 @@
  */
 package mpv5.utils.print;
 
-import com.sun.pdfview.PDFFile;
-import com.sun.pdfview.PDFPage;
-import com.sun.pdfview.PDFRenderer;
 import java.awt.*;
 import java.awt.print.*;
 import java.io.*;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 import java.util.Arrays;
 import javax.print.*;
 import javax.print.attribute.*;
@@ -33,7 +28,6 @@ import mpv5.globals.GlobalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Notificator;
-import mpv5.utils.files.FileDirectoryHandler;
 
 /**
  *
@@ -220,83 +214,36 @@ public class PrintJob2 {
     }
 
     /**
+     * Prints a PDF with PDFBox (page size and orientation of the PDF, text and
+     * graphics as vectors); the print job is named like the file, so a PDF
+     * printer ("Microsoft Print to PDF" ...) suggests that name
      *
      * @param file
-     * @param printername not used yet
-     * @throws Exception
+     * @param printername may be null
      */
     private void printPdf(File file, String printername) throws Exception {
-
-        // Copy the file to a temp location to avoid issues with RandomAccessFile and spaces in path names
-        File tempFile = FileDirectoryHandler.copyFile2(file, FileDirectoryHandler.getTempFile("pdf"), true);
-        // set up the PDF reading
-        RandomAccessFile raf = new RandomAccessFile(tempFile, "r");
-        FileChannel channel = raf.getChannel();
-        ByteBuffer buf = channel.map(FileChannel.MapMode.READ_ONLY, 0, channel.size());
-        final PDFFile pdfFile = new PDFFile(buf); // Create PDF Print Page
-
-        // Create Print Job
-        PrinterJob pjob = PrinterJob.getPrinterJob();
-        PageFormat pf = PrinterJob.getPrinterJob().defaultPage();
-
-        Paper paper = a4();
-        pf.setOrientation(PageFormat.PORTRAIT);
-        pf.setPaper(paper);
-
-        Book book = new Book();
-
-        book.append(new java.awt.print.Printable() {
-
-            @Override
-            public int print(Graphics g, PageFormat format, int index) throws PrinterException {
-                int pagenum = index + 1;
-
-                if ((pagenum >= 1) && (pagenum <= pdfFile.getNumPages())) {
-                    try {
-                        Graphics2D g2 = (Graphics2D) g;
-                        PDFPage page = pdfFile.getPage(pagenum);
-                        double pwidth = format.getImageableWidth();
-                        double pheight = format.getImageableHeight();
-                        double aspect = page.getAspectRatio();
-                        double paperaspect = pwidth / pheight;
-                        Rectangle imgbounds;
-                        int width;
-                        int height;
-                        if (aspect > paperaspect) {
-                            //fit paper
-                            height = (int) (pwidth / aspect);
-                            width = (int) pwidth;
-                        } else {
-                            width = (int) (pheight * aspect);
-                            height = (int) pheight;
-                        }
-                        imgbounds = new Rectangle((int) format.getImageableX(), (int) format.getImageableY(), width, height);
-                        PDFRenderer pgs = new PDFRenderer(page, g2, imgbounds, null, null);
-                        try {
-                            page.waitForFinish();
-                            pgs.run();
-                        } catch (InterruptedException ie) {
-                        }
-                        return PAGE_EXISTS;
-                    } catch (Exception ex) {
-                        Log.Debug(ex);
-                        return NO_SUCH_PAGE;
-                    }
-                } else {
-                    return NO_SUCH_PAGE;
-                }
-            }
-        }, pf, pdfFile.getNumPages());
-        pjob.setPageable(book);
-        try {
+        //read with java.io: toPath() fails on names with umlauts without an UTF-8 file system encoding
+        try (InputStream in = new FileInputStream(file);
+                org.apache.pdfbox.pdmodel.PDDocument pdf = org.apache.pdfbox.Loader.loadPDF(
+                        new org.apache.pdfbox.io.RandomAccessReadBuffer(in))) {
+            PrinterJob pjob = PrinterJob.getPrinterJob();
+            pjob.setJobName(jobName(file));
+            Log.Debug(PrintJob2.class, "Print job: " + pjob.getJobName());
+            pjob.setPageable(new org.apache.pdfbox.printing.PDFPageable(pdf));
             print0(pjob, printername);
-            Notificator.raiseNotification(Messages.PRINTED + " .pdf " + " [" + pjob.getPrintService().getName() + "]", false);
+            Notificator.raiseNotification(Messages.PRINTED + " " + file.getName() + " [" + pjob.getPrintService().getName() + "]", false);
             Log.Debug(PrintJob2.class, "Document '" + file + "' printed.");
-        } catch (Exception e) {
-            throw e;
-        } finally {
-            raf.close();
         }
+    }
+
+    /**
+     * @param file
+     * @return the file name without extension
+     */
+    static String jobName(File file) {
+        String n = file.getName();
+        int dot = n.lastIndexOf('.');
+        return dot > 0 ? n.substring(0, dot) : n;
     }
 
     /**

@@ -357,19 +357,40 @@ public final class Export extends HashMap<String, Object> implements Waitable {
      * @param dataOwner
      */
     public static void print(final Template preloadedTemplate, final DatabaseObject dataOwner) {
+        print(preloadedTemplate, dataOwner, documentName(preloadedTemplate, dataOwner));
+    }
+
+    /**
+     * Prints a template: the PDF is created with the given name, which is also
+     * the name of the print job (a PDF printer suggests it as file name)
+     *
+     * @param preloadedTemplate
+     * @param dataOwner
+     * @param name the file name without extension, e.g.
+     * "Kontaktdatenblatt-000001-Muster GmbH"
+     */
+    public static void print(final Template preloadedTemplate, final DatabaseObject dataOwner, final String name) {
         Runnable runnable = new Runnable() {
 
             @Override
             public void run() {
                 Map<String, Object> hm1 = dataOwner.getFormFields();//new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
-                File f2 = FileDirectoryHandler.getTempFile("pdf");
+                File f2 = FileDirectoryHandler.getTempFile(name, "pdf");
                 final Export ex = new Export(preloadedTemplate);
                 ex.putAll(hm1);
+                ex.putDataOwner(dataOwner);
                 ex.setTemplate(preloadedTemplate.getExFile());
                 ex.setTargetFile(f2);
 //        new Job(ex, (Waiter) new PrintJob()).execute();
 
-                ex.waitFor();
+                Exception failed = ex.waitFor();
+                if (failed != null || !ex.getTargetFile().isFile() || ex.getTargetFile().length() == 0) {
+                    //no broken file to the printer
+                    Log.Debug(Export.class, "Not printed: " + failed);
+                    Popup.error(failed != null ? failed : new Exception(String.format(Messages.EXPORT_FAILED.toString(),
+                            preloadedTemplate.__getCname(), ex.getTargetFile())));
+                    return;
+                }
                 try {
                     PrintJob2.print(ex.getTargetFile(), preloadedTemplate.__getPrinter());
                 } catch (Exception ex1) {
@@ -378,6 +399,66 @@ public final class Export extends HashMap<String, Object> implements Waitable {
             }
         };
         new Thread(runnable).start();
+    }
+
+    /**
+     * The file name of a document created from a template: kind, number and
+     * name, e.g. "Kontaktdatenblatt-000001-Muster GmbH" or
+     * "Rechnung-RE-2026-0001"; characters not allowed in file names are
+     * replaced
+     *
+     * @param template
+     * @param dataOwner
+     * @return the name without extension
+     */
+    public static String documentName(Template template, DatabaseObject dataOwner) {
+        int type = -1;
+        try {
+            type = Integer.parseInt(String.valueOf(template.__getMimetype()).trim());
+        } catch (Exception e) {
+            //unknown type: no kind in the name
+        }
+        String kind = type == mpv5.globals.Constants.TYPE_CONTACT ? Messages.CONTACT_SHEET.toString()
+                : type >= 0 ? mpv5.handler.TemplateHandler.getName(type) : "";
+        //the plain number: the formatters give e.g. "name (number)" or "name-number (total)"
+        String number = "";
+        if (dataOwner instanceof Contact) {
+            number = ((Contact) dataOwner).__getCNumber();
+        } else if (dataOwner instanceof mpv5.db.objects.Item) {
+            number = ((mpv5.db.objects.Item) dataOwner).__getCnumber();
+        } else if (dataOwner instanceof mpv5.db.objects.Product) {
+            number = ((mpv5.db.objects.Product) dataOwner).__getCnumber();
+        }
+        number = number == null ? "" : number;
+        String name;
+        if (dataOwner instanceof Contact) {
+            Contact c = (Contact) dataOwner;
+            String company = c.__getCompany() == null ? "" : c.__getCompany().trim();
+            String person = ((c.__getPrename() == null ? "" : c.__getPrename().trim()) + " "
+                    + (c.__getCname() == null ? "" : c.__getCname().trim())).trim();
+            name = company.isEmpty() ? person : company;
+        } else {
+            name = dataOwner == null || dataOwner.__getCname() == null ? "" : dataOwner.__getCname().trim();
+        }
+        return fileName(kind, number, name.equals(number) ? "" : name);
+    }
+
+    /**
+     * @param parts
+     * @return the non empty parts joined with "-", without characters not
+     * allowed in file names; "document" if all are empty
+     */
+    static String fileName(String... parts) {
+        StringBuilder b = new StringBuilder();
+        for (String p : parts) {
+            //an unknown template type ("<undefined> [99]") is no part of the name
+            String t = p == null || p.trim().startsWith("<undefined>") ? "" : p.replaceAll("[\\\\/:*?\"<>|\\p{Cntrl}]", "_").replaceAll("\\s+", " ").trim();
+            if (!t.isEmpty()) {
+                b.append(b.length() > 0 ? "-" : "").append(t);
+            }
+        }
+        String n = b.length() > 0 ? b.toString() : "document";
+        return n.length() > 120 ? n.substring(0, 120).trim() : n;
     }
 
     public static File print2(Template preloadedTemplate, DatabaseObject dataOwner, HashMap<String, Object> hm) {

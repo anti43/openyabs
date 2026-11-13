@@ -1524,6 +1524,7 @@ public enum Messages {
     CSV_PROBLEM_EXISTS("number \"%s\" exists already"),
     ACTION_SAVE_AS_NEW("Save as new"),
     EXPORT_FAILED("The document could not be created from the template \"%s\": %s"),
+    CONTACT_SHEET("Contact sheet"),
     MODERN_UI("Modern views for contacts, products and documents (preview, takes effect for newly opened tabs)");
 
 
