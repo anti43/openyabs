@@ -302,6 +302,67 @@ abstract class AppOnDatabase {
             Contact firm2 = (Contact) DatabaseObject.getObject(Context.getContact(), firm.__getIDS());
             assertEquals("Firma AG", firm2.__getCname());
             assertTrue(firm2.__getisCompany());
+
+            //CSV import: contacts (Windows-1252, semicolon), checked rows only
+            byte[] contactsCsv = ("Kundennummer;Firma;Vorname;Nachname;Straße;PLZ;Ort;E-Mail\r\n"
+                    + "K-9001;Bäckerei Süß;Anna;Schmidt;Hauptstr. 5;10115;Berlin;anna@example.org\r\n"
+                    + "K-9002;;;;Nirgendwo 1;;;\r\n"
+                    + "K-9003;Nur Firma GmbH;;;;;;falsch-mail\r\n"
+                    + ";;;\r\n"
+                    + "K-9004;Nur Firma GmbH;;;;;;\r\n").getBytes(java.nio.charset.Charset.forName("windows-1252"));
+            mpv5.utils.csv.CsvImport.Data cd = mpv5.utils.csv.CsvImport.read(contactsCsv);
+            assertEquals(java.nio.charset.Charset.forName("windows-1252"), cd.charset);
+            assertEquals(';', cd.separator);
+            mpv5.utils.csv.CsvImport.Field[] cm = mpv5.utils.csv.CsvImport.guess(cd.rows.get(0), mpv5.utils.csv.CsvImport.Kind.CUSTOMERS);
+            mpv5.utils.csv.CsvImport.Result cr = mpv5.utils.csv.CsvImport.importRows(cd, cm, mpv5.utils.csv.CsvImport.Kind.CUSTOMERS, null);
+            assertEquals(2, cr.imported, cr.skipped.toString());
+            assertEquals(2, cr.skipped.size());
+            assertEquals(3, cr.skipped.get(0).line);
+            assertEquals(4, cr.skipped.get(1).line);
+            assertEquals(1, cr.empty);
+            Contact baker = (Contact) DatabaseObject.getObject(Context.getContact(), cr.ids.get(0));
+            assertEquals("Schmidt", baker.__getCname());
+            assertEquals("Anna", baker.__getPrename());
+            assertEquals("Bäckerei Süß", baker.__getCompany());
+            assertEquals("Hauptstr. 5", baker.__getStreet());
+            assertEquals("10115", baker.__getZip());
+            assertEquals("anna@example.org", baker.__getMailaddress());
+            assertEquals("K-9001", baker.__getCNumber(), "the number of the file is kept");
+            assertTrue(baker.__getIscustomer());
+            Contact onlyFirm = (Contact) DatabaseObject.getObject(Context.getContact(), cr.ids.get(1));
+            assertEquals("Nur Firma GmbH", onlyFirm.__getCname());
+            assertTrue(onlyFirm.__getisCompany());
+
+            //products (UTF-8, comma, quoted, English numbers); tax rates are found or created
+            byte[] productsCsv = ("SKU,Product name,Price,Tax rate,Unit,Supplier,Stock\n"
+                    + "P-1,\"Tee, grün\",\"1,234.50\",19,Stk,Teehaus Nord,12\n"
+                    + "P-2,Zucker,0.99,7.0,kg,Teehaus Nord,\n"
+                    + "P-3,Kaputt,zwei,19,,,\n").getBytes(java.nio.charset.StandardCharsets.UTF_8);
+            mpv5.utils.csv.CsvImport.Data pd = mpv5.utils.csv.CsvImport.read(productsCsv);
+            assertEquals(',', pd.separator);
+            mpv5.utils.csv.CsvImport.Field[] pm = mpv5.utils.csv.CsvImport.guess(pd.rows.get(0), mpv5.utils.csv.CsvImport.Kind.PRODUCTS);
+            mpv5.utils.csv.CsvImport.Result pr = mpv5.utils.csv.CsvImport.importRows(pd, pm, mpv5.utils.csv.CsvImport.Kind.PRODUCTS, null);
+            assertEquals(2, pr.imported, pr.skipped.toString());
+            assertEquals(1, pr.skipped.size());
+            //the same file again: the numbers exist, nothing is imported twice
+            mpv5.utils.csv.CsvImport.Result again = mpv5.utils.csv.CsvImport.importRows(cd, cm, mpv5.utils.csv.CsvImport.Kind.CUSTOMERS, null);
+            assertEquals(0, again.imported, again.skipped.toString());
+            assertTrue(again.skipped.get(0).text.contains("K-9001"), again.skipped.toString());
+            assertEquals(4, pr.skipped.get(0).line);
+            Product tea = (Product) DatabaseObject.getObject(Context.getProduct(), pr.ids.get(0));
+            assertEquals("TEE, GRÜN", tea.__getCname(), "the on-save script above makes product names upper case");
+            assertEquals("P-1", tea.__getCnumber());
+            assertEquals(0, new BigDecimal("1234.50").compareTo(tea.__getExternalnetvalue()));
+            assertEquals(0, new BigDecimal("12").compareTo(tea.__getStockvalue()));
+            assertEquals("Stk", tea.__getMeasure());
+            assertEquals(0, new BigDecimal("19").compareTo(((mpv5.db.objects.Tax) DatabaseObject.getObject(Context.getTaxes(), tea.__getTaxids())).__getTaxvalue()));
+            Product sugar = (Product) DatabaseObject.getObject(Context.getProduct(), pr.ids.get(1));
+            assertEquals(0, new BigDecimal("7").compareTo(((mpv5.db.objects.Tax) DatabaseObject.getObject(Context.getTaxes(), sugar.__getTaxids())).__getTaxvalue()));
+            assertTrue(tea.__getSuppliersids() > 0);
+            assertEquals(tea.__getSuppliersids(), sugar.__getSuppliersids(), "the supplier is created once");
+            assertTrue(((Contact) DatabaseObject.getObject(Context.getContact(), tea.__getSuppliersids())).__getIssupplier());
+            assertTrue(DatabaseObject.exists(Context.getProduct(), tea.__getIDS()));
+            assertTrue(!DatabaseObject.exists(Context.getProduct(), 987654));
         } finally {
             DatabaseConnection.shutdown();
         }

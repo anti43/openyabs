@@ -88,7 +88,6 @@ import mpv5.ui.dialogs.Search;
 import mpv5.ui.dialogs.Search2;
 import mpv5.ui.dialogs.Wizard;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_MailTemplates;
-import mpv5.ui.dialogs.subcomponents.wizard_CSVImport2_1;
 import mpv5.ui.dialogs.subcomponents.wizard_FirstSettings1;
 import mpv5.ui.dialogs.subcomponents.wizard_MP45_Import;
 import mpv5.ui.dialogs.subcomponents.wizard_Toolbar1;
@@ -3005,9 +3004,7 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
 
     private void jMenuItem40ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem40ActionPerformed
 
-        Wizard w = new Wizard(false);
-        w.addPanel(new wizard_CSVImport2_1(w));
-        w.showWiz();
+        mpv5.ui.dialogs.CsvImportDialog.open();
 
     }//GEN-LAST:event_jMenuItem40ActionPerformed
 
