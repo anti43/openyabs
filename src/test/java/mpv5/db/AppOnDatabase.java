@@ -236,12 +236,16 @@ abstract class AppOnDatabase {
             assertTrue(ps.save(true));
             assertEquals("KAFFEE", ((Product) DatabaseObject.getObject(Context.getProduct(), ps.__getIDS())).__getCname(), "changed script ran");
 
-            //backup page: local H2 can be zipped (with its size), servers not (with the reason)
+            //backup page: local H2 and Derby can be zipped (with their size), servers not (with the reason)
             mpv5.db.common.DatabaseBackup.Status bs = mpv5.db.common.DatabaseBackup.status();
             if (ConnectionTypeHandler.H2_DRIVER.equals(driver)) {
                 assertTrue(bs.possible, bs.reason);
                 assertTrue(bs.size > 0, "size of the database files");
                 assertTrue(bs.location.endsWith(dbname + ".mv.db"), bs.location);
+            } else if (ConnectionTypeHandler.DERBY_DRIVER.equals(driver)) {
+                //a local Derby folder can be zipped as well
+                assertTrue(bs.possible, bs.reason);
+                assertTrue(bs.size > 0, "size of the database files");
             } else {
                 assertTrue(!bs.possible && bs.reason != null && bs.size < 0, bs.type + " " + bs.reason);
             }
