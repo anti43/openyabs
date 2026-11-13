@@ -146,8 +146,10 @@ public class PrinitingComboBox extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jComboBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox1ItemStateChanged
-        JComboBox cb = (JComboBox) evt.getSource();
-        if (cb.getSelectedIndex() <0) {
+        final JComboBox cb = (JComboBox) evt.getSource();
+        //only the chosen entry: the DESELECTED event of the previous one used to reset the
+        //selection (below) before the SELECTED event came - nothing was printed or exported
+        if (evt.getStateChange() != ItemEvent.SELECTED || cb.getSelectedIndex() < 0) {
             return;
         }
         // Get the affected item
@@ -158,7 +160,14 @@ public class PrinitingComboBox extends javax.swing.JPanel {
                 if (evt.getStateChange() == ItemEvent.SELECTED) {
                     switch (Integer.valueOf(item.getId().toString())) {
                         case 0:
-                            new PrintJob().print((DatabaseObject) dataowner);
+                            if (dataowner instanceof mpv5.db.objects.Contact) {
+                                //the contact sheet (template), as the print button of the contact
+                                final DatabaseObject contact = (DatabaseObject) dataowner;
+                                mpv5.handler.ContactService.printSheet((mpv5.db.objects.Contact) contact,
+                                        () -> new PrintJob().print(contact));
+                            } else {
+                                new PrintJob().print((DatabaseObject) dataowner);
+                            }
                             break;
                         case 1:
                             new FilePrintJob((DatabaseObject) dataowner).toVCF();
@@ -239,7 +248,8 @@ public class PrinitingComboBox extends javax.swing.JPanel {
                 }
                 break;
         }
-        cb.setSelectedIndex(-1);
+        //back to "nothing chosen" after this event, so the same entry can be chosen again
+        javax.swing.SwingUtilities.invokeLater(() -> cb.setSelectedIndex(-1));
     }//GEN-LAST:event_jComboBox1ItemStateChanged
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox jComboBox1;

@@ -1208,7 +1208,8 @@ public class ModernContactPanel extends ModernDataPanel {
 
     @Override
     public void print() {
-        Export.print(this);
+        //the contact sheet (template), named after the contact; the view only without a template
+        ContactService.printSheet(dataOwner, () -> Export.print(this));
     }
     // </editor-fold>
 }
