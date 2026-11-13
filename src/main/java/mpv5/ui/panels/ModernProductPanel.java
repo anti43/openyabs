@@ -75,7 +75,6 @@ import mpv5.logging.Log;
 import mpv5.ui.beans.LabeledCombobox;
 import mpv5.ui.beans.LabeledTextField;
 import mpv5.ui.beans.MPCBSelectionChangeReceiver;
-import mpv5.ui.beans.PrinitingComboBox;
 import mpv5.ui.dialogs.BigPopup;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.Notificator;
@@ -132,7 +131,6 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
     private final JButton previewButton = action(text("ProductPanel.button_preview.text"));
     private final JButton orderButton = action(text("ProductPanel.button_order.text"));
     private final JButton listButton = action(text("ProductPanel.button_listedit.text"));
-    private final PrinitingComboBox printing = new PrinitingComboBox();
     //general
     private final LabeledTextField cname = field();
     private final LabeledTextField cnumber = field();
@@ -228,11 +226,9 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
         //the toolbar calls showSearchBar(), so it is created last
         tb = new ModernCommandBar(this);
         add(tb, BorderLayout.NORTH);
-        //the actions of a product, next to the record actions
-        tb.addAction(previewButton, null);
+        //the actions of a product, next to the record actions (preview, PDF, print and mail are in the bar already)
         //the product order (purchase order) is hidden
         tb.addAction(listButton, null);
-        tb.addAction(printing, null);
         //Ctrl+F: find in the documents with the product
         tb.setFindAction(() -> {
             filter.requestFocusInWindow();
@@ -1320,7 +1316,6 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
         if (object.isExisting()) {
             setTabTitle(cname_);
         }
-        printing.init(dataOwner);
         tb.setFavourite(Favourite.isFavourite(object));
         tb.setEditable(!object.isReadOnly());
         if (object.isReadOnly()) {
