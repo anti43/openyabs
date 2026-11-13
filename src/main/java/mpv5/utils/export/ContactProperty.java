@@ -20,7 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
-import mpv5.db.common.QueryCriteria;
+import mpv5.db.common.QueryCriteria2;
+import mpv5.db.common.QueryParameter;
 import mpv5.db.objects.ValueProperty;
 import mpv5.logging.Log;
 
@@ -64,21 +65,40 @@ public final class ContactProperty {
      * context
      */
     private static List<ValueProperty> find(DatabaseObject owner, String key) {
+        final int[] ids = isContact(owner) ? contactContextIds() : new int[]{owner.getContext().getId()};
         List<ValueProperty> list = new ArrayList<ValueProperty>();
-        int[] ids = isContact(owner) ? contactContextIds() : new int[]{owner.getContext().getId()};
-        for (int id : ids) {
-            try {
-                QueryCriteria c = new QueryCriteria("contextids", id);
-                c.addAndCondition("cname", key);
-                c.addAndCondition("objectids", owner.__getIDS());
-                for (DatabaseObject o : DatabaseObject.getObjects(Context.getValueProperties(), c)) {
-                    list.add((ValueProperty) o);
-                }
-            } catch (Exception e) {
-                //none in this context
+        //one query for all contexts (was one per context: five per value, 30 to open a contact)
+        QueryCriteria2 c = new QueryCriteria2();
+        c.and(new QueryParameter(Context.getValueProperties(), "cname", key, QueryParameter.EQUALS),
+                new QueryParameter(Context.getValueProperties(), "objectids", owner.__getIDS(), QueryParameter.EQUALS));
+        QueryParameter[] contexts = new QueryParameter[ids.length];
+        for (int i = 0; i < ids.length; i++) {
+            contexts[i] = new QueryParameter(Context.getValueProperties(), "contextids", ids[i], QueryParameter.EQUALS);
+        }
+        if (contexts.length == 1) {
+            c.and(contexts[0]);
+        } else {
+            c.or(contexts[0], java.util.Arrays.copyOfRange(contexts, 1, contexts.length));
+        }
+        try {
+            for (DatabaseObject o : DatabaseObject.getObjects(Context.getValueProperties(), c)) {
+                list.add((ValueProperty) o);
+            }
+        } catch (Exception e) {
+            //none
+        }
+        //in the order of the contexts: the plain contact context first
+        list.sort(java.util.Comparator.comparingInt(p -> indexOf(ids, p.__getContextids())));
+        return list;
+    }
+
+    private static int indexOf(int[] ids, int id) {
+        for (int i = 0; i < ids.length; i++) {
+            if (ids[i] == id) {
+                return i;
             }
         }
-        return list;
+        return ids.length;
     }
 
     /**
