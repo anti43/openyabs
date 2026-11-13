@@ -722,7 +722,7 @@ public class DatabaseUpdater {
                 if (tableExists(c, e.getValue(), mysql)) {
                     continue;
                 }
-                Log.Debug(DatabaseUpdater.class, "Table " + e.getValue() + " is missing, creating it");
+                Log.Print("DatabaseUpdater: table " + e.getValue() + " is missing, creating it");
                 for (String sql : updates.get(e.getKey())) {
                     try (Statement s = c.createStatement()) {
                         s.execute(DatabaseConnection.withPrefix(sql));
@@ -741,6 +741,9 @@ public class DatabaseUpdater {
                 }
                 if (!tableExists(c, e.getValue(), mysql)) {
                     MISSING_TABLES.add(e.getValue());
+                    Log.Print("DatabaseUpdater: table " + e.getValue() + " could not be created, its function is off");
+                } else {
+                    Log.Print("DatabaseUpdater: table " + e.getValue() + " created");
                 }
             } catch (Exception ex) {
                 Log.Debug(DatabaseUpdater.class, ex);
@@ -762,27 +765,23 @@ public class DatabaseUpdater {
     /**
      * @param c
      * @param table
-     * @return true if the table exists (in any letter case)
+     * @param mysql not used any more (kept for the callers)
+     * @return true if the table can be queried with the connection, exactly
+     * as the application queries it (schema, letter case)
      */
-    private static String schema(Connection c, boolean mysql) {
-        try {
-            return mysql ? null : c.getSchema();
-        } catch (Throwable e) {
-            return null;
-        }
-    }
-
     static boolean tableExists(Connection c, String table, boolean mysql) throws SQLException {
-        java.sql.DatabaseMetaData md = c.getMetaData();
-        for (String name : new String[]{table, table.toUpperCase(Locale.ROOT), table.toLowerCase(Locale.ROOT)}) {
-            //the current database / schema only (MySQL would search all databases)
-            try (java.sql.ResultSet rs = md.getTables(c.getCatalog(), schema(c, mysql), name, new String[]{"TABLE"})) {
-                if (rs.next()) {
-                    return true;
-                }
+        boolean auto = c.getAutoCommit();
+        try (Statement s = c.createStatement()) {
+            s.executeQuery("SELECT COUNT(*) FROM " + table + " WHERE 1 = 0").close();
+            return true;
+        } catch (SQLException e) {
+            Log.Debug(DatabaseUpdater.class, "Table " + table + " can not be queried: " + e.getMessage());
+            if (!auto) {
+                //PostgreSQL: a failed statement aborts the transaction
+                c.rollback();
             }
+            return false;
         }
-        return false;
     }
 
     public void updateFrom(double version) throws Exception {

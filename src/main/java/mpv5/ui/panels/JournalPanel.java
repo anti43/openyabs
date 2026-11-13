@@ -776,6 +776,9 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
      */
     private Object[][] paymentRows(Group forGroup, User forUser) {
         paidInParts = new java.util.HashSet<Integer>();
+        if (!mpv5.db.common.DatabaseUpdater.hasTable("payments")) {
+            return new Object[0][17];
+        }
         try {
             mpv5.db.common.ReturnValue rv = QueryHandler.instanceOf().clone(Context.getInvoice()).freeSelectQuery(
                     "SELECT DISTINCT itemsids FROM payments", mpv5.usermanagement.MPSecurityManager.VIEW, null);
