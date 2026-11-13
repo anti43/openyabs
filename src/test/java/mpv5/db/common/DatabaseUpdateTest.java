@@ -92,6 +92,23 @@ class DatabaseUpdateTest {
     }
 
     @Test
+    void missingPaymentsTableIsCreatedAtStart() throws Exception {
+        //reported: an older Derby database at the current version without the payments table
+        try (Connection c = create()) {
+            new SchemaUpdate(r -> c, true, null).run(1.0, derbyUpdates());
+            exec(c, "DROP TABLE payments");
+            assertTrue(!DatabaseUpdater.tableExists(c, "payments", false));
+            DatabaseUpdater.ensureTables(c, derbyUpdates(), false);
+            assertTrue(DatabaseUpdater.tableExists(c, "payments", false));
+            assertTrue(DatabaseUpdater.hasTable("payments"));
+            exec(c, "SELECT ids, itemsids, amount, datepaid, description FROM payments");
+            //present: nothing happens
+            DatabaseUpdater.ensureTables(c, derbyUpdates(), false);
+            assertTrue(DatabaseUpdater.hasTable("payments"));
+        }
+    }
+
+    @Test
     void partlyAppliedUpdatesContinue() throws Exception {
         //like the reported database: version 1.1974, but changes of later updates exist
         try (Connection c = create()) {

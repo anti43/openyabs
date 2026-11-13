@@ -153,6 +153,7 @@ public class QueryHandler implements Cloneable {
                     }
                     new DatabaseUpdater().updateFrom(dbversion);
                 }
+                DatabaseUpdater.ensureTables(sqlConn);
                 Log.Debug(this, "Database version " + Math.max(dbversion, Constants.DATABASE_VERSION) + ", YaBS " + Constants.VERSION_NUMBER);
             } else {
                 Log.Debug(this, "Database version info can not be found.");

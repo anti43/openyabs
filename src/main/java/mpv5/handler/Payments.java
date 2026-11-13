@@ -89,6 +89,9 @@ public final class Payments {
 
     private static List<Payment> select(String where) {
         List<Payment> l = new ArrayList<Payment>();
+        if (!mpv5.db.common.DatabaseUpdater.hasTable("payments")) {
+            return l;
+        }
         try {
             ReturnValue rv = db().freeSelectQuery("SELECT ids, itemsids, amount, datepaid, description FROM payments " + where,
                     MPSecurityManager.VIEW, null);
@@ -144,7 +147,7 @@ public final class Payments {
      * @return true if stored
      */
     public static boolean add(Item i, BigDecimal amount, Date date, String description) {
-        if (i == null || !i.isExisting() || amount == null || amount.signum() <= 0) {
+        if (i == null || !i.isExisting() || amount == null || amount.signum() <= 0 || !mpv5.db.common.DatabaseUpdater.hasTable("payments")) {
             return false;
         }
         String now = q(DateConverter.getSQLDateString(new Date()));
