@@ -283,6 +283,25 @@ abstract class AppOnDatabase {
             c2.setMailaddress("kunde@example.org");
             mpv5.utils.export.Export.mail(null, inv2, c2, log);
             assertTrue(log.get(2).contains(mpv5.globals.Messages.MAIL_NO_TEMPLATE_BATCH.toString()), log.toString());
+
+            //a document saved without customer: the new customer from the small dialog
+            Contact asked = mpv5.ui.dialogs.ChooseCustomerDialog.createContact("Neumann", "Nina", "Neu & Co", "Weg 2", "50667", "Köln", "nina@example.org");
+            assertNotNull(asked);
+            Contact asked2 = (Contact) DatabaseObject.getObject(Context.getContact(), asked.__getIDS());
+            assertEquals("Neumann", asked2.__getCname());
+            assertEquals("Nina", asked2.__getPrename());
+            assertEquals("Neu & Co", asked2.__getCompany());
+            assertEquals("Weg 2", asked2.__getStreet());
+            assertEquals("50667", asked2.__getZip());
+            assertEquals("Köln", asked2.__getCity());
+            assertEquals("nina@example.org", asked2.__getMailaddress());
+            assertTrue(asked2.__getIscustomer());
+            //only a company: it is the name as well
+            Contact firm = mpv5.ui.dialogs.ChooseCustomerDialog.createContact("", "", "Firma AG", "", "", "", "");
+            assertNotNull(firm);
+            Contact firm2 = (Contact) DatabaseObject.getObject(Context.getContact(), firm.__getIDS());
+            assertEquals("Firma AG", firm2.__getCname());
+            assertTrue(firm2.__getisCompany());
         } finally {
             DatabaseConnection.shutdown();
         }

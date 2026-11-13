@@ -1255,23 +1255,42 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
     }
     // </editor-fold>
 
+    /**
+     * The document has no customer: a small dialog to choose one or to create
+     * one, prefilled with what was typed
+     *
+     * @return the customer, null if cancelled
+     */
+    private Contact askForCustomer() {
+        mpv5.ui.dialogs.ChooseCustomerDialog.Prefill p = new mpv5.ui.dialogs.ChooseCustomerDialog.Prefill();
+        String typed = contactname.getTypedText() == null ? "" : contactname.getTypedText().trim();
+        if (typed.equals(Messages.ITEM_NEW_CUSTOMER_ENTRY.toString())) {
+            typed = "";
+        }
+        p.search = typed;
+        p.cname = cname.getText();
+        p.prename = prename.getText();
+        p.street = street.getText();
+        p.zip = zip.getText();
+        p.city = city.getText();
+        return mpv5.ui.dialogs.ChooseCustomerDialog.choose(this, p);
+    }
+
     @Override
     public boolean collectData() {
         saveNewCustomerFirst();
         try {
             contactsids_ = Integer.parseInt(String.valueOf(contactname.getSelectedItem().getId()));
         } catch (Exception e) {
-            //no contact chosen: the typed name, a new customer if there is none
-            try {
-                Contact owner = ItemService.contactByNameOrNew(cname.getText(true, Messages.ENTER_VALUE),
-                        prename.getText(), zip.getText(), city.getText());
-                contactname.setModel(owner);
-                setContactData(owner);
-                contactsids_ = owner.__getIDS();
-            } catch (Exception ex) {
-                Notificator.raiseNotification(ex, false);
+            //no contact chosen: ask (choose an existing one or create a new one)
+            Contact owner = askForCustomer();
+            if (owner == null) {
+                //cancelled: not saved
                 return false;
             }
+            contactname.setModel(owner);
+            setContactData(owner);
+            contactsids_ = owner.__getIDS();
         }
         if (contactsids_ <= 0) {
             showRequiredFields();
