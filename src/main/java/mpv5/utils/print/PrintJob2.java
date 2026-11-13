@@ -42,18 +42,19 @@ import mpv5.utils.files.FileDirectoryHandler;
 public class PrintJob2 {
 
     /**
-     * a paper fitting DIN-A4
+     * A new paper fitting DIN-A4 (595 x 842 points), printable to the edges.
+     * Every print job gets its own: the component print used to change the
+     * one shared paper - to a printable area of about 15 x 21 metres, so every
+     * later print rendered gigantic raster pages on the Swing thread (YaBS
+     * hung for minutes after printing and wrote gigabytes to the spooler).
+     *
+     * @return the paper
      */
-    public static Paper DINA4;
-
-    /**
-     * Creates a paper fitting DIN-A4
-     */
-    static {
+    public static Paper a4() {
         Paper paper = new java.awt.print.Paper();
         paper.setSize(595, 842);
         paper.setImageableArea(0, 0, 595, 842);
-        DINA4 = paper;
+        return paper;
     }
 
     /**
@@ -238,7 +239,7 @@ public class PrintJob2 {
         PrinterJob pjob = PrinterJob.getPrinterJob();
         PageFormat pf = PrinterJob.getPrinterJob().defaultPage();
 
-        Paper paper = DINA4;
+        Paper paper = a4();
         pf.setOrientation(PageFormat.PORTRAIT);
         pf.setPaper(paper);
 
@@ -298,18 +299,24 @@ public class PrintJob2 {
         }
     }
 
+    /**
+     * @return DIN-A4 with margins of 0.78 inch (about 2 cm) on every side
+     */
+    static Paper a4WithMargins() {
+        Paper paper = a4();
+        //margins in inches; the paper size is in points (1/72 inch)
+        double margin = 0.78 * 72.0;
+        paper.setImageableArea(margin, margin,
+                paper.getWidth() - 2 * margin,
+                paper.getHeight() - 2 * margin);
+        return paper;
+    }
+
     private void printComponent(final Component componentToPrint) {
         PrinterJob job = PrinterJob.getPrinterJob();
         PageFormat pf = job.defaultPage();
 
-        Paper paper = DINA4;
-        double leftMargin = 0.78;
-        double rightMargin = 0.78;
-        double topMargin = 0.78;
-        double bottomMargin = 0.78;
-        paper.setImageableArea(leftMargin * 72.0, topMargin * 72.0,
-                (paper.getWidth() - leftMargin - rightMargin) * 72.0,
-                (paper.getHeight() - topMargin - bottomMargin) * 72.0);
+        Paper paper = a4WithMargins();
         pf.setPaper(paper);
         pf.setOrientation(PageFormat.LANDSCAPE);
 
