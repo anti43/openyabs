@@ -176,7 +176,7 @@ Eine kaufmännische Software darf nicht runden wie ein Taschenrechner. YaBS rech
 - **Papierkorb & Historie**: Versehentlich gelöschte Einträge landen im Papierkorb und können jederzeit wiederhergestellt werden.
 - **Vollständige Tastaturbedienung**: Schnelles Arbeiten ohne Maus über standardisierte Shortcuts (`Strg+S` Speichern, `Strg+P` Drucken, `Strg+Shift+P` PDF, `Strg+E` Mail).
 - **Datumsfelder mit Schnelltippen**: Kurzeingaben wie `1.2.` (dieses Jahr), `010226`, `5` (5. des Monats), `+7` (in einer Woche) oder `h` / `heute`.
-- **Kopie erstellen (`Strg+Shift+S`)**: Öffnet eine ungespeicherte Kopie eines Belegs oder Artikels in einem neuen Tab zum schnellen Weiterbearbeiten.
+- **Als neu speichern (`Strg+Shift+S`)**: Öffnet eine ungespeicherte Kopie eines Belegs oder Artikels in einem neuen Tab zum schnellen Weiterbearbeiten.
 - **Zoom wie im Browser**: Mit `Strg +`, `Strg −` und `Strg 0` die gesamte Oberfläche stufenlos von 80 % bis 200 % vergrößern.
 
 ## Kasse für die Ladentheke (erster Entwurf)

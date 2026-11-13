@@ -228,7 +228,7 @@ public class ControlPanel_Reminder extends javax.swing.JPanel implements DataPan
         });
         jPanel2.add(jButton2);
 
-        jButton4.setText(bundle.getString("ControlPanel_Reminder.jButton4.text")); // NOI18N
+        jButton4.setText(mpv5.globals.Messages.ACTION_SAVE_AS_NEW.toString()); // NOI18N
         jButton4.setName("jButton4"); // NOI18N
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -366,6 +366,11 @@ public class ControlPanel_Reminder extends javax.swing.JPanel implements DataPan
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        //nothing saved yet (nothing chosen, or a new one): Save creates it
+        if (dataOwner == null || !dataOwner.isExisting()) {
+            jButton4ActionPerformed(evt);
+            return;
+        }
 
         if (dataOwner != null) {
             DatabaseObject dato = dataOwner;

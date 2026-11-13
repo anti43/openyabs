@@ -373,7 +373,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
         });
         jPanel6.add(jButton2);
 
-        jButton1.setText(bundle.getString("ControlPanel_Accounts.jButton1.text")); // NOI18N
+        jButton1.setText(mpv5.globals.Messages.ACTION_SAVE_AS_NEW.toString()); // NOI18N
         jButton1.setName("jButton1"); // NOI18N
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -403,6 +403,11 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
 }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        //nothing saved yet (nothing chosen, or a new one): Save creates it
+        if (dataOwner == null || !dataOwner.isExisting()) {
+            jButton1ActionPerformed(evt);
+            return;
+        }
 
         if (dataOwner != null) {
             DatabaseObject dato = dataOwner;
@@ -543,7 +548,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
     }
 
     public void reset() {
-        if (dataOwner.isExisting()) {
+        if (dataOwner != null && dataOwner.isExisting()) {
             DatabaseObject dato = dataOwner;
 
             dato.getPanelData(this);

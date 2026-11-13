@@ -90,7 +90,7 @@ public class ModernCommandBar extends JPanel {
     public static java.util.List<Object[]> shortcuts() {
         java.util.List<Object[]> l = new java.util.ArrayList<Object[]>();
         l.add(new Object[]{SAVE, text("MPV5View.jButton25.toolTipText")});
-        l.add(new Object[]{SAVE_AS_NEW, text("MPV5View.jButton4.toolTipText")});
+        l.add(new Object[]{SAVE_AS_NEW, Messages.ACTION_SAVE_AS_NEW.toString()});
         l.add(new Object[]{REVERT, Messages.SHORTCUT_REVERT.toString()});
         l.add(new Object[]{PRINT, text("MPV5View.jButton23.toolTipText")});
         l.add(new Object[]{PDF, text("DataPanelTB.pdfButton.toolTipText")});
@@ -205,7 +205,7 @@ public class ModernCommandBar extends JPanel {
 
         //rarely used actions in a menu
         JPopupMenu more = new JPopupMenu();
-        JMenuItem saveAsNew = item(more, Messages.ACTION_CREATE_COPY.toString(), "/images/16/filesaveas.png", SAVE_AS_NEW);
+        JMenuItem saveAsNew = item(more, Messages.ACTION_SAVE_AS_NEW.toString(), "/images/16/filesaveas.png", SAVE_AS_NEW);
         saveAsNew.setToolTipText(Messages.ACTION_CREATE_COPY_TIP.toString());
         saveAsNew.addActionListener(e -> createCopy());
         JMenuItem copy = item(more, text("DataPanelTB.but10.toolTipText"), "/images/16/editcopy.png", COPY);

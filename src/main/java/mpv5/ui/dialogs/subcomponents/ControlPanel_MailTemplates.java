@@ -108,7 +108,7 @@ public class ControlPanel_MailTemplates extends javax.swing.JPanel implements Co
         });
         jPanel6.add(jButton2);
 
-        jButton7.setText(bundle.getString("ControlPanel_MailTemplates.jButton7.text_1")); // NOI18N
+        jButton7.setText(mpv5.globals.Messages.ACTION_SAVE_AS_NEW.toString()); // NOI18N
         jButton7.setName("jButton7"); // NOI18N
         jButton7.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -236,6 +236,11 @@ public class ControlPanel_MailTemplates extends javax.swing.JPanel implements Co
 }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        //nothing saved yet (nothing chosen, or a new one): Save creates it
+        if (dataOwner == null || !dataOwner.isExisting()) {
+            jButton7ActionPerformed(evt);
+            return;
+        }
 
         if (dataOwner != null) {
             DatabaseObject dato = dataOwner;
