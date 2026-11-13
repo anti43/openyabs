@@ -225,12 +225,10 @@ public class FormatHandler {
                     Integer startCount = null;
                     String value = formats[i][0].toString();
                     try {
-                        int formatId = Integer.valueOf(formats[i][1].toString());
 
-                        if (value.startsWith(START_VALUE_IDENTIFIER) && Integer.valueOf(formats[i][2].toString()) == typ) {
+                        if (value.startsWith(START_VALUE_IDENTIFIER)) {
                             startCount = Integer.valueOf(value.split(START_VALUE_IDENTIFIER)[1]);
                             value = value.split(START_VALUE_IDENTIFIER)[2];
-                            QueryHandler.instanceOf().clone(Context.getFormats()).update("cname", formatId, value);
                             Log.Debug(this, "Setting start count to: " + startCount);
                         }
                     } catch (Exception numberFormatException) {
@@ -239,6 +237,8 @@ public class FormatHandler {
                     }
                     try {
                         YMessageFormat mFormat = new YMessageFormat(value, startCount);
+                        mFormat.formatId = Integer.valueOf(formats[i][1].toString());
+                        mFormat.stored = value;
                         Log.Debug(this, "Format found: " + mFormat.toPattern() + ", caching for " + formats[i][3].toString() + "@" + formats[i][2].toString());
                         formatCache.put(formats[i][3].toString() + "@" + formats[i][2].toString(), mFormat);
 
@@ -330,6 +330,10 @@ public class FormatHandler {
             int tmp = format.startValue();
             Log.Debug(FormatHandler.class, "Found Startcount: " + tmp + " for " + format.toPattern());
             format.setStartValue(null);
+            if (format.formatId > 0) {
+                //used once: the stored format no longer carries the start value
+                QueryHandler.instanceOf().clone(Context.getFormats()).update("cname", format.formatId, format.stored);
+            }
             return tmp;
         }
     }
@@ -518,6 +522,14 @@ public class FormatHandler {
 
         private static final long serialVersionUID = 1L;
         private Integer startValue = null;
+        /**
+         * ids of the stored format, 0 if not stored
+         */
+        int formatId = 0;
+        /**
+         * the stored pattern without start value
+         */
+        String stored;
 
         public YMessageFormat(String pattern, Integer startValue) {
             super(pattern.replace(DELETED_IDENTIFIER, ""));

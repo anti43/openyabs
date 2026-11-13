@@ -92,6 +92,12 @@ public class ControlPanel_NumberFormats extends JPanel implements ControlApplet 
         }
     };
     private final JTable existing = new JTable(existingModel);
+    private final JPanel overviewRows = new JPanel(new java.awt.GridBagLayout());
+    /**
+     * the kinds offered in the overview (product orders and deposits are hidden in the program)
+     */
+    private static final java.util.Set<Integer> HIDDEN = new java.util.HashSet<Integer>(java.util.Arrays.asList(
+            mpv5.globals.Constants.TYPE_PRODUCT_ORDER, mpv5.globals.Constants.TYPE_DEPOSIT));
     private final List<Object[]> existingRows = new ArrayList<Object[]>();
     private final JPanel actions;
     private boolean loading;
@@ -176,7 +182,25 @@ public class ControlPanel_NumberFormats extends JPanel implements ControlApplet 
         Card dates = new Card(Messages.FORMATS_CARD_DATE.toString())
                 .row(Card.field(Messages.FORMATS_DATE_LOCALE.toString(), locales))
                 .addFull(Applets.hint(Messages.NUMFMT_LOCALE_HINT.toString()));
-        add(Applets.page(Messages.NUMFMT_INFO.toString(), 380, what, how, result, list, dates), BorderLayout.CENTER);
+        //the overview with an assistant per kind; the detailed cards for experts
+        Card overview = new Card(Messages.NUMWIZ_OVERVIEW.toString()).addFull(overviewRows);
+        overviewRows.setOpaque(false);
+        final Card[] advanced = {what, how, result, list, dates};
+        javax.swing.JToggleButton more = new javax.swing.JToggleButton(Messages.NUMWIZ_SHOW_ALL.toString());
+        more.setFocusable(false);
+        more.addActionListener(e -> {
+            for (Card c : advanced) {
+                c.setVisible(more.isSelected());
+            }
+            more.setText(more.isSelected() ? Messages.NUMWIZ_HIDE_ALL.toString() : Messages.NUMWIZ_SHOW_ALL.toString());
+            revalidate();
+            repaint();
+        });
+        overview.headerAction(more);
+        for (Card c : advanced) {
+            c.setVisible(false);
+        }
+        add(Applets.page(Messages.NUMWIZ_INFO.toString(), 380, overview, what, how, result, list, dates), BorderLayout.CENTER);
 
         PrimaryButton save = new PrimaryButton(Messages.NUMFMT_SAVE.toString(), "/images/16/filesave.png");
         save.addActionListener(e -> save());
@@ -336,6 +360,90 @@ public class ControlPanel_NumberFormats extends JPanel implements ControlApplet 
         }
     }
 
+    /**
+     * One row per kind: name, example of its numbers (for all users), own
+     * formats of single users, "Change..." (the assistant)
+     */
+    private void showOverview() {
+        overviewRows.removeAll();
+        java.util.Map<Integer, String> forAll = new java.util.HashMap<Integer, String>();
+        java.util.Map<Integer, Integer> own = new java.util.HashMap<Integer, Integer>();
+        try {
+            Object[][] d = QueryHandler.instanceOf().clone(Context.getFormats()).select("inttype, usersids, cname", (String[]) null);
+            for (Object[] r : d) {
+                int t = Integer.parseInt(String.valueOf(r[0]));
+                int u = Integer.parseInt(String.valueOf(r[1]));
+                String pat = String.valueOf(r[2]);
+                if (pat.startsWith(FormatHandler.START_VALUE_IDENTIFIER)) {
+                    String[] p = pat.split(FormatHandler.START_VALUE_IDENTIFIER);
+                    pat = p.length > 2 ? p[2] : "";
+                }
+                if (u == User.ADMIN_ID) {
+                    forAll.put(t, pat);
+                } else {
+                    own.merge(t, 1, Integer::sum);
+                }
+            }
+        } catch (Exception e) {
+            //none stored
+        }
+        Date now = new Date();
+        int row = 0;
+        for (MPEnum t : FormatHandler.TYPES.values()) {
+            if (HIDDEN.contains(t.getId())) {
+                continue;
+            }
+            String pat = forAll.getOrDefault(t.getId(), FormatHandler.INTEGERPART_IDENTIFIER);
+            String example;
+            try {
+                example = NumberFormatBuilder.format(pat, 1, now);
+            } catch (Exception e) {
+                example = pat;
+            }
+            JLabel name = new JLabel(t.getName());
+            JLabel ex = new JLabel(example);
+            ex.setFont(ModernTheme.font(1, Font.BOLD));
+            JLabel note = new JLabel(own.containsKey(t.getId()) ? String.format(Messages.NUMWIZ_OWN.toString(), own.get(t.getId())) : "");
+            note.setForeground(ModernTheme.muted());
+            javax.swing.JButton change = new javax.swing.JButton(Messages.NUMWIZ_CHANGE.toString());
+            change.setFocusable(false);
+            final MPEnum kind = t;
+            change.addActionListener(e -> openWizard(kind));
+            JComponent[] cells = {name, ex, note, change};
+            double[] weights = {0, 1, 0, 0};
+            for (int c = 0; c < cells.length; c++) {
+                java.awt.GridBagConstraints g = new java.awt.GridBagConstraints();
+                g.gridx = c;
+                g.gridy = row;
+                g.weightx = weights[c];
+                g.anchor = java.awt.GridBagConstraints.WEST;
+                g.fill = c == 1 ? java.awt.GridBagConstraints.HORIZONTAL : java.awt.GridBagConstraints.NONE;
+                g.insets = new java.awt.Insets(ModernTheme.px(3), c == 0 ? 0 : ModernTheme.px(14), ModernTheme.px(3), 0);
+                overviewRows.add(cells[c], g);
+            }
+            row++;
+        }
+        overviewRows.revalidate();
+        overviewRows.repaint();
+    }
+
+    /**
+     * The assistant for one kind; afterwards the overview and the details show the new format
+     *
+     * @param kind
+     */
+    private void openWizard(MPEnum kind) {
+        List<Object[]> us = new ArrayList<Object[]>();
+        for (int i = 0; i < user.getItemCount(); i++) {
+            us.add(user.getItemAt(i));
+        }
+        NumberFormatWizard w = new NumberFormatWizard(javax.swing.SwingUtilities.getWindowAncestor(this), kind, us, User.ADMIN_ID);
+        w.setVisible(true);
+        if (w.isSaved()) {
+            reset();
+        }
+    }
+
     private void showExisting() {
         existingModel.setRowCount(0);
         existingRows.clear();
@@ -425,6 +533,7 @@ public class ControlPanel_NumberFormats extends JPanel implements ControlApplet 
 
     @Override
     public final void reset() {
+        showOverview();
         showExisting();
         load();
         showLocale();

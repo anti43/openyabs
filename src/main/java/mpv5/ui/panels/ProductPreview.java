@@ -92,7 +92,7 @@ public final class ProductPreview extends javax.swing.JPanel {
                 javax.swing.BorderFactory.createMatteBorder(0, 1, 0, 0, mpv5.ui.modern.ModernTheme.border()),
                 javax.swing.BorderFactory.createEmptyBorder(10 * px, 12 * px, 10 * px, 10 * px)));
         previewImage.setForeground(mpv5.ui.modern.ModernTheme.muted());
-        previewTitle.setFont(mpv5.ui.modern.ModernTheme.font(13f, java.awt.Font.BOLD));
+        previewTitle.setFont(mpv5.ui.modern.ModernTheme.font(2f, java.awt.Font.BOLD));
         previewFacts.setForeground(mpv5.ui.modern.ModernTheme.muted());
         previewText.setEditable(false);
         previewText.setLineWrap(true);

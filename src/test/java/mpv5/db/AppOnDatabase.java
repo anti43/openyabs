@@ -258,6 +258,18 @@ abstract class AppOnDatabase {
             assertEquals("GS-" + year + "-00010", newCredit(c.__getIDS(), "GS-" + (year - 1) + "-00009"), "keep counting");
             mpv5.handler.FormatHandler.store(Item.TYPE_CREDIT, User.ADMIN_ID, nf.pattern(), nf.parsePosition(), 100);
             assertEquals("GS-" + year + "-00100", newCredit(c.__getIDS(), null), "next number set");
+            //a next number is kept until a record of its kind is numbered, also when another kind is numbered first
+            mpv5.handler.FormatHandler.store(Item.TYPE_CREDIT, User.ADMIN_ID, nf.pattern(), nf.parsePosition(), 200);
+            Contact other = (Contact) DatabaseObject.getObject(Context.getContact());
+            other.setCname("Zweite GmbH");
+            other.setisCustomer(true);
+            other.setDateadded(new Date());
+            assertTrue(other.save(true));
+            assertTrue(!other.__getCNumber().contains(mpv5.handler.FormatHandler.START_VALUE_IDENTIFIER), other.__getCNumber());
+            assertEquals("GS-" + year + "-00200", newCredit(c.__getIDS(), null), "next number set, after a contact");
+            assertEquals("GS-" + year + "-00201", newCredit(c.__getIDS(), null), "then counting on");
+            mpv5.handler.FormatHandler.clearCache();
+            assertEquals("GS-" + year + "-00202", newCredit(c.__getIDS(), null), "the next number was used once only");
 
             //mail (log mode, no questions): nothing is sent without sender, recipient and template
             java.util.List<String> log = new java.util.ArrayList<String>();
