@@ -64,6 +64,12 @@ public class ProductList extends javax.swing.JPanel implements ListPanel {
             wrapper.add(buttons, java.awt.BorderLayout.NORTH);
             ProductPreview.attach(listTable, 0, wrapper, buttons);
         }
+        //the whole list when it opens, like the other lists (was empty until a search);
+        //products / services / both filter right away
+        for (javax.swing.JRadioButton r : new javax.swing.JRadioButton[]{products, services, both}) {
+            r.addActionListener(e -> refresh());
+        }
+        filltable(null, null);
     }
 
     /**
@@ -398,6 +404,8 @@ public class ProductList extends javax.swing.JPanel implements ListPanel {
     }
 
     public void refresh() {
+        String text = search.getText();
+        filltable(text == null || text.trim().isEmpty() ? null : text, null);
     }
 
     public void flush() {
