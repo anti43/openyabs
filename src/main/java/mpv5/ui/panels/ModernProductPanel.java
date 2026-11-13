@@ -119,8 +119,6 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
     private Product dataOwner;
     private final int type;
     private final ModernCommandBar tb;
-    private final SearchPanel sp;
-    private final JPanel leftpane = new JPanel(new BorderLayout());
     private String old_cnumber = "";
     //header
     private final Avatar avatar = new Avatar();
@@ -209,7 +207,6 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
         super(new BorderLayout());
         setName("productpanel");
         this.type = type;
-        sp = new SearchPanel(context, this);
         dataOwner = new Product();
         dataOwner.setInttype(type);
         inttype_ = type;
@@ -222,8 +219,6 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
         JSplitPane split = split("product", scroll(createOverview()), createUsagePanel(), 0.6);
         content.add(split, BorderLayout.CENTER);
         add(content, BorderLayout.CENTER);
-        add(leftpane, BorderLayout.WEST);
-        //the toolbar calls showSearchBar(), so it is created last
         tb = new ModernCommandBar(this);
         add(tb, BorderLayout.NORTH);
         //the actions of a product, next to the record actions (preview, PDF, print and mail are in the bar already)
@@ -1456,7 +1451,6 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
     public void refresh() {
         SwingUtilities.invokeLater(() -> {
             try {
-                sp.refresh();
                 if (!dataOwner.isExisting()) {
                     groupnameselect.setModel(DatabaseObject.getObject(Context.getGroup(), User.getCurrentUser().__getGroupsids()));
                     try {
@@ -1495,12 +1489,7 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
 
     @Override
     public void showSearchBar(boolean show) {
-        leftpane.removeAll();
-        if (show) {
-            leftpane.add(sp, BorderLayout.CENTER);
-            sp.search();
-        }
-        validate();
+        //no side search panel any more: the search button opens "Search anything"
     }
 
     @Override
@@ -1511,7 +1500,6 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
     @Override
     public void actionAfterCreate() {
         saveRelations();
-        sp.refresh();
     }
 
     @Override

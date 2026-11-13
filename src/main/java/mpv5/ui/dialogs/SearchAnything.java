@@ -119,6 +119,31 @@ public final class SearchAnything extends JDialog {
         instance.showOver(owner);
     }
 
+    /**
+     * Opens the search window right below the given component (e.g. the
+     * search button of a record), kept on the screen
+     *
+     * @param anchor
+     */
+    public static void openAt(java.awt.Component anchor) {
+        if (anchor == null || !anchor.isShowing()) {
+            open();
+            return;
+        }
+        JFrame owner = (JFrame) mpv5.YabsViewProxy.instance().getIdentifierFrame();
+        if (instance == null || instance.getOwner() != owner) {
+            instance = new SearchAnything(owner);
+        }
+        Point p = anchor.getLocationOnScreen();
+        java.awt.Rectangle screen = anchor.getGraphicsConfiguration().getBounds();
+        int x = Math.max(screen.x, Math.min(p.x, screen.x + screen.width - instance.getWidth()));
+        int y = p.y + anchor.getHeight() + ModernTheme.px(2);
+        if (y + instance.getHeight() > screen.y + screen.height) {
+            y = Math.max(screen.y, p.y - instance.getHeight() - ModernTheme.px(2));
+        }
+        instance.showAt(x, y);
+    }
+
     private SearchAnything(JFrame owner) {
         super(owner, Messages.SEARCH_ANYTHING.toString(), false);
         setUndecorated(true);
@@ -219,7 +244,11 @@ public final class SearchAnything extends JDialog {
 
     private void showOver(JFrame owner) {
         Point o = owner.getLocationOnScreen();
-        setLocation(o.x + (owner.getWidth() - getWidth()) / 2, o.y + Math.max(ModernTheme.px(60), owner.getHeight() / 8));
+        showAt(o.x + (owner.getWidth() - getWidth()) / 2, o.y + Math.max(ModernTheme.px(60), owner.getHeight() / 8));
+    }
+
+    private void showAt(int x, int y) {
+        setLocation(x, y);
         field.selectAll();
         setVisible(true);
         SwingUtilities.invokeLater(field::requestFocusInWindow);
