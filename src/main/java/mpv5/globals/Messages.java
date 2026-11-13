@@ -1355,7 +1355,6 @@ public enum Messages {
     FKT_NO_CONTACT("no contact, document skipped"),
     FKT_SHIPPING("Shipping"),
     FKT_REBATE_NOT_IMPORTED("discount on the whole document not imported:"),
-    ACTION_CREATE_COPY("Create copy"),
     ACTION_CREATE_COPY_TIP("Opens a copy of this record as a new, not yet saved record. Only saving creates it."),
     COPY_PENDING("Copy of \"%s\", not saved yet. Change what you need and save: only then the new record is created. The original is unchanged."),
     COPY_DISCARD("Discard copy"),
@@ -1523,6 +1522,7 @@ public enum Messages {
     CSV_RESULT_EMPTY("%d empty rows ignored."),
     CSV_RESULT_NONE_SKIPPED("No row was skipped."),
     CSV_PROBLEM_EXISTS("number \"%s\" exists already"),
+    ACTION_SAVE_AS_NEW("Save as new"),
     MODERN_UI("Modern views for contacts, products and documents (preview, takes effect for newly opened tabs)");
 
 

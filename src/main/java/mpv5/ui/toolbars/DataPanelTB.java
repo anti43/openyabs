@@ -208,7 +208,7 @@ public class DataPanelTB extends javax.swing.JPanel implements ActionListener, I
 
         but4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/32/filenew.png"))); // NOI18N
         but4.setText(bundle.getString("MPV5View.jButton4.text")); // NOI18N
-        but4.setToolTipText(bundle.getString("MPV5View.jButton4.toolTipText")); // NOI18N
+        but4.setToolTipText(mpv5.globals.Messages.ACTION_SAVE_AS_NEW.toString()); // NOI18N
         but4.setContentAreaFilled(false);
         but4.setFocusable(false);
         but4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);

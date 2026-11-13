@@ -1847,7 +1847,7 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
 
         jMenuItem14.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/16/filesaveas.png"))); // NOI18N
-        jMenuItem14.setText(bundle.getString("MPView.jMenuItem14.text")); // NOI18N
+        jMenuItem14.setText(Messages.ACTION_SAVE_AS_NEW.toString()); // NOI18N
         jMenuItem14.setName("jMenuItem14"); // NOI18N
         jMenuItem14.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
