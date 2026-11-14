@@ -63,17 +63,11 @@ public class Scheduler extends Thread {
      * @param show true to show the tab, false to only bring it up to date
      */
     public static void openHomeScreen(final boolean show) {
-        final Scheduler s = new Scheduler();
-        Thread t = new Thread(() -> {
-            s.checkForOverdueEvents(null);
-            s.checkForCreateBillEvents(null);
-            if (show) {
-                javax.swing.SwingUtilities.invokeLater(() -> mpv5.YabsViewProxy.instance().getIdentifierView()
-                        .addOrShowTab(s.homescreen, Messages.HOMESCREEN.toString()));
-            }
-        }, "dashboard");
-        t.setDaemon(true);
-        t.start();
+        //getInstance loads the data again in the background
+        HomeScreen h = HomeScreen.getInstance();
+        if (show) {
+            mpv5.YabsViewProxy.instance().getIdentifierView().addOrShowTab(h, Messages.HOMESCREEN.toString());
+        }
     }
 
     public void checkForCreateBillEvents(vTimeframe DateFrame) {

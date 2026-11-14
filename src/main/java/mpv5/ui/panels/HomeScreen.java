@@ -14,30 +14,46 @@
  *      You should have received a copy of the GNU General Public License
  *      along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- * GeneralListPanel.java
- *
- * Created on 03.04.2009, 15:26:37
- */
 package mpv5.ui.panels;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridLayout;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import javax.swing.ImageIcon;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JSplitPane;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.table.TableCellRenderer;
-import mpv5.db.common.Context;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
 import mpv5.db.common.DatabaseObject;
-import mpv5.db.common.NodataFoundException;
-import mpv5.db.objects.Group;
+import mpv5.db.objects.Contact;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.Reminder;
 import mpv5.db.objects.Revenue;
@@ -46,939 +62,830 @@ import mpv5.db.objects.SubItem;
 import mpv5.db.objects.User;
 import mpv5.globals.Messages;
 import mpv5.handler.Scheduler;
+import mpv5.handler.SearchService;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
-import mpv5.ui.dialogs.ScheduleEvents;
-import mpv5.ui.misc.MPTable;
-import mpv5.ui.misc.TableViewPersistenceHandler;
+import mpv5.ui.modern.Applets;
+import mpv5.ui.modern.Card;
+import mpv5.ui.modern.ChipToggle;
+import mpv5.ui.modern.ModernTheme;
 import mpv5.ui.panels.calendar.ScheduleCalendar;
 import mpv5.utils.date.DateConverter;
-import mpv5.utils.date.vTimeframe;
-import mpv5.utils.models.MPTableModel;
 import mpv5.utils.numberformat.FormatNumber;
-import mpv5.utils.renderer.TableCellRendererForDatabaseObjects;
-import mpv5.utils.tables.TableFormat;
 
-public class HomeScreen extends javax.swing.JPanel {
+/**
+ * The dashboard ("Schreibtisch"): tiles with what is overdue and open, the
+ * open documents in one table (status, document, customer, date, days open,
+ * amount) with filters, the calendar and the recurring invoices due this
+ * month. Which documents appear and when they turn yellow or red is set in
+ * the settings "Dashboard, deadlines and appointments".
+ */
+public class HomeScreen extends JPanel {
 
-    private static final long serialVersionUID = 8043431014500289718L;
-    private List<DatabaseObject> odata;
-    private List<DatabaseObject> xdata;
-    TableCellRendererForDatabaseObjects rend = new TableCellRendererForDatabaseObjects();
-    private final ScheduleDayEventsPanel SDEPanel;
-    private final ScheduleCalendar sc;
+    private static final long serialVersionUID = 2L;
     private static HomeScreen icke;
-    private BigDecimal billsSum = new BigDecimal(0);
-    private BigDecimal orderSum = new BigDecimal(0);
-    private BigDecimal offerSum = new BigDecimal(0);
+
+    /**
+     * Status of an open document (the colors of {@link Scheduler})
+     */
+    static final int OVERDUE = 0, WARNING = 1, OPEN = 2;
+
+    /**
+     * A row of the open documents
+     */
+    static final class Row {
+
+        final DatabaseObject object;
+        final int status;
+        final String kind;
+        final int type;
+        final String document;
+        final String contact;
+        final Date date;
+        final long days;
+        final BigDecimal amount;
+
+        Row(DatabaseObject object, int status, String kind, int type, String document, String contact, Date date, long days, BigDecimal amount) {
+            this.object = object;
+            this.status = status;
+            this.kind = kind;
+            this.type = type;
+            this.document = document;
+            this.contact = contact;
+            this.date = date;
+            this.days = days;
+            this.amount = amount;
+        }
+    }
+
+    private final List<Row> rows = new ArrayList<Row>();
+    private final List<Row> shown = new ArrayList<Row>();
+    private final List<Schedule> recurring = new ArrayList<Schedule>();
+    private int loadRun;
+
+    //header and tiles
+    private final JLabel dateLabel = new JLabel();
+    private final Tile overdueTile = new Tile(Messages.DASH_OVERDUE.toString(), new Color(185, 28, 28));
+    private final Tile warningTile = new Tile(Messages.DASH_WARNING.toString(), new Color(180, 120, 0));
+    private final Tile invoicesTile = new Tile(Messages.DASH_OPEN_INVOICES.toString(), null);
+    private final Tile offersTile = new Tile(Messages.DASH_OPEN_OFFERS.toString(), null);
+    private final Tile ordersTile = new Tile(Messages.DASH_OPEN_ORDERS.toString(), null);
+    //open documents
+    private final ChipToggle chipAll = new ChipToggle(Messages.DASH_ALL.toString());
+    private final ChipToggle chipOverdue = new ChipToggle(Messages.DASH_OVERDUE.toString());
+    private final ChipToggle chipWarning = new ChipToggle(Messages.DASH_WARNING.toString());
+    private final ChipToggle chipOpen = new ChipToggle(Messages.DASH_OPEN.toString());
+    private final JComboBox<String> kind = new JComboBox<String>();
+    private final JTextField search = ModernTheme.roomy(new JTextField());
+    private final OpenModel openModel = new OpenModel();
+    private final JTable openTable = new JTable(openModel);
+    private final JLabel openEmpty = new JLabel();
+    private final JButton openDoc = new JButton(Messages.DASH_OPEN_DOC.toString());
+    private final JButton reminder = new JButton(Messages.DASH_REMINDER.toString());
+    //recurring invoices
+    private final RecurringModel recurringModel = new RecurringModel();
+    private final JTable recurringTable = new JTable(recurringModel);
+    private final JLabel recurringEmpty = new JLabel();
+    private final JButton createBill = new JButton(Messages.DASH_CREATE_BILL.toString());
+    private final JButton deleteSchedule = new JButton(Messages.DASH_DELETE_SCHEDULE.toString());
 
     public static HomeScreen getInstance() {
         if (icke == null) {
             icke = new HomeScreen();
-        } else {
-            icke.refresh();
         }
+        icke.refresh();
         return icke;
     }
 
-    /**
-     * 
-     */
     private HomeScreen() {
-        initComponents();
-
+        super(new BorderLayout(ModernTheme.px(12), ModernTheme.px(12)));
         setName("homescreenpanel");
+        setBackground(ModernTheme.background());
+        setBorder(ModernTheme.padding(12, 14));
+        add(header(), BorderLayout.NORTH);
+        add(openCard(), BorderLayout.CENTER);
+        add(rightColumn(), BorderLayout.EAST);
+    }
 
-        labeledCombobox1.setContext(Context.getGroup());
-        labeledCombobox2.setModel(Item.getItemEnum());
-        labeledCombobox3.setContext(Context.getGroup());
-        labeledCombobox4.setModel(Item.getItemEnum());
+    // ------------------------------------------------------------------ layout
+    private JComponent header() {
+        JLabel title = new JLabel(Messages.HOMESCREEN.toString());
+        title.setFont(ModernTheme.font(9, Font.BOLD));
+        dateLabel.setForeground(ModernTheme.muted());
+        JPanel left = new JPanel();
+        left.setOpaque(false);
+        left.setLayout(new BoxLayout(left, BoxLayout.PAGE_AXIS));
+        left.add(title);
+        left.add(dateLabel);
 
-        timeframeChooser1.setTime(new vTimeframe(DateConverter.getStartOfMonth(new Date()), DateConverter.getEndOfMonth(new Date())));
-        timeframeChooser2.setTime(new vTimeframe(DateConverter.getStartOfMonth(new Date()), DateConverter.getEndOfMonth(new Date())));
+        JButton reload = new JButton(Messages.DASH_REFRESH.toString());
+        reload.addActionListener(e -> refresh());
+        JButton settings = new JButton(Messages.DASH_SETTINGS.toString());
+        settings.setToolTipText(Messages.SETTINGS_D_SCHEDULE.toString());
+        settings.addActionListener(e -> openSettings());
+        JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT, ModernTheme.px(6), 0));
+        buttons.setOpaque(false);
+        buttons.add(reload);
+        buttons.add(settings);
 
-        SDEPanel = ScheduleDayEventsPanel.instanceOf();
-        jSplitPane1.setBottomComponent(SDEPanel);
-        sc = ScheduleCalendar.instanceOf();
+        JPanel top = new JPanel(new BorderLayout());
+        top.setOpaque(false);
+        top.add(left, BorderLayout.WEST);
+        top.add(buttons, BorderLayout.EAST);
+
+        JPanel tiles = new JPanel(new GridLayout(1, 0, ModernTheme.px(10), 0));
+        tiles.setOpaque(false);
+        tiles.add(overdueTile);
+        tiles.add(warningTile);
+        tiles.add(invoicesTile);
+        tiles.add(offersTile);
+        tiles.add(ordersTile);
+        overdueTile.onClick(() -> filter(chipOverdue, -1));
+        warningTile.onClick(() -> filter(chipWarning, -1));
+        invoicesTile.onClick(() -> filter(chipAll, Item.TYPE_INVOICE));
+        offersTile.onClick(() -> filter(chipAll, Item.TYPE_OFFER));
+        ordersTile.onClick(() -> filter(chipAll, Item.TYPE_ORDER));
+
+        JPanel p = new JPanel(new BorderLayout(0, ModernTheme.px(12)));
+        p.setOpaque(false);
+        p.add(top, BorderLayout.NORTH);
+        p.add(tiles, BorderLayout.CENTER);
+        return p;
+    }
+
+    private JComponent openCard() {
+        ButtonGroup g = new ButtonGroup();
+        JPanel chips = new JPanel(new FlowLayout(FlowLayout.LEFT, ModernTheme.px(6), 0));
+        chips.setOpaque(false);
+        for (ChipToggle c : new ChipToggle[]{chipAll, chipOverdue, chipWarning, chipOpen}) {
+            g.add(c);
+            chips.add(c);
+            c.addActionListener(e -> applyFilter());
+        }
+        chipAll.setSelected(true);
+        kind.addActionListener(e -> applyFilter());
+        search.putClientProperty("JTextField.placeholderText", Messages.DASH_SEARCH.toString());
+        search.putClientProperty("JTextField.showClearButton", true);
+        search.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                applyFilter();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                applyFilter();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                applyFilter();
+            }
+        });
+        search.setPreferredSize(new Dimension(ModernTheme.px(220), search.getPreferredSize().height));
+        JPanel filters = new JPanel(new BorderLayout(ModernTheme.px(8), 0));
+        filters.setOpaque(false);
+        filters.add(chips, BorderLayout.CENTER);
+        JPanel right = new JPanel(new FlowLayout(FlowLayout.RIGHT, ModernTheme.px(6), 0));
+        right.setOpaque(false);
+        right.add(kind);
+        right.add(search);
+        filters.add(right, BorderLayout.EAST);
+
+        ModernTheme.style(openTable);
+        openTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        openTable.setAutoCreateRowSorter(true);
+        openTable.setDefaultRenderer(Object.class, new OpenRenderer());
+        openTable.getColumnModel().getColumn(0).setPreferredWidth(ModernTheme.px(110));
+        openTable.getColumnModel().getColumn(1).setPreferredWidth(ModernTheme.px(200));
+        openTable.getColumnModel().getColumn(2).setPreferredWidth(ModernTheme.px(200));
+        openTable.getColumnModel().getColumn(3).setPreferredWidth(ModernTheme.px(90));
+        openTable.getColumnModel().getColumn(4).setPreferredWidth(ModernTheme.px(80));
+        openTable.getColumnModel().getColumn(5).setPreferredWidth(ModernTheme.px(110));
+        openTable.getSelectionModel().addListSelectionListener(e -> updateButtons());
+        openTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    openSelected();
+                }
+            }
+        });
+        openTable.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(javax.swing.KeyStroke.getKeyStroke("ENTER"), "open");
+        openTable.getActionMap().put("open", new javax.swing.AbstractAction() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                openSelected();
+            }
+        });
+        JScrollPane sp = new JScrollPane(openTable);
+        sp.setBorder(BorderFactory.createLineBorder(ModernTheme.border()));
+        openEmpty.setHorizontalAlignment(SwingConstants.CENTER);
+        openEmpty.setForeground(ModernTheme.muted());
+        openEmpty.setVisible(false);
+
+        openDoc.addActionListener(e -> openSelected());
+        reminder.addActionListener(e -> createReminder());
+        reminder.setToolTipText(Messages.DASH_REMINDER_TIP.toString());
+        JPanel buttons = new JPanel(new FlowLayout(FlowLayout.LEFT, ModernTheme.px(6), 0));
+        buttons.setOpaque(false);
+        buttons.add(openDoc);
+        buttons.add(reminder);
+
+        JPanel table = new JPanel(new BorderLayout());
+        table.setOpaque(false);
+        table.add(sp, BorderLayout.CENTER);
+        table.add(openEmpty, BorderLayout.NORTH);
+        table.setPreferredSize(new Dimension(ModernTheme.px(600), ModernTheme.px(320)));
+        return new Card(Messages.DASH_LIST.toString())
+                .addFull(filters)
+                .addFull(table, 1)
+                .addFull(buttons)
+                .addFull(Applets.hint(Messages.DASH_LIST_HINT.toString()));
+    }
+
+    private JComponent rightColumn() {
+        ScheduleCalendar sc = ScheduleCalendar.instanceOf();
         sc.setDate(new Date());
-        jSplitPane1.setTopComponent(sc);
-        initTable(overdue);
-        initTable(nextEvents);
-    }
+        JPanel calendar = new JPanel(new BorderLayout(0, ModernTheme.px(6)));
+        calendar.setOpaque(false);
+        calendar.add(sc, BorderLayout.NORTH);
+        calendar.add(ScheduleDayEventsPanel.instanceOf(), BorderLayout.CENTER);
+        Card calendarCard = new Card(Messages.DASH_CALENDAR.toString()).addFull(calendar, 1);
 
-    public JSplitPane getjSplitPane1() {
-        return jSplitPane1;
-    }
-
-    private void initTable(JTable table) {
-        table.setDefaultRenderer(String.class,
-                rend);
-        table.setDefaultRenderer(Date.class,
-                rend);
-        table.setDefaultRenderer(DatabaseObject.class,
-                rend);
-
-        ((MPTable) table).setDefaultColumns(new Integer[]{100,
-                    100,
-                    100,
-                    100,
-                    100,
-                    15,
-                    15},
-                new Boolean[]{true,
-                    true,
-                    true,
-                    true,
-                    true,
-                    true,
-                    true});
-        ((MPTable) table).setPersistanceHandler(new TableViewPersistenceHandler(
-                (MPTable) table,
-                this));
-        TableFormat.hideHeader(table);
-    }
-
-    public JTable getNextEvents() {
-        return nextEvents;
-    }
-
-    public JTable getOverdue() {
-        return overdue;
-    }
-
-    public <T extends DatabaseObject> void show(HashMap<Color, List<? extends DatabaseObject>> map, JTable table) {
-
-        Iterator<Color> it = map.keySet().
-                iterator();
-        List<DatabaseObject> ndata = new ArrayList<DatabaseObject>();
-        while (it.hasNext()) {
-            Color c = it.next();
-            List<? extends DatabaseObject> data = map.get(c);
-            for (int i = 0; i < data.size(); i++) {
-                DatabaseObject databaseObject = data.get(i);
-                databaseObject.defineColor(c);
-                ndata.add(databaseObject);
-            }
-        }
-
-        labeledCombobox1.setSearchEnabled(true);
-        labeledCombobox1.setContext(Context.getGroup());
-        labeledCombobox1.triggerSearch();
-//        timeframeChooser1.setTime(new vTimeframe(DateConverter.getStartOfMonth(new Date()), DateConverter.getEndOfMonth(new Date())));
-
-        labeledCombobox3.setSearchEnabled(true);
-        labeledCombobox3.setContext(Context.getGroup());
-        labeledCombobox3.triggerSearch();
-//        timeframeChooser2.setTime(new vTimeframe(DateConverter.getStartOfMonth(new Date()), DateConverter.getEndOfMonth(new Date())));
-
-        if (table.equals(overdue)) {
-            setData(ndata, table);
-            odata = ndata;
-        } else {
-            setData(ndata, table);
-            xdata = ndata;
-        }
-        validate();
-    }
-
-    public <T extends DatabaseObject> void setData(List<T> list, JTable table) {
-        Object[][] data;
-        int type;
-        orderSum = new BigDecimal(0);
-        offerSum = new BigDecimal(0);
-        billsSum = new BigDecimal(0);
-        BigDecimal tax;
-        if (list != null) {
-            data = new Object[list.size()][7];
-
-            for (int i = 0; i < list.size(); i++) {
-                DatabaseObject databaseObject = list.get(i);
-                if (databaseObject instanceof Item) {
-                    data[i][0] = databaseObject;
-                    data[i][1] = User.getUsername(databaseObject.__getIntaddedby());
-                    data[i][2] = databaseObject.__getDateadded();
-                    try {
-                        data[i][3] = DatabaseObject.getObject(Context.getGroup(),
-                                databaseObject.__getGroupsids());
-                    } catch (NodataFoundException ex) {
-                        data[i][3] = "N/A";
-                    }
-                    type = ((Item) databaseObject).__getInttype();
-                    //tax = Constants.BD100.add(((Item) databaseObject).__getTaxvalue()).divide(Constants.BD100, 9, BigDecimal.ROUND_HALF_UP);
-                    BigDecimal value = ((Item) databaseObject).__getNetvalue().add(((Item) databaseObject).__getTaxvalue()).subtract(((Item) databaseObject).__getDiscountvalue());
-                    //  <li>TYPE_INVOICE = 0;
-                    //  <li>TYPE_ORDER = 1;
-                    //  <li>TYPE_OFFER = 2;
-                    switch (type) {
-                        case Item.TYPE_INVOICE:
-                        case Item.TYPE_PART_PAYMENT:
-                        case Item.TYPE_DEPOSIT:
-                            billsSum = billsSum.add(value);
-                            break;
-                        case Item.TYPE_OFFER:
-                            offerSum = offerSum.add(value);
-                            break;
-                        case Item.TYPE_ORDER:
-                            orderSum = orderSum.add(value);
-                            break;
-                    }
-
-                    data[i][4] = Item.getTypeString(type);
-                    data[i][5] = FormatNumber.formatLokalCurrency(value);
-                    data[i][6] = databaseObject.getIcon();
-                    ((ImageIcon) data[i][6]).setDescription(Item.getStatusString(((Item) databaseObject).__getIntstatus()));
-                } else if (databaseObject instanceof Schedule) {
-                    Schedule sched = (Schedule) databaseObject;
-                    data[i][0] = sched;
-                    data[i][1] = User.getUsername(sched.__getIntaddedby());
-                    data[i][2] = sched.__getNextdate();
-                    data[i][3] = sched.__getStopdate();
-                    data[i][4] = Item.getTypeString(0);
-                    data[i][5] = 0;
-                    data[i][6] = sched.getIcon();
-                    ((ImageIcon) data[i][6]).setDescription(Messages.NEW_INVOICE.toString());
-                } else if (databaseObject instanceof Revenue) {
-                    Revenue rev = (Revenue) databaseObject;
-                    data[i][0] = rev;
-                    data[i][1] = User.getUsername(rev.__getIntaddedby());
-                    data[i][2] = rev.__getDateadded();
-                    try {
-                        data[i][3] = DatabaseObject.getObject(Context.getGroup(),
-                                rev.__getGroupsids());
-                    } catch (NodataFoundException ex) {
-                        data[i][3] = "N/A";
-                    }
-                    data[i][4] = Messages.TYPE_REVENUE.toString();
-                    BigDecimal value = rev.__getBrutvalue();
-                    billsSum = billsSum.add(value);
-                    data[i][5] = FormatNumber.formatLokalCurrency(value);
-                    data[i][6] = rev.getIcon();
-                    ((ImageIcon) data[i][6]).setDescription(Item.getStatusString(rev.__getStatus()));
+        ModernTheme.style(recurringTable);
+        recurringTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        recurringTable.getSelectionModel().addListSelectionListener(e -> updateButtons());
+        recurringTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    createBill();
                 }
             }
-        } else {
-            data = new Object[0][6];
-        }
+        });
+        JScrollPane sp = new JScrollPane(recurringTable);
+        sp.setBorder(BorderFactory.createLineBorder(ModernTheme.border()));
+        sp.setPreferredSize(new Dimension(ModernTheme.px(340), ModernTheme.px(120)));
+        recurringEmpty.setForeground(ModernTheme.muted());
+        createBill.addActionListener(e -> createBill());
+        deleteSchedule.addActionListener(e -> deleteSchedule());
+        JPanel buttons = new JPanel(new mpv5.ui.modern.WrapLayout(FlowLayout.LEFT, ModernTheme.px(6), ModernTheme.px(2)));
+        buttons.setOpaque(false);
+        buttons.add(createBill);
+        buttons.add(Applets.danger(deleteSchedule));
+        Card recurringCard = new Card(Messages.DASH_RECURRING.toString())
+                .addFull(Applets.hint(Messages.DASH_RECURRING_HINT.toString()))
+                .addFull(recurringEmpty)
+                .addFull(sp)
+                .addFull(buttons);
 
-        MPTableModel m = new MPTableModel(data);
-        m.setTypes(new Class[]{DatabaseObject.class,
-                    String.class,
-                    Date.class,
-                    DatabaseObject.class,
-                    String.class,
-                    BigDecimal.class,
-                    ImageIcon.class
-                });
-        table.setModel(m);
-
-        orders.setText(FormatNumber.formatLokalCurrency(orderSum));
-        offers.setText(FormatNumber.formatLokalCurrency(offerSum));
-        bills.setText(FormatNumber.formatLokalCurrency(billsSum));
+        JPanel col = new JPanel();
+        col.setOpaque(false);
+        col.setLayout(new BoxLayout(col, BoxLayout.PAGE_AXIS));
+        calendarCard.setAlignmentX(Component.LEFT_ALIGNMENT);
+        recurringCard.setAlignmentX(Component.LEFT_ALIGNMENT);
+        col.add(calendarCard);
+        col.add(Box.createVerticalStrut(ModernTheme.px(12)));
+        col.add(recurringCard);
+        JScrollPane s = new JScrollPane(col, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        s.setBorder(null);
+        s.setOpaque(false);
+        s.getViewport().setOpaque(false);
+        s.getVerticalScrollBar().setUnitIncrement(ModernTheme.px(16));
+        s.setPreferredSize(new Dimension(ModernTheme.px(380), ModernTheme.px(400)));
+        return s;
     }
 
+    // ------------------------------------------------------------------ data
     /**
-     * Filter by group
-     * @param g
+     * Loads the open documents and the recurring invoices again, in the
+     * background
      */
-    @SuppressWarnings("unchecked")
-    public void filterByTimeframe(vTimeframe g) {
-        HashMap<Color, List<? extends DatabaseObject>> map = Scheduler.getOverdueEvents(g);
-        this.show(map, this.getOverdue());
-    }
-
-    /**
-     * Filter by group
-     * @param g
-     */
-    @SuppressWarnings("unchecked")
-    public void filterByTimeframe2(vTimeframe g) {
-        HashMap<Color, List<? extends DatabaseObject>> map = Scheduler.getScheduledBills(g);
-        this.show(map, this.getNextEvents());
-    }
-
-    @SuppressWarnings("unchecked")
-    public void filterByItemType(Integer Type) {
-        setData(odata, overdue);
-        if (Type >= 0) {
-            Object[][] data = ((MPTableModel) overdue.getModel()).getData();
-            List<DatabaseObject> list = new ArrayList<DatabaseObject>();
-            for (int i = 0; i < data.length; i++) {
-                Item d = (Item) data[i][0];
-                if (d.__getInttype() == Type) {
-                    list.add(d);
-                }
-            }
-            setData(list, overdue);
-        }
-    }
-
-    /**
-     * Filter by group
-     * @param g
-     */
-    @SuppressWarnings({"unchecked"})
-    public void filterByGroup(Group g) {
-        setData(odata, overdue);
-        Object[][] data = ((MPTableModel) overdue.getModel()).getData();
-        List<DatabaseObject> list = new ArrayList<DatabaseObject>();
-        if (g.__getIDS() != 1) {
-            for (int i = 0; i < data.length; i++) {
-                DatabaseObject d = (DatabaseObject) data[i][0];
-                if (d.__getGroupsids() == g.__getIDS()) {
-                    list.add(d);
-                }
-            }
-        } else {
-            for (int i = 0; i < data.length; i++) {
-                DatabaseObject d = (DatabaseObject) data[i][0];
-                list.add(d);
-            }
-        }
-        setData(list, overdue);
-    }
-
-    @SuppressWarnings("unchecked")
-    public void filterByItemType2(Integer Type) {
-        setData(xdata, nextEvents);
-        if (Type >= 0) {
-            Object[][] data = ((MPTableModel) nextEvents.getModel()).getData();
-            List<DatabaseObject> list = new ArrayList<DatabaseObject>();
-            for (int i = 0; i < data.length; i++) {
-                Item d = (Item) data[i][0];
-                if (d.__getInttype() == Type) {
-                    list.add(d);
-                }
-            }
-            setData(list, nextEvents);
-        }
-    }
-
-    /**
-     * Filter by group
-     * @param g
-     */
-    @SuppressWarnings({"unchecked"})
-    public void filterByGroup2(Group g) {
-        setData(xdata, nextEvents);
-        Object[][] data = ((MPTableModel) nextEvents.getModel()).getData();
-        List<DatabaseObject> list = new ArrayList<DatabaseObject>();
-        if (g.__getIDS() != 1) {
-            for (int i = 0; i < data.length; i++) {
-                DatabaseObject d = (DatabaseObject) data[i][0];
-                if (d.__getGroupsids() == g.__getIDS()) {
-                    list.add(d);
-                }
-            }
-        } else {
-            for (int i = 0; i < data.length; i++) {
-                DatabaseObject d = (DatabaseObject) data[i][0];
-                list.add(d);
-            }
-        }
-        setData(list, nextEvents);
-    }
-
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
-     */
-    @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
-
-        jSplitPane1 = new javax.swing.JSplitPane();
-        jPanel1 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        timeframeChooser1 = new mpv5.ui.beans.TimeframeChooser();
-        labeledCombobox1 = new mpv5.ui.beans.LabeledCombobox();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        overdue = new  mpv5.ui.misc.MPTable(this) {
-            private static final long serialVersionUID = 1L;
-            public Component prepareRenderer(TableCellRenderer renderer,
-                int rowIndex, int vColIndex) {
-                Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);
-                if (c instanceof JComponent) {
-                    JComponent jc = (JComponent)c;
-                    jc.setToolTipText(String.valueOf(getValueAt(rowIndex, vColIndex)));
-                }
-                return c;
-            }
-        };
-        labeledCombobox2 = new mpv5.ui.beans.LabeledCombobox();
-        jButton3 = new javax.swing.JButton();
-        offers = new mpv5.ui.beans.LabeledTextField();
-        bills = new mpv5.ui.beans.LabeledTextField();
-        orders = new mpv5.ui.beans.LabeledTextField();
-        but6 = new javax.swing.JButton();
-        jPanel2 = new javax.swing.JPanel();
-        jButton6 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
-        timeframeChooser2 = new mpv5.ui.beans.TimeframeChooser();
-        labeledCombobox3 = new mpv5.ui.beans.LabeledCombobox();
-        labeledCombobox4 = new mpv5.ui.beans.LabeledCombobox();
-        jButton4 = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        nextEvents = new  mpv5.ui.misc.MPTable(this) {
-            private static final long serialVersionUID = 1L;
-            public Component prepareRenderer(TableCellRenderer renderer,
-                int rowIndex, int vColIndex) {
-                Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);
-                if (c instanceof JComponent) {
-                    JComponent jc = (JComponent)c;
-                    jc.setToolTipText(String.valueOf(getValueAt(rowIndex, vColIndex)));
-                }
-                return c;
-            }
-        };
-        but5 = new javax.swing.JButton();
-        but4 = new javax.swing.JButton();
-
-        setName("Form"); // NOI18N
-
-        jSplitPane1.setDividerLocation(200);
-        jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
-        jSplitPane1.setName("jSplitPane1"); // NOI18N
-
-        java.util.ResourceBundle bundle =  mpv5.i18n.LanguageManager.getBundle(); // NOI18N
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("HomeScreen.jPanel1.border.title"))); // NOI18N
-        jPanel1.setName("jPanel1"); // NOI18N
-
-        jButton1.setText(bundle.getString("HomeScreen.jButton1.text")); // NOI18N
-        jButton1.setName("jButton1"); // NOI18N
-        jButton1.setPreferredSize(new java.awt.Dimension(60, 23));
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
-        jButton2.setText(bundle.getString("HomeScreen.jButton2.text")); // NOI18N
-        jButton2.setName("jButton2"); // NOI18N
-        jButton2.setPreferredSize(new java.awt.Dimension(60, 23));
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-
-        timeframeChooser1.setName("timeframeChooser1"); // NOI18N
-
-        labeledCombobox1.set_Label(bundle.getString("HomeScreen.labeledCombobox1._Label")); // NOI18N
-        labeledCombobox1.setName("labeledCombobox1"); // NOI18N
-
-        jScrollPane2.setName("jScrollPane2"); // NOI18N
-
-        overdue.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {},
-                {},
-                {},
-                {}
-            },
-            new String [] {
-
-            }
-        ));
-        overdue.setAutoCreateRowSorter(true);
-        overdue.setName("overdue"); // NOI18N
-        overdue.setShowVerticalLines(false);
-        overdue.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                overdueMouseClicked(evt);
-            }
-        });
-        jScrollPane2.setViewportView(overdue);
-
-        labeledCombobox2.set_Label(bundle.getString("HomeScreen.labeledCombobox2._Label")); // NOI18N
-        labeledCombobox2.setName("labeledCombobox2"); // NOI18N
-
-        jButton3.setText(bundle.getString("HomeScreen.jButton3.text")); // NOI18N
-        jButton3.setName("jButton3"); // NOI18N
-        jButton3.setPreferredSize(new java.awt.Dimension(60, 23));
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
-
-        offers.set_Label(bundle.getString("HomeScreen.offers._Label")); // NOI18N
-        offers.setEnabled(false);
-        offers.setName("offers"); // NOI18N
-
-        bills.set_Label(bundle.getString("HomeScreen.bills._Label")); // NOI18N
-        bills.setEnabled(false);
-        bills.setName("bills"); // NOI18N
-
-        orders.set_Label(bundle.getString("HomeScreen.orders._Label")); // NOI18N
-        orders.setEnabled(false);
-        orders.setName("orders"); // NOI18N
-
-        but6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/32/agt_reload.png"))); // NOI18N
-        but6.setText(bundle.getString("HomeScreen.but6.text")); // NOI18N
-        but6.setToolTipText(bundle.getString("HomeScreen.but6.toolTipText")); // NOI18N
-        but6.setContentAreaFilled(false);
-        but6.setFocusable(false);
-        but6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        but6.setName("but6"); // NOI18N
-        but6.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/images/32/xclock.png"))); // NOI18N
-        but6.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/images/32/agt_reload.png"))); // NOI18N
-        but6.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        but6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                but6ActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 841, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addComponent(offers, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 124, Short.MAX_VALUE)
-                .addComponent(orders, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(117, 117, 117)
-                .addComponent(bills, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(timeframeChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 395, Short.MAX_VALUE)
-                        .addComponent(but6, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(labeledCombobox2, javax.swing.GroupLayout.PREFERRED_SIZE, 325, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(labeledCombobox1, javax.swing.GroupLayout.PREFERRED_SIZE, 322, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                            .addComponent(timeframeChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(but6, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(labeledCombobox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(labeledCombobox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 52, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(orders, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(bills, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(offers, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
-
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("HomeScreen.jPanel2.border.title"))); // NOI18N
-        jPanel2.setName("jPanel2"); // NOI18N
-
-        jButton6.setText(bundle.getString("HomeScreen.jButton6.text")); // NOI18N
-        jButton6.setName("jButton6"); // NOI18N
-        jButton6.setPreferredSize(new java.awt.Dimension(60, 23));
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
-            }
-        });
-
-        jButton5.setText(bundle.getString("HomeScreen.jButton5.text")); // NOI18N
-        jButton5.setName("jButton5"); // NOI18N
-        jButton5.setPreferredSize(new java.awt.Dimension(60, 23));
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
-            }
-        });
-
-        timeframeChooser2.setName("timeframeChooser2"); // NOI18N
-
-        labeledCombobox3.set_Label(bundle.getString("HomeScreen.labeledCombobox3._Label")); // NOI18N
-        labeledCombobox3.setName("labeledCombobox3"); // NOI18N
-
-        labeledCombobox4.set_Label(bundle.getString("HomeScreen.labeledCombobox4._Label")); // NOI18N
-        labeledCombobox4.setName("labeledCombobox4"); // NOI18N
-
-        jButton4.setText(bundle.getString("HomeScreen.jButton4.text")); // NOI18N
-        jButton4.setName("jButton4"); // NOI18N
-        jButton4.setPreferredSize(new java.awt.Dimension(60, 23));
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
-            }
-        });
-
-        jScrollPane1.setName("jScrollPane1"); // NOI18N
-
-        nextEvents.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {},
-                {},
-                {},
-                {}
-            },
-            new String [] {
-
-            }
-        ));
-        nextEvents.setAutoCreateRowSorter(true);
-        nextEvents.setName("nextEvents"); // NOI18N
-        nextEvents.setShowVerticalLines(false);
-        nextEvents.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                nextEventsMouseClicked(evt);
-            }
-        });
-        jScrollPane1.setViewportView(nextEvents);
-
-        but5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/32/edittrash.png"))); // NOI18N
-        but5.setText(bundle.getString("HomeScreen.but5.text")); // NOI18N
-        but5.setToolTipText(bundle.getString("HomeScreen.but5.toolTipText")); // NOI18N
-        but5.setContentAreaFilled(false);
-        but5.setFocusable(false);
-        but5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        but5.setName("but5"); // NOI18N
-        but5.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/images/32/xclock.png"))); // NOI18N
-        but5.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/images/32/bright_edittrash.png"))); // NOI18N
-        but5.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        but5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                but5ActionPerformed(evt);
-            }
-        });
-
-        but4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/32/view_right.png"))); // NOI18N
-        but4.setText(bundle.getString("HomeScreen.but4.text")); // NOI18N
-        but4.setToolTipText(bundle.getString("HomeScreen.but4.toolTipText")); // NOI18N
-        but4.setContentAreaFilled(false);
-        but4.setFocusable(false);
-        but4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        but4.setName("but4"); // NOI18N
-        but4.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/images/32/xclock.png"))); // NOI18N
-        but4.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/images/32/view_right.png"))); // NOI18N
-        but4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        but4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                but4ActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 841, Short.MAX_VALUE)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(but4, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 763, Short.MAX_VALUE)
-                .addComponent(but5, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(timeframeChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(labeledCombobox4, javax.swing.GroupLayout.PREFERRED_SIZE, 325, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(labeledCombobox3, javax.swing.GroupLayout.PREFERRED_SIZE, 322, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(51, Short.MAX_VALUE))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(timeframeChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(9, 9, 9)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(labeledCombobox4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(labeledCombobox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(but4, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(but5, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSplitPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 397, Short.MAX_VALUE)
-        );
-    }// </editor-fold>//GEN-END:initComponents
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-         filterByTimeframe(timeframeChooser1.getTime());
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        try {
-            filterByGroup((Group) Group.getObject(Context.getGroup(),
-                    Integer.valueOf(labeledCombobox1.getSelectedItem().
-                    getId())));
-        } catch (Exception ex) {
-            Log.Debug(ex);
-        }
-    }//GEN-LAST:event_jButton2ActionPerformed
-
-    private void nextEventsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_nextEventsMouseClicked
-        if (evt.getClickCount() > 1) {
-            try {
-                System.err.println(mpv5.YabsViewProxy.instance().
-                        getIdentifierView());
-                createBill();
-            } catch (Exception e) {
-                Log.Debug(e);
-            }
-        }
-    }//GEN-LAST:event_nextEventsMouseClicked
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        filterByItemType(Integer.valueOf(labeledCombobox2.getSelectedItem().
-                getId()));
-    }//GEN-LAST:event_jButton3ActionPerformed
-
-    private void overdueMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_overdueMouseClicked
-        Reminder rem;
-        DatabaseObject dbo;
-        Item itm;
-        if (evt.getClickCount() > 1) {
-            try {
-                System.err.println(mpv5.YabsViewProxy.instance().
-                        getIdentifierView());
-                dbo = ((DatabaseObject) overdue.getModel().
-                        getValueAt(overdue.convertRowIndexToModel(overdue.getSelectedRow()),
-                        0));
-                if (dbo.getColor().equals(Color.RED)
-                        && (dbo instanceof Item)) {
-                    itm = (Item) dbo;
-                    if (itm.__getInttype() == Item.TYPE_INVOICE ||
-                           itm.__getInttype() == Item.TYPE_DEPOSIT ||
-                            itm.__getInttype() == Item.TYPE_PART_PAYMENT) {
-                        if (Popup.Y_N_dialog(Messages.CREATE_REMINDER.toString())) {
-                            rem = new Reminder();
-                            rem.setCname(Messages.REMINDER.toString() + "@" + dbo.__getCname());
-                            rem.setDateadded(new Date());
-                            rem.setDescription("");
-                            rem.setGroupsids(dbo.__getGroupsids());
-                            rem.setIntaddedby(User.getCurrentUser().getID());
-                            rem.setItemsids(dbo.__getIDS());
-                            rem.save();
-                        }
-                    }
-                }
-                mpv5.YabsViewProxy.instance().
-                        getIdentifierView().
-                        addTab(dbo);
-            } catch (Exception e) {
-                Log.Debug(e);
-            }
-        }
-    }//GEN-LAST:event_overdueMouseClicked
-
-private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-    filterByItemType2(Integer.valueOf(labeledCombobox4.getSelectedItem().
-            getId()));
-}//GEN-LAST:event_jButton4ActionPerformed
-
-private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-    try {
-        filterByGroup2((Group) Group.getObject(Context.getGroup(),
-                Integer.valueOf(labeledCombobox3.getSelectedItem().
-                getId())));
-    } catch (Exception ex) {
-        Log.Debug(ex);
-    }
-}//GEN-LAST:event_jButton5ActionPerformed
-
-private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-    filterByTimeframe2(timeframeChooser2.getTime());
-}//GEN-LAST:event_jButton6ActionPerformed
-
-    private void but4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but4ActionPerformed
-        Log.Debug(this, "adding new schedule from Homescreen");
-        ScheduleEvents.instanceOf();
-
-    }//GEN-LAST:event_but4ActionPerformed
-
-    private void but5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but5ActionPerformed
-        Schedule d = (Schedule) nextEvents.getModel().getValueAt(nextEvents.convertRowIndexToModel(nextEvents.getSelectedRow()), 0);
-        Log.Debug(this, "deleting the marked entry from Homescreen (and database :-) )");
-        d.delete();
-        refresh();
-    }//GEN-LAST:event_but5ActionPerformed
-
-    private void but6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but6ActionPerformed
-        odata = xdata = null;
-        refresh();
-        HashMap<Color, List<? extends DatabaseObject>> map1 = Scheduler.getScheduledBills(null);
-        Iterator<Color> it1 = map1.keySet().
-                iterator();
-        while (it1.hasNext()) {
-            Color c = it1.next();
-            List<? extends DatabaseObject> data = map1.get(c);
-            if (!data.isEmpty()) {
-                this.show(map1, this.getNextEvents());
-                break;
-            }
-        }
-
-        HashMap<Color, List<? extends DatabaseObject>> map2 = Scheduler.getOverdueEvents(null);
-        Iterator<Color> it2 = map2.keySet().
-                iterator();
-        while (it2.hasNext()) {
-            Color c = it2.next();
-            List<? extends DatabaseObject> data = map2.get(c);
-            if (!data.isEmpty()) {
-                this.show(map2, this.getOverdue());
-                break;
-            }
-        }
-    }//GEN-LAST:event_but6ActionPerformed
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private mpv5.ui.beans.LabeledTextField bills;
-    private javax.swing.JButton but4;
-    private javax.swing.JButton but5;
-    private javax.swing.JButton but6;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JSplitPane jSplitPane1;
-    private mpv5.ui.beans.LabeledCombobox labeledCombobox1;
-    private mpv5.ui.beans.LabeledCombobox labeledCombobox2;
-    private mpv5.ui.beans.LabeledCombobox labeledCombobox3;
-    private mpv5.ui.beans.LabeledCombobox labeledCombobox4;
-    private javax.swing.JTable nextEvents;
-    private mpv5.ui.beans.LabeledTextField offers;
-    private mpv5.ui.beans.LabeledTextField orders;
-    private javax.swing.JTable overdue;
-    private mpv5.ui.beans.TimeframeChooser timeframeChooser1;
-    private mpv5.ui.beans.TimeframeChooser timeframeChooser2;
-    // End of variables declaration//GEN-END:variables
-
-    private void createBill() {
-        if (Popup.Y_N_dialog(Messages.SCHEDULE_NEW_ITEMS)) {
-            MPTableModel m = (MPTableModel) nextEvents.getModel();
-            Schedule schedule = (Schedule) m.getValueAt(nextEvents.convertRowIndexToModel(nextEvents.getSelectedRow()),
-                    0);
-            Log.Debug(this, !schedule.__getIsdone());
-            if (!schedule.__getIsdone()) {
-                Log.Debug(this, "Objekt muss generiert werden ...");
-                try {
-                    Item item = schedule.getItem();
-                    SubItem[] subs = item.getSubitems();
-                    item.setIDS(-1);
-                    item.setDateadded(new Date());
-                    try {
-                        item.setDatetodo(DateConverter.addDays(new Date(), Integer.valueOf(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("bills.warn.days"))));
-                        item.setDateend(DateConverter.addDays(new Date(), Integer.valueOf(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("bills.alert.days"))));
-                    } catch (Exception e) {
-                        item.setDatetodo(DateConverter.addDays(new Date(), 14));
-                        item.setDateend(DateConverter.addDays(new Date(), 30));
-                    }
-                    item.setIntreminders(0);
-                    item.setIntstatus(Item.STATUS_IN_PROGRESS);
-                    item.setDescription(item.__getDescription()
-                            + "\n"
-                            + Messages.SCHEDULE_GENERATED
-                            + "\n"
-                            + item.__getCname());
-                    Log.Debug(this, "Objekt wird gesichert ...");
-                    item.save();
-                    for (int j = 0; j < subs.length; j++) {
-                        SubItem subItem = subs[j];
-                        subItem.setItemsids(item.__getIDS());
-                        subItem.setIDS(-1);
-                        subItem.save(true);
-                    }
-                    Log.Debug(this, "Posten wurden gesichert ...");
-                    Date olddate = schedule.__getNextdate();
-                    schedule.setNextdate(DateConverter.addMonths(schedule.__getNextdate(), schedule.__getIntervalmonth()));
-                    if (schedule.__getNextdate().before(schedule.__getStopdate())) {
-                        Schedule s2 = (Schedule) schedule.clone();
-                        s2.setIsdone(false);
-                        s2.setIDS(-1);
-                        s2.save(true);
-                        schedule.setNextdate(olddate);
-                        schedule.setIsdone(true);
-                        schedule.save(true);
-                    } else {
-                        schedule.setNextdate(olddate);
-                        schedule.setIsdone(true);
-                        schedule.save(true);
-                        mpv5.YabsViewProxy.instance().addMessage(Messages.SCHEDULE_ITEM_REMOVED + " " + schedule);
-                    }
-                    Log.Debug(this, "Schedule wurde gesichert ...");
-                    mpv5.YabsViewProxy.instance().
-                            getIdentifierView().
-                            addTab(item);
-                    m.removeRow(nextEvents.convertRowIndexToModel(nextEvents.getSelectedRow()));
-                } catch (NodataFoundException ex) {
-                    Log.Debug(ex);
-                }
-            }
-        }
-    }
-
     public void refresh() {
-        // überfällige Objekte zurücksetzen ...
-        timeframeChooser1.setTime(new vTimeframe(DateConverter.getStartOfMonth(new Date()), DateConverter.getEndOfMonth(new Date())));
-        labeledCombobox1.getComboBox().setSelectedIndex(-1);
-        labeledCombobox2.getComboBox().setSelectedIndex(-1);
-        setData(odata, overdue);
-        // Zyklische Objekte zurücksetzen ...
-        timeframeChooser2.setTime(new vTimeframe(DateConverter.getStartOfMonth(new Date()), DateConverter.getEndOfMonth(new Date())));
-        labeledCombobox3.getComboBox().setSelectedIndex(-1);
-        labeledCombobox4.getComboBox().setSelectedIndex(-1);
-        setData(xdata, nextEvents);
-        // Navigation rechts aktualisieren ...
-        sc.setDate(new Date());
+        final int run = ++loadRun;
+        dateLabel.setText(DateConverter.getDefDateString(new Date()) + " · " + Messages.DASH_LOADING);
+        new SwingWorker<Object[], Void>() {
+            @Override
+            protected Object[] doInBackground() {
+                return new Object[]{rowsOf(Scheduler.getOverdueEvents(null)), schedulesOf(Scheduler.getScheduledBills(null))};
+            }
+
+            @Override
+            @SuppressWarnings("unchecked")
+            protected void done() {
+                if (run != loadRun) {
+                    return;
+                }
+                try {
+                    Object[] r = get();
+                    setRows((List<Row>) r[0]);
+                    setRecurring((List<Schedule>) r[1]);
+                } catch (Exception e) {
+                    Log.Debug(HomeScreen.this, e);
+                }
+                dateLabel.setText(DateConverter.getDefDateString(new Date()));
+            }
+        }.execute();
+    }
+
+    /**
+     * For {@link Scheduler}: the open documents (red, yellow, green)
+     */
+    public JTable getOverdue() {
+        return openTable;
+    }
+
+    /**
+     * For {@link Scheduler}: the recurring invoices
+     */
+    public JTable getNextEvents() {
+        return recurringTable;
+    }
+
+    /**
+     * Shows the result of {@link Scheduler} (from any thread)
+     *
+     * @param map color → objects
+     * @param table {@link #getOverdue()} or {@link #getNextEvents()}
+     */
+    public <T extends DatabaseObject> void show(final HashMap<Color, List<? extends DatabaseObject>> map, final JTable table) {
+        if (table == recurringTable) {
+            final List<Schedule> s = schedulesOf(map);
+            SwingUtilities.invokeLater(() -> setRecurring(s));
+        } else {
+            final List<Row> r = rowsOf(map);
+            SwingUtilities.invokeLater(() -> setRows(r));
+        }
+    }
+
+    private static List<Schedule> schedulesOf(Map<Color, List<? extends DatabaseObject>> map) {
+        List<Schedule> l = new ArrayList<Schedule>();
+        for (List<? extends DatabaseObject> v : map.values()) {
+            for (DatabaseObject o : v) {
+                if (o instanceof Schedule) {
+                    l.add((Schedule) o);
+                }
+            }
+        }
+        Collections.sort(l, (a, b) -> String.valueOf(a.__getNextdate()).compareTo(String.valueOf(b.__getNextdate())));
+        return l;
+    }
+
+    /**
+     * @return the rows, most urgent first (overdue, warning, open), then the
+     * oldest
+     */
+    static List<Row> rowsOf(Map<Color, List<? extends DatabaseObject>> map) {
+        List<Row> l = new ArrayList<Row>();
+        Date today = new Date();
+        Map<Integer, String> names = new HashMap<Integer, String>();
+        for (Map.Entry<Color, List<? extends DatabaseObject>> e : map.entrySet()) {
+            int status = Color.red.equals(e.getKey()) ? OVERDUE : Color.yellow.equals(e.getKey()) ? WARNING : OPEN;
+            for (DatabaseObject o : e.getValue()) {
+                try {
+                    if (o instanceof Item) {
+                        Item i = (Item) o;
+                        String number = i.__getCnumber() == null || i.__getCnumber().isEmpty() ? i.__getCname() : i.__getCnumber();
+                        l.add(new Row(o, status, Item.getTypeString(i.__getInttype()), i.__getInttype(),
+                                Item.getTypeString(i.__getInttype()) + " " + number, contactName(i.__getContactsids(), names),
+                                i.__getDateadded(), daysOpen(i.__getDateadded(), today), i.getGrossAmount()));
+                    } else if (o instanceof Revenue) {
+                        Revenue r = (Revenue) o;
+                        l.add(new Row(o, status, Messages.TYPE_REVENUE.toString(), -1, Messages.TYPE_REVENUE + " " + r.__getCname(), "",
+                                r.__getDateadded(), daysOpen(r.__getDateadded(), today), r.__getBrutvalue()));
+                    }
+                } catch (Exception ex) {
+                    Log.Debug(HomeScreen.class, ex.getMessage());
+                }
+            }
+        }
+        sort(l);
+        return l;
+    }
+
+    static void sort(List<Row> l) {
+        Collections.sort(l, (a, b) -> a.status != b.status ? Integer.compare(a.status, b.status) : Long.compare(b.days, a.days));
+    }
+
+    /**
+     * @return whole days from the date to today, 0 if none or in the future
+     */
+    static long daysOpen(Date from, Date today) {
+        if (from == null || today == null || from.after(today)) {
+            return 0;
+        }
+        return TimeUnit.MILLISECONDS.toDays(today.getTime() - from.getTime());
+    }
+
+    private static String contactName(int id, Map<Integer, String> names) {
+        if (id <= 0) {
+            return "";
+        }
+        String n = names.get(id);
+        if (n == null) {
+            try {
+                Contact c = (Contact) DatabaseObject.getObject(mpv5.db.common.Context.getContact(), id);
+                String company = c.__getCompany() == null ? "" : c.__getCompany().trim();
+                n = company.isEmpty() ? ((c.__getPrename() == null ? "" : c.__getPrename() + " ") + c.__getCname()).trim() : company;
+            } catch (Exception e) {
+                n = "";
+            }
+            names.put(id, n);
+        }
+        return n;
+    }
+
+    private void setRows(List<Row> l) {
+        rows.clear();
+        rows.addAll(l);
+        //the kinds that occur, for the choice
+        String selected = (String) kind.getSelectedItem();
+        List<String> kinds = new ArrayList<String>();
+        for (Row r : rows) {
+            if (!kinds.contains(r.kind)) {
+                kinds.add(r.kind);
+            }
+        }
+        Collections.sort(kinds);
+        kinds.add(0, Messages.DASH_KIND_ALL.toString());
+        kind.setModel(new javax.swing.DefaultComboBoxModel<String>(kinds.toArray(new String[0])));
+        kind.setSelectedItem(selected != null && kinds.contains(selected) ? selected : kinds.get(0));
+        updateTiles();
+        applyFilter();
+    }
+
+    private void updateTiles() {
+        int over = 0, warn = 0;
+        BigDecimal overSum = BigDecimal.ZERO, warnSum = BigDecimal.ZERO, inv = BigDecimal.ZERO, off = BigDecimal.ZERO, ord = BigDecimal.ZERO;
+        int invN = 0, offN = 0, ordN = 0;
+        for (Row r : rows) {
+            BigDecimal a = r.amount == null ? BigDecimal.ZERO : r.amount;
+            if (r.status == OVERDUE) {
+                over++;
+                overSum = overSum.add(a);
+            } else if (r.status == WARNING) {
+                warn++;
+                warnSum = warnSum.add(a);
+            }
+            if (r.type == Item.TYPE_INVOICE || r.type == Item.TYPE_PART_PAYMENT || r.type == Item.TYPE_DEPOSIT) {
+                inv = inv.add(a);
+                invN++;
+            } else if (r.type == Item.TYPE_OFFER) {
+                off = off.add(a);
+                offN++;
+            } else if (r.type == Item.TYPE_ORDER) {
+                ord = ord.add(a);
+                ordN++;
+            }
+        }
+        overdueTile.set(over, overSum);
+        warningTile.set(warn, warnSum);
+        invoicesTile.set(invN, inv);
+        offersTile.set(offN, off);
+        ordersTile.set(ordN, ord);
+    }
+
+    /**
+     * From a tile: the chip and the kind of document (-1: all kinds)
+     */
+    private void filter(ChipToggle chip, int type) {
+        chip.setSelected(true);
+        String k = type < 0 ? Messages.DASH_KIND_ALL.toString() : Item.getTypeString(type);
+        boolean found = false;
+        for (int i = 0; i < kind.getItemCount(); i++) {
+            if (kind.getItemAt(i).equals(k)) {
+                kind.setSelectedIndex(i);
+                found = true;
+            }
+        }
+        if (!found && kind.getItemCount() > 0) {
+            kind.setSelectedIndex(0);
+        }
+        search.setText("");
+        applyFilter();
+    }
+
+    private void applyFilter() {
+        shown.clear();
+        String k = (String) kind.getSelectedItem();
+        boolean allKinds = k == null || k.equals(Messages.DASH_KIND_ALL.toString());
+        String needle = search.getText();
+        for (Row r : rows) {
+            if (chipOverdue.isSelected() && r.status != OVERDUE
+                    || chipWarning.isSelected() && r.status != WARNING
+                    || chipOpen.isSelected() && r.status != OPEN) {
+                continue;
+            }
+            if (!allKinds && !k.equals(r.kind)) {
+                continue;
+            }
+            if (!SearchService.matches(r.document + " " + r.contact + " " + FormatNumber.formatLokalCurrency(r.amount), needle)) {
+                continue;
+            }
+            shown.add(r);
+        }
+        openModel.fireTableDataChanged();
+        boolean empty = shown.isEmpty();
+        openEmpty.setText(rows.isEmpty() ? Messages.DASH_EMPTY.toString() : Messages.DASH_NOTHING_FOUND.toString());
+        openEmpty.setVisible(empty);
+        updateButtons();
+    }
+
+    private void setRecurring(List<Schedule> l) {
+        recurring.clear();
+        recurring.addAll(l);
+        recurringModel.fireTableDataChanged();
+        recurringEmpty.setText(Messages.DASH_RECURRING_EMPTY.toString());
+        recurringEmpty.setVisible(recurring.isEmpty());
+        updateButtons();
+    }
+
+    private Row selectedRow() {
+        int v = openTable.getSelectedRow();
+        return v < 0 ? null : shown.get(openTable.convertRowIndexToModel(v));
+    }
+
+    private Schedule selectedSchedule() {
+        int v = recurringTable.getSelectedRow();
+        return v < 0 ? null : recurring.get(recurringTable.convertRowIndexToModel(v));
+    }
+
+    private void updateButtons() {
+        Row r = selectedRow();
+        openDoc.setEnabled(r != null);
+        reminder.setEnabled(r != null && r.status == OVERDUE
+                && (r.type == Item.TYPE_INVOICE || r.type == Item.TYPE_PART_PAYMENT || r.type == Item.TYPE_DEPOSIT));
+        Schedule s = selectedSchedule();
+        createBill.setEnabled(s != null && !s.__getIsdone());
+        deleteSchedule.setEnabled(s != null);
+    }
+
+    // ------------------------------------------------------------------ actions
+    private void openSelected() {
+        Row r = selectedRow();
+        if (r != null) {
+            mpv5.YabsViewProxy.instance().getIdentifierView().addTab(r.object);
+        }
+    }
+
+    private void createReminder() {
+        Row r = selectedRow();
+        if (r == null || !(r.object instanceof Item)) {
+            return;
+        }
+        if (Popup.Y_N_dialog(String.format(Messages.DASH_REMINDER_CONFIRM.toString(), r.document))) {
+            Reminder rem = new Reminder();
+            rem.setCname(Messages.REMINDER.toString() + "@" + r.object.__getCname());
+            rem.setDateadded(new Date());
+            rem.setDescription("");
+            rem.setGroupsids(r.object.__getGroupsids());
+            rem.setIntaddedby(User.getCurrentUser().getID());
+            rem.setItemsids(r.object.__getIDS());
+            if (rem.save()) {
+                mpv5.YabsViewProxy.instance().addMessage(Messages.REMINDER + ": " + r.document);
+            }
+        }
+    }
+
+    private void openSettings() {
+        for (MPControlPanel.Entry e : MPControlPanel.entries()) {
+            if (e.panelClass == mpv5.ui.dialogs.subcomponents.ControlPanel_Schedule.class) {
+                MPControlPanel.show(e);
+                return;
+            }
+        }
+    }
+
+    private void deleteSchedule() {
+        Schedule s = selectedSchedule();
+        if (s != null && Popup.Y_N_dialog(String.format(Messages.DASH_DELETE_SCHEDULE_CONFIRM.toString(), scheduleName(s)))) {
+            s.delete();
+            refresh();
+        }
+    }
+
+    private static String scheduleName(Schedule s) {
+        try {
+            Item i = s.getItem();
+            return Item.getTypeString(i.__getInttype()) + " " + (i.__getCnumber() == null || i.__getCnumber().isEmpty() ? i.__getCname() : i.__getCnumber());
+        } catch (Exception e) {
+            return String.valueOf(s);
+        }
+    }
+
+    /**
+     * A new invoice from a recurring one; the next date is planned
+     */
+    private void createBill() {
+        Schedule schedule = selectedSchedule();
+        if (schedule == null || schedule.__getIsdone()
+                || !Popup.Y_N_dialog(String.format(Messages.DASH_CREATE_BILL_CONFIRM.toString(), scheduleName(schedule)))) {
+            return;
+        }
+        try {
+            Item item = schedule.getItem();
+            SubItem[] subs = item.getSubitems();
+            item.setIDS(-1);
+            item.setDateadded(new Date());
+            try {
+                item.setDatetodo(DateConverter.addDays(new Date(), Integer.valueOf(User.getCurrentUser().getProperties().getProperty("bills.warn.days"))));
+                item.setDateend(DateConverter.addDays(new Date(), Integer.valueOf(User.getCurrentUser().getProperties().getProperty("bills.alert.days"))));
+            } catch (Exception e) {
+                item.setDatetodo(DateConverter.addDays(new Date(), 14));
+                item.setDateend(DateConverter.addDays(new Date(), 30));
+            }
+            item.setIntreminders(0);
+            item.setIntstatus(Item.STATUS_IN_PROGRESS);
+            item.setDescription(item.__getDescription() + "\n" + Messages.SCHEDULE_GENERATED + "\n" + item.__getCname());
+            item.save();
+            for (SubItem subItem : subs) {
+                subItem.setItemsids(item.__getIDS());
+                subItem.setIDS(-1);
+                subItem.save(true);
+            }
+            Date olddate = schedule.__getNextdate();
+            schedule.setNextdate(DateConverter.addMonths(schedule.__getNextdate(), schedule.__getIntervalmonth()));
+            if (schedule.__getNextdate().before(schedule.__getStopdate())) {
+                Schedule s2 = (Schedule) schedule.clone();
+                s2.setIsdone(false);
+                s2.setIDS(-1);
+                s2.save(true);
+            } else {
+                mpv5.YabsViewProxy.instance().addMessage(Messages.SCHEDULE_ITEM_REMOVED + " " + schedule);
+            }
+            schedule.setNextdate(olddate);
+            schedule.setIsdone(true);
+            schedule.save(true);
+            mpv5.YabsViewProxy.instance().getIdentifierView().addTab(item);
+            refresh();
+        } catch (Exception ex) {
+            Log.Debug(this, ex);
+            Popup.error(ex);
+        }
+    }
+
+    // ------------------------------------------------------------------ parts
+    /**
+     * A tile: title, count and sum; a click filters the list
+     */
+    private static final class Tile extends JPanel {
+
+        private static final long serialVersionUID = 1L;
+        private final JLabel value = new JLabel("–");
+        private final JLabel detail = new JLabel(" ");
+        private Runnable click;
+
+        Tile(String title, Color color) {
+            super(new BorderLayout(0, ModernTheme.px(2)));
+            setBackground(ModernTheme.cardBackground());
+            setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createMatteBorder(0, ModernTheme.px(4), 0, 0, color == null ? ModernTheme.accent() : color),
+                    BorderFactory.createCompoundBorder(BorderFactory.createMatteBorder(1, 0, 1, 1, ModernTheme.border()),
+                            ModernTheme.padding(8, 12))));
+            JLabel t = new JLabel(title);
+            t.setForeground(ModernTheme.muted());
+            t.setFont(ModernTheme.font(-1, Font.BOLD));
+            value.setFont(ModernTheme.font(8, Font.BOLD));
+            if (color != null) {
+                value.setForeground(color);
+            }
+            detail.setForeground(ModernTheme.muted());
+            add(t, BorderLayout.NORTH);
+            add(value, BorderLayout.CENTER);
+            add(detail, BorderLayout.SOUTH);
+            setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override
+                public void mouseClicked(java.awt.event.MouseEvent e) {
+                    if (click != null) {
+                        click.run();
+                    }
+                }
+            });
+        }
+
+        void onClick(Runnable r) {
+            click = r;
+            setToolTipText(Messages.DASH_TILE_TIP.toString());
+        }
+
+        void set(int count, BigDecimal sum) {
+            value.setText(FormatNumber.formatLokalCurrency(sum));
+            detail.setText(String.format(Messages.DASH_COUNT.toString(), count));
+        }
+    }
+
+    private final class OpenModel extends AbstractTableModel {
+
+        private static final long serialVersionUID = 1L;
+        private final String[] cols = {Messages.DASH_COL_STATUS.toString(), Messages.DASH_COL_DOCUMENT.toString(),
+            Messages.DASH_COL_CONTACT.toString(), Messages.DASH_COL_DATE.toString(), Messages.DASH_COL_DAYS.toString(),
+            Messages.DASH_COL_AMOUNT.toString()};
+
+        @Override
+        public int getRowCount() {
+            return shown.size();
+        }
+
+        @Override
+        public int getColumnCount() {
+            return cols.length;
+        }
+
+        @Override
+        public String getColumnName(int c) {
+            return cols[c];
+        }
+
+        @Override
+        public Class<?> getColumnClass(int c) {
+            return c == 3 ? Date.class : c == 4 ? Long.class : c == 5 ? BigDecimal.class : c == 0 ? Integer.class : String.class;
+        }
+
+        @Override
+        public Object getValueAt(int row, int c) {
+            Row r = shown.get(row);
+            switch (c) {
+                case 0:
+                    return r.status;
+                case 1:
+                    return r.document;
+                case 2:
+                    return r.contact;
+                case 3:
+                    return r.date;
+                case 4:
+                    return r.days;
+                default:
+                    return r.amount;
+            }
+        }
+    }
+
+    private final class RecurringModel extends AbstractTableModel {
+
+        private static final long serialVersionUID = 1L;
+        private final String[] cols = {Messages.DASH_COL_DOCUMENT.toString(), Messages.DASH_COL_NEXT.toString(),
+            Messages.DASH_COL_EVERY.toString()};
+
+        @Override
+        public int getRowCount() {
+            return recurring.size();
+        }
+
+        @Override
+        public int getColumnCount() {
+            return cols.length;
+        }
+
+        @Override
+        public String getColumnName(int c) {
+            return cols[c];
+        }
+
+        @Override
+        public Object getValueAt(int row, int c) {
+            Schedule s = recurring.get(row);
+            switch (c) {
+                case 0:
+                    return scheduleName(s);
+                case 1:
+                    return s.__getNextdate() == null ? "" : DateConverter.getDefDateString(s.__getNextdate());
+                default:
+                    return String.format(Messages.DASH_EVERY_MONTHS.toString(), s.__getIntervalmonth());
+            }
+        }
+    }
+
+    /**
+     * Status as a colored word, dates and amounts formatted
+     */
+    private static final class OpenRenderer extends DefaultTableCellRenderer {
+
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean selected, boolean focus, int row, int column) {
+            Object v = value;
+            int col = table.convertColumnIndexToModel(column);
+            if (col == 0 && value instanceof Integer) {
+                int s = (Integer) value;
+                v = "● " + (s == OVERDUE ? Messages.DASH_OVERDUE : s == WARNING ? Messages.DASH_WARNING : Messages.DASH_OPEN);
+            } else if (value instanceof Date) {
+                v = DateConverter.getDefDateString((Date) value);
+            } else if (value instanceof BigDecimal) {
+                v = FormatNumber.formatLokalCurrency((BigDecimal) value);
+            }
+            Component c = super.getTableCellRendererComponent(table, v, selected, focus, row, column);
+            setHorizontalAlignment(col >= 4 ? SwingConstants.RIGHT : SwingConstants.LEFT);
+            if (col == 0 && !selected && value instanceof Integer) {
+                int s = (Integer) value;
+                c.setForeground(s == OVERDUE ? new Color(185, 28, 28) : s == WARNING ? new Color(180, 120, 0) : new Color(21, 128, 61));
+            } else if (!selected) {
+                c.setForeground(table.getForeground());
+            }
+            return c;
+        }
     }
 }
