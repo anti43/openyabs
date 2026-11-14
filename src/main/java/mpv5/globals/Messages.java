@@ -1584,7 +1584,14 @@ public enum Messages {
     Y132_KEPT_SETTINGS("%d settings of the new database kept (the old database does not have them)"),
     Y132_KEPT_COUNTRIES("%d countries of the new database added"),
     Y132_KEPT_TEMPLATES("%d templates of the new database kept as additional templates (not assigned)"),
-    Y132_KEPT_TEMPLATES_ASSIGNED("%d templates of the new database kept and assigned (the old database had no assigned templates)");
+    Y132_KEPT_TEMPLATES_ASSIGNED("%d templates of the new database kept and assigned (the old database had no assigned templates)"),
+    FIRSTSTART_IMPORT132("Take over the data of YaBS 1.3.2 \u2026"),
+    FIRSTSTART_IMPORT132_FROM("With the data of YaBS 1.3.2 from %s"),
+    FIRSTSTART_IMPORT132_REMOVE("without"),
+    FIRSTSTART_IMPORT132_STEP("Taking over the data of YaBS 1.3.2"),
+    FIRSTSTART_IMPORT132_DONE("The data of YaBS 1.3.2 was taken over, the old database is unchanged. YaBS starts signed in as \"%s\". All users of YaBS 1.3.2 sign in with their old names and passwords."),
+    CONNMGR_IMPORT132("Import from YaBS 1.3.2 \u2026"),
+    CONNMGR_IMPORT132_TIP("A new database with all data of an old YaBS 1.3.2 (Derby) database; the old database stays unchanged");
 
 
     /**
