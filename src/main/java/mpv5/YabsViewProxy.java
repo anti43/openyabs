@@ -444,7 +444,8 @@ public class YabsViewProxy implements YabsView {
     /**
      * @return true if the modern views and look are used: the system property
      * {@value #UI_PROPERTY} if set, else the setting of the current user -
-     * modern unless the user switched to classic (View &gt; Layout)
+     * modern unless the user switched to the classic views (Control Panel &gt;
+     * User settings); independent of the look (View &gt; Layout)
      */
     public boolean isModernUi() {
         String p = System.getProperty(UI_PROPERTY);
@@ -460,8 +461,9 @@ public class YabsViewProxy implements YabsView {
     }
 
     /**
-     * Switches the current user to the modern or the classic views and look
-     * (saved with the user); open tabs keep their view
+     * Switches the current user to the modern or the classic views of
+     * contacts, products and documents (saved with the user); open tabs keep
+     * their view
      *
      * @param modern
      */
@@ -469,10 +471,7 @@ public class YabsViewProxy implements YabsView {
         User u = User.getCurrentUser();
         u.getProperties().changeProperty("org.openyabs.uiproperty", MODERN_UI_SETTING, modern);
         u.saveProperties();
-        //no look and feel of the user's own: the one belonging to modern / classic
-        u.setLaf("");
-        u.save();
-        mpv5.Main.setLaF("");
+        //the look (View > Layout) stays as it is
     }
 
     /**
