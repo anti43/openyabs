@@ -359,7 +359,7 @@ public class ControlPanel_ValueProps extends javax.swing.JPanel implements Contr
         actions = mpv5.ui.modern.Applets.actionBar(new javax.swing.JComponent[]{toolbar, docs}, mpv5.ui.modern.Applets.buttonsOf(jPanel1, b.getString("ControlPanel_ValueProps.jButton4.text")));
     }
 
-    private static final String DOCS = "https://github.com/anti43/openyabs/blob/master/docs/Scripts.md";
+    private static final String DOCS = "https://github.com/anti43/openyabs/wiki/Scripts-(EN)";
 
     /**
      * What a name (key) does: hook, display name or template field
