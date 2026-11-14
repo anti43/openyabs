@@ -197,6 +197,18 @@ abstract class AppOnDatabase {
             assertEquals(0, new BigDecimal("60").compareTo(inv2.__getNetvalue()));
             assertEquals(c.__getIDS(), inv2.__getContactsids());
             orderConfirmationHasPositions(c, inv2);
+            //template manager: the preview is a PDF of the template with the document
+            Template invoiceTemplate = null;
+            for (DatabaseObject o : DatabaseObject.getObjects(Context.getTemplate())) {
+                if (String.valueOf(Item.TYPE_INVOICE).equals(((Template) o).__getMimetype())) {
+                    invoiceTemplate = (Template) o;
+                }
+            }
+            assertNotNull(invoiceTemplate);
+            File preview = mpv5.ui.dialogs.subcomponents.ControlPanel_Templates.previewPdf(invoiceTemplate, inv2);
+            try (org.apache.pdfbox.pdmodel.PDDocument d = org.apache.pdfbox.Loader.loadPDF(preview)) {
+                assertTrue(d.getNumberOfPages() >= 1, "preview has pages");
+            }
             //"search anything": a position shows its document (number, customer, date), a document its customer
             boolean position = false, document = false;
             for (mpv5.handler.SearchService.Hit h : mpv5.handler.SearchService.search("Pos 2")) {

@@ -79,13 +79,11 @@ import mpv5.ui.modern.ModernTheme;
 import mpv5.ui.modern.PrimaryButton;
 import mpv5.ui.modern.ResponsiveGrid;
 import mpv5.ui.panels.DataPanel;
-import mpv5.ui.panels.PreviewWaiter;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.export.Export;
 import mpv5.utils.export.ODTFile2;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.files.FileExecutor;
-import mpv5.utils.jobs.Job;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.ui.TextFieldUtils;
 
@@ -123,6 +121,14 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
     private final JTextField einvoicePayterm = new JTextField();
     private final JLabel file = new JLabel();
     private final JLabel editState = new JLabel();
+    private final JLabel previewImage = new JLabel();
+    private final JLabel previewCaption = new JLabel();
+    /**
+     * the document shown in the preview, null: the default
+     */
+    private DatabaseObject previewDoc;
+    private File previewPdf;
+    private int previewRun;
     private final JPanel actions = new JPanel(new BorderLayout());
     private final List<JComponent> needsTemplate = new ArrayList<JComponent>();
     private final mpv5.handler.TemplateEditing.Listener editListener = (tpl, when) -> javax.swing.SwingUtilities.invokeLater(() -> {
@@ -130,6 +136,7 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
         if (dataOwner != null && dataOwner.isExisting() && dataOwner.__getIDS().intValue() == tpl.__getIDS().intValue()) {
             dataOwner.forgetFile();
             showFileState();
+            refreshPreview();
         }
     });
     private boolean loading;
@@ -207,17 +214,13 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
         JButton edit = new JButton(Messages.TEMPLATES_OPEN.toString());
         ModernTheme.actionButton(edit, null);
         edit.addActionListener(e -> editFile());
-        JButton preview = new JButton(Messages.TEMPLATES_PREVIEW.toString());
-        preview.addActionListener(e -> preview());
-        JButton vars = new JButton(Messages.TEMPLATES_VARIABLES.toString());
-        vars.addActionListener(e -> showVariables());
         JButton replace = new JButton(Messages.TEMPLATES_REPLACE.toString());
         replace.addActionListener(e -> replaceFile());
         JButton saveAs = new JButton(Messages.TEMPLATES_SAVE_AS.toString());
         saveAs.addActionListener(e -> saveFileAs());
         JPanel fileButtons = new JPanel(new mpv5.ui.modern.WrapLayout(FlowLayout.LEFT, ModernTheme.px(6), ModernTheme.px(4)));
         fileButtons.setOpaque(false);
-        for (JButton b : new JButton[]{edit, preview, vars, replace, saveAs}) {
+        for (JButton b : new JButton[]{edit, replace, saveAs}) {
             fileButtons.add(b);
             needsTemplate.add(b);
         }
@@ -226,6 +229,44 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
                 .addFull(fileButtons)
                 .addFull(editState)
                 .addFull(file));
+
+        //always a preview: the first page with a document, made again after each save in LibreOffice
+        previewImage.setHorizontalAlignment(JLabel.CENTER);
+        previewImage.setVerticalAlignment(JLabel.TOP);
+        previewImage.setBorder(BorderFactory.createLineBorder(ModernTheme.border()));
+        previewImage.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
+        previewImage.setToolTipText(Messages.TEMPLATES_PREVIEW_LARGER.toString());
+        previewImage.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                showLarger();
+            }
+        });
+        previewCaption.setFont(ModernTheme.font(-1, Font.PLAIN));
+        previewCaption.setForeground(ModernTheme.muted());
+        JButton larger = new JButton(Messages.TEMPLATES_PREVIEW_LARGER.toString());
+        larger.addActionListener(e -> showLarger());
+        JButton otherDoc = new JButton(Messages.TEMPLATES_PREVIEW_DOCUMENT.toString());
+        otherDoc.addActionListener(e -> choosePreviewDocument());
+        JButton vars = new JButton(Messages.TEMPLATES_VARIABLES.toString());
+        vars.addActionListener(e -> showVariables());
+        JPanel previewButtons = new JPanel(new mpv5.ui.modern.WrapLayout(FlowLayout.LEFT, ModernTheme.px(6), ModernTheme.px(4)));
+        previewButtons.setOpaque(false);
+        for (JButton b : new JButton[]{larger, otherDoc}) {
+            previewButtons.add(b);
+            needsTemplate.add(b);
+        }
+        JPanel varsRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, ModernTheme.px(4)));
+        varsRow.setOpaque(false);
+        varsRow.add(vars);
+        needsTemplate.add(vars);
+        grid.add(new Card(Messages.TEMPLATES_PREVIEW.toString())
+                .addFull(hint(Messages.TEMPLATES_PREVIEW_HINT.toString()))
+                .addFull(previewImage)
+                .addFull(previewCaption)
+                .addFull(previewButtons)
+                .addFull(hint(Messages.TEMPLATES_VARIABLES_HINT.toString()))
+                .addFull(varsRow));
 
         //the position table
         formatLabel.setFont(ModernTheme.font(0, Font.PLAIN));
@@ -275,7 +316,8 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
     }
 
     private static JLabel hint(String text) {
-        JLabel l = new JLabel("<html>" + text + "</html>");
+        //plain text: placeholders like <item.paymentiban> are shown, not read as HTML
+        JLabel l = new JLabel("<html>" + text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;") + "</html>");
         l.setFont(ModernTheme.font(-1, Font.PLAIN));
         l.setForeground(ModernTheme.muted());
         return l;
@@ -368,7 +410,7 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
 
     private void showVariables() {
         try {
-            DatabaseObject t = searchDocument();
+            DatabaseObject t = previewDocument();
             if (t != null) {
                 List<String[]> vars = VariablesHandler.resolveVarsFor(t);
                 List<List<String>> varsl = new ArrayList<List<String>>();
@@ -433,6 +475,7 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
                 dataOwner.forgetFile();
                 mpv5.YabsViewProxy.instance().addMessage(String.format(Messages.TEMPLATES_FILE_REPLACED.toString(), dataOwner.__getCname()));
                 showFileState();
+                refreshPreview();
             }
         }
     }
@@ -637,44 +680,123 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
     }
 
     /**
-     * A PDF of the template with a chosen document (or sample data) and 20
-     * sample positions
+     * @return the document of the preview: the chosen one, else the first
+     * invoice, else sample data
      */
-    private void preview() {
-        if (dataOwner == null) {
-            return;
-        }
-        DatabaseObject t = searchDocument();
-        if (t == null) {
-            try {
-                t = DatabaseObject.getObject(Context.getInvoice(), 1);
-            } catch (NodataFoundException ex) {
-                t = (Item) Context.getInvoice().getNewObject();
-                Contact k = new Contact();
-                k.avoidNulls();
-                k.fillSampleData();
-                t.avoidNulls();
-                t.fillSampleData();
-                ((Item) t).setContactsids(k.__getIDS());
-            }
+    private DatabaseObject previewDocument() {
+        if (previewDoc != null) {
+            return previewDoc;
         }
         try {
-            Map<String, Object> hm1 = t.getFormFields();
-            File f = dataOwner.getFile();
-            File f2 = FileDirectoryHandler.getTempFile("pdf");
-            Export ex = new Export(dataOwner);
-            ex.putAll(hm1);
-            ArrayList<String[]> l = new ArrayList<String[]>();
-            for (int i = 0; i < 20; i++) {
-                l.add(SubItem.getRandomItem().toStringArray());
+            return DatabaseObject.getObject(Context.getInvoice(), 1);
+        } catch (NodataFoundException ex) {
+            Item t = (Item) Context.getInvoice().getNewObject();
+            Contact k = new Contact();
+            k.avoidNulls();
+            k.fillSampleData();
+            t.avoidNulls();
+            t.fillSampleData();
+            t.setContactsids(k.__getIDS());
+            return t;
+        }
+    }
+
+    /**
+     * A PDF of the template with a document and 20 sample positions
+     */
+    public static File previewPdf(Template template, DatabaseObject document) throws Exception {
+        Map<String, Object> hm1 = document.getFormFields();
+        File f = template.getFile();
+        File f2 = FileDirectoryHandler.getTempFile("pdf");
+        Export ex = new Export(template);
+        ex.putAll(hm1);
+        ArrayList<String[]> l = new ArrayList<String[]>();
+        for (int i = 0; i < 20; i++) {
+            l.add(SubItem.getRandomItem().toStringArray());
+        }
+        ex.put(ODTFile2.KEY_TABLE + "1", l);
+        ex.setTemplate(new ODTFile2(f.getPath()));
+        ex.setTargetFile(f2);
+        Exception e = ex.waitFor();
+        if (e != null) {
+            throw e;
+        }
+        return f2;
+    }
+
+    /**
+     * Makes the preview again in the background (selection, new file)
+     */
+    private void refreshPreview() {
+        final int run = ++previewRun;
+        previewPdf = null;
+        if (dataOwner == null || !dataOwner.isExisting()) {
+            previewImage.setIcon(null);
+            previewImage.setText(" ");
+            previewCaption.setText(" ");
+            return;
+        }
+        final Template tpl = dataOwner;
+        final DatabaseObject doc = previewDocument();
+        final int width = Math.max(ModernTheme.px(240), Math.min(ModernTheme.px(420),
+                previewImage.getParent() == null ? 0 : previewImage.getParent().getWidth() - ModernTheme.px(24)));
+        previewImage.setIcon(null);
+        previewImage.setText(Messages.TEMPLATES_PREVIEW_LOADING.toString());
+        previewImage.setPreferredSize(new Dimension(width, (int) (width * 1.414)));
+        previewCaption.setText(" ");
+        new javax.swing.SwingWorker<Object[], Void>() {
+            @Override
+            protected Object[] doInBackground() throws Exception {
+                File pdf = previewPdf(tpl, doc);
+                try (org.apache.pdfbox.pdmodel.PDDocument d = org.apache.pdfbox.Loader.loadPDF(pdf)) {
+                    float pageWidth = d.getPage(0).getMediaBox().getWidth();
+                    java.awt.image.BufferedImage img = new org.apache.pdfbox.rendering.PDFRenderer(d)
+                            .renderImage(0, width / pageWidth);
+                    return new Object[]{pdf, img, d.getNumberOfPages()};
+                }
             }
-            ex.put(ODTFile2.KEY_TABLE + "1", l);
-            ex.setTemplate(new ODTFile2(f.getPath()));
-            ex.setTargetFile(f2);
-            new Job(ex, new PreviewWaiter()).execute();
-        } catch (Exception ex1) {
-            Log.Debug(ex1);
-            Popup.error(ex1);
+
+            @Override
+            protected void done() {
+                if (run != previewRun) {
+                    return;
+                }
+                try {
+                    Object[] r = get();
+                    previewPdf = (File) r[0];
+                    java.awt.image.BufferedImage img = (java.awt.image.BufferedImage) r[1];
+                    previewImage.setText(null);
+                    previewImage.setIcon(new javax.swing.ImageIcon(img));
+                    previewImage.setPreferredSize(new Dimension(img.getWidth() + 2, img.getHeight() + 2));
+                    String what = doc.isExisting() ? doc.toString() : Messages.TEMPLATES_PREVIEW_SAMPLE.toString();
+                    previewCaption.setText(String.format(Messages.TEMPLATES_PREVIEW_CAPTION.toString(), r[2], what));
+                } catch (Exception e) {
+                    Log.Debug(ControlPanel_Templates.this, e);
+                    Throwable c = e.getCause() != null ? e.getCause() : e;
+                    previewImage.setIcon(null);
+                    previewImage.setText("<html><div style='padding:8px'>" + Messages.TEMPLATES_PREVIEW_FAILED + "<br><font color='#b91c1c'>"
+                            + String.valueOf(c.getMessage()).replace("<", "&lt;") + "</font></div></html>");
+                    previewImage.setPreferredSize(null);
+                }
+                previewImage.revalidate();
+            }
+        }.execute();
+    }
+
+    private void showLarger() {
+        if (previewPdf != null && previewPdf.exists()) {
+            mpv5.ui.dialogs.PdfPreview.show(previewPdf);
+        }
+    }
+
+    /**
+     * Another document for the preview and the fields
+     */
+    private void choosePreviewDocument() {
+        DatabaseObject d = searchDocument();
+        if (d != null) {
+            previewDoc = d;
+            refreshPreview();
         }
     }
 
@@ -704,6 +826,7 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
         descr.setText("");
         file.setText(" ");
         editState.setText(" ");
+        refreshPreview();
         for (JComponent c : needsTemplate) {
             c.setEnabled(false);
         }
@@ -825,6 +948,7 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
             einvoicePayterm.setText(days >= 0 ? String.valueOf(days) : "");
             lastmodified = lastmodified_;
             showFileState();
+            refreshPreview();
         } catch (Exception e) {
             Log.Debug(this, e);
         } finally {
@@ -869,6 +993,10 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
 
     @Override
     public void setDataOwner(DatabaseObject object, boolean p) {
+        if (dataOwner == null || object == null || !dataOwner.__getIDS().equals(object.__getIDS())) {
+            //another template: the preview starts with the default document again
+            previewDoc = null;
+        }
         dataOwner = (Template) object;
         if (p) {
             dataOwner.setPanelData(this);

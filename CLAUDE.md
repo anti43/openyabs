@@ -8,3 +8,7 @@
 - Links from the app, `README.md` and the website point to wiki pages (`https://github.com/anti43/openyabs/wiki/<Page>`).
 - `docs/` holds only the website (GitHub Pages: `index.html`, the `*.html` redirect pages to the wiki, `.nojekyll`, the Google verification file) and the screenshots in `docs/images` used by README and website.
 - If the wiki cannot be pushed from the session, prepare the wiki commit as a patch (`git format-patch`) for the maintainer to apply with `git am` and push.
+
+## Testing
+
+- Do not run the full test suite (`./gradlew test`) for layout or text changes: compiling (`./gradlew compileJava`) is enough. For logic changes run only the tests of the touched area (`--tests ...`); the full suite only for changes that affect many parts.
