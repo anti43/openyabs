@@ -770,7 +770,9 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
         viewMenu.insertSeparator(1);
 
         //the products: one entry in the navigation ("All products" and "Product overview" are one view)
-        jButton20.setVisible(false);
+        //removed, not hidden: the grid of the navigation keeps a gap for hidden buttons
+        nav_products.remove(jButton20);
+        nav_products.revalidate();
         jButton19.setText(Messages.PRODUCTS_TITLE.toString());
 
         addTab(new StartPage(), Messages.WELCOME);
