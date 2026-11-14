@@ -228,11 +228,16 @@ public final class ConnectionManager extends JDialog {
         JButton remove = Applets.danger(new JButton(Messages.CONNMGR_REMOVE.toString()));
         remove.addActionListener(e -> remove());
         JButton create = new JButton(Messages.CONNMGR_NEW.toString());
-        create.addActionListener(e -> createNew());
-        //two rows: in one row the last button was cut off
-        JPanel listButtons = new JPanel(new java.awt.GridLayout(2, 2, ModernTheme.px(6), ModernTheme.px(6)));
+        create.addActionListener(e -> createNew(false));
+        //a new database with the data of an old YaBS 1.3.2 (Derby) database
+        JButton import132 = new JButton(Messages.CONNMGR_IMPORT132.toString());
+        import132.setToolTipText(Messages.CONNMGR_IMPORT132_TIP.toString());
+        import132.addActionListener(e -> createNew(true));
+        //rows of two: in one row the last button was cut off
+        JPanel listButtons = new JPanel(new java.awt.GridLayout(3, 2, ModernTheme.px(6), ModernTheme.px(6)));
         listButtons.setOpaque(false);
         listButtons.add(create);
+        listButtons.add(import132);
         listButtons.add(add);
         listButtons.add(rename);
         listButtons.add(remove);
@@ -427,10 +432,12 @@ public final class ConnectionManager extends JDialog {
 
     /**
      * A new database: a new connection, set up by the first start assistant
+     *
+     * @param import132 true: with the data of an old YaBS 1.3.2 database
      */
-    private void createNew() {
+    private void createNew(boolean import132) {
         String name = JOptionPane.showInputDialog(this, Messages.CONNMGR_NAME.toString(),
-                Messages.CONNMGR_NEW_NAME + " " + (model.size() + 1));
+                import132 ? "YaBS 1.3.2" : Messages.CONNMGR_NEW_NAME + " " + (model.size() + 1));
         if (name == null || name.trim().isEmpty()) {
             return;
         }
@@ -449,8 +456,7 @@ public final class ConnectionManager extends JDialog {
                     QueryHandler.restart();
                     GlobalSettings.read();
                     mpv5.globals.ConnectionStart.used(id);
-                    User admin = (User) DatabaseObject.getObject(Context.getUser(), "admin");
-                    admin.login();
+                    signIn().login();
                     LocalSettings.save();
                     dispose();
                     //at start: YaBS goes on starting (signed in, the new database); a second
@@ -477,12 +483,28 @@ public final class ConnectionManager extends JDialog {
                 }
                 load(before);
                 setupEnded(true);
-            });
+            }, import132);
         } catch (Exception e) {
             Log.Debug(this, e);
             Popup.notice(Messages.CONNMGR_FAILED + "\n" + e.getMessage());
             setupEnded(!isVisible());
         }
+    }
+
+    /**
+     * @return the user the first start assistant signs in (after an import
+     * from YaBS 1.3.2 the administrator of the old database), else admin
+     */
+    private static User signIn() throws Exception {
+        try {
+            String id = LocalSettings.getProperty(LocalSettings.LAST_USER);
+            if (id != null && id.matches("\\d+")) {
+                return (User) DatabaseObject.getObject(Context.getUser(), Integer.parseInt(id));
+            }
+        } catch (Exception e) {
+            Log.Debug(ConnectionManager.class, e);
+        }
+        return (User) DatabaseObject.getObject(Context.getUser(), "admin");
     }
 
     /**

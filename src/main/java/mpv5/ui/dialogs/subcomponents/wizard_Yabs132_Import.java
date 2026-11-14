@@ -21,13 +21,9 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -313,10 +309,7 @@ public class wizard_Yabs132_Import extends JPanel implements Wizardable {
         }
         done = true;
         start.setEnabled(false);
-        //the data was replaced: nothing cached of the old one
-        mpv5.db.common.DatabaseObject.clearCache();
-        mpv5.handler.TemplateHandler.clearCache();
-        mpv5.handler.FormatHandler.clearCache();
+        clearCaches();
         mpv5.db.objects.User.cacheUser();
         progress.setValue(100);
         progress.setString(Messages.Y132_DONE.toString());
@@ -334,15 +327,47 @@ public class wizard_Yabs132_Import extends JPanel implements Wizardable {
     }
 
     private static File saveReport(Yabs132Import.Result r) {
-        try {
-            File dir = new File(Main.MPPATH != null ? Main.MPPATH : System.getProperty("user.home"));
-            File f = new File(dir, "import-yabs-1.3.2-" + new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date()) + ".txt");
-            Files.write(f.toPath(), r.getSummary().getBytes(StandardCharsets.UTF_8));
-            return f;
-        } catch (Exception e) {
-            Log.Debug(wizard_Yabs132_Import.class, e);
+        return Yabs132Import.saveReport(r, new File(Main.MPPATH != null ? Main.MPPATH : System.getProperty("user.home")));
+    }
+
+    /**
+     * The data was replaced by an import: nothing cached of the data before
+     */
+    public static void clearCaches() {
+        mpv5.db.common.DatabaseObject.clearCache();
+        mpv5.handler.TemplateHandler.clearCache();
+        mpv5.handler.FormatHandler.clearCache();
+    }
+
+    /**
+     * Let the user choose the folder of an old YaBS 1.3.2 database
+     *
+     * @param parent
+     * @return the database folder, null if none was chosen
+     */
+    public static File chooseDatabase(java.awt.Component parent) {
+        JFileChooser fc = new JFileChooser();
+        fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        fc.setDialogTitle(Messages.Y132_FOLDER.toString());
+        List<File> found = new ArrayList<File>();
+        for (File dir : new File[]{Main.MPPATH == null ? null : new File(Main.MPPATH), new File(System.getProperty("user.home"), ".yabs")}) {
+            found.addAll(Yabs132Import.findDatabases(dir));
+        }
+        if (!found.isEmpty()) {
+            fc.setCurrentDirectory(found.get(0).getParentFile());
+            fc.setSelectedFile(found.get(0));
+        } else {
+            fc.setCurrentDirectory(new File(System.getProperty("user.home")));
+        }
+        if (fc.showOpenDialog(parent) != JFileChooser.APPROVE_OPTION) {
             return null;
         }
+        List<File> l = Yabs132Import.findDatabases(fc.getSelectedFile());
+        if (l.isEmpty()) {
+            Popup.notice(String.format(Messages.Y132_NOT_A_DATABASE.toString(), fc.getSelectedFile()));
+            return null;
+        }
+        return l.get(0);
     }
 
     @Override

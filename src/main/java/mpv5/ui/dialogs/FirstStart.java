@@ -115,7 +115,21 @@ public final class FirstStart extends JFrame {
         new Step(tr(Messages.FIRSTSTART_COUNTRIES)),
         new Step(tr(Messages.FIRSTSTART_LANGUAGES)),
         new Step(tr(Messages.FIRSTSTART_TEMPLATES)),
+        new Step(tr(Messages.FIRSTSTART_IMPORT132_STEP)),
         new Step(tr(Messages.FIRSTSTART_LAUNCH))};
+    /**
+     * the step of the import from YaBS 1.3.2 (shown only with an import)
+     */
+    private static final int IMPORT_STEP = 5;
+    /**
+     * the old YaBS 1.3.2 database to take over into the new one, null: none
+     */
+    private File importFrom;
+    private final JButton importLink = link(tr(Messages.FIRSTSTART_IMPORT132));
+    private final JLabel importLabel = new JLabel();
+    private final JButton importRemove = link(tr(Messages.FIRSTSTART_IMPORT132_REMOVE));
+    private mpv5.db.migration.Yabs132Import.Result imported;
+    private String[] signedIn;
     private final JProgressBar bar = new JProgressBar();
     private final JTextArea error = text("");
     private final JPanel errorButtons = new JPanel(new FlowLayout(FlowLayout.RIGHT, ModernTheme.px(8), 0));
@@ -145,9 +159,23 @@ public final class FirstStart extends JFrame {
      * @param cancelled closed without a database
      */
     public static void open(Integer forConnId, Runnable done, Runnable cancelled) {
+        open(forConnId, done, cancelled, false);
+    }
+
+    /**
+     * @param forConnId the (new) connection
+     * @param done after the database was created (connected to it)
+     * @param cancelled closed without a database
+     * @param import132 true: the data of an old YaBS 1.3.2 database is taken
+     * over into the new database (the folder is asked first)
+     */
+    public static void open(Integer forConnId, Runnable done, Runnable cancelled, boolean import132) {
         FirstStart f = new FirstStart(forConnId, done, cancelled);
         f.setVisible(true);
         f.toFront();
+        if (import132) {
+            f.chooseImport();
+        }
     }
 
     private final Runnable whenDone;
@@ -226,6 +254,21 @@ public final class FirstStart extends JFrame {
         change.setVisible(!mpv5.db.common.ConnectionTypeHandler.DEVMODE);
         local.extra(folderRow);
         showFolder();
+        //take over the data of YaBS 1.3.2 (local H2 database only)
+        JPanel importRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        importRow.setOpaque(false);
+        importLabel.setForeground(ModernTheme.muted());
+        importLink.addActionListener(e -> chooseImport());
+        importRemove.addActionListener(e -> {
+            importFrom = null;
+            showImport();
+        });
+        importRow.add(importLink);
+        importRow.add(importLabel);
+        importRow.add(Box.createHorizontalStrut(ModernTheme.px(8)));
+        importRow.add(importRemove);
+        local.extra(importRow);
+        showImport();
         where.add(local);
         where.add(Box.createVerticalStrut(ModernTheme.px(8)));
 
@@ -318,6 +361,34 @@ public final class FirstStart extends JFrame {
         folderLabel.setToolTipText(folder.getAbsolutePath());
     }
 
+    /**
+     * Choose the old YaBS 1.3.2 database whose data the new database gets
+     */
+    private void chooseImport() {
+        File f = mpv5.ui.dialogs.subcomponents.wizard_Yabs132_Import.chooseDatabase(this);
+        if (f != null) {
+            importFrom = f;
+            if (server.isSelected()) {
+                choose(false);
+            }
+        }
+        showImport();
+    }
+
+    private void showImport() {
+        importLink.setVisible(importFrom == null);
+        importLabel.setVisible(importFrom != null);
+        importRemove.setVisible(importFrom != null);
+        if (importFrom != null) {
+            importLabel.setText(String.format(tr(Messages.FIRSTSTART_IMPORT132_FROM), importFrom.getAbsolutePath()));
+            importLabel.setToolTipText(importFrom.getAbsolutePath());
+        }
+        if (isShowing()) {
+            validate();
+            repaint();
+        }
+    }
+
     private void advanced() {
         Wizard w = new Wizard(true);
         w.addPanel(new wizard_DBSettings_1(w, forConnId));
@@ -398,6 +469,9 @@ public final class FirstStart extends JFrame {
         if (s.url.isEmpty() || s.dbname.isEmpty()) {
             return;
         }
+        //the import goes into a local (H2) database only
+        final File imp = server.isSelected() ? null : importFrom;
+        steps[IMPORT_STEP].setVisible(imp != null);
         start.setEnabled(false);
         for (Step st : steps) {
             st.set(Step.TODO);
@@ -454,13 +528,50 @@ public final class FirstStart extends JFrame {
                     if (created) {
                         prepare();
                     }
-                    at(5);
+                    if (imp != null) {
+                        at(IMPORT_STEP);
+                        takeOver(conn);
+                    }
+                    at(steps.length - 1);
                     return true;
                 } catch (Throwable e) {
                     Log.Debug(FirstStart.class, e);
-                    problem = tr(Messages.CONNECTION_FAILED) + "\n" + e.getMessage();
+                    if (problem == null) {
+                        problem = tr(Messages.CONNECTION_FAILED) + "\n" + e.getMessage();
+                    }
                     return false;
                 }
+            }
+
+            /**
+             * The data of YaBS 1.3.2 into the new database; YaBS starts
+             * signed in as its administrator
+             */
+            private void takeOver(DatabaseConnection conn) throws Exception {
+                mpv5.db.migration.Yabs132Import i = new mpv5.db.migration.Yabs132Import();
+                i.setProgress((m, pct) -> javax.swing.SwingUtilities.invokeLater(() -> {
+                    bar.setIndeterminate(false);
+                    bar.setStringPainted(true);
+                    bar.setValue(pct);
+                    bar.setString(m);
+                }));
+                try (java.sql.Connection c = java.sql.DriverManager.getConnection(
+                        conn.getCtype().getConnectionString(false), s.user, s.password)) {
+                    imported = i.importInto(imp, c);
+                    signedIn = mpv5.db.migration.Yabs132Import.signInUser(c);
+                } catch (mpv5.db.migration.Yabs132Import.ImportException e) {
+                    problem = e.getMessage();
+                    throw e;
+                }
+                mpv5.ui.dialogs.subcomponents.wizard_Yabs132_Import.clearCaches();
+                if (signedIn != null) {
+                    LocalSettings.setProperty(LocalSettings.LAST_USER, signedIn[0]);
+                    LocalSettings.setProperty(LocalSettings.LAST_USER_PW, signedIn[2]);
+                    LocalSettings.save(forConnId);
+                }
+                File report = mpv5.db.migration.Yabs132Import.saveReport(imported,
+                        new File(Main.MPPATH == null ? System.getProperty("user.home") : Main.MPPATH));
+                Log.Debug(FirstStart.class, "YaBS 1.3.2 import:\n" + imported.getSummary() + "\nReport: " + report);
             }
 
             private void prepare() throws Exception {
@@ -508,6 +619,9 @@ public final class FirstStart extends JFrame {
                         st.set(Step.DONE);
                     }
                     System.clearProperty("yabs_firststart");
+                    if (imported != null) {
+                        showImported();
+                    }
                     dispose();
                     if (whenDone != null) {
                         whenDone.run();
@@ -529,6 +643,20 @@ public final class FirstStart extends JFrame {
                 }
             }
         }.execute();
+    }
+
+    /**
+     * The result of the import from YaBS 1.3.2 and how to sign in
+     */
+    private void showImported() {
+        JTextArea report = new JTextArea(imported.getSummary(), 18, 70);
+        report.setEditable(false);
+        report.setFont(new Font(Font.MONOSPACED, Font.PLAIN, report.getFont().getSize()));
+        report.setCaretPosition(0);
+        JPanel p = new JPanel(new BorderLayout(0, ModernTheme.px(10)));
+        p.add(text(String.format(tr(Messages.FIRSTSTART_IMPORT132_DONE), signedIn == null ? "admin" : signedIn[1])), BorderLayout.NORTH);
+        p.add(new javax.swing.JScrollPane(report), BorderLayout.CENTER);
+        javax.swing.JOptionPane.showMessageDialog(this, p, tr(Messages.Y132_TITLE), javax.swing.JOptionPane.INFORMATION_MESSAGE);
     }
 
     /**

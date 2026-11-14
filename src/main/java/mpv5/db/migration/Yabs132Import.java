@@ -319,6 +319,40 @@ public class Yabs132Import {
     }
 
     /**
+     * The user to sign in as after an import: "admin" if there, else the
+     * enabled user with the most rights
+     *
+     * @param c the database
+     * @return ids, cname, password (MD5) - null if there is no user
+     * @throws SQLException
+     */
+    public static String[] signInUser(Connection c) throws SQLException {
+        try (Statement s = c.createStatement(); ResultSet rs = s.executeQuery(
+                "SELECT ids, cname, password FROM users WHERE invisible = 0 "
+                + "ORDER BY CASE WHEN cname = 'admin' THEN 0 ELSE 1 END, CASE WHEN isenabled = 1 THEN 0 ELSE 1 END, inthighestright, ids")) {
+            return rs.next() ? new String[]{rs.getString(1), rs.getString(2), rs.getString(3)} : null;
+        }
+    }
+
+    /**
+     * Save the report as text file
+     *
+     * @param r the result
+     * @param dir the folder (the YaBS folder)
+     * @return the file, null if it could not be written
+     */
+    public static File saveReport(Result r, File dir) {
+        try {
+            File f = new File(dir, "import-yabs-1.3.2-" + new java.text.SimpleDateFormat("yyyyMMdd-HHmmss").format(new java.util.Date()) + ".txt");
+            Files.write(f.toPath(), r.getSummary().getBytes(java.nio.charset.StandardCharsets.UTF_8));
+            return f;
+        } catch (Exception e) {
+            Log.Debug(Yabs132Import.class, e);
+            return null;
+        }
+    }
+
+    /**
      * Import the old database into the target. The target must be an H2
      * database without contacts, documents, products …
      *
