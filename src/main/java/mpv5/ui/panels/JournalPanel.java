@@ -1608,11 +1608,22 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         mpv5.ui.modern.Card accounts = new mpv5.ui.modern.Card(Messages.JOURNAL_ACCOUNTS.toString())
                 .addFull(jScrollPane3, 1)
                 .addFull(mpv5.ui.modern.Applets.hint(Messages.JOURNAL_ACCOUNTS_HINT.toString()));
-        accounts.setPreferredSize(new Dimension(mpv5.ui.modern.ModernTheme.px(260), mpv5.ui.modern.ModernTheme.px(160)));
-        javax.swing.JPanel top = new javax.swing.JPanel(new BorderLayout(mpv5.ui.modern.ModernTheme.px(10), 0));
+        //filters and accounts share the width (about 60 : 40), so the filter fields do not stretch
+        javax.swing.JPanel top = new javax.swing.JPanel(new GridBagLayout());
         top.setOpaque(false);
-        top.add(filters, BorderLayout.CENTER);
-        top.add(accounts, BorderLayout.EAST);
+        GridBagConstraints gc = new GridBagConstraints();
+        gc.fill = GridBagConstraints.BOTH;
+        gc.weighty = 1;
+        gc.gridx = 0;
+        gc.weightx = 0.6;
+        gc.insets = new Insets(0, 0, 0, mpv5.ui.modern.ModernTheme.px(10));
+        filters.setPreferredSize(new Dimension(0, filters.getPreferredSize().height));
+        top.add(filters, gc);
+        gc.gridx = 1;
+        gc.weightx = 0.4;
+        gc.insets = new Insets(0, 0, 0, 0);
+        accounts.setPreferredSize(new Dimension(0, filters.getPreferredSize().height));
+        top.add(accounts, gc);
 
         //the table and the totals
         mpv5.ui.modern.ModernTheme.style(jTable1);
