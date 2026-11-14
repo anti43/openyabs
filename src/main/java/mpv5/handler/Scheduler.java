@@ -56,6 +56,26 @@ public class Scheduler extends Thread {
         }
     }
 
+    /**
+     * Fills the dashboard again (in the background) and shows it: also when
+     * it is switched off at start or was closed (menu View > Open dashboard)
+     *
+     * @param show true to show the tab, false to only bring it up to date
+     */
+    public static void openHomeScreen(final boolean show) {
+        final Scheduler s = new Scheduler();
+        Thread t = new Thread(() -> {
+            s.checkForOverdueEvents(null);
+            s.checkForCreateBillEvents(null);
+            if (show) {
+                javax.swing.SwingUtilities.invokeLater(() -> mpv5.YabsViewProxy.instance().getIdentifierView()
+                        .addOrShowTab(s.homescreen, Messages.HOMESCREEN.toString()));
+            }
+        }, "dashboard");
+        t.setDaemon(true);
+        t.start();
+    }
+
     public void checkForCreateBillEvents(vTimeframe DateFrame) {
         HashMap<Color, List<? extends DatabaseObject>> map;
         map = getScheduledBills(DateFrame);
