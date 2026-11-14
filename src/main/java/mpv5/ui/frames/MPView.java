@@ -112,7 +112,6 @@ import mpv5.ui.panels.ItemPanel2;
 import mpv5.ui.panels.JournalPanel;
 import mpv5.ui.panels.MPControlPanel;
 import mpv5.ui.panels.MassPrintPanel;
-import mpv5.ui.panels.ProductList;
 import mpv5.ui.panels.ProductListsPanel;
 import mpv5.ui.panels.ProductOrderPanel;
 import mpv5.ui.panels.ProductPanel;
@@ -415,8 +414,8 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
     /**
      * @return the plisttab
      */
-    public static ProductList getPlisttab() {
-        return plisttab;
+    public static ProductsOverview getPlisttab() {
+        return polisttab;
     }
 
     public static void setPredefTitle(String string) {
@@ -757,6 +756,10 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
         openDashboard.addActionListener(e -> Scheduler.openHomeScreen(true));
         viewMenu.insert(openDashboard, 0);
         viewMenu.insertSeparator(1);
+
+        //the products: one entry in the navigation ("All products" and "Product overview" are one view)
+        jButton20.setVisible(false);
+        jButton19.setText(Messages.PRODUCTS_TITLE.toString());
 
         addTab(new StartPage(), Messages.WELCOME);
         LocalSettings.save();
@@ -2639,7 +2642,6 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
     private static ContactsList clisttabc;
     private static ContactsList clisttabs;
     private static ContactsList clisttabm;
-    private static ProductList plisttab;
     private static ProductsOverview polisttab;
     private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
 
@@ -2914,10 +2916,11 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
 
     private void jButton19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton19ActionPerformed
 
-        if (getPlisttab() == null) {
-            plisttab = new ProductList();
+        //one products view (was "All products" and "Product overview")
+        if (polisttab == null) {
+            polisttab = new ProductsOverview();
         }
-        addOrShowTab(getPlisttab(), Messages.ALL_PRODUCTS.toString());
+        addOrShowTab(polisttab, Messages.PRODUCTS_TITLE.toString());
     }//GEN-LAST:event_jButton19ActionPerformed
 
     private void jMenuItem31ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem31ActionPerformed
@@ -3013,7 +3016,7 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
         if (polisttab == null) {
             polisttab = new ProductsOverview();
         }
-        addOrShowTab(polisttab, Messages.ALL_PRODUCTS.toString());
+        addOrShowTab(polisttab, Messages.PRODUCTS_TITLE.toString());
     }//GEN-LAST:event_jButton20ActionPerformed
 
     private void jMenuItem41ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem41ActionPerformed
