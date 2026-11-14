@@ -125,6 +125,7 @@ public class ReceiptLookup extends javax.swing.JPanel {
             }
         });
 
+        modernLayout();
         generalListPanel1.getTable().addMouseListener(new MouseAdapter() {
 
             @Override
@@ -167,10 +168,18 @@ public class ReceiptLookup extends javax.swing.JPanel {
     private void popup(MouseEvent e) throws Exception {
         JPopupMenu menu = new JPopupMenu();
         JMenuItem x = new JMenuItem(mpv5.globals.Messages.RECEIPT_ADD_TO_NEW_INVOICE.toString());
-        x.addActionListener(new ActionListener() {
+        x.addActionListener(e2 -> mergeSelected());
+        menu.add(x);
+        menu.show(e.getComponent(), e.getX(), e.getY());
+    }
 
-            @Override
-            public void actionPerformed(ActionEvent e) {
+    /**
+     * The selected documents (of one or more customers) in a new invoice per
+     * customer: the wizard of the mass export
+     */
+    private void mergeSelected() {
+        {
+            {
                 int[] rows = generalListPanel1.getTable().getSelectedRows();
                 if (rows.length == 0) {
                     return;
@@ -196,10 +205,67 @@ public class ReceiptLookup extends javax.swing.JPanel {
                 w.addPanel(new wizard_MassExportPanel(w, list));
                 w.showWiz();
             }
-        });
+        }
+    }
 
-        menu.add(x);
-        menu.show(e.getComponent(), e.getX(), e.getY());
+    private final javax.swing.JButton merge = new javax.swing.JButton(mpv5.globals.Messages.RECEIPT_ADD_TO_NEW_INVOICE.toString());
+
+    /**
+     * The modern layout: title and count, the filters in a card (kind and
+     * status apply at once, period and group with "Filter", the blue main
+     * action), the list with "Combine into new invoice" and a hint
+     */
+    private void modernLayout() {
+        removeAll();
+        setLayout(new java.awt.BorderLayout(mpv5.ui.modern.ModernTheme.px(10), mpv5.ui.modern.ModernTheme.px(10)));
+        setBorder(mpv5.ui.modern.ModernTheme.padding(12, 14));
+        setBackground(mpv5.ui.modern.ModernTheme.background());
+
+        javax.swing.JLabel title = new javax.swing.JLabel(mpv5.i18n.LanguageManager.getBundle().getString("ReceiptLookup.jPanel1.border.title"));
+        title.setFont(mpv5.ui.modern.ModernTheme.font(9, java.awt.Font.BOLD));
+        javax.swing.JLabel count = generalListPanel1.getCountLabel();
+        count.setForeground(mpv5.ui.modern.ModernTheme.muted());
+        count.setFont(mpv5.ui.modern.ModernTheme.font(0, java.awt.Font.PLAIN));
+        javax.swing.JPanel header = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, mpv5.ui.modern.ModernTheme.px(10), 0));
+        header.setOpaque(false);
+        header.add(title);
+        header.add(count);
+
+        for (mpv5.ui.beans.LabeledCombobox c : new mpv5.ui.beans.LabeledCombobox[]{type, status, generalListPanel1.getGroupChoice()}) {
+            mpv5.ui.modern.ModernTheme.roomyCombo(c);
+        }
+        javax.swing.JPanel filterRow = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
+        filterRow.setOpaque(false);
+        filterRow.add(generalListPanel1.getFilterButton());
+        mpv5.ui.modern.Card filters = new mpv5.ui.modern.Card(null)
+                .row(mpv5.ui.modern.Card.field(mpv5.globals.Messages.RECEIPT_TYPE.toString(), type.getComboBox()),
+                        mpv5.ui.modern.Card.field(mpv5.globals.Messages.RECEIPT_STATUS.toString(), status.getComboBox()),
+                        mpv5.ui.modern.Card.field(mpv5.globals.Messages.RECEIPT_PERIOD.toString(), generalListPanel1.getTimeframeChooser(), 2),
+                        mpv5.ui.modern.Card.field(mpv5.globals.Messages.RECEIPT_GROUP.toString(), generalListPanel1.getGroupChoice().getComboBox()),
+                        mpv5.ui.modern.Card.field(" ", filterRow));
+
+        javax.swing.JScrollPane sp = generalListPanel1.getListScroll();
+        sp.setBorder(javax.swing.BorderFactory.createLineBorder(mpv5.ui.modern.ModernTheme.border()));
+        //no table style: it would show the header row (0 1 2 ...) the grouped list hides
+        merge.addActionListener(e -> mergeSelected());
+        merge.setEnabled(false);
+        generalListPanel1.getTable().getSelectionModel().addListSelectionListener(e ->
+                merge.setEnabled(generalListPanel1.getTable().getSelectedRowCount() > 0));
+        javax.swing.JPanel buttons = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
+        buttons.setOpaque(false);
+        buttons.add(merge);
+        mpv5.ui.modern.Card list = new mpv5.ui.modern.Card(null)
+                .addFull(sp, 1)
+                .addFull(buttons)
+                .addFull(mpv5.ui.modern.Applets.hint(mpv5.globals.Messages.RECEIPT_HINT.toString()));
+
+        javax.swing.JPanel top = new javax.swing.JPanel(new java.awt.BorderLayout(0, mpv5.ui.modern.ModernTheme.px(10)));
+        top.setOpaque(false);
+        top.add(header, java.awt.BorderLayout.NORTH);
+        top.add(filters, java.awt.BorderLayout.CENTER);
+        add(top, java.awt.BorderLayout.NORTH);
+        add(list, java.awt.BorderLayout.CENTER);
+        revalidate();
     }
 
     /**
