@@ -37,6 +37,68 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel, DataP
       this.context = Context.getContact();
       ((MPTable) listTable).setDefaultColumns(new Integer[]{0, 100, 100, 100, 100, 100, 100}, new Boolean[]{});
       ((MPTable) listTable).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) listTable, this));
+      modernLayout();
+   }
+
+   /**
+    * The modern layout: title, count, printing and the "add" buttons; the
+    * filters in a card ("Filter" is the blue main action); the table. Logic
+    * unchanged.
+    */
+   private void modernLayout() {
+      java.util.ResourceBundle b = mpv5.i18n.LanguageManager.getBundle();
+      removeAll();
+      setLayout(new java.awt.BorderLayout(mpv5.ui.modern.ModernTheme.px(10), mpv5.ui.modern.ModernTheme.px(10)));
+      setBorder(mpv5.ui.modern.ModernTheme.padding(12, 14));
+      setBackground(mpv5.ui.modern.ModernTheme.background());
+
+      javax.swing.JLabel title = new javax.swing.JLabel(b.getString("ContactsList.jPanel1.border.title"));
+      title.setFont(mpv5.ui.modern.ModernTheme.font(9, java.awt.Font.BOLD));
+      count.setForeground(mpv5.ui.modern.ModernTheme.muted());
+      count.setFont(mpv5.ui.modern.ModernTheme.font(0, java.awt.Font.PLAIN));
+      javax.swing.JPanel left = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, mpv5.ui.modern.ModernTheme.px(10), 0));
+      left.setOpaque(false);
+      left.add(title);
+      left.add(count);
+      javax.swing.JPanel right = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, mpv5.ui.modern.ModernTheme.px(6), 0));
+      right.setOpaque(false);
+      prinitingComboBox1.setOpaque(false);
+      right.add(prinitingComboBox1);
+      right.add(new javax.swing.JLabel(jLabel4.getText()));
+      right.add(jButton1);
+      right.add(jButton5);
+      right.add(jButton4);
+      javax.swing.JPanel header = new javax.swing.JPanel(new java.awt.BorderLayout());
+      header.setOpaque(false);
+      header.add(left, java.awt.BorderLayout.WEST);
+      header.add(right, java.awt.BorderLayout.EAST);
+
+      mpv5.ui.modern.ModernTheme.roomy(jTextField1);
+      jTextField1.putClientProperty("JTextField.placeholderText", b.getString("ContactsList.jLabel3.text").replace(":", ""));
+      javax.swing.JPanel show = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, mpv5.ui.modern.ModernTheme.px(10), 0));
+      show.setOpaque(false);
+      for (javax.swing.JCheckBox c : new javax.swing.JCheckBox[]{jCheckBox1, jCheckBox2, jCheckBox3, jCheckBox4, excButton}) {
+         c.setOpaque(false);
+         show.add(c);
+      }
+      javax.swing.JPanel buttons = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, mpv5.ui.modern.ModernTheme.px(6), 0));
+      buttons.setOpaque(false);
+      buttons.add(jButton2);
+      buttons.add(jButton3);
+      mpv5.ui.modern.Card filters = new mpv5.ui.modern.Card(null)
+            .row(mpv5.ui.modern.Card.field(jLabel3.getText().replace(":", ""), jTextField1, 2),
+                  mpv5.ui.modern.Card.field(jLabel1.getText().replace(":", ""), show, 3),
+                  mpv5.ui.modern.Card.field(" ", buttons, 1));
+
+      jScrollPane1.setBorder(javax.swing.BorderFactory.createLineBorder(mpv5.ui.modern.ModernTheme.border()));
+      mpv5.ui.modern.Card list = new mpv5.ui.modern.Card(null).addFull(jScrollPane1, 1);
+
+      javax.swing.JPanel top = new javax.swing.JPanel(new java.awt.BorderLayout(0, mpv5.ui.modern.ModernTheme.px(10)));
+      top.setOpaque(false);
+      top.add(header, java.awt.BorderLayout.NORTH);
+      top.add(filters, java.awt.BorderLayout.CENTER);
+      add(top, java.awt.BorderLayout.NORTH);
+      add(list, java.awt.BorderLayout.CENTER);
    }
 
    public ContactsList(Context context) {
@@ -58,7 +120,7 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel, DataP
       } else {
          listTable.setModel(new MPTableModel(new DatabaseSearch(context).getValuesFor(Context.DETAILS_CONTACTS), Headers.CONTACT_DETAILS.getValue()));
       }
-      count.setText(String.valueOf(listTable.getModel().getRowCount()));
+      count.setText(String.format(mpv5.globals.Messages.CONTACTS_COUNT.toString(), listTable.getModel().getRowCount()));
    }
 
    /**
