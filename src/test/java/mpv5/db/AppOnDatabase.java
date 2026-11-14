@@ -161,6 +161,21 @@ abstract class AppOnDatabase {
             assertEquals(0, new BigDecimal("60").compareTo(inv2.__getNetvalue()));
             assertEquals(c.__getIDS(), inv2.__getContactsids());
             orderConfirmationHasPositions(c, inv2);
+            //"search anything": a position shows its document (number, customer, date), a document its customer
+            boolean position = false, document = false;
+            for (mpv5.handler.SearchService.Hit h : mpv5.handler.SearchService.search("Pos 2")) {
+                if (h.title.equals("Pos 2")) {
+                    position = h.detail.contains(inv2.__getCnumber()) && h.detail.contains("Muster GmbH")
+                            && h.detail.contains(DateConverter.getDefDateString(inv2.__getDateadded()));
+                }
+            }
+            assertTrue(position, "position hit shows its document");
+            for (mpv5.handler.SearchService.Hit h : mpv5.handler.SearchService.search(inv2.__getCnumber())) {
+                if (h.id == inv2.__getIDS() && h.title.contains(inv2.__getCnumber())) {
+                    document = h.detail.contains("Muster GmbH");
+                }
+            }
+            assertTrue(document, "document hit shows its customer");
             errorsInTheHistory();
             assertEquals(DateConverter.getDefDateString(inv.__getDatetodo()), DateConverter.getDefDateString(inv2.__getDatetodo()));
 
