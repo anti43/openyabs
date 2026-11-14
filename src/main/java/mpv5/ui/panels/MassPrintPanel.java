@@ -129,7 +129,7 @@ public class MassPrintPanel
         RTF_Text = new javax.swing.JTextPane();
         dateTo = new mpv5.ui.beans.DateChooser();
         templates = new javax.swing.JComboBox();
-        jButton1 = new javax.swing.JButton();
+        jButton1 = new mpv5.ui.modern.PrimaryButton("", null); //the main action: blue, Shift+Enter
         jLabel5 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
         messageTpl = new javax.swing.JComboBox();

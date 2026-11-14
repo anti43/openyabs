@@ -119,7 +119,9 @@ public final class ClassicPolish {
         }
         c.putClientProperty(DONE, Boolean.TRUE);
         Border b = c.getBorder();
-        if (c instanceof JButton && c.getParent() instanceof JToolBar) {
+        if (c instanceof PrimaryButton) {
+            //the main action keeps its blue look
+        } else if (c instanceof JButton && c.getParent() instanceof JToolBar) {
             if (isOld(b)) {
                 //an action of a toolbar row with a hard frame (e.g. "Create invoice"):
                 //a rounded outline, highlighted under the mouse like other toolbar buttons

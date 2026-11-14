@@ -57,6 +57,58 @@ public class Scheduler extends Thread {
     }
 
     /**
+     * @param use e.g. "usebills": show this kind of document on the dashboard
+     * @return the setting; without one: shown (credit notes: not, they have no
+     * setting)
+     */
+    static boolean uses(String use) {
+        return User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty$" + use, !"usecredit".equals(use));
+    }
+
+    /**
+     * @param hide e.g. "hideunpaidbills": only from the alarm
+     */
+    static boolean hides(String hide) {
+        return User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty$" + hide, false);
+    }
+
+    /**
+     * @param itemType the kind as used here ("bills", "delivery", "partial
+     * payment" ...)
+     * @param level "warn" or "alert"
+     * @return the days of the settings page (its keys), else 14 (warn) or 30
+     * (alert)
+     */
+    static int days(String itemType, String level) {
+        String key = settingsKey(itemType) + "." + level + ".days";
+        String v = User.getCurrentUser().getProperties().getProperty(key);
+        try {
+            return Integer.parseInt(v.trim());
+        } catch (Exception e) {
+            return "warn".equals(level) ? 14 : 30;
+        }
+    }
+
+    /**
+     * @return the name the settings page stores the days under
+     */
+    static String settingsKey(String itemType) {
+        switch (itemType) {
+            case "delivery":
+                return "deliver";
+            case "partial payment":
+            case "partial payments":
+            case "partpayment":
+                return "partpayment";
+            case "revenues":
+            case "revenue":
+                return "revenue";
+            default:
+                return itemType;
+        }
+    }
+
+    /**
      * Fills the dashboard again (in the background) and shows it: also when
      * it is switched off at start or was closed (menu View > Open dashboard)
      *
@@ -205,8 +257,8 @@ public class Scheduler extends Thread {
                         use = "usedeposit";
                         break;
                 }
-                if (!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", prop)
-                        && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", use)) {
+                if (!hides(prop)
+                        && uses(use)) {
                     if (b < 5) {
                         opens.and(new QueryParameter(c, "inttype", b, QueryParameter.EQUALS));
                     }
@@ -313,12 +365,9 @@ public class Scheduler extends Thread {
                         use = "usedeposit";
                         break;
                 }
-                if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty(ItemType + ".warn.days")
-                        && !mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", prop)
-                        && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", use)) {
-                    Integer warn = Integer.valueOf(mpv5.db.objects.User.getCurrentUser().
-                            getProperties().
-                            getProperty(ItemType + ".warn.days"));
+                if (!hides(prop)
+                        && uses(use)) {
+                    Integer warn = days(ItemType, "warn");
                     if (b < 5) {
                     opens.and(new QueryParameter(c, "inttype", b, QueryParameter.EQUALS));
                     }
@@ -418,11 +467,8 @@ public class Scheduler extends Thread {
                         use = "usedeposit";
                         break;
                 }
-                if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty(ItemType + ".alert.days")
-                        && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", use)) {
-                    Integer alert = Integer.valueOf(mpv5.db.objects.User.getCurrentUser().
-                            getProperties().
-                            getProperty(ItemType + ".alert.days"));
+                if (uses(use)) {
+                    Integer alert = days(ItemType, "alert");
                     if (b < 5) {
                     opens.and(new QueryParameter(c, "inttype", b, QueryParameter.EQUALS));
                     }
@@ -470,8 +516,8 @@ public class Scheduler extends Thread {
         opens.and(new QueryParameter(c, "status", Item.STATUS_QUEUED, QueryParameter.EQUALS));
         ItemType = "revenues";
 
-        if (!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hideunattentedrevenues")
-                && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "userevenues")) {
+        if (!hides("hideunattentedrevenues")
+                && uses("userevenues")) {
            opens.setOrder("dateadded", true);
             try {
                 ReturnValue data = QueryHandler.instanceOf().clone(c).select("IDS", opens);
@@ -504,12 +550,9 @@ public class Scheduler extends Thread {
             Log.Debug(Scheduler.class,
                     "Don't show " + ItemType + " befor alert!");
         }
-        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("revenue.warn.days")
-                && !mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hideunattentedrevenues")
-                && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "userevenues")) {
-            Integer warn = Integer.valueOf(mpv5.db.objects.User.getCurrentUser().
-                    getProperties().
-                    getProperty("revenue.warn.days"));
+        if (!hides("hideunattentedrevenues")
+                && uses("userevenues")) {
+            Integer warn = days("revenue", "warn");
             opens.setOrder("dateadded", true);
             try {
                 ReturnValue data = QueryHandler.instanceOf().clone(c).select("IDS", opens,
@@ -543,11 +586,8 @@ public class Scheduler extends Thread {
             Log.Debug(Scheduler.class,
                     "No warn treshold for " + ItemType + " defined.");
         }
-        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("revenue.alert.days")
-                && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "userevenues")) {
-            Integer alert = Integer.valueOf(mpv5.db.objects.User.getCurrentUser().
-                    getProperties().
-                    getProperty("revenue.alert.days"));
+        if (uses("userevenues")) {
+            Integer alert = days("revenue", "alert");
             opens.setOrder("dateadded", true);
             try {
                 ReturnValue data = QueryHandler.instanceOf().clone(c).select("IDS", opens,

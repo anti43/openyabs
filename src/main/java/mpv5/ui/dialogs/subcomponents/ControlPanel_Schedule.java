@@ -917,14 +917,14 @@ public class ControlPanel_Schedule extends javax.swing.JPanel implements Control
         hide_deposit.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hideunattenteddeposits"));
         hide_rev.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hideunattentedrevenues"));
         
-        use_bills.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "usebills"));
-        use_orders.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "useorders"));
-        use_offers.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "useoffers"));
-        use_deliv.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "usedeliverys"));
-        use_confi.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "useconfirmations"));
-        use_part.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "usepartpayment"));
-        use_deposit.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "usedeposit"));
-        use_rev.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "userevenues"));
+        use_bills.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty$usebills", true));
+        use_orders.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty$useorders", true));
+        use_offers.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty$useoffers", true));
+        use_deliv.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty$usedeliverys", true));
+        use_confi.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty$useconfirmations", true));
+        use_part.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty$usepartpayment", true));
+        use_deposit.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty$usedeposit", true));
+        use_rev.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty$userevenues", true));
 
         if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("bills.warn.days")) {
             bill_warn.setText(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("bills.warn.days"));

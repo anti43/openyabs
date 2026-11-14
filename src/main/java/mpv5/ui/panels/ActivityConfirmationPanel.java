@@ -190,7 +190,7 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         downItem = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         total = new javax.swing.JTextField();
-        button_invoice = new javax.swing.JButton();
+        button_invoice = new mpv5.ui.modern.PrimaryButton("", null); //the main action: blue, Shift+Enter
         jLabel5 = new javax.swing.JLabel();
         button_compare = new javax.swing.JButton();
         toolbarpanetbp = new javax.swing.JPanel();
@@ -400,7 +400,6 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         total.setName("total"); // NOI18N
 
         button_invoice.setText(bundle.getString("ActivityConfirmationPanel.button_invoice.text")); // NOI18N
-        button_invoice.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
         button_invoice.setName("button_invoice"); // NOI18N
         button_invoice.setPreferredSize(new java.awt.Dimension(78, 24));
         button_invoice.addActionListener(new java.awt.event.ActionListener() {

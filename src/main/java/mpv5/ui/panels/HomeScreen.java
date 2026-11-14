@@ -140,7 +140,11 @@ public class HomeScreen extends JPanel {
     private final OpenModel openModel = new OpenModel();
     private final JTable openTable = new JTable(openModel);
     private final JLabel openEmpty = new JLabel();
-    private final JButton openDoc = new JButton(Messages.DASH_OPEN_DOC.toString());
+    private JPanel tableCards;
+    private JScrollPane recurringScroll;
+    private JPanel recurringButtons;
+    //the main action of the dashboard: blue
+    private final JButton openDoc = new mpv5.ui.modern.PrimaryButton(Messages.DASH_OPEN_DOC.toString(), null);
     private final JButton reminder = new JButton(Messages.DASH_REMINDER.toString());
     //recurring invoices
     private final RecurringModel recurringModel = new RecurringModel();
@@ -255,7 +259,11 @@ public class HomeScreen extends JPanel {
         ModernTheme.style(openTable);
         openTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         openTable.setAutoCreateRowSorter(true);
-        openTable.setDefaultRenderer(Object.class, new OpenRenderer());
+        //for every column class: the table style sets its own number and date renderers
+        OpenRenderer renderer = new OpenRenderer();
+        for (Class<?> c : new Class<?>[]{Object.class, String.class, Integer.class, Long.class, Number.class, BigDecimal.class, Date.class}) {
+            openTable.setDefaultRenderer(c, renderer);
+        }
         openTable.getColumnModel().getColumn(0).setPreferredWidth(ModernTheme.px(110));
         openTable.getColumnModel().getColumn(1).setPreferredWidth(ModernTheme.px(200));
         openTable.getColumnModel().getColumn(2).setPreferredWidth(ModernTheme.px(200));
@@ -282,7 +290,6 @@ public class HomeScreen extends JPanel {
         sp.setBorder(BorderFactory.createLineBorder(ModernTheme.border()));
         openEmpty.setHorizontalAlignment(SwingConstants.CENTER);
         openEmpty.setForeground(ModernTheme.muted());
-        openEmpty.setVisible(false);
 
         openDoc.addActionListener(e -> openSelected());
         reminder.addActionListener(e -> createReminder());
@@ -292,10 +299,13 @@ public class HomeScreen extends JPanel {
         buttons.add(openDoc);
         buttons.add(reminder);
 
-        JPanel table = new JPanel(new BorderLayout());
+        openEmpty.setFont(ModernTheme.font(1, Font.PLAIN));
+        openEmpty.setBorder(ModernTheme.padding(30, 10));
+        JPanel table = new JPanel(new java.awt.CardLayout());
         table.setOpaque(false);
-        table.add(sp, BorderLayout.CENTER);
-        table.add(openEmpty, BorderLayout.NORTH);
+        table.add(sp, "table");
+        table.add(openEmpty, "empty");
+        tableCards = table;
         table.setPreferredSize(new Dimension(ModernTheme.px(600), ModernTheme.px(320)));
         return new Card(Messages.DASH_LIST.toString())
                 .addFull(filters)
@@ -325,8 +335,9 @@ public class HomeScreen extends JPanel {
             }
         });
         JScrollPane sp = new JScrollPane(recurringTable);
+        recurringScroll = sp;
         sp.setBorder(BorderFactory.createLineBorder(ModernTheme.border()));
-        sp.setPreferredSize(new Dimension(ModernTheme.px(340), ModernTheme.px(120)));
+        sp.setPreferredSize(new Dimension(ModernTheme.px(340), ModernTheme.px(110)));
         recurringEmpty.setForeground(ModernTheme.muted());
         createBill.addActionListener(e -> createBill());
         deleteSchedule.addActionListener(e -> deleteSchedule());
@@ -334,27 +345,20 @@ public class HomeScreen extends JPanel {
         buttons.setOpaque(false);
         buttons.add(createBill);
         buttons.add(Applets.danger(deleteSchedule));
+        recurringButtons = buttons;
         Card recurringCard = new Card(Messages.DASH_RECURRING.toString())
                 .addFull(Applets.hint(Messages.DASH_RECURRING_HINT.toString()))
                 .addFull(recurringEmpty)
                 .addFull(sp)
                 .addFull(buttons);
 
-        JPanel col = new JPanel();
+        //a column of fixed width: the calendar, below it the recurring invoices
+        JPanel col = new JPanel(new BorderLayout(0, ModernTheme.px(12)));
         col.setOpaque(false);
-        col.setLayout(new BoxLayout(col, BoxLayout.PAGE_AXIS));
-        calendarCard.setAlignmentX(Component.LEFT_ALIGNMENT);
-        recurringCard.setAlignmentX(Component.LEFT_ALIGNMENT);
-        col.add(calendarCard);
-        col.add(Box.createVerticalStrut(ModernTheme.px(12)));
-        col.add(recurringCard);
-        JScrollPane s = new JScrollPane(col, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        s.setBorder(null);
-        s.setOpaque(false);
-        s.getViewport().setOpaque(false);
-        s.getVerticalScrollBar().setUnitIncrement(ModernTheme.px(16));
-        s.setPreferredSize(new Dimension(ModernTheme.px(380), ModernTheme.px(400)));
-        return s;
+        col.add(calendarCard, BorderLayout.CENTER);
+        col.add(recurringCard, BorderLayout.SOUTH);
+        col.setPreferredSize(new Dimension(ModernTheme.px(420), ModernTheme.px(400)));
+        return col;
     }
 
     // ------------------------------------------------------------------ data
@@ -368,7 +372,10 @@ public class HomeScreen extends JPanel {
         new SwingWorker<Object[], Void>() {
             @Override
             protected Object[] doInBackground() {
-                return new Object[]{rowsOf(Scheduler.getOverdueEvents(null)), schedulesOf(Scheduler.getScheduledBills(null))};
+                //no date filter: all open documents; recurring invoices due until the end of
+                //this month, also those of past months that were not created yet
+                return new Object[]{rowsOf(Scheduler.getOverdueEvents(null)),
+                    schedulesOf(Scheduler.getScheduledBills(dueUntilEndOfMonth()))};
             }
 
             @Override
@@ -410,13 +417,15 @@ public class HomeScreen extends JPanel {
      * @param table {@link #getOverdue()} or {@link #getNextEvents()}
      */
     public <T extends DatabaseObject> void show(final HashMap<Color, List<? extends DatabaseObject>> map, final JTable table) {
-        if (table == recurringTable) {
-            final List<Schedule> s = schedulesOf(map);
-            SwingUtilities.invokeLater(() -> setRecurring(s));
-        } else {
-            final List<Row> r = rowsOf(map);
-            SwingUtilities.invokeLater(() -> setRows(r));
-        }
+        //the scheduler asks with its own time frame: load everything the dashboard shows instead
+        SwingUtilities.invokeLater(this::refresh);
+    }
+
+    /**
+     * @return from the beginning to the end of this month
+     */
+    static mpv5.utils.date.vTimeframe dueUntilEndOfMonth() {
+        return new mpv5.utils.date.vTimeframe(new Date(0), DateConverter.getEndOfMonth(new Date()));
     }
 
     private static List<Schedule> schedulesOf(Map<Color, List<? extends DatabaseObject>> map) {
@@ -460,8 +469,25 @@ public class HomeScreen extends JPanel {
                 }
             }
         }
+        return dedupe(l);
+    }
+
+    /**
+     * The scheduler lists a document in every list it reaches (open, warning,
+     * overdue): once, with its most urgent status
+     */
+    static List<Row> dedupe(List<Row> l) {
         sort(l);
-        return l;
+        List<Row> out = new ArrayList<Row>();
+        java.util.Set<String> seen = new java.util.HashSet<String>();
+        for (Row r : l) {
+            String key = r.object == null ? String.valueOf(System.identityHashCode(r))
+                    : r.object.getDbIdentity() + "#" + r.object.__getIDS();
+            if (seen.add(key)) {
+                out.add(r);
+            }
+        }
+        return out;
     }
 
     static void sort(List<Row> l) {
@@ -588,7 +614,7 @@ public class HomeScreen extends JPanel {
         openModel.fireTableDataChanged();
         boolean empty = shown.isEmpty();
         openEmpty.setText(rows.isEmpty() ? Messages.DASH_EMPTY.toString() : Messages.DASH_NOTHING_FOUND.toString());
-        openEmpty.setVisible(empty);
+        ((java.awt.CardLayout) tableCards.getLayout()).show(tableCards, empty ? "empty" : "table");
         updateButtons();
     }
 
@@ -598,6 +624,9 @@ public class HomeScreen extends JPanel {
         recurringModel.fireTableDataChanged();
         recurringEmpty.setText(Messages.DASH_RECURRING_EMPTY.toString());
         recurringEmpty.setVisible(recurring.isEmpty());
+        recurringScroll.setVisible(!recurring.isEmpty());
+        recurringButtons.setVisible(!recurring.isEmpty());
+        revalidate();
         updateButtons();
     }
 

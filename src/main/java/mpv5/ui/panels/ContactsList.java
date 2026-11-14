@@ -86,7 +86,7 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel, DataP
         jPanel2 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
-        jButton2 = new javax.swing.JButton();
+        jButton2 = new mpv5.ui.modern.PrimaryButton("", null); //the main action: blue, Shift+Enter
         jButton3 = new javax.swing.JButton();
         jToolBar2 = new javax.swing.JToolBar();
         jLabel1 = new javax.swing.JLabel();

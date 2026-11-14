@@ -263,7 +263,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         jPanel6 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList();
-        jButton1 = new javax.swing.JButton();
+        jButton1 = new mpv5.ui.modern.PrimaryButton("", null); //the main action: blue, Shift+Enter
         count = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         profitNetto = new mpv5.ui.beans.LabeledTextField();

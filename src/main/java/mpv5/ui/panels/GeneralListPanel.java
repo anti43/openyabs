@@ -90,6 +90,8 @@ public final class GeneralListPanel extends javax.swing.JPanel {
     public GeneralListPanel() {
         initComponents();
         setName("generallistpanel");
+        //one filter button for time frame and group: the main action (blue, Shift+Enter)
+        jButton2.setVisible(false);
         rend.setDbColumn(1);
 
         listtable.setDefaultRenderer(String.class, rend);
@@ -353,7 +355,7 @@ public final class GeneralListPanel extends javax.swing.JPanel {
         };
         timeframeChooser1 = new mpv5.ui.beans.TimeframeChooser();
         labeledCombobox1 = new mpv5.ui.beans.LabeledCombobox();
-        jButton1 = new javax.swing.JButton();
+        jButton1 = new mpv5.ui.modern.PrimaryButton("", null);
         jButton2 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
@@ -443,17 +445,40 @@ public final class GeneralListPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-
-        filterByTimeframe(timeframeChooser1.getTime());
+        applyFilters();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        try {
-            filterByGroup((Group) Group.getObject(Context.getGroup(), Integer.valueOf(labeledCombobox1.getSelectedItem().getId())));
-        } catch (Exception ex) {
-//            Log.Debug(ex);
-        }
+        applyFilters();
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    /**
+     * One filter for both: the time frame and the group together (before, each
+     * button filtered alone and dropped the other filter)
+     */
+    private void applyFilters() {
+        if (odata == null) {
+            return;
+        }
+        List fullData = odata;
+        int group = 1;
+        try {
+            group = Integer.parseInt(labeledCombobox1.getSelectedItem().getId());
+        } catch (Exception ex) {
+            //no group chosen: all
+        }
+        vTimeframe frame = timeframeChooser1.getTime();
+        List<DatabaseObject> list = new Vector<DatabaseObject>();
+        for (int i = 0; i < odata.size(); i++) {
+            DatabaseObject d = (DatabaseObject) odata.get(i);
+            if ((frame == null || frame.contains(d.__getDateadded()))
+                    && (group == 1 || d.__getGroupsids() == group)) {
+                list.add(d);
+            }
+        }
+        setData(list);
+        odata = fullData;
+    }
 
     private void listtableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listtableMouseClicked
         if (evt.getClickCount() > 1) {
