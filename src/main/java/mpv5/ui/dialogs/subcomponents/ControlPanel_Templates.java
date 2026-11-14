@@ -283,7 +283,7 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
                 .addFull(hint(Messages.TEMPLATES_PRINTER_HINT.toString())));
 
         //the preview is the tallest card: last
-        grid.add(new Card(Messages.TEMPLATES_PREVIEW.toString())
+        grid.addFullWidth(new Card(Messages.TEMPLATES_PREVIEW.toString())
                 .addFull(hint(Messages.TEMPLATES_PREVIEW_HINT.toString()))
                 .addFull(previewImage)
                 .addFull(previewCaption)
@@ -733,7 +733,7 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
         }
         final Template tpl = dataOwner;
         final DatabaseObject doc = previewDocument();
-        final int width = Math.max(ModernTheme.px(240), Math.min(ModernTheme.px(420),
+        final int width = Math.max(ModernTheme.px(240), Math.min(ModernTheme.px(620),
                 previewImage.getParent() == null ? 0 : previewImage.getParent().getWidth() - ModernTheme.px(24)));
         previewImage.setIcon(null);
         previewImage.setText(Messages.TEMPLATES_PREVIEW_LOADING.toString());

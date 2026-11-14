@@ -22,6 +22,7 @@ import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.LayoutManager;
 import java.awt.Rectangle;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.Scrollable;
 
@@ -278,6 +279,26 @@ public class ResponsiveGrid extends JPanel implements Scrollable {
         }
     }
 
+    /**
+     * Client property: the component takes a whole row (all columns)
+     */
+    public static final String FULL_WIDTH = "ResponsiveGrid.fullWidth";
+
+    /**
+     * Adds a component that takes a whole row
+     *
+     * @param c
+     * @return c
+     */
+    public Component addFullWidth(JComponent c) {
+        c.putClientProperty(FULL_WIDTH, Boolean.TRUE);
+        return add(c);
+    }
+
+    private static boolean isFullWidth(Component c) {
+        return c instanceof JComponent && Boolean.TRUE.equals(((JComponent) c).getClientProperty(FULL_WIDTH));
+    }
+
     private static final class Layout implements LayoutManager {
 
         private final int minColumnWidth;
@@ -324,28 +345,51 @@ public class ResponsiveGrid extends JPanel implements Scrollable {
             return w;
         }
 
+        /**
+         * The rows: up to cols components each; a full width component is a
+         * row of its own
+         */
+        private static java.util.List<java.util.List<Component>> rows(Container parent, int cols) {
+            java.util.List<java.util.List<Component>> rows = new java.util.ArrayList<java.util.List<Component>>();
+            java.util.List<Component> row = new java.util.ArrayList<Component>();
+            for (Component c : parent.getComponents()) {
+                if (!c.isVisible()) {
+                    continue;
+                }
+                if (isFullWidth(c)) {
+                    if (!row.isEmpty()) {
+                        rows.add(row);
+                        row = new java.util.ArrayList<Component>();
+                    }
+                    rows.add(java.util.Collections.singletonList(c));
+                    continue;
+                }
+                row.add(c);
+                if (row.size() == cols) {
+                    rows.add(row);
+                    row = new java.util.ArrayList<Component>();
+                }
+            }
+            if (!row.isEmpty()) {
+                rows.add(row);
+            }
+            return rows;
+        }
+
         @Override
         public Dimension preferredLayoutSize(Container parent) {
             Insets in = parent.getInsets();
             int w = width(parent);
             int cols = w > 0 ? columns(parent, w) : Math.min(2, maxColumns);
             int colWidth = w > 0 ? (w - in.left - in.right - gap * (cols - 1)) / cols : minColumnWidth;
+            int fullWidth = colWidth * cols + gap * (cols - 1);
             int height = 0;
-            int rowHeight = 0;
-            int i = 0;
-            for (Component c : parent.getComponents()) {
-                if (!c.isVisible()) {
-                    continue;
+            for (java.util.List<Component> row : rows(parent, cols)) {
+                int rowHeight = 0;
+                for (Component c : row) {
+                    rowHeight = Math.max(rowHeight, heightFor(c, isFullWidth(c) ? fullWidth : colWidth));
                 }
-                rowHeight = Math.max(rowHeight, heightFor(c, colWidth));
-                if (++i % cols == 0) {
-                    height += rowHeight + gap;
-                    rowHeight = 0;
-                }
-            }
-            height += rowHeight;
-            if (rowHeight == 0 && height > 0) {
-                height -= gap;
+                height += (height > 0 ? gap : 0) + rowHeight;
             }
             int prefWidth = w > 0 ? w : cols * minColumnWidth + (cols - 1) * gap + in.left + in.right;
             return new Dimension(prefWidth, height + in.top + in.bottom);
@@ -372,23 +416,18 @@ public class ResponsiveGrid extends JPanel implements Scrollable {
             int w = parent.getWidth();
             int cols = columns(parent, w);
             int colWidth = Math.max(1, (w - in.left - in.right - gap * (cols - 1)) / cols);
-            java.util.List<Component> visible = new java.util.ArrayList<Component>();
-            for (Component c : parent.getComponents()) {
-                if (c.isVisible()) {
-                    visible.add(c);
-                }
-            }
+            int fullWidth = colWidth * cols + gap * (cols - 1);
             int y = in.top;
-            for (int start = 0; start < visible.size(); start += cols) {
+            for (java.util.List<Component> row : rows(parent, cols)) {
                 int rowHeight = 0;
-                int end = Math.min(start + cols, visible.size());
-                for (int i = start; i < end; i++) {
-                    rowHeight = Math.max(rowHeight, heightFor(visible.get(i), colWidth));
+                for (Component c : row) {
+                    rowHeight = Math.max(rowHeight, heightFor(c, isFullWidth(c) ? fullWidth : colWidth));
                 }
-                for (int i = start; i < end; i++) {
-                    int x = in.left + (i - start) * (colWidth + gap);
+                for (int i = 0; i < row.size(); i++) {
+                    Component c = row.get(i);
+                    int x = in.left + i * (colWidth + gap);
                     //cards of a row get the same height, so their edges line up
-                    visible.get(i).setBounds(x, y, colWidth, rowHeight);
+                    c.setBounds(x, y, isFullWidth(c) ? fullWidth : colWidth, rowHeight);
                 }
                 y += rowHeight + gap;
             }
