@@ -15,6 +15,7 @@ Free and open source (GPL v3) · Windows, Linux and macOS · No cloud, no accoun
 - **Your own layout**: ODT (LibreOffice / OpenOffice) and PDF templates, with [EPC QR code (GiroCode)](docs/QR-Code.md)
 - **Your data stays with you**: local database or your own MySQL / MariaDB server – no cloud, no account, no tracking
 - **Switching from Fakturama 2?** *File › Import › Fakturama 2*, choose Fakturama's `Database.script` – contacts, products, documents and expenses come along with their numbers and dates
+- **Coming from YaBS 1.3.2 (Derby)?** *File › Import › From YaBS 1.3.2* takes everything over into a new H2 database – the old database stays unchanged
 - **Extendable**: Groovy scripts and [plugins](docs/Plugins.md)
 
 All features: **[anti43.github.io/openyabs](https://anti43.github.io/openyabs/)**
@@ -28,6 +29,7 @@ All features: **[anti43.github.io/openyabs](https://anti43.github.io/openyabs/)*
 - **Kunden, Lieferanten, Artikel und Lager**, Ausgaben und Buchungsjournal mit Umsatzsteuer
 - **Eigene Vorlagen** in LibreOffice / OpenOffice (ODT) mit **GiroCode** (EPC-QR-Code zum Bezahlen per Banking-App)
 - **Umstieg von Fakturama 2**: *Datei › Import › Fakturama 2* – Kontakte, Artikel, Belege und Ausgaben werden mit Belegnummern und Datum übernommen
+- **Umstieg von YaBS 1.3.2 (Derby)**: *Datei › Import › Von YaBS 1.3.2* übernimmt alles in eine neue H2-Datenbank – die alte Datenbank bleibt unverändert
 - **Datenschutz**: alle Daten bleiben auf Ihrem Rechner oder Ihrem eigenen Datenbankserver
 
 Ausführliche deutsche Beschreibung: [README auf Deutsch](docs/README.de.md) · [Hinweise und Neuerungen](docs/Hinweise.md) · **[Webseite](https://anti43.github.io/openyabs/)** (Sprache oben rechts auf DE umschalten)

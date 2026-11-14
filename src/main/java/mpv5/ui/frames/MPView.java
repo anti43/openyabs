@@ -684,6 +684,14 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
             w.showWiz();
         });
         jMenu8.add(fakturama, jMenu8.getMenuComponentCount() > 0 ? java.util.Arrays.asList(jMenu8.getMenuComponents()).indexOf(jMenu12) + 1 : 0);
+        //File > Import > From YaBS 1.3.2 (old Derby database into the new H2 database)
+        javax.swing.JMenuItem yabs132 = new javax.swing.JMenuItem(Messages.Y132_MENU.toString());
+        yabs132.addActionListener(e -> {
+            Wizard w = new Wizard(false);
+            w.addPanel(new mpv5.ui.dialogs.subcomponents.wizard_Yabs132_Import(w));
+            w.showWiz();
+        });
+        jMenu8.add(yabs132, java.util.Arrays.asList(jMenu8.getMenuComponents()).indexOf(fakturama) + 1);
         jMenuItem17.setText(Messages.SEARCH_ANYTHING + " \u2026   (Shift Shift)");
         jMenu2.add(new javax.swing.JPopupMenu.Separator(), 1);
         jMenu2.addMenuListener(new javax.swing.event.MenuListener() {
