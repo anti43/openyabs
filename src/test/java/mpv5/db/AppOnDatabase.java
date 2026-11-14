@@ -76,6 +76,41 @@ abstract class AppOnDatabase {
         return ((Item) DatabaseObject.getObject(Context.getCredit(), n.__getIDS())).__getCnumber();
     }
 
+    /**
+     * "Edit in LibreOffice": the template goes to a writable working file;
+     * saving it there stores the new file in the database and notes it in the
+     * history
+     */
+    private void templateEditedInLibreOffice(Template tpl) throws Exception {
+        mpv5.handler.TemplateEditing.setFolder(tmp.resolve("templates-edit").toFile());
+        File work = mpv5.handler.TemplateEditing.start(tpl);
+        assertTrue(work.getName().endsWith(".odt"), work.getName());
+        assertTrue(work.canWrite());
+        assertTrue(Arrays.equals(java.nio.file.Files.readAllBytes(tpl.getFile().toPath()), java.nio.file.Files.readAllBytes(work.toPath())));
+        assertTrue(mpv5.handler.TemplateEditing.isEditing(tpl));
+        final java.util.concurrent.CountDownLatch stored = new java.util.concurrent.CountDownLatch(1);
+        mpv5.handler.TemplateEditing.Listener l = (t, when) -> stored.countDown();
+        mpv5.handler.TemplateEditing.addListener(l);
+        try {
+            byte[] changed = java.nio.file.Files.readAllBytes(work.toPath());
+            changed = Arrays.copyOf(changed, changed.length + 16);
+            Thread.sleep(1100);
+            java.nio.file.Files.write(work.toPath(), changed);
+            assertTrue(stored.await(20, java.util.concurrent.TimeUnit.SECONDS), "the saved file is taken over");
+            Template again = (Template) DatabaseObject.getObject(Context.getTemplate(), tpl.__getIDS());
+            assertTrue(Arrays.equals(changed, java.nio.file.Files.readAllBytes(again.getFile().toPath())), "stored in the database");
+            Object[][] history = QueryHandler.instanceOf().clone(Context.getHistory()).select("cname", new String[]{"intitem", String.valueOf(tpl.__getIDS()), ""});
+            boolean noted = false;
+            for (Object[] h : history) {
+                noted |= String.valueOf(h[0]).contains(tpl.__getCname());
+            }
+            assertTrue(noted, "noted in the history");
+        } finally {
+            mpv5.handler.TemplateEditing.removeListener(l);
+            mpv5.handler.TemplateEditing.stop(tpl);
+        }
+    }
+
     void newInstallationSaveAndLoad(String driver, String location, String dbname, String user, String password) throws Exception {
         if (System.getenv("YABS_TEST_DEBUG") != null) {
             mpv5.logging.Log.setLogLevel(mpv5.logging.Log.LOGLEVEL_DEBUG);
@@ -107,6 +142,7 @@ abstract class AppOnDatabase {
             List<DatabaseObject> templates = DatabaseObject.getObjects(Context.getTemplate());
             assertEquals(19, templates.size());
             assertNotNull(((Template) templates.get(0)).__getDateadded());
+            templateEditedInLibreOffice((Template) templates.get(0));
 
             Contact c = (Contact) DatabaseObject.getObject(Context.getContact());
             c.setCname("Muster GmbH");
