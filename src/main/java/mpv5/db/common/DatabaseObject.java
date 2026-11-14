@@ -305,6 +305,14 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         t.start();
     }
 
+    /**
+     * Forget all cached objects (e.g. after the data of the database was
+     * replaced by an import)
+     */
+    public static synchronized void clearCache() {
+        cache.clear();
+    }
+
     public static synchronized void cacheObject(final DatabaseObject databaseObject) {
         if (databaseObject != null && databaseObject.__getIDS() > 0) {
             if (databaseObject.IDENTITY == null) {
