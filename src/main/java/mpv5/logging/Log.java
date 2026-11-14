@@ -199,9 +199,9 @@ public class Log {
       for (int i = 0; i < message.length; i++) {
          Object object = message[i];
          write(object);
-         if (!YConsole.CONSOLE_LOG_ENABLED) {
-            System.out.println(object);
-         }
+         //if (!YConsole.CONSOLE_LOG_ENABLED) {
+         //   System.out.println(object);
+         //}
       }
    }
 
@@ -272,7 +272,6 @@ public class Log {
          public void run() {
             for (int i = 0; i < loggers.size(); i++) {
                loggers.get(i).log(obj);
-               ;
             }
          }
       };
