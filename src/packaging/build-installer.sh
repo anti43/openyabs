@@ -4,8 +4,9 @@
 #
 #   src/packaging/build-installer.sh <deb|rpm|msi|dmg> <version>
 #
-# version: numbers only, e.g. 1.3.2 (MSI: each part at most 255.255.65535;
-# macOS: the first number must not be 0).
+# version: e.g. 1.3.2 (MSI and macOS: numbers only, MSI each part at most
+# 255.255.65535, macOS the first number not 0); deb and rpm also take a
+# pre-release with "~", e.g. 2.0.4~dev250, which sorts before 2.0.4.
 # Needs: deb - dpkg-deb, fakeroot; rpm - rpmbuild; msi - WiX Toolset 3 on the
 # PATH; dmg - macOS (sips, iconutil, hdiutil). The dmg is not signed.
 # Result: build/installer/out/

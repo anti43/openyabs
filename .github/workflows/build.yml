@@ -95,6 +95,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # the release tags, for the version of master builds
 
       - uses: actions/setup-java@v4
         with:
@@ -121,23 +123,32 @@ jobs:
           }
           "$($wix.FullName)\bin" | Out-File -FilePath $env:GITHUB_PATH -Append -Encoding utf8
 
-      # installer versions are numbers only: the tag (v2.1.0 -> 2.1.0), else
-      # 2.0.<build number> (as the application)
+      # installer versions: releases and tags X.Y.Z (v2.1.0 -> 2.1.0). Master builds
+      # must rank below the next release, as the application (2.0.4-dev.250):
+      # deb and rpm get 2.0.4~dev250 ("~" sorts before the release in dpkg and
+      # rpm); MSI and macOS only take numbers and get the latest release
+      # (2.0.3), so every following release installs as an update
       - name: Build installers
         shell: bash
         env:
           RELEASE_VERSION: ${{ inputs.release-version }}
         run: |
           if [[ -n "$RELEASE_VERSION" ]]; then
-            version="$RELEASE_VERSION"
+            linux="$RELEASE_VERSION"; numeric="$RELEASE_VERSION"
           elif [[ "$GITHUB_REF" == refs/tags/v* ]]; then
-            version="${GITHUB_REF_NAME#v}"
-            version="${version%%-*}"
+            linux="${GITHUB_REF_NAME#v}"; linux="${linux%%-*}"; numeric="$linux"
           else
-            version="2.0.${GITHUB_RUN_NUMBER}"
+            latest=$(git tag --list 'v*' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sed 's/^v//' | sort -V | tail -n 1)
+            IFS=. read -r major minor patch <<< "${latest:-2.0.-1}"
+            linux="${major}.${minor}.$((patch + 1))~dev${GITHUB_RUN_NUMBER}"
+            numeric="${latest:-2.0.0}"
           fi
           mkdir -p dist
           for type in ${{ matrix.types }}; do
+            case "$type" in
+              deb|rpm) version="$linux" ;;
+              *) version="$numeric" ;;
+            esac
             src/packaging/build-installer.sh "$type" "$version"
             cp build/installer/out/* dist/
           done
