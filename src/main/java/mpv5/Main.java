@@ -395,6 +395,18 @@ public class Main implements Runnable {
             return;
         }
         linuxPaintFix();
+        //uncaught exceptions (also of the Swing thread): printed as before and in the
+        //history (category "Errors")
+        final Thread.UncaughtExceptionHandler previous = Thread.getDefaultUncaughtExceptionHandler();
+        Thread.setDefaultUncaughtExceptionHandler((thread, e) -> {
+            mpv5.logging.ErrorHistory.record(thread.getName(), e);
+            if (previous != null) {
+                previous.uncaughtException(thread, e);
+            } else {
+                System.err.print("Exception in thread \"" + thread.getName() + "\" ");
+                e.printStackTrace();
+            }
+        });
 
         classLoader = new Java10UrlClassloader(new URL[0], Main.class.getClassLoader());
 

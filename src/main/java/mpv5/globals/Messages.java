@@ -1525,6 +1525,8 @@ public enum Messages {
     ACTION_SAVE_AS_NEW("Save as new"),
     EXPORT_FAILED("The document could not be created from the template \"%s\": %s"),
     CONTACT_SHEET("Contact sheet"),
+    HISTORY_KIND_ERRORS("Errors"),
+    HISTORY_ERROR_COUNT("%d\u00d7"),
     MODERN_UI("Modern views for contacts, products and documents (preview, takes effect for newly opened tabs)");
 
 

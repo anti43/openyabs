@@ -161,6 +161,7 @@ abstract class AppOnDatabase {
             assertEquals(0, new BigDecimal("60").compareTo(inv2.__getNetvalue()));
             assertEquals(c.__getIDS(), inv2.__getContactsids());
             orderConfirmationHasPositions(c, inv2);
+            errorsInTheHistory();
             assertEquals(DateConverter.getDefDateString(inv.__getDatetodo()), DateConverter.getDefDateString(inv2.__getDatetodo()));
 
             //payments on the invoice (60 net + 19 % = 71.40): open amount, paid when complete, open again when removed
@@ -454,6 +455,42 @@ abstract class AppOnDatabase {
         }
         try (org.apache.pdfbox.pdmodel.PDDocument d = org.apache.pdfbox.Loader.loadPDF(ex.getTargetFile())) {
             return new org.apache.pdfbox.text.PDFTextStripper().getText(d);
+        }
+    }
+
+    /**
+     * Logged exceptions are in the history (category "Errors"): once per
+     * message, with how often they happened
+     */
+    private static void errorsInTheHistory() throws Exception {
+        String unique = "test error " + System.nanoTime();
+        for (int i = 0; i < 3; i++) {
+            mpv5.logging.Log.Debug(AppOnDatabase.class, new IllegalStateException(unique));
+        }
+        mpv5.logging.Log.Debug(new IllegalArgumentException(unique + " other"));
+        mpv5.logging.Log.Debug(new mpv5.db.common.NodataFoundException());
+        mpv5.logging.ErrorHistory.flush();
+        mpv5.logging.Log.Debug(AppOnDatabase.class, new IllegalStateException(unique));
+        mpv5.logging.ErrorHistory.flush();
+        java.sql.Connection conn = DatabaseConnection.instanceOf().getConnection();
+        try (java.sql.PreparedStatement s = conn.prepareStatement(
+                "SELECT cname, reserve1, reserve2, dbidentity FROM history WHERE dbidentity = 'error' AND cname LIKE ? ORDER BY cname")) {
+            s.setString(1, "%" + unique + "%");
+            try (java.sql.ResultSet r = s.executeQuery()) {
+                assertTrue(r.next());
+                assertEquals("IllegalArgumentException: " + unique + " other", r.getString(1));
+                assertEquals("1", r.getString(2).trim());
+                assertTrue(r.next());
+                assertEquals("IllegalStateException: " + unique, r.getString(1));
+                assertEquals("4", r.getString(2).trim(), "once, with the count of all four");
+                assertTrue(r.getString(3).contains("mpv5.db.AppOnDatabase"), r.getString(3));
+                assertTrue(!r.next(), "one entry per message");
+            }
+        }
+        try (java.sql.ResultSet r = conn.createStatement().executeQuery(
+                "SELECT COUNT(*) FROM history WHERE dbidentity = 'error' AND cname LIKE 'NodataFoundException%'")) {
+            r.next();
+            assertEquals(0, r.getInt(1), "no data found is no error");
         }
     }
 }

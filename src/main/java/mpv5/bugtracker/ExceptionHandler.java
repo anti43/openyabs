@@ -30,7 +30,13 @@ public class ExceptionHandler {
      * @param exception
      */
     public static void add(Exception exception) {
-        exc.add(exception);
+        //the last ones for a bug report: the list grew for as long as YaBS ran
+        synchronized (exc) {
+            exc.add(exception);
+            while (exc.size() > 100) {
+                exc.remove(0);
+            }
+        }
 //        mpv5.YabsViewProxy.instance().showError();
 //        mpv5.YabsViewProxy.instance().setWaiting(false);//clean up
     }
