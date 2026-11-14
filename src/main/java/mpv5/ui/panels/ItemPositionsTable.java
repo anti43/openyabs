@@ -51,7 +51,6 @@ import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.dialogs.subcomponents.ItemTextAreaDialog;
 import mpv5.ui.dialogs.subcomponents.ProductSelectDialog;
-import mpv5.ui.dialogs.subcomponents.ProductSelectDialog3;
 import mpv5.ui.modern.ModernTheme;
 import mpv5.ui.popups.TablePopUp;
 import mpv5.utils.date.DateConverter;
@@ -388,7 +387,8 @@ public class ItemPositionsTable extends JPanel {
         prepareTable();
         sizeColumns();
         MPTableModel model = getModel();
-        model.setCanEdits(new boolean[]{false, false, true, true, true, true, true, true, false, false, true, true, false, false, true, true, false, false});
+        //the product column is a link only: products are chosen in the dialog of the text column
+        model.setCanEdits(new boolean[]{false, false, true, true, true, true, true, true, false, false, false, true, false, false, true, true, false, false});
         //position number: muted, the selected row in the accent color
         itemtable.getColumnModel().getColumn(1).setCellRenderer(new javax.swing.table.DefaultTableCellRenderer() {
             private static final long serialVersionUID = 1L;
@@ -422,16 +422,6 @@ public class ItemPositionsTable extends JPanel {
             TableFormat.stripColumn(itemtable, 15);
             model.setCellEditable(0, 15, false);
         }
-
-        TextAreaCellEditor r = new TextAreaCellEditor(itemtable);
-        //created when the product cell is edited the first time
-        r.setDialog(() -> {
-            ProductSelectDialog3 productSelectDialog = new ProductSelectDialog3(mpv5.YabsViewProxy.instance().getIdentifierFrame(), true, itemtable);
-            productSelectDialog.okButton.addActionListener(r);
-            productSelectDialog.cancelButton.addActionListener(r);
-            return productSelectDialog;
-        }, d -> ((ProductSelectDialog3) d).getIDTextField());
-        r.setEditorTo(10);
 
         if (!User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "showoptionalcolumn")) {
             TableFormat.stripColumn(itemtable, 14);
@@ -488,15 +478,15 @@ public class ItemPositionsTable extends JPanel {
     }
 
     /**
-     * Choose a product for the row (the product column's picker, next to the
-     * row), or an order if orders are preferred
+     * Choose a product for the row (the dialog of the text column, with the
+     * product search), or an order if orders are preferred
      */
     private void choose(int row) {
         if (row < 0) {
             return;
         }
         if (!User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "ordersoverproducts")) {
-            itemtable.editCellAt(row, itemtable.convertColumnIndexToView(10));
+            itemtable.editCellAt(row, itemtable.convertColumnIndexToView(4));
             return;
         }
         Item o = (Item) Popup.SelectValue(Context.getOrder());

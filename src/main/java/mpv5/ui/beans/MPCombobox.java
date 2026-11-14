@@ -78,6 +78,11 @@ public class MPCombobox extends javax.swing.JPanel {
 
             @Override
             public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER && isSelectionCommitted()) {
+                    //the user picked an entry of the list (e.g. with the arrow keys): Enter selects it,
+                    //searching again for its text would replace the selection
+                    return;
+                }
                 if (SEARCH_WHILE_TYPE && getContext() != null) {
                     search();
                 } else if (SEARCH_ON_ENTER && (e.getKeyCode() == KeyEvent.VK_ENTER) && getContext() != null) {
@@ -152,6 +157,22 @@ public class MPCombobox extends javax.swing.JPanel {
     }
 
     /**
+     * @return true if the selected item is an entry of the list (a record or
+     * the action entry) and the field still shows its text
+     */
+    private boolean isSelectionCommitted() {
+        Object sel = jComboBox1.getSelectedItem();
+        if (!(sel instanceof MPComboBoxModelItem)) {
+            return false;
+        }
+        if (sel != actionItem && !((MPComboBoxModelItem) sel).isValid()) {
+            return false;
+        }
+        Object text = jComboBox1.getEditor().getItem();
+        return text != null && String.valueOf(text).equals(sel.toString());
+    }
+
+    /**
      * Triggers the search functionality
      */
     public void search() {
@@ -175,7 +196,9 @@ public class MPCombobox extends javax.swing.JPanel {
                 public void run() {
                     ComboBoxEditor cbField = jComboBox1.getEditor();
                     Object value = cbField.getItem();
-                    jComboBox1.setSelectedItem(new MPComboBoxModelItem(-1, value.toString()));
+                    if (value == null) {
+                        value = "";
+                    }
 
                     Object[][] data = null;
                     if (getComboBox().isEditable()) {
@@ -192,34 +215,44 @@ public class MPCombobox extends javax.swing.JPanel {
                         data = new DatabaseSearch(getContext(), 20).getValuesFor("ids, cname", "cname", "", true);
                     }
 
-                    if (data.length > 0) {
-                        jComboBox1.setModel(withAction(MPComboBoxModelItem.toModel(MPComboBoxModelItem.toItems(data, true, true))));
-               
-                        if (table != null) {
-                            table.editCellAt(table.getSelectedRow(), 4);
-                        }
-                        if (!hidePopup) {
-                            jComboBox1.showPopup();
-                        }
-                    }
-                    
-                    if (data.length == 0 && actionItem != null) {
-                        //nothing found: the action (e.g. "new customer") is still offered
-                        Object typed = jComboBox1.getEditor().getItem();
-                        jComboBox1.setModel(withAction(new MPComboboxModel(new MPComboBoxModelItem[0])));
-                        jComboBox1.getEditor().setItem(typed);
-                        if (!hidePopup) {
-                            jComboBox1.showPopup();
-                        }
-                    }
-                    if (data.length == 1) {
-                        jComboBox1.setSelectedIndex(0);
-                    }
+                    //the models are changed on the EDT, not while Swing handles the key event
+                    final Object typed = value;
+                    final Object[][] found = data;
+                    javax.swing.SwingUtilities.invokeLater(() -> showResults(typed, found, hidePopup));
                 }
             };
             if (getContext() != null) {
                 executor.execute(runnable);
             }
+        }
+    }
+
+    /**
+     * Puts the search results into the list (on the EDT)
+     */
+    private void showResults(Object typed, Object[][] data, boolean hidePopup) {
+        jComboBox1.setSelectedItem(new MPComboBoxModelItem(-1, typed.toString()));
+        if (data.length > 0) {
+            jComboBox1.setModel(withAction(MPComboBoxModelItem.toModel(MPComboBoxModelItem.toItems(data, true, true))));
+
+            if (table != null) {
+                table.editCellAt(table.getSelectedRow(), 4);
+            }
+            if (!hidePopup) {
+                jComboBox1.showPopup();
+            }
+        }
+
+        if (data.length == 0 && actionItem != null) {
+            //nothing found: the action (e.g. "new customer") is still offered
+            jComboBox1.setModel(withAction(new MPComboboxModel(new MPComboBoxModelItem[0])));
+            jComboBox1.getEditor().setItem(typed);
+            if (!hidePopup) {
+                jComboBox1.showPopup();
+            }
+        }
+        if (data.length == 1) {
+            jComboBox1.setSelectedIndex(0);
         }
     }
 
@@ -481,6 +514,31 @@ public class MPCombobox extends javax.swing.JPanel {
     private MPComboBoxModelItem actionItem;
     private Runnable action;
     private Object lastRealSelection;
+    private boolean actionPending;
+
+    /**
+     * @return true if the current event moves through the list (arrow keys
+     * etc.) instead of choosing an entry
+     */
+    private static boolean isKeyNavigation() {
+        java.awt.AWTEvent ev = java.awt.EventQueue.getCurrentEvent();
+        if (!(ev instanceof KeyEvent)) {
+            return false;
+        }
+        switch (((KeyEvent) ev).getKeyCode()) {
+            case KeyEvent.VK_UP:
+            case KeyEvent.VK_DOWN:
+            case KeyEvent.VK_KP_UP:
+            case KeyEvent.VK_KP_DOWN:
+            case KeyEvent.VK_PAGE_UP:
+            case KeyEvent.VK_PAGE_DOWN:
+            case KeyEvent.VK_HOME:
+            case KeyEvent.VK_END:
+                return true;
+            default:
+                return false;
+        }
+    }
 
     /**
      * An entry at the end of every list (also without results) which runs an
@@ -496,11 +554,20 @@ public class MPCombobox extends javax.swing.JPanel {
         jComboBox1.addActionListener(e -> {
             Object sel = jComboBox1.getSelectedItem();
             if (sel == actionItem) {
+                if (isKeyNavigation() || actionPending) {
+                    //only moved onto the entry, or already triggered by this Enter
+                    return;
+                }
+                actionPending = true;
                 final Object restore = lastRealSelection;
                 javax.swing.SwingUtilities.invokeLater(() -> {
-                    jComboBox1.hidePopup();
-                    jComboBox1.setSelectedItem(restore);
-                    this.action.run();
+                    try {
+                        jComboBox1.hidePopup();
+                        jComboBox1.setSelectedItem(restore);
+                        this.action.run();
+                    } finally {
+                        actionPending = false;
+                    }
                 });
             } else if (sel instanceof MPComboBoxModelItem) {
                 lastRealSelection = sel;

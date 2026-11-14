@@ -53,6 +53,64 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
         labeledCombobox1.setToolTipText(Messages.SEARCHABLE.toString());
 
         labeledSpinner1.setValue(1);
+        makeMovable();
+    }
+
+    /**
+     * Undecorated, so: a border and a strip at the top to drag the dialog
+     * (e.g. when it opens at the bottom of the screen)
+     */
+    private void makeMovable() {
+        final java.awt.Color line = mpv5.ui.modern.ModernTheme.border();
+        javax.swing.JPanel handle = new javax.swing.JPanel() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected void paintComponent(java.awt.Graphics g) {
+                super.paintComponent(g);
+                //a grip in the middle
+                int d = Math.max(2, mpv5.ui.modern.ModernTheme.px(2));
+                int gap = d * 2;
+                int x = getWidth() / 2 - gap * 2;
+                int y = getHeight() / 2 - gap / 2;
+                g.setColor(mpv5.ui.modern.ModernTheme.muted());
+                for (int i = 0; i < 5; i++) {
+                    g.fillRect(x + i * gap, y, d, d);
+                    g.fillRect(x + i * gap, y + gap, d, d);
+                }
+            }
+        };
+        handle.setPreferredSize(new java.awt.Dimension(10, mpv5.ui.modern.ModernTheme.px(12)));
+        handle.setBackground(mpv5.ui.modern.ModernTheme.blend(mpv5.ui.modern.ModernTheme.background(), mpv5.ui.modern.ModernTheme.cardBackground(), 0.5f));
+        handle.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, line));
+        handle.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.MOVE_CURSOR));
+        java.awt.event.MouseAdapter drag = new java.awt.event.MouseAdapter() {
+            private java.awt.Point offset;
+
+            @Override
+            public void mousePressed(java.awt.event.MouseEvent e) {
+                java.awt.Point p = e.getLocationOnScreen();
+                offset = new java.awt.Point(p.x - getX(), p.y - getY());
+            }
+
+            @Override
+            public void mouseDragged(java.awt.event.MouseEvent e) {
+                if (offset != null) {
+                    java.awt.Point p = e.getLocationOnScreen();
+                    setLocation(p.x - offset.x, p.y - offset.y);
+                }
+            }
+        };
+        handle.addMouseListener(drag);
+        handle.addMouseMotionListener(drag);
+
+        javax.swing.JPanel root = new javax.swing.JPanel(new java.awt.BorderLayout());
+        root.setBorder(javax.swing.BorderFactory.createLineBorder(line));
+        root.add(handle, java.awt.BorderLayout.NORTH);
+        root.add(jPanel1, java.awt.BorderLayout.CENTER);
+        jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+        setContentPane(root);
+        pack();
     }
 
     @Override

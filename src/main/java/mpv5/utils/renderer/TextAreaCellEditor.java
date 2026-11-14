@@ -172,9 +172,13 @@ public class TextAreaCellEditor extends DefaultCellEditor implements ActionListe
 
         Component component = super.getTableCellEditorComponent(table, value, isSelected, row, column);
 
-        dialogsTextComponent.setText(value.toString());    
+        dialogsTextComponent.setText(value.toString());
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
+                //editing may have ended meanwhile (e.g. the document was saved): no dialog then
+                if (table.getCellEditor() != TextAreaCellEditor.this || !textArea.isShowing()) {
+                    return;
+                }
 
                 // Point p =textArea.getLocationOnScreen();
                 // p.move((int)p.getX(),mpv5.YabsViewProxy.instance().identifierFrame.getY() + mpv5.YabsViewProxy.instance().identifierFrame.getHeight() - 310);
@@ -195,6 +199,21 @@ public class TextAreaCellEditor extends DefaultCellEditor implements ActionListe
         });
 
         return component;
+    }
+
+    /**
+     * Shortcuts (Ctrl+S, Alt+..., ...) do not start editing: the JTable starts
+     * editing on any key, which opened the dialog when the document was saved
+     */
+    @Override
+    public boolean isCellEditable(java.util.EventObject e) {
+        if (e instanceof KeyEvent) {
+            KeyEvent k = (KeyEvent) e;
+            if (k.isControlDown() || k.isAltDown() || k.isMetaDown()) {
+                return false;
+            }
+        }
+        return super.isCellEditable(e);
     }
 
     @Override
