@@ -44,9 +44,9 @@ jobs:
           RELEASE_VERSION: ${{ inputs.release-version }}
         run: |
           if [[ -n "$RELEASE_VERSION" ]]; then
-            ./gradlew --no-daemon test distributionZip -PreleaseVersion="$RELEASE_VERSION"
+            ./gradlew --no-daemon test distributionZip -PreleaseVersion="$RELEASE_VERSION" -PreleaseChannel=release
           elif [[ "$GITHUB_REF" == refs/tags/v* ]]; then
-            ./gradlew --no-daemon test distributionZip -PreleaseVersion="${GITHUB_REF_NAME#v}"
+            ./gradlew --no-daemon test distributionZip -PreleaseVersion="${GITHUB_REF_NAME#v}" -PreleaseChannel=release
           else
             ./gradlew --no-daemon test distributionZip -PreleaseVersion="2.0.${GITHUB_RUN_NUMBER}"
           fi

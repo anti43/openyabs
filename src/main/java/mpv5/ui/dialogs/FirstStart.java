@@ -107,6 +107,10 @@ public final class FirstStart extends JFrame {
     private final JTextField prefix = ModernTheme.roomy(new JTextField());
     private final JCheckBox shared = new JCheckBox(tr(Messages.FIRSTSTART_SHARED), true);
     private final JCheckBox existing = new JCheckBox(tr(Messages.FIRSTSTART_EXISTING));
+    /**
+     * look for new versions at start (on unless switched off here)
+     */
+    private final JCheckBox updates = new JCheckBox("<html>" + tr(Messages.FIRSTSTART_UPDATES) + "</html>", true);
     private final Card serverCard = new Card(null);
     //progress
     private final Step[] steps = {
@@ -289,6 +293,11 @@ public final class FirstStart extends JFrame {
         server.extra(serverCard);
         where.add(server);
         type.addActionListener(e -> typeChanged());
+        where.add(Box.createVerticalStrut(ModernTheme.px(12)));
+        updates.setOpaque(false);
+        updates.setFont(ModernTheme.font(-1, Font.PLAIN));
+        updates.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
+        where.add(updates);
 
         local.radio.addActionListener(e -> choose(false));
         server.radio.addActionListener(e -> choose(true));
@@ -672,6 +681,7 @@ public final class FirstStart extends JFrame {
         LocalSettings.setProperty(LocalSettings.OFFICE_USE, "false");
         LocalSettings.setProperty(LocalSettings.OFFICE_ALT, "true");
         LocalSettings.setProperty(LocalSettings.DBTYPE, s.network ? "network" : "single");
+        LocalSettings.setProperty(LocalSettings.SUPPRESS_UPDATE_CHECK, String.valueOf(!updates.isSelected()));
         DatabaseConnection conn = new DatabaseConnection();
         if (!conn.connect(s.driver, s.user, s.password, s.url, s.dbname, s.prefix, !s.onlyConnect)) {
             return null;

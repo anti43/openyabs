@@ -355,6 +355,7 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
 
         savebasedir.set_Text(values.getProperty(LocalSettings.BASE_DIR));
         backupbasedir.set_Text(values.getProperty(LocalSettings.BACKUP_DIR));
+        updateCheck.setSelected(!TypeConversion.stringToBoolean(values.getProperty(LocalSettings.SUPPRESS_UPDATE_CHECK)));
         showFolders();
     }
 
@@ -447,6 +448,7 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
         LocalSettings.setProperty(LocalSettings.DBAUTOLOCK, TypeConversion.booleanToString(autolock.isSelected()));
         LocalSettings.setProperty(LocalSettings.BASE_DIR, savebasedir.get_Text(true));
         LocalSettings.setProperty(LocalSettings.BACKUP_DIR, backupbasedir.get_Text(true));
+        LocalSettings.setProperty(LocalSettings.SUPPRESS_UPDATE_CHECK, TypeConversion.booleanToString(!updateCheck.isSelected()));
 
         LocalSettings.apply();
         showFolders();
@@ -470,7 +472,7 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
         setOpaque(false);
         add(mpv5.ui.modern.Applets.page(null, 420,
                 mpv5.ui.modern.Applets.wrap(null, jPanel2), mpv5.ui.modern.Applets.wrap(null, jPanel3),
-                mpv5.ui.modern.Applets.wrap(null, jPanel4), mpv5.ui.modern.Applets.wrap(null, jPanel5), localFilesCard()), java.awt.BorderLayout.CENTER);
+                mpv5.ui.modern.Applets.wrap(null, jPanel4), mpv5.ui.modern.Applets.wrap(null, jPanel5), localFilesCard(), updatesCard()), java.awt.BorderLayout.CENTER);
         mpv5.ui.modern.PrimaryButton save = new mpv5.ui.modern.PrimaryButton(jButton1.getText(), "/images/16/filesave.png");
         save.addActionListener(e -> jButton1.doClick());
         actions = mpv5.ui.modern.Applets.actionBar(new javax.swing.JComponent[]{jButton4}, new javax.swing.JComponent[]{jButton3, jButton2, save});
@@ -513,6 +515,25 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
                 .addFull(mpv5.ui.modern.Applets.hint(mpv5.globals.Messages.LOCALFILES_HINT.toString()))
                 .addFull(pathLabel(dir))
                 .addFull(info)
+                .addFull(row);
+    }
+
+    private final javax.swing.JCheckBox updateCheck = new javax.swing.JCheckBox(mpv5.globals.Messages.UPDATE_SWITCH.toString(), true);
+
+    /**
+     * Looking for new versions on GitHub: on/off (saved with the other local
+     * settings) and "Check now"
+     */
+    private mpv5.ui.modern.Card updatesCard() {
+        updateCheck.setOpaque(false);
+        javax.swing.JButton now = new javax.swing.JButton(mpv5.globals.Messages.UPDATE_CHECK_NOW.toString());
+        now.addActionListener(e -> mpv5.ui.dialogs.UpdateNotice.checkNow(this));
+        javax.swing.JPanel row = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
+        row.setOpaque(false);
+        row.add(now);
+        return new mpv5.ui.modern.Card(mpv5.globals.Messages.UPDATE_CARD.toString())
+                .addFull(updateCheck)
+                .addFull(mpv5.ui.modern.Applets.hint(mpv5.globals.Messages.UPDATE_HINT.toString()))
                 .addFull(row);
     }
 

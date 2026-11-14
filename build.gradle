@@ -7,11 +7,14 @@ group = 'org.openyabs'
 // (see .github/workflows/build.yml); local builds are 2.0-dev
 version = findProperty('releaseVersion') ?: '2.0-dev'
 
-// the version shown in the application (splash screen, About, database update)
+// the version shown in the application (splash screen, About, database update);
+// releases pass -PreleaseChannel=release (only they look for updates on GitHub)
+def releaseChannel = findProperty('releaseChannel') ?: 'dev'
 processResources {
     inputs.property('version', project.version)
+    inputs.property('channel', releaseChannel)
     filesMatching('mpv5/version.properties') {
-        expand(version: project.version)
+        expand(version: project.version, channel: releaseChannel)
     }
 }
 

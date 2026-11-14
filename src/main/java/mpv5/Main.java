@@ -33,7 +33,6 @@ import java.awt.Font;
 import java.awt.Window;
 import java.io.File;
 import java.lang.reflect.Method;
-import java.net.HttpURLConnection;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URL;
@@ -953,20 +952,9 @@ public class Main implements Runnable {
             }
         }
 
-        if (!HEADLESS) {
-//            if (GlobalSettings.getBooleanProperty("org.openyabs.updates.enable") && !LocalSettings.getBooleanProperty(LocalSettings.SUPPRESS_UPDATE_CHECK)) {
-//                Runnable runnable1 = new Runnable() {
-//
-//                    @Override
-//                    public void run() {
-//                        if (checkUpdates()) {
-//                            Notificator.raiseNotification(Messages.UPDATE_AVAILABLE, false);
-//                        }
-//                    }
-//                };
-//
-//                new Thread(runnable1).start();
-//            }
+        //newer release on GitHub? (release builds only, can be switched off)
+        if (!HEADLESS && !mpv5.db.common.ConnectionTypeHandler.DEVMODE) {
+            mpv5.ui.dialogs.UpdateNotice.checkAtStart();
         }
 
     }
@@ -1186,33 +1174,6 @@ public class Main implements Runnable {
         }
 
         mpv5.ui.dialogs.FirstStart.open(forConnId);
-    }
-
-    /**
-     * Checks if updates are available
-     *
-     * @return
-     */
-    public static boolean checkUpdates() {
-
-        try {
-            //Just a basic check
-            String url = GlobalSettings.getProperty("org.openyabs.updates.url");
-            if ("null".equals(url)) {
-                return false;
-            }
-            HttpURLConnection.setFollowRedirects(true);
-            HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
-            con.setRequestMethod("GET");
-            // When the available version is not the current version, we assume there is an update available
-            Log.Debug(Main.class, url + " " + con.getResponseMessage());
-
-            return (con.getResponseCode() != HttpURLConnection.HTTP_OK);
-        } catch (Exception e) {
-            Log.Debug(Main.class, e.getMessage());
-            //When we cant reach it at all, no update presumably
-            return false;
-        }
     }
 
     @SuppressWarnings("unchecked")
