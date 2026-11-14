@@ -99,6 +99,14 @@ public class HistoryPanel extends JPanel implements ListPanel {
         Date date;
         char action;
         String name;
+        /**
+         * errors: how often it happened (0: not an error)
+         */
+        long count;
+        /**
+         * errors: where it happened
+         */
+        String where = "";
     }
 
     private final JTextField search = ModernTheme.roomy(new JTextField());
@@ -146,7 +154,7 @@ public class HistoryPanel extends JPanel implements ListPanel {
         ButtonGroup g = new ButtonGroup();
         Object[][] chips = {{Messages.ACTIVITY_ALL, null}, {Messages.HISTORY_KIND_NEW, "+"}, {Messages.HISTORY_KIND_CHANGED, "~"},
         {Messages.HISTORY_KIND_DELETED, "-"}, {Messages.SEARCH_KIND_CONTACTS, "contacts"}, {Messages.SEARCH_KIND_DOCUMENTS, "items"},
-        {Messages.SEARCH_KIND_PRODUCTS, "products"}};
+        {Messages.SEARCH_KIND_PRODUCTS, "products"}, {Messages.HISTORY_KIND_ERRORS, "e"}};
         for (Object[] c : chips) {
             final String k = (String) c[1];
             JToggleButton b = new JToggleButton(c[0].toString(), k == null);
@@ -282,7 +290,7 @@ public class HistoryPanel extends JPanel implements ListPanel {
             c.addReference(Context.getGroup());
             Object[][] d = QueryHandler.instanceOf().clone(c).select(
                     h + "ids, " + h + "cname, " + h + "username, " + Context.getGroup().getDbIdentity() + ".cname, "
-                    + h + "dbidentity, " + h + "intitem, " + h + "dateadded", dh, time).getData();
+                    + h + "dbidentity, " + h + "intitem, " + h + "dateadded, " + h + "reserve1, " + h + "reserve2", dh, time).getData();
             for (Object[] r : d) {
                 Event e = new Event();
                 e.id = num(r[0]);
@@ -290,14 +298,22 @@ public class HistoryPanel extends JPanel implements ListPanel {
                 e.user = s(r[2]);
                 e.group = s(r[3]);
                 String db = s(r[4]);
-                e.context = db.isEmpty() ? null : Context.getMatchingContext(db);
+                boolean error = mpv5.logging.ErrorHistory.DBIDENTITY.equals(db);
+                e.context = db.isEmpty() || error ? null : Context.getMatchingContext(db);
                 e.item = num(r[5]);
                 try {
                     e.date = DateConverter.getDate(r[6]);
                 } catch (Exception ex) {
                     e.date = null;
                 }
-                classify(e);
+                if (error) {
+                    e.action = 'e';
+                    e.name = e.message;
+                    e.count = Math.max(1, num(r[7]));
+                    e.where = s(r[8]);
+                } else {
+                    classify(e);
+                }
                 l.add(e);
             }
         } catch (NodataFoundException ex) {
@@ -357,7 +373,7 @@ public class HistoryPanel extends JPanel implements ListPanel {
                 }
             }
             String type = RichList.typeName(e.context);
-            if (!n.isEmpty() && !SearchService.matches(e.message + " " + e.user + " " + e.group + " " + type, n)) {
+            if (!n.isEmpty() && !SearchService.matches(e.message + " " + e.user + " " + e.group + " " + type + " " + e.where, n)) {
                 continue;
             }
             String d = e.date == null ? "" : dayName(e.date, day);
@@ -384,6 +400,10 @@ public class HistoryPanel extends JPanel implements ListPanel {
                     r.badge = "✎";
                     r.color = ModernTheme.accent();
                     break;
+                case 'e':
+                    r.badge = "!";
+                    r.color = RichList.RED;
+                    break;
                 default:
                     r.badge = "i";
                     r.color = ModernTheme.muted();
@@ -391,8 +411,14 @@ public class HistoryPanel extends JPanel implements ListPanel {
             r.title = e.name;
             r.strong = e.context != null && e.item > 0 && e.action != '-';
             String who = e.user.isEmpty() ? "" : Messages.HISTORY_BY + " " + e.user;
-            r.detail = join(type, actionName(e.action), who);
-            r.right = e.item > 0 ? "#" + e.item : "";
+            if (e.action == 'e') {
+                //the error once, how often and where it happened (last time: date and user)
+                r.detail = join(Messages.HISTORY_KIND_ERRORS.toString(), e.where, who);
+                r.right = String.format(Messages.HISTORY_ERROR_COUNT.toString(), e.count);
+            } else {
+                r.detail = join(type, actionName(e.action), who);
+                r.right = e.item > 0 ? "#" + e.item : "";
+            }
             model.addElement(r);
             rows.add(new Object[]{e.id, e.message, e.user, e.group, e.date});
             shown++;

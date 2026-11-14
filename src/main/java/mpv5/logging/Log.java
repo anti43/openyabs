@@ -129,6 +129,10 @@ public class Log {
       //the common case without the lock: nothing is written (log level none, or normal
       //and no error in the message); exceptions and written messages as before
       java.util.Objects.requireNonNull(source);
+      if (message instanceof Throwable) {
+         //the history ("Errors"): once per message, with count; at any log level
+         ErrorHistory.record(source, (Throwable) message);
+      }
       if (!(message instanceof Throwable)) {
          int level = loglevel;
          if (level == LOGLEVEL_NONE) {
@@ -155,13 +159,9 @@ public class Log {
          sourcen = source.getClass().getName();
       }
 
-      if (message instanceof Throwable) {
-         try {
-            ExceptionHandler.add((Exception) message);
-         } catch (Exception e) {
-            Print(e);
-         }
-      }   
+      if (message instanceof Exception) {
+         ExceptionHandler.add((Exception) message);
+      }
       switch (loglevel) {
          case LOGLEVEL_DEBUG:
             writeDirect(sourcen + ": " + message);
