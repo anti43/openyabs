@@ -98,7 +98,7 @@ public class ProductsOverview extends javax.swing.JPanel implements ListPanel {
       jSeparator2 = new javax.swing.JToolBar.Separator();
       jSeparator1 = new javax.swing.JToolBar.Separator();
       search = new mpv5.ui.beans.LabeledTextField();
-      jButton1 = new javax.swing.JButton();
+      jButton1 = new mpv5.ui.modern.PrimaryButton("", null); //the main action: blue, Shift+Enter
 
       setName("Form"); // NOI18N
       setLayout(new java.awt.BorderLayout());
@@ -201,7 +201,6 @@ public class ProductsOverview extends javax.swing.JPanel implements ListPanel {
       jToolBar1.add(search);
 
       jButton1.setText(bundle.getString("ProductsOverview.jButton1.text")); // NOI18N
-      jButton1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
       jButton1.setFocusable(false);
       jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
       jButton1.setName("jButton1"); // NOI18N

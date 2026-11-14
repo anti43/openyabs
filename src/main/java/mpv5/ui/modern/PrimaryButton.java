@@ -64,6 +64,41 @@ public class PrimaryButton extends JButton {
         setIconTextGap(ModernTheme.px(6));
         setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         setBorder(BorderFactory.createEmptyBorder(ModernTheme.px(7), ModernTheme.px(16), ModernTheme.px(7), ModernTheme.px(16)));
+        //the tooltip names the shortcut (see getToolTipText)
+        javax.swing.ToolTipManager.sharedInstance().registerComponent(this);
+        //Shift+Enter runs the main action of the view that is showing (not a red one, e.g. Delete)
+        getInputMap(WHEN_IN_FOCUSED_WINDOW).put(SHORTCUT, "yabs.primary");
+        getActionMap().put("yabs.primary", new javax.swing.AbstractAction() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public boolean isEnabled() {
+                //not enabled: another (showing) main action gets the key
+                return isShowing() && PrimaryButton.this.isEnabled() && color == null;
+            }
+
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                doClick();
+            }
+        });
+    }
+
+    /**
+     * Shift+Enter: the main action
+     */
+    public static final javax.swing.KeyStroke SHORTCUT = javax.swing.KeyStroke.getKeyStroke(
+            java.awt.event.KeyEvent.VK_ENTER, java.awt.event.InputEvent.SHIFT_DOWN_MASK);
+
+    @Override
+    public String getToolTipText() {
+        String t = super.getToolTipText();
+        if (color != null) {
+            return t;
+        }
+        String key = java.awt.event.InputEvent.getModifiersExText(java.awt.event.InputEvent.SHIFT_DOWN_MASK)
+                + "+" + java.awt.event.KeyEvent.getKeyText(java.awt.event.KeyEvent.VK_ENTER);
+        return (t == null || t.isEmpty() ? getText() : t) + " (" + key + ")";
     }
 
     @Override

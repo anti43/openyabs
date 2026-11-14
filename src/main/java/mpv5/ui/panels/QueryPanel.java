@@ -75,7 +75,7 @@ public class QueryPanel extends javax.swing.JPanel {
             }
         };
         labeledTextChooser1 = new mpv5.ui.beans.LabeledTextChooser();
-        jButton1 = new javax.swing.JButton();
+        jButton1 = new mpv5.ui.modern.PrimaryButton("", null); //the main action: blue, Shift+Enter
         jButton2 = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();

@@ -174,7 +174,7 @@ public class HistoryPanel extends JPanel implements ListPanel {
         filters.add(groups);
         filters.add(new JLabel(Messages.HISTORY_PERIOD.toString()));
         filters.add(timeframe);
-        JButton load = new JButton(Messages.HISTORY_LOAD.toString());
+        JButton load = new mpv5.ui.modern.PrimaryButton(Messages.HISTORY_LOAD.toString(), null);
         load.addActionListener(e -> refresh());
         filters.add(load);
         head.add(filters, BorderLayout.CENTER);
