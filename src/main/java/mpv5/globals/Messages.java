@@ -122,6 +122,7 @@ public enum Messages {
     CREATING_DATABASE_FAILED("Creating database structure failed, see logs for details."),
     RESTORING_DATABASE("Restoring database structure.."),
     RESTORING_DATABASE_FAILED("Restoring database structure failed, see logs for details."),
+    CONTACTS_COUNT("%d contacts"),
     CONTACTS_LIST("List of contacts"),
     CONTROL_PANEL("Control Panel"),
     REALLY_CLOSE("Do you really want to close the entire application?\nUnsaved data will be lost!"),
