@@ -27,7 +27,6 @@ import java.awt.GridLayout;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -68,7 +67,6 @@ import mpv5.globals.Constants;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.handler.TemplateHandler;
-import mpv5.handler.VariablesHandler;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.DialogForFile;
@@ -260,13 +258,6 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
         varsRow.setOpaque(false);
         varsRow.add(vars);
         needsTemplate.add(vars);
-        grid.add(new Card(Messages.TEMPLATES_PREVIEW.toString())
-                .addFull(hint(Messages.TEMPLATES_PREVIEW_HINT.toString()))
-                .addFull(previewImage)
-                .addFull(previewCaption)
-                .addFull(previewButtons)
-                .addFull(hint(Messages.TEMPLATES_VARIABLES_HINT.toString()))
-                .addFull(varsRow));
 
         //the position table
         formatLabel.setFont(ModernTheme.font(0, Font.PLAIN));
@@ -290,6 +281,15 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
         grid.add(new Card(Messages.TEMPLATES_PRINTING.toString())
                 .row(Card.field(Messages.TEMPLATES_PRINTER.toString(), printern))
                 .addFull(hint(Messages.TEMPLATES_PRINTER_HINT.toString())));
+
+        //the preview is the tallest card: last
+        grid.add(new Card(Messages.TEMPLATES_PREVIEW.toString())
+                .addFull(hint(Messages.TEMPLATES_PREVIEW_HINT.toString()))
+                .addFull(previewImage)
+                .addFull(previewCaption)
+                .addFull(previewButtons)
+                .addFull(hint(Messages.TEMPLATES_VARIABLES_HINT.toString()))
+                .addFull(varsRow));
 
         JPanel right = new JPanel(new BorderLayout());
         right.setOpaque(false);
@@ -408,19 +408,14 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
         }
     }
 
+    /**
+     * All placeholders with their value in the document of the preview,
+     * searchable
+     */
     private void showVariables() {
-        try {
-            DatabaseObject t = previewDocument();
-            if (t != null) {
-                List<String[]> vars = VariablesHandler.resolveVarsFor(t);
-                List<List<String>> varsl = new ArrayList<List<String>>();
-                for (String[] strings : vars) {
-                    varsl.add(Arrays.asList(strings));
-                }
-                Popup.notice(varsl, Messages.VARIABLES + "\n\n" + t.toString());
-            }
-        } catch (Exception ex) {
-            Log.Debug(ex);
+        DatabaseObject t = previewDocument();
+        if (t != null) {
+            mpv5.ui.dialogs.PlaceholderList.show(this, t);
         }
     }
 
