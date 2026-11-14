@@ -1527,7 +1527,13 @@ public enum Messages {
     CONTACT_SHEET("Contact sheet"),
     HISTORY_KIND_ERRORS("Errors"),
     HISTORY_ERROR_COUNT("%d\u00d7"),
-    MODERN_UI("Modern views for contacts, products and documents (preview, takes effect for newly opened tabs)");
+    MODERN_UI("Modern views for contacts, products and documents (preview, takes effect for newly opened tabs)"),
+    POSITION_OPEN_PRODUCT("Open product"),
+    POSITION_OPEN_PRODUCT_TIP("Opens the product this position was added from (also: Ctrl+click on the product number)"),
+    POSITION_NO_PRODUCT("This position was not added from a product"),
+    POSITION_PRODUCT_DELETED("The product of this position (internal ID %d) no longer exists - it was deleted for good."),
+    POSITION_PRODUCT_TRASHED("The product \"%s\" of this position is in the trash.\n\nOpen it anyway? (To use it again, restore it from the trash.)"),
+    POSITION_PRODUCT_GONE("(deleted)");
 
 
     /**

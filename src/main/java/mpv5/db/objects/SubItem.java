@@ -92,14 +92,8 @@ public final class SubItem extends DatabaseObject implements Triggerable {
             it.setInternalvalue(getBigDecimal(row[5]));//not supported yet
             it.setMeasure(String.valueOf(row[3]));
 
-            if (row[10] instanceof Product) {
-                try {
-                    it.setOriginalproductsids(((Product) row[10]).__getIDS());
-                } catch (Exception e) {
-                    Log.Debug(e);
-                }
-            } else {
-            }
+            //the product the position was added from (also a bare id, e.g. from product lists)
+            it.setOriginalproductsids(productIdOf(row[10]));
             it.setLinkurl(String.valueOf(row[12 + 1]));
             it.setQuantityvalue(getBigDecimal(row[2]));
             it.setTaxpercentvalue(getBigDecimal(row[6]));
@@ -174,14 +168,8 @@ public final class SubItem extends DatabaseObject implements Triggerable {
             it.setInternalvalue(getBigDecimal(row[5]).negate());//not supported yet
             it.setMeasure(String.valueOf(row[3]));
 
-            if (row[10] instanceof Product) {
-                try {
-                    it.setOriginalproductsids(((Product) row[10]).__getIDS());
-                } catch (Exception e) {
-                    Log.Debug(e);
-                }
-            } else {
-            }
+            //the product the position was added from (also a bare id, e.g. from product lists)
+            it.setOriginalproductsids(productIdOf(row[10]));
             it.setLinkurl(String.valueOf(row[12 + 1]));
             it.setQuantityvalue(getBigDecimal(row[2]));
             it.setTaxpercentvalue(getBigDecimal(row[6]));
@@ -267,14 +255,7 @@ public final class SubItem extends DatabaseObject implements Triggerable {
             it.setExternalvalue(getBigDecimal(row[5]));
             it.setInternalvalue(getBigDecimal(row[5]));//not supported yet
             it.setMeasure(row[3].toString());
-            it.setOriginalproductsids(getInteger(row[10]));
-            if (row[10] instanceof Product) {
-                try {
-                    it.setOriginalproductsids(((Product) row[10]).__getIDS());
-                } catch (Exception e) {
-                    Log.Debug(e);
-                }
-            }
+            it.setOriginalproductsids(productIdOf(row[10]));
             it.setQuantityvalue(getBigDecimal(row[2]));
             it.setTaxpercentvalue(getBigDecimal(row[6]));
             it.setLinkurl(String.valueOf(row[12 + 1]));
@@ -566,6 +547,22 @@ public final class SubItem extends DatabaseObject implements Triggerable {
     }
 
     /**
+     * The product of a position in the product column of a positions table:
+     * the product, or its id (rows of product lists, deleted products)
+     *
+     * @param cell the value of the product column
+     * @return the id of the product, 0 if none
+     */
+    public static int productIdOf(Object cell) {
+        if (cell instanceof Product) {
+            return Math.max(0, ((Product) cell).__getIDS());
+        } else if (cell instanceof Number) {
+            return Math.max(0, ((Number) cell).intValue());
+        }
+        return 0;
+    }
+
+    /**
      * @return the originalproductsids
      */
     public int __getOriginalproductsids() {
@@ -847,6 +844,8 @@ public final class SubItem extends DatabaseObject implements Triggerable {
                     data[10] = Product.getObject(Context.getProduct(), __getOriginalproductsids());
                 } catch (NodataFoundException ex) {
                     Log.Debug(ex);
+                    //deleted for good: the id stays, so the link is not lost on saving
+                    data[10] = Integer.valueOf(__getOriginalproductsids());
                 }
             }
             data[11] = "A";
@@ -890,12 +889,8 @@ public final class SubItem extends DatabaseObject implements Triggerable {
         if (m.getValueAt(row, 6) != null) {
             t.setTaxpercentvalue(getBigDecimal(m, row, 6));
         }
-        if (m.getValueAt(row, 10) != null) {
-            try {
-                t.setOriginalproductsids(((Product) m.getValueAt(row, 10)).__getIDS());
-            } catch (Exception e) {
-                Log.Debug(e);
-            }
+        if (productIdOf(m.getValueAt(row, 10)) > 0) {
+            t.setOriginalproductsids(productIdOf(m.getValueAt(row, 10)));
         }
         if (m.getValueAt(row, 13) != null) {
             t.setLinkurl(m.getValueAt(row, 13).toString());

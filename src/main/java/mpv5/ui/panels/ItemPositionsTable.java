@@ -693,7 +693,7 @@ public class ItemPositionsTable extends JPanel {
         itemtable.getColumnModel().getColumn(SubItem.COLUMNINDEX_REMOVE).setCellEditor(new ButtonEditor(b2));
 
         boolean orders = User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "ordersoverproducts");
-        new TablePopUp(itemtable, new String[]{
+        TablePopUp menu = new TablePopUp(itemtable, new String[]{
             (orders ? Messages.ITEM_CHOOSE_ORDER : Messages.ITEM_CHOOSE_PRODUCT).getValue(),
             null,
             Messages.ITEM_INSERT_ABOVE.getValue(),
@@ -723,6 +723,9 @@ public class ItemPositionsTable extends JPanel {
                     null,
                     e -> clearRow(),
                     e -> removeSelected()});
+        //from the position to its product (also in read-only documents)
+        PositionProductLink.install(itemtable, menu);
+        tx.setLinkHint(true);
         //positions are the main content: larger than the default table font
         Font font = ModernTheme.font(2, Font.PLAIN);
         itemtable.setFont(font);

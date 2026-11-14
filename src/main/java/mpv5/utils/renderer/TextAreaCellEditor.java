@@ -63,6 +63,7 @@ public class TextAreaCellEditor extends DefaultCellEditor implements ActionListe
     protected JTextComponent      dialogsTextComponent;
     private final JTable          table;
     protected JTextArea           textArea;
+    private Product               editedProduct;
 
     public TextAreaCellEditor(JTable table) {
         super(new JTextField());
@@ -97,6 +98,11 @@ public class TextAreaCellEditor extends DefaultCellEditor implements ActionListe
             }
             @Override
             public Object getCellEditorValue() {
+                //the product column: an unchanged product number stays the product
+                //(else the position would lose the link to its product)
+                if (editedProduct != null && textArea.getText().equals(String.valueOf(editedProduct.__getCnumber()))) {
+                    return editedProduct;
+                }
                 return textArea.getText();
             }           
         };
@@ -153,6 +159,7 @@ public class TextAreaCellEditor extends DefaultCellEditor implements ActionListe
     @Override
     public Component getTableCellEditorComponent(final JTable table, Object value, boolean isSelected, final int row, final int column) {
         ensureDialog();
+        editedProduct = value instanceof Product ? (Product) value : null;
         if (value != null && dialog instanceof ProductSelectDialog3 && value instanceof  Product){
             MPTableModel m = (MPTableModel) table.getModel();
             SubItem it = m.getRowAt(row, SubItem.getDefaultItem());
