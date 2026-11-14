@@ -618,7 +618,9 @@ public class ControlPanel_Schedule extends javax.swing.JPanel implements Control
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
         setPropertys();
         mpv5.db.objects.User.getCurrentUser().saveProperties();
-        Popup.notice(Messages.RESTART_REQUIRED);
+        //the dashboard reads the values when it is filled: no restart needed
+        mpv5.handler.Scheduler.openHomeScreen(false);
+        mpv5.YabsViewProxy.instance().addMessage(Messages.SCHEDULE_SAVED.toString());
     }//GEN-LAST:event_saveActionPerformed
 
     private void advancedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_advancedActionPerformed
@@ -743,7 +745,8 @@ public class ControlPanel_Schedule extends javax.swing.JPanel implements Control
         typeButtons.add(mpv5.ui.modern.Applets.danger(remove));
         mpv5.ui.modern.Card types = new mpv5.ui.modern.Card(b.getString("ControlPanel_Schedule.jPanel3.border.title"))
                 .addFull(jScrollPane2, 1)
-                .row(mpv5.ui.modern.Card.field(jLabel1.getText(), labeledCombobox2.getComboBox()), mpv5.ui.modern.Applets.field(labeledTextField2))
+                .addFull(mpv5.ui.modern.Applets.hint(Messages.SCHEDULE_TYPES_HINT.toString()))
+                .row(mpv5.ui.modern.Card.field(Messages.SCHEDULE_TYPES_USER.toString(), labeledCombobox2.getComboBox()), mpv5.ui.modern.Applets.field(labeledTextField2))
                 .addFull(typeButtons);
 
         javax.swing.JPanel grid = new javax.swing.JPanel(new java.awt.GridBagLayout());
@@ -778,12 +781,16 @@ public class ControlPanel_Schedule extends javax.swing.JPanel implements Control
             mpv5.ui.beans.LabeledTextField warn = (mpv5.ui.beans.LabeledTextField) r[2];
             mpv5.ui.beans.LabeledTextField alert = (mpv5.ui.beans.LabeledTextField) r[3];
             String name = warn.get_Label() == null || warn.get_Label().trim().isEmpty() ? alert.get_Label() : warn.get_Label();
-            use.setToolTipText(use.getText());
+            String kindName = name == null ? "" : name.trim();
+            use.setToolTipText(kindName + ": " + Messages.SCHEDULE_DASHBOARD);
             use.setText("");
             use.setOpaque(false);
-            hide.setToolTipText(hide.getText());
+            hide.setToolTipText(kindName + ": " + Messages.SCHEDULE_HIDE);
             hide.setText("");
             hide.setOpaque(false);
+            //"only from the alarm" only for documents shown on the dashboard
+            hide.setEnabled(use.isSelected());
+            use.addItemListener(ev -> hide.setEnabled(use.isSelected()));
             javax.swing.JTextField w = mpv5.ui.modern.ModernTheme.plain(warn).getTextField();
             javax.swing.JTextField a = mpv5.ui.modern.ModernTheme.plain(alert).getTextField();
             java.awt.Dimension d = new java.awt.Dimension(mpv5.ui.modern.ModernTheme.px(70), w.getPreferredSize().height);
@@ -812,7 +819,8 @@ public class ControlPanel_Schedule extends javax.swing.JPanel implements Control
 
         mpv5.ui.modern.PrimaryButton saveButton = new mpv5.ui.modern.PrimaryButton(save.getText(), "/images/16/filesave.png");
         saveButton.addActionListener(e -> save.doClick());
-        actions = mpv5.ui.modern.Applets.actionBar(new javax.swing.JComponent[]{advanced}, new javax.swing.JComponent[]{apply, saveButton});
+        //one button: saving applies at once (no separate "apply")
+        actions = mpv5.ui.modern.Applets.actionBar(new javax.swing.JComponent[]{advanced}, new javax.swing.JComponent[]{saveButton});
     }
 
     @Override

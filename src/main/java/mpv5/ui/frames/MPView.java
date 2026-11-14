@@ -748,6 +748,16 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
 
         pluginLoader = new YabsPluginLoader();
 
+        //View > Open dashboard: also when it was closed or is switched off at start
+        javax.swing.JMenuItem openDashboard = new javax.swing.JMenuItem(Messages.HOMESCREEN_OPEN.toString(),
+                new javax.swing.ImageIcon(getClass().getResource("/images/22/kontact_journal.png")));
+        openDashboard.setName("openDashboard");
+        openDashboard.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D,
+                java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx() | java.awt.event.InputEvent.SHIFT_DOWN_MASK));
+        openDashboard.addActionListener(e -> Scheduler.openHomeScreen(true));
+        viewMenu.insert(openDashboard, 0);
+        viewMenu.insertSeparator(1);
+
         addTab(new StartPage(), Messages.WELCOME);
         LocalSettings.save();
 
@@ -3032,11 +3042,7 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
     }//GEN-LAST:event_jMenuItem5ActionPerformed
 
     private void jMenuItem43ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem43ActionPerformed
-        try {
-            (new Scheduler()).start();
-        } catch (Exception e) {
-            Log.Debug(e);
-        }
+        Scheduler.openHomeScreen(true);
     }//GEN-LAST:event_jMenuItem43ActionPerformed
 
     private void closeButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButton1ActionPerformed
