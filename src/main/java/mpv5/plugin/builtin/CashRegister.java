@@ -349,7 +349,7 @@ public final class CashRegister implements YabsExtension {
 
     /**
      * The TSE of the register: none (demo) or the test TSE; a certified TSE
-     * is still to come (docs/Kasse-TSE.md)
+     * is still to come (https://github.com/anti43/openyabs/wiki/Kasse-und-TSE)
      */
     private void applyTse() {
         if (service != null) {

@@ -47,7 +47,7 @@ public class ControlPanel_Shopify extends JPanel implements ControlApplet {
 
     private static final long serialVersionUID = 1L;
     public final String UNAME = "shopify";
-    private static final String DOCS = "https://github.com/anti43/openyabs/blob/master/docs/Shopify.md";
+    private static final String DOCS = "https://github.com/anti43/openyabs/wiki/Shopify-(EN)";
     private final JTextField shop = new JTextField(28);
     private final JPasswordField token = new JPasswordField(28);
     private final JTextField version = new JTextField(10);

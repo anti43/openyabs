@@ -71,7 +71,7 @@ import mpv5.ui.modern.PrimaryButton;
 public final class GroovyPluginEditor extends JDialog {
 
     private static final long serialVersionUID = 1L;
-    private static final String DOCS = "https://github.com/anti43/openyabs/blob/master/docs/Plugins.md";
+    private static final String DOCS = "https://github.com/anti43/openyabs/wiki/Writing-plugins-(EN)";
     private final File file;
     private final JTextComponent editor;
     private final UndoManager undo = new UndoManager();

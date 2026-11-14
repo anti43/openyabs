@@ -1233,7 +1233,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         }
     }
 
-    private static final String WIKI_FILENAMES = "https://github.com/anti43/openyabs/wiki/File-name-defaults";
+    private static final String WIKI_FILENAMES = "https://github.com/anti43/openyabs/wiki/File-name-defaults-(EN)";
 
     /**
      * The parts of the form as cards, the buttons in the action bar

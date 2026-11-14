@@ -24,7 +24,7 @@ import java.time.Instant;
  * finished with the data of the sale; the TSE signs it.
  * <p>
  * Implementations: {@link DummyTse} (tests and demo, NOT a TSE); a certified
- * TSE (e.g. Epson via JavaPOS) is still to come, see docs/Kasse-TSE.md.
+ * TSE (e.g. Epson via JavaPOS) is still to come, see https://github.com/anti43/openyabs/wiki/Kasse-und-TSE.
  */
 public interface Tse {
 
