@@ -1,18 +1,40 @@
-
 /*
- * ProductsOverview.java
+ *  This file is part of YaBS.
  *
- * Created on Aug 27, 2010, 1:48:39 PM
+ *      YaBS is free software: you can redistribute it and/or modify
+ *      it under the terms of the GNU General Public License as published by
+ *      the Free Software Foundation, either version 3 of the License, or
+ *      (at your option) any later version.
+ *
+ *      YaBS is distributed in the hope that it will be useful,
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *      GNU General Public License for more details.
+ *
+ *      You should have received a copy of the GNU General Public License
+ *      along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
  */
 package mpv5.ui.panels;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseEvent;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.AbstractAction;
-import mpv5.ui.misc.MPTable;
+import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -24,232 +46,190 @@ import mpv5.db.objects.Product;
 import mpv5.db.objects.ProductGroup;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
-import mpv5.ui.dialogs.BigPopup;
+import mpv5.ui.beans.LabeledCombobox;
+import mpv5.ui.beans.PrinitingComboBox;
 import mpv5.ui.misc.DragNDropTreeForGroups;
 import mpv5.ui.misc.DragTableHandlerForDBOs;
-
+import mpv5.ui.misc.MPTable;
+import mpv5.ui.misc.TableViewPersistenceHandler;
+import mpv5.ui.modern.Applets;
+import mpv5.ui.modern.Card;
+import mpv5.ui.modern.ChipToggle;
+import mpv5.ui.modern.ModernTheme;
+import mpv5.ui.modern.PrimaryButton;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.tables.TableFormat;
 import mpv5.utils.trees.TreeFormat;
-import mpv5.ui.misc.TableViewPersistenceHandler;
 
 /**
- *
- * @author andreas.weber
+ * Products ("Artikel"): one view for what were "All products" and "Product
+ * overview". Search, kind (products / services), supplier and manufacturer,
+ * the product groups at the left (click: only this group; drag products onto
+ * a group to assign them), the list with the preview of the selected product,
+ * "New product" as the main action and printing. Double click opens a
+ * product, Enter makes a new invoice with the selected products.
  */
-public class ProductsOverview extends javax.swing.JPanel implements ListPanel {
+public class ProductsOverview extends JPanel implements ListPanel {
 
-    /** Creates new form ProductsOverview */
+    private static final long serialVersionUID = 2L;
+    private final JTextField search = ModernTheme.roomy(new JTextField());
+    private final ChipToggle kindAll = new ChipToggle(Messages.PRODUCTS_KIND_ALL.toString());
+    private final ChipToggle kindProducts = new ChipToggle(Messages.PRODUCTS_KIND_PRODUCTS.toString());
+    private final ChipToggle kindServices = new ChipToggle(Messages.PRODUCTS_KIND_SERVICES.toString());
+    private final LabeledCombobox supplier = new LabeledCombobox();
+    private final LabeledCombobox manufacturer = new LabeledCombobox();
+    private final DragNDropTreeForGroups gtree = new DragNDropTreeForGroups(1);
+    private final JTable listtable = new MPTable(this);
+    private final JLabel count = new JLabel();
+    private final PrinitingComboBox printing = new PrinitingComboBox();
+    private final Timer typing = new Timer(300, e -> refresh());
+    private boolean loading;
+
     public ProductsOverview() {
-        initComponents();
-        gtree.setLargeModel(true);
-
-        ((DragNDropTreeForGroups) gtree).setContainerToNotify(this);
-        DragTableHandlerForDBOs t = new DragTableHandlerForDBOs(listtable, Context.getProduct());
+        super(new BorderLayout(ModernTheme.px(12), ModernTheme.px(12)));
         setName("productsoverview");
-        both.setSelected(true);
-//        addedafter.setDate(DateConverter.addYears(new Date(), -10));
+        setBackground(ModernTheme.background());
+        setBorder(ModernTheme.padding(12, 14));
+        typing.setRepeats(false);
+        loading = true;
+        add(header(), BorderLayout.NORTH);
+        add(groups(), BorderLayout.WEST);
+        add(listCard(), BorderLayout.CENTER);
         fillTree();
-        filltable(null, null);
-        search.getTextField().addActionListener(new AbstractAction() {
+        loading = false;
+        refresh();
+    }
 
-            public void actionPerformed(ActionEvent e) {
-                search();
+    // ------------------------------------------------------------------ layout
+    private JComponent header() {
+        JLabel title = new JLabel(Messages.PRODUCTS_TITLE.toString());
+        title.setFont(ModernTheme.font(9, Font.BOLD));
+        count.setForeground(ModernTheme.muted());
+        JPanel left = new JPanel(new FlowLayout(FlowLayout.LEFT, ModernTheme.px(10), 0));
+        left.setOpaque(false);
+        left.add(title);
+        left.add(count);
+
+        //the main action: a new product (blue, Shift+Enter)
+        JButton add = new PrimaryButton(Messages.NEW_PRODUCT.toString(), "/images/16/add.png");
+        add.addActionListener(e -> mpv5.YabsViewProxy.instance().getIdentifierView()
+                .addTab(DatabaseObject.getObject(Context.getProduct()), Messages.NEW_PRODUCT));
+        printing.init(listtable);
+        printing.setOpaque(false);
+        JPanel right = new JPanel(new FlowLayout(FlowLayout.RIGHT, ModernTheme.px(8), 0));
+        right.setOpaque(false);
+        right.add(printing);
+        right.add(add);
+
+        JPanel top = new JPanel(new BorderLayout());
+        top.setOpaque(false);
+        top.add(left, BorderLayout.WEST);
+        top.add(right, BorderLayout.EAST);
+
+        //filters
+        search.putClientProperty("JTextField.placeholderText", Messages.PRODUCTS_SEARCH.toString());
+        search.putClientProperty("JTextField.showClearButton", true);
+        search.setToolTipText(Messages.PRODUCTS_SEARCH_TIP.toString());
+        search.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                typing.restart();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                typing.restart();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                typing.restart();
             }
         });
-        ((MPTable) listtable).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) listtable, this));
-        //preview of the selected product, Enter: new invoice with the selection
-        ProductPreview.attach(listtable, 0, jPanel1, jToolBar1);
-    }
-
-
-
-    private void search() {
-        List<ProductGroup> gs = new ArrayList<ProductGroup>();
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode) gtree.getLastSelectedPathComponent();
-        if (node != null && !node.isRoot()) {
-            ProductGroup g = (ProductGroup) node.getUserObject();
-            gs.add(g);
+        search.addActionListener(e -> refresh());
+        ButtonGroup g = new ButtonGroup();
+        JPanel chips = new JPanel(new FlowLayout(FlowLayout.LEFT, ModernTheme.px(6), 0));
+        chips.setOpaque(false);
+        for (ChipToggle c : new ChipToggle[]{kindAll, kindProducts, kindServices}) {
+            g.add(c);
+            chips.add(c);
+            c.addActionListener(e -> refresh());
         }
+        kindAll.setSelected(true);
+        for (LabeledCombobox c : new LabeledCombobox[]{supplier, manufacturer}) {
+            c.setSearchEnabled(true);
+            c.setEditable(true);
+            c.getComboBox().addActionListener(e -> refresh());
+        }
+        supplier.setContext(Context.getSupplier());
+        manufacturer.setContext(Context.getManufacturer());
+        supplier.setSelectedIndex(-1);
+        manufacturer.setSelectedIndex(-1);
+        JButton reset = new JButton(Messages.PRODUCTS_RESET.toString());
+        reset.putClientProperty("JButton.buttonType", "toolBarButton");
+        reset.setForeground(ModernTheme.accent());
+        reset.addActionListener(e -> resetFilters());
 
-        filltable(search.getText(), gs);
+        Card filters = new Card(null)
+                .row(Card.field(null, search, 3), Card.field(null, chips, 2))
+                .row(Card.field(Messages.PRODUCTS_SUPPLIER.toString(), supplier.getComboBox()),
+                        Card.field(Messages.PRODUCTS_MANUFACTURER.toString(), manufacturer.getComboBox()),
+                        Card.field(null, reset));
+
+        JPanel p = new JPanel(new BorderLayout(0, ModernTheme.px(10)));
+        p.setOpaque(false);
+        p.add(top, BorderLayout.NORTH);
+        p.add(filters, BorderLayout.CENTER);
+        return p;
     }
 
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
-     */
-    @SuppressWarnings("unchecked")
-   // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-   private void initComponents() {
+    private JComponent groups() {
+        gtree.setLargeModel(true);
+        gtree.setContainerToNotify(this);
+        gtree.addTreeSelectionListener(e -> refresh());
+        JScrollPane sp = new JScrollPane(gtree);
+        sp.setBorder(BorderFactory.createLineBorder(ModernTheme.border()));
+        Card c = new Card(Messages.PRODUCTS_GROUPS.toString())
+                .addFull(sp, 1)
+                .addFull(Applets.hint(Messages.PRODUCTS_GROUPS_HINT.toString()));
+        c.setPreferredSize(new Dimension(ModernTheme.px(240), ModernTheme.px(300)));
+        return c;
+    }
 
-      buttonGroup1 = new javax.swing.ButtonGroup();
-      jSplitPane1 = new javax.swing.JSplitPane();
-      jScrollPane1 = new javax.swing.JScrollPane();
-      gtree =  new DragNDropTreeForGroups(1);
-      jPanel1 = new javax.swing.JPanel();
-      jScrollPane2 = new javax.swing.JScrollPane();
-      listtable = new MPTable(this);
-      jToolBar1 = new javax.swing.JToolBar();
-      products = new javax.swing.JRadioButton();
-      services = new javax.swing.JRadioButton();
-      both = new javax.swing.JRadioButton();
-      jSeparator2 = new javax.swing.JToolBar.Separator();
-      jSeparator1 = new javax.swing.JToolBar.Separator();
-      search = new mpv5.ui.beans.LabeledTextField();
-      jButton1 = new mpv5.ui.modern.PrimaryButton("", null); //the main action: blue, Shift+Enter
+    private JComponent listCard() {
+        new DragTableHandlerForDBOs(listtable, Context.getProduct());
+        listtable.setAutoCreateRowSorter(true);
+        listtable.setDragEnabled(true);
+        listtable.setFillsViewportHeight(true);
+        listtable.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        ModernTheme.style(listtable);
+        ((MPTable) listtable).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) listtable, this));
+        //double click opens the product
+        listtable.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    openSelected();
+                }
+            }
+        });
+        JScrollPane sp = new JScrollPane(listtable);
+        sp.setBorder(BorderFactory.createLineBorder(ModernTheme.border()));
+        JPanel host = new JPanel(new BorderLayout());
+        host.setOpaque(false);
+        host.add(sp, BorderLayout.CENTER);
+        //the preview of the selected product at the right, its "New invoice" button above the list
+        JPanel buttons = new JPanel(new FlowLayout(FlowLayout.LEFT, ModernTheme.px(6), 0));
+        buttons.setOpaque(false);
+        ProductPreview.attach(listtable, 0, host, buttons);
+        JPanel north = new JPanel(new BorderLayout());
+        north.setOpaque(false);
+        north.add(buttons, BorderLayout.WEST);
+        host.add(north, BorderLayout.NORTH);
+        return new Card(null).addFull(host, 1);
+    }
 
-      setName("Form"); // NOI18N
-      setLayout(new java.awt.BorderLayout());
-
-      jSplitPane1.setName("jSplitPane1"); // NOI18N
-
-      jScrollPane1.setName("jScrollPane1"); // NOI18N
-
-      gtree.setLargeModel(true);
-      gtree.setName("gtree"); // NOI18N
-      gtree.setPreferredSize(new java.awt.Dimension(250, 64));
-      gtree.addMouseListener(new java.awt.event.MouseAdapter() {
-         public void mouseClicked(java.awt.event.MouseEvent evt) {
-            gtreeMouseClicked(evt);
-         }
-      });
-      jScrollPane1.setViewportView(gtree);
-
-      jSplitPane1.setLeftComponent(jScrollPane1);
-
-      jPanel1.setName("jPanel1"); // NOI18N
-      jPanel1.setLayout(new java.awt.BorderLayout());
-
-      jScrollPane2.setName("jScrollPane2"); // NOI18N
-
-      listtable.setAutoCreateRowSorter(true);
-      listtable.setModel(new javax.swing.table.DefaultTableModel(
-         new Object [][] {
-
-         },
-         new String [] {
-
-         }
-      ));
-      listtable.setDragEnabled(true);
-      listtable.setName("listtable"); // NOI18N
-      listtable.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-      listtable.addMouseListener(new java.awt.event.MouseAdapter() {
-         public void mouseClicked(java.awt.event.MouseEvent evt) {
-            listtableMouseClicked(evt);
-         }
-      });
-      jScrollPane2.setViewportView(listtable);
-
-      jPanel1.add(jScrollPane2, java.awt.BorderLayout.CENTER);
-
-      jToolBar1.setFloatable(false);
-      jToolBar1.setRollover(true);
-      jToolBar1.setName("jToolBar1"); // NOI18N
-
-      buttonGroup1.add(products);
-      java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
-      products.setText(bundle.getString("ProductsOverview.products.text")); // NOI18N
-      products.setFocusable(false);
-      products.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-      products.setMaximumSize(new java.awt.Dimension(333, 20));
-      products.setMinimumSize(new java.awt.Dimension(100, 20));
-      products.setName("products"); // NOI18N
-      products.setPreferredSize(new java.awt.Dimension(100, 20));
-      products.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-      jToolBar1.add(products);
-
-      buttonGroup1.add(services);
-      services.setText(bundle.getString("ProductsOverview.services.text")); // NOI18N
-      services.setFocusable(false);
-      services.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-      services.setMaximumSize(new java.awt.Dimension(333, 20));
-      services.setMinimumSize(new java.awt.Dimension(100, 20));
-      services.setName("services"); // NOI18N
-      services.setPreferredSize(new java.awt.Dimension(100, 20));
-      services.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-      jToolBar1.add(services);
-
-      buttonGroup1.add(both);
-      both.setSelected(true);
-      both.setText(bundle.getString("ProductsOverview.both.text")); // NOI18N
-      both.setFocusable(false);
-      both.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-      both.setMaximumSize(new java.awt.Dimension(333, 20));
-      both.setMinimumSize(new java.awt.Dimension(100, 20));
-      both.setName("both"); // NOI18N
-      both.setPreferredSize(new java.awt.Dimension(100, 20));
-      both.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-      jToolBar1.add(both);
-
-      jSeparator2.setMaximumSize(new java.awt.Dimension(10, 0));
-      jSeparator2.setMinimumSize(new java.awt.Dimension(10, 0));
-      jSeparator2.setName("jSeparator2"); // NOI18N
-      jSeparator2.setPreferredSize(new java.awt.Dimension(10, 0));
-      jToolBar1.add(jSeparator2);
-
-      jSeparator1.setMaximumSize(new java.awt.Dimension(10, 0));
-      jSeparator1.setMinimumSize(new java.awt.Dimension(10, 0));
-      jSeparator1.setName("jSeparator1"); // NOI18N
-      jSeparator1.setPreferredSize(new java.awt.Dimension(10, 0));
-      jToolBar1.add(jSeparator1);
-
-      search.set_Label(bundle.getString("ProductsOverview.search._Label")); // NOI18N
-      search.setName("search"); // NOI18N
-      jToolBar1.add(search);
-
-      jButton1.setText(bundle.getString("ProductsOverview.jButton1.text")); // NOI18N
-      jButton1.setFocusable(false);
-      jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-      jButton1.setName("jButton1"); // NOI18N
-      jButton1.setPreferredSize(new java.awt.Dimension(55, 19));
-      jButton1.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/images/16/kalarm.png"))); // NOI18N
-      jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-      jButton1.addActionListener(new java.awt.event.ActionListener() {
-         public void actionPerformed(java.awt.event.ActionEvent evt) {
-            jButton1ActionPerformed(evt);
-         }
-      });
-      jToolBar1.add(jButton1);
-
-      jPanel1.add(jToolBar1, java.awt.BorderLayout.PAGE_START);
-
-      jSplitPane1.setRightComponent(jPanel1);
-
-      add(jSplitPane1, java.awt.BorderLayout.CENTER);
-   }// </editor-fold>//GEN-END:initComponents
-
-    private void listtableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listtableMouseClicked
-        doPopup(evt);
-    }//GEN-LAST:event_listtableMouseClicked
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        search();
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void gtreeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gtreeMouseClicked
-        search();
-    }//GEN-LAST:event_gtreeMouseClicked
-   // Variables declaration - do not modify//GEN-BEGIN:variables
-   private javax.swing.JRadioButton both;
-   private javax.swing.ButtonGroup buttonGroup1;
-   private javax.swing.JTree gtree;
-   private javax.swing.JButton jButton1;
-   private javax.swing.JPanel jPanel1;
-   private javax.swing.JScrollPane jScrollPane1;
-   private javax.swing.JScrollPane jScrollPane2;
-   private javax.swing.JToolBar.Separator jSeparator1;
-   private javax.swing.JToolBar.Separator jSeparator2;
-   private javax.swing.JSplitPane jSplitPane1;
-   private javax.swing.JToolBar jToolBar1;
-   private javax.swing.JTable listtable;
-   private javax.swing.JRadioButton products;
-   private mpv5.ui.beans.LabeledTextField search;
-   private javax.swing.JRadioButton services;
-   // End of variables declaration//GEN-END:variables
-
+    // ------------------------------------------------------------------ data
     private void fillTree() {
         ArrayList<ProductGroup> data = null;
         try {
@@ -257,7 +237,6 @@ public class ProductsOverview extends javax.swing.JPanel implements ListPanel {
         } catch (NodataFoundException ex) {
             Log.Debug(this, ex.getMessage());
         }
-
         ProductGroup g;
         try {
             g = (ProductGroup) DatabaseObject.getObject(Context.getProductGroup(), 1);
@@ -265,97 +244,119 @@ public class ProductsOverview extends javax.swing.JPanel implements ListPanel {
             g = new ProductGroup(Messages.GROUPNAMES.toString());
             g.setIDS(-1);
         }
-
         gtree.setModel(ProductGroup.toTreeModel(data, g));
-        Runnable runnable = new Runnable() {
-
-            @Override
-            public void run() {
-                TreeFormat.expandTree(gtree);
-            }
-        };
-        SwingUtilities.invokeLater(runnable);
+        SwingUtilities.invokeLater(() -> TreeFormat.expandTree(gtree));
     }
 
-    private void doPopup(MouseEvent evt) {
+    private void resetFilters() {
+        loading = true;
+        try {
+            search.setText("");
+            kindAll.setSelected(true);
+            supplier.setSelectedIndex(-1);
+            manufacturer.setSelectedIndex(-1);
+            gtree.clearSelection();
+        } finally {
+            loading = false;
+        }
+        refresh();
+    }
 
-        if (evt.isPopupTrigger()) {
-        } else {
-            if (evt.getClickCount() > 1) {
-                try {
-                    Product p = (Product) DatabaseObject.getObject(Context.getProduct(), Integer.valueOf(listtable.getModel().getValueAt(listtable.getSelectedRow(), 0).toString()));
-                    javax.swing.JPanel pan = mpv5.YabsViewProxy.instance().productView(p);
-                    BigPopup.showPopup(this, pan, p.__getCname(), false);
-                } catch (NodataFoundException ex) {
-                }
-            }
-
+    private void openSelected() {
+        int v = listtable.getSelectedRow();
+        if (v < 0) {
+            return;
+        }
+        try {
+            Object id = listtable.getModel().getValueAt(listtable.convertRowIndexToModel(v), 0);
+            mpv5.YabsViewProxy.instance().getIdentifierView().addTab(
+                    DatabaseObject.getObject(Context.getProduct(), Integer.valueOf(String.valueOf(id))));
+        } catch (Exception ex) {
+            Log.Debug(this, ex.getMessage());
         }
     }
 
-    private void filltable(String search, List<ProductGroup> groups) {
-
+    /**
+     * The list again with all filters: search (every word; "-word" excludes),
+     * kind, supplier, manufacturer and the selected product group
+     */
+    @Override
+    public void refresh() {
+        if (loading) {
+            return;
+        }
+        typing.stop();
         QueryCriteria2 qc = new QueryCriteria2();
-
-        if (search != null) {
+        String text = search.getText() == null ? "" : search.getText().trim();
+        if (!text.isEmpty()) {
             List<List<QueryParameter>> ps = new ArrayList<List<QueryParameter>>();
             List<QueryParameter> not = new ArrayList<QueryParameter>();
-            String[] strings = search.split("\\s+");
-            for (int i = 0; i < strings.length; i++) {
+            for (String word : text.split("\\s+")) {
                 ArrayList<QueryParameter> psx = new ArrayList<QueryParameter>();
                 ps.add(psx);
-                String string = strings[i];
                 for (String en : new Product().getStringVars()) {
-                    if (!string.startsWith("-")) {
-                        psx.add(new QueryParameter(Context.getProduct(), en, string, QueryParameter.LIKE));
-                    } else {
-                        not.add(new QueryParameter(Context.getProduct(), en, string.substring(1), QueryParameter.NOTLIKE));
+                    if (!word.startsWith("-")) {
+                        psx.add(new QueryParameter(Context.getProduct(), en, word, QueryParameter.LIKE));
+                    } else if (word.length() > 1) {
+                        not.add(new QueryParameter(Context.getProduct(), en, word.substring(1), QueryParameter.NOTLIKE));
                     }
                 }
             }
-            for (int i = 0; i < ps.size(); i++) {
-                qc.or(ps.get(i));
+            for (List<QueryParameter> p : ps) {
+                if (!p.isEmpty()) {
+                    qc.or(p);
+                }
             }
-
-            qc.and(not);
-        }
-
-        if (!both.isSelected()) {
-            int type = Product.TYPE_PRODUCT;
-            if (services.isSelected()) {
-                type = Product.TYPE_SERVICE;
+            if (!not.isEmpty()) {
+                qc.and(not);
             }
-            qc.and(new QueryParameter(Context.getProduct(), "inttype", type, QueryParameter.EQUALS));
         }
-
-        if (groups != null && !groups.isEmpty()) {
-            List<QueryParameter> ps = new ArrayList<QueryParameter>();
-            for (int i = 0; i < groups.size(); i++) {
-                ProductGroup group = groups.get(i);
-                ps.add(new QueryParameter(Context.getProduct(), "productgroupsids", group.__getIDS(), QueryParameter.EQUALS));
-            }
-            qc.or(ps);
+        if (!kindAll.isSelected()) {
+            qc.and(new QueryParameter(Context.getProduct(), "inttype",
+                    kindServices.isSelected() ? Product.TYPE_SERVICE : Product.TYPE_PRODUCT, QueryParameter.EQUALS));
         }
-
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode) gtree.getLastSelectedPathComponent();
+        if (node != null && !node.isRoot() && node.getUserObject() instanceof ProductGroup) {
+            qc.and(new QueryParameter(Context.getProduct(), "productgroupsids",
+                    ((ProductGroup) node.getUserObject()).__getIDS(), QueryParameter.EQUALS));
+        }
+        Integer s = selectedId(supplier);
+        if (s != null) {
+            qc.and(new QueryParameter(Context.getProduct(), "suppliersids", s, QueryParameter.EQUALS));
+        }
+        Integer m = selectedId(manufacturer);
+        if (m != null) {
+            qc.and(new QueryParameter(Context.getProduct(), "manufacturersids", m, QueryParameter.EQUALS));
+        }
         Context c = Context.getProduct();
         c.addReference(Context.getContact().getDbIdentity(), "ids", "suppliersids");
         c.addReference(Context.getGroup());
-
         String[] header = ProductPreview.productColumns();
+        Object[][] data;
         try {
-            listtable.setModel(new MPTableModel(QueryHandler.instanceOf().clone(c).select(Context.DETAILS_PRODUCTS, qc).getData(), header));
+            data = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_PRODUCTS, qc).getData();
         } catch (NodataFoundException ex) {
-            listtable.setModel(new MPTableModel(new Object[0][header.length], header));
+            data = new Object[0][header.length];
         }
+        listtable.setModel(new MPTableModel(data, header));
         //the internal id is not shown
         TableFormat.stripColumn(listtable, 0);
+        count.setText(String.format(Messages.PRODUCTS_COUNT.toString(), data.length));
     }
 
-    public void refresh() {
-        search();
+    private static Integer selectedId(LabeledCombobox c) {
+        try {
+            if (c.getComboBox().getSelectedIndex() >= 0 && c.getSelectedItem() != null) {
+                return Integer.valueOf(c.getSelectedItem().getId());
+            }
+        } catch (Exception e) {
+            //typed text that is no contact
+        }
+        return null;
     }
 
+    @Override
     public void flush() {
-        search();
+        refresh();
     }
 }
