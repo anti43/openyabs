@@ -45,7 +45,12 @@ public final class UpdateNotice {
      * shows a notice if there is a newer release
      */
     public static void checkAtStart() {
+        if (!UpdateCheck.isSwitchedOn()) {
+            mpv5.logging.Log.Print("Update check: switched off (local settings > Updates)");
+            return;
+        }
         if (!UpdateCheck.enabledAtStart()) {
+            mpv5.logging.Log.Print("Update check: not at start for an own build (" + VersionInfo.number() + ")");
             return;
         }
         Thread t = new Thread(() -> {
@@ -55,6 +60,15 @@ public final class UpdateNotice {
                 return;
             }
             UpdateCheck.Release r = UpdateCheck.latest();
+            if (r != null && !UpdateCheck.isNewer(r.version, VersionInfo.number())) {
+                //up to date: a short note in the status bar
+                SwingUtilities.invokeLater(() -> mpv5.YabsViewProxy.instance().addMessage(
+                        String.format(Messages.UPDATE_UP_TO_DATE.toString(), VersionInfo.number())));
+            }
+            if (r != null && UpdateCheck.isNewer(r.version, VersionInfo.number())
+                    && r.version.equals(LocalSettings.getProperty(SKIPPED))) {
+                mpv5.logging.Log.Print("Update check: " + r.version + " was skipped by the user, no notice");
+            }
             if (r != null && UpdateCheck.isNewer(r.version, VersionInfo.number())
                     && !r.version.equals(LocalSettings.getProperty(SKIPPED))) {
                 SwingUtilities.invokeLater(() -> show(null, r, false));

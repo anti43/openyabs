@@ -95,6 +95,8 @@ public final class UpdateCheck {
      */
     public static Release latest() {
         HttpURLConnection con = null;
+        //always in the log (any log level): when YaBS goes online, and what it got
+        Log.Print("Update check: GET " + LATEST);
         try {
             con = (HttpURLConnection) new URL(LATEST).openConnection();
             con.setConnectTimeout(5000);
@@ -103,7 +105,7 @@ public final class UpdateCheck {
             //a generic client name, nothing about the user
             con.setRequestProperty("User-Agent", "YaBS-update-check");
             if (con.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                Log.Debug(UpdateCheck.class, "Update check: HTTP " + con.getResponseCode());
+                Log.Print("Update check: GitHub answered HTTP " + con.getResponseCode());
                 return null;
             }
             try (InputStream in = con.getInputStream()) {
@@ -113,10 +115,14 @@ public final class UpdateCheck {
                 while ((n = in.read(b)) > 0 && out.size() < 2_000_000) {
                     out.write(b, 0, n);
                 }
-                return parse(new String(out.toByteArray(), StandardCharsets.UTF_8));
+                Release r = parse(new String(out.toByteArray(), StandardCharsets.UTF_8));
+                Log.Print("Update check: latest release " + (r == null ? "none with a version number" : r.version)
+                        + ", this version " + VersionInfo.number()
+                        + (r != null && isNewer(r.version, VersionInfo.number()) ? " - newer version available" : " - up to date"));
+                return r;
             }
         } catch (Exception e) {
-            Log.Debug(UpdateCheck.class, "Update check: " + e.getMessage());
+            Log.Print("Update check: GitHub not reached (" + e.getClass().getSimpleName() + ": " + e.getMessage() + ")");
             return null;
         } finally {
             if (con != null) {

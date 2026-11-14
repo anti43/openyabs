@@ -259,6 +259,7 @@ public enum Messages {
     UPDATE_OPEN("Open download page"),
     UPDATE_LATER("Later"),
     UPDATE_SKIP("Skip this version"),
+    UPDATE_UP_TO_DATE("Version up to date (%s)"),
     UPDATE_NONE("You have the latest version (%s)."),
     UPDATE_CHECK_FAILED("GitHub could not be reached. Check the internet connection (or the proxy in the local settings)."),
     UPDATE_CARD("Updates"),
