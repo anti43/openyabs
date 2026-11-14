@@ -18,10 +18,14 @@ package mpv5.handler;
 
 import java.text.Normalizer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Locale;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseSearch;
+import mpv5.db.common.DatabaseObject;
+import mpv5.db.objects.Contact;
 import mpv5.db.objects.Item;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
@@ -120,7 +124,7 @@ public final class SearchService {
 
     private static void documents(Context c, int itemType, String n, List<Hit> hits) {
         String t = c.getDbIdentity() + ".";
-        String fields = t + "ids," + t + "cnumber," + t + "cname," + t + "description," + t + "dateadded," + t + "inttype";
+        String fields = t + "ids," + t + "cnumber," + t + "cname," + t + "description," + t + "dateadded," + t + "inttype," + t + "contactsids";
         Object[][] rows = find(c, fields, n);
         if (rows.length == 0) {
             rows = byLabel(c, fields, n);
@@ -135,6 +139,7 @@ public final class SearchService {
                 Log.Debug(SearchService.class, e);
             }
         }
+        Map<Integer, String> names = new HashMap<Integer, String>();
         for (Object[] r : rows) {
             String type;
             try {
@@ -143,8 +148,9 @@ public final class SearchService {
                 type = "";
             }
             String number = s(r[1]).isEmpty() ? s(r[2]) : s(r[1]);
+            //as in the old search: number, customer, date and the matching part of the description
             hits.add(new Hit(Messages.SEARCH_KIND_DOCUMENTS.toString(), join(" ", type, number),
-                    join(" · ", date(r[4]), shorten(s(r[3]))), c, id(r[0])));
+                    join(" · ", date(r[4]), contactName(r.length > 6 ? id(r[6]) : -1, names), snippet(s(r[3]), n)), c, id(r[0])));
         }
     }
 
@@ -187,12 +193,77 @@ public final class SearchService {
     private static void positions(String n, List<Hit> hits) {
         Context c = Context.getSubItem();
         String t = c.getDbIdentity() + ".";
+        Map<Integer, String> names = new HashMap<Integer, String>();
         for (Object[] r : find(c, t + "ids," + t + "itemsids," + t + "description," + t + "cname", n)) {
-            String text = shorten(s(r[2]).isEmpty() ? s(r[3]) : s(r[2]));
-            //opens the document of the position
-            hits.add(new Hit(Messages.SEARCH_KIND_POSITIONS.toString(), text, Messages.SEARCH_IN_DOCUMENT.toString(),
+            String text = snippet(s(r[2]).isEmpty() ? s(r[3]) : s(r[2]), n);
+            //opens the document of the position; shows which document it is
+            hits.add(new Hit(Messages.SEARCH_KIND_POSITIONS.toString(), text, documentLabel(id(r[1]), names),
                     Context.getInvoice(), id(r[1])));
         }
+    }
+
+    /**
+     * @return "Auftrag 000012 · Christ · 01.02.2026" for the document of a
+     * position, or "opens the document" if it cannot be read
+     */
+    private static String documentLabel(int itemId, Map<Integer, String> names) {
+        try {
+            Item i = (Item) DatabaseObject.getObject(Context.getInvoice(), itemId);
+            String label = join(" · ", join(" ", Item.getTypeString(i.__getInttype()), i.__getCnumber()),
+                    contactName(i.__getContactsids(), names), date(i.__getDateadded()));
+            if (!label.isEmpty()) {
+                return label;
+            }
+        } catch (Exception e) {
+            Log.Debug(SearchService.class, e.getMessage());
+        }
+        return Messages.SEARCH_IN_DOCUMENT.toString();
+    }
+
+    private static String contactName(int contactId, Map<Integer, String> names) {
+        if (contactId <= 0) {
+            return "";
+        }
+        String name = names.get(contactId);
+        if (name == null) {
+            try {
+                Contact co = (Contact) DatabaseObject.getObject(Context.getContact(), contactId);
+                String company = s(co.__getCompany());
+                name = company.isEmpty() ? join(" ", s(co.__getPrename()), s(co.__getCname())) : company;
+            } catch (Exception e) {
+                name = "";
+            }
+            names.put(contactId, name);
+        }
+        return name;
+    }
+
+    /**
+     * @return the text without markup, shortened around the first word of the
+     * needle it contains, so the matching part (e.g. an order number) is
+     * visible
+     */
+    static String snippet(String s, String needle) {
+        String p = plain(s);
+        if (p.length() <= 90) {
+            return p;
+        }
+        String lower = p.toLowerCase(Locale.ROOT);
+        int at = -1;
+        for (String w : (needle == null ? "" : needle.trim().toLowerCase(Locale.ROOT)).split("\\s+")) {
+            if (!w.isEmpty()) {
+                int k = lower.indexOf(w);
+                if (k >= 0 && (at < 0 || k < at)) {
+                    at = k;
+                }
+            }
+        }
+        if (at < 60) {
+            return p.substring(0, 87) + "...";
+        }
+        int from = Math.max(0, at - 30);
+        int to = Math.min(p.length(), from + 84);
+        return "..." + p.substring(from, to).trim() + (to < p.length() ? "..." : "");
     }
 
     private static void simple(Context c, String kind, String n, List<Hit> hits) {
