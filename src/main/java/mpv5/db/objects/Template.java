@@ -218,6 +218,14 @@ public class Template extends DatabaseObject {
     }
 
     /**
+     * Forgets the file fetched before: the next {@link #getFile()} reads the
+     * stored file again (after a new version was stored)
+     */
+    public synchronized void forgetFile() {
+        file = null;
+    }
+
+    /**
      * Fetches the physical file from db
      *
      * @return

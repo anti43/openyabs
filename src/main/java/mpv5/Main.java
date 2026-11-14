@@ -969,10 +969,6 @@ public class Main implements Runnable {
 //            }
         }
 
-
-        if (!HEADLESS) {
-           // checkTpls();
-        }
     }
 
     /**
@@ -1303,60 +1299,6 @@ public class Main implements Runnable {
             } catch (Exception e) {
                 Log.Debug(e);
             }
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private void checkTpls() {
-        splash.nextStep(Messages.CHECK_TPLUPDATE.toString());
-        if (!SKIP_TPLCHECK) {
-            Runnable runnable1 = new Runnable() {
-
-                Object[][] data = null;
-
-                @Override
-                public void run() {
-                    try {
-                        ReturnValue rv = QueryHandler.instanceOf().clone(Context.getTemplate()).select(false);
-                        data = rv.getData();
-                        for (int i = 0; i < data.length; i++) {
-                            final Template tpl = (Template) Template.getObject(Context.getTemplate(), Integer.parseInt(data[i][0].toString()));
-                            FileMonitor.FileChangeListener filecl = new FileMonitor.FileChangeListener() {
-
-                                @Override
-                                public void fileChanged(String fileName) {
-                                    QueryHandler.instanceOf().clone(Context.getFiles()).updateFile(new File(fileName), tpl.__getFilename());
-                                    tpl.setDescription(tpl.__getDescription() + "\n - Updated: " + new Date());
-                                    tpl.save(true);
-                                    TemplateHandler.clearCache();
-                                }
-                            };
-
-                            if (!tpl.__getPathtofile().equals("")) {
-                                if (tpl.__getisupdateenabled()) {
-                                    File file = new File(tpl.__getPathtofile());
-                                    if (file.exists()) {
-                                        Log.Debug(this, tpl.__getLastmodified());
-                                        Log.Debug(this, file.lastModified());
-                                        if (tpl.__getLastmodified() < file.lastModified()) {
-                                            QueryHandler.instanceOf().clone(Context.getFiles()).updateFile(file, tpl.__getFilename());
-                                            tpl.setDescription(tpl.__getDescription() + "\n - Updated: " + new Date());
-                                            tpl.setLastmodified(file.lastModified());
-                                            tpl.save(true);
-                                            TemplateHandler.clearCache();
-                                        }
-                                    }
-                                    FileMonitor.getInstance().addFileChangeListener(filecl, tpl.__getPathtofile(), 1000l);
-                                }
-                            }
-                        }
-                    } catch (NodataFoundException ex) {
-                        Log.Debug(this, ex.getMessage());
-                       // YabsViewProxy.instance().addMessage(Messages.NO_TEMPLATE_DEFINDED, Color.YELLOW);
-                    }
-                }
-            };
-            new Thread(runnable1).start();
         }
     }
 

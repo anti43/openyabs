@@ -70,7 +70,6 @@ import mpv5.globals.Messages;
 import mpv5.handler.TemplateHandler;
 import mpv5.handler.VariablesHandler;
 import mpv5.logging.Log;
-import mpv5.ui.dialogs.BigPopup;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.Popup;
@@ -86,7 +85,6 @@ import mpv5.utils.export.Export;
 import mpv5.utils.export.ODTFile2;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.files.FileExecutor;
-import mpv5.utils.files.FileMonitor;
 import mpv5.utils.jobs.Job;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.ui.TextFieldUtils;
@@ -104,7 +102,6 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
      */
     public final String UNAME = "templates";
     private Template dataOwner;
-    private File lastImportedFile;
     private long lastmodified;
 
     private final JTable templates = new JTable();
@@ -117,15 +114,24 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
     private final JPanel userBoxes = new JPanel(new GridLayout(0, 2, ModernTheme.px(8), ModernTheme.px(2)));
     private final List<JCheckBox> userChecks = new ArrayList<JCheckBox>();
     private final List<User> allUsers = new ArrayList<User>();
-    private final JTextField printern = new JTextField();
-    private final JTextField format = new JTextField();
+    private final JComboBox<String> printern = new JComboBox<String>();
+    /**
+     * the columns of the position table, e.g. "1,2,3,4,5,6"
+     */
+    private String formatValue = Template.DEFAULT_FORMAT;
+    private final JLabel formatLabel = new JLabel();
     private final JTextField einvoicePayterm = new JTextField();
     private final JLabel file = new JLabel();
-    private final JCheckBox updateService = new JCheckBox(Messages.TEMPLATES_WATCH.toString());
+    private final JLabel editState = new JLabel();
     private final JPanel actions = new JPanel(new BorderLayout());
     private final List<JComponent> needsTemplate = new ArrayList<JComponent>();
-    private FileMonitor.FileChangeListener watcher;
-    private String watchedFile;
+    private final mpv5.handler.TemplateEditing.Listener editListener = (tpl, when) -> javax.swing.SwingUtilities.invokeLater(() -> {
+        mpv5.YabsViewProxy.instance().addMessage(String.format(Messages.TEMPLATES_FILE_CHANGED.toString(), tpl.__getCname()));
+        if (dataOwner != null && dataOwner.isExisting() && dataOwner.__getIDS().intValue() == tpl.__getIDS().intValue()) {
+            dataOwner.forgetFile();
+            showFileState();
+        }
+    });
     private boolean loading;
 
     public ControlPanel_Templates() {
@@ -134,7 +140,7 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
             type.setModel(new DefaultComboBoxModel<MPComboBoxModelItem>(MPComboBoxModelItem.toItems(TemplateHandler.getTypes())));
             groupname.setModel(new DefaultComboBoxModel(
                     MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID()))));
-            format.setText(Template.DEFAULT_FORMAT);
+            mpv5.handler.TemplateEditing.addListener(editListener);
             refresh();
             setVisible(true);
         }
@@ -169,7 +175,7 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
         //right: the template
         title.setFont(ModernTheme.font(8, Font.BOLD));
         title.setBorder(BorderFactory.createEmptyBorder(0, ModernTheme.px(4), ModernTheme.px(6), 0));
-        for (JTextField t : new JTextField[]{fullname, printern, format, einvoicePayterm}) {
+        for (JTextField t : new JTextField[]{fullname, einvoicePayterm}) {
             ModernTheme.roomy(t);
         }
         descr.setLineWrap(true);
@@ -195,42 +201,54 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
                 .addFull(hint(Messages.TEMPLATES_USERS_HINT.toString()))
                 .addFull(userBoxes));
 
-        JButton printers = new JButton(Messages.TEMPLATES_PRINTERS.toString());
-        printers.addActionListener(e -> showPrinters());
-        JButton editFormat = new JButton(Messages.TEMPLATES_EDIT_FORMAT.toString());
-        editFormat.addActionListener(e -> BigPopup.showPopup(this, TemplateFormatEditor.instanceOf(format), "", true));
-        grid.add(new Card(Messages.TEMPLATES_OUTPUT.toString())
-                .row(Card.field(Messages.TEMPLATES_PRINTER.toString(), printern, 3), Card.field(null, printers, 1))
-                .addFull(hint(Messages.TEMPLATES_PRINTER_HINT.toString()))
-                .row(Card.field(Messages.TEMPLATES_FORMAT.toString(), format, 3), Card.field(null, editFormat, 1))
-                .row(Card.field(Messages.TEMPLATE_EINVOICE_PAYTERM.toString(), einvoicePayterm))
-                .addFull(hint(Messages.TEMPLATES_PAYTERM_HINT.toString())));
-
+        //the file: edit it in LibreOffice, every save is taken over
         file.setForeground(ModernTheme.muted());
-        JButton open = new JButton(Messages.TEMPLATES_OPEN.toString());
-        open.addActionListener(e -> openFile());
-        JButton replace = new JButton(Messages.TEMPLATES_REPLACE.toString());
-        replace.addActionListener(e -> replaceFile());
-        JButton saveAs = new JButton(Messages.TEMPLATES_SAVE_AS.toString());
-        saveAs.addActionListener(e -> saveFileAs());
+        editState.setFont(ModernTheme.font(-1, Font.PLAIN));
+        JButton edit = new JButton(Messages.TEMPLATES_OPEN.toString());
+        ModernTheme.actionButton(edit, null);
+        edit.addActionListener(e -> editFile());
         JButton preview = new JButton(Messages.TEMPLATES_PREVIEW.toString());
         preview.addActionListener(e -> preview());
         JButton vars = new JButton(Messages.TEMPLATES_VARIABLES.toString());
         vars.addActionListener(e -> showVariables());
+        JButton replace = new JButton(Messages.TEMPLATES_REPLACE.toString());
+        replace.addActionListener(e -> replaceFile());
+        JButton saveAs = new JButton(Messages.TEMPLATES_SAVE_AS.toString());
+        saveAs.addActionListener(e -> saveFileAs());
         JPanel fileButtons = new JPanel(new mpv5.ui.modern.WrapLayout(FlowLayout.LEFT, ModernTheme.px(6), ModernTheme.px(4)));
         fileButtons.setOpaque(false);
-        for (JButton b : new JButton[]{open, replace, saveAs, preview, vars}) {
+        for (JButton b : new JButton[]{edit, preview, vars, replace, saveAs}) {
             fileButtons.add(b);
             needsTemplate.add(b);
         }
-        updateService.setOpaque(false);
-        updateService.addItemListener(e -> watch(updateService.isSelected()));
-        needsTemplate.add(updateService);
         grid.add(new Card(Messages.TEMPLATES_FILE.toString())
-                .addFull(file)
+                .addFull(hint(Messages.TEMPLATES_EDIT_HINT.toString()))
                 .addFull(fileButtons)
-                .addFull(updateService)
-                .addFull(hint(Messages.TEMPLATES_WATCH_HINT.toString())));
+                .addFull(editState)
+                .addFull(file));
+
+        //the position table
+        formatLabel.setFont(ModernTheme.font(0, Font.PLAIN));
+        JButton columns = new JButton(Messages.TEMPLATES_CHOOSE_COLUMNS.toString());
+        columns.addActionListener(e -> chooseColumns());
+        needsTemplate.add(columns);
+        JPanel columnsRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, ModernTheme.px(4)));
+        columnsRow.setOpaque(false);
+        columnsRow.add(columns);
+        grid.add(new Card(Messages.TEMPLATES_POSITIONS.toString())
+                .addFull(hint(Messages.TEMPLATES_FORMAT_HINT.toString()))
+                .addFull(formatLabel)
+                .addFull(columnsRow));
+
+        //payment term
+        grid.add(new Card(Messages.TEMPLATES_PAYTERM_CARD.toString())
+                .row(Card.field(Messages.TEMPLATE_EINVOICE_PAYTERM.toString(), einvoicePayterm))
+                .addFull(hint(Messages.TEMPLATES_PAYTERM_HINT.toString())));
+
+        //printing
+        grid.add(new Card(Messages.TEMPLATES_PRINTING.toString())
+                .row(Card.field(Messages.TEMPLATES_PRINTER.toString(), printern))
+                .addFull(hint(Messages.TEMPLATES_PRINTER_HINT.toString())));
 
         JPanel right = new JPanel(new BorderLayout());
         right.setOpaque(false);
@@ -242,8 +260,6 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
         delete.setForeground(new Color(185, 28, 28));
         delete.addActionListener(e -> delete());
         needsTemplate.add(delete);
-        JButton reset = new JButton(Messages.USERS_RESET.toString());
-        reset.addActionListener(e -> reset());
         PrimaryButton save = new PrimaryButton(Messages.USERS_SAVE.toString(), "/images/16/filesave.png");
         save.addActionListener(e -> save());
         needsTemplate.add(save);
@@ -252,7 +268,6 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
         l.add(delete);
         JPanel r = new JPanel(new FlowLayout(FlowLayout.RIGHT, ModernTheme.px(8), ModernTheme.px(6)));
         r.setOpaque(false);
-        r.add(reset);
         r.add(save);
         actions.setOpaque(false);
         actions.add(l, BorderLayout.WEST);
@@ -312,7 +327,6 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
                         if (created instanceof Template) {
                             select((Template) created);
                         }
-                        configureUpdateService(fi);
                         Popup.notice(Messages.TEMPLATES_IMPORTED.toString());
                     });
                 }
@@ -344,7 +358,7 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
     private void delete() {
         if (dataOwner != null && dataOwner.isExisting()
                 && Popup.Y_N_dialog(String.format(Messages.TEMPLATES_DELETE_CONFIRM.toString(), dataOwner.__getCname()))) {
-            watch(false);
+            mpv5.handler.TemplateEditing.stop(dataOwner);
             TemplateHandler.clearCache();
             dataOwner.delete();
             dataOwner = null;
@@ -398,11 +412,7 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
         if (dataOwner != null && dataOwner.isExisting()) {
             try {
                 DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY, new File(dataOwner.getFile().getName()));
-                File nFile = d.saveFile(dataOwner.getFile());
-                if (nFile != null) {
-                    configureUpdateService(nFile);
-                    updateService.setSelected(true);
-                }
+                d.saveFile(dataOwner.getFile());
             } catch (Exception e) {
                 Log.Debug(e);
                 Popup.error(e);
@@ -417,68 +427,213 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
             di.setFileFilter(DialogForFile.TEMPLATE_FILES);
             if (di.chooseFile()) {
                 File fi = di.getFile();
-                storeFile(dataOwner, fi);
-                configureUpdateService(fi);
+                //a new file: an edit in LibreOffice starts again from it
+                mpv5.handler.TemplateEditing.stop(dataOwner);
+                mpv5.handler.TemplateEditing.store(dataOwner, fi, Messages.TEMPLATES_FILE_REPLACED.toString());
+                dataOwner.forgetFile();
+                mpv5.YabsViewProxy.instance().addMessage(String.format(Messages.TEMPLATES_FILE_REPLACED.toString(), dataOwner.__getCname()));
+                showFileState();
             }
         }
     }
 
     /**
-     * Stores a new version of the template file
+     * Opens the template in LibreOffice (or the program for its file type);
+     * every save there is taken over (see TemplateEditing)
      */
-    private void storeFile(Template tpl, File fi) {
-        QueryHandler.instanceOf().clone(Context.getFiles(), this).updateFile(fi, tpl.__getFilename());
-        tpl.setDescription(tpl.__getDescription() + "\n - Updated: " + new Date());
-        tpl.save(true);
-        TemplateHandler.clearCache();
-        mpv5.YabsViewProxy.instance().addMessage(Messages.TEMPLATES_UPDATED + ": " + tpl.__getCname());
-    }
-
-    /**
-     * Watches the template file: changes are stored automatically. One
-     * watcher at a time (switching it off really stops it).
-     */
-    private void watch(boolean on) {
-        if (loading) {
+    private void editFile() {
+        if (dataOwner == null || !dataOwner.isExisting()) {
             return;
         }
-        if (watcher != null) {
-            FileMonitor.getInstance().removeFileChangeListener(watcher, watchedFile);
-            watcher = null;
-            watchedFile = null;
+        try {
+            File work = mpv5.handler.TemplateEditing.start(dataOwner);
+            if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.OPEN)) {
+                Desktop.getDesktop().open(work);
+            } else if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_USE)) {
+                FileExecutor.run(LocalSettings.getProperty(LocalSettings.OFFICE_HOME) + File.separator + work.getPath());
+            } else {
+                Popup.notice(Messages.TEMPLATES_CANNOT_OPEN.toString() + "\n" + work.getPath());
+            }
+        } catch (Exception e) {
+            Log.Debug(e);
+            Popup.error(e);
         }
-        String path = sourceFile();
-        if (on && path != null && dataOwner != null) {
-            final Template tpl = dataOwner;
-            watchedFile = path;
-            watcher = fileName -> javax.swing.SwingUtilities.invokeLater(() -> storeFile(tpl, new File(fileName)));
-            FileMonitor.getInstance().addFileChangeListener(watcher, path, 1000L);
+        showFileState();
+    }
+
+    /**
+     * The size of the file and whether it is edited in LibreOffice
+     */
+    private void showFileState() {
+        if (dataOwner == null || !dataOwner.isExisting()) {
+            file.setText(" ");
+            editState.setText(" ");
+            return;
+        }
+        try {
+            File f = dataOwner.getFile();
+            file.setText(Messages.TEMPLATES_FILE_SIZE + ": " + Math.max(1, f.length() / 1024) + " KB");
+        } catch (Exception e) {
+            //the file could not be read: say so, do not offer to delete the template
+            Log.Debug(this, e);
+            file.setText("<html><font color='#b91c1c'>" + Messages.TEMPLATES_FILE_MISSING + "</font></html>");
+        }
+        File work = mpv5.handler.TemplateEditing.workingFile(dataOwner);
+        if (work == null) {
+            editState.setText(" ");
+        } else {
+            Date last = mpv5.handler.TemplateEditing.lastStored(dataOwner);
+            String state = last == null ? Messages.TEMPLATES_EDIT_WAITING.toString()
+                    : String.format(Messages.TEMPLATES_EDIT_LAST.toString(),
+                            mpv5.utils.date.DateConverter.getDefDateString(last) + " "
+                            + new java.text.SimpleDateFormat("HH:mm:ss").format(last));
+            editState.setText("<html><b>" + Messages.TEMPLATES_EDITING + "</b> \u00b7 " + state
+                    + "<br><font color='#64748b'>" + work.getPath() + "</font></html>");
         }
     }
 
-    private void openFile() {
-        if (dataOwner != null && dataOwner.isExisting()) {
+    /**
+     * @param format e.g. "1,2,4,6"
+     * @return the names of the columns, e.g. "No. · Quantity · Description ·
+     * Total net"
+     */
+    static String columnNames(String format) {
+        String[] names = Messages.TEMPLATES_COLUMNS.toString().split("\\|");
+        List<String> l = new ArrayList<String>();
+        for (int c : columns(format)) {
+            l.add(c <= names.length ? names[c - 1] : String.valueOf(c));
+        }
+        return l.isEmpty() ? Messages.TEMPLATES_COLUMNS_NONE.toString() : String.join(" \u00b7 ", l);
+    }
+
+    /**
+     * @return the column numbers of a format, invalid parts left out
+     */
+    static List<Integer> columns(String format) {
+        List<Integer> l = new ArrayList<Integer>();
+        for (String s : (format == null ? "" : format).split(",")) {
             try {
-                if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.OPEN)) {
-                    Desktop.getDesktop().open(dataOwner.getFile());
-                } else if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_USE)) {
-                    FileExecutor.run(LocalSettings.getProperty(LocalSettings.OFFICE_HOME) + File.separator + dataOwner.getFile().getPath());
-                } else {
-                    Popup.notice(Messages.TEMPLATES_CANNOT_OPEN.toString());
+                int c = Integer.parseInt(s.trim());
+                if (c > 0 && !l.contains(c)) {
+                    l.add(c);
                 }
-            } catch (Exception e) {
-                Log.Debug(e);
-                Popup.error(e);
+            } catch (NumberFormatException e) {
+                //not a column
             }
         }
+        return l;
     }
 
-    private void showPrinters() {
-        List<String> l = new ArrayList<String>();
-        for (PrintService s : PrintServiceLookup.lookupPrintServices(null, null)) {
-            l.add(s.getName());
+    private void showFormat() {
+        formatLabel.setText("<html>" + columnNames(formatValue) + "</html>");
+    }
+
+    /**
+     * The columns of the position table: tick them and put them in order
+     */
+    private void chooseColumns() {
+        String[] names = Messages.TEMPLATES_COLUMNS.toString().split("\\|");
+        final javax.swing.DefaultListModel<JCheckBox> model = new javax.swing.DefaultListModel<JCheckBox>();
+        List<Integer> chosen = columns(formatValue);
+        List<Integer> order = new ArrayList<Integer>(chosen);
+        for (int c = 1; c <= names.length; c++) {
+            if (!order.contains(c)) {
+                order.add(c);
+            }
         }
-        Popup.notice(l, Messages.PRINTER_NAMES);
+        for (int c : order) {
+            JCheckBox b = new JCheckBox(c <= names.length ? names[c - 1] : String.valueOf(c), chosen.contains(c));
+            b.putClientProperty("column", c);
+            model.addElement(b);
+        }
+        final javax.swing.JList<JCheckBox> list = new javax.swing.JList<JCheckBox>(model);
+        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        list.setCellRenderer((l, value, index, selected, focus) -> {
+            value.setOpaque(true);
+            value.setBackground(selected ? l.getSelectionBackground() : l.getBackground());
+            value.setForeground(selected ? l.getSelectionForeground() : l.getForeground());
+            return value;
+        });
+        list.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                int i = list.locationToIndex(e.getPoint());
+                if (i >= 0 && list.getCellBounds(i, i).contains(e.getPoint())) {
+                    model.get(i).setSelected(!model.get(i).isSelected());
+                    list.repaint();
+                }
+            }
+        });
+        list.getInputMap().put(javax.swing.KeyStroke.getKeyStroke("SPACE"), "toggle");
+        list.getActionMap().put("toggle", new javax.swing.AbstractAction() {
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                int i = list.getSelectedIndex();
+                if (i >= 0) {
+                    model.get(i).setSelected(!model.get(i).isSelected());
+                    list.repaint();
+                }
+            }
+        });
+        JButton up = new JButton("\u2191");
+        JButton down = new JButton("\u2193");
+        up.addActionListener(e -> move(list, model, -1));
+        down.addActionListener(e -> move(list, model, 1));
+        JPanel arrows = new JPanel(new GridLayout(0, 1, 0, ModernTheme.px(4)));
+        arrows.add(up);
+        arrows.add(down);
+        JPanel arrowsTop = new JPanel(new BorderLayout());
+        arrowsTop.add(arrows, BorderLayout.NORTH);
+        JScrollPane sl = new JScrollPane(list);
+        sl.setPreferredSize(new Dimension(ModernTheme.px(320), ModernTheme.px(300)));
+        JPanel p = new JPanel(new BorderLayout(ModernTheme.px(8), ModernTheme.px(8)));
+        p.add(hint(Messages.TEMPLATES_COLUMNS_HINT.toString()), BorderLayout.NORTH);
+        p.add(sl, BorderLayout.CENTER);
+        p.add(arrowsTop, BorderLayout.EAST);
+        if (javax.swing.JOptionPane.showConfirmDialog(this, p, Messages.TEMPLATES_POSITIONS.toString(),
+                javax.swing.JOptionPane.OK_CANCEL_OPTION, javax.swing.JOptionPane.PLAIN_MESSAGE) == javax.swing.JOptionPane.OK_OPTION) {
+            List<String> f = new ArrayList<String>();
+            for (int i = 0; i < model.size(); i++) {
+                if (model.get(i).isSelected()) {
+                    f.add(String.valueOf(model.get(i).getClientProperty("column")));
+                }
+            }
+            formatValue = String.join(",", f);
+            showFormat();
+        }
+    }
+
+    private static void move(javax.swing.JList<JCheckBox> list, javax.swing.DefaultListModel<JCheckBox> model, int by) {
+        int i = list.getSelectedIndex();
+        int j = i + by;
+        if (i >= 0 && j >= 0 && j < model.size()) {
+            JCheckBox b = model.remove(i);
+            model.add(j, b);
+            list.setSelectedIndex(j);
+            list.ensureIndexIsVisible(j);
+        }
+    }
+
+    /**
+     * The printers of the system, the first entry is the default printer
+     */
+    private void fillPrinters(String current) {
+        DefaultComboBoxModel<String> m = new DefaultComboBoxModel<String>();
+        m.addElement(Messages.TEMPLATES_PRINTER_DEFAULT.toString());
+        try {
+            for (PrintService s : PrintServiceLookup.lookupPrintServices(null, null)) {
+                m.addElement(s.getName());
+            }
+        } catch (Exception e) {
+            Log.Debug(this, e);
+        }
+        boolean set = current != null && !current.trim().isEmpty() && !Template.PRINTER_UNDEFINED.equals(current);
+        if (set && m.getIndexOf(current) < 0) {
+            //a printer not on this computer: keep it
+            m.addElement(current);
+        }
+        printern.setModel(m);
+        printern.setSelectedIndex(set ? m.getIndexOf(current) : 0);
     }
 
     /**
@@ -548,6 +703,7 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
         fullname.setText("");
         descr.setText("");
         file.setText(" ");
+        editState.setText(" ");
         for (JComponent c : needsTemplate) {
             c.setEnabled(false);
         }
@@ -607,10 +763,12 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
         cname_ = fullname.getText().trim();
         MPComboBoxModelItem t = (MPComboBoxModelItem) type.getSelectedItem();
         mimetype_ = t == null ? mimetype_ : String.valueOf(t.getId());
-        format_ = format.getText();
-        printer_ = printern.getText().trim().isEmpty() ? Template.PRINTER_UNDEFINED : printern.getText().trim();
+        format_ = formatValue;
+        printer_ = printern.getSelectedIndex() <= 0 || printern.getSelectedItem() == null
+                ? Template.PRINTER_UNDEFINED : String.valueOf(printern.getSelectedItem());
         lastmodified_ = lastmodified;
-        isupdateenabled_ = updateService.isSelected();
+        //the old watching of the imported file is replaced by "Edit in LibreOffice"
+        isupdateenabled_ = false;
         return true;
     }
 
@@ -633,8 +791,9 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
             if (group_ != null) {
                 groupname.setSelectedIndex(MPComboBoxModelItem.getItemID(String.valueOf(group_.__getIDS()), groupname.getModel()));
             }
-            format.setText(format_);
-            printern.setText(Template.PRINTER_UNDEFINED.equals(printer_) ? "" : printer_);
+            formatValue = format_ == null || format_.trim().isEmpty() ? Template.DEFAULT_FORMAT : format_;
+            showFormat();
+            fillPrinters(printer_);
 
             //the users, checked if the template is assigned to them
             Set<Integer> assigned = new HashSet<Integer>();
@@ -664,27 +823,13 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
 
             int days = mpv5.utils.export.ZugpferdFile.paytermOf(dataOwner);
             einvoicePayterm.setText(days >= 0 ? String.valueOf(days) : "");
-            lastImportedFile = null;
             lastmodified = lastmodified_;
-            try {
-                File f = dataOwner.getFile();
-                //stored in the database; where it came from, if known
-                file.setText("<html>" + Messages.TEMPLATES_FILE_SIZE + ": <b>" + Math.max(1, f.length() / 1024) + " KB</b>"
-                        + (pathtofile_ != null && !pathtofile_.isEmpty() ? "<br>" + Messages.TEMPLATES_FILE_ORIGIN + ": " + pathtofile_ : "")
-                        + "</html>");
-            } catch (Exception e) {
-                //the file could not be read: say so, do not offer to delete the template
-                Log.Debug(this, e);
-                file.setText("<html><font color='#b91c1c'>" + Messages.TEMPLATES_FILE_MISSING + "</font></html>");
-            }
-            updateService.setSelected(isupdateenabled_);
-            updateService.setEnabled(sourceFile() != null);
+            showFileState();
         } catch (Exception e) {
             Log.Debug(this, e);
         } finally {
             loading = false;
         }
-        watch(updateService.isSelected());
     }
 
     private List<User> selectedUsers() {
@@ -861,27 +1006,5 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
 
     @Override
     public void print() {
-    }
-
-    /**
-     * @return the file on this computer the template was imported from (to be
-     * watched), null if unknown
-     */
-    private String sourceFile() {
-        if (lastImportedFile != null) {
-            return lastImportedFile.getPath();
-        }
-        return pathtofile_ != null && !pathtofile_.isEmpty() && new File(pathtofile_).canRead() ? pathtofile_ : null;
-    }
-
-    private void configureUpdateService(File fi) {
-        lastImportedFile = fi;
-        updateService.setEnabled(true);
-        try {
-            pathtofile_ = fi.getCanonicalPath();
-        } catch (IOException ex) {
-            Log.Debug(this, ex);
-        }
-        lastmodified = fi.lastModified();
     }
 }
