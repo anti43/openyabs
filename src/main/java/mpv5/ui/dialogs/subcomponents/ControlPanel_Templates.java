@@ -270,7 +270,9 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
         grid.add(new Card(Messages.TEMPLATES_POSITIONS.toString())
                 .addFull(hint(Messages.TEMPLATES_FORMAT_HINT.toString()))
                 .addFull(formatLabel)
-                .addFull(columnsRow));
+                .addFull(columnsRow)
+                .addFull(hint(Messages.TEMPLATES_VARIABLES_HINT.toString()))
+                .addFull(varsRow));
 
         //payment term
         grid.add(new Card(Messages.TEMPLATES_PAYTERM_CARD.toString())
@@ -287,9 +289,7 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
                 .addFull(hint(Messages.TEMPLATES_PREVIEW_HINT.toString()))
                 .addFull(previewImage)
                 .addFull(previewCaption)
-                .addFull(previewButtons)
-                .addFull(hint(Messages.TEMPLATES_VARIABLES_HINT.toString()))
-                .addFull(varsRow));
+                .addFull(previewButtons));
 
         JPanel right = new JPanel(new BorderLayout());
         right.setOpaque(false);
