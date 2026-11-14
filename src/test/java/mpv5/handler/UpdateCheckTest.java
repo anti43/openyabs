@@ -16,7 +16,27 @@ class UpdateCheckTest {
         assertTrue(UpdateCheck.isNewer("2.0.1", "2.0"));
         assertFalse(UpdateCheck.isNewer("2.0.3", "2.0.3"));
         assertFalse(UpdateCheck.isNewer("2.0.2", "2.0.3"));
-        assertTrue(UpdateCheck.isNewer("2.0.3", "2.0-dev"));
+    }
+
+    @Test
+    void masterBuildsArePreReleasesOfTheNextPatch() {
+        //master build after the release 2.0.3: 2.0.4-dev.250
+        assertFalse(UpdateCheck.isNewer("2.0.3", "2.0.4-dev.250"));
+        assertTrue(UpdateCheck.isNewer("2.0.4", "2.0.4-dev.250"));
+        assertTrue(UpdateCheck.isNewer("2.1.0", "2.0.4-dev.250"));
+        //later builds are higher, numerically (dev.10 > dev.9)
+        assertTrue(UpdateCheck.compare("2.0.4-dev.10", "2.0.4-dev.9") > 0);
+        assertTrue(UpdateCheck.compare("2.0.4-dev", "2.0.4-dev.1") < 0);
+        assertTrue(UpdateCheck.compare("2.0.4-alpha", "2.0.4-beta") < 0);
+        assertTrue(UpdateCheck.compare("2.0.4-1", "2.0.4-alpha") < 0);
+        assertTrue(UpdateCheck.compare("v2.0.4+build.7", "2.0.4") == 0);
+    }
+
+    @Test
+    void ownBuildsDoNotCheckAtStart() {
+        assertTrue(UpdateCheck.isLocalBuild("2.0-dev"));
+        assertFalse(UpdateCheck.isLocalBuild("2.0.4-dev.250"));
+        assertFalse(UpdateCheck.isLocalBuild("2.0.3"));
     }
 
     @Test

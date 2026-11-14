@@ -65,11 +65,20 @@ public final class UpdateCheck {
     }
 
     /**
-     * @return true if the check at start is switched on and this is a
-     * release build (master and local builds have their own numbers)
+     * @return true if the check at start is switched on; builds made on
+     * the own computer ("2.0-dev") do not check
      */
     public static boolean enabledAtStart() {
-        return VersionInfo.isRelease() && isSwitchedOn();
+        return isSwitchedOn() && !isLocalBuild(VersionInfo.number());
+    }
+
+    /**
+     * @param version
+     * @return true for a build made on the own computer (no version from the
+     * build server)
+     */
+    static boolean isLocalBuild(String version) {
+        return version == null || version.trim().endsWith("-dev");
     }
 
     /**
@@ -145,41 +154,90 @@ public final class UpdateCheck {
 
     /**
      * @param available e.g. "2.1.0"
-     * @param current e.g. "2.0.3"
-     * @return true if available is a higher version number
+     * @param current e.g. "2.0.3" or "2.0.4-dev.250"
+     * @return true if available is a higher version (semantic versioning)
      */
     public static boolean isNewer(String available, String current) {
         return compare(available, current) > 0;
     }
 
     /**
-     * Compares version numbers part by part ("2.0.10" &gt; "2.0.9"); text
-     * after a number ("2.0-dev") is ignored
+     * Compares two versions by semantic versioning: the numbers part by part
+     * ("2.0.10" &gt; "2.0.9"), a pre-release before its release
+     * ("2.0.4-dev.250" &lt; "2.0.4", but &gt; "2.0.3"); build metadata
+     * ("+...") does not count
      */
     static int compare(String a, String b) {
-        int[] x = numbers(a);
-        int[] y = numbers(b);
+        String[] x = split(a);
+        String[] y = split(b);
+        int c = compareCore(x[0], y[0]);
+        if (c != 0) {
+            return c;
+        }
+        //same numbers: a version without pre-release is higher
+        if (x[1].isEmpty() || y[1].isEmpty()) {
+            return x[1].isEmpty() == y[1].isEmpty() ? 0 : (x[1].isEmpty() ? 1 : -1);
+        }
+        return comparePreRelease(x[1], y[1]);
+    }
+
+    /**
+     * @return [numbers, pre-release] ("2.0.4-dev.250" -> ["2.0.4", "dev.250"])
+     */
+    private static String[] split(String v) {
+        String s = v == null ? "" : v.trim();
+        if (s.startsWith("v") || s.startsWith("V")) {
+            s = s.substring(1);
+        }
+        int plus = s.indexOf('+');
+        if (plus >= 0) {
+            s = s.substring(0, plus);
+        }
+        int dash = s.indexOf('-');
+        return dash < 0 ? new String[]{s, ""} : new String[]{s.substring(0, dash), s.substring(dash + 1)};
+    }
+
+    private static int compareCore(String a, String b) {
+        String[] x = a.split("\\.");
+        String[] y = b.split("\\.");
         for (int i = 0; i < Math.max(x.length, y.length); i++) {
-            int p = i < x.length ? x[i] : 0;
-            int q = i < y.length ? y[i] : 0;
+            long p = i < x.length ? number(x[i]) : 0;
+            long q = i < y.length ? number(y[i]) : 0;
             if (p != q) {
-                return Integer.compare(p, q);
+                return Long.compare(p, q);
             }
         }
         return 0;
     }
 
-    private static int[] numbers(String v) {
-        String[] parts = (v == null ? "" : v.trim()).split("\\.");
-        int[] n = new int[parts.length];
-        for (int i = 0; i < parts.length; i++) {
-            String digits = parts[i].replaceAll("^(\\d*).*$", "$1");
-            try {
-                n[i] = digits.isEmpty() ? 0 : Integer.parseInt(digits);
-            } catch (NumberFormatException e) {
-                n[i] = 0;
+    private static int comparePreRelease(String a, String b) {
+        String[] x = a.split("\\.");
+        String[] y = b.split("\\.");
+        for (int i = 0; i < Math.min(x.length, y.length); i++) {
+            boolean xn = x[i].matches("\\d+");
+            boolean yn = y[i].matches("\\d+");
+            int c;
+            if (xn && yn) {
+                c = Long.compare(number(x[i]), number(y[i]));
+            } else if (xn != yn) {
+                //numeric identifiers are lower than alphanumeric ones
+                c = xn ? -1 : 1;
+            } else {
+                c = x[i].compareTo(y[i]);
+            }
+            if (c != 0) {
+                return c;
             }
         }
-        return n;
+        return Integer.compare(x.length, y.length);
+    }
+
+    private static long number(String s) {
+        String digits = s.replaceAll("^(\\d*).*$", "$1");
+        try {
+            return digits.isEmpty() ? 0 : Long.parseLong(digits);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
     }
 }

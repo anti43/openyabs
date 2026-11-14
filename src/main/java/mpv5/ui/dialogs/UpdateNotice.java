@@ -75,7 +75,7 @@ public final class UpdateNotice {
             SwingUtilities.invokeLater(() -> {
                 if (r == null) {
                     Popup.notice(parent, Messages.UPDATE_CHECK_FAILED.toString());
-                } else if (UpdateCheck.isNewer(r.version, VersionInfo.number()) || !VersionInfo.isRelease()) {
+                } else if (UpdateCheck.isNewer(r.version, VersionInfo.number())) {
                     show(parent, r, true);
                 } else {
                     Popup.notice(parent, String.format(Messages.UPDATE_NONE.toString(), VersionInfo.number()));
@@ -87,9 +87,7 @@ public final class UpdateNotice {
     }
 
     private static void show(Component parent, UpdateCheck.Release r, boolean asked) {
-        String text = VersionInfo.isRelease()
-                ? String.format(Messages.UPDATE_FOUND.toString(), r.version, VersionInfo.number())
-                : String.format(Messages.UPDATE_FOUND_DEV.toString(), r.version, VersionInfo.number());
+        String text = String.format(Messages.UPDATE_FOUND.toString(), r.version, VersionInfo.number());
         String open = Messages.UPDATE_OPEN.toString();
         String later = Messages.UPDATE_LATER.toString();
         String skip = Messages.UPDATE_SKIP.toString();
