@@ -267,6 +267,9 @@ public class MPControlPanel extends JPanel {
 
         String system = Messages.SETTINGS_GROUP_SYSTEM.toString();
         l.add(panel(system, "jButton1", Messages.SETTINGS_D_LOCAL, "internet", ControlPanel_Local.class, ControlPanel_Local::new));
+        //the update check is in the local settings: its own entry, so "update" finds it
+        l.add(new Entry(system, Messages.UPDATE_CARD.toString(), Messages.SETTINGS_D_UPDATES.toString(), "internet",
+                ControlPanel_Local.class, ControlPanel_Local::new, null, null));
         l.add(panel(system, "jButton7", Messages.SETTINGS_D_EXTERNAL, "openofficeorg-20", ControlPanel_External.class, ControlPanel_External::new));
         l.add(panel(system, "jButton11", Messages.SETTINGS_D_PLUGINS, "usb", ControlPanel_Plugins.class, ControlPanel_Plugins::new));
         //Shopify instead of the old XML-RPC shop interface
