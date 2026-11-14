@@ -33,43 +33,19 @@ public final class VersionInfo {
     public static final String LINE = "2.0";
     private static final String FALLBACK = LINE + "-dev";
     private static String number;
-    private static Boolean release;
 
     private VersionInfo() {
     }
 
     /**
-     * @return e.g. "2.0.123"
+     * @return e.g. "2.0.3" (release), "2.0.4-dev.250" (master build) or
+     * "2.0-dev" (local build)
      */
     public static synchronized String number() {
         if (number == null) {
             number = read();
         }
         return number;
-    }
-
-    /**
-     * @return true for a release build (built from a release tag), false for
-     * master and local builds
-     */
-    public static synchronized boolean isRelease() {
-        if (release == null) {
-            release = "release".equals(property("channel"));
-        }
-        return release;
-    }
-
-    private static String property(String key) {
-        try (InputStream in = VersionInfo.class.getResourceAsStream("/mpv5/version.properties")) {
-            if (in != null) {
-                Properties p = new Properties();
-                p.load(in);
-                return p.getProperty(key, "").trim();
-            }
-        } catch (Exception e) {
-            //none
-        }
-        return "";
     }
 
     private static String read() {

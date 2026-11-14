@@ -26,6 +26,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # the release tags, for the version of master builds
 
       - uses: actions/setup-java@v4
         with:
@@ -38,17 +40,21 @@ jobs:
       - name: Install fonts
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends fonts-liberation
 
-      # Use the release version, tag version or development build number.
+      # Use the release version, tag version or a pre-release version of the next patch.
       - name: Test and build distribution zip
         env:
           RELEASE_VERSION: ${{ inputs.release-version }}
         run: |
           if [[ -n "$RELEASE_VERSION" ]]; then
-            ./gradlew --no-daemon test distributionZip -PreleaseVersion="$RELEASE_VERSION" -PreleaseChannel=release
+            ./gradlew --no-daemon test distributionZip -PreleaseVersion="$RELEASE_VERSION"
           elif [[ "$GITHUB_REF" == refs/tags/v* ]]; then
-            ./gradlew --no-daemon test distributionZip -PreleaseVersion="${GITHUB_REF_NAME#v}" -PreleaseChannel=release
+            ./gradlew --no-daemon test distributionZip -PreleaseVersion="${GITHUB_REF_NAME#v}"
           else
-            ./gradlew --no-daemon test distributionZip -PreleaseVersion="2.0.${GITHUB_RUN_NUMBER}"
+            # semantic versioning: a pre-release of the next patch after the latest
+            # release tag (2.0.3 -> 2.0.4-dev.<build number>), so releases compare right
+            latest=$(git tag --list 'v*' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sed 's/^v//' | sort -V | tail -n 1)
+            IFS=. read -r major minor patch <<< "${latest:-2.0.-1}"
+            ./gradlew --no-daemon test distributionZip -PreleaseVersion="${major}.${minor}.$((patch + 1))-dev.${GITHUB_RUN_NUMBER}"
           fi
 
       # the artifact download is itself a zip which contains openyabs-<version>.zip;
