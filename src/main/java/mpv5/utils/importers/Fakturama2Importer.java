@@ -594,6 +594,34 @@ public class Fakturama2Importer {
      * @return the text, at most max characters; "" for null (YaBS columns are
      * not nullable)
      */
+    /**
+     * The unit of a product or position: Fakturama has units like " (only
+     * quotes) or none, then the default unit of the user
+     *
+     * @param raw QUANTITYUNIT
+     * @return the unit
+     */
+    static String unit(String raw) {
+        String t = raw == null ? "" : raw.trim();
+        if (t.replaceAll("[\"'`´‘’‚“”„\\s]", "").isEmpty()) {
+            return defaultUnit();
+        }
+        return cut(t, 250);
+    }
+
+    private static String defaultUnit() {
+        try {
+            mpv5.db.objects.User u = mpv5.db.objects.User.getCurrentUser();
+            if (u != null && u.getProperties().hasProperty("defunit")) {
+                String d = u.getProperties().getProperty("defunit");
+                return d == null ? "" : cut(d.trim(), 250);
+            }
+        } catch (Exception e) {
+            Log.Debug(Fakturama2Importer.class, e.getMessage());
+        }
+        return "";
+    }
+
     private static String cut(String s, int max) {
         return s == null ? "" : s.length() <= max ? s : s.substring(0, max);
     }
@@ -886,7 +914,7 @@ public class Fakturama2Importer {
                 if (r.d("QUANTITY") != null) {
                     p.setStockvalue(r.d("QUANTITY"));
                 }
-                p.setMeasure(cut(r.s("QUANTITYUNIT"), 250));
+                p.setMeasure(unit(r.s("QUANTITYUNIT")));
                 p.setEan(cut(r.s("GTIN"), 250));
                 p.setReference(cut(r.s("SUPPLIERITEMNUMBER"), 250));
                 Integer tax = taxIds.get(r.l("FK_VAT"));
@@ -1246,7 +1274,7 @@ public class Fakturama2Importer {
         s.setExternalvalue(net);
         s.setInternalvalue(net);
         s.setTaxpercentvalue(rate);
-        s.setMeasure(measure == null ? "" : cut(measure, 250));
+        s.setMeasure(unit(measure));
         s.setOrdernr(pos);
         s.setDateadded(item.__getDateadded());
         s.setGroupsids(1);
