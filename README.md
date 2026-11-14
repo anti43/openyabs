@@ -65,7 +65,7 @@ Trying things out without touching your data: `java -jar openyabs.jar -devmode` 
 
 The ZIP is created in `build/distributions/`. Java 21 is required. After `./gradlew build` (or `jar`), the libraries are copied to `build/libs/lib/`, so `java -jar build/libs/openyabs.jar` starts right away (a `-cp` option is ignored by `java -jar`). Pushes to `master` and version tags build the ZIP and the installer packages on GitHub Actions.
 
-Versions follow semantic versioning (shown on the splash screen and in *Help › About*): releases carry the version of their tag (`v2.1.0` → 2.1.0), builds of `master` are a pre-release of the next patch, e.g. **2.0.4-dev.250** after the release 2.0.3 (build number 250, older than 2.0.4), local builds are `2.0-dev` (`./gradlew distributionZip -PreleaseVersion=2.0.5` sets one). YaBS looks for a newer release on GitHub at start; switch it off in the setup assistant or in *Local settings › Updates*.
+Versions follow semantic versioning (shown on the splash screen and in *Help › About*): releases carry the version of their tag (`v2.1.0` → 2.1.0), builds of `master` are a pre-release of the next patch, e.g. **2.0.4-dev.250** after the release 2.0.3 (build number 250, older than 2.0.4), local builds are `2.0-dev` (`./gradlew distributionZip -PreleaseVersion=2.0.5` sets one). Installer packages of master builds: `.deb`/`.rpm` 2.0.4~dev250 (also below the release 2.0.4), `.msi` the latest release number (2.0.3), so a following release installs as an update. YaBS looks for a newer release on GitHub at start; switch it off in the setup assistant or in *Local settings › Updates*.
 
 ## Help, community and license
 
