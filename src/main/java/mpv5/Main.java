@@ -824,17 +824,12 @@ public class Main implements Runnable {
         if (SYSTEM_LAF.equals(lafname)) {
             return null;
         }
-        //no choice (or only the default of the platform): modern if enabled
+        //no choice (or only the default of the platform): the modern look; it does not depend on
+        //the modern views (a user setting of its own)
         if (lafname == null || lafname.trim().length() == 0
                 || lafname.equals(UIManager.getSystemLookAndFeelClassName())
                 || lafname.equals(UIManager.getCrossPlatformLookAndFeelClassName())) {
-            try {
-                if (YabsViewProxy.instance().isModernUi()) {
-                    return mpv5.ui.modern.YabsLookAndFeel.class.getName();
-                }
-            } catch (Exception e) {
-                Log.Debug(Main.class, e);
-            }
+            return mpv5.ui.modern.YabsLookAndFeel.class.getName();
         }
         return lafname;
     }

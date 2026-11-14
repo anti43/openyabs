@@ -607,15 +607,25 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
         shortcuts.setAccelerator(mpv5.ui.toolbars.ModernCommandBar.HELP);
         shortcuts.addActionListener(e -> mpv5.ui.dialogs.ShortcutsDialog.show(getFrame().getRootPane()));
         helpmenu.add(shortcuts, 0);
-        //View > Layout > Modern look: modern views and look (default) or classic
-        final javax.swing.JCheckBoxMenuItem modernLook = new javax.swing.JCheckBoxMenuItem(Messages.LAF_MODERN.toString());
+        //View > Layout: only the look (modern or system); the checked one is the look in use.
+        //The modern views of contacts, products and documents are a user setting (Control Panel)
+        final javax.swing.JRadioButtonMenuItem modernLook = new javax.swing.JRadioButtonMenuItem(Messages.LAF_MODERN.toString());
         modernLook.setToolTipText(Messages.LAF_MODERN_TIP.toString());
         modernLook.addActionListener(e -> {
-            mpv5.YabsViewProxy.instance().setModernUi(modernLook.isSelected());
-            mpv5.YabsViewProxy.instance().addMessage(Messages.LAF_MODERN_CHANGED.toString());
-            Popup.notice(Messages.LAF_MODERN_CHANGED.toString());
+            //no look of the user's own: the modern one (the default)
+            User.getCurrentUser().setLaf("");
+            User.getCurrentUser().save();
+            Main.setLaF("");
         });
+        final javax.swing.JRadioButtonMenuItem systemLook = new javax.swing.JRadioButtonMenuItem(jMenuItem1.getText());
+        systemLook.setToolTipText(Messages.LAF_SYSTEM_TIP.toString());
+        systemLook.addActionListener(e -> jMenuItem1.doClick());
+        javax.swing.ButtonGroup looks = new javax.swing.ButtonGroup();
+        looks.add(modernLook);
+        looks.add(systemLook);
+        jMenuItem1.setVisible(false);
         jMenu2.add(modernLook, 0);
+        jMenu2.add(systemLook, 1);
         //View > Language: built-in English, German and imported languages
         final javax.swing.JMenu languages = new javax.swing.JMenu(Messages.LANGUAGE_MENU.toString());
         languages.addMenuListener(new javax.swing.event.MenuListener() {
@@ -692,11 +702,13 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
         });
         jMenu8.add(yabs132, java.util.Arrays.asList(jMenu8.getMenuComponents()).indexOf(fakturama) + 1);
         jMenuItem17.setText(Messages.SEARCH_ANYTHING + " \u2026   (Shift Shift)");
-        jMenu2.add(new javax.swing.JPopupMenu.Separator(), 1);
+        jMenu2.add(new javax.swing.JPopupMenu.Separator(), 2);
         jMenu2.addMenuListener(new javax.swing.event.MenuListener() {
             @Override
             public void menuSelected(javax.swing.event.MenuEvent e) {
-                modernLook.setSelected(mpv5.YabsViewProxy.instance().isModernUi());
+                boolean modern = mpv5.ui.modern.YabsLookAndFeel.isActive();
+                modernLook.setSelected(modern);
+                systemLook.setSelected(!modern);
             }
 
             @Override
