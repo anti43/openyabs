@@ -152,6 +152,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         refresh(null, null);
         loadTemplate();
         ((MPTable) jTable1).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) jTable1, this));
+        modernLayout();
 
     }
 
@@ -205,6 +206,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
 //        TreeFormat.expandTree(jTree1);
         loadTemplate();
         ((MPTable) jTable1).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) jTable1, this));
+        modernLayout();
 
     }
 
@@ -1343,7 +1345,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                     jTable1.setModel(new MPTableModel(d, Headers.JOURNAL.getValue(),
                             new Class[]{DatabaseObject.class, String.class, String.class, String.class, String.class, String.class, Date.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class}));
                     //TableFormat.stripColumn(jTable1, 0);
-                    count.setText("" + d.length); //NOI18N
+                    count.setText(String.format(Messages.JOURNAL_COUNT.toString(), d.length)); //NOI18N
                 } catch (Exception e) {
                     Log.Debug(this, e);
                     Popup.error(e);
@@ -1548,6 +1550,100 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         });
         jPanel3.add(exportResult, BorderLayout.SOUTH);
     }
+    /**
+     * The modern layout, for the general journal and the journal of a
+     * contact: a header (title, count, export, "Load" as the main action),
+     * the filters and the accounts as cards, the table, the totals in four
+     * columns. The components and their logic are the same as before.
+     */
+    private void modernLayout() {
+        removeAll();
+        setLayout(new BorderLayout(mpv5.ui.modern.ModernTheme.px(10), mpv5.ui.modern.ModernTheme.px(10)));
+        setBorder(mpv5.ui.modern.ModernTheme.padding(12, 14));
+        setBackground(mpv5.ui.modern.ModernTheme.background());
+
+        //header
+        javax.swing.JLabel title = new javax.swing.JLabel(dataOwner == null ? Messages.JOURNAL_TITLE.toString()
+                : String.format(Messages.JOURNAL_TITLE_CONTACT.toString(), dataOwner.__getCname()));
+        title.setFont(mpv5.ui.modern.ModernTheme.font(9, Font.BOLD));
+        count.setForeground(mpv5.ui.modern.ModernTheme.muted());
+        javax.swing.JPanel left = new javax.swing.JPanel(new FlowLayout(FlowLayout.LEFT, mpv5.ui.modern.ModernTheme.px(10), 0));
+        left.setOpaque(false);
+        left.add(title);
+        left.add(count);
+        javax.swing.JPanel right = new javax.swing.JPanel(new FlowLayout(FlowLayout.RIGHT, mpv5.ui.modern.ModernTheme.px(8), 0));
+        right.setOpaque(false);
+        right.add(new javax.swing.JLabel(Messages.JOURNAL_EXPORT.toString()));
+        right.add(exportBox);
+        right.add(jButton1);
+        javax.swing.JPanel header = new javax.swing.JPanel(new BorderLayout());
+        header.setOpaque(false);
+        header.add(left, BorderLayout.WEST);
+        header.add(right, BorderLayout.EAST);
+
+        //filters and accounts
+        for (javax.swing.JComponent c : new javax.swing.JComponent[]{groups, users, statusc, types}) {
+            mpv5.ui.modern.ModernTheme.roomyCombo(c);
+        }
+        javax.swing.JPanel groupRow = new javax.swing.JPanel(new BorderLayout(mpv5.ui.modern.ModernTheme.px(8), 0));
+        groupRow.setOpaque(false);
+        groupRow.add(groups, BorderLayout.CENTER);
+        groupRow.add(includechildgroups, BorderLayout.EAST);
+        for (javax.swing.AbstractButton b : new javax.swing.AbstractButton[]{includechildgroups, bydateend, expbydateend}) {
+            b.setOpaque(false);
+        }
+        javax.swing.JPanel options = new javax.swing.JPanel(new FlowLayout(FlowLayout.LEFT, mpv5.ui.modern.ModernTheme.px(12), 0));
+        options.setOpaque(false);
+        options.add(bydateend);
+        options.add(expbydateend);
+        mpv5.ui.modern.Card filters = new mpv5.ui.modern.Card(Messages.JOURNAL_FILTERS.toString())
+                .row(mpv5.ui.modern.Card.field(Messages.JOURNAL_PERIOD.toString(), timeframeChooser1, 2),
+                        mpv5.ui.modern.Card.field(typesLabel.getText().replace(":", ""), types))
+                .row(mpv5.ui.modern.Card.field(jLabel2.getText().replace(":", ""), groupRow, 2),
+                        mpv5.ui.modern.Card.field(jLabel8.getText().replace(":", ""), users))
+                .row(mpv5.ui.modern.Card.field(jLabel6.getText().replace(":", ""), statusc), mpv5.ui.modern.Card.field(null, options, 2));
+        jList1.setSelectionBackground(javax.swing.UIManager.getColor("List.selectionBackground"));
+        jList1.setFont(mpv5.ui.modern.ModernTheme.font(0, Font.PLAIN));
+        jScrollPane3.setPreferredSize(new Dimension(mpv5.ui.modern.ModernTheme.px(200), mpv5.ui.modern.ModernTheme.px(110)));
+        mpv5.ui.modern.Card accounts = new mpv5.ui.modern.Card(Messages.JOURNAL_ACCOUNTS.toString())
+                .addFull(jScrollPane3, 1)
+                .addFull(mpv5.ui.modern.Applets.hint(Messages.JOURNAL_ACCOUNTS_HINT.toString()));
+        accounts.setPreferredSize(new Dimension(mpv5.ui.modern.ModernTheme.px(260), mpv5.ui.modern.ModernTheme.px(160)));
+        javax.swing.JPanel top = new javax.swing.JPanel(new BorderLayout(mpv5.ui.modern.ModernTheme.px(10), 0));
+        top.setOpaque(false);
+        top.add(filters, BorderLayout.CENTER);
+        top.add(accounts, BorderLayout.EAST);
+
+        //the table and the totals
+        mpv5.ui.modern.ModernTheme.style(jTable1);
+        jScrollPane1.setBorder(javax.swing.BorderFactory.createLineBorder(mpv5.ui.modern.ModernTheme.border()));
+        mpv5.ui.modern.Card totals = new mpv5.ui.modern.Card(Messages.JOURNAL_TOTALS.toString())
+                .row(mpv5.ui.modern.Applets.field(volumeNetto), mpv5.ui.modern.Applets.field(profitNetto),
+                        mpv5.ui.modern.Applets.field(revenueNetto), mpv5.ui.modern.Applets.field(expNetto))
+                .row(mpv5.ui.modern.Applets.field(taxVolume), mpv5.ui.modern.Applets.field(profitTax),
+                        mpv5.ui.modern.Applets.field(revenueTax), mpv5.ui.modern.Applets.field(expTax))
+                .row(mpv5.ui.modern.Applets.field(volumeBrutto), mpv5.ui.modern.Applets.field(volumeDiscount),
+                        mpv5.ui.modern.Applets.field(revenueBrut), mpv5.ui.modern.Applets.field(expBrut))
+                .addFull(exportResult);
+        javax.swing.JPanel journal = new javax.swing.JPanel(new BorderLayout(0, mpv5.ui.modern.ModernTheme.px(10)));
+        journal.setOpaque(false);
+        journal.add(top, BorderLayout.NORTH);
+        journal.add(jScrollPane1, BorderLayout.CENTER);
+        journal.add(totals, BorderLayout.SOUTH);
+
+        add(header, BorderLayout.NORTH);
+        if (dataOwner == null) {
+            add(journal, BorderLayout.CENTER);
+        } else {
+            //a contact: the journal and the overview of the contact (tree) as tabs
+            javax.swing.JTabbedPane tabs = new javax.swing.JTabbedPane();
+            tabs.addTab(bundle.getString("JournalPanel.jPanel4.TabConstraints.tabTitle"), journal);
+            tabs.addTab(bundle.getString("JournalPanel.jPanel5.TabConstraints.tabTitle"), jPanel5);
+            add(tabs, BorderLayout.CENTER);
+        }
+        revalidate();
+    }
+
     private final javax.swing.JComboBox exportBox = new javax.swing.JComboBox();
     private final javax.swing.JLabel exportResult = new javax.swing.JLabel(" ");
     private File exportedFile;

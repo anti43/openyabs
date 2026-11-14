@@ -161,6 +161,8 @@ public class ProductsOverview extends JPanel implements ListPanel {
             c.setEditable(true);
             c.getComboBox().addActionListener(e -> refresh());
         }
+        ModernTheme.roomyCombo(supplier);
+        ModernTheme.roomyCombo(manufacturer);
         supplier.setContext(Context.getSupplier());
         manufacturer.setContext(Context.getManufacturer());
         supplier.setSelectedIndex(-1);
@@ -171,7 +173,7 @@ public class ProductsOverview extends JPanel implements ListPanel {
         reset.addActionListener(e -> resetFilters());
 
         Card filters = new Card(null)
-                .row(Card.field(null, search, 3), Card.field(null, chips, 2))
+                .row(Card.field(Messages.PRODUCTS_SEARCH_LABEL.toString(), search, 3), Card.field(Messages.PRODUCTS_KIND.toString(), chips, 2))
                 .row(Card.field(Messages.PRODUCTS_SUPPLIER.toString(), supplier.getComboBox()),
                         Card.field(Messages.PRODUCTS_MANUFACTURER.toString(), manufacturer.getComboBox()),
                         Card.field(null, reset));

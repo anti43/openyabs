@@ -239,6 +239,30 @@ public final class ModernTheme {
      * @param field
      * @return the field
      */
+    /**
+     * A combo box (or the one inside a classic combo box panel) in the height
+     * of the modern text fields: the classic ones are fixed at 20 px
+     *
+     * @param c a JComboBox, MPCombobox or LabeledCombobox
+     * @return c
+     */
+    public static <T extends javax.swing.JComponent> T roomyCombo(T c) {
+        javax.swing.JComponent box = c;
+        if (c instanceof mpv5.ui.beans.MPCombobox) {
+            box = ((mpv5.ui.beans.MPCombobox) c).getComboBox();
+        } else if (c instanceof LabeledCombobox) {
+            box = ((LabeledCombobox) c).getComboBox();
+        }
+        int h = px(30);
+        box.setPreferredSize(new java.awt.Dimension(Math.max(px(120), box.getPreferredSize().width), h));
+        box.setMinimumSize(new java.awt.Dimension(px(80), h));
+        if (box != c) {
+            c.setPreferredSize(null);
+            c.setMinimumSize(null);
+        }
+        return c;
+    }
+
     public static LabeledCombobox plain(LabeledCombobox field) {
         hideLabels(field);
         field.setPreferredSize(null);
