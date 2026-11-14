@@ -60,6 +60,11 @@ public final class UpdateNotice {
                 return;
             }
             UpdateCheck.Release r = UpdateCheck.latest();
+            if (r != null && !UpdateCheck.isNewer(r.version, VersionInfo.number())) {
+                //up to date: a short note in the status bar
+                SwingUtilities.invokeLater(() -> mpv5.YabsViewProxy.instance().addMessage(
+                        String.format(Messages.UPDATE_UP_TO_DATE.toString(), VersionInfo.number())));
+            }
             if (r != null && UpdateCheck.isNewer(r.version, VersionInfo.number())
                     && r.version.equals(LocalSettings.getProperty(SKIPPED))) {
                 mpv5.logging.Log.Print("Update check: " + r.version + " was skipped by the user, no notice");
