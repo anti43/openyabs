@@ -607,6 +607,31 @@ public final class GeneralListPanel extends javax.swing.JPanel {
     /**
      * @param groupBy the groupBy to set
      */
+    /**
+     * The parts of the list, for a view that lays them out itself (e.g. the
+     * receipt lookup): the time frame, the group, the filter button (applies
+     * both), the count and the table in its scroll pane
+     */
+    public mpv5.ui.beans.TimeframeChooser getTimeframeChooser() {
+        return timeframeChooser1;
+    }
+
+    public mpv5.ui.beans.LabeledCombobox getGroupChoice() {
+        return labeledCombobox1;
+    }
+
+    public javax.swing.JButton getFilterButton() {
+        return jButton1;
+    }
+
+    public javax.swing.JLabel getCountLabel() {
+        return jLabel1;
+    }
+
+    public javax.swing.JScrollPane getListScroll() {
+        return jScrollPane1;
+    }
+
     public void setGroupBy(Context groupBy) {
         this.groupBy = groupBy;
     }
