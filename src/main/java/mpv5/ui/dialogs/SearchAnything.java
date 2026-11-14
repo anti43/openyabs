@@ -112,6 +112,7 @@ public final class SearchAnything extends JDialog {
      * Opens the search window over the main window
      */
     public static void open() {
+        mpv5.ui.panels.SettingsIndex.build();
         JFrame owner = (JFrame) mpv5.YabsViewProxy.instance().getIdentifierFrame();
         if (instance == null || instance.getOwner() != owner) {
             instance = new SearchAnything(owner);
@@ -126,6 +127,7 @@ public final class SearchAnything extends JDialog {
      * @param anchor
      */
     public static void openAt(java.awt.Component anchor) {
+        mpv5.ui.panels.SettingsIndex.build();
         if (anchor == null || !anchor.isShowing()) {
             open();
             return;
@@ -428,6 +430,15 @@ public final class SearchAnything extends JDialog {
             for (final mpv5.ui.panels.MPControlPanel.Entry e : mpv5.ui.panels.MPControlPanel.entries()) {
                 if (e.matches(needle) && l.size() < 8) {
                     l.add(new Command(e.title, e.description, () -> mpv5.ui.panels.MPControlPanel.show(e)));
+                }
+            }
+            //the single options of the pages (check boxes, fields, cards)
+            int options = 0;
+            for (final mpv5.ui.panels.SettingsIndex.Option o : mpv5.ui.panels.SettingsIndex.options()) {
+                if (options < 10 && SearchService.matches(o.text, needle)) {
+                    l.add(new Command(o.text, Messages.CONTROL_PANEL + " \u203a " + o.entry.title,
+                            () -> mpv5.ui.panels.SettingsIndex.show(o)));
+                    options++;
                 }
             }
         } catch (Exception ex) {
