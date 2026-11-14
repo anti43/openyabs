@@ -18,7 +18,7 @@
 - H2 verwendet dieselbe Struktur und dieselben Updates wie Derby, automatisch umgewandelt (`mpv5.db.common.H2Dialect`): Derby-Kompatibilitätsmodus, **SMALLINT-Spalten werden BIGINT** (keine Überläufe), `LONG VARCHAR` → `VARCHAR(32700)`, `RENAME COLUMN` und Identity-Syntax angepasst.
 - Derbys SQL-Trigger (Suchindex, Papierkorb) laufen in H2 über die Java-Klasse `H2Trigger`; ihre Anweisungen stehen in der Tabelle `yabstriggers`.
 - Updates beim Start funktionieren wie bei Derby: unterbrochene Updates setzen fort, bereits vorhandene Änderungen werden übersprungen.
-- Eine bestehende Derby-Datenbank wird **nicht** automatisch nach H2 umgezogen; beide Varianten laufen nebeneinander (je eine Verbindung).
+- Eine bestehende Derby-Datenbank wird **nicht** automatisch nach H2 umgezogen; beide Varianten laufen nebeneinander (je eine Verbindung). Umziehen: neue (H2-)Datenbank anlegen, dann *Datei › Import › Von YaBS 1.3.2 …* – übernimmt alle Daten einer Derby-Datenbank von YaBS 1.3.2 (oder älter) mit ihren IDs, die alte Datenbank bleibt unverändert (`mpv5.db.migration.Yabs132Import`, siehe [Hinweise](Hinweise.md)).
 
 ### Neue Datenbanken: eine Struktur-Datei statt aller Updates
 

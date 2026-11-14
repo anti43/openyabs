@@ -41,8 +41,18 @@ public final class Applets {
      * @return a gray, wrapping explanation
      */
     public static JComponent hint(String text) {
+        return plainHint(text.replaceAll("<br\\s*/?>", "\n").replaceAll("<[^>]+>", ""));
+    }
+
+    /**
+     * Like {@link #hint(String)}, the text as it is (e.g. with "&lt;name&gt;")
+     *
+     * @param text plain text
+     * @return the hint
+     */
+    public static JComponent plainHint(String text) {
         //a wrapping text: as wide as its place, as high as its lines
-        javax.swing.JTextArea t = new javax.swing.JTextArea(text.replaceAll("<br\\s*/?>", "\n").replaceAll("<[^>]+>", ""));
+        javax.swing.JTextArea t = new javax.swing.JTextArea(text);
         t.setLineWrap(true);
         t.setWrapStyleWord(true);
         t.setEditable(false);
