@@ -71,7 +71,8 @@ public class DialogForFile extends JFileChooser implements Waiter {
    };
    public static FileFilter TEMPLATE_FILES = new FileFilter() {
       public boolean accept(File f) {
-         return f.getName().toLowerCase().endsWith(".odt") || f.getName().toLowerCase().endsWith(".pdf") || f.isDirectory();
+         return f.getName().toLowerCase().endsWith(".odt") /*|| f.getName().toLowerCase().endsWith(".pdf") */
+                 || f.isDirectory();
       }
 
       public String getDescription() {
