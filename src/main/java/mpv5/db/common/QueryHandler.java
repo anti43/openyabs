@@ -1420,7 +1420,7 @@ public class QueryHandler implements Cloneable {
             } catch (Exception ex) {
                 Log.Debug(this, "Datenbankfehler: " + ivpquery);
                 Log.Debug(this, ex);
-                Popup.error(ex);
+                //Popup.error(ex);
                 jobmessage = Messages.ERROR_OCCURED.toString();
             } finally {
                 stop();
@@ -1473,7 +1473,7 @@ public class QueryHandler implements Cloneable {
             } catch (Exception ex) {
                 Log.Debug(this, "Datenbankfehler: " + uvpquery);
                 Log.Debug(this, ex);
-                Popup.error(ex);
+               //Popup.error(ex);
                 jobmessage = Messages.ERROR_OCCURED.toString();
             } finally {
                 stop();
@@ -2291,7 +2291,7 @@ public class QueryHandler implements Cloneable {
                     resultSet.close();
                 } catch (SQLException ex) {
                     Log.Debug(this, message + ex.getMessage());
-                    Popup.error(ex);
+                    //Popup.error(ex);
                 }
             }
             if (stm != null) {
@@ -2299,7 +2299,7 @@ public class QueryHandler implements Cloneable {
                     stm.close();
                 } catch (SQLException ex) {
                     Log.Debug(this, message + ex.getMessage());
-                    Popup.error(ex);
+                    //Popup.error(ex);
                 }
             }
         }
@@ -2352,7 +2352,7 @@ public class QueryHandler implements Cloneable {
                     resultSet.close();
                 } catch (SQLException ex) {
                     Log.Debug(this, message + ex.getMessage());
-                    Popup.error(ex);
+                    //Popup.error(ex);
                 }
             }
             if (stm != null) {
@@ -2360,7 +2360,7 @@ public class QueryHandler implements Cloneable {
                     stm.close();
                 } catch (SQLException ex) {
                     Log.Debug(this, message + ex.getMessage());
-                    Popup.error(ex);
+                    //Popup.error(ex);
                 }
             }
         }
@@ -2738,7 +2738,7 @@ public class QueryHandler implements Cloneable {
         } catch (SQLException ex) {
             Log.Debug(this, "Datenbankfehler: " + query);
             Log.Debug(this, message + ex.getMessage());
-            Popup.error(ex);
+            //Popup.error(ex);
             jobmessage = Messages.ERROR_OCCURED.toString();
         } finally {
             // Alle Ressourcen wieder freigeben
@@ -2749,7 +2749,7 @@ public class QueryHandler implements Cloneable {
                 } catch (SQLException ex) {
                     jobmessage = Messages.ERROR_OCCURED.toString();
                     Log.Debug(this, message + ex.getMessage());
-                    Popup.error(ex);
+                    //Popup.error(ex);
                 }
             }
             if (stm != null) {
@@ -2757,7 +2757,7 @@ public class QueryHandler implements Cloneable {
                     stm.close();
                 } catch (SQLException ex) {
                     Log.Debug(this, message + ex.getMessage());
-                    Popup.error(ex);
+                    //Popup.error(ex);
                 }
             }
             stm = null;
@@ -2812,7 +2812,7 @@ public class QueryHandler implements Cloneable {
         } catch (Exception ex) {
             Log.Debug(this, "Datenbankfehler: " + query);
             Log.Debug(this, ex);
-            Popup.error(ex);
+            //Popup.error(ex);
             jobmessage = Messages.ERROR_OCCURED.toString();
         } finally {
 
@@ -2882,7 +2882,7 @@ public class QueryHandler implements Cloneable {
             } catch (SQLException ex) {
                 Log.Debug(this, ex);
                 if (list == null || list.isEmpty()) {
-                    Popup.error(ex);
+                   // Popup.error(ex);
                 }
                 jobmessage = Messages.ERROR_OCCURED.toString();
             } finally {
@@ -2899,7 +2899,7 @@ public class QueryHandler implements Cloneable {
                     } catch (SQLException ex) {
                         jobmessage = Messages.ERROR_OCCURED.toString();
                         Log.Debug(this, ex.getMessage());
-                        Popup.error(ex);
+                        //Popup.error(ex);
                     }
                 }
                 if (stm != null) {
@@ -2907,7 +2907,7 @@ public class QueryHandler implements Cloneable {
                         stm.close();
                     } catch (SQLException ex) {
                         Log.Debug(this, ex.getMessage());
-                        Popup.error(ex);
+                        //Popup.error(ex);
                     }
                 }
             }
@@ -3118,7 +3118,7 @@ public class QueryHandler implements Cloneable {
                 }
             } catch (SQLException ex) {
                 Log.Debug(this, ex);
-                Popup.error(ex);
+                //Popup.error(ex);
             } finally {
                 progressbar.setValue(0);
                 mpv5.ui.modern.Edt.setIndeterminate(progressbar, false);
@@ -3209,7 +3209,7 @@ public class QueryHandler implements Cloneable {
                     mpv5.ui.modern.Edt.setIndeterminate(progressbar, false);
                     Log.Debug(this, "Datenbankfehler: " + query);
                     Log.Debug(this, ex);
-                    Popup.error(ex);
+                    //.error(ex);
                     jobmessage = Messages.ERROR_OCCURED.toString();
                 } finally {
                     try {
@@ -3319,7 +3319,7 @@ public class QueryHandler implements Cloneable {
                     mpv5.ui.modern.Edt.setIndeterminate(progressbar, false);
                     Log.Debug(this, "Datenbankfehler: " + query);
                     Log.Debug(this, ex);
-                    Popup.error(ex);
+                    //Popup.error(ex);
                     jobmessage = Messages.ERROR_OCCURED.toString();
                 }
 
