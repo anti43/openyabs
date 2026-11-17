@@ -191,7 +191,16 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel, DataP
    private static final int COL_ID = 0, COL_CNUMBER = 1, COL_TITLE = 2, COL_PRENAME = 3, COL_NAME = 4, COL_STREET = 5,
          COL_ZIP = 6, COL_CITY = 7, COL_COUNTRY = 8, COL_MAINPHONE = 9, COL_FAX = 10, COL_MOBILEPHONE = 11,
          COL_WORKPHONE = 12, COL_COMPANY = 13, COL_MAIL = 14, COL_WEBSITE = 15, COL_NOTES = 16, COL_TAXNUMBER = 17,
-         COL_IBAN = 18, COLUMNS = 19;
+         COL_IBAN = 18,
+         /**
+          * not a column of the contacts table: the own account the contact pays to (value property)
+          */
+         COL_ACCOUNT = 19, COLUMNS = 20;
+   /**
+    * The own account the contact pays to (IBAN) by contact id, none: the
+    * default account
+    */
+   private final java.util.Map<String, String> accounts = new java.util.HashMap<String, String>();
    private final mpv5.ui.modern.ChipToggle editToggle = new mpv5.ui.modern.ChipToggle(Messages.CONTACTLIST_EDITMODE.toString());
    private final javax.swing.JLabel editLegend = new javax.swing.JLabel(Messages.CONTACTLIST_EDITMODE_LEGEND.toString());
    private boolean editMode;
@@ -273,16 +282,24 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel, DataP
       checks.clear();
       mpv5.i18n.LanguageManager.getCountriesAsComboBoxModel();//loads the country names
       homeCountry = mpv5.utils.export.ZugpferdFile.toCountryCode(mpv5.utils.export.ZugpferdFile.companySettings().apply("country"));
-      for (Object[] row : data) {
-         if (row.length > COL_COUNTRY) {
-            String country = row[COL_COUNTRY] == null ? "" : String.valueOf(row[COL_COUNTRY]);
-            countries.put(String.valueOf(row[COL_ID]), country);
-            row[COL_COUNTRY] = mpv5.db.objects.Address.countryName(country);
-         }
+      accounts.clear();
+      for (java.util.Map.Entry<Integer, String> e : mpv5.utils.export.ContactProperty.all(mpv5.utils.export.BankAccount.KEY_CONTACT).entrySet()) {
+         accounts.put(String.valueOf(e.getKey()), mpv5.utils.text.Iban.normalize(e.getValue()));
       }
+      java.util.List<mpv5.utils.export.BankAccount> own = mpv5.utils.export.BankAccount.companyAccounts(mpv5.utils.export.ZugpferdFile.companySettings());
+      for (int i = 0; i < data.length; i++) {
+         Object[] row = java.util.Arrays.copyOf(data[i], COLUMNS);
+         String country = row[COL_COUNTRY] == null ? "" : String.valueOf(row[COL_COUNTRY]);
+         countries.put(String.valueOf(row[COL_ID]), country);
+         row[COL_COUNTRY] = mpv5.db.objects.Address.countryName(country);
+         row[COL_ACCOUNT] = accountLabel(own, accounts.get(String.valueOf(row[COL_ID])));
+         data[i] = row;
+      }
+      String[] header = java.util.Arrays.copyOf(Headers.CONTACT_DETAILS.getValue(), COLUMNS);
+      header[COL_ACCOUNT] = Messages.EINVOICE_ACCOUNT.toString();
       Class[] types = new Class[COLUMNS];
       java.util.Arrays.fill(types, Object.class);
-      MPTableModel model = new MPTableModel(types, editable(editMode), data, Headers.CONTACT_DETAILS.getValue()) {
+      MPTableModel model = new MPTableModel(types, editable(editMode), data, header) {
          private static final long serialVersionUID = 1L;
 
          @Override
@@ -301,6 +318,20 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel, DataP
       };
       listTable.setModel(model);
       setupColumns();
+   }
+
+   /**
+    * @param own the accounts of the company info
+    * @param iban the account assigned to the contact, null or empty for the
+    * default
+    * @return the text for the table
+    */
+   private static String accountLabel(java.util.List<mpv5.utils.export.BankAccount> own, String iban) {
+      if (iban == null || iban.isEmpty() || !own.isEmpty() && own.get(0).getIban().equals(iban)) {
+         return Messages.EINVOICE_ACCOUNT_DEFAULT.toString();
+      }
+      mpv5.utils.export.BankAccount a = mpv5.utils.export.BankAccount.find(own, iban);
+      return a != null ? a.toString() : mpv5.utils.text.Iban.format(iban) + " - " + Messages.EINVOICE_ACCOUNT_MISSING;
    }
 
    private static boolean[] editable(boolean edit) {
@@ -350,6 +381,31 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel, DataP
             };
             editor.setClickCountToStart(2);
             column.setCellEditor(editor);
+         } else if (column.getModelIndex() == COL_ACCOUNT) {
+            final javax.swing.JComboBox<Object> box = new javax.swing.JComboBox<Object>();
+            javax.swing.DefaultCellEditor editor = new javax.swing.DefaultCellEditor(box) {
+               private static final long serialVersionUID = 1L;
+
+               @Override
+               public Component getTableCellEditorComponent(javax.swing.JTable table, Object value, boolean isSelected, int row, int col) {
+                  //the accounts of the company info, the one of the contact selected
+                  String id = String.valueOf(table.getModel().getValueAt(table.convertRowIndexToModel(row), COL_ID));
+                  java.util.List<mpv5.handler.ContactService.AccountOption> options = new java.util.ArrayList<mpv5.handler.ContactService.AccountOption>();
+                  int index = -1;
+                  try {
+                     Contact c = (Contact) DatabaseObject.getObject(Context.getContact(), Integer.parseInt(id));
+                     options = mpv5.handler.ContactService.accountOptions(c);
+                     index = mpv5.handler.ContactService.selectedAccount(options, mpv5.utils.export.BankAccount.contactIban(c));
+                  } catch (Exception ex) {
+                     Log.Debug(ex);
+                  }
+                  box.setModel(new javax.swing.DefaultComboBoxModel<Object>(options.toArray()));
+                  box.setSelectedIndex(index);
+                  return box;
+               }
+            };
+            editor.setClickCountToStart(2);
+            column.setCellEditor(editor);
          }
       }
    }
@@ -378,6 +434,25 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel, DataP
       String id = String.valueOf(model.getValueAt(row, COL_ID));
       String text = value == null ? "" : String.valueOf(value).trim();
       String country = null;
+      if (column == COL_ACCOUNT) {
+         if (!(value instanceof mpv5.handler.ContactService.AccountOption)) {
+            return null;//nothing selected
+         }
+         String iban = ((mpv5.handler.ContactService.AccountOption) value).iban;
+         String before = accounts.get(id) == null ? "" : accounts.get(id);
+         if (iban.equals(before)) {
+            return null;
+         }
+         try {
+            Contact c = (Contact) DatabaseObject.getObject(Context.getContact(), Integer.parseInt(id));
+            mpv5.utils.export.BankAccount.saveForContact(c, iban);
+            accounts.put(id, iban);
+            return accountLabel(mpv5.utils.export.BankAccount.companyAccounts(mpv5.utils.export.ZugpferdFile.companySettings()), iban);
+         } catch (Exception ex) {
+            Log.Debug(ex);
+            return null;
+         }
+      }
       if (column == COL_COUNTRY) {
          if (!(value instanceof mpv5.utils.models.MPComboBoxModelItem)) {
             return null;//nothing selected
