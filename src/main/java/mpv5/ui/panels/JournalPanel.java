@@ -1571,15 +1571,18 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         left.setOpaque(false);
         left.add(title);
         left.add(count);
-        javax.swing.JPanel right = new javax.swing.JPanel(new FlowLayout(FlowLayout.RIGHT, mpv5.ui.modern.ModernTheme.px(8), 0));
-        right.setOpaque(false);
-        right.add(new javax.swing.JLabel(Messages.JOURNAL_EXPORT.toString()));
-        right.add(exportBox);
-        right.add(jButton1);
         javax.swing.JPanel header = new javax.swing.JPanel(new BorderLayout());
         header.setOpaque(false);
         header.add(left, BorderLayout.WEST);
-        header.add(right, BorderLayout.EAST);
+        //the main action (blue) sits in the filter card, on the right
+        javax.swing.JPanel load = new javax.swing.JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+        load.setOpaque(false);
+        load.add(jButton1);
+        //the export: below the table, on the left
+        javax.swing.JPanel export = new javax.swing.JPanel(new FlowLayout(FlowLayout.LEFT, mpv5.ui.modern.ModernTheme.px(8), 0));
+        export.setOpaque(false);
+        export.add(new javax.swing.JLabel(Messages.JOURNAL_EXPORT.toString()));
+        export.add(exportBox);
 
         //filters and accounts
         for (javax.swing.JComponent c : new javax.swing.JComponent[]{groups, users, statusc, types}) {
@@ -1601,7 +1604,8 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                         mpv5.ui.modern.Card.field(typesLabel.getText().replace(":", ""), types))
                 .row(mpv5.ui.modern.Card.field(jLabel2.getText().replace(":", ""), groupRow, 2),
                         mpv5.ui.modern.Card.field(jLabel8.getText().replace(":", ""), users))
-                .row(mpv5.ui.modern.Card.field(jLabel6.getText().replace(":", ""), statusc), mpv5.ui.modern.Card.field(null, options, 2));
+                .row(mpv5.ui.modern.Card.field(jLabel6.getText().replace(":", ""), statusc), mpv5.ui.modern.Card.field(null, options, 1),
+                        mpv5.ui.modern.Card.field(null, load, 1));
         jList1.setSelectionBackground(javax.swing.UIManager.getColor("List.selectionBackground"));
         jList1.setFont(mpv5.ui.modern.ModernTheme.font(0, Font.PLAIN));
         jScrollPane3.setPreferredSize(new Dimension(mpv5.ui.modern.ModernTheme.px(200), mpv5.ui.modern.ModernTheme.px(110)));
@@ -1639,7 +1643,11 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         javax.swing.JPanel journal = new javax.swing.JPanel(new BorderLayout(0, mpv5.ui.modern.ModernTheme.px(10)));
         journal.setOpaque(false);
         journal.add(top, BorderLayout.NORTH);
-        journal.add(jScrollPane1, BorderLayout.CENTER);
+        javax.swing.JPanel table = new javax.swing.JPanel(new BorderLayout(0, mpv5.ui.modern.ModernTheme.px(6)));
+        table.setOpaque(false);
+        table.add(jScrollPane1, BorderLayout.CENTER);
+        table.add(export, BorderLayout.SOUTH);
+        journal.add(table, BorderLayout.CENTER);
         journal.add(totals, BorderLayout.SOUTH);
 
         add(header, BorderLayout.NORTH);
