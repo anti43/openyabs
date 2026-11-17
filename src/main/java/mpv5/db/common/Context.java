@@ -210,10 +210,11 @@ public class Context implements Serializable, Comparable<Context> {
     public static String DETAILS_CONTACTS = IDENTITY_CONTACTS + "." + "IDS," + IDENTITY_CONTACTS + "." + "CNUMBER,"
             + IDENTITY_CONTACTS + "." + "TITLE," + IDENTITY_CONTACTS + "." + "PRENAME," + IDENTITY_CONTACTS + "." + "CNAME,"
             + IDENTITY_CONTACTS + "." + "STREET," + IDENTITY_CONTACTS + "." + "ZIP," + IDENTITY_CONTACTS + "." + "CITY,"
+            + IDENTITY_CONTACTS + "." + "COUNTRY,"
             + IDENTITY_CONTACTS + "." + "MAINPHONE," + IDENTITY_CONTACTS + "." + "FAX," + IDENTITY_CONTACTS + "." + "MOBILEPHONE,"
             + IDENTITY_CONTACTS + "." + "WORKPHONE," + IDENTITY_CONTACTS + "." + "COMPANY," + IDENTITY_CONTACTS + "." + "MAILADDRESS,"
             + IDENTITY_CONTACTS + "." + "WEBSITE," + IDENTITY_CONTACTS + "." + "NOTES,"
-            + IDENTITY_CONTACTS + "." + "TAXNUMBER";
+            + IDENTITY_CONTACTS + "." + "TAXNUMBER," + IDENTITY_CONTACTS + "." + "BANKACCOUNT";
     public static String DETAILS_PRODUCTS
             = IDENTITY_PRODUCTS + "." + "ids,"
             + IDENTITY_PRODUCTS + "." + "cnumber,"
