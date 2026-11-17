@@ -694,13 +694,14 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
         });
         jMenu8.add(fakturama, jMenu8.getMenuComponentCount() > 0 ? java.util.Arrays.asList(jMenu8.getMenuComponents()).indexOf(jMenu12) + 1 : 0);
         //File > Import > From YaBS 1.3.2 (old Derby database into the new H2 database)
-        javax.swing.JMenuItem yabs132 = new javax.swing.JMenuItem(Messages.Y132_MENU.toString());
+        /*javax.swing.JMenuItem yabs132 = new javax.swing.JMenuItem(Messages.Y132_MENU.toString());
         yabs132.addActionListener(e -> {
             Wizard w = new Wizard(false);
             w.addPanel(new mpv5.ui.dialogs.subcomponents.wizard_Yabs132_Import(w));
             w.showWiz();
         });
         jMenu8.add(yabs132, java.util.Arrays.asList(jMenu8.getMenuComponents()).indexOf(fakturama) + 1);
+        */
         jMenuItem17.setText(Messages.SEARCH_ANYTHING + " \u2026   (Shift Shift)");
         jMenu2.add(new javax.swing.JPopupMenu.Separator(), 2);
         jMenu2.addMenuListener(new javax.swing.event.MenuListener() {
@@ -2029,19 +2030,19 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
         });
         jMenu8.add(jMenuItem40);
 
-        jMenu12.setText(bundle.getString("MPView.jMenu12.text")); // NOI18N
+        /*jMenu12.setText(bundle.getString("MPView.jMenu12.text")); // NOI18N
         jMenu12.setName("jMenu12"); // NOI18N
-
-        jMenuItem28.setText(bundle.getString("MPView.jMenuItem28.text")); // NOI18N
+*/
+        /*jMenuItem28.setText(bundle.getString("MPView.jMenuItem28.text")); // NOI18N
         jMenuItem28.setName("jMenuItem28"); // NOI18N
         jMenuItem28.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem28ActionPerformed(evt);
             }
         });
-        jMenu12.add(jMenuItem28);
+        jMenu12.add(jMenuItem28);*/
 
-        jMenuItem29.setText(bundle.getString("MPView.jMenuItem29.text")); // NOI18N
+        /*jMenuItem29.setText(bundle.getString("MPView.jMenuItem29.text")); // NOI18N
         jMenuItem29.setName("jMenuItem29"); // NOI18N
         jMenuItem29.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -2051,7 +2052,7 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
         jMenu12.add(jMenuItem29);
 
         jMenu8.add(jMenu12);
-
+*/
         fileMenu.add(jMenu8);
 
         jSeparator1.setName("jSeparator1"); // NOI18N
