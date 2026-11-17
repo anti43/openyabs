@@ -266,6 +266,8 @@ class ExtensionManagerTest {
         public void actionAfterCreate() {}
         public void actionBeforeCreate() {}
         public void actionBeforeSave() {}
+        public void mail() {}
+        public void print() {}
     }
 
     @Test
