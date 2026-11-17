@@ -20,7 +20,7 @@ public enum Headers {
     IMPORT(new String[]{"Internal ID", "Import", "Type", "Name", "Data"}),
     JOURNAL(new String[]{"Internal ID", "Name", "Surname", "Street", "City", "Country", "Date", "Group", "Account", "Number", "Type", "Status", "Net", "Tax", "Gross", "Profit", "Discount", "Description"}),
     TRASHBIN(new String[]{"Type", "Internal ID", "Description"}),
-    PRODUCT_DEFAULT(new String[]{"Internal ID", "Name", "Number", "Description"}),
+    PRODUCT_DEFAULT(new String[]{"Internal ID", "Number", "Name", "Description"}),
     SUBITEMS(new String[]{"Internal ID", "Nr", "Count", "Measure", "Text", "Net price", "Tax rate", "Total", "Tax value", "Net 2", "Product", "+", "-", "Link", "Optional", "Discount %", "Discount value", "Discount value with tax"}),
     TEMPLATES(new String[]{"Name", "Type", "Group"}),
     MAILTEMPLATES(new String[]{"Name", "Description", "Group"}),
@@ -39,17 +39,49 @@ public enum Headers {
     private String[] header;
 
     public String[] getValue() {
-      
-           if (LanguageManager.isReady()) {
+        if (LanguageManager.isReady()) {
+            boolean isDe = LanguageManager.isGerman();
             for (int i = 0; i < header.length; i++) {
+                String key = this.name() + "." + i;
                 try {
-                    header[i] = LanguageManager.getBundle().getString(this.name() + "." + i);
+                    String val = LanguageManager.getBundle().getString(key);
+                    if (val != null && !val.trim().isEmpty()) {
+                        header[i] = isDe ? LanguageManager.localize(key, val) : val;
+                    } else if (isDe) {
+                        String de = LanguageManager.fallback(key);
+                        if (de != null) {
+                            header[i] = de;
+                        }
+                    }
                 } catch (Exception e) {
+                    if (isDe) {
+                        String de = LanguageManager.fallback(key);
+                        if (de != null) {
+                            header[i] = de;
+                            continue;
+                        }
+                    }
                     Log.Debug(this, e.getMessage());
                 }
             }
         }
-        
+
+        // Detect legacy unshifted CONTACT_DETAILS where index 8 was Haupttelefon/Mainphone
+        if (this == CONTACT_DETAILS && header.length >= 19) {
+            String col8 = header[8];
+            if (col8 != null && (col8.equalsIgnoreCase("Haupttelefon") || col8.equalsIgnoreCase("Mainphone"))) {
+                boolean wasGerman = col8.equalsIgnoreCase("Haupttelefon") || LanguageManager.isGerman();
+                String[] fixed = new String[header.length];
+                System.arraycopy(header, 0, fixed, 0, 8);
+                fixed[8] = wasGerman ? "Land" : "Country";
+                System.arraycopy(header, 8, fixed, 9, Math.min(header.length - 9, 9));
+                if (fixed.length > 18) {
+                    fixed[18] = "IBAN";
+                }
+                header = fixed;
+            }
+        }
+
         return header;
     }
 

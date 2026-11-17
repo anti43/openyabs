@@ -558,6 +558,14 @@ public class LanguageManager {
         }
     }
 
+    private static boolean lineMatchesKey(String line, String key) {
+        String trimmed = line.trim();
+        if (trimmed.isEmpty() || trimmed.startsWith("#") || trimmed.startsWith("!")) {
+            return false;
+        }
+        return trimmed.equals(key) || trimmed.startsWith(key + "=") || trimmed.startsWith(key + ":") || trimmed.startsWith(key + " ");
+    }
+
     private static boolean hasNeededKeys(File file, boolean popupOnError) {
         synchronized (new LanguageManager()) {
             try {
@@ -571,9 +579,9 @@ public class LanguageManager {
                     String string = keys.nextElement();
                     boolean found = false;
                     for (int i = 0; i < lines.length; i++) {
-                        String line = lines[i];
-                        if (line.startsWith(string)) {
+                        if (lineMatchesKey(lines[i], string)) {
                             found = true;
+                            break;
                         }
                     }
                     if (!found) {
@@ -620,19 +628,31 @@ public class LanguageManager {
                 File impFile = file;
                 FileReaderWriter frw = new FileReaderWriter(impFile, "UTF8");
                 String[] lines = frw.readLinesWCharset();
+                boolean isDe = file.getName().toLowerCase().contains("de") || isGerman();
 
                 while (keys.hasMoreElements()) {
                     String string = keys.nextElement();
                     boolean found = false;
                     for (int i = 0; i < lines.length; i++) {
-                        String line = lines[i];
-                        if (line.startsWith(string)) {
+                        if (lineMatchesKey(lines[i], string)) {
                             found = true;
+                            break;
                         }
                     }
                     if (!found) {
                         Log.Debug(LanguageManager.class, "Key '" + string + "' added to file " + file);
-                        frw.write(string + "=" + ResourceBundle.getBundle(defLanguageBundleName).getString(string));
+                        String val = null;
+                        if (isDe) {
+                            val = bundledGerman().getProperty(string);
+                        }
+                        if (val == null) {
+                            try {
+                                val = ResourceBundle.getBundle(defLanguageBundleName).getString(string);
+                            } catch (Exception e) {
+                                val = "";
+                            }
+                        }
+                        frw.write(string + "=" + val);
                     }
                 }
                 failed = false;
@@ -770,8 +790,13 @@ public class LanguageManager {
             if (data != null && data.length > 0) {
                 String previous = String.valueOf(data[0]).toLowerCase();
                 Log.Debug(LanguageManager.class, "previous: " + previous);
-                if (previous.startsWith(("language-" + langid).toLowerCase())
-                        || previous.startsWith((langid + "-").toLowerCase())) {
+                String lid = langid.toLowerCase();
+                boolean matches = previous.startsWith(("language-" + lid).toLowerCase())
+                        || previous.startsWith((lid + "-").toLowerCase())
+                        || previous.startsWith((lid + "_").toLowerCase())
+                        || previous.equals(lid)
+                        || (lid.equals("de") && (previous.contains("deutsch") || previous.contains("german") || previous.contains("deu") || previous.startsWith("de")));
+                if (matches) {
                     importFromJar(langid.toUpperCase());
                     return true;
                 }
@@ -802,6 +827,32 @@ public class LanguageManager {
     private static boolean lastIsGerman;
 
     /**
+     * @return true if the active language or current user is German
+     */
+    public static synchronized boolean isGerman() {
+        if (isGermanUser(null)) {
+            return true;
+        }
+        try {
+            if (User.getCurrentUser() != null && isGermanUser(User.getCurrentUser())) {
+                return true;
+            }
+            ResourceBundle b = getBundle();
+            if (b != lastChecked) {
+                lastChecked = b;
+                java.util.Properties de = bundledGerman();
+                //German: a known text is the German one, or header 0 is German
+                lastIsGerman = (de.getProperty("INSERTED") != null && b.containsKey("INSERTED")
+                        && de.getProperty("INSERTED").equals(b.getString("INSERTED")))
+                        || (b.containsKey("CONTACT_DETAILS.0") && "Interne ID".equals(b.getString("CONTACT_DETAILS.0")));
+            }
+            return lastIsGerman;
+        } catch (Exception e) {
+            return isGermanUser(null);
+        }
+    }
+
+    /**
      * A text missing in the language of the database (e.g. a German language
      * imported before the text existed): taken from the German file bundled
      * with YaBS when the language is German, so new texts are not English
@@ -811,15 +862,7 @@ public class LanguageManager {
      */
     public static synchronized String fallback(String key) {
         try {
-            ResourceBundle b = getBundle();
-            if (b != lastChecked) {
-                lastChecked = b;
-                java.util.Properties de = bundledGerman();
-                //German: a known text is the German one
-                lastIsGerman = de.getProperty("INSERTED") != null && b.containsKey("INSERTED")
-                        && de.getProperty("INSERTED").equals(b.getString("INSERTED"));
-            }
-            return lastIsGerman ? bundledGerman().getProperty(key) : null;
+            return isGerman() ? bundledGerman().getProperty(key) : null;
         } catch (Exception e) {
             return null;
         }
