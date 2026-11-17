@@ -13,12 +13,13 @@ Das Plugin **`gobd_compliance.groovy`** (ID: `groovy.gobd-compliance`, Version `
 5. [Z3-Betriebsprüfer-Export (IDEA / GDPdU)](#5-z3-betriebsprüfer-export-idea--gdpdu)
 6. [Datenbankschema & Archivstruktur](#6-datenbankschema--archivstruktur)
 7. [Wichtige organisatorische Hinweise](#7-wichtige-organisatorische-hinweise)
+8. [Fehlende Funktionen / Nicht abgedeckt (Missing)](#8-fehlende-funktionen--nicht-abgedeckt-missing)
 
 ---
 
 ## 1. Funktionsumfang im Überblick
 
-* **Automatische Festschreibung beim Export:** Sobald eine Rechnung oder Gutschrift als **PDF**, **ZUGFeRD** oder **XRechnung (XML)** erzeugt wird, wird sie automatisch festgeschrieben (optional in den Einstellungen konfigurierbar).
+* **Automatische Festschreibung beim Export:** Sobald eine Ausgangsrechnung oder Gutschrift als **PDF**, **ZUGFeRD** oder **XRechnung (XML)** erzeugt wird, wird sie automatisch festgeschrieben (optional in den Einstellungen konfigurierbar).
 * **Unveränderbarkeit (`DatabaseObjectModifier`):** Festgeschriebene Belege und deren Positionen (`SubItem`) sind gegen nachträgliche Änderungen steuerrelevanter Felder sowie gegen Löschen und Verschieben in den Papierkorb gesperrt.
 * **Erlaubter Offene-Posten-Workflow:** Reine Statuswechsel im Zahlungs- und Mahnwesen (z. B. *Offen* → *Bezahlt*, Mahnstufe) bleiben nach der Festschreibung möglich und werden lückenlos protokolliert.
 * **Stammdaten- & Positions-Snapshots:** Empfängeranschrift, Steuernummer und Rechnungspositionen werden zum Zeitpunkt der Festschreibung eingefroren. Spätere Änderungen an Kundenstammdaten verändern archivierte Belege nicht.
@@ -138,6 +139,20 @@ Ein Software-Plugin allein stellt noch keine vollständige GoBD-Konformität sic
 1. **Revisionssichere Datensicherung:** Der konfigurierte GoBD-Archivordner sowie die YaBS-Datenbank müssen regelmäßig gesichert und über die gesetzlichen Aufbewahrungsfristen (nach § 147 Abs. 3 AO regelmäßig **8 Jahre** für Buchungsbelege/Rechnungen bzw. **10 Jahre** für Bücher und Abschlüsse) unveränderbar aufbewahrt werden (z. B. WORM-/Versionierungs-Backup).
 2. **Datenbank-Zugriffsschutz:** Direkte Schreibrechte auf die Datenbank außerhalb von OpenYaBS (insbesondere `UPDATE`/`DELETE` auf `gobd_document_lock`, `gobd_audit_log` und `items`) sollten für reguläre Benutzer unterbunden werden.
 3. **Betriebliche Verfahrensdokumentation:** Die mitgelieferte `VERFAHRENSDOKUMENTATION_TECHNIK.txt` deckt nur den technischen Teil des Plugins ab und sollte um Ihre individuellen betrieblichen Abläufe (Rechnungseingang, Belegablage, Backup-Konzept, Zugriffsrechte) ergänzt werden.
+
+---
+
+## 8. Fehlende Funktionen / Nicht abgedeckt (Missing)
+
+Folgende Anforderungen liegen **außerhalb des aktuellen Funktionsumfangs** (*Out of Scope*) dieses Plugins und werden derzeit noch nicht technisch durchgesetzt:
+
+### Eingangsbelege & Ausgaben (*„Keine Buchung ohne Beleg“*, GoBD Rz. 61–64)
+Das Plugin konzentriert sich aktuell auf **Ausgangsrechnungen und Gutschriften (`Item`)**. Für Ausgaben (*Expenses*) und Eingangsrechnungen greift noch keine automatische Beleg- und Archivierungspflicht:
+
+* **Verknüpfungspflicht:** In den GoBD gilt der Grundsatz *„Keine Buchung ohne Beleg“*. Jede in YaBS erfasste Ausgabe muss eindeutig mit dem zugehörigen Eingangsbeleg verknüpft sein (entweder direkt als hochgeladene Datei am Datensatz oder über eine eindeutige Belegnummer/Referenz auf ein externes Belegarchiv). Dies wird vom Plugin derzeit **nicht** erzwungen oder validiert.
+* **Aufbewahrung im digitalen Originalformat (E-Rechnungspflicht):** Digital empfangene Eingangsrechnungen (z. B. als PDF, ZUGFeRD-PDF/A-3 oder XRechnung-XML) müssen zwingend in ihrem **digitalen Originalformat** unveränderbar archiviert werden – ein bloßes Ausdrucken und Abheften in Papierform reicht steuerrechtlich nicht aus. Das Plugin übernimmt aktuell **keine** automatische Hash-Verkettung, Sperrung oder Z3-Exportierung für hochgeladene Eingangsrechnungen/Ausgabenbelege.
+
+*(Diese Punkte müssen bis zu einer eventuellen Erweiterung organisatorisch – z. B. durch disziplinierte Dateiablage am Ausgaben-Datensatz bzw. ein revisionssicheres Belegarchiv außerhalb des Plugins – sichergestellt werden.)*
 
 ---
 
