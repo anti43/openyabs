@@ -67,10 +67,10 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel, DataP
       editToggle.addActionListener(e -> setEditMode(editToggle.isSelected()));
       editLegend.setForeground(mpv5.ui.modern.ModernTheme.muted());
       editLegend.setVisible(false);
+      editLegend.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
       javax.swing.JPanel header = new javax.swing.JPanel(new java.awt.BorderLayout());
       header.setOpaque(false);
       header.add(left, java.awt.BorderLayout.WEST);
-      header.add(editToggle, java.awt.BorderLayout.EAST);
 
       //export and "new ..." live in the search card, on the far right
       javax.swing.JPanel actions = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, mpv5.ui.modern.ModernTheme.px(6), 0));
@@ -78,10 +78,6 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel, DataP
       prinitingComboBox1.setOpaque(false);
       //all controls of the bar have the height of the main button, so they sit on one line
       final int height = jButton2.getPreferredSize().height;
-      for (javax.swing.JButton add : new javax.swing.JButton[]{jButton1, jButton5, jButton4}) {
-         add.setPreferredSize(null);
-         add.setPreferredSize(new java.awt.Dimension(add.getPreferredSize().width + mpv5.ui.modern.ModernTheme.px(16), height));
-      }
       jButton3.setPreferredSize(new java.awt.Dimension(jButton3.getPreferredSize().width, height));
       for (Component c : prinitingComboBox1.getComponents()) {
          if (c instanceof javax.swing.JLabel) {
@@ -92,11 +88,16 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel, DataP
          }
       }
       prinitingComboBox1.setPreferredSize(null);
-      actions.add(prinitingComboBox1);
       actions.add(new javax.swing.JLabel(jLabel4.getText()));
-      actions.add(jButton1);
-      actions.add(jButton5);
-      actions.add(jButton4);
+      //"new ...": green, each one runs the action of the button of the form
+      for (final javax.swing.JButton form : new javax.swing.JButton[]{jButton1, jButton5, jButton4}) {
+         mpv5.ui.modern.PrimaryButton add = new mpv5.ui.modern.PrimaryButton(form.getText(), null);
+         add.setColor(new java.awt.Color(22, 163, 74));
+         add.setToolTipText(jLabel4.getText().replace(":", "") + ": " + form.getText());
+         add.setPreferredSize(new java.awt.Dimension(add.getPreferredSize().width, height));
+         add.addActionListener(e -> form.doClick(0));
+         actions.add(add);
+      }
 
       mpv5.ui.modern.ModernTheme.roomy(jTextField1);
       jTextField1.putClientProperty("JTextField.placeholderText", b.getString("ContactsList.jLabel3.text").replace(":", ""));
@@ -140,7 +141,13 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel, DataP
 
       jScrollPane1.setBorder(javax.swing.BorderFactory.createLineBorder(mpv5.ui.modern.ModernTheme.border()));
       jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-      mpv5.ui.modern.Card list = new mpv5.ui.modern.Card(null).addFull(editLegend).addFull(jScrollPane1, 1);
+      //below the table: export on the left, the edit mode on the right
+      javax.swing.JPanel bottom = new javax.swing.JPanel(new java.awt.BorderLayout(mpv5.ui.modern.ModernTheme.px(10), 0));
+      bottom.setOpaque(false);
+      bottom.add(prinitingComboBox1, java.awt.BorderLayout.WEST);
+      bottom.add(editLegend, java.awt.BorderLayout.CENTER);
+      bottom.add(editToggle, java.awt.BorderLayout.EAST);
+      mpv5.ui.modern.Card list = new mpv5.ui.modern.Card(null).addFull(jScrollPane1, 1).addFull(bottom);
 
       javax.swing.JPanel top = new javax.swing.JPanel(new java.awt.BorderLayout(0, mpv5.ui.modern.ModernTheme.px(10)));
       top.setOpaque(false);
@@ -195,13 +202,43 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel, DataP
          /**
           * not a column of the contacts table: the own account the contact pays to (value property)
           */
-         COL_ACCOUNT = 19, COLUMNS = 20;
+         COL_ACCOUNT = 19,
+         /**
+          * the tax rate of the contact (value property)
+          */
+         COL_TAX = 20,
+         /**
+          * the result of the e-invoice check, to sort by
+          */
+         COL_VALID = 21, COLUMNS = 22;
+   /**
+    * The id of the tax rate by contact id
+    */
+   private final java.util.Map<String, String> taxes = new java.util.HashMap<String, String>();
+   private java.util.List<mpv5.handler.ContactService.TaxOption> taxOptions = new java.util.ArrayList<mpv5.handler.ContactService.TaxOption>();
    /**
     * The own account the contact pays to (IBAN) by contact id, none: the
     * default account
     */
    private final java.util.Map<String, String> accounts = new java.util.HashMap<String, String>();
-   private final mpv5.ui.modern.ChipToggle editToggle = new mpv5.ui.modern.ChipToggle(Messages.CONTACTLIST_EDITMODE.toString());
+   private final mpv5.ui.modern.ChipToggle editToggle = new mpv5.ui.modern.ChipToggle(Messages.CONTACTLIST_EDITMODE.toString()) {
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      protected void paintComponent(java.awt.Graphics g) {
+         super.paintComponent(g);
+         if (!isSelected()) {
+            //light blue while off (the chip is white otherwise), blue while on
+            java.awt.Graphics2D g2 = (java.awt.Graphics2D) g.create();
+            g2.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
+            int h = getHeight() - 1;
+            g2.setColor(mpv5.ui.modern.ModernTheme.blend(mpv5.ui.modern.ModernTheme.accent(), mpv5.ui.modern.ModernTheme.cardBackground(), getModel().isRollover() ? 0.6f : 0.75f));
+            g2.fillRoundRect(0, 0, getWidth() - 1, h, h, h);
+            g2.dispose();
+            getUI().paint(g, this);
+         }
+      }
+   };
    private final javax.swing.JLabel editLegend = new javax.swing.JLabel(Messages.CONTACTLIST_EDITMODE_LEGEND.toString());
    private boolean editMode;
    /**
@@ -238,11 +275,13 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel, DataP
                String tip = value == null || String.valueOf(value).isEmpty() ? null : String.valueOf(value);
                //the renderer keeps a background once set: always set it
                java.awt.Color background = getBackground();
-               if (editMode) {
+               if (editMode || convertColumnIndexToModel(vColIndex) == COL_VALID) {
                   EInvoiceContactCheck.Result check = check(convertRowIndexToModel(rowIndex));
                   if (!check.isOk()) {
                      tip = tooltip(check);
-                     background = color(check, convertColumnIndexToModel(vColIndex), background);
+                     if (editMode) {
+                        background = color(check, convertColumnIndexToModel(vColIndex), background);
+                     }
                   }
                }
                if (!isRowSelected(rowIndex)) {
@@ -286,6 +325,11 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel, DataP
       for (java.util.Map.Entry<Integer, String> e : mpv5.utils.export.ContactProperty.all(mpv5.utils.export.BankAccount.KEY_CONTACT).entrySet()) {
          accounts.put(String.valueOf(e.getKey()), mpv5.utils.text.Iban.normalize(e.getValue()));
       }
+      taxes.clear();
+      for (java.util.Map.Entry<Integer, String> e : mpv5.utils.export.ContactProperty.all(mpv5.handler.ContactService.KEY_TAX).entrySet()) {
+         taxes.put(String.valueOf(e.getKey()), e.getValue().trim());
+      }
+      taxOptions = mpv5.handler.ContactService.taxOptions();
       java.util.List<mpv5.utils.export.BankAccount> own = mpv5.utils.export.BankAccount.companyAccounts(mpv5.utils.export.ZugpferdFile.companySettings());
       for (int i = 0; i < data.length; i++) {
          Object[] row = java.util.Arrays.copyOf(data[i], COLUMNS);
@@ -293,10 +337,13 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel, DataP
          countries.put(String.valueOf(row[COL_ID]), country);
          row[COL_COUNTRY] = mpv5.db.objects.Address.countryName(country);
          row[COL_ACCOUNT] = accountLabel(own, accounts.get(String.valueOf(row[COL_ID])));
+         row[COL_TAX] = taxLabel(taxes.get(String.valueOf(row[COL_ID])));
          data[i] = row;
       }
       String[] header = java.util.Arrays.copyOf(Headers.CONTACT_DETAILS.getValue(), COLUMNS);
       header[COL_ACCOUNT] = Messages.EINVOICE_ACCOUNT.toString();
+      header[COL_TAX] = Messages.CONTACT_TAXRATE.toString();
+      header[COL_VALID] = Messages.CONTACTLIST_EINVOICE.toString();
       Class[] types = new Class[COLUMNS];
       java.util.Arrays.fill(types, Object.class);
       MPTableModel model = new MPTableModel(types, editable(editMode), data, header) {
@@ -312,11 +359,15 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel, DataP
             if (shown != null) {
                super.setValueAt(shown, row, column);
                checks.remove(row);
+               super.setValueAt(validLabel(check(row)), row, COL_VALID);
                listTable.repaint();
             }
          }
       };
       listTable.setModel(model);
+      for (int row = 0; row < model.getRowCount(); row++) {
+         model.setValueAt(validLabel(check(row)), row, COL_VALID, true);
+      }
       setupColumns();
    }
 
@@ -334,12 +385,18 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel, DataP
       return a != null ? a.toString() : mpv5.utils.text.Iban.format(iban) + " - " + Messages.EINVOICE_ACCOUNT_MISSING;
    }
 
+   private String taxLabel(String taxId) {
+      mpv5.handler.ContactService.TaxOption o = mpv5.handler.ContactService.taxOption(taxOptions, taxId);
+      return o.id.isEmpty() ? "" : o.label;
+   }
+
    private static boolean[] editable(boolean edit) {
       boolean[] b = new boolean[COLUMNS];
       java.util.Arrays.fill(b, edit);
       //the customer number identifies the contact in documents and bookkeeping: only in the contact itself
       b[COL_ID] = false;
       b[COL_CNUMBER] = false;
+      b[COL_VALID] = false;
       return b;
    }
 
@@ -376,6 +433,20 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel, DataP
                      }
                   }
                   box.setSelectedIndex(index);
+                  return box;
+               }
+            };
+            editor.setClickCountToStart(2);
+            column.setCellEditor(editor);
+         } else if (column.getModelIndex() == COL_TAX) {
+            final javax.swing.JComboBox<Object> box = new javax.swing.JComboBox<Object>(taxOptions.toArray());
+            javax.swing.DefaultCellEditor editor = new javax.swing.DefaultCellEditor(box) {
+               private static final long serialVersionUID = 1L;
+
+               @Override
+               public Component getTableCellEditorComponent(javax.swing.JTable table, Object value, boolean isSelected, int row, int col) {
+                  String id = String.valueOf(table.getModel().getValueAt(table.convertRowIndexToModel(row), COL_ID));
+                  box.setSelectedItem(mpv5.handler.ContactService.taxOption(taxOptions, taxes.get(id)));
                   return box;
                }
             };
@@ -448,6 +519,24 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel, DataP
             mpv5.utils.export.BankAccount.saveForContact(c, iban);
             accounts.put(id, iban);
             return accountLabel(mpv5.utils.export.BankAccount.companyAccounts(mpv5.utils.export.ZugpferdFile.companySettings()), iban);
+         } catch (Exception ex) {
+            Log.Debug(ex);
+            return null;
+         }
+      }
+      if (column == COL_TAX) {
+         if (!(value instanceof mpv5.handler.ContactService.TaxOption)) {
+            return null;//nothing selected
+         }
+         String tax = ((mpv5.handler.ContactService.TaxOption) value).id;
+         if (tax.equals(mpv5.handler.ContactService.taxOption(taxOptions, taxes.get(id)).id)) {
+            return null;
+         }
+         try {
+            Contact c = (Contact) DatabaseObject.getObject(Context.getContact(), Integer.parseInt(id));
+            mpv5.handler.ContactService.saveContactTax(c, tax);
+            taxes.put(id, tax);
+            return taxLabel(tax);
          } catch (Exception ex) {
             Log.Debug(ex);
             return null;
@@ -547,6 +636,11 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel, DataP
          checks.put(row, r);
       }
       return r;
+   }
+
+   private static String validLabel(EInvoiceContactCheck.Result check) {
+      return (check.isOk() ? Messages.CONTACTLIST_EINVOICE_YES : check.hasErrors()
+            ? Messages.CONTACTLIST_EINVOICE_NO : Messages.CONTACTLIST_EINVOICE_CHECK).toString();
    }
 
    private static String text(javax.swing.table.TableModel m, int row, int column) {

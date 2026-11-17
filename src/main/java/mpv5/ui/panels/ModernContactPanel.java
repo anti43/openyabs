@@ -163,6 +163,7 @@ public class ModernContactPanel extends ModernDataPanel {
     private final JComboBox<EInvoiceDelivery> einvoiceDelivery = new JComboBox<EInvoiceDelivery>(EInvoiceDelivery.values());
     private final JTextField einvoiceLeitweg = new JTextField(20);
     private final JComboBox<Object> einvoiceAccount = new JComboBox<Object>();
+    private final JComboBox<Object> contactTax = new JComboBox<Object>();
     private final JCheckBox einvoiceImmediate = new JCheckBox(Messages.EINVOICE_PAY_IMMEDIATELY.toString());
     private final JTextField einvoiceSkontoPercent = new JTextField(6);
     private final JTextField einvoiceSkontoDays = new JTextField(6);
@@ -369,6 +370,7 @@ public class ModernContactPanel extends ModernDataPanel {
         einvoiceImmediate.setToolTipText(Messages.EINVOICE_PAY_IMMEDIATELY_TOOLTIP.toString());
         einvoiceImmediate.addActionListener(e -> updateImmediate());
         einvoiceAccount.setToolTipText(Messages.EINVOICE_ACCOUNT_TOOLTIP.toString());
+        contactTax.setToolTipText(Messages.CONTACT_TAXRATE_TOOLTIP.toString());
         payterm.getTextField().setToolTipText(Messages.EINVOICE_PAYTERM_TOOLTIP.toString());
         einvoiceSkontoPercent.setToolTipText(Messages.EINVOICE_SKONTO_TOOLTIP.toString());
         einvoiceSkontoDays.setToolTipText(Messages.EINVOICE_SKONTO_TOOLTIP.toString());
@@ -498,6 +500,7 @@ public class ModernContactPanel extends ModernDataPanel {
                 .row(Card.field(Messages.EINVOICE_PAYTERM.toString(), payterm, 1),
                         Card.field(null, einvoiceImmediate, 2))
                 .row(Card.field(Messages.EINVOICE_ACCOUNT.toString(), einvoiceAccount))
+                .row(Card.field(Messages.CONTACT_TAXRATE.toString(), contactTax))
                 .row(Card.field(Messages.COMPANY_SKONTO_PERCENT.toString(), einvoiceSkontoPercent),
                         Card.field(Messages.COMPANY_SKONTO_DAYS.toString(), einvoiceSkontoDays))
                 .row(Card.field(Messages.EINVOICE_DELIVERY.toString(), einvoiceDelivery))
@@ -950,6 +953,9 @@ public class ModernContactPanel extends ModernDataPanel {
         List<ContactService.AccountOption> options = ContactService.accountOptions(dataOwner);
         einvoiceAccount.setModel(new DefaultComboBoxModel<Object>(options.toArray()));
         einvoiceAccount.setSelectedIndex(ContactService.selectedAccount(options, mpv5.utils.export.BankAccount.contactIban(dataOwner)));
+        List<ContactService.TaxOption> taxes = ContactService.taxOptions();
+        contactTax.setModel(new DefaultComboBoxModel<Object>(taxes.toArray()));
+        contactTax.setSelectedItem(ContactService.taxOption(taxes, ContactService.contactTax(dataOwner)));
         einvoiceImmediate.setSelected(PaymentTerms.isImmediate(dataOwner));
         updateImmediate();
         einvoiceSkontoPercent.setText(ContactService.paymentValue(dataOwner, PaymentTerms.KEY_SKONTO_PERCENT));
@@ -967,6 +973,10 @@ public class ModernContactPanel extends ModernDataPanel {
                 einvoiceImmediate.isSelected(),
                 einvoiceSkontoPercent.getText(),
                 einvoiceSkontoDays.getText());
+        Object tax = contactTax.getSelectedItem();
+        if (dataOwner != null && dataOwner.isExisting()) {
+            ContactService.saveContactTax(dataOwner, tax instanceof ContactService.TaxOption ? ((ContactService.TaxOption) tax).id : "");
+        }
     }
 
     // </editor-fold>
