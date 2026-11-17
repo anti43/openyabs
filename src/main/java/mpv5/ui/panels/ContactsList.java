@@ -517,6 +517,7 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel, DataP
          try {
             Contact c = (Contact) DatabaseObject.getObject(Context.getContact(), Integer.parseInt(id));
             mpv5.utils.export.BankAccount.saveForContact(c, iban);
+            saved(row);
             accounts.put(id, iban);
             return accountLabel(mpv5.utils.export.BankAccount.companyAccounts(mpv5.utils.export.ZugpferdFile.companySettings()), iban);
          } catch (Exception ex) {
@@ -535,6 +536,7 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel, DataP
          try {
             Contact c = (Contact) DatabaseObject.getObject(Context.getContact(), Integer.parseInt(id));
             mpv5.handler.ContactService.saveContactTax(c, tax);
+            saved(row);
             taxes.put(id, tax);
             return taxLabel(tax);
          } catch (Exception ex) {
@@ -613,6 +615,7 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel, DataP
          if (!c.save()) {
             return null;
          }
+         mpv5.YabsViewProxy.instance().addMessage(Messages.CONTACTLIST_SAVED + " " + c.__getCNumber() + " " + c.__getCname());
          if (country != null) {
             countries.put(id, country);
             return String.valueOf(value);
@@ -622,6 +625,14 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel, DataP
          Log.Debug(ex);
          return null;
       }
+   }
+
+   /**
+    * Tell the user that the change has been saved
+    */
+   private void saved(int row) {
+      javax.swing.table.TableModel m = listTable.getModel();
+      mpv5.YabsViewProxy.instance().addMessage(Messages.CONTACTLIST_SAVED + " " + text(m, row, COL_CNUMBER) + " " + text(m, row, COL_NAME));
    }
 
    private EInvoiceContactCheck.Result check(int row) {
@@ -1180,6 +1191,10 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel, DataP
    }
 
    public void actionBeforeSave() throws ChangeNotApprovedException {
+      //Ctrl+S while a cell is edited: take over the value (which saves it)
+      if (listTable.isEditing()) {
+         listTable.getCellEditor().stopCellEditing();
+      }
    }
 
    public void mail() {

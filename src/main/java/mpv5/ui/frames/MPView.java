@@ -2757,6 +2757,9 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
                 pane.actionBeforeSave();
                 try {
                     DatabaseObject dato = (pane).getDataOwner();
+                    if (dato == null) {
+                        return;//a list: nothing to save (a cell in edit is saved by actionBeforeSave)
+                    }
                     dato.getPanelData((pane));
                     if (dato.save()) {
                         (pane).actionAfterSave();

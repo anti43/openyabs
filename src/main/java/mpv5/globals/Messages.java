@@ -430,6 +430,7 @@ public enum Messages {
     CONTACTLIST_EINVOICE_YES("yes"),
     CONTACTLIST_EINVOICE_CHECK("check"),
     CONTACTLIST_EINVOICE_NO("no"),
+    CONTACTLIST_SAVED("Saved contact"),
     CONTACTLIST_EDITMODE("Edit mode"),
     CONTACTLIST_EDITMODE_TIP("Change the contacts directly in the table (double click on a cell). Every change is saved immediately."),
     CONTACTLIST_EDITMODE_LEGEND("Changes are saved immediately. Red: data for e-invoices is missing or invalid, yellow: please check - the tooltip tells the reason."),
