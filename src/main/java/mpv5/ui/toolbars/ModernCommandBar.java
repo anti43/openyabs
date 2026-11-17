@@ -127,6 +127,7 @@ public class ModernCommandBar extends JPanel {
     private Runnable findAction;
     private final JPanel copyBanner = new JPanel(new BorderLayout(ModernTheme.px(8), 0));
     private final javax.swing.JLabel copyText = new javax.swing.JLabel();
+    private final JPanel pluginBanner = new JPanel(new BorderLayout());
 
     /**
      * Shows the record as copy (new, not saved yet)
@@ -146,6 +147,22 @@ public class ModernCommandBar extends JPanel {
         if (original != null) {
             copyText.setText("<html>" + String.format(Messages.COPY_PENDING.toString(),
                     original.replace("&", "&amp;").replace("<", "&lt;")) + "</html>");
+        }
+        revalidate();
+        repaint();
+    }
+
+    /**
+     * Shows or hides the banner set by a plugin on the view
+     */
+    public void updatePluginBanner() {
+        Object c = viewComponent.getClientProperty(DataPanel.PROPERTY_PLUGIN_BANNER);
+        pluginBanner.removeAll();
+        if (c instanceof JComponent) {
+            pluginBanner.add((JComponent) c, BorderLayout.CENTER);
+            pluginBanner.setVisible(true);
+        } else {
+            pluginBanner.setVisible(false);
         }
         revalidate();
         repaint();
@@ -216,7 +233,11 @@ public class ModernCommandBar extends JPanel {
         JMenuItem copy = item(more, text("DataPanelTB.but10.toolTipText"), "/images/16/editcopy.png", COPY);
         copy.addActionListener(e -> copy());
         JMenuItem paste = item(more, Messages.ACTION_PASTE.toString(), "/images/16/editpaste.png", PASTE);
-        paste.addActionListener(e -> RecordActions.paste(view));
+        paste.addActionListener(e -> {
+            if (!view.isContentLocked()) {
+                RecordActions.paste(view);
+            }
+        });
         more.addSeparator();
         lock = item(more, text("MPV5View.jButton21.toolTipText"), null, null);
         lock.setEnabled(!DatabaseObject.isAutoLockEnabled());
@@ -269,7 +290,17 @@ public class ModernCommandBar extends JPanel {
         copyBanner.add(copyText, BorderLayout.CENTER);
         copyBanner.add(discard, BorderLayout.EAST);
         copyBanner.setVisible(false);
-        add(copyBanner, BorderLayout.SOUTH);
+
+        pluginBanner.setOpaque(false);
+        pluginBanner.setVisible(false);
+
+        JPanel banners = new JPanel();
+        banners.setLayout(new javax.swing.BoxLayout(banners, javax.swing.BoxLayout.Y_AXIS));
+        banners.setOpaque(false);
+        banners.add(copyBanner);
+        banners.add(pluginBanner);
+        add(banners, BorderLayout.SOUTH);
+
         //the view became a copy (also when made from another tab)
         viewComponent.addPropertyChangeListener("yabs.copyOf", e -> SwingUtilities.invokeLater(() -> {
             updateCopyBanner();
@@ -277,6 +308,20 @@ public class ModernCommandBar extends JPanel {
                 setEditable(true);
             }
         }));
+        viewComponent.addPropertyChangeListener(DataPanel.PROPERTY_PLUGIN_BANNER, e -> {
+            if (SwingUtilities.isEventDispatchThread()) {
+                updatePluginBanner();
+            } else {
+                SwingUtilities.invokeLater(this::updatePluginBanner);
+            }
+        });
+        viewComponent.addPropertyChangeListener(DataPanel.PROPERTY_CONTENT_LOCKED, e -> {
+            if (SwingUtilities.isEventDispatchThread()) {
+                setEditable(editable);
+            } else {
+                SwingUtilities.invokeLater(() -> setEditable(editable));
+            }
+        });
 
         //all elements of the bar in one height
         uniformHeight(left);
@@ -309,11 +354,15 @@ public class ModernCommandBar extends JPanel {
         });
         shortcut(SEARCH_PANEL, this::showSearchPanel);
         shortcut(COPY, this::copy);
-        shortcut(PASTE, () -> RecordActions.paste(view));
+        shortcut(PASTE, () -> {
+            if (!view.isContentLocked()) {
+                RecordActions.paste(view);
+            }
+        });
         shortcut(FAVOURITE, favourite::doClick);
         shortcut(HELP, () -> mpv5.ui.dialogs.ShortcutsDialog.show(this));
         shortcut(DELETE, () -> {
-            if (editable) {
+            if (editable && !view.isContentLocked()) {
                 RecordActions.delete(view);
             }
         });
@@ -503,9 +552,10 @@ public class ModernCommandBar extends JPanel {
      */
     public void setEditable(boolean on) {
         editable = on;
+        boolean contentLocked = view.isContentLocked();
         save.setEnabled(on);
-        delete.setEnabled(on);
-        lock.setEnabled(on && !DatabaseObject.isAutoLockEnabled());
+        delete.setEnabled(on && !contentLocked);
+        lock.setEnabled(on && !contentLocked && !DatabaseObject.isAutoLockEnabled());
     }
 
     /**

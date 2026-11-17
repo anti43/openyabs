@@ -562,6 +562,7 @@ public final class GroovyPluginEditor extends JDialog {
                 + "//   yabs.onActivity({ entry -> ... })                  new / changed / deleted records, created files\n"
                 + "//   yabs.addSettingsPage(title, description, { component })   page in Settings\n"
                 + "//   yabs.openTab(title, component)                     own tab in the main window\n"
+                + "//   yabs.onView({ view -> ... })                       decorate / lock a record view when it opens\n"
                 + "//   yabs.addRecordModifier(modifier)                   change records when they are saved\n"
                 + "//   yabs.notify(text), yabs.settings(), yabs.dataFolder(), yabs.background({ work }, { result -> })\n"
                 + "// \"Insert example\" adds working examples of each. Ctrl+S saves and starts the plugin.\n"

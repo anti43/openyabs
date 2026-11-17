@@ -47,6 +47,7 @@ import mpv5.plugin.api.ExtensionContext;
 import mpv5.plugin.api.PluginSettings;
 import mpv5.plugin.api.SearchResult;
 import mpv5.plugin.api.YabsExtension;
+import mpv5.ui.panels.DataPanel;
 
 /**
  * Finds, starts and stops the plugins ({@link YabsExtension}): the ones built
@@ -83,6 +84,13 @@ public final class ExtensionManager {
         void changed();
 
         void error(String plugin, Throwable t);
+
+        /**
+         * @return the record views currently open in the main window
+         */
+        default List<DataPanel> openViews() {
+            return Collections.emptyList();
+        }
     }
 
     /**
@@ -185,6 +193,7 @@ public final class ExtensionManager {
     private final List<Owned<Function<String, List<SearchResult>>>> providers = new CopyOnWriteArrayList<Owned<Function<String, List<SearchResult>>>>();
     private final List<Owned<Consumer<Activity.Entry>>> listeners = new CopyOnWriteArrayList<Owned<Consumer<Activity.Entry>>>();
     private final List<Owned<DatabaseObjectModifier>> modifiers = new CopyOnWriteArrayList<Owned<DatabaseObjectModifier>>();
+    private final List<Owned<Consumer<DataPanel>>> viewListeners = new CopyOnWriteArrayList<Owned<Consumer<DataPanel>>>();
     private final List<Runnable> changeListeners = new CopyOnWriteArrayList<Runnable>();
     private final File folder;
     private Host host;
@@ -633,6 +642,27 @@ public final class ExtensionManager {
         }
     }
 
+    /**
+     * Tells the view listeners of the plugins that a record view was opened
+     * or updated
+     *
+     * @param view
+     */
+    public void fireView(DataPanel view) {
+        if (view == null || viewListeners.isEmpty()) {
+            return;
+        }
+        ui(() -> {
+            for (Owned<Consumer<DataPanel>> l : viewListeners) {
+                try {
+                    l.value.accept(view);
+                } catch (Throwable t) {
+                    Log.Debug(ExtensionManager.class, t);
+                }
+            }
+        });
+    }
+
     private synchronized void hookActivity() {
         if (activityHooked) {
             return;
@@ -650,18 +680,29 @@ public final class ExtensionManager {
         pages.removeIf(p -> p.owner.equals(owner));
         providers.removeIf(p -> p.owner.equals(owner));
         listeners.removeIf(p -> p.owner.equals(owner));
+        boolean hadViews = viewListeners.removeIf(p -> p.owner.equals(owner));
         for (Owned<DatabaseObjectModifier> m : modifiers) {
             if (m.owner.equals(owner)) {
                 mpv5.pluginhandling.YabsPluginLoader.removeModifier(m.value);
                 modifiers.remove(m);
             }
         }
+        if (hadViews && host != null) {
+            host.ui(() -> {
+                for (DataPanel v : host.openViews()) {
+                    v.setPluginBanner(null);
+                    v.setPluginBadge(null);
+                    v.setContentLocked(false);
+                    fireView(v);
+                }
+            });
+        }
     }
 
     /**
      * @param owner
      * @return how many things the plugin added (commands, pages, providers,
-     * listeners, modifiers)
+     * listeners, modifiers, view listeners)
      */
     public int contributions(String owner) {
         int n = 0;
@@ -678,6 +719,9 @@ public final class ExtensionManager {
             n += p.owner.equals(owner) ? 1 : 0;
         }
         for (Owned<?> p : modifiers) {
+            n += p.owner.equals(owner) ? 1 : 0;
+        }
+        for (Owned<?> p : viewListeners) {
             n += p.owner.equals(owner) ? 1 : 0;
         }
         return n;
@@ -798,6 +842,22 @@ public final class ExtensionManager {
         public void addRecordModifier(DatabaseObjectModifier modifier) {
             modifiers.add(new Owned<DatabaseObjectModifier>(owner, modifier));
             mpv5.pluginhandling.YabsPluginLoader.registeredModifiers.add(modifier);
+        }
+
+        @Override
+        public void onView(Consumer<DataPanel> listener) {
+            viewListeners.add(new Owned<Consumer<DataPanel>>(owner, listener));
+            if (host != null) {
+                host.ui(() -> {
+                    for (DataPanel v : host.openViews()) {
+                        try {
+                            listener.accept(v);
+                        } catch (Throwable t) {
+                            failed(t);
+                        }
+                    }
+                });
+            }
         }
 
         @Override

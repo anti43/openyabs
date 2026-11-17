@@ -375,6 +375,7 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
         displayname.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, ModernTheme.px(14)));
         titleRow.add(displayname);
         titleRow.add(chips);
+        titleRow.add(createPluginBadgeSlot());
         titleRow.add(meta);
         titleRow.setAlignmentX(LEFT_ALIGNMENT);
         center.add(titleRow);
@@ -1320,6 +1321,7 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
         orderButton.setEnabled(false);
         preloadTemplate();
         showUsage(dataOwner.isExisting() ? Usage.INVOICES : null);
+        notifyViewOpened();
     }
 
     @Override

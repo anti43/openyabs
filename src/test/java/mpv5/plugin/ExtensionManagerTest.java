@@ -33,6 +33,7 @@ class ExtensionManagerTest {
 
         final List<String> messages = new ArrayList<String>();
         final List<String> errors = new ArrayList<String>();
+        final List<mpv5.ui.panels.DataPanel> views = new ArrayList<mpv5.ui.panels.DataPanel>();
 
         public void openTab(String title, JComponent content) {
         }
@@ -50,6 +51,11 @@ class ExtensionManagerTest {
 
         public void error(String plugin, Throwable t) {
             errors.add(plugin);
+        }
+
+        @Override
+        public List<mpv5.ui.panels.DataPanel> openViews() {
+            return views;
         }
     }
 
@@ -245,5 +251,57 @@ class ExtensionManagerTest {
         assertEquals(ExtensionManager.State.FAILED, i.getState());
         assertNotNull(i.getError());
         assertTrue(m.commands().isEmpty());
+    }
+
+    static final class DummyDataPanel extends javax.swing.JPanel implements mpv5.ui.panels.DataPanel {
+        public boolean collectData() { return true; }
+        public mpv5.db.common.DatabaseObject getDataOwner() { return null; }
+        public void setDataOwner(mpv5.db.common.DatabaseObject object, boolean populateData) {}
+        public void refresh() {}
+        public void exposeData() {}
+        public void paste(mpv5.db.common.DatabaseObject... dbo) {}
+        public void showRequiredFields() {}
+        public void showSearchBar(boolean show) {}
+        public void actionAfterSave() {}
+        public void actionAfterCreate() {}
+        public void actionBeforeCreate() {}
+        public void actionBeforeSave() {}
+    }
+
+    @Test
+    void viewHooksLockAndDecorateAndCleanUpOnStop() {
+        TestHost h = new TestHost();
+        DummyDataPanel panel = new DummyDataPanel();
+        h.views.add(panel);
+        ExtensionManager m = new ExtensionManager(dir.toFile(), h);
+        ExtensionManager.Installed i = m.register(new YabsExtension() {
+            public String id() { return "lock.ext"; }
+            public String name() { return "Lock Ext"; }
+            public void start(ExtensionContext ctx) {
+                ctx.onView(view -> {
+                    view.setContentLocked(true);
+                    view.setPluginBadge(new javax.swing.JLabel("LOCKED"));
+                    view.setPluginBanner(new javax.swing.JLabel("BANNER"));
+                });
+            }
+        });
+        assertTrue(m.start(i));
+        assertTrue(panel.isContentLocked());
+        assertNotNull(panel.getClientProperty(mpv5.ui.panels.DataPanel.PROPERTY_PLUGIN_BADGE));
+        assertNotNull(panel.getClientProperty(mpv5.ui.panels.DataPanel.PROPERTY_PLUGIN_BANNER));
+        assertEquals(1, m.contributions("lock.ext"));
+
+        m.stop(i);
+        assertFalse(panel.isContentLocked());
+        assertEquals(null, panel.getClientProperty(mpv5.ui.panels.DataPanel.PROPERTY_PLUGIN_BADGE));
+        assertEquals(null, panel.getClientProperty(mpv5.ui.panels.DataPanel.PROPERTY_PLUGIN_BANNER));
+    }
+
+    @Test
+    void gobdComplianceScriptParsesCleanly() throws Exception {
+        Path gobd = java.nio.file.Paths.get("plugins/groovy/gobd_compliance.groovy");
+        String code = new String(Files.readAllBytes(gobd), StandardCharsets.UTF_8);
+        // Compiles (but does not run) the script; throws on syntax/compile errors.
+        assertNotNull(new groovy.lang.GroovyShell().parse(code, "gobd_compliance.groovy"));
     }
 }

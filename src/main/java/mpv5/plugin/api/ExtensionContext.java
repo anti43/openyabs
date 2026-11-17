@@ -24,6 +24,7 @@ import java.util.function.Supplier;
 import javax.swing.JComponent;
 import mpv5.db.common.DatabaseObjectModifier;
 import mpv5.handler.Activity;
+import mpv5.ui.panels.DataPanel;
 
 /**
  * What YaBS offers to a plugin. Everything registered here belongs to the
@@ -73,6 +74,15 @@ public interface ExtensionContext {
      * @param modifier
      */
     void addRecordModifier(DatabaseObjectModifier modifier);
+
+    /**
+     * Told when a record view ({@link DataPanel}) is opened or populated with
+     * a record, so the plugin can mark, decorate or adjust the view
+     *
+     * @param listener called on the Swing thread with the view
+     */
+    default void onView(Consumer<DataPanel> listener) {
+    }
 
     /**
      * Opens a tab in the main window

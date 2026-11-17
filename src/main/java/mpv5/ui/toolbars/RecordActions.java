@@ -115,6 +115,10 @@ public final class RecordActions {
         dato.ReadOnly(false);
         view.actionBeforeCreate();
         ((javax.swing.JComponent) view).putClientProperty(COPY_OF, new Object[]{original, name, dato});
+        view.setPluginBanner(null);
+        view.setPluginBadge(null);
+        view.setContentLocked(false);
+        mpv5.plugin.ExtensionManager.instance().fireView(view);
         return true;
     }
 

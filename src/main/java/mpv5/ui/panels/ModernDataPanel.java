@@ -402,6 +402,47 @@ public abstract class ModernDataPanel extends JPanel implements DataPanel, Scrol
     }
 
     /**
+     * @return a header slot which shows the component set via
+     * {@link #setPluginBadge(JComponent)}
+     */
+    protected final JComponent createPluginBadgeSlot() {
+        final JPanel slot = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, ModernTheme.px(6), 0));
+        slot.setOpaque(false);
+        slot.setVisible(false);
+        Runnable update = () -> {
+            Object b = getClientProperty(PROPERTY_PLUGIN_BADGE);
+            slot.removeAll();
+            if (b instanceof JComponent) {
+                slot.add((JComponent) b);
+                slot.setVisible(true);
+            } else {
+                slot.setVisible(false);
+            }
+            slot.revalidate();
+            slot.repaint();
+        };
+        addPropertyChangeListener(PROPERTY_PLUGIN_BADGE, e -> {
+            if (javax.swing.SwingUtilities.isEventDispatchThread()) {
+                update.run();
+            } else {
+                javax.swing.SwingUtilities.invokeLater(update);
+            }
+        });
+        return slot;
+    }
+
+    /**
+     * Resets plugin decorations from the previous record and notifies the
+     * running plugins that this view now shows the current record
+     */
+    protected final void notifyViewOpened() {
+        setPluginBanner(null);
+        setPluginBadge(null);
+        setContentLocked(false);
+        mpv5.plugin.ExtensionManager.instance().fireView(this);
+    }
+
+    /**
      * The details column: muted, with some space to the column before
      */
     protected static final class DetailsRenderer extends javax.swing.table.DefaultTableCellRenderer {

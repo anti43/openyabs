@@ -20,8 +20,9 @@ Das Plugin **`gobd_compliance.groovy`** (ID: `groovy.gobd-compliance`, Version `
 ## 1. Funktionsumfang im Überblick
 
 * **Automatische Festschreibung beim Export:** Sobald eine Ausgangsrechnung oder Gutschrift als **PDF**, **ZUGFeRD** oder **XRechnung (XML)** erzeugt wird, wird sie automatisch festgeschrieben (optionale Konfiguration im Plugin-Manager).
+* **Visuelle Sperranzeige & Feldsperre im Modern-UI (`yabs.onView`):** Festgeschriebene Rechnungen und Gutschriften werden in den `Modern*`-Ansichten sofort durch ein Kopfzeilen-Badge (`🔒 GoBD FESTGESCHRIEBEN` bzw. `🔒 GoBD STORNIERT`), ein Hinweis- und Aktionsbanner unter der Werkzeugleiste (mit Direktzugriff auf Originalbeleg und Stornorechnung) sowie eine gezielte Sperre aller steuerrelevanten Eingabefelder und Positionen kenntlich gemacht.
 * **Unveränderbarkeit (`DatabaseObjectModifier`):** Festgeschriebene Belege und deren Positionen (`SubItem`) sind gegen nachträgliche Änderungen steuerrelevanter Felder sowie gegen Löschen und Verschieben geschützt.
-* **Erlaubter Offene-Posten-Workflow:** Reine Statuswechsel im Zahlungs- und Mahnwesen (z. B. *Offen* → *Bezahlt*, Mahnstufe) bleiben nach der Festschreibung möglich und werden lückenlos protokolliert.
+* **Erlaubter Offene-Posten-Workflow:** Reine Statuswechsel im Zahlungs- und Mahnwesen (z. B. *Offen* → *Bezahlt*, Teilzahlungen, Mahnstufe) bleiben im UI und auf Datenbankebene nach der Festschreibung möglich und werden lückenlos protokolliert.
 * **Stammdaten- & Positions-Snapshots:** Empfängeranschrift, Steuernummer und Rechnungspositionen werden zum Zeitpunkt der Festschreibung eingefroren. Spätere Änderungen an Kundenstammdaten verändern die bereits archivierten Belege nicht.
 * **Kryptographische Hash-Verkettung (SHA-256):** Jeder archivierte Beleg wird mit dem Hash seines Vorgängers verkettet, sodass fehlende oder manipulierte Dateien sofort erkannt werden.
 * **Stornorechnungen statt Bearbeitung:** Korrekturen erfolgen ausschließlich über eine festgeschriebene Gegenbuchung (`ST-YYYY-NNNNN`).
@@ -53,10 +54,11 @@ Unter **Einstellungen › Plugins › GoBD-Konformitaet** stehen folgende Option
 
 ### Phase 1: Entwurf (frei bearbeitbar)
 * Solange eine Rechnung (`Item.TYPE_INVOICE`) oder Gutschrift (`Item.TYPE_CREDIT`) noch **nicht** festgeschrieben ist, kann sie beliebig bearbeitet oder gelöscht werden.
+* In der modernen Belegansicht (`ModernItemPanel`) erscheint das Badge `GoBD: Entwurf (offen)` sowie ein dezentes Hinweisbanner mit der Schaltfläche **„Jetzt GoBD-festschreiben“**.
 * Das Anlegen neuer Entwürfe wird als `DRAFT_CREATED` protokolliert.
 
 ### Phase 2: Festschreibung (*Inverkehrbringen*)
-Die Festschreibung erfolgt **automatisch beim PDF-/E-Rechnungs-Export** oder **manuell** über *Plugins › GoBD: 1. Beleg festschreiben*:
+Die Festschreibung erfolgt **automatisch beim PDF-/E-Rechnungs-Export** oder **manuell** über *Plugins › GoBD: 1. Beleg festschreiben* (bzw. direkt über die Schaltfläche im Entwurfsbanner):
 
 1. **Nummernvergabe:** Besitzt der Beleg noch keine endgültige Nummer (oder beginnt diese mit `ENTWURF` bzw. `DRAFT`), vergibt das Plugin automatisch die nächste fortlaufende Nummer (z.B. `RE-JJJJ-NNNNN` bzw. `ST-JJJJ-NNNNN` für Storno, muss in yabs vorher konfiguriert werden).
 2. **Pflichtangaben-Prüfung (§ 14 Abs. 4 UStG):** Geprüft werden u. a.:
@@ -68,16 +70,21 @@ Die Festschreibung erfolgt **automatisch beim PDF-/E-Rechnungs-Export** oder **m
 4. **Hash-Verkettung:** Der Prüfsummen-Eintrag wird über folgende Formel berechnet und in `gobd_document_lock` gespeichert:
    $$\text{SHA256}(\text{Datei-Bytes}_n \parallel \text{Hash}_{n-1})$$
    *(Der Initialwert / Genesis-Hash für den ersten Beleg besteht aus 64 Nullen.)*
-5. **Bestätigung:** Eine Meldung über den `Notificator` zeigt Belegnummer, Format, Hash-Präfix und Archivdatei an und schreibt den Vorgang in das YaBS-Verlaufsprotokoll.
+5. **Bestätigung & UI-Sperre:** Eine Meldung über den `Notificator` zeigt Belegnummer, Format, Hash-Präfix und Archivdatei an, schreibt den Vorgang in das YaBS-Verlaufsprotokoll und aktualisiert den geöffneten Beleg-Tab unmittelbar in den gesperrten Zustand (`panel.setContentLocked(true)`).
 
 ### Phase 3: Nach der Festschreibung (Zwei getrennte Ebenen)
 
+Sobald ein festgeschriebener Beleg im `ModernItemPanel` geöffnet wird, greift der generische View-Hook `yabs.onView(...)`:
+* **Kopfzeilen-Badge (`setPluginBadge`):** Zeigt `🔒 GoBD FESTGESCHRIEBEN` (Amber) bzw. `🔒 GoBD STORNIERT` (Rot) inkl. Tooltip mit Zeitstempel, Benutzer, Archivformat und vollständigem SHA-256-Hash.
+* **Kommandoleisten-Banner (`setPluginBanner`):** Hebt den Schreibschutz nach § 146 Abs. 4 AO hervor und bietet Direkt-Buttons zum **Öffnen des archivierten Originalbelegs** sowie zum **Erstellen einer Stornorechnung**.
+* **Selektive Feldsperre (`setContentLocked(true)`):** Sperrt Kundenauswahl, Anschrift, Belegnummer, Datumswerte, Beschreibung, Positionstabelle (`ItemPositionsTable`) sowie den Lösch-Button in der `ModernCommandBar`, lässt aber Zahlungsstatus, Teilzahlungen, Mahnungen und Export/Vorschau aktiv.
+
 | Bereich | Verhalten nach Festschreibung | Audit-Log-Aktion |
 | :--- | :--- | :--- |
-| **Steuerrelevante Belegdaten** (Beträge, Steuern, Rabatte, Datum, Nummer, Beschreibung, Kunde, Positionen) | **Gesperrt** (Änderung wird blockiert) | `BLOCKED_EDIT` |
-| **Löschen / Papierkorb** (Beleg oder einzelne Positionen) | **Gesperrt** (Löschen wird blockiert) | `BLOCKED_DELETE` |
+| **Steuerrelevante Belegdaten** (Beträge, Steuern, Rabatte, Datum, Nummer, Beschreibung, Kunde, Positionen) | **Im UI gesperrt & DB-seitig blockiert** | `BLOCKED_EDIT` |
+| **Löschen / Papierkorb** (Beleg oder einzelne Positionen) | **Im UI deaktiviert & DB-seitig blockiert** | `BLOCKED_DELETE` |
 | **Manuelles Setzen auf „Storniert“** (ohne Stornorechnung) | **Gesperrt** (Verweis auf Storno-Funktion) | `BLOCKED_MANUAL_CANCEL` |
-| **Zahlungsstatus** (`intstatus`, z. B. *Bezahlt*) | **Erlaubt** | `PAYMENT_STATUS_CHANGED` |
+| **Zahlungsstatus** (`intstatus`, z. B. *Bezahlt*) & Teilzahlungen | **Erlaubt** | `PAYMENT_STATUS_CHANGED` |
 | **Mahnstufe** (`intreminders`) | **Erlaubt** | `DUNNING_CHANGED` |
 | **Kundenstammdaten** (`Contact`) | **Erlaubt** (nur mit Alt-/Neu-Protokoll; archivierte Belege bleiben unverändert) | `MASTERDATA_CHANGED` |
 
