@@ -693,6 +693,14 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
             w.showWiz();
         });
         jMenu8.add(fakturama, jMenu8.getMenuComponentCount() > 0 ? java.util.Arrays.asList(jMenu8.getMenuComponents()).indexOf(jMenu12) + 1 : 0);
+        //File > Export > Contacts > CSV
+        javax.swing.JMenuItem contactsCsv = new javax.swing.JMenuItem(Messages.EXPORT_AS_CSV.toString());
+        contactsCsv.addActionListener(e -> mpv5.utils.csv.CsvExport.export(mpv5.db.common.Context.getContact()));
+        jMenu5.add(contactsCsv);
+        //File > Export > Products > CSV
+        javax.swing.JMenuItem productsCsv = new javax.swing.JMenuItem(Messages.EXPORT_AS_CSV.toString());
+        productsCsv.addActionListener(e -> mpv5.utils.csv.CsvExport.export(mpv5.db.common.Context.getProduct()));
+        jMenu13.add(productsCsv);
         //File > Import > From YaBS 1.3.2 (old Derby database into the new H2 database)
         /*javax.swing.JMenuItem yabs132 = new javax.swing.JMenuItem(Messages.Y132_MENU.toString());
         yabs132.addActionListener(e -> {

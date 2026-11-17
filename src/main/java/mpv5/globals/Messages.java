@@ -85,6 +85,7 @@ public enum Messages {
     ACTION_PREVIEW("Preview"),
     ACTION_EDIT("Edit"),
     ACTION_EXPORT("Export"),
+    EXPORT_AS_CSV("As CSV \u2026"),
     ACTION_VIEW("View"),
     ACTION_PASTE("Paste"),
     ACTION_COPY("Copy"),
