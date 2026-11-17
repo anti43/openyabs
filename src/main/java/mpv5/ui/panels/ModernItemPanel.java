@@ -250,7 +250,6 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         tb = new ModernCommandBar(this);
         add(tb, BorderLayout.NORTH);
         createActions();
-        tb.setFindAction(() -> positions.getTable().requestFocusInWindow());
         addPropertyChangeListener(PROPERTY_CONTENT_LOCKED, e -> applyContentLock());
 
         intaddedby_ = User.getCurrentUser().__getIDS();

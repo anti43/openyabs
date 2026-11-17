@@ -245,6 +245,10 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
         this(context, -1);
     }
 
+    public JTextField getFilterField() {
+        return filter;
+    }
+
     // <editor-fold defaultstate="collapsed" desc="Layout">
     private void initFields() {
         cnumber.setSearchOnEnterEnabled(true);

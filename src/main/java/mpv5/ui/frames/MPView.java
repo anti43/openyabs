@@ -2822,7 +2822,11 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
     private void jMenuItem17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem17ActionPerformed
 
         //"Search anything" (also double Shift)
-        mpv5.ui.dialogs.SearchAnything.open();
+        if ((evt.getModifiers() & (java.awt.event.ActionEvent.CTRL_MASK | java.awt.event.ActionEvent.META_MASK)) != 0) {
+            mpv5.ui.dialogs.SearchAnything.handleContextualFind();
+        } else {
+            mpv5.ui.dialogs.SearchAnything.openAtMenu(jMenuItem17, editMenu);
+        }
 
     }//GEN-LAST:event_jMenuItem17ActionPerformed
 
@@ -2958,10 +2962,7 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
     }//GEN-LAST:event_jMenuItem32ActionPerformed
 
     private void jMenuItem33ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem33ActionPerformed
-        DatabaseObject d = Search2.showSearchFor(Context.getContact());
-        if (d != null) {
-            addTab(d);
-        }
+        mpv5.ui.dialogs.SearchAnything.openAtMenu(jMenuItem33, menuBar != null ? menuBar.getMenu(0) : null);
     }//GEN-LAST:event_jMenuItem33ActionPerformed
 
     private void jMenuItem34ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem34ActionPerformed

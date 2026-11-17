@@ -318,6 +318,10 @@ public class ModernContactPanel extends ModernDataPanel {
         refresh();
     }
 
+    public JTextField getFilterField() {
+        return filter;
+    }
+
     // <editor-fold defaultstate="collapsed" desc="Layout">
     private void initFields() {
         number.setEnabled(false);
