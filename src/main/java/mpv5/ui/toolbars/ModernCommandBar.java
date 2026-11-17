@@ -76,6 +76,10 @@ public class ModernCommandBar extends JPanel {
      */
     public static final KeyStroke HELP = KeyStroke.getKeyStroke(KeyEvent.VK_F1, InputEvent.CTRL_DOWN_MASK);
     /**
+     * Shortcut of the online help (the wiki of the repository)
+     */
+    public static final KeyStroke WIKI = KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0);
+    /**
      * Shortcut of the history of a contact (Ctrl+H is backspace in text
      * fields)
      */
@@ -103,6 +107,7 @@ public class ModernCommandBar extends JPanel {
         l.add(new Object[]{DELETE, Messages.SHORTCUT_DELETE_RECORD.toString()});
         l.add(new Object[]{HISTORY, Messages.SHORTCUT_HISTORY.toString()});
         l.add(new Object[]{HELP, Messages.KEYBOARD_SHORTCUTS.toString()});
+        l.add(new Object[]{WIKI, text("MPView.jMenuItem27.text")});
         return l;
     }
     private final DataPanel view;

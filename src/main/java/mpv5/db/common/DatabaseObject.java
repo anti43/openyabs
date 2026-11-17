@@ -2903,14 +2903,26 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     public void toPdf(boolean showDialog) {
-        export(true, showDialog);
+        export(true, showDialog, null);
+    }
+
+    /**
+     * Creates the PDF of this object with further documents appended (e.g.
+     * the order confirmation after the invoice) in one file
+     *
+     * @param showDialog
+     * @param appended templates to fill with this object and append, may be
+     * null or empty
+     */
+    public void toPdf(boolean showDialog, mpv5.db.objects.Template[] appended) {
+        export(true, showDialog, appended);
     }
 
     public void toOdt(boolean showDialog) {
-        export(false, showDialog);
+        export(false, showDialog, null);
     }
 
-    private void export(boolean convertToPdf, boolean showDialog) {
+    private void export(boolean convertToPdf, boolean showDialog, mpv5.db.objects.Template[] appended) {
         if (this instanceof Templateable) {
             Templateable me = (Templateable) this;
             if (TemplateHandler.isLoaded(me)) {
@@ -2929,7 +2941,21 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                     x = Export.wait(xf);
                 }
                 try {
-                    if (convertToPdf) {
+                    if (convertToPdf && appended != null && appended.length > 0) {
+                        mpv5.db.objects.Template[] all = new mpv5.db.objects.Template[appended.length + 1];
+                        all[0] = TemplateHandler.loadTemplate(me);
+                        System.arraycopy(appended, 0, all, 1, appended.length);
+                        File merged = Export.createMergedFile(all, this);
+                        if (merged != null) {
+                            //the dialog suggests the name of the given file
+                            String name = xf.getName().substring(0, xf.getName().length() - 4);
+                            File named = mpv5.utils.files.FileDirectoryHandler.copyFile2(merged,
+                                    mpv5.utils.files.FileDirectoryHandler.getTempFile(name, "pdf"), true);
+                            x.set(named, null);
+                        } else {
+                            x.set(null, new java.io.FileNotFoundException(xf.getName()));
+                        }
+                    } else if (convertToPdf) {
                         new Job(Export.createFile(null, TemplateHandler.loadTemplate(me), this), x).executeSync();
                     } else {
                         new Job(Export.sourceFile(null, TemplateHandler.loadTemplate(me), this), x).executeSync();

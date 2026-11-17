@@ -503,42 +503,63 @@ public final class Export extends HashMap<String, Object> implements Waitable {
      * @param dataOwner
      */
     public static void print(final Template[] preloadedTemplate, final DatabaseObject dataOwner) {
-        Runnable runnable = new Runnable() {
-
-            @Override
-            public void run() {
-                List<File> files = new ArrayList<File>();
-                if (preloadedTemplate != null && preloadedTemplate.length > 0) {
-                    for (int i = 0; i < preloadedTemplate.length; i++) {
-                        Template template = preloadedTemplate[i];
-                        Map<String, Object> hm1 = dataOwner.getFormFields();//new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
-                        File f2 = FileDirectoryHandler.getTempFile("pdf");
-                        Export ex = new Export(template);
-                        ex.putAll(hm1);
-                        ex.putDataOwner(dataOwner);
-                        try {
-                            ex.processData(f2);
-                            files.add(f2);
-                        } catch (ExportFailedException failed) {
-                            //not printed: say why, instead of printing an empty file
-                            Popup.notice(failed.getMessage());
-                        } catch (NodataFoundException ex1) {
-                            Log.Debug(ex1);
-                        } catch (FileNotFoundException ex1) {
-                            Log.Debug(ex1);
-                        }
-                    }
-
-                    try {
-                        PrintJob2.print(mergeFiles(files), preloadedTemplate[0].__getPrinter());
-                    } catch (Exception fileNotFoundException) {
-                        Popup.error(fileNotFoundException);
-                        Log.Debug(fileNotFoundException);
-                    }
+        if (preloadedTemplate == null || preloadedTemplate.length == 0) {
+            return;
+        }
+        new Thread(() -> {
+            try {
+                File merged = createMergedFile(preloadedTemplate, dataOwner);
+                if (merged == null) {
+                    throw new FileNotFoundException("The documents could not be merged");
                 }
+                PrintJob2.print(merged, preloadedTemplate[0].__getPrinter());
+            } catch (Exception ex) {
+                Popup.error(ex);
+                Log.Debug(ex);
             }
-        };
-        new Thread(runnable).start();
+        }).start();
+    }
+
+    /**
+     * Creates one PDF of the given templates, filled with the data of the
+     * dataOwner, in the given order (e.g. the invoice followed by the order
+     * confirmation). Runs on the calling thread.
+     *
+     * @param templates
+     * @param dataOwner
+     * @return the merged temporary PDF, or null if none could be created
+     */
+    public static File createMergedFile(Template[] templates, DatabaseObject dataOwner) {
+        List<File> files = new ArrayList<File>();
+        for (Template template : templates) {
+            if (template == null) {
+                continue;
+            }
+            File f2 = FileDirectoryHandler.getTempFile("pdf");
+            Export ex = new Export(template);
+            ex.putAll(dataOwner.getFormFields());
+            ex.putDataOwner(dataOwner);
+            try {
+                ex.processData(f2);
+                if (f2.exists() && f2.length() > 0) {
+                    files.add(f2);
+                } else {
+                    Log.Debug(Export.class, "No file created for template " + template);
+                }
+            } catch (ExportFailedException failed) {
+                //not created: say why, instead of using an empty file
+                Popup.notice(failed.getMessage());
+            } catch (Exception ex1) {
+                Log.Debug(ex1);
+            }
+        }
+        if (files.isEmpty()) {
+            return null;
+        }
+        if (files.size() == 1) {
+            return files.get(0);
+        }
+        return mergeFiles(files);
     }
 
     private static File mergeFiles(List<File> p) {

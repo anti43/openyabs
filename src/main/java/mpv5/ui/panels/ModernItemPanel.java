@@ -182,6 +182,12 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
     private final JMenuItem deliveryNote = new JMenuItem(text("ItemPanel2.button_deliverynote.text"));
     private final JMenuItem orderConfirmation = new JMenuItem(text("ItemPanel2.button_orderconf.text"));
     private final JCheckBoxMenuItem printWithConfirmation = new JCheckBoxMenuItem(text("ItemPanel2.checkb_pront_oc.text"));
+    /**
+     * The user property of "print with order confirmation" (as the
+     * {@link mpv5.ui.beans.UserCheckbox} of the classic view stores it)
+     */
+    private static final String OC_PROPERTY_PREFIX = "org.openyabs.uiproperty";
+    private static final String OC_PROPERTY = "orderconfirmationalways";
     private final JButton documentsButton = new JButton(Messages.ITEM_MORE_DOCUMENTS + " ▾");
     private final JButton einvoiceButton = new JButton(Messages.CREATE_X_INVOICE + " ▾");
     private final JButton createButton = new JButton(Messages.ITEM_CREATE + " ▾");
@@ -495,6 +501,11 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         docs.add(orderConfirmation);
         docs.addSeparator();
         docs.add(printWithConfirmation);
+        //remembered per user, the same setting as in the classic view
+        printWithConfirmation.setSelected(User.getCurrentUser().getProperties().getProperty(OC_PROPERTY_PREFIX, OC_PROPERTY));
+        printWithConfirmation.setToolTipText(Messages.PRINT_WITH_OC_TIP.toString());
+        printWithConfirmation.addActionListener(e -> User.getCurrentUser().setPropertyAndSave(
+                OC_PROPERTY_PREFIX + "$" + OC_PROPERTY, String.valueOf(printWithConfirmation.isSelected())));
         positions.addAction(menuButton(documentsButton, docs));
 
         JPopupMenu einvoice = new JPopupMenu();
@@ -1568,9 +1579,10 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
     public void print() {
         if (dataOwner != null && dataOwner.isExisting()) {
             if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
-                if (printWithConfirmation.isSelected() && printWithConfirmation.isEnabled()) {
+                Template[] oc = appendedConfirmation();
+                if (oc != null) {
                     Export.print(new Template[]{TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()),
-                        TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), Constants.TYPE_ORDER_CONFIRMATION)}, dataOwner);
+                        oc[0]}, dataOwner);
                 } else {
                     Export.print(TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()), dataOwner);
                 }
@@ -1586,8 +1598,28 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
     @Override
     public void pdf() {
         if (dataOwner != null && dataOwner.isExisting()) {
-            dataOwner.toPdf(true);
+            dataOwner.toPdf(true, appendedConfirmation());
         }
+    }
+
+    /**
+     * @return the order confirmation template to append to print and PDF if
+     * "print with order confirmation" is checked and the template exists,
+     * else null
+     */
+    private Template[] appendedConfirmation() {
+        if (!printWithConfirmation.isSelected()
+                || dataOwner.__getInttype() == Constants.TYPE_ORDER_CONFIRMATION) {
+            return null;
+        }
+        long group = dataOwner.templateGroupIds();
+        Template t = TemplateHandler.loadTemplate(group, Constants.TYPE_ORDER_CONFIRMATION);
+        if (t == null || !TemplateHandler.isLoaded(group, Constants.TYPE_ORDER_CONFIRMATION)) {
+            mpv5.YabsViewProxy.instance().addMessage(Messages.NO_TEMPLATE_LOADED + ": "
+                    + TemplateHandler.getName(Constants.TYPE_ORDER_CONFIRMATION), java.awt.Color.YELLOW);
+            return null;
+        }
+        return new Template[]{t};
     }
 
     @Override

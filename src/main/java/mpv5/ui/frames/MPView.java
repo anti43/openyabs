@@ -2429,7 +2429,9 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
                 jMenuItem27ActionPerformed(evt);
             }
         });
-        //the online help (F1) is gone: the old website does not exist anymore
+        //the online help (F1): the wiki of the repository
+        jMenuItem27.setAccelerator(mpv5.ui.toolbars.ModernCommandBar.WIKI);
+        helpmenu.add(jMenuItem27);
 
         jMenuItem30.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/about.gif"))); // NOI18N
         jMenuItem30.setText(bundle.getString("MPView.jMenuItem30.text")); // NOI18N
@@ -2914,7 +2916,7 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
     private void jMenuItem27ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem27ActionPerformed
 
         try {
-            java.awt.Desktop.getDesktop().browse(new URI(Constants.WEBSITE));
+            java.awt.Desktop.getDesktop().browse(new URI(Constants.WIKI));
         } catch (Exception ex) {
             Log.Debug(ex);
         }

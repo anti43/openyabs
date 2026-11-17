@@ -3167,8 +3167,9 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
     public void print() {
         if (dataOwner != null && dataOwner.isExisting()) {
             if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
-                if (checkb_pront_oc.isSelected() && checkb_pront_oc.isEnabled()) {
-                    Export.print(new Template[]{TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()), TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), Constants.TYPE_ORDER_CONFIRMATION)}, dataOwner);
+                Template[] oc = appendedConfirmation();
+                if (oc != null) {
+                    Export.print(new Template[]{TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()), oc[0]}, dataOwner);
                 } else {
                     Export.print(TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()), dataOwner);
                 }
@@ -3218,8 +3219,28 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
     @Override
     public void pdf() {
         if (dataOwner != null && dataOwner.isExisting()) {
-            dataOwner.toPdf(true);
+            dataOwner.toPdf(true, appendedConfirmation());
         }
+    }
+
+    /**
+     * @return the order confirmation template to append to print and PDF if
+     * "print with order confirmation" is checked and the template exists,
+     * else null
+     */
+    private Template[] appendedConfirmation() {
+        if (!checkb_pront_oc.isSelected()
+                || dataOwner.__getInttype() == Constants.TYPE_ORDER_CONFIRMATION) {
+            return null;
+        }
+        long group = dataOwner.templateGroupIds();
+        Template t = TemplateHandler.loadTemplate(group, Constants.TYPE_ORDER_CONFIRMATION);
+        if (t == null || !TemplateHandler.isLoaded(group, Constants.TYPE_ORDER_CONFIRMATION)) {
+            mpv5.YabsViewProxy.instance().addMessage(Messages.NO_TEMPLATE_LOADED + ": "
+                    + TemplateHandler.getName(Constants.TYPE_ORDER_CONFIRMATION), java.awt.Color.YELLOW);
+            return null;
+        }
+        return new Template[]{t};
     }
 
     @Override

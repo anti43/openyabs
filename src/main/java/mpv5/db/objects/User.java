@@ -794,5 +794,31 @@ public class User extends DatabaseObject {
     public void setProperty(String key, String value) {
         getProperties().changeProperty(key, value);
     }
+
+    /**
+     * Sets the property and saves it right away (in the background), so it
+     * survives a crash or a kill of the application, not only a regular
+     * logout
+     *
+     * @param key
+     * @param value
+     */
+    public void setPropertyAndSave(final String key, final String value) {
+        setProperty(key, value);
+        final int uid = getID();
+        final int gid = __getGroupsids();
+        new Thread(() -> {
+            try {
+                UserProperty p = new UserProperty();
+                p.setValue(value);
+                p.setCname(key);
+                p.setUsersids(uid);
+                p.setGroupsids(gid);
+                p.save();
+            } catch (Exception e) {
+                Log.Debug(User.class, e);
+            }
+        }).start();
+    }
 }
 

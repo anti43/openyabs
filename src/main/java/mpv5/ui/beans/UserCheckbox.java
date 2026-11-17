@@ -42,8 +42,13 @@ public final class UserCheckbox extends javax.swing.JCheckBox {
       }
    }
 
+   private boolean loading;
+
    private void checkboxItemStateChanged(ItemEvent evt) {
-      User.getCurrentUser().setProperty(prefix + "$" + propertyname, String.valueOf(isSelected()));
+      if (loading) {
+         return;
+      }
+      (getUser() != null ? getUser() : User.getCurrentUser()).setPropertyAndSave(prefix + "$" + propertyname, String.valueOf(isSelected()));
    }
 
    /**
@@ -77,8 +82,13 @@ public final class UserCheckbox extends javax.swing.JCheckBox {
     * Load the property value for the current user
     */
    public void load() {
-      setSelected((getUser() != null ? getUser() : mpv5.db.objects.User.getCurrentUser()).getProperties().getProperty(
+      loading = true;
+      try {
+         setSelected((getUser() != null ? getUser() : mpv5.db.objects.User.getCurrentUser()).getProperties().getProperty(
               prefix, propertyname));
+      } finally {
+         loading = false;
+      }
    }
 
    /**
