@@ -3,6 +3,7 @@
 // @version 1.4.2
 // @author OpenYaBS Community
 // @id groovy.gobd-compliance
+// @minYabsVersion 2.0.9
 
 import mpv5.YabsViewProxy
 import mpv5.db.common.Context

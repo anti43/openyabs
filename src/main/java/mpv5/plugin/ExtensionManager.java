@@ -40,9 +40,12 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.swing.JComponent;
 import mpv5.db.common.DatabaseObjectModifier;
+import mpv5.globals.VersionInfo;
 import mpv5.handler.Activity;
 import mpv5.handler.SearchService;
+import mpv5.handler.UpdateCheck;
 import mpv5.logging.Log;
+import java.util.Locale;
 import mpv5.plugin.api.ExtensionContext;
 import mpv5.plugin.api.PluginSettings;
 import mpv5.plugin.api.SearchResult;
@@ -410,6 +413,22 @@ public final class ExtensionManager {
         }
         hookActivity();
         i.error = null;
+
+        String minVersion = i.extension.minYabsVersion();
+        if (minVersion != null && !minVersion.trim().isEmpty()) {
+            String current = VersionInfo.number();
+            if (!isVersionCompatible(current, minVersion)) {
+                i.state = State.FAILED;
+                i.error = "Requires YaBS " + minVersion.trim() + " or newer (current: " + current + ")";
+                Log.Debug(ExtensionManager.class, "Plugin " + name(i) + " not started: " + i.error);
+                if (host != null) {
+                    host.error(name(i), new IllegalStateException(i.error));
+                }
+                fireChanged();
+                return false;
+            }
+        }
+
         try {
             i.extension.start(new Context(i));
             i.state = State.RUNNING;
@@ -426,6 +445,112 @@ public final class ExtensionManager {
             return false;
         } finally {
             fireChanged();
+        }
+    }
+
+    /**
+     * @param version a version string, e.g. "2.0-dev" or "2.0.4-dev.250"
+     * @return true if this is a development/pre-release build rather than a formal release
+     */
+    public static boolean isDevBuild(String version) {
+        if (version == null) {
+            return true;
+        }
+        String v = version.toLowerCase(Locale.ROOT).trim();
+        return v.contains("-dev") || v.contains("snapshot") || v.equals("dev");
+    }
+
+    /**
+     * Checks if current YaBS version satisfies a plugin's minimum release version.
+     * <p>
+     * For formal releases, semantic version comparison is strictly enforced.
+     * For development builds (e.g. {@code 2.0-dev} or CI builds like {@code 2.0.9-dev.123}),
+     * plugins targeting the active development release line are permitted so developers
+     * and CI tests can run and test new features.
+     *
+     * @param currentVersion e.g. "2.0.8" or "2.0-dev"
+     * @param minRequiredVersion e.g. "2.0.9"
+     * @return true if compatible
+     */
+    public static boolean isVersionCompatible(String currentVersion, String minRequiredVersion) {
+        if (minRequiredVersion == null || minRequiredVersion.trim().isEmpty()) {
+            return true;
+        }
+        String min = minRequiredVersion.trim();
+        String current = currentVersion != null ? currentVersion.trim() : "";
+        if (current.isEmpty()) {
+            return true;
+        }
+        if (Boolean.getBoolean("yabs.plugins.ignoreVersion")) {
+            return true;
+        }
+        if (isDevBuild(current)) {
+            // In development builds:
+            // 1) If CI pre-release of the target version (e.g. "2.0.9-dev.123" >= "2.0.9")
+            String currentCore = splitCore(current);
+            String minCore = splitCore(min);
+            if (compareCore(currentCore, minCore) >= 0) {
+                return true;
+            }
+            // 2) If working on the active development branch (e.g. "2.0-dev"), allow plugins
+            // requiring that release line (e.g. "2.0.9") because dev builds contain the latest code.
+            String[] curParts = currentCore.split("\\.");
+            String[] minParts = minCore.split("\\.");
+            if (curParts.length > 0 && minParts.length > 0) {
+                try {
+                    int curMajor = Integer.parseInt(curParts[0]);
+                    int minMajor = Integer.parseInt(minParts[0]);
+                    if (curMajor > minMajor) return true;
+                    if (curMajor == minMajor) {
+                        if (curParts.length == 1) return true;
+                        int curMinor = Integer.parseInt(curParts[1]);
+                        int minMinor = minParts.length > 1 ? Integer.parseInt(minParts[1]) : 0;
+                        if (curMinor >= minMinor) {
+                            return true;
+                        }
+                    }
+                } catch (NumberFormatException ignored) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        return UpdateCheck.compare(current, min) >= 0;
+    }
+
+    private static String splitCore(String v) {
+        if (v == null) return "";
+        String s = v.trim();
+        if (s.startsWith("v") || s.startsWith("V")) {
+            s = s.substring(1);
+        }
+        int plus = s.indexOf('+');
+        if (plus >= 0) {
+            s = s.substring(0, plus);
+        }
+        int dash = s.indexOf('-');
+        return dash >= 0 ? s.substring(0, dash) : s;
+    }
+
+    private static int compareCore(String a, String b) {
+        String[] x = a.split("\\.");
+        String[] y = b.split("\\.");
+        for (int i = 0; i < Math.max(x.length, y.length); i++) {
+            long p = i < x.length ? parseNumber(x[i]) : 0;
+            long q = i < y.length ? parseNumber(y[i]) : 0;
+            if (p != q) {
+                return Long.compare(p, q);
+            }
+        }
+        return 0;
+    }
+
+    private static long parseNumber(String s) {
+        String digits = s.replaceAll("^(\\d*).*$", "$1");
+        try {
+            return digits.isEmpty() ? 0 : Long.parseLong(digits);
+        } catch (NumberFormatException e) {
+            return 0;
         }
     }
 

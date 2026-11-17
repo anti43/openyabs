@@ -173,7 +173,7 @@ public final class UpdateCheck {
      * ("2.0.4-dev.250" &lt; "2.0.4", but &gt; "2.0.3"); build metadata
      * ("+...") does not count
      */
-    static int compare(String a, String b) {
+    public static int compare(String a, String b) {
         String[] x = split(a);
         String[] y = split(b);
         int c = compareCore(x[0], y[0]);
