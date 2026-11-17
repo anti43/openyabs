@@ -2898,7 +2898,11 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
     }//GEN-LAST:event_jButton14ActionPerformed
 
     private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
-        addOrShowTab(ExpensePanel.instanceOf(), Messages.EXPENSE);
+        if (mpv5.YabsViewProxy.instance().isModernUi()) {
+            addOrShowTab(mpv5.ui.panels.ModernExpensePanel.instanceOf(), Messages.EXPENSE);
+        } else {
+            addOrShowTab(ExpensePanel.instanceOf(), Messages.EXPENSE);
+        }
     }//GEN-LAST:event_jButton15ActionPerformed
 
     private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed

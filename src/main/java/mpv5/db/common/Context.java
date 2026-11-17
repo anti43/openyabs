@@ -464,6 +464,8 @@ public class Context implements Serializable, Comparable<Context> {
         list.add(getProductOrder());
         list.add(getProductPrice());
         list.add(getConversation()); 
+        list.add(getExpense());
+        list.add(getRevenue());
         return list;
     }
 
