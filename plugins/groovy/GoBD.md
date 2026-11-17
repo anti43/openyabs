@@ -58,7 +58,7 @@ Unter **Einstellungen › Plugins › GoBD-Konformitaet** stehen folgende Option
 ### Phase 2: Festschreibung (*Inverkehrbringen*)
 Die Festschreibung erfolgt **automatisch beim PDF-/E-Rechnungs-Export** oder **manuell** über *Plugins › GoBD: 1. Beleg festschreiben*:
 
-1. **Nummernvergabe:** Besitzt der Beleg noch keine endgültige Nummer (oder beginnt diese mit `ENTWURF` bzw. `DRAFT`), vergibt das Plugin automatisch die nächste fortlaufende Nummer (`RE-JJJJ-NNNNN` bzw. `ST-JJJJ-NNNNN` für Storno).
+1. **Nummernvergabe:** Besitzt der Beleg noch keine endgültige Nummer (oder beginnt diese mit `ENTWURF` bzw. `DRAFT`), vergibt das Plugin automatisch die nächste fortlaufende Nummer (z.B. `RE-JJJJ-NNNNN` bzw. `ST-JJJJ-NNNNN` für Storno, muss in yabs vorher konfiguriert werden).
 2. **Pflichtangaben-Prüfung (§ 14 Abs. 4 UStG):** Geprüft werden u. a.:
    * Endgültige fortlaufende Rechnungsnummer
    * Ausstellungsdatum (`dateadded`) und Leistungs-/Lieferdatum (`datetodo`)
