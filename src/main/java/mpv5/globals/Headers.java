@@ -7,7 +7,7 @@ public enum Headers {
 //empty columnnames not allowed
     SEARCH_DEFAULT(new String[]{"Internal ID", "A", "B"}),
     CONTACT_DEFAULT(new String[]{"Internal ID", "ID", "Name", "City"}),
-    CONTACT_DETAILS(new String[]{"Internal ID", "ID", "Title", "Prename", "Name", "Street", "Zip", "City", "Mainphone", "Fax", "Mobilephone", "Workphone", "Company", "Mailaddress", "Website", "Notes", "Taxnumber"}),
+    CONTACT_DETAILS(new String[]{"Internal ID", "Customer number", "Title", "Prename", "Name", "Street", "Zip", "City", "Country", "Mainphone", "Fax", "Mobilephone", "Workphone", "Company", "Mailaddress", "Website", "Notes", "VAT ID / tax number", "IBAN"}),
     USER_DEFAULT(new String[]{"Internal ID", "ID", "User Name", "Mail", "Last logged in"}),
     USER_DETAILS(new String[]{"Internal ID", "User Name", "Fullname", "Mail", "Enabled", "Logged in"}),
     BABELFISH(new String[]{"Component", "Language Value", "New Value"}),

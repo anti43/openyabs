@@ -476,6 +476,12 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
         //the country is stored as code (276): the name in documents (was never resolved, the documents showed 276)
         map.put("country", Address.countryName(country));
 
+        //the tax rate assigned to the contact: for the templates
+        mpv5.handler.ContactService.TaxOption tax = mpv5.handler.ContactService.taxOption(
+                mpv5.handler.ContactService.taxOptions(), mpv5.handler.ContactService.contactTax(this));
+        map.put("taxrate", tax.percent);
+        map.put("taxname", tax.name);
+
         if (ismale) {
             map.put("gender", Messages.CONTACT_TYPE_MALE.toString());
             map.put("intro", Messages.CONTACT_INTRO_MALE.toString());

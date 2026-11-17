@@ -678,6 +678,90 @@ public final class ContactService {
     }
 
     /**
+     * Value property of a contact: the id of its tax rate
+     */
+    public static final String KEY_TAX = "taxrate";
+
+    /**
+     * A tax rate a contact can be assigned
+     */
+    public static final class TaxOption {
+
+        /**
+         * the id of the tax, "" for none
+         */
+        public final String id;
+        public final String label;
+        /**
+         * the rate in percent ("19"), "" for none
+         */
+        public final String percent;
+        public final String name;
+
+        TaxOption(String id, String name, String percent) {
+            this.id = id;
+            this.name = name;
+            this.percent = percent;
+            this.label = id.isEmpty() ? "\u2013" : name + " (" + percent + " %)";
+        }
+
+        @Override
+        public String toString() {
+            return label;
+        }
+    }
+
+    /**
+     * @return "none" and the tax rates of the application, never empty
+     */
+    public static List<TaxOption> taxOptions() {
+        List<TaxOption> options = new java.util.ArrayList<TaxOption>();
+        options.add(new TaxOption("", "", ""));
+        try {
+            for (DatabaseObject o : DatabaseObject.getObjects(Context.getTaxes())) {
+                mpv5.db.objects.Tax t = (mpv5.db.objects.Tax) o;
+                java.math.BigDecimal v = t.__getTaxvalue() == null ? java.math.BigDecimal.ZERO : t.__getTaxvalue();
+                String percent = v.signum() == 0 ? "0" : v.stripTrailingZeros().toPlainString();
+                options.add(new TaxOption(String.valueOf(t.__getIDS()), t.__getCname(), percent));
+            }
+        } catch (Exception e) {
+            //no tax rates
+        }
+        return options;
+    }
+
+    /**
+     * @param options from {@link #taxOptions()}
+     * @param id the id of a tax
+     * @return the option of the tax, the first one (none) if unknown
+     */
+    public static TaxOption taxOption(List<TaxOption> options, String id) {
+        for (TaxOption o : options) {
+            if (o.id.equals(id == null ? "" : id.trim())) {
+                return o;
+            }
+        }
+        return options.get(0);
+    }
+
+    /**
+     * @param contact
+     * @return the id of the tax rate of the contact, "" if none
+     */
+    public static String contactTax(Contact contact) {
+        String v = mpv5.utils.export.ContactProperty.get(contact, KEY_TAX);
+        return v == null ? "" : v.trim();
+    }
+
+    /**
+     * @param contact the (saved) contact
+     * @param taxId the id of the tax, null or "" for none
+     */
+    public static void saveContactTax(Contact contact, String taxId) {
+        mpv5.utils.export.ContactProperty.set(contact, KEY_TAX, taxId);
+    }
+
+    /**
      * @param contact
      * @return the Leitweg-ID (buyer reference), "" if not set
      */

@@ -110,21 +110,20 @@ public class ProductsOverview extends JPanel implements ListPanel {
         left.add(title);
         left.add(count);
 
-        //the main action: a new product (blue, Shift+Enter)
-        JButton add = new PrimaryButton(Messages.NEW_PRODUCT.toString(), "/images/16/add.png");
+        //a new product: green, in the filter card on the right
+        PrimaryButton add = new PrimaryButton(Messages.NEW_PRODUCT.toString(), "/images/16/add.png");
+        add.setColor(new java.awt.Color(22, 163, 74));
         add.addActionListener(e -> mpv5.YabsViewProxy.instance().getIdentifierView()
                 .addTab(DatabaseObject.getObject(Context.getProduct()), Messages.NEW_PRODUCT));
         printing.init(listtable);
         printing.setOpaque(false);
         JPanel right = new JPanel(new FlowLayout(FlowLayout.RIGHT, ModernTheme.px(8), 0));
         right.setOpaque(false);
-        right.add(printing);
         right.add(add);
 
         JPanel top = new JPanel(new BorderLayout());
         top.setOpaque(false);
         top.add(left, BorderLayout.WEST);
-        top.add(right, BorderLayout.EAST);
 
         //filters
         search.putClientProperty("JTextField.placeholderText", Messages.PRODUCTS_SEARCH.toString());
@@ -176,7 +175,7 @@ public class ProductsOverview extends JPanel implements ListPanel {
                 .row(Card.field(Messages.PRODUCTS_SEARCH_LABEL.toString(), search, 3), Card.field(Messages.PRODUCTS_KIND.toString(), chips, 2))
                 .row(Card.field(Messages.PRODUCTS_SUPPLIER.toString(), supplier.getComboBox()),
                         Card.field(Messages.PRODUCTS_MANUFACTURER.toString(), manufacturer.getComboBox()),
-                        Card.field(null, reset));
+                        Card.field(null, reset), Card.field(null, right));
 
         JPanel p = new JPanel(new BorderLayout(0, ModernTheme.px(10)));
         p.setOpaque(false);
@@ -228,7 +227,11 @@ public class ProductsOverview extends JPanel implements ListPanel {
         north.setOpaque(false);
         north.add(buttons, BorderLayout.WEST);
         host.add(north, BorderLayout.NORTH);
-        return new Card(null).addFull(host, 1);
+        //the export: below the table, on the left
+        JPanel bottom = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        bottom.setOpaque(false);
+        bottom.add(printing);
+        return new Card(null).addFull(host, 1).addFull(bottom);
     }
 
     // ------------------------------------------------------------------ data

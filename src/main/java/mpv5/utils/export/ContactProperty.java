@@ -124,6 +124,39 @@ public final class ContactProperty {
     }
 
     /**
+     * The values of one key of all contacts, read with a single query (for
+     * lists)
+     *
+     * @param key
+     * @return contact id -> value, contacts without a value are missing
+     */
+    public static java.util.Map<Integer, String> all(String key) {
+        java.util.Map<Integer, String> map = new java.util.HashMap<Integer, String>();
+        final int[] ids = contactContextIds();
+        QueryCriteria2 c = new QueryCriteria2();
+        c.and(new QueryParameter(Context.getValueProperties(), "cname", key, QueryParameter.EQUALS));
+        try {
+            List<ValueProperty> list = new ArrayList<ValueProperty>();
+            for (DatabaseObject o : DatabaseObject.getObjects(Context.getValueProperties(), c)) {
+                if (indexOf(ids, ((ValueProperty) o).__getContextids()) < ids.length) {
+                    list.add((ValueProperty) o);
+                }
+            }
+            //the plain contact context wins, as in get()
+            list.sort(java.util.Comparator.comparingInt(p -> -indexOf(ids, p.__getContextids())));
+            for (ValueProperty p : list) {
+                Object v = p.getValue();
+                if (v != null) {
+                    map.put(p.__getObjectids(), String.valueOf(v));
+                }
+            }
+        } catch (Exception e) {
+            //none
+        }
+        return map;
+    }
+
+    /**
      * Store a value at the (saved) contact, null or empty removes it
      *
      * @param owner
