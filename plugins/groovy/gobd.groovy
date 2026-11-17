@@ -1,9 +1,10 @@
 // @name GoBD-Konformitaet (Vollstaendiges MVP)
 // @description Erzwingt GoBD-Unveraenderbarkeit (Festschreibung bei Export), erlaubten Offene-Posten-/Zahlungsstatus-Workflow, Loesch-/Papierkorbschutz, Stammdaten-Snapshots, SHA-256-Hash-Verkettung, Stornorechnungen und Z3-Betriebspruefer-Exporte.
-// @version 1.4.0
+// @version 1.4.2
 // @author OpenYaBS Community
 // @id groovy.gobd-compliance
 
+import mpv5.YabsViewProxy
 import mpv5.db.common.Context
 import mpv5.db.common.DatabaseObject
 import mpv5.db.common.DatabaseObjectModifier
@@ -14,10 +15,11 @@ import mpv5.db.objects.Item
 import mpv5.db.objects.SubItem
 import mpv5.db.objects.User
 import mpv5.handler.Activity
+import mpv5.logging.Log
 import mpv5.plugin.api.SearchResult
 import mpv5.ui.dialogs.Notificator
-import mpv5.ui.dialogs.Popup
 import mpv5.ui.panels.ChangeNotApprovedException
+import mpv5.ui.panels.DataPanel
 import mpv5.usermanagement.MPSecurityManager
 
 import javax.swing.BorderFactory
@@ -90,13 +92,9 @@ def selectRows = { String sql ->
     return res.getData() ?: ([] as Object[][])
 }
 
-// Benachrichtigungs-Helper ueber mpv5.ui.dialogs.Notificator & Popup
+// Benachrichtigungs-Helper ausschliesslich ueber mpv5.ui.dialogs.Notificator
 def showError = { String msg ->
-    if (SwingUtilities.isEventDispatchThread()) {
-        Popup.error(msg)
-    } else {
-        SwingUtilities.invokeLater { Popup.error(msg) }
-    }
+    Notificator.raiseNotification(msg, true)
 }
 
 def notifyStatus = { String msg ->
@@ -112,6 +110,24 @@ def notifyDocumentEvent = { String msg, DatabaseObject source ->
         Notificator.raiseNotification(msg, true, true, source)
     } else {
         Notificator.raiseNotification(msg, true)
+    }
+}
+
+// Aktualisiert den aktuell geoeffneten Tab, falls er den angegebenen Beleg anzeigt
+def reloadCurrentTabIfShowing = { Item doc ->
+    if (doc == null || doc.__getIDS() <= 0) return
+    Runnable updateUi = {
+        try {
+            DataPanel currentTab = YabsViewProxy.instance().getCurrentTab()
+            if (currentTab != null && currentTab.getDataOwner() instanceof Item && currentTab.getDataOwner().__getIDS() == doc.__getIDS()) {
+                currentTab.setDataOwner(doc, true)
+            }
+        } catch (Exception ignored) { }
+    }
+    if (SwingUtilities.isEventDispatchThread()) {
+        updateUi.run()
+    } else {
+        SwingUtilities.invokeLater(updateUi)
     }
 }
 
@@ -165,7 +181,6 @@ def initSchema = {
         )
     """)
 
-    // Migration fuer bestehende Tabellen aus frueheren Versionen
     [
         "ALTER TABLE gobd_document_lock ADD COLUMN IF NOT EXISTS chain_seq BIGINT NULL",
         "ALTER TABLE gobd_document_lock ADD COLUMN IF NOT EXISTS customer_snapshot TEXT NULL",
@@ -303,8 +318,6 @@ def isMovedToTrash = { DatabaseObject obj ->
     return false
 }
 
-// Deterministischer Fingerabdruck der steuerrelevanten Kernfelder eines Belegs
-// (intstatus und intreminders sind bewusst NICHT enthalten, damit Bezahlt/Gemahnt moeglich bleibt)
 def createFinancialCoreSnapshot = { Item doc ->
     return [
         "Num=${doc.__getCnumber() ?: ''}",
@@ -501,11 +514,13 @@ def finalizeDocument = { Item doc, Long cancelsDocId = null ->
 
         int year = LocalDate.now().getYear()
         String rawNumber = doc.__getCnumber()?.trim() ?: ""
+        boolean numberAssigned = false
         if (!rawNumber || rawNumber.toUpperCase().startsWith("ENTWURF") || rawNumber.toUpperCase().startsWith("DRAFT")) {
             String prefix = (doc.__getInttype() == Item.TYPE_CREDIT) ? "ST" : "RE"
             String assignedNumber = nextSequenceNumber(prefix, year)
             doc.setCnumber(assignedNumber)
             doc.save(true)
+            numberAssigned = true
         }
 
         List<String> validationErrors = validateMandatoryFields(doc)
@@ -535,6 +550,10 @@ def finalizeDocument = { Item doc, Long cancelsDocId = null ->
                 (${doc.__getIDS()}, ${chainSeq}, '${esc(doc.__getCnumber())}', 'FINALIZED', CURRENT_TIMESTAMP, '${esc(currentUser())}', '${esc(customerSnap)}', '${esc(positionsSnap)}', '${esc(targetFile.toString())}', '${esc(format)}', '${currentHash}', '${prevHash}', ${cancelsSql})
         """)
 
+        if (numberAssigned) {
+            reloadCurrentTabIfShowing(doc)
+        }
+
         logAudit("INVOICE", doc.__getIDS(), "FINALIZED", "STATUS=DRAFT", "STATUS=FINALIZED | SNAPSHOT=${customerSnap}", currentHash, "Festgeschrieben: ${doc.__getCnumber()} (${format})")
         notifyDocumentEvent(
             "GoBD-Festschreibung erfolgreich:\nBeleg: ${doc.__getCnumber()} (${format})\nSHA-256: ${currentHash.substring(0, 16)}...\nArchiv: ${targetFile.getFileName()}",
@@ -548,24 +567,18 @@ def finalizeDocument = { Item doc, Long cancelsDocId = null ->
 
 // -----------------------------------------------------------------------------
 // 3. Datensatz-Waechter ueber yabs.addRecordModifier(...)
-//    - Blockiert UPDATE (steuerrelevante Felder) & DELETE/Papierkorb auf festgeschriebenen Belegen & Positionen
-//    - Erlaubt reinen Offene-Posten-/Zahlungsstatus-Workflow (Bezahlt, Gemahnt) & protokolliert im Audit-Log
-//    - Protokolliert Stammdaten-Aenderungen (Kontakte) mit Alt- und Neuwert
 // -----------------------------------------------------------------------------
 def checkWriteAllowed = { DatabaseObject obj, boolean isDelete ->
-    // 1. Schutz fuer Rechnungen & Gutschriften (Item)
     if (obj instanceof Item && isTaxRelevantDocument(obj) && obj.__getIDS() > 0) {
         Item doc = (Item) obj
         def lock = getLockRecord(doc.__getIDS())
         if (lock != null) {
-            // 1a. Endgueltiges Loeschen UND Verschieben in den Papierkorb sind bei festgeschriebenen Belegen verboten
             if (isDelete || isMovedToTrash(doc)) {
                 logAudit("INVOICE", doc.__getIDS(), "BLOCKED_DELETE", lock[5]?.toString(), "Delete/Trash=true", lock[9]?.toString(), "Loesch- oder Papierkorb-Versuch an festgeschriebenem Beleg ${lock[1]} blockiert.")
                 showError("GoBD-Loeschschutz (§§ 146, 147 AO):\nBeleg ${lock[1]} ist festgeschrieben und darf weder geloescht noch in den Papierkorb verschoben werden!\nBitte erstellen Sie stattdessen eine Stornorechnung ueber 'Plugins > GoBD: 2. Beleg stornieren'.")
                 return false
             }
 
-            // 1b. Pruefen, ob nur Zahlungsstatus (intstatus) oder Mahnstufe (intreminders) geaendert wurde
             def dbRows = selectRows(
                 "SELECT cnumber, inttype, contactsids, accountsids, dateadded, datetodo, dateend, netvalue, discountvalue, taxvalue, discountgrosvalue, description, intstatus, intreminders FROM items WHERE ids = ${doc.__getIDS()}"
             )
@@ -593,7 +606,6 @@ def checkWriteAllowed = { DatabaseObject obj, boolean isDelete ->
                     int oldReminders = db[13] != null ? Integer.parseInt(db[13].toString()) : 0
                     int newReminders = doc.__getIntreminders()
 
-                    // Manuelles Setzen auf STATUS_CANCELLED ohne Stornobeleg verhindern
                     if (newStatus == Item.STATUS_CANCELLED && oldStatus != Item.STATUS_CANCELLED && !creatingStorno) {
                         logAudit("INVOICE", doc.__getIDS(), "BLOCKED_MANUAL_CANCEL", "intstatus=${oldStatus}", "intstatus=${newStatus}", lock[9]?.toString(), "Manuelles Stornieren ohne Stornorechnung fuer Beleg ${lock[1]} blockiert.")
                         showError("GoBD-Schutz: Ein festgeschriebener Beleg darf nicht einfach auf 'Storniert' gesetzt werden.\nBitte nutzen Sie 'Plugins > GoBD: 2. Beleg stornieren (Stornorechnung)', um eine ordnungsgemaesse Gegenbuchung zu erzeugen.")
@@ -614,14 +626,12 @@ def checkWriteAllowed = { DatabaseObject obj, boolean isDelete ->
                 }
             }
 
-            // 1c. Steuerrelevante Felder wurden geaendert -> blockieren
             logAudit("INVOICE", doc.__getIDS(), "BLOCKED_EDIT", lock[5]?.toString(), createFinancialCoreSnapshot(doc), lock[9]?.toString(), "Unzulaessige Aenderung steuerrelevanter Felder an Beleg ${lock[1]} blockiert.")
             showError("GoBD-Schutz (§ 146 Abs. 4 AO):\nBeleg ${lock[1]} ist festgeschrieben! Betraege, Steuern, Datum, Positionen und Empfaenger duerfen nicht mehr geaendert werden.\n(Hinweis: Nur Zahlungsstatus wie 'Bezahlt' und Mahnungen sind erlaubt. Fuer Korrekturen bitte 'Plugins > GoBD: 2. Beleg stornieren' nutzen.)")
             return false
         }
     }
 
-    // 2. Schutz fuer einzelne Rechnungspositionen (SubItem), falls Hauptbeleg festgeschrieben ist
     if (obj instanceof SubItem) {
         SubItem sub = (SubItem) obj
         long parentId = sub.__getItemsids()
@@ -635,7 +645,6 @@ def checkWriteAllowed = { DatabaseObject obj, boolean isDelete ->
         }
     }
 
-    // 3. Stammdaten-Historisierung (Kontakte): Alt-Wert vor dem Speichern merken
     if (obj instanceof Contact && obj.__getIDS() > 0 && !isDelete) {
         masterDataBeforeSave.put("CONTACT_${obj.__getIDS()}".toString(), createContactSnapshot(obj.__getIDS()))
     }
@@ -685,29 +694,51 @@ yabs.addRecordModifier([
 
 // -----------------------------------------------------------------------------
 // 4. Reaktion auf Aktivitaeten ueber yabs.onActivity(...)
-//    - Automatische Festschreibung beim PDF-/E-Rechnungs-Export (GoBD-Standard: aktiv)
+//    - Automatische Festschreibung beim PDF-/E-Rechnungs-Export (inkl. Tab-Fallback)
 // -----------------------------------------------------------------------------
 yabs.onActivity({ Activity.Entry entry ->
-    if (entry.kind == Activity.Kind.CREATED && entry.file != null && entry.id > 0) {
+    Log.Debug(this, "GoBD onActivity: kind=${entry.kind}, id=${entry.id}, context=${entry.context?.getDbIdentity()}, file=${entry.file}, detail=${entry.detail}, text=${entry.text}")
+    if (entry.file == null || entry.kind?.name() == "DELETED") return
+
+    String fileName = entry.file.getName().toLowerCase()
+    if (!(fileName.endsWith(".pdf") || fileName.endsWith(".xml"))) return
+
+    Item doc = null
+    String entryCtx = entry.context?.getDbIdentity() ?: ""
+    String invCtx = Context.getInvoice()?.getDbIdentity() ?: ""
+    String credCtx = Context.getCredit()?.getDbIdentity() ?: ""
+
+    if (entry.id > 0 && (entryCtx == invCtx || entryCtx == credCtx)) {
         lastGeneratedFiles.put((long) entry.id, entry.file.toPath())
-        if (creatingStorno || finalizingIds.contains((int) entry.id)) return
-        String entryCtx = entry.context?.getDbIdentity() ?: ""
-        String invCtx = Context.getInvoice()?.getDbIdentity() ?: ""
-        String credCtx = Context.getCredit()?.getDbIdentity() ?: ""
-        if ((entryCtx == invCtx || entryCtx == credCtx) && getLockRecord(entry.id) == null) {
-            boolean autoLock = yabs.settings().getBoolean("gobd.autoLockOnExport", true)
-            if (autoLock) {
-                try {
-                    Item doc = (Item) DatabaseObject.getObject(entry.context, (int) entry.id)
-                    if (doc != null) {
-                        finalizeDocument(doc, null)
-                    }
-                } catch (Exception ex) {
-                    showError("GoBD-Auto-Festschreibung fehlgeschlagen:\n${ex.getMessage()}")
+        try {
+            doc = (Item) DatabaseObject.getObject(entry.context, (int) entry.id)
+        } catch (Exception ignored) { }
+    } else {
+        try {
+            DataPanel currentTab = YabsViewProxy.instance().getCurrentTab()
+            if (currentTab != null && currentTab.getDataOwner() instanceof Item) {
+                Item tabItem = (Item) currentTab.getDataOwner()
+                if (tabItem.__getIDS() > 0 && isTaxRelevantDocument(tabItem)) {
+                    doc = tabItem
+                    lastGeneratedFiles.put((long) doc.__getIDS(), entry.file.toPath())
                 }
-            } else {
-                notifyStatus("Belegdatei erstellt (${entry.file.getName()}). Jetzt ueber 'Plugins > GoBD: 1. Beleg festschreiben' sichern.")
             }
+        } catch (Exception ignored) { }
+    }
+
+    if (doc == null || doc.__getIDS() <= 0) return
+    if (creatingStorno || finalizingIds.contains((int) doc.__getIDS())) return
+
+    if (getLockRecord(doc.__getIDS()) == null) {
+        boolean autoLock = yabs.settings().getBoolean("gobd.autoLockOnExport", true)
+        if (autoLock) {
+            try {
+                finalizeDocument(doc, null)
+            } catch (Exception ex) {
+                showError("GoBD-Auto-Festschreibung fehlgeschlagen:\n${ex.getMessage()}")
+            }
+        } else {
+            notifyStatus("Belegdatei erstellt (${entry.file.getName()}). Jetzt ueber 'Plugins > GoBD: 1. Beleg festschreiben' sichern.")
         }
     }
 })
@@ -948,11 +979,11 @@ yabs.addCommand("GoBD: 2. Beleg stornieren (Stornorechnung)", "Erstellt eine fes
 
         if (finalizeDocument(storno, (long) original.__getIDS())) {
             execSql("UPDATE gobd_document_lock SET status = 'CANCELLED' WHERE document_id = ${original.__getIDS()}")
-            // Auch den YaBS-Status des Originalbelegs konsistent auf STATUS_CANCELLED setzen
             try {
                 original.setIntstatus(Item.STATUS_CANCELLED)
                 original.save(true)
             } catch (Exception ignored) { }
+            reloadCurrentTabIfShowing(original)
             logAudit("INVOICE", original.__getIDS(), "CANCELLED", "STATUS=FINALIZED", "STATUS=CANCELLED BY ${storno.__getCnumber()}", origLock[9]?.toString(), "Storniert durch Stornobeleg ${storno.__getCnumber()}")
             notifyDocumentEvent("Beleg ${original.__getCnumber()} storniert durch ${storno.__getCnumber()}.", original)
         }
@@ -996,7 +1027,7 @@ yabs.addCommand("GoBD: 3. Archiv-Integritaet pruefen", "Prueft alle archivierten
         return "OK: Alle ${verifiedCount} festgeschriebenen Belege und die SHA-256-Hash-Kette sind lueckenlos und unversehrt."
     }, { String report ->
         if (report.startsWith("FEHLER")) {
-            Popup.error(report)
+            showError(report)
         } else {
             notifyPopup(report)
         }
@@ -1242,7 +1273,7 @@ yabs.addSearchProvider({ String text ->
 
 // Initialisierung beim Starten des Plugins ausfuehren
 initSchema()
-notifyStatus("GoBD-Konformitaets-Plugin (v1.4.0) vollstaendig geladen.")
+notifyStatus("GoBD-Konformitaets-Plugin (v1.4.2) vollstaendig geladen.")
 
 // Aufraeum-Closure beim Stoppen/Deaktivieren/Neuladen des Plugins
 onStop = {
