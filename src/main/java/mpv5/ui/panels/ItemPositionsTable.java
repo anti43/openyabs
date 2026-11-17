@@ -95,6 +95,11 @@ public class ItemPositionsTable extends JPanel {
     private DynamicTableCalculator discnetcalculator;
     private DynamicTableCalculator discbrutcalculator;
     private final List<Item> usedOrders = new ArrayList<Item>();
+    private final JButton addButton;
+    private final JButton removeButton;
+    private final JButton upButton;
+    private final JButton downButton;
+    private boolean editable = true;
 
     public ItemPositionsTable() {
         super(new BorderLayout(0, ModernTheme.px(6)));
@@ -107,20 +112,24 @@ public class ItemPositionsTable extends JPanel {
         itemtable.setSelectionForeground(ModernTheme.foreground());
         //right click: the menu of the positions (see prepareTable)
 
-        JButton add = button("/images/16/add.png", Messages.ACTION_ADD.toString());
-        add.addActionListener(e -> getModel().addRow(1));
-        JButton remove = button("/images/16/remove.png", Messages.ACTION_REMOVE.toString());
-        remove.addActionListener(e -> removeSelected());
-        JButton up = button("/images/16/arrow-up.png", Messages.ITEM_MOVE_UP.toString());
-        up.addActionListener(e -> move(-1));
-        JButton down = button("/images/16/arrow-down.png", Messages.ITEM_MOVE_DOWN.toString());
-        down.addActionListener(e -> move(1));
+        addButton = button("/images/16/add.png", Messages.ACTION_ADD.toString());
+        addButton.addActionListener(e -> {
+            if (editable) {
+                getModel().addRow(1);
+            }
+        });
+        removeButton = button("/images/16/remove.png", Messages.ACTION_REMOVE.toString());
+        removeButton.addActionListener(e -> removeSelected());
+        upButton = button("/images/16/arrow-up.png", Messages.ITEM_MOVE_UP.toString());
+        upButton.addActionListener(e -> move(-1));
+        downButton = button("/images/16/arrow-down.png", Messages.ITEM_MOVE_DOWN.toString());
+        downButton.addActionListener(e -> move(1));
         JPanel buttons = new JPanel(new FlowLayout(FlowLayout.LEFT, ModernTheme.px(4), 0));
         buttons.setOpaque(false);
-        buttons.add(add);
-        buttons.add(remove);
-        buttons.add(up);
-        buttons.add(down);
+        buttons.add(addButton);
+        buttons.add(removeButton);
+        buttons.add(upButton);
+        buttons.add(downButton);
 
         //the actions of the document right of the position buttons, directly above the list
         JPanel bar = new JPanel(new BorderLayout(ModernTheme.px(12), 0));
@@ -318,16 +327,76 @@ public class ItemPositionsTable extends JPanel {
     }
 
     /**
+     * Enables or disables editing the positions (cells, buttons, context menu mutations)
+     *
+     * @param editable true if positions can be modified
+     */
+    public void setEditable(boolean editable) {
+        this.editable = editable;
+        if (!editable) {
+            stopEditing();
+        }
+        addButton.setEnabled(editable);
+        removeButton.setEnabled(editable);
+        upButton.setEnabled(editable);
+        downButton.setEnabled(editable);
+        if (itemtable.getModel() instanceof MPTableModel) {
+            applyCanEdits();
+        }
+    }
+
+    /**
+     * @return true if positions can be modified
+     */
+    public boolean isEditable() {
+        return editable;
+    }
+
+    private void applyCanEdits() {
+        MPTableModel model = getModel();
+        if (!editable) {
+            model.setCanEdits(new boolean[18]);
+            return;
+        }
+        //the product column is a link only: products are chosen in the dialog of the text column
+        model.setCanEdits(new boolean[]{false, false, true, true, true, true, true, true, false, false, false, true, false, false, true, true, false, false});
+        if (User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hidecolumnquantity")) {
+            model.setCellEditable(0, 2, false);
+        }
+        if (User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hidecolumnmeasure")) {
+            model.setCellEditable(0, 3, false);
+        }
+        if (User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hideproductscolumn")) {
+            model.setCellEditable(0, 10, false);
+        }
+        if (User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hidetaxcolumn")) {
+            model.setCellEditable(0, 6, false);
+        }
+        if (User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hidediscountcolumn")) {
+            model.setCellEditable(0, 15, false);
+        }
+        if (!User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "showoptionalcolumn")) {
+            model.setCellEditable(0, 14, false);
+        }
+    }
+
+    /**
      * Adds a position at the end
      *
      * @param s
      */
     public void addPosition(SubItem s) {
+        if (!editable) {
+            return;
+        }
         getModel().addRow(s.getRowData(getModel().getRowCount() + 1));
         fireUpdate();
     }
 
     private void removeSelected() {
+        if (!editable) {
+            return;
+        }
         int index = itemtable.getSelectedRow();
         if (index < 0) {
             return;
@@ -337,6 +406,9 @@ public class ItemPositionsTable extends JPanel {
     }
 
     private void move(int direction) {
+        if (!editable) {
+            return;
+        }
         int index = itemtable.getSelectedRow();
         int target = index + direction;
         if (index < 0 || target < 0 || target >= itemtable.getRowCount()) {
@@ -433,6 +505,7 @@ public class ItemPositionsTable extends JPanel {
             }
             TableFormat.resizeCol(itemtable, 14, widthc, widthc != 121);
         }
+        applyCanEdits();
         //column move is the very last thing to do, in newcol.asc order
         itemtable.moveColumn(10, 3);
         itemtable.moveColumn(14, 5);
@@ -482,7 +555,7 @@ public class ItemPositionsTable extends JPanel {
      * product search), or an order if orders are preferred
      */
     private void choose(int row) {
-        if (row < 0) {
+        if (!editable || row < 0) {
             return;
         }
         if (!User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "ordersoverproducts")) {
@@ -512,6 +585,9 @@ public class ItemPositionsTable extends JPanel {
      * A new empty row at the given index
      */
     private void insertAt(int row) {
+        if (!editable) {
+            return;
+        }
         int r = Math.max(0, Math.min(row, getModel().getRowCount()));
         getModel().insertRow(r);
         getModel().setRowAt(SubItem.getDefaultItem().getRowData(r), r, 1);
@@ -522,6 +598,9 @@ public class ItemPositionsTable extends JPanel {
      * Puts a copy of a position below the given row
      */
     private void insertCopy(SubItem it, int row) {
+        if (!editable) {
+            return;
+        }
         Object[] data = it.getRowData(row + 1);
         data[0] = -1; //a new position
         getModel().insertRow(row + 1);
@@ -561,6 +640,9 @@ public class ItemPositionsTable extends JPanel {
      * Empties the row (the old "C" button)
      */
     private void clearRow() {
+        if (!editable) {
+            return;
+        }
         int row = selectedRow();
         if (row >= 0) {
             SubItem.addToDeletionQueue(getModel().getValueAt(row, 0));

@@ -89,4 +89,66 @@ public interface DataPanel {
      */
     public void print();
 
+    /**
+     * Client property key for a banner component shown at the top of the view
+     */
+    public static final String PROPERTY_PLUGIN_BANNER = "yabs.pluginBanner";
+
+    /**
+     * Client property key for a badge component shown in the header of the view
+     */
+    public static final String PROPERTY_PLUGIN_BADGE = "yabs.pluginBadge";
+
+    /**
+     * Client property key indicating that the main content fields and deletion
+     * of the record are locked by a plugin
+     */
+    public static final String PROPERTY_CONTENT_LOCKED = "yabs.contentLocked";
+
+    /**
+     * Shows or clears a banner component provided by a plugin at the top of
+     * this view
+     *
+     * @param banner the banner component, or null to clear
+     */
+    public default void setPluginBanner(javax.swing.JComponent banner) {
+        if (this instanceof javax.swing.JComponent) {
+            ((javax.swing.JComponent) this).putClientProperty(PROPERTY_PLUGIN_BANNER, banner);
+        }
+    }
+
+    /**
+     * Shows or clears a status badge component provided by a plugin in the
+     * header of this view
+     *
+     * @param badge the badge component, or null to clear
+     */
+    public default void setPluginBadge(javax.swing.JComponent badge) {
+        if (this instanceof javax.swing.JComponent) {
+            ((javax.swing.JComponent) this).putClientProperty(PROPERTY_PLUGIN_BADGE, badge);
+        }
+    }
+
+    /**
+     * Locks or unlocks the main content fields and positions of this view
+     * (e.g. when a plugin marks a finalized document as immutable while still
+     * allowing status updates)
+     *
+     * @param locked true to lock content fields and deletion
+     */
+    public default void setContentLocked(boolean locked) {
+        if (this instanceof javax.swing.JComponent) {
+            ((javax.swing.JComponent) this).putClientProperty(PROPERTY_CONTENT_LOCKED, Boolean.valueOf(locked));
+        }
+    }
+
+    /**
+     * @return true if a plugin locked the content of this view
+     */
+    public default boolean isContentLocked() {
+        return this instanceof javax.swing.JComponent
+                && Boolean.TRUE.equals(((javax.swing.JComponent) this).getClientProperty(PROPERTY_CONTENT_LOCKED));
+    }
+
 }
+

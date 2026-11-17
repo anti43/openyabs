@@ -433,6 +433,7 @@ public class ModernContactPanel extends ModernDataPanel {
         JPanel second = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         second.setOpaque(false);
         second.add(chips);
+        second.add(createPluginBadgeSlot());
         second.add(meta);
         second.setAlignmentX(LEFT_ALIGNMENT);
         center.add(displayname);
@@ -1027,6 +1028,7 @@ public class ModernContactPanel extends ModernDataPanel {
         properties();
         loadEInvoiceSettings();
         updateHeader();
+        notifyViewOpened();
     }
 
     @Override

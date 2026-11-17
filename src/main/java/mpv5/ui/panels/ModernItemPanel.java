@@ -154,6 +154,8 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
     private final LabeledCombobox refOrder = ModernTheme.plain(new LabeledCombobox());
     private final JButton refOrderShow = action(text("ItemPanel2.refOrderShow.text"));
     private JComponent refOrderRow;
+    private JButton numberEditButton;
+    private JButton removeFileButton;
     //dates
     private final LabeledDateChooser date1 = ModernTheme.plain(new LabeledDateChooser());
     private final LabeledDateChooser date2 = ModernTheme.plain(new LabeledDateChooser());
@@ -249,6 +251,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         add(tb, BorderLayout.NORTH);
         createActions();
         tb.setFindAction(() -> positions.getTable().requestFocusInWindow());
+        addPropertyChangeListener(PROPERTY_CONTENT_LOCKED, e -> applyContentLock());
 
         intaddedby_ = User.getCurrentUser().__getIDS();
         dateadded_ = new Date();
@@ -376,6 +379,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         titleRow.setOpaque(false);
         titleRow.add(displayname);
         titleRow.add(statusPill);
+        titleRow.add(createPluginBadgeSlot());
         titleRow.add(meta);
         titleRow.setAlignmentX(LEFT_ALIGNMENT);
         center.add(titleRow);
@@ -409,6 +413,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
             edit.setToolTipText(text("ItemPanel2.number._Label"));
             edit.addActionListener(e -> editNumber());
             numberRow.add(edit, BorderLayout.EAST);
+            numberEditButton = edit;
         }
         JPanel refRow = new JPanel(new BorderLayout(ModernTheme.px(4), 0));
         refRow.setOpaque(false);
@@ -438,6 +443,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         JButton removeFile = link(null, "/images/16/remove.png");
         removeFile.setToolTipText(text("ItemPanel2.removefile.toolTipText"));
         removeFile.addActionListener(e -> deleteFile());
+        removeFileButton = removeFile;
         JPanel fileButtons = new JPanel(new FlowLayout(FlowLayout.RIGHT, ModernTheme.px(4), 0));
         fileButtons.setOpaque(false);
         fileButtons.add(addFile);
@@ -1116,6 +1122,37 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         return dataOwner;
     }
 
+    /**
+     * Locks or unlocks the content fields of the document while keeping payment
+     * status, partial payments, reminders, and preview/export actions usable.
+     */
+    private void applyContentLock() {
+        boolean editable = !isContentLocked();
+        contactname.setEnabled(editable);
+        prename.setEnabled(editable);
+        cname.setEnabled(editable);
+        street.setEnabled(editable);
+        zip.setEnabled(editable);
+        city.setEnabled(editable);
+        number.setEnabled(editable);
+        if (numberEditButton != null) {
+            numberEditButton.setEnabled(editable);
+        }
+        name.setEnabled(editable);
+        groupnameselect.setEnabled(editable);
+        accountselect.setEnabled(editable);
+        refOrder.setEnabled(editable);
+        date1.setEnabled(editable);
+        date2.setEnabled(editable);
+        date3.setEnabled(editable);
+        messages.setEnabled(editable);
+        notes.setEditable(editable);
+        if (removeFileButton != null) {
+            removeFileButton.setEnabled(editable);
+        }
+        positions.setEditable(editable);
+    }
+
     @Override
     public void setDataOwner(DatabaseObject object, boolean populate) {
         loading = true;
@@ -1139,6 +1176,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
                     preloadTemplates();
                     updateHeader();
                     validate();
+                    notifyViewOpened();
                 }
             } else if (object instanceof SubItem) {
                 try {
@@ -1390,6 +1428,9 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
     @Override
     @SuppressWarnings("unchecked")
     public void paste(DatabaseObject... dbos) {
+        if (isContentLocked()) {
+            return;
+        }
         positions.stopEditing();
         try {
             positions.getModel().removeEmptyRows(new int[]{4});

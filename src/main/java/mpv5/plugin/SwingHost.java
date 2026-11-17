@@ -17,11 +17,16 @@
 package mpv5.plugin;
 
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JComponent;
+import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import mpv5.YabsViewProxy;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
+import mpv5.ui.frames.MPView;
+import mpv5.ui.panels.DataPanel;
 
 /**
  * The plugins in the YaBS window: tabs, messages, errors, the plugin menu
@@ -69,4 +74,25 @@ final class SwingHost implements ExtensionManager.Host {
             Log.Debug(SwingHost.class, e);
         }
     }
+
+    @Override
+    public List<DataPanel> openViews() {
+        List<DataPanel> list = new ArrayList<DataPanel>();
+        try {
+            MPView view = MPView.identifierView;
+            JTabbedPane tabs = MPView.getTabPane();
+            if (view != null && tabs != null) {
+                for (int i = 0; i < tabs.getTabCount(); i++) {
+                    DataPanel p = view.getTabAt(i);
+                    if (p != null) {
+                        list.add(p);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.Debug(SwingHost.class, e);
+        }
+        return list;
+    }
 }
+

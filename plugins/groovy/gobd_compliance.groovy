@@ -32,14 +32,17 @@ import javax.swing.JLabel
 import javax.swing.JOptionPane
 import javax.swing.JPanel
 import javax.swing.JScrollPane
+import mpv5.ui.modern.ModernTheme
 import javax.swing.JTable
 import javax.swing.JTextField
 import javax.swing.SwingUtilities
 import java.awt.BorderLayout
+import java.awt.Color
 import java.awt.Component
 import java.awt.Desktop
 import java.awt.Dimension
 import java.awt.FlowLayout
+import java.awt.Font
 import java.math.BigDecimal
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
@@ -550,9 +553,7 @@ def finalizeDocument = { Item doc, Long cancelsDocId = null ->
                 (${doc.__getIDS()}, ${chainSeq}, '${esc(doc.__getCnumber())}', 'FINALIZED', CURRENT_TIMESTAMP, '${esc(currentUser())}', '${esc(customerSnap)}', '${esc(positionsSnap)}', '${esc(targetFile.toString())}', '${esc(format)}', '${esc(currentHash)}', '${esc(prevHash)}', ${cancelsSql})
         """)
 
-        if (numberAssigned) {
-            reloadCurrentTabIfShowing(doc)
-        }
+        reloadCurrentTabIfShowing(doc)
 
         logAudit("INVOICE", doc.__getIDS(), "FINALIZED", "STATUS=DRAFT", "STATUS=FINALIZED | SNAPSHOT=${customerSnap}", currentHash, "Festgeschrieben: ${doc.__getCnumber()} (${format})")
         notifyDocumentEvent(
@@ -900,7 +901,7 @@ def buildGdpduIndexXml = { int exportYear ->
 def selectInvoiceDialog = { String title, boolean onlyLocked ->
     String sql = onlyLocked
         ? "SELECT i.ids, i.cnumber, (COALESCE(i.netvalue, 0) - COALESCE(i.discountvalue, 0) + COALESCE(i.taxvalue, 0)) FROM items i INNER JOIN gobd_document_lock g ON i.ids = g.document_id WHERE g.status = 'FINALIZED'"
-        : "SELECT i.ids, i.cnumber, (COALESCE(i.netvalue, 0) - COALESCE(i.discountvalue, 0) + COALESCE(i.taxvalue, 0)) FROM items i LEFT JOIN gobd_document_lock g ON i.ids = g.document_id WHERE g.document_id IS NULL"
+        : "SELECT i.ids, i.cnumber, (COALESCE(i.netvalue, 0) - COALESCE(i.discountvalue, 0) + COALESCE(i.taxvalue, 0)) FROM items i LEFT JOIN gobd_document_lock g ON i.ids = g.document_id WHERE g.document_id IS NULL AND i.inttype IN (${Item.TYPE_INVOICE}, ${Item.TYPE_CREDIT}) ORDER BY i.ids DESC"
     def rows = selectRows(sql)
     if (!rows || rows.length == 0) {
         notifyPopup(onlyLocked ? "Keine festgeschriebenen Rechnungen vorhanden." : "Keine offenen (unfestgeschriebenen) Rechnungen vorhanden.")
@@ -915,21 +916,13 @@ def selectInvoiceDialog = { String title, boolean onlyLocked ->
     return (Item) DatabaseObject.getObject(Context.getInvoice(), id)
 }
 
-yabs.addCommand("GoBD: 1. Beleg festschreiben", "Schreibt eine Rechnung unveraenderbar nach GoBD fest (inkl. Stammdaten-Snapshot & SHA-256 Hash-Kette)", {
-    Item doc = selectInvoiceDialog("GoBD-Festschreibung (§ 146 Abs. 4 AO)", false)
-    if (doc != null) {
-        finalizeDocument(doc, null)
-    }
-})
-
-yabs.addCommand("GoBD: 2. Beleg stornieren (Stornorechnung)", "Erstellt eine festgeschriebene Stornorechnung fuer einen gesperrten Beleg", {
-    Item original = selectInvoiceDialog("GoBD-Stornorechnung erstellen", true)
-    if (original == null) return
+def stornoDocument = { Item original ->
+    if (original == null) return false
 
     def origLock = getLockRecord(original.__getIDS())
     if (origLock == null || origLock[2].toString() == "CANCELLED") {
         showError("Dieser Beleg wurde bereits storniert oder ist nicht festgeschrieben.")
-        return
+        return false
     }
 
     int yr = LocalDate.now().getYear()
@@ -955,7 +948,7 @@ yabs.addCommand("GoBD: 2. Beleg stornieren (Stornorechnung)", "Erstellt eine fes
 
         if (storno.__getIDS() <= 0) {
             showError("Stornorechnung konnte nicht in der Datenbank gespeichert werden.")
-            return
+            return false
         }
 
         def origLines = fetchSubItems(original)
@@ -984,11 +977,27 @@ yabs.addCommand("GoBD: 2. Beleg stornieren (Stornorechnung)", "Erstellt eine fes
                 original.save(true)
             } catch (Exception ignored) { }
             reloadCurrentTabIfShowing(original)
-            logAudit("INVOICE", original.__getIDS(), "CANCELLED", "STATUS=FINALIZED", "STATUS=CANCELLED BY ${storno.__getCnumber()}", origLock[9]?.toString(), "Storniert durch Stornobeleg ${storno.__getCnumber()}.")
+            logAudit("INVOICE", original.__getIDS(), "CANCELLED", "STATUS=FINALIZED", "STATUS=CANCELLED BY ${storno.__getCnumber()}", origLock[9]?.toString(), "Storniert durch Stornobeleg ${storno.__getCnumber()}")
             notifyDocumentEvent("Beleg ${original.__getCnumber()} storniert durch ${storno.__getCnumber()}.", original)
+            return true
         }
+        return false
     } finally {
         creatingStorno = false
+    }
+}
+
+yabs.addCommand("GoBD: 1. Beleg festschreiben", "Schreibt eine Rechnung unveraenderbar nach GoBD fest (inkl. Stammdaten-Snapshot & SHA-256 Hash-Kette)", {
+    Item doc = selectInvoiceDialog("GoBD-Festschreibung (§ 146 Abs. 4 AO)", false)
+    if (doc != null) {
+        finalizeDocument(doc, null)
+    }
+})
+
+yabs.addCommand("GoBD: 2. Beleg stornieren (Stornorechnung)", "Erstellt eine festgeschriebene Stornorechnung fuer einen gesperrten Beleg", {
+    Item original = selectInvoiceDialog("GoBD-Stornorechnung erstellen", true)
+    if (original != null) {
+        stornoDocument(original)
     }
 })
 
@@ -998,35 +1007,430 @@ yabs.addCommand("GoBD: 3. Archiv-Integritaet pruefen", "Prueft alle archivierten
             "SELECT document_id, document_number, archive_path, sha256_hash, prev_sha256_hash FROM gobd_document_lock ORDER BY COALESCE(chain_seq, document_id) ASC, finalized_at ASC, document_id ASC"
         )
 
-        if (!rows || rows.isEmpty()) {
-            notifyPopup("Keine archivierten GoBD-Belege gefunden.")
-            return
+        if (!rows || rows.length == 0) {
+            return "Keine festgeschriebenen Belege im GoBD-Archiv vorhanden."
         }
 
-        StringBuilder issues = new StringBuilder()
-        String prevHash = GENESIS_HASH
-        rows.each { row ->
-            long docId = row[0] != null ? Long.parseLong(row[0].toString()) : -1L
-            String docNum = row[1]?.toString() ?: ""
-            String archivePath = row[2]?.toString() ?: ""
-            String currentHash = row[3]?.toString() ?: ""
-            String expectedPrev = row[4]?.toString() ?: ""
+        String expectedPrev = GENESIS_HASH
+        int verifiedCount = 0
 
-            if (!archivePath || !Files.exists(Paths.get(archivePath))) {
-                issues.append("- Archivdatei fehlt fuer ${docNum} (${docId})\n")
+        for (def row : rows) {
+            String docNum = row[1].toString()
+            Path file = Paths.get(row[2].toString())
+            String storedHash = row[3].toString()
+            String storedPrev = row[4].toString()
+
+            if (storedPrev != expectedPrev) {
+                return "FEHLER: Kettenbruch vor Beleg ${docNum}! Erwartet: ${expectedPrev}, Gefunden: ${storedPrev}"
             }
-            if (expectedPrev != prevHash) {
-                issues.append("- Hash-Kette fehlerhaft bei ${docNum} (${docId}): prev=${expectedPrev}, erwartet=${prevHash}\n")
+            if (!Files.exists(file)) {
+                return "FEHLER: Archivdatei fehlt fuer Beleg ${docNum} (${file})!"
             }
-            prevHash = currentHash
+            String actualHash = computeChainedSha256(Files.readAllBytes(file), storedPrev)
+            if (actualHash != storedHash) {
+                return "FEHLER: Datei-Manipulation erkannt bei Beleg ${docNum}! Berechneter SHA-256-Hash weicht ab."
+            }
+            expectedPrev = storedHash
+            verifiedCount++
         }
-
-        if (issues.length() > 0) {
-            notifyPopup("GoBD-Archiv-Integritaet: Probleme gefunden\n${issues}")
+        return "OK: Alle ${verifiedCount} festgeschriebenen Belege und die SHA-256-Hash-Kette sind lueckenlos und unversehrt."
+    }, { String report ->
+        if (report.startsWith("FEHLER")) {
+            showError(report)
         } else {
-            notifyPopup("GoBD-Archiv-Integritaet: OK (${rows.size()} Belege, Kette unverletzt).")
+            notifyPopup(report)
         }
     })
 })
 
+yabs.addCommand("GoBD: 4. Betriebspruefer-Export (Z3 / IDEA ZIP)", "Erzeugt ein IDEA-kompatibles Z3-Prueferpaket (index.xml, gdpdu-01-09-2004.dtd, CSVs & Originalbelege)", {
+    String defaultYear = String.valueOf(LocalDate.now().getYear())
+    String yearInput = JOptionPane.showInputDialog(null, "Pruefungsjahr fuer den Z3-Export eingeben:", defaultYear)
+    if (!yearInput || !yearInput.isInteger()) return
+    int exportYear = yearInput.toInteger()
+
+    yabs.background({
+        String ts = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"))
+        Path zipPath = getArchiveRoot().resolve("YaBS_GoBD_Z3_Export_${exportYear}_${ts}.zip")
+
+        def allLocks = selectRows(
+            "SELECT g.document_id, g.document_number, g.status, g.finalized_at, g.finalized_by, g.customer_snapshot, g.positions_snapshot, g.archive_path, g.artifact_format, g.sha256_hash, g.prev_sha256_hash, g.cancels_document_id, i.dateadded, i.datetodo, i.contactsids, (COALESCE(i.netvalue, 0) - COALESCE(i.discountvalue, 0)), COALESCE(i.taxvalue, 0), (COALESCE(i.netvalue, 0) - COALESCE(i.discountvalue, 0) + COALESCE(i.taxvalue, 0)) FROM gobd_document_lock g LEFT JOIN items i ON g.document_id = i.ids ORDER BY COALESCE(g.chain_seq, g.document_id) ASC, g.finalized_at ASC"
+        )
+        def locks = allLocks.findAll { r -> r[3]?.toString()?.startsWith(String.valueOf(exportYear)) }
+        Set<String> exportedDocIds = locks.collect { r -> r[0].toString() } as Set<String>
+
+        def allPositions = selectRows(
+            "SELECT s.ids, s.itemsids, s.description, s.quantityvalue, s.externalvalue, s.taxpercentvalue FROM subitems s INNER JOIN gobd_document_lock g ON s.itemsids = g.document_id ORDER BY s.ids ASC"
+        )
+        def positions = allPositions.findAll { p -> exportedDocIds.contains(p[1]?.toString()) }
+
+        def contacts = selectRows(
+            "SELECT ids, cnumber, company, cname, street, zip, city, country, taxnumber FROM contacts ORDER BY ids ASC"
+        )
+
+        def allAudits = selectRows(
+            "SELECT id, created_at, user_id, entity_type, entity_id, action, old_value, new_value, file_hash, details FROM gobd_audit_log ORDER BY id ASC"
+        )
+        def audits = allAudits.findAll { a -> a[1]?.toString()?.startsWith(String.valueOf(exportYear)) }
+
+        new ZipOutputStream(Files.newOutputStream(zipPath)).withCloseable { ZipOutputStream zos ->
+            zos.putNextEntry(new ZipEntry("index.xml"))
+            zos.write(buildGdpduIndexXml(exportYear).getBytes(StandardCharsets.UTF_8))
+            zos.closeEntry()
+
+            zos.putNextEntry(new ZipEntry("gdpdu-01-09-2004.dtd"))
+            zos.write(buildGdpduDtd().getBytes(StandardCharsets.UTF_8))
+            zos.closeEntry()
+
+            zos.putNextEntry(new ZipEntry("rechnungen.csv"))
+            StringBuilder sbDocs = new StringBuilder("document_id;document_number;status;issue_date;delivery_date;contact_id;net_amount;tax_amount;gross_amount;artifact_format;sha256_hash;prev_sha256_hash;cancels_document_id;customer_snapshot\n")
+            locks.each { r ->
+                sbDocs.append("${r[0]};\"${csvCell(r[1])}\";\"${csvCell(r[2])}\";${fmtDate(r[12])};${fmtDate(r[13])};${r[14] ?: 0};${fmtDec(r[15])};${fmtDec(r[16])};${fmtDec(r[17])};\"${csvCell(r[8])}\";\"${csvCell(r[9])}\";\"${csvCell(r[10])}\";\"${csvCell(r[11])}\";\"${csvCell(r[5])}\"\n")
+            }
+            zos.write(sbDocs.toString().getBytes(StandardCharsets.UTF_8))
+            zos.closeEntry()
+
+            zos.putNextEntry(new ZipEntry("rechnungspositionen.csv"))
+            StringBuilder sbPos = new StringBuilder("position_id;document_id;description;quantity;unit_price;tax_rate\n")
+            positions.each { p ->
+                sbPos.append("${p[0]};${p[1]};\"${csvCell(p[2])}\";${fmtDec(p[3])};${fmtDec(p[4])};${fmtDec(p[5])}\n")
+            }
+            zos.write(sbPos.toString().getBytes(StandardCharsets.UTF_8))
+            zos.closeEntry()
+
+            zos.putNextEntry(new ZipEntry("kunden.csv"))
+            StringBuilder sbCust = new StringBuilder("contact_id;customer_number;company;name;street;zip;city;country;tax_number\n")
+            contacts.each { c ->
+                sbCust.append("${c[0]};\"${csvCell(c[1])}\";\"${csvCell(c[2])}\";\"${csvCell(c[3])}\";\"${csvCell(c[4])}\";\"${csvCell(c[5])}\";\"${csvCell(c[6])}\";\"${csvCell(c[7])}\";\"${csvCell(c[8])}\"\n")
+            }
+            zos.write(sbCust.toString().getBytes(StandardCharsets.UTF_8))
+            zos.closeEntry()
+
+            zos.putNextEntry(new ZipEntry("audit_log.csv"))
+            StringBuilder sbAudit = new StringBuilder("id;created_at;user_id;entity_type;entity_id;action;old_value;new_value;file_hash;details\n")
+            audits.each { a ->
+                sbAudit.append("${a[0]};\"${csvCell(a[1])}\";\"${csvCell(a[2])}\";\"${csvCell(a[3])}\";${a[4]};\"${csvCell(a[5])}\";\"${csvCell(a[6])}\";\"${csvCell(a[7])}\";\"${csvCell(a[8])}\";\"${csvCell(a[9])}\"\n")
+            }
+            zos.write(sbAudit.toString().getBytes(StandardCharsets.UTF_8))
+            zos.closeEntry()
+
+            locks.each { r ->
+                Path belegFile = Paths.get(r[7].toString())
+                if (Files.exists(belegFile)) {
+                    zos.putNextEntry(new ZipEntry("belege/${belegFile.getFileName()}"))
+                    zos.write(Files.readAllBytes(belegFile))
+                    zos.closeEntry()
+                }
+            }
+
+            zos.putNextEntry(new ZipEntry("VERFAHRENSDOKUMENTATION_TECHNIK.txt"))
+            String readme = [
+                "=======================================================================",
+                "OpenYaBS - Technische System- und Verfahrensdokumentation nach GoBD",
+                "=======================================================================",
+                "Pruefungsjahr: ${exportYear}",
+                "Export-Zeitpunkt: ${ts}",
+                "",
+                "1. Unveraenderbarkeit (§ 146 Abs. 4 AO):",
+                "   Festgeschriebene Belege (gobd_document_lock) und deren Positionen",
+                "   sind durch den DatabaseObjectModifier gegen steuerrelevante Aenderungen",
+                "   sowie gegen Loeschen und Papierkorb gesperrt. Reine Zahlungs- und",
+                "   Mahnstatus-Aenderungen bleiben erlaubt und werden protokolliert.",
+                "   Inhaltliche Korrekturen erfolgen ausschliesslich ueber Stornorechnungen (ST-*).",
+                "",
+                "2. Stammdaten-Snapshots:",
+                "   Empfaengeranschrift, Steuernummer und Positionen werden zum Zeitpunkt",
+                "   der Festschreibung unveraenderbar in gobd_document_lock sowie im",
+                "   archivierten Originalbeleg gespeichert.",
+                "",
+                "3. Kryptographische Integritaetssicherung (SHA-256 Hash-Kette):",
+                "   Jeder archivierte Originalbeleg unter /belege/ ist ueber die Formel",
+                "   SHA256(Datei_Bytes || prev_sha256_hash) verkettet (Genesis: 64 Nullen).",
+                "",
+                "4. Maschinelle Auswertbarkeit (Z3-Zugriff / IDEA):",
+                "   Dieses Archiv enthaelt eine vollstaendige index.xml sowie die",
+                "   offizielle gdpdu-01-09-2004.dtd zum direkten Import in IDEA."
+            ].join("\n")
+            zos.write(readme.getBytes(StandardCharsets.UTF_8))
+            zos.closeEntry()
+        }
+
+        return zipPath
+    }, { Path zipPath ->
+        logAudit("EXPORT", exportYear, "Z3_EXPORTED", null, zipPath.getFileName().toString(), null, "Z3 Prueferexport erstellt: ${zipPath.getFileName()}")
+        notifyPopup("GoBD Z3-Export erstellt:\n${zipPath}")
+        if (Desktop.isDesktopSupported()) {
+            Desktop.getDesktop().open(zipPath.getParent().toFile())
+        }
+    })
+})
+
+yabs.addCommand("GoBD: 5. Pruefer-Ansicht oeffnen (Z1 Read-Only Tab)", "Oeffnet eine schreibgeschuetzte Tabelle aller festgeschriebenen Belege", {
+    def lockRows = selectRows(
+        "SELECT document_id, document_number, status, finalized_at, finalized_by, artifact_format, sha256_hash, cancels_document_id FROM gobd_document_lock ORDER BY COALESCE(chain_seq, document_id) DESC, finalized_at DESC"
+    )
+
+    String[] cols = ["ID", "Belegnummer", "Status", "Festgeschrieben am", "Benutzer", "Format", "SHA-256 Hash", "Storno-Bezug"] as String[]
+    JTable table = new JTable(lockRows, cols) {
+        @Override
+        boolean isCellEditable(int row, int column) {
+            return false
+        }
+    }
+    JPanel panel = new JPanel(new BorderLayout(8, 8))
+    panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10))
+    panel.add(new JLabel("GoBD Z1-Prueferansicht (Schreibgeschuetztes Belegjournal - ${lockRows.length} Belege)"), BorderLayout.NORTH)
+    panel.add(new JScrollPane(table), BorderLayout.CENTER)
+    yabs.openTab("GoBD Z1-Prueferjournal", panel)
+})
+
+// -----------------------------------------------------------------------------
+// 7. Einstellungsseite unter Settings > Plugins (yabs.addSettingsPage)
+// -----------------------------------------------------------------------------
+yabs.addSettingsPage("GoBD-Konformitaet", "Einstellungen fuer automatische Beleg-Festschreibung und GoBD-Archivpfad", {
+    JPanel panel = new JPanel()
+    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS))
+    panel.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12))
+
+    boolean currentAutoLock = yabs.settings().getBoolean("gobd.autoLockOnExport", true)
+    JCheckBox autoLockCheck = new JCheckBox("Rechnungen beim Export (PDF / ZUGFeRD / XRechnung) automatisch festschreiben (GoBD-Standard)", currentAutoLock)
+    autoLockCheck.setAlignmentX(Component.LEFT_ALIGNMENT)
+    autoLockCheck.addActionListener({
+        yabs.settings().setBoolean("gobd.autoLockOnExport", autoLockCheck.isSelected())
+        notifyStatus("GoBD-Einstellung gespeichert.")
+    })
+
+    JLabel pathLabel = new JLabel("Revisionssicherer GoBD-Archivordner:")
+    pathLabel.setAlignmentX(Component.LEFT_ALIGNMENT)
+    pathLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 4, 0))
+
+    JPanel rowPanel = new JPanel(new BorderLayout(6, 0))
+    rowPanel.setAlignmentX(Component.LEFT_ALIGNMENT)
+
+    JTextField pathField = new JTextField(getArchiveRoot().toAbsolutePath().toString(), 30)
+    rowPanel.add(pathField, BorderLayout.CENTER)
+
+    JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 4, 0))
+    JButton browseBtn = new JButton("...")
+    browseBtn.setToolTipText("Archivordner auswaehlen")
+    JButton savePathBtn = new JButton("Speichern")
+
+    def saveArchivePath = { String newPathStr ->
+        try {
+            Path newPath = Paths.get(newPathStr.trim()).toAbsolutePath()
+            Files.createDirectories(newPath)
+            yabs.settings().set("gobd.archivePath", newPath.toString())
+            pathField.setText(newPath.toString())
+            logAudit("SETTINGS", 0L, "ARCHIVE_PATH_CHANGED", null, newPath.toString(), null, "GoBD-Archivordner geaendert")
+            notifyPopup("GoBD-Archivordner gespeichert:\n${newPath}")
+        } catch (Exception ex) {
+            showError("Ungueltiger oder nicht beschreibbarer Ordnerpfad:\n${ex.getMessage()}")
+        }
+    }
+
+    browseBtn.addActionListener({
+        JFileChooser chooser = new JFileChooser(pathField.getText())
+        chooser.setDialogTitle("GoBD-Archivordner auswaehlen")
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY)
+        chooser.setAcceptAllFileFilterUsed(false)
+        if (chooser.showOpenDialog(panel) == JFileChooser.APPROVE_OPTION && chooser.getSelectedFile() != null) {
+            saveArchivePath(chooser.getSelectedFile().getAbsolutePath())
+        }
+    })
+
+    savePathBtn.addActionListener({
+        saveArchivePath(pathField.getText())
+    })
+
+    btnPanel.add(browseBtn)
+    btnPanel.add(savePathBtn)
+    rowPanel.add(btnPanel, BorderLayout.EAST)
+
+    Dimension pref = rowPanel.getPreferredSize()
+    rowPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, (int) pref.getHeight()))
+
+    panel.add(autoLockCheck)
+    panel.add(pathLabel)
+    panel.add(rowPanel)
+    return (JComponent) panel
+})
+
+// -----------------------------------------------------------------------------
+// 8. Suchanbieter fuer „Search anything“ (Shift+Shift) via yabs.addSearchProvider
+// -----------------------------------------------------------------------------
+yabs.addSearchProvider({ String text ->
+    if (!text || text.trim().length() < 2) return []
+    String q = text.trim().toLowerCase()
+
+    def rows = selectRows(
+        "SELECT document_id, document_number, status, finalized_at, archive_path FROM gobd_document_lock WHERE LOWER(document_number) LIKE '%${esc(q)}%' ORDER BY COALESCE(chain_seq, document_id) DESC, finalized_at DESC"
+    )
+
+    return (rows ?: []).collect { r ->
+        new SearchResult(
+            "GoBD-Beleg ${r[1]} [${r[2]}]",
+            "Festgeschrieben am ${r[3]} – Klick oeffnet Originalbeleg",
+            {
+                Path f = Paths.get(r[4].toString())
+                if (Files.exists(f) && Desktop.isDesktopSupported()) {
+                    Desktop.getDesktop().open(f.toFile())
+                }
+            }
+        )
+    }
+})
+
+// -----------------------------------------------------------------------------
+// 9. Visuelle Sperranzeige & Feldsperre in den Modern-Panels (yabs.onView)
+// -----------------------------------------------------------------------------
+yabs.onView({ DataPanel panel ->
+    if (panel == null) return
+    DatabaseObject owner = panel.getDataOwner()
+    if (!(owner instanceof Item) || !isTaxRelevantDocument(owner)) {
+        return
+    }
+    Item doc = (Item) owner
+    if (doc.__getIDS() <= 0) {
+        panel.setContentLocked(false)
+        panel.setPluginBadge(null)
+        panel.setPluginBanner(null)
+        return
+    }
+
+    def lock = getLockRecord(doc.__getIDS())
+    if (lock != null) {
+        String docNum = lock[1]?.toString() ?: doc.__getCnumber()
+        String lockStatus = lock[2]?.toString() ?: "FINALIZED"
+        String finalizedAt = lock[3]?.toString() ?: ""
+        String finalizedBy = lock[4]?.toString() ?: ""
+        String archivePath = lock[7]?.toString() ?: ""
+        String format = lock[8]?.toString() ?: "ARCHIVE"
+        String sha256 = lock[9]?.toString() ?: ""
+        String shortHash = sha256.length() >= 12 ? sha256.substring(0, 12) : sha256
+        boolean cancelled = (lockStatus == "CANCELLED")
+
+        // 1. Inhaltliche Felder & Positionen im UI sperren (Zahlungsstatus/Mahnungen bleiben frei)
+        panel.setContentLocked(true)
+
+        // 2. Kompaktes GoBD-Badge in der Kopfzeile neben dem Status-Pill
+        Color badgeBg = cancelled ? new Color(254, 226, 226) : new Color(254, 243, 199)
+        Color badgeFg = cancelled ? new Color(153, 27, 27) : new Color(146, 64, 14)
+        Color badgeBorder = cancelled ? new Color(248, 113, 113) : new Color(245, 158, 11)
+        JLabel badge = new JLabel(cancelled ? "🔒 GoBD STORNIERT" : "🔒 GoBD FESTGESCHRIEBEN")
+        badge.setOpaque(true)
+        badge.setBackground(badgeBg)
+        badge.setForeground(badgeFg)
+        badge.setFont(ModernTheme.font(0, Font.BOLD))
+        badge.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(badgeBorder, 1, true),
+            BorderFactory.createEmptyBorder(ModernTheme.px(2), ModernTheme.px(8), ModernTheme.px(2), ModernTheme.px(8))
+        ))
+        badge.setToolTipText("GoBD § 146 Abs. 4 AO | Festgeschrieben am ${finalizedAt} von ${finalizedBy} | Format: ${format} | SHA-256: ${sha256}")
+        panel.setPluginBadge(badge)
+
+        // 3. Hinweis- und Aktionsbanner unter der ModernCommandBar
+        JPanel banner = new JPanel(new BorderLayout(ModernTheme.px(12), 0))
+        banner.setBackground(badgeBg)
+        banner.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createMatteBorder(1, 0, 0, 0, badgeBorder),
+            ModernTheme.padding(6, 12)
+        ))
+
+        JLabel info = new JLabel(
+            "🔒 GoBD-Festschreibung (§ 146 Abs. 4 AO): Beleg ${docNum} [${lockStatus}] ist unveraenderbar archiviert (${format}, SHA-256: ${shortHash}…). " +
+            "Steuerrelevante Felder & Positionen sind gesperrt; Zahlungsstatus, Teilzahlungen & Mahnungen bleiben buchbar."
+        )
+        info.setFont(ModernTheme.font(1, Font.BOLD))
+        info.setForeground(badgeFg)
+        banner.add(info, BorderLayout.CENTER)
+
+        JPanel actions = new JPanel(new FlowLayout(FlowLayout.RIGHT, ModernTheme.px(6), 0))
+        actions.setOpaque(false)
+
+        JButton openArchiveBtn = ModernTheme.actionButton(new JButton("Originalbeleg oeffnen"), null)
+        openArchiveBtn.setToolTipText(archivePath)
+        openArchiveBtn.addActionListener({
+            Path f = Paths.get(archivePath)
+            if (Files.exists(f)) {
+                if (Desktop.isDesktopSupported()) {
+                    try {
+                        Desktop.getDesktop().open(f.toFile())
+                    } catch (Exception ex) {
+                        notifyPopup("Archivierte Belegdatei:\n${f.toAbsolutePath()}")
+                    }
+                } else {
+                    notifyPopup("Archivierte Belegdatei:\n${f.toAbsolutePath()}")
+                }
+            } else {
+                showError("Archivdatei nicht gefunden:\n${archivePath}")
+            }
+        })
+        actions.add(openArchiveBtn)
+
+        if (!cancelled && doc.__getInttype() == Item.TYPE_INVOICE) {
+            JButton stornoBtn = ModernTheme.actionButton(new JButton("Stornorechnung erstellen"), null)
+            stornoBtn.addActionListener({
+                int confirm = JOptionPane.showConfirmDialog(
+                    panel instanceof Component ? (Component) panel : null,
+                    "Soll fuer den festgeschriebenen Beleg ${docNum} jetzt eine GoBD-konforme Stornorechnung erstellt werden?",
+                    "GoBD-Stornorechnung (§ 146 Abs. 4 AO)",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE
+                )
+                if (confirm == JOptionPane.YES_OPTION) {
+                    stornoDocument(doc)
+                }
+            })
+            actions.add(stornoBtn)
+        }
+
+        banner.add(actions, BorderLayout.EAST)
+        panel.setPluginBanner(banner)
+    } else {
+        // Gespeicherter Entwurf (noch nicht festgeschrieben)
+        panel.setContentLocked(false)
+
+        JLabel draftBadge = new JLabel("GoBD: Entwurf (offen)")
+        draftBadge.setOpaque(true)
+        draftBadge.setBackground(ModernTheme.accentSoft())
+        draftBadge.setForeground(ModernTheme.accent())
+        draftBadge.setFont(ModernTheme.font(0, Font.BOLD))
+        draftBadge.setBorder(BorderFactory.createEmptyBorder(ModernTheme.px(2), ModernTheme.px(8), ModernTheme.px(2), ModernTheme.px(8)))
+        draftBadge.setToolTipText("Dieser Beleg ist noch nicht nach GoBD festgeschrieben und wird beim Export automatisch gesichert.")
+        panel.setPluginBadge(draftBadge)
+
+        JPanel draftBanner = new JPanel(new BorderLayout(ModernTheme.px(12), 0))
+        draftBanner.setBackground(ModernTheme.accentSoft())
+        draftBanner.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createMatteBorder(1, 0, 0, 0, ModernTheme.border()),
+            ModernTheme.padding(5, 12)
+        ))
+        JLabel draftInfo = new JLabel("GoBD-Hinweis: Dieser Beleg ist noch ein bearbeitbarer Entwurf und wird beim PDF-/E-Rechnungs-Export automatisch festgeschrieben.")
+        draftInfo.setFont(ModernTheme.font(1, Font.PLAIN))
+        draftInfo.setForeground(ModernTheme.foreground())
+        draftBanner.add(draftInfo, BorderLayout.CENTER)
+
+        JButton lockNowBtn = ModernTheme.actionButton(new JButton("Jetzt GoBD-festschreiben"), null)
+        lockNowBtn.addActionListener({
+            finalizeDocument(doc, null)
+        })
+        JPanel draftActions = new JPanel(new FlowLayout(FlowLayout.RIGHT, ModernTheme.px(6), 0))
+        draftActions.setOpaque(false)
+        draftActions.add(lockNowBtn)
+        draftBanner.add(draftActions, BorderLayout.EAST)
+        panel.setPluginBanner(draftBanner)
+    }
+})
+
+// Initialisierung beim Starten des Plugins ausfuehren
 initSchema()
+notifyStatus("GoBD-Konformitaets-Plugin (v1.4.2) vollstaendig geladen.")
+
+// Aufraeum-Closure beim Stoppen/Deaktivieren/Neuladen des Plugins
+onStop = {
+    creatingStorno = false
+    finalizingIds.clear()
+    lastGeneratedFiles.clear()
+    masterDataBeforeSave.clear()
+}
+
