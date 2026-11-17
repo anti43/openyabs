@@ -1738,23 +1738,27 @@ public enum Messages {
 
     @Override
     public String toString() {
-
-        if(missing.contains(name())) {
+    
+        if (missing.contains(name())) {
             String de = LanguageManager.fallback(name());
             return de != null ? de : message;
         }
+    
         try {
-            return LanguageManager.localize(name(), LanguageManager.getBundle().getString(name()));
+            String bundleValue = LanguageManager.getBundle().getString(name());
+            if (bundleValue != null && bundleValue.equals(name())) {
+                return message != null ? message : super.toString();
+            }
+            return LanguageManager.localize(name(), bundleValue);
         } catch (Exception e) {
             Log.Debug(this, e.getMessage());
             addMessage(name());
-            //a new text, not yet in the language of the database
             String de = LanguageManager.fallback(name());
             if (de != null) {
                 return de;
             }
         }
-
+    
         if (message == null) {
             return super.toString();
         } else {
