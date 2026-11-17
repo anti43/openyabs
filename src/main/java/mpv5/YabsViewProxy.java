@@ -384,6 +384,7 @@ public class YabsViewProxy implements YabsView {
         registerModernView(Product.class, item -> new ModernProductPanel(item.getContext(), ((Product) item).__getInttype()));
         registerModernView(Item.class, item -> new mpv5.ui.panels.ModernItemPanel(
                 mpv5.handler.ItemService.contextOf(((Item) item).__getInttype()), ((Item) item).__getInttype()));
+        registerModernView(mpv5.db.objects.Expense.class, item -> new mpv5.ui.panels.ModernExpensePanel());
     }
 
     /**

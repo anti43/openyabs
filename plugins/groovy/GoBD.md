@@ -149,17 +149,32 @@ Ein Software-Plugin allein stellt noch keine vollständige GoBD-Konformität sic
 
 ---
 
-## 8. Fehlende Funktionen / Nicht abgedeckt (Missing)
+## 8. Eingangsbelege & Ausgaben (GoBD Rz. 61–64: „Keine Buchung ohne Beleg“)
 
-Folgende Anforderungen liegen **außerhalb des aktuellen Funktionsumfangs** (*Out of Scope*) dieses Plugins und werden derzeit noch nicht technisch durchgesetzt:
+Seit Version 1.5.0 und OpenYaBS Core unterstützt das System die GoBD-konforme Erfassung und revisionssichere Archivierung von **Eingangsbelegen zu Ausgaben (`Expense`)**:
 
-### Eingangsbelege & Ausgaben (*„Keine Buchung ohne Beleg“*, GoBD Rz. 61–64)
-Das Plugin konzentriert sich aktuell auf **Ausgangsrechnungen und Gutschriften (`Item`)**. Für Ausgaben (*Expenses*) und Eingangsrechnungen greift noch keine automatische Beleg- und Archivierungspflicht im Sinne der GoBD.
-
-* **Verknüpfungspflicht:** In den GoBD gilt der Grundsatz *„Keine Buchung ohne Beleg“*. Jede in YaBS erfasste Ausgabe muss eindeutig mit dem zugehörigen Eingangsbeleg verknüpft sein (entweder per Belegnummer, Datei oder Dokumentlink).
-* **Aufbewahrung im digitalen Originalformat (E-Rechnungspflicht):** Digital empfangene Eingangsrechnungen (z. B. als PDF, ZUGFeRD-PDF/A-3 oder XRechnung-XML) müssen zwingend in ihrem **digitalen Originalformat** archiviert und unveränderlich hinterlegt werden.
-
-*(Diese Punkte müssen bis zu einer eventuellen Erweiterung organisatorisch – z. B. durch disziplinierte Dateiablage am Ausgaben-Datensatz bzw. ein revisionssicheres Belegarchiv außerhalb des Plugins – sichergestellt werden.)*
+* **Keine Speicherung in H2 / relationalen BLOBs:** Die Originaldateien (Scans, PDF-Rechnungen, XRechnung-XML) werden **nicht** als BLOB in der Datenbank abgelegt, um Datenbanken schlank, portabel und performant zu halten.
+* **Jahresordner mit SHA256SUMS-Manifest:**
+  * Belege werden byte-identisch in `<Beleg-Ordner>/<Jahr>/<Hash-Praefix>_<Dateiname>` abgelegt und auf Dateisystemebene auf schreibgeschützt (`read-only`) gesetzt.
+  * In jedem Jahresordner wird ein standardisiertes Manifest **`SHA256SUMS`** fortlaufend gepflegt:
+    ```text
+    <sha256-hash>  <dateiname>
+    ```
+    Dadurch kann die Archiv-Integrität jederzeit auch außerhalb von YaBS mit Standardwerkzeugen geprüft werden:
+    ```bash
+    sha256sum -c SHA256SUMS
+    ```
+* **Konfigurierbarer Belegordner mit Variablen:** Der Speicherort kann unter Berücksichtigung von Pfadvariablen (`[HOME]`, `[APPDIR]`, `[DBNAME]`, `[YEAR]`, `[MONTH]`, `[DAY]`) flexibel konfiguriert werden (Standard: `[APPDIR]/receipts`).
+* **ModernExpensePanel mit Drag & Drop:**
+  * Eingangsbelege können per Drag & Drop direkt auf die Belegetabelle im `ModernExpensePanel` gezogen werden.
+  * Revisionssichere Anzeige von Dateiname, Größe, SHA-256-Hash, Importdatum und Benutzer.
+  * Direktes Öffnen mit dem Standard-Viewer des Betriebssystems.
+  * Integrierte Prüffunktion zur Überprüfung aller Belege gegen ihre kryptographischen Checksummen.
+* **Visuelle GoBD-Statusanzeige (`yabs.onView`):**
+  * Ausgaben mit verknüpften Belegen erhalten das Badge `🔒 GoBD BELEGABLAGE (<Anzahl>)` und ein grünes Infobanner.
+  * Ausgaben ohne Beleg werden mit `⚠️ GoBD: OHNE BELEG` markiert, um an den Grundsatz *„Keine Buchung ohne Beleg“* zu erinnern.
+* **Lösch- und Manipulationsschutz:** Ausgaben mit archivierten Belegen dürfen weder gelöscht noch in den Papierkorb verschoben werden.
+* **GDPdU / IDEA Z3-Export:** Der Z3-Export umfasst nun auch `ausgaben.csv`, `eingangsbelege.csv` und die Originalbelege unter `/belege/eingangsbelege/`.
 
 ---
 
