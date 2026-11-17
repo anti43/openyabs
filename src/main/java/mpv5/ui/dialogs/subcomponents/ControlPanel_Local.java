@@ -356,6 +356,7 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
         savebasedir.set_Text(values.getProperty(LocalSettings.BASE_DIR));
         backupbasedir.set_Text(values.getProperty(LocalSettings.BACKUP_DIR));
         updateCheck.setSelected(!TypeConversion.stringToBoolean(values.getProperty(LocalSettings.SUPPRESS_UPDATE_CHECK)));
+        simpleNavCheck.setSelected(LocalSettings.isSimpleNavigation());
         showFolders();
     }
 
@@ -450,6 +451,15 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
         LocalSettings.setProperty(LocalSettings.BACKUP_DIR, backupbasedir.get_Text(true));
         LocalSettings.setProperty(LocalSettings.SUPPRESS_UPDATE_CHECK, TypeConversion.booleanToString(!updateCheck.isSelected()));
 
+        boolean oldSimple = LocalSettings.isSimpleNavigation();
+        boolean newSimple = simpleNavCheck.isSelected();
+        if (oldSimple != newSimple) {
+            LocalSettings.setSimpleNavigation(newSimple);
+            if (mpv5.YabsViewProxy.instance().getIdentifierView() instanceof mpv5.ui.frames.MPView) {
+                ((mpv5.ui.frames.MPView) mpv5.YabsViewProxy.instance().getIdentifierView()).initNav();
+            }
+        }
+
         LocalSettings.apply();
         showFolders();
     }
@@ -460,6 +470,20 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
     }
 
     private javax.swing.JPanel actions = new javax.swing.JPanel();
+    private final javax.swing.JCheckBox simpleNavCheck = new javax.swing.JCheckBox();
+
+    /**
+     * Simplified navigation mode option
+     */
+    private mpv5.ui.modern.Card navigationCard() {
+        simpleNavCheck.setOpaque(false);
+        java.util.ResourceBundle b = mpv5.i18n.LanguageManager.getBundle();
+        simpleNavCheck.setText(b.getString("MPView.simplenav.text"));
+        simpleNavCheck.setSelected(LocalSettings.isSimpleNavigation());
+        return new mpv5.ui.modern.Card(b.getString("MPView.parent_nav_simple.TabConstraints.tabTitle"))
+                .addFull(simpleNavCheck)
+                .addFull(mpv5.ui.modern.Applets.hint(b.getString("MPView.sjournal.toolTipText_1")));
+    }
 
     /**
      * The parts of the form as cards, the buttons in the action bar
@@ -471,6 +495,7 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
         setLayout(new java.awt.BorderLayout());
         setOpaque(false);
         add(mpv5.ui.modern.Applets.page(null, 420,
+                navigationCard(),
                 mpv5.ui.modern.Applets.wrap(null, jPanel2), mpv5.ui.modern.Applets.wrap(null, jPanel3),
                 mpv5.ui.modern.Applets.wrap(null, jPanel4), mpv5.ui.modern.Applets.wrap(null, jPanel5), localFilesCard(), updatesCard()), java.awt.BorderLayout.CENTER);
         mpv5.ui.modern.PrimaryButton save = new mpv5.ui.modern.PrimaryButton(jButton1.getText(), "/images/16/filesave.png");

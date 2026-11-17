@@ -434,6 +434,7 @@ public enum Messages {
     CONTACTLIST_EDITMODE("Edit mode"),
     CONTACTLIST_EDITMODE_TIP("Change the contacts directly in the table (double click on a cell). Every change is saved immediately."),
     CONTACTLIST_EDITMODE_LEGEND("Changes are saved immediately. Red: data for e-invoices is missing or invalid, yellow: please check - the tooltip tells the reason."),
+    COMPANY_INFO("Company info"),
     COMPANY_CHECK_DATA("Please check the company info:"),
     COMPANY_VATID_INVALID("VAT ID is invalid: enter it with the country code, e.g. DE123456789 (German VAT IDs: DE + 9 digits). Your tax number (Steuernummer) belongs in the field 'Tax number'."),
     COMPANY_VATID_IN_TAXNUMBER("Your VAT ID was entered in the field 'Tax number'. Please move it to the field 'VAT ID' (the tax number field is for the Steuernummer, e.g. 30/123/45678):"),

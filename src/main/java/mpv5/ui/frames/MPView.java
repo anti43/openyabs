@@ -1845,30 +1845,15 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
         fileMenu.setText(bundle.getString("MPView.fileMenu.text_1")); // NOI18N
         fileMenu.setName("fileMenu"); // NOI18N
 
-        jMenu14.setText(bundle.getString("MPView.jMenu14.text")); // NOI18N
-        jMenu14.setName("jMenu14"); // NOI18N
-
         jMenuItem33.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItem33.setText(bundle.getString("MPView.jMenuItem33.text")); // NOI18N
+        jMenuItem33.setText(bundle.getString("MPView.jMenu14.text") + " \u2026"); // NOI18N
         jMenuItem33.setName("jMenuItem33"); // NOI18N
         jMenuItem33.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem33ActionPerformed(evt);
             }
         });
-        jMenu14.add(jMenuItem33);
-
-        jMenuItem34.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_I, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItem34.setText(bundle.getString("MPView.jMenuItem34.text")); // NOI18N
-        jMenuItem34.setName("jMenuItem34"); // NOI18N
-        jMenuItem34.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem34ActionPerformed(evt);
-            }
-        });
-        jMenu14.add(jMenuItem34);
-
-        fileMenu.add(jMenu14);
+        fileMenu.add(jMenuItem33);
 
         jMenuItem13.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/16/filesave.png"))); // NOI18N
@@ -2345,7 +2330,7 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
         });
         jMenu1.add(jMenuItem42);
 
-        jMenuItem50.setText(bundle.getString("MPView.jMenuItem50.text")); // NOI18N
+        jMenuItem50.setText(Messages.COMPANY_INFO.toString() + " \u2026"); // NOI18N
         jMenuItem50.setName("jMenuItem50"); // NOI18N
         jMenuItem50.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -2958,10 +2943,7 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
     }//GEN-LAST:event_jMenuItem32ActionPerformed
 
     private void jMenuItem33ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem33ActionPerformed
-        DatabaseObject d = Search2.showSearchFor(Context.getContact());
-        if (d != null) {
-            addTab(d);
-        }
+        mpv5.ui.dialogs.SearchAnything.open();
     }//GEN-LAST:event_jMenuItem33ActionPerformed
 
     private void jMenuItem34ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem34ActionPerformed
@@ -3172,7 +3154,7 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
     }//GEN-LAST:event_jMenuItem49ActionPerformed
 
    private void jMenuItem50ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem50ActionPerformed
-       wizard_FirstSettings1.build(getIdentifierFrame());
+       mpv5.ui.panels.MPControlPanel.show(mpv5.ui.dialogs.subcomponents.ControlPanel_Company.class);
    }//GEN-LAST:event_jMenuItem50ActionPerformed
 
    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
@@ -3208,17 +3190,20 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     }//GEN-LAST:event_sjournalActionPerformed
 
     private void sproductsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sproductsActionPerformed
-        addTab(mpv5.YabsViewProxy.instance().newProductView(Product.TYPE_PRODUCT), Messages.NEW_PRODUCT);
+        if (polisttab == null) {
+            polisttab = new ProductsOverview();
+        }
+        addOrShowTab(polisttab, Messages.PRODUCTS_TITLE.toString());
     }//GEN-LAST:event_sproductsActionPerformed
 
     private void sinvoicesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sinvoicesActionPerformed
-        addTab(mpv5.YabsViewProxy.instance().newItemView(Item.TYPE_INVOICE), Messages.NEW_INVOICE);
+        addTab(mpv5.YabsViewProxy.instance().newItemView(Item.TYPE_INVOICE, Item.STATUS_IN_PROGRESS), Messages.NEW_INVOICE);
     }//GEN-LAST:event_sinvoicesActionPerformed
 
     private void simplenavActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_simplenavActionPerformed
 
-        boolean oldval = GlobalSettings.getBooleanProperty("navigation.simplified");
-        GlobalSettings.setProperty("navigation.simplified", String.valueOf(!oldval));
+        boolean oldval = LocalSettings.isSimpleNavigation();
+        LocalSettings.setSimpleNavigation(!oldval);
 
         initNav();
     }//GEN-LAST:event_simplenavActionPerformed
@@ -3974,7 +3959,7 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    private void initNav() {
+    public void initNav() {
         java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N            
         nav_outlookbar.remove(parent_nav_accounting);
         nav_outlookbar.remove(parent_nav_products);
@@ -3982,7 +3967,7 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         nav_outlookbar.remove(parent_nav_extras);
         nav_outlookbar.remove(parent_nav_simple);
 
-        if (GlobalSettings.getBooleanProperty("navigation.simplified", false)) {
+        if (LocalSettings.isSimpleNavigation()) {
 
             nav_outlookbar.addTab(bundle.getString("MPView.parent_nav_simple.TabConstraints.tabTitle"), parent_nav_simple); // NOI18N
             nav_outlookbar.addTab(bundle.getString("MPView.parent_nav_extras.TabConstraints.tabTitle"), parent_nav_extras); // NOI18N

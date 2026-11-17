@@ -2575,6 +2575,11 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         }
     }
 
+    public void setItemStatus(int statusId) {
+        this.intstatus_ = statusId;
+        status.setSelectedItem(statusId);
+    }
+
     private void hideRefOrder() {
         refOrderShow.setVisible(inttype_ == Item.TYPE_INVOICE);
         button_references.setVisible(inttype_ == Item.TYPE_ORDER);

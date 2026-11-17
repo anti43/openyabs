@@ -535,4 +535,18 @@ public class LocalSettings {
             Log.Debug(LocalSettings.class, ex);
         }
     }
+
+    /**
+     * @return true if simplified navigation is enabled
+     */
+    public static boolean isSimpleNavigation() {
+        return GlobalSettings.getBooleanProperty("navigation.simplified", false);
+    }
+
+    /**
+     * @param simple true to enable simplified navigation
+     */
+    public static void setSimpleNavigation(boolean simple) {
+        GlobalSettings.setProperty("navigation.simplified", String.valueOf(simple));
+    }
 }
