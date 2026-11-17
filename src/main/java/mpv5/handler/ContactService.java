@@ -763,6 +763,42 @@ public final class ContactService {
 
     /**
      * @param contact
+     * @return the tax rate of the contact as BigDecimal (e.g. 19.0 or 0.0), or null if none is set
+     */
+    public static java.math.BigDecimal customerTaxRate(Contact contact) {
+        if (contact == null) {
+            return null;
+        }
+        String id = contactTax(contact);
+        if (id == null || id.trim().isEmpty()) {
+            return null;
+        }
+        try {
+            int taxId = Integer.parseInt(id.trim());
+            return mpv5.db.objects.Tax.getTaxValue(taxId);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * @param contactId
+     * @return the tax rate of the contact as BigDecimal, or null if none is set or contact not found
+     */
+    public static java.math.BigDecimal customerTaxRate(int contactId) {
+        if (contactId <= 0) {
+            return null;
+        }
+        try {
+            Contact c = (Contact) DatabaseObject.getObject(Context.getContact(), contactId);
+            return customerTaxRate(c);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * @param contact
      * @return the Leitweg-ID (buyer reference), "" if not set
      */
     public static String leitweg(Contact contact) {

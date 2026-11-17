@@ -24,6 +24,7 @@ public class ProductSelectDialog extends javax.swing.JPanel {
 
     private static ProductSelectDialog me;
     private static JFrame frame;
+    private BigDecimal overrideTaxRate;
 
     /**
      * @param model
@@ -35,6 +36,20 @@ public class ProductSelectDialog extends javax.swing.JPanel {
      * @return
      */
     public static ProductSelectDialog instanceOf(MPTableModel model, int row, MouseEvent evt, int productid, Object link, Object optional) {
+        return instanceOf(model, row, evt, productid, link, optional, null);
+    }
+
+    /**
+     * @param model
+     * @param row
+     * @param evt
+     * @param productid
+     * @param link
+     * @param optional
+     * @param overrideTaxRate tax rate override (e.g. from customer), or null
+     * @return
+     */
+    public static ProductSelectDialog instanceOf(MPTableModel model, int row, MouseEvent evt, int productid, Object link, Object optional, BigDecimal overrideTaxRate) {
         if (me == null) {
             me = new ProductSelectDialog();
             frame = new JFrame();
@@ -46,6 +61,7 @@ public class ProductSelectDialog extends javax.swing.JPanel {
             frame.setTitle(Messages.ACTION_OPEN.toString());
             frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         }
+        me.overrideTaxRate = overrideTaxRate;
         me.setModel(model);
         me.setEvent(evt);
         me.setRow(row);
@@ -55,6 +71,9 @@ public class ProductSelectDialog extends javax.swing.JPanel {
         }
         if (link != null) {
             me.setLink(link.toString());
+        }
+        if (overrideTaxRate != null) {
+            me.taxrate.setSelectedItem(Tax.getTaxId(overrideTaxRate));
         }
         if (productid > 0) {
             try {
@@ -224,7 +243,7 @@ public class ProductSelectDialog extends javax.swing.JPanel {
             Product p = (Product) Product.getObject(Context.getProduct(), Integer.valueOf(labeledCombobox1.getSelectedItem().getId()));
             measure.setText(p.__getMeasure());
             value.setText(FormatNumber.formatDezimal(p.findPriceFor(countt.getValue(0d))));
-            taxrate.setSelectedItem(p.__getTaxids());
+            taxrate.setSelectedItem(overrideTaxRate != null ? Tax.getTaxId(overrideTaxRate) : p.__getTaxids());
             if (linkt == null || linkt.length() == 0) {
                 link.setText(p.__getUrl());
             } else {
@@ -233,16 +252,19 @@ public class ProductSelectDialog extends javax.swing.JPanel {
         } catch (NodataFoundException ex) {
             measure.setText("");
             value.setText("");
-            taxrate.setSelectedItem(0);
+            taxrate.setSelectedItem(overrideTaxRate != null ? Tax.getTaxId(overrideTaxRate) : 0);
         }
     }
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         SubItem s;
         try {
-            s = new SubItem((Product) Product.getObject(Context.getProduct(), Integer.valueOf(labeledCombobox1.getSelectedItem().getId())));
+            s = new SubItem((Product) Product.getObject(Context.getProduct(), Integer.valueOf(labeledCombobox1.getSelectedItem().getId())), overrideTaxRate);
         } catch (Exception ex) {
             s = SubItem.getDefaultItem();
+            if (overrideTaxRate != null) {
+                s.setTaxpercentvalue(overrideTaxRate);
+            }
             if (labeledCombobox1.getText() != null) {
                 s.setDescription(labeledCombobox1.getText());
             }
@@ -259,7 +281,7 @@ public class ProductSelectDialog extends javax.swing.JPanel {
         } catch (Exception e) {
         }
         try {
-            s.setTaxpercentvalue(Tax.getTaxValue(Integer.valueOf(taxrate.getSelectedItem().getId())));
+            s.setTaxpercentvalue(overrideTaxRate != null ? overrideTaxRate : Tax.getTaxValue(Integer.valueOf(taxrate.getSelectedItem().getId())));
         } catch (Exception numberFormatException) {
         }
 

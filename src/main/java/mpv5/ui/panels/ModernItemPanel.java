@@ -58,6 +58,7 @@ import mpv5.db.common.NodataFoundException;
 import mpv5.db.objects.Contact;
 import mpv5.db.objects.Favourite;
 import mpv5.db.objects.Group;
+import mpv5.handler.ContactService;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.MailMessage;
 import mpv5.db.objects.Product;
@@ -283,6 +284,11 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
                         setContactData(dbo);
                         setEnddate(dbo);
                         updateHeader();
+                        BigDecimal rate = ContactService.customerTaxRate(dbo);
+                        positions.setCustomerTaxRate(rate);
+                        if (rate != null) {
+                            positions.applyCustomerTaxRate(rate);
+                        }
                     } catch (Exception ex) {
                         Log.Debug(ModernItemPanel.this, ex.getMessage());
                     }
@@ -1167,6 +1173,8 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
                     setTabTitle(cname_);
                     tb.setFavourite(Favourite.isFavourite(object));
                     tb.setEditable(!object.isReadOnly());
+                    BigDecimal rate = ContactService.customerTaxRate(dataOwner.__getContactsids());
+                    positions.setCustomerTaxRate(rate);
                     positions.setPositions(dataOwner.getSubitems());
                     refreshPayments();
                     if (object.isReadOnly()) {
@@ -1446,23 +1454,29 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
             } else if (dbo.getContext().equals(Context.getContact())) {
                 dataOwner.setContactsids(((Contact) dbo).__getIDS());
                 setDataOwner(dataOwner, true);
+                BigDecimal rate = ContactService.customerTaxRate((Contact) dbo);
+                positions.setCustomerTaxRate(rate);
+                if (rate != null) {
+                    positions.applyCustomerTaxRate(rate);
+                }
             } else if (dbo.getContext().equals(Context.getProduct())) {
-                positions.addPosition(new SubItem((Product) dbo));
+                positions.addPosition(new SubItem((Product) dbo, positions.getCustomerTaxRate()));
             } else if (dbo.getContext().equals(Context.getProductList())) {
                 //the components of a bill of materials: one position each, like pasted products,
                 //with the quantity and the price of the list
                 try {
+                    BigDecimal rate = positions.getCustomerTaxRate();
                     for (ProductlistSubItem c : ProductlistSubItem.getList(dbo.__getIDS())) {
                         SubItem s;
                         try {
-                            s = new SubItem((Product) DatabaseObject.getObject(Context.getProduct(), c.__getOriginalproductsids()));
+                            s = new SubItem((Product) DatabaseObject.getObject(Context.getProduct(), c.__getOriginalproductsids()), rate);
                         } catch (NodataFoundException gone) {
                             //the product was deleted: the stored values
                             s = new SubItem();
                             s.setCname(c.getCname());
                             s.setDescription(c.__getDescription());
                             s.setMeasure(c.__getMeasure());
-                            s.setTaxpercentvalue(java.math.BigDecimal.valueOf(c.__getTaxpercentvalue()));
+                            s.setTaxpercentvalue(rate != null ? rate : java.math.BigDecimal.valueOf(c.__getTaxpercentvalue()));
                         }
                         s.setQuantityvalue(java.math.BigDecimal.valueOf(c.__getQuantityvalue()));
                         s.setExternalvalue(java.math.BigDecimal.valueOf(c.__getExternalvalue()));
@@ -1557,7 +1571,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
             int i = itemtable.getSelectedRow();
             if (i >= 0) {
                 Object opt = itemtable.getModel().getValueAt(i, 14);
-                positions.getModel().setRowAt(new SubItem((Product) o).getRowData(i), i, 4);
+                positions.getModel().setRowAt(new SubItem((Product) o, positions.getCustomerTaxRate()).getRowData(i), i, 4);
                 itemtable.setValueAt(opt, i, 14);
             }
         } catch (Exception ex) {

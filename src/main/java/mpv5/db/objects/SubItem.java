@@ -373,6 +373,14 @@ public final class SubItem extends DatabaseObject implements Triggerable {
      * @param product
      */
     public SubItem(Product product) {
+        this(product, null);
+    }
+
+    /**
+     * @param product
+     * @param overrideTax tax rate override (e.g. from customer), or null to use product's tax rate
+     */
+    public SubItem(Product product, BigDecimal overrideTax) {
         this();
         setCname(product.__getCname());
         setDateadded(new Date());
@@ -443,7 +451,7 @@ public final class SubItem extends DatabaseObject implements Triggerable {
         setMeasure(product.__getMeasure());
         setOriginalproductsids(product.__getIDS());
         setQuantityvalue(BigDecimal.ONE);
-        setTaxpercentvalue(Tax.getTaxValue(product.__getTaxids()));
+        setTaxpercentvalue(overrideTax != null ? overrideTax : Tax.getTaxValue(product.__getTaxids()));
         setLinkurl(product.__getUrl());
         calculate(this);
     }
@@ -1024,7 +1032,7 @@ public final class SubItem extends DatabaseObject implements Triggerable {
         return isOptionalColumnCalculated() ? q.multiply(optionalFactor(getCname())) : q;
     }
 
-    static void calculate(SubItem s) {
+    public static void calculate(SubItem s) {
         //EN 16931 arithmetic, rounded per line like the item table and the e-invoice
         BigDecimal q = s.effectiveQuantity(), p = s.externalvalue, d = s.__getDiscount(), t = s.taxpercentvalue;
         BigDecimal tax = mpv5.utils.numberformat.InvoiceMath.lineTax(q, p, d, t);
