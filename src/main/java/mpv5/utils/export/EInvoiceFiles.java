@@ -42,7 +42,7 @@ public final class EInvoiceFiles {
      * (ZUGFeRD: the PDF with embedded XML has the same file name)
      */
     public static boolean replacesPdf(Contact contact) {
-        return EInvoiceDelivery.forContact(contact) == EInvoiceDelivery.ZUGFERD;
+        return EInvoiceDelivery.effectiveFor(contact) == EInvoiceDelivery.ZUGFERD;
     }
 
     /**
@@ -54,7 +54,7 @@ public final class EInvoiceFiles {
      * @return the report lines, empty if the contact gets a normal PDF
      */
     public static List<String> write(Item item, Contact contact, File dir) {
-        EInvoiceDelivery delivery = EInvoiceDelivery.forContact(contact);
+        EInvoiceDelivery delivery = EInvoiceDelivery.effectiveFor(contact);
         if (!delivery.isEInvoice()) {
             return new ArrayList<String>();
         }

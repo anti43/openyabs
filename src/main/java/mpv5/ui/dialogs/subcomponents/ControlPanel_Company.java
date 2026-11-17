@@ -70,6 +70,7 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
      * SEPA creditor ID (for direct debits), stored as companyinfo.sepacreditorid
      */
     private final LabeledTextField creditorid = new LabeledTextField();
+    private final javax.swing.JCheckBox defaultZugpferd = new javax.swing.JCheckBox(Messages.COMPANY_DEFAULT_ZUGFERD.toString());
     private final JPanel actions;
 
     public ControlPanel_Company() {
@@ -120,8 +121,13 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
                 .row(Applets.field(taxnumber), Applets.field(taxauthority))
                 .row(Applets.field(taxmandant))
                 .row(Applets.field(taxadvsior), Applets.field(taxadvjob));
+        defaultZugpferd.setToolTipText(Messages.COMPANY_DEFAULT_ZUGFERD_HINT.toString());
+        defaultZugpferd.setOpaque(false);
+        Card einvoice = new Card(Messages.COMPANY_CARD_EINVOICE.toString())
+                .addFull(defaultZugpferd)
+                .addFull(Applets.hint(Messages.COMPANY_DEFAULT_ZUGFERD_HINT.toString()));
         String info = "* " + Messages.COMPANY_REQUIRED_LEGEND + "  \u00b7  " + bundle.getString("ControlPanel_Company.jTextArea1.text");
-        add(Applets.page(info, 380, company, contact, bank, tax), BorderLayout.CENTER);
+        add(Applets.page(info, 380, company, contact, bank, tax, einvoice), BorderLayout.CENTER);
 
         //mark invalid values while typing
         FieldCheck.attach(account1, ZugpferdFile::isValidVatId, Messages.COMPANY_VATID_TOOLTIP.toString(),
@@ -285,6 +291,7 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
         for (LabeledTextField f : fields) {
             User.getCurrentUser().setProperty("companyinfo." + f.getName(), f.getText() == null ? "" : f.getText());
         }
+        mpv5.utils.export.EInvoiceDelivery.setZugpferdDefault(defaultZugpferd.isSelected());
     }
 
     @Override
@@ -305,6 +312,7 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
                     }
                 }
             }
+            defaultZugpferd.setSelected(mpv5.utils.export.EInvoiceDelivery.isZugpferdDefault());
         } catch (Exception e) {
             Log.Debug(this, e);
         }

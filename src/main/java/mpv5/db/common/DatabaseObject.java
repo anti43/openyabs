@@ -2956,7 +2956,33 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                             x.set(null, new java.io.FileNotFoundException(xf.getName()));
                         }
                     } else if (convertToPdf) {
-                        new Job(Export.createFile(null, TemplateHandler.loadTemplate(me), this), x).executeSync();
+                        boolean zugferd = false;
+                        if (this instanceof mpv5.db.objects.Item && mpv5.utils.export.ZugpferdFile.supports((mpv5.db.objects.Item) this)) {
+                            mpv5.db.objects.Item item = (mpv5.db.objects.Item) this;
+                            mpv5.db.objects.Contact contact = null;
+                            try {
+                                contact = item.getContact();
+                            } catch (Exception ignored) {
+                            }
+                            if (contact != null && mpv5.utils.export.EInvoiceDelivery.effectiveFor(contact) == mpv5.utils.export.EInvoiceDelivery.ZUGFERD) {
+                                org.mustangproject.Invoice inv = null;
+                                try {
+                                    inv = mpv5.utils.export.ZugpferdFile.createInvoice(item, mpv5.utils.export.ZugpferdFile.Format.ZUGFERD);
+                                } catch (Exception ex) {
+                                    Log.Debug(DatabaseObject.class, ex);
+                                }
+                                if (inv != null) {
+                                    List<String> problems = mpv5.utils.export.ZugpferdFile.validate(inv);
+                                    if (problems.isEmpty() || !showDialog || Popup.Y_N_dialog(Messages.ZUGFERD_CONTINUE_ANYWAY)) {
+                                        zugferd = true;
+                                        new Job(new mpv5.utils.export.ZugpferdFile(item, inv, xf, mpv5.utils.export.ZugpferdFile.Format.ZUGFERD), x).executeSync();
+                                    }
+                                }
+                            }
+                        }
+                        if (!zugferd) {
+                            new Job(Export.createFile(null, TemplateHandler.loadTemplate(me), this), x).executeSync();
+                        }
                     } else {
                         new Job(Export.sourceFile(null, TemplateHandler.loadTemplate(me), this), x).executeSync();
                     }
