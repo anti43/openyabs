@@ -161,8 +161,13 @@ public class Revenue extends DatabaseObject implements Formattable {
     @Override
     public void ensureUniqueness() {
         Log.Debug(this, "In ensureUniqueness for " + this.getClass());
-        setCnumber(getFormatHandler().next());
-        buildCname();
+        if (cnumber == null || cnumber.trim().isEmpty()) {
+            setCnumber(getFormatHandler().next());
+        }
+        String currentCname = __getCname();
+        if (currentCname == null || currentCname.trim().isEmpty() || "<not set>".equals(currentCname)) {
+            buildCname();
+        }
         Log.Debug(this, "ensureUniqueness result: " + __getCnumber());
     }
 
@@ -346,6 +351,34 @@ public class Revenue extends DatabaseObject implements Formattable {
      */
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    /**
+     * Convenience accessor for paid state mapped to {@link Item#STATUS_PAID}.
+     * Marked non-persistable because the {@code revenues} table stores {@code status}.
+     *
+     * @return true if status is {@link Item#STATUS_PAID}
+     */
+    @mpv5.db.common.Persistable(false)
+    public boolean __getIspaid() {
+        return status == Item.STATUS_PAID;
+    }
+
+    /**
+     * @return true if status is {@link Item#STATUS_PAID}
+     */
+    @mpv5.db.common.Persistable(false)
+    public boolean isIspaid() {
+        return status == Item.STATUS_PAID;
+    }
+
+    /**
+     * Convenience mutator for paid state mapped to {@link Item#STATUS_PAID} / {@link Item#STATUS_QUEUED}.
+     *
+     * @param ispaid true if paid
+     */
+    public void setIspaid(boolean ispaid) {
+        this.status = ispaid ? Item.STATUS_PAID : Item.STATUS_QUEUED;
     }
     
     /**
