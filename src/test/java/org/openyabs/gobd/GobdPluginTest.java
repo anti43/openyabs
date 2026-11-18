@@ -125,10 +125,15 @@ public class GobdPluginTest {
 
     @Test
     public void thePluginIsFoundAsService() throws Exception {
-        try (InputStream in = GobdCompliance.class.getResourceAsStream("/META-INF/services/mpv5.plugin.api.YabsExtension")) {
-            assertNotNull(in);
-            assertEquals(GobdCompliance.class.getName(), new String(in.readAllBytes(), StandardCharsets.UTF_8).trim());
+        //YaBS itself has a services file too (its built-in plugins): look at all of them
+        boolean listed = false;
+        java.util.Enumeration<java.net.URL> files = GobdCompliance.class.getClassLoader().getResources("META-INF/services/mpv5.plugin.api.YabsExtension");
+        while (files.hasMoreElements()) {
+            try (InputStream in = files.nextElement().openStream()) {
+                listed |= new String(in.readAllBytes(), StandardCharsets.UTF_8).trim().equals(GobdCompliance.class.getName());
+            }
         }
+        assertTrue(listed, "plugins/gobd/src/main/resources/META-INF/services lists only " + GobdCompliance.class.getName());
         boolean found = false;
         for (YabsExtension e : ServiceLoader.load(YabsExtension.class)) {
             found |= e instanceof GobdCompliance;
