@@ -148,13 +148,11 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
         FieldCheck.attach(banknumber, Iban::isValidBic, Messages.COMPANY_BIC_TOOLTIP.toString(),
                 Messages.COMPANY_BIC_INVALID_HINT.toString());
 
-        JButton resetItems = Applets.danger(new JButton(bundle.getString("ControlPanel_Company.jButton2.text")));
-        resetItems.addActionListener(e -> resetItems());
         JButton reset = new JButton(bundle.getString("ControlPanel_Company.jButton3.text"));
         reset.addActionListener(e -> reset());
         PrimaryButton save = new PrimaryButton(bundle.getString("ControlPanel_Company.jButton1.text"), "/images/16/filesave.png");
         save.addActionListener(e -> save());
-        actions = Applets.actionBar(new javax.swing.JComponent[]{resetItems}, new javax.swing.JComponent[]{reset, save});
+        actions = Applets.actionBar(new javax.swing.JComponent[]{}, new javax.swing.JComponent[]{reset, save});
         add(actions, BorderLayout.SOUTH);
 
         setValues(User.getCurrentUser().getProperties().getProperties("companyinfo."));
@@ -184,27 +182,6 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
         setSettings();
         User.getCurrentUser().saveProperties();
         mpv5.YabsViewProxy.instance().addMessage(Messages.COMPANY_SAVED.toString());
-    }
-
-    private void resetItems() {
-        if (mpv5.ui.dialogs.Popup.Y_N_dialog("Really delete all invoices, orders and offers from the database? This is irreversible!!! Contacts and Products will not be affected.", Messages.ARE_YOU_SURE)) {
-            if (Popup.Y_N_dialog(Messages.ARE_YOU_SURE)) {
-                Popup.notice(QueryHandler.instanceOf().freeQuery("delete from items", MPSecurityManager.ADMINISTRATE, "Item reset done.").getMessage());
-                final String fmessage = "ITEM RESET: removed all invoices, orders and offers from database";
-                final String fdbid = "items";
-                final int fids = 0;
-                final int fgids = 1;
-
-                Runnable runnable = new Runnable() {
-
-                    @Override
-                    public void run() {
-                        QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, mpv5.db.objects.User.getCurrentUser().__getCname(), fdbid, fids, fgids);
-                    }
-                };
-                SwingUtilities.invokeLater(runnable);
-            }
-        }
     }
 
     /**
