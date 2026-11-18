@@ -4,7 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
+import java.awt.GraphicsEnvironment;
 import javax.swing.JEditorPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
@@ -40,6 +42,7 @@ class ControlPanel_MailTemplatesTest {
 
     @Test
     void testTabbedLayoutAndPreview() {
+        assumeFalse(GraphicsEnvironment.isHeadless());
         ControlPanel_MailTemplates panel = new ControlPanel_MailTemplates();
         JTabbedPane tabs = panel.getEditorTabs();
         assertNotNull(tabs, "Editor tabs should exist");
@@ -67,6 +70,7 @@ class ControlPanel_MailTemplatesTest {
 
     @Test
     void testPlainTextPreviewWrapsHtml() {
+        assumeFalse(GraphicsEnvironment.isHeadless());
         ControlPanel_MailTemplates panel = new ControlPanel_MailTemplates();
         JTextArea source = panel.getSourceArea();
         source.setText("First line\nSecond line");
