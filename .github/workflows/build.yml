@@ -62,7 +62,10 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: openyabs-${{ github.run_number }}
-          path: build/distributions/*.zip
+          # the zip and the GoBD plugin (gobd-compliance.jar, also a release asset)
+          path: |
+            build/distributions/*.zip
+            build/distributions/*.jar
           if-no-files-found: error
 
       - uses: actions/upload-artifact@v4

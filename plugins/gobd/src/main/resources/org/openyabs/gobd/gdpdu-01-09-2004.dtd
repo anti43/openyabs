@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!ELEMENT DataSet (Version, DataSupplier?, Media+)>
+<!ELEMENT Version (#PCDATA)>
+<!ELEMENT DataSupplier (Name, Location, Comment?)>
+<!ELEMENT Name (#PCDATA)>
+<!ELEMENT Location (#PCDATA)>
+<!ELEMENT Comment (#PCDATA)>
+<!ELEMENT Media (Name, Table+)>
+<!ELEMENT Table (URL, Name, Description?, Validity?, UTF8?, DecimalSymbol?, DigitGroupingSymbol?, VariableLength)>
+<!ELEMENT URL (#PCDATA)>
+<!ELEMENT Description (#PCDATA)>
+<!ELEMENT Validity (Range, Format?)>
+<!ELEMENT Range (From, To?)>
+<!ELEMENT From (#PCDATA)>
+<!ELEMENT To (#PCDATA)>
+<!ELEMENT Format (#PCDATA)>
+<!ELEMENT UTF8 EMPTY>
+<!ELEMENT DecimalSymbol (#PCDATA)>
+<!ELEMENT DigitGroupingSymbol (#PCDATA)>
+<!ELEMENT VariableLength (ColumnDelimiter?, RecordDelimiter?, TextEncapsulator?, VariablePrimaryKey*, VariableColumn*, ForeignKey*)>
+<!ELEMENT ColumnDelimiter (#PCDATA)>
+<!ELEMENT RecordDelimiter (#PCDATA)>
+<!ELEMENT TextEncapsulator (#PCDATA)>
+<!ELEMENT VariablePrimaryKey (Name, Description?, (AlphaNumeric | Numeric | Date))>
+<!ELEMENT VariableColumn (Name, Description?, (AlphaNumeric | Numeric | Date))>
+<!ELEMENT AlphaNumeric EMPTY>
+<!ELEMENT Numeric (ImpliedAccuracy | Accuracy)?>
+<!ELEMENT ImpliedAccuracy (#PCDATA)>
+<!ELEMENT Accuracy (#PCDATA)>
+<!ELEMENT Date (Format)?>
+<!ELEMENT ForeignKey (Name+, References)>
+<!ELEMENT References (#PCDATA)>
