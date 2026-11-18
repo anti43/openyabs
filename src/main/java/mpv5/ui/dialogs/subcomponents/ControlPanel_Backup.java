@@ -81,12 +81,20 @@ public class ControlPanel_Backup extends JPanel implements ControlApplet {
                 showFolder();
             }
         });
+        JButton allFolders = new JButton(Messages.FOLDERS_TITLE.toString() + " \u2026");
+        allFolders.setIcon(new mpv5.utils.images.MPIcon("/images/22/folder_yellow.png").getIcon(16));
+        allFolders.addActionListener(e -> mpv5.ui.panels.MPControlPanel.instanceOf().openDetails(new ControlPanel_Folders()));
+        JPanel foldersRow = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
+        foldersRow.setOpaque(false);
+        foldersRow.add(allFolders);
+
         Card where = new Card(Messages.ZIPBACKUP_CARD_FOLDER.toString())
                 .row(Card.field(Messages.ZIPBACKUP_FOLDER.toString(), folder))
                 .addFull(resolved)
                 .row(Card.field(Messages.ZIPBACKUP_KEEP.toString(), keep))
                 .addFull(onExit)
-                .addFull(last);
+                .addFull(last)
+                .addFull(foldersRow);
         //the database in use and whether it can be backed up here
         DatabaseBackup.Status st = DatabaseBackup.status();
         JLabel possible = new JLabel(st.possible ? "\u2714 " + Messages.ZIPBACKUP_POSSIBLE_YES : "\u2716 " + Messages.ZIPBACKUP_POSSIBLE_NO);
