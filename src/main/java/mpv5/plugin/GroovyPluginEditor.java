@@ -163,7 +163,7 @@ public final class GroovyPluginEditor extends JDialog {
         setContentPane(content);
 
         keys();
-        getRootPane().putClientProperty(mpv5.ui.misc.Help.PROPERTY_HELP_PAGE, "Writing-plugins-(EN)");
+        getRootPane().putClientProperty(mpv5.ui.misc.Help.PROPERTY_HELP_PAGE, "Plugins-schreiben|Writing-plugins-(EN)");
         load();
         setSize(new Dimension(ModernTheme.px(900), ModernTheme.px(680)));
         setLocationRelativeTo(owner);

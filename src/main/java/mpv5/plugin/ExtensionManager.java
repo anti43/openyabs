@@ -334,13 +334,33 @@ public final class ExtensionManager {
         return found;
     }
 
-    private Installed add(YabsExtension e, File jar, URLClassLoader loader) {
+    /**
+     * Set while {@link #install(File)} loads the new file
+     */
+    private boolean replacing = false;
+
+        private Installed add(YabsExtension e, File jar, URLClassLoader loader) {
         String id;
         try {
             id = e.id();
         } catch (Throwable t) {
             Log.Debug(ExtensionManager.class, t);
             return null;
+        }
+        if (id != null && replacing && jar != null && find(id) != null) {
+            //installing a plugin that is there already from another file (e.g. the Java
+            //version of a Groovy script): the old one goes, its file is kept as *.replaced
+            Installed old = find(id);
+            if (old.jar != null && !old.jar.equals(jar)) {
+                stop(old);
+                installed.remove(old);
+                close(old.loader);
+                File moved = new File(old.jar.getPath() + ".replaced");
+                if (!old.jar.renameTo(moved)) {
+                    Log.Debug(ExtensionManager.class, "Could not rename " + old.jar);
+                }
+                Log.Debug(ExtensionManager.class, "Plugin " + id + " replaced by " + jar + " (old file: " + moved + ")");
+            }
         }
         if (id == null || id.trim().isEmpty() || find(id) != null) {
             Log.Debug(ExtensionManager.class, "Plugin without id or twice: " + id + " (" + jar + ")");
@@ -736,7 +756,13 @@ public final class ExtensionManager {
         if (!jar.getCanonicalFile().equals(target.getCanonicalFile())) {
             Files.copy(jar.toPath(), target.toPath(), StandardCopyOption.REPLACE_EXISTING);
         }
-        List<Installed> found = loadFile(target);
+        List<Installed> found;
+        replacing = true;
+        try {
+            found = loadFile(target);
+        } finally {
+            replacing = false;
+        }
         if (found.isEmpty()) {
             Files.deleteIfExists(target.toPath());
             throw new IOException("No YaBS plugin in " + jar.getName()
@@ -874,7 +900,26 @@ public final class ExtensionManager {
         });
     }
 
+    /**
+     * What the plugins want to run when they stop (ExtensionContext.onStop)
+     */
+    private final java.util.Map<String, List<Runnable>> stopActions = new java.util.concurrent.ConcurrentHashMap<String, List<Runnable>>();
+
+    private void runStopActions(String owner) {
+        List<Runnable> l = stopActions.remove(owner);
+        if (l != null) {
+            for (Runnable r : l) {
+                try {
+                    r.run();
+                } catch (Throwable t) {
+                    Log.Debug(ExtensionManager.class, t);
+                }
+            }
+        }
+    }
+
     private void removeContributions(String owner) {
+        runStopActions(owner);
         commands.removeIf(c -> c.owner.equals(owner));
         pages.removeIf(p -> p.owner.equals(owner));
         providers.removeIf(p -> p.owner.equals(owner));
@@ -1093,6 +1138,13 @@ public final class ExtensionManager {
                     store(p, f);
                 }
             };
+        }
+
+        @Override
+        public void onStop(Runnable action) {
+            if (action != null) {
+                stopActions.computeIfAbsent(owner, k -> new CopyOnWriteArrayList<Runnable>()).add(action);
+            }
         }
 
         @Override

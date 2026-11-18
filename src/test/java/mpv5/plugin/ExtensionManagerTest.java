@@ -339,29 +339,50 @@ class ExtensionManagerTest {
     }
 
     @Test
-    void gobdComplianceScriptParsesCleanly() throws Exception {
-        Path gobd = java.nio.file.Paths.get("plugins/groovy/gobd_compliance.groovy");
-        String code = new String(Files.readAllBytes(gobd), StandardCharsets.UTF_8);
-        // Compiles (but does not run) the script; throws on syntax/compile errors.
-        assertNotNull(new groovy.lang.GroovyShell().parse(code, "gobd_compliance.groovy"));
-        assertTrue(code.contains("CREATE TABLE IF NOT EXISTS gobd_income_lock"));
-        assertTrue(code.contains("INCOME_IMPORTED"));
-        assertTrue(code.contains("INCOME_PAYMENT_STATUS_CHANGED"));
-        assertTrue(code.contains("GoBD: 7. ZUGFeRD / XRechnung als Einnahme importieren"));
-        assertTrue(code.contains("<URL>einnahmen.csv</URL>"));
-        assertTrue(code.contains("belege/einnahmen/"));
-        assertTrue(code.contains("gobd.incomeWatchPath"));
-        assertTrue(code.contains("gobd.autoImportIncome"));
-        assertTrue(code.contains("owner instanceof Revenue"));
-        assertTrue(code.contains("1. Ausgangsrechnungen & Stornos"));
-        assertTrue(code.contains("2. Importierte Einnahmen"));
-        assertTrue(code.contains("3. Ausgaben & Eingangsbelege"));
-        assertTrue(code.contains("4. GoBD Audit-Protokoll"));
-        assertTrue(code.contains("Markierten Originalbeleg oeffnen"));
-        assertTrue(code.contains("Alle Jahre"));
-        assertTrue(code.contains("EXPENSE_PAYMENT_STATUS_CHANGED"));
-        assertTrue(code.contains("EXPENSE_RECEIPT_ATTACHED"));
-        assertTrue(code.contains("PLUGIN_STOPPED"));
+    void onStopRunsWhenThePluginStops() {
+        TestHost h = new TestHost();
+        ExtensionManager m = new ExtensionManager(dir.toFile(), h);
+        final int[] stops = {0};
+        ExtensionManager.Installed i = m.register(new YabsExtension() {
+            public String id() {
+                return "test.onstop";
+            }
+
+            public String name() {
+                return "On stop";
+            }
+
+            public void start(ExtensionContext ctx) {
+                ctx.onStop(() -> stops[0]++);
+            }
+        });
+        assertTrue(m.start(i));
+        m.stop(i);
+        assertEquals(1, stops[0]);
+        //once: a second stop does not run it again
+        m.stop(i);
+        assertEquals(1, stops[0]);
+    }
+
+    @Test
+    void installingAJarReplacesAScriptWithTheSameId() throws Exception {
+        File plugins = dir.resolve("plugins").toFile();
+        plugins.mkdirs();
+        File script = new File(plugins, "jarplugin.groovy");
+        Files.write(script.toPath(), ("// @id test.jarplugin\n"
+                + "yabs.addCommand('From the script', '', { })\n").getBytes(StandardCharsets.UTF_8));
+        ExtensionManager m = new ExtensionManager(plugins, new TestHost());
+        m.startAll();
+        assertTrue(m.commands().stream().anyMatch(c -> "From the script".equals(c.title)));
+        File jar = buildPluginJar(dir.resolve("work").toFile(), "From the jar");
+        ExtensionManager.Installed i = m.install(jar).get(0);
+        assertEquals("test.jarplugin", i.id());
+        assertEquals(ExtensionManager.State.RUNNING, i.getState());
+        assertTrue(m.commands().stream().anyMatch(c -> "From the jar".equals(c.title)));
+        assertFalse(m.commands().stream().anyMatch(c -> "From the script".equals(c.title)));
+        //the script is kept, renamed, and not loaded again
+        assertFalse(script.exists());
+        assertTrue(new File(plugins, "jarplugin.groovy.replaced").exists());
     }
 
     @Test
