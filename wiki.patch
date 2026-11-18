@@ -1,0 +1,701 @@
+From acff660e2ad61aef49e5e2a58d1663586adc3aae Mon Sep 17 00:00:00 2001
+From: anti43 <2292100+anti43@users.noreply.github.com>
+Date: Wed, 18 Nov 2026 18:01:06 +0000
+Subject: [PATCH] Plugins: all hooks and actions, German page; GoBD plugin
+ pages (Java jar)
+
+- Writing-plugins-(EN): Groovy and Java side by side, every method of the
+  ExtensionContext (also the new helpers select, execute, ui, popup,
+  error, notify with record, currentView, refreshView, openFile,
+  yabsVersion, onStop), the record view hooks (badge, banner, content
+  lock, locked document), threads, background start, replacing plugins
+  of the same id, the GoBD plugin as example (openyabs#152).
+- New German counterpart Plugins-schreiben.
+- New GoBD-Plugin / GoBD-plugin-(EN): the GoBD plugin as Java plugin
+  (plugins/gobd-compliance.jar), installation, moving from the Groovy
+  script, settings, life cycle, expenses, income, commands, Z3 export,
+  tables (openyabs#165; replaces plugins/groovy/GoBD.md).
+- Ist-Yabs-GoBD-konforme-Software?, entry pages and sidebar link them.
+---
+ GoBD-Plugin.md                      | 118 ++++++++++++++++++
+ GoBD-plugin-(EN).md                 | 118 ++++++++++++++++++
+ Ist-Yabs-GoBD-konforme-Software?.md |   4 +-
+ Openyabs-Dokumentation-(DE).md      |   3 +-
+ Openyabs-documentation-(EN).md      |   1 +
+ Plugins-schreiben.md                | 178 ++++++++++++++++++++++++++++
+ Writing-plugins-(EN).md             | 107 +++++++++++++----
+ _Sidebar.md                         |   3 +
+ 8 files changed, 506 insertions(+), 26 deletions(-)
+ create mode 100644 GoBD-Plugin.md
+ create mode 100644 GoBD-plugin-(EN).md
+ create mode 100644 Plugins-schreiben.md
+
+diff --git a/GoBD-Plugin.md b/GoBD-Plugin.md
+new file mode 100644
+index 0000000..3e73df2
+--- /dev/null
++++ b/GoBD-Plugin.md
+@@ -0,0 +1,118 @@
++*English: [GoBD plugin](GoBD-plugin-(EN))* · Hintergrund: [Ist YaBS GoBD-konforme Software?](Ist-Yabs-GoBD-konforme-Software%3F)
++
++# GoBD-Konformitäts-Plugin
++
++Das GoBD-Plugin (ID `groovy.gobd-compliance`, Version 2.0) ergänzt YaBS um technische Schutzmechanismen für die **GoBD** (*Grundsätze zur ordnungsmäßigen Führung und Aufbewahrung von Büchern, Aufzeichnungen und Unterlagen in elektronischer Form sowie zum Datenzugriff*). Es ist ein Java-Plugin und liegt YaBS als **`plugins/gobd-compliance.jar`** bei ([Quelltext](https://github.com/anti43/openyabs/tree/master/plugins/gobd)).
++
++> Ein Plugin allein macht die Buchführung nicht GoBD-konform: Dazu gehören auch Datensicherung, Zugriffsschutz und die betriebliche Verfahrensdokumentation (siehe [Organisatorische Hinweise](#organisatorische-hinweise)). Diese Seite ersetzt keine steuerliche oder rechtliche Beratung.
++
++## Funktionen im Überblick
++
++* **Festschreibung beim Export:** Wird eine Rechnung, Gutschrift, Anzahlungs- oder Abschlagsrechnung als **PDF**, **ZUGFeRD** oder **XRechnung** erzeugt, schreibt das Plugin sie automatisch fest (abschaltbar). Aufträge, Angebote und Bestätigungen sind nie betroffen.
++* **Unveränderbarkeit:** Festgeschriebene Belege und ihre Positionen sind gegen Änderungen steuerrelevanter Felder sowie gegen Löschen und Papierkorb gesperrt – in der Oberfläche und beim Speichern.
++* **Offene-Posten-Workflow:** Zahlungsstatus, Teilzahlungen und Mahnstufen bleiben änderbar und werden protokolliert.
++* **Kein neuer Ausdruck festgeschriebener Belege:** Drucken, PDF, Vorschau und E-Rechnung öffnen bei festgeschriebenen Rechnungen die archivierte Datei, statt eine neue zu erzeugen.
++* **Stammdaten- und Positions-Snapshots** zum Zeitpunkt der Festschreibung.
++* **SHA-256-Hash-Kette** über alle archivierten Belege: `SHA256(Datei-Bytes ‖ vorheriger Hash)`, Startwert 64 Nullen.
++* **Stornorechnungen statt Bearbeitung** (`ST-JJJJ-NNNNN`).
++* **Eingangsbelege zu Ausgaben** und **E-Rechnungen als Einnahmen** (ZUGFeRD / XRechnung), byte-identisch archiviert mit `SHA256SUMS`.
++* **Prüferzugriff:** Z1-Prüferansicht in YaBS (nur lesend) und Z3-Export für IDEA (GDPdU).
++
++## Installation
++
++1. **`gobd-compliance.jar`** besorgen: Es liegt im Zip von YaBS im Ordner `openyabs/plugins/` und ist ein eigener Download jedes [Releases](https://github.com/anti43/openyabs/releases) (für die Installationspakete .deb, .rpm, .msi, .dmg).
++2. *Einstellungen › Plugin-Manager › Plugin installieren...* und die Datei wählen – oder sie auf den Plugin-Manager ziehen.
++3. Nach dem Start meldet die Statuszeile: `GoBD-Konformitaets-Plugin (v2.0.0) vollstaendig geladen.`
++
++Die Datenbanktabellen (`gobd_document_lock`, `gobd_audit_log`, `gobd_receipt`, `gobd_income_lock`) legt das Plugin beim Start an bzw. erweitert sie.
++
++**Umstieg vom Groovy-Skript `gobd_compliance.groovy`:** Das Jar hat dieselbe ID. Einstellungen, Archivordner und Datenbanktabellen bleiben erhalten. Beim Installieren des Jars wird das laufende Skript ersetzt und als `gobd_compliance.groovy.replaced` aufbewahrt; es wird nicht mehr geladen.
++
++Benötigt YaBS **2.0.10** oder neuer.
++
++## Einstellungen
++
++*Einstellungen › Plugins › GoBD-Konformitaet*:
++
++| Einstellung | Standard | Beschreibung |
++| :--- | :--- | :--- |
++| Rechnungen beim Export automatisch festschreiben | an | Schreibt Rechnungen beim Erzeugen von PDF / ZUGFeRD / XRechnung fest. Aus: Festschreiben nur über den Befehl oder die Schaltfläche im Banner. |
++| Revisionssicherer GoBD-Archivordner | `<Plugin-Datenordner>/gobd-archive` | Ziel aller archivierten Originalbelege (nach Jahren) und der Z3-Exporte. |
++| E-Rechnungen aus Überwachungsordner automatisch importieren | aus | Prüft alle 15 Sekunden den Überwachungsordner und importiert neue ZUGFeRD-PDFs / XRechnung-XMLs als festgeschriebene Einnahmen. |
++| Überwachungsordner | leer | Ordner für den automatischen Einnahmen-Import. |
++
++## Lebenszyklus einer Rechnung
++
++### 1. Entwurf
++Solange eine Rechnung nicht festgeschrieben ist, kann sie beliebig bearbeitet oder gelöscht werden. Die Ansicht zeigt das Badge `GoBD: Entwurf (offen)` und ein Banner mit **„Jetzt GoBD-festschreiben“**. Neue Entwürfe werden als `DRAFT_CREATED` protokolliert.
++
++### 2. Festschreibung
++Automatisch beim Export, über *Plugins › GoBD: 1. Beleg festschreiben* oder die Schaltfläche im Banner:
++
++1. **Nummer:** Ohne endgültige Nummer (leer, `ENTWURF…`, `DRAFT…`) vergibt das Plugin die nächste fortlaufende Nummer (`RE-JJJJ-NNNNN`, Gutschriften `ST-JJJJ-NNNNN`).
++2. **Status** wird auf *erledigt* gesetzt, das Enddatum gesetzt, falls leer.
++3. **Pflichtangaben (§ 14 Abs. 4 UStG):** Nummer, Ausstellungsdatum, Leistungsdatum, Kontakt mit Straße und Ort, Beträge, mindestens eine Position. Fehlt etwas, wird nicht festgeschrieben.
++4. **Archiv:** Die zuletzt erzeugte Datei (ZUGFeRD-PDF oder XRechnung-XML) wird schreibgeschützt nach `<Archivordner>/<Jahr>/` kopiert; ohne Datei schreibt das Plugin ein XML mit den Belegdaten.
++5. **Hash-Kette** und Snapshots werden in `gobd_document_lock` gespeichert, der Vorgang als `FINALIZED` protokolliert, der geöffnete Beleg sofort gesperrt angezeigt.
++
++### 3. Nach der Festschreibung
++Die Ansicht zeigt `🔒 GoBD FESTGESCHRIEBEN` (bzw. `🔒 GoBD STORNIERT`), ein Banner mit **„Originalbeleg öffnen“** und **„Stornorechnung erstellen“**, und sperrt Kunde, Anschrift, Nummer, Datum, Beschreibung und Positionen.
++
++| Bereich | Verhalten | Audit-Log |
++| :--- | :--- | :--- |
++| Steuerrelevante Daten (Beträge, Steuern, Rabatte, Datum, Nummer, Beschreibung, Kunde, Positionen) | gesperrt | `BLOCKED_EDIT` |
++| Löschen / Papierkorb (Beleg oder Position) | gesperrt | `BLOCKED_DELETE` |
++| Manuell auf „Storniert“ setzen | gesperrt (Hinweis auf Stornorechnung) | `BLOCKED_MANUAL_CANCEL` |
++| Zahlungsstatus, Teilzahlungen | erlaubt | `PAYMENT_STATUS_CHANGED` |
++| Mahnstufe | erlaubt | `DUNNING_CHANGED` |
++| Kundenstammdaten | erlaubt, mit Alt-/Neu-Werten | `MASTERDATA_CHANGED` |
++| Drucken, PDF, Vorschau, E-Rechnung | öffnen die archivierte Datei | – |
++
++## Ausgaben und Eingangsbelege (GoBD Rz. 61–64)
++
++* Eingangsbelege werden in der Ausgaben-Ansicht verknüpft (Schaltfläche, Drag & Drop oder E-Rechnungs-Import) und byte-identisch mit `SHA256SUMS` im Belegordner abgelegt – nicht als BLOB in der Datenbank. Prüfen auch außerhalb von YaBS: `sha256sum -c SHA256SUMS`.
++* Ausgaben mit Beleg: Badge `🔒 GoBD BELEGABLAGE (n)`; Beträge, Steuer, Konto und Belegentfernung sind gesperrt, Zahlungsstatus und Zahlungsdatum bleiben buchbar. Ohne Beleg: `⚠️ GoBD: OHNE BELEG` mit **„Beleg verknüpfen & festschreiben“**.
++* Ausgaben mit archivierten Belegen dürfen nicht gelöscht werden.
++
++## Einnahmen aus E-Rechnungen
++
++* *Plugins › GoBD: 7. ZUGFeRD / XRechnung als Einnahme importieren* (oder der Überwachungsordner) liest Rechnungsnummer (BT-1), Ausstellungsdatum (BT-2), Fälligkeit (BT-9), Partner, Netto (BT-109), Brutto (BT-112) und Steuersatz (BT-119) und legt eine festgeschriebene Einnahme an. Fehlen Pflichtfelder, wird abgelehnt.
++* Die Originaldatei wird nach `<Archivordner>/einnahmen/<Jahr>/` mit `SHA256SUMS` und eigener Hash-Kette (`gobd_income_lock`) archiviert.
++* Dubletten (gleiche Datei oder gleiche Belegnummer) werden abgelehnt.
++* In der Einnahmen-Ansicht ohne Beleg verknüpft **„ZUGFeRD / Beleg verknüpfen“** eine Datei mit der vorhandenen Einnahme.
++
++## Befehle und Suche
++
++Im Menü **Plugins** und in **Alles durchsuchen** (`Umschalt Umschalt`):
++
++1. **GoBD: 1. Beleg festschreiben** – wählt eine noch nicht festgeschriebene Rechnung.
++2. **GoBD: 2. Beleg stornieren (Stornorechnung)** – erzeugt eine festgeschriebene Stornorechnung mit negierten Beträgen und Mengen, setzt den Originalbeleg auf `CANCELLED` und verweist über `cancels_document_id` darauf.
++3. **GoBD: 3. Archiv-Integritaet pruefen** – prüft im Hintergrund alle Archivdateien und beide Hash-Ketten.
++4. **GoBD: 4. Betriebspruefer-Export (Z3 / IDEA ZIP)** – siehe unten.
++5. **GoBD: 5. Pruefer-Ansicht oeffnen (Z1 Read-Only Tab)** – vier Tabs (Ausgangsrechnungen & Stornos, importierte Einnahmen, Ausgaben & Eingangsbelege, Audit-Protokoll) mit Jahresfilter; ein Doppelklick öffnet den Originalbeleg.
++6. **GoBD: 6. Eingangsbelege pruefen (SHA256SUMS)** – prüft Eingangs- und Einnahmenbelege gegen Datenbank und `SHA256SUMS`.
++7. **GoBD: 7. ZUGFeRD / XRechnung als Einnahme importieren**.
++
++Die Suche findet festgeschriebene Belege und Einnahmen über ihre Nummer; ein Klick öffnet den Originalbeleg.
++
++## Z3-Export (IDEA / GDPdU)
++
++`YaBS_GoBD_Z3_Export_<Jahr>_<Zeitstempel>.zip` im Archivordner, für ein wählbares Prüfungsjahr:
++
++* `index.xml` und `gdpdu-01-09-2004.dtd` – Beschreibung für den Import in IDEA,
++* `rechnungen.csv`, `rechnungspositionen.csv`, `kunden.csv`, `audit_log.csv`,
++* `ausgaben.csv`, `eingangsbelege.csv`, `einnahmen.csv`,
++* `belege/`, `belege/eingangsbelege/`, `belege/einnahmen/` – die Originalbelege,
++* `VERFAHRENSDOKUMENTATION_TECHNIK.txt` – die technischen Sperr-, Snapshot- und Hash-Mechanismen.
++
++## Datenbanktabellen
++
++* **`gobd_document_lock`** – je festgeschriebenem Beleg: `document_id`, `chain_seq`, `document_number`, `status` (`FINALIZED` / `CANCELLED`), `finalized_at`, `finalized_by`, `customer_snapshot`, `positions_snapshot`, `archive_path`, `artifact_format`, `sha256_hash`, `prev_sha256_hash`, `cancels_document_id`.
++* **`gobd_income_lock`** – je importierter Einnahme: Originaldatei, Archivpfad, Datei-SHA-256, Ketten-Hash, Finanz-Snapshot.
++* **`gobd_audit_log`** – fortlaufendes Protokoll mit Zeit, Benutzer, Objekt, Aktion, Alt-/Neuwert, Datei-Hash.
++
++## Organisatorische Hinweise
++
++1. **Datensicherung:** Archivordner, Belegordner und Datenbank regelmäßig sichern und über die Aufbewahrungsfristen (§ 147 Abs. 3 AO, § 14b UStG) aufbewahren.
++2. **Zugriffsschutz:** Direkte Schreibrechte auf die Datenbank außerhalb von YaBS (besonders auf die `gobd_*`-Tabellen und `items`) sperren oder überwachen.
++3. **Verfahrensdokumentation:** `VERFAHRENSDOKUMENTATION_TECHNIK.txt` beschreibt nur den technischen Teil; sie muss um die eigenen Abläufe, Verantwortlichkeiten und Freigaben ergänzt werden.
+diff --git a/GoBD-plugin-(EN).md b/GoBD-plugin-(EN).md
+new file mode 100644
+index 0000000..443b858
+--- /dev/null
++++ b/GoBD-plugin-(EN).md
+@@ -0,0 +1,118 @@
++*Deutsch: [GoBD-Plugin](GoBD-Plugin)*
++
++# GoBD compliance plugin
++
++The GoBD plugin (id `groovy.gobd-compliance`, version 2.0) adds technical safeguards for the German **GoBD** (*principles for the proper keeping and storage of books, records and documents in electronic form and for data access*). It is a Java plugin and comes with YaBS as **`plugins/gobd-compliance.jar`** ([source](https://github.com/anti43/openyabs/tree/master/plugins/gobd)). Its messages and labels are in German.
++
++> A plugin alone does not make bookkeeping GoBD compliant: backups, access control and the company's procedure documentation are needed too (see [Organisational notes](#organisational-notes)). This page is no tax or legal advice.
++
++## Features
++
++* **Finalizing on export:** when an invoice, credit note, deposit or part payment invoice is created as **PDF**, **ZUGFeRD** or **XRechnung**, the plugin finalizes it (*festschreiben*, can be switched off). Orders, offers and confirmations are never affected.
++* **Immutability:** finalized documents and their positions are protected against changes of tax relevant fields and against deleting and the trash – in the user interface and when saving.
++* **Open items workflow:** payment status, part payments and dunning levels stay changeable and are logged.
++* **No new print of finalized documents:** print, PDF, preview and e-invoice open the archived file of a finalized invoice instead of creating a new one.
++* **Snapshots** of master data and positions at the time of finalizing.
++* **SHA-256 hash chain** over all archived documents: `SHA256(file bytes ‖ previous hash)`, starting with 64 zeros.
++* **Cancellation invoices instead of editing** (`ST-YYYY-NNNNN`).
++* **Receipts of expenses** and **e-invoices as income** (ZUGFeRD / XRechnung), archived byte-identical with `SHA256SUMS`.
++* **Auditor access:** the Z1 auditor view in YaBS (read only) and the Z3 export for IDEA (GDPdU).
++
++## Installation
++
++1. Get **`gobd-compliance.jar`**: it is in the YaBS zip in the folder `openyabs/plugins/`, and a download of its own in every [release](https://github.com/anti43/openyabs/releases) (for the installers .deb, .rpm, .msi, .dmg).
++2. *Settings › Plugin Manager › Install plugin...* and choose the file – or drop it onto the Plugin Manager.
++3. After the start the status bar says: `GoBD-Konformitaets-Plugin (v2.0.0) vollstaendig geladen.`
++
++The plugin creates or extends its database tables (`gobd_document_lock`, `gobd_audit_log`, `gobd_receipt`, `gobd_income_lock`) when it starts.
++
++**Moving from the Groovy script `gobd_compliance.groovy`:** the jar has the same id. Settings, archive folder and database tables stay. Installing the jar replaces the running script and keeps it as `gobd_compliance.groovy.replaced`; it is not loaded any more.
++
++Needs YaBS **2.0.10** or newer.
++
++## Settings
++
++*Settings › Plugins › GoBD-Konformitaet*:
++
++| Setting | Default | Description |
++| :--- | :--- | :--- |
++| Finalize invoices on export | on | finalizes invoices when PDF / ZUGFeRD / XRechnung are created. Off: only with the command or the button in the banner. |
++| GoBD archive folder | `<plugin data folder>/gobd-archive` | where all archived originals (per year) and the Z3 exports go |
++| Import e-invoices from the watch folder | off | checks the watch folder every 15 seconds and imports new ZUGFeRD PDFs / XRechnung XMLs as finalized income |
++| Watch folder | empty | the folder of the automatic income import |
++
++## Life cycle of an invoice
++
++### 1. Draft
++As long as an invoice is not finalized it can be edited or deleted. The view shows the badge `GoBD: Entwurf (offen)` and a banner with **"Jetzt GoBD-festschreiben"** (finalize now). New drafts are logged as `DRAFT_CREATED`.
++
++### 2. Finalizing
++On export, with *Plugins › GoBD: 1. Beleg festschreiben* or with the button in the banner:
++
++1. **Number:** without a final number (empty, `ENTWURF…`, `DRAFT…`) the plugin assigns the next number (`RE-YYYY-NNNNN`, credit notes `ST-YYYY-NNNNN`).
++2. **Status** finished; the end date is set if empty.
++3. **Mandatory data (§ 14 (4) UStG):** number, issue date, delivery date, contact with street and city, amounts, at least one position. If something is missing, nothing is finalized.
++4. **Archive:** the file just created (ZUGFeRD PDF or XRechnung XML) is copied read only to `<archive folder>/<year>/`; without a file the plugin writes an XML with the data of the document.
++5. **Hash chain** and snapshots are stored in `gobd_document_lock`, the action is logged as `FINALIZED`, and the open document is shown locked at once.
++
++### 3. After finalizing
++The view shows `🔒 GoBD FESTGESCHRIEBEN` (or `🔒 GoBD STORNIERT`), a banner with **"Originalbeleg oeffnen"** (open the original) and **"Stornorechnung erstellen"** (create a cancellation invoice), and locks customer, address, number, dates, description and positions.
++
++| Area | Behaviour | Audit log |
++| :--- | :--- | :--- |
++| Tax relevant data (amounts, taxes, discounts, dates, number, description, customer, positions) | locked | `BLOCKED_EDIT` |
++| Deleting / trash (document or position) | locked | `BLOCKED_DELETE` |
++| Setting "cancelled" by hand | locked (use a cancellation invoice) | `BLOCKED_MANUAL_CANCEL` |
++| Payment status, part payments | allowed | `PAYMENT_STATUS_CHANGED` |
++| Dunning level | allowed | `DUNNING_CHANGED` |
++| Customer master data | allowed, with old and new values | `MASTERDATA_CHANGED` |
++| Print, PDF, preview, e-invoice | open the archived file | – |
++
++## Expenses and receipts (GoBD Rz. 61–64)
++
++* Receipts are linked in the expense view (button, drag and drop or the e-invoice import) and stored byte-identical with `SHA256SUMS` in the receipts folder – not as BLOB in the database. Check them outside YaBS too: `sha256sum -c SHA256SUMS`.
++* Expenses with a receipt: badge `🔒 GoBD BELEGABLAGE (n)`; amounts, tax, account and removing the receipt are locked, payment status and date stay changeable. Without a receipt: `⚠️ GoBD: OHNE BELEG` with **"Beleg verknuepfen & festschreiben"** (link receipt and finalize).
++* Expenses with archived receipts can not be deleted.
++
++## Income from e-invoices
++
++* *Plugins › GoBD: 7. ZUGFeRD / XRechnung als Einnahme importieren* (or the watch folder) reads invoice number (BT-1), issue date (BT-2), due date (BT-9), partner, net (BT-109), gross (BT-112) and tax rate (BT-119) and creates finalized income. Without the mandatory fields the file is refused.
++* The original goes to `<archive folder>/einnahmen/<year>/` with `SHA256SUMS` and a hash chain of its own (`gobd_income_lock`).
++* Duplicates (same file or same number) are refused.
++* In the income view without a receipt, **"ZUGFeRD / Beleg verknuepfen"** links a file to the existing income.
++
++## Commands and search
++
++In the menu **Plugins** and in **Search anything** (`Shift Shift`):
++
++1. **GoBD: 1. Beleg festschreiben** – choose an invoice that is not finalized yet.
++2. **GoBD: 2. Beleg stornieren (Stornorechnung)** – creates a finalized cancellation invoice with negated amounts and quantities, sets the original to `CANCELLED` and links it via `cancels_document_id`.
++3. **GoBD: 3. Archiv-Integritaet pruefen** – checks all archived files and both hash chains in the background.
++4. **GoBD: 4. Betriebspruefer-Export (Z3 / IDEA ZIP)** – see below.
++5. **GoBD: 5. Pruefer-Ansicht oeffnen (Z1 Read-Only Tab)** – four tabs (invoices and cancellations, imported income, expenses and receipts, audit log) with a year filter; a double click opens the original.
++6. **GoBD: 6. Eingangsbelege pruefen (SHA256SUMS)** – checks receipts and income originals against the database and `SHA256SUMS`.
++7. **GoBD: 7. ZUGFeRD / XRechnung als Einnahme importieren**.
++
++The search finds finalized documents and income by number; a click opens the original.
++
++## Z3 export (IDEA / GDPdU)
++
++`YaBS_GoBD_Z3_Export_<year>_<timestamp>.zip` in the archive folder, for a year of your choice:
++
++* `index.xml` and `gdpdu-01-09-2004.dtd` – the description for the import into IDEA,
++* `rechnungen.csv`, `rechnungspositionen.csv`, `kunden.csv`, `audit_log.csv`,
++* `ausgaben.csv`, `eingangsbelege.csv`, `einnahmen.csv`,
++* `belege/`, `belege/eingangsbelege/`, `belege/einnahmen/` – the originals,
++* `VERFAHRENSDOKUMENTATION_TECHNIK.txt` – the technical locking, snapshot and hash mechanisms.
++
++## Database tables
++
++* **`gobd_document_lock`** – per finalized document: `document_id`, `chain_seq`, `document_number`, `status` (`FINALIZED` / `CANCELLED`), `finalized_at`, `finalized_by`, `customer_snapshot`, `positions_snapshot`, `archive_path`, `artifact_format`, `sha256_hash`, `prev_sha256_hash`, `cancels_document_id`.
++* **`gobd_income_lock`** – per imported income: original file, archive path, file SHA-256, chain hash, financial snapshot.
++* **`gobd_audit_log`** – the running log with time, user, object, action, old and new value, file hash.
++
++## Organisational notes
++
++1. **Backups:** back up the archive folder, the receipts folder and the database regularly and keep them for the retention periods (§ 147 (3) AO, § 14b UStG).
++2. **Access control:** block or monitor direct write access to the database outside YaBS (especially to the `gobd_*` tables and `items`).
++3. **Procedure documentation:** `VERFAHRENSDOKUMENTATION_TECHNIK.txt` only covers the technical part; add your own procedures, responsibilities and approvals.
+diff --git a/Ist-Yabs-GoBD-konforme-Software?.md b/Ist-Yabs-GoBD-konforme-Software?.md
+index 5158bee..eb8ad73 100644
+--- a/Ist-Yabs-GoBD-konforme-Software?.md
++++ b/Ist-Yabs-GoBD-konforme-Software?.md
+@@ -4,9 +4,9 @@ Wichtig vorab: Es gibt in Deutschland keine staatliche Zertifizierung für GoBD-
+ 
+ Out of the box, Yabs ist *nicht* GoBD konform. Diese Anforderung gibt es so nur in Deutschland. Um Yabs GoBD konform zu betreiben, müssen einige Dinge umgesetzt sein. 
+ 
+-_Ein erstes Plugin zur Umsetzung steht hier zum Test bereit: https://github.com/anti43/openyabs/blob/master/plugins/groovy/GoBD.md_
++_Ein Plugin zur Umsetzung liegt YaBS bei: [GoBD-Plugin](GoBD-Plugin) (`plugins/gobd-compliance.jar`)._
+ 
+-| GoBD-Grundsatz (lt. sevdesk) | Typische Verstöße in der Praxis | Status in OpenYaBS + `gobd_compliance.groovy` |
++| GoBD-Grundsatz (lt. sevdesk) | Typische Verstöße in der Praxis | Status in OpenYaBS + [GoBD-Plugin](GoBD-Plugin) |
+ | --- | --- | --- |
+ | 1. Unveränderbarkeit (§ 146 Abs. 4 AO, Rz. 107–112) | Rechnungen in Word/Excel überschreibbar; nachträgliches Ändern von Beträgen/Steuersätzen ohne Historie; Löschen von Buchungen. | • `checkWriteAllowed` hängt direkt in `DatabaseObject.save()` / `delete()` und blockiert Änderungen an Finanzfeldern sowie das Löschen (`BLOCKED_EDIT`, `BLOCKED_DELETE`).<br>• Offene-Posten-Workflow (Status „bezahlt“, Mahnstufe) bleibt erlaubt, wird aber revisionssicher in `gobd_audit_log` protokolliert.<br>• Korrekturen an Ausgangsrechnungen erzwingen eine echte Stornorechnung (`ST-…`) mit Gegenbuchung statt Überschreiben.<br>• Archivdateien werden auf Dateisystemebene Read-Only gesetzt und per SHA-256-Hash-Kette (`SHA256(file_bytes \|\| prev_hash)`) verkettet. |
+ | 2. Stammdaten-Historisierung | „Stammdatenänderungen überschreiben Daten in alten Rechnungen“ (klassischer Fehler, wenn der Kundenname/Adresse später im Kontakt geändert wird). | • Beim Festschreiben speichert `lockDocument` einen JSON-Snapshot (`customer_snapshot` mit Name, Straße, PLZ, Ort, Land, USt-IdNr.) in `gobd_document_lock` und archiviert das erzeugte PDF/XML unveränderbar.<br>• `masterDataBeforeSave` erkennt nachträgliche Änderungen an `Contact`, die bereits festgeschriebene Rechnungen betreffen, und protokolliert den Vorher-/Nachher-Zustand als `MASTER_DATA_CHANGED`. |
+diff --git a/Openyabs-Dokumentation-(DE).md b/Openyabs-Dokumentation-(DE).md
+index c5b57ce..b0e017f 100644
+--- a/Openyabs-Dokumentation-(DE).md
++++ b/Openyabs-Dokumentation-(DE).md
+@@ -43,4 +43,5 @@ Skripte und Plugins
+ 
+ - [Skripte (Skriptmanager)](Skripte)
+ - [ScriptOnSavePlugin](ScriptOnSavePlugin)
+-- [Plugins schreiben (Groovy und Java, englisch)](Writing-plugins-(EN))
++- [Plugins schreiben (Groovy und Java)](Plugins-schreiben)
++- [GoBD-Plugin](GoBD-Plugin)
+diff --git a/Openyabs-documentation-(EN).md b/Openyabs-documentation-(EN).md
+index 306700e..cdecfd9 100644
+--- a/Openyabs-documentation-(EN).md
++++ b/Openyabs-documentation-(EN).md
+@@ -28,3 +28,4 @@ Scripts and plugins
+ 
+ - [Scripts (Script manager)](Scripts-(EN))
+ - [Writing plugins (Groovy and Java)](Writing-plugins-(EN))
++- [GoBD plugin](GoBD-plugin-(EN))
+diff --git a/Plugins-schreiben.md b/Plugins-schreiben.md
+new file mode 100644
+index 0000000..78f8c00
+--- /dev/null
++++ b/Plugins-schreiben.md
+@@ -0,0 +1,178 @@
++*English: [Writing plugins](Writing-plugins-(EN))*
++
++# Plugins für YaBS schreiben
++
++Plugins ergänzen YaBS um **Befehle**, **Suchergebnisse**, **Einstellungsseiten**, **Tabs**, **Markierungen in Datensatz-Ansichten** und **Reaktionen** – in **Groovy** (eine einzelne Datei, ohne Build) oder in **Java** (ein Jar). Beide bekommen **dieselbe Schnittstelle**: den [`ExtensionContext`](https://github.com/anti43/openyabs/blob/master/src/main/java/mpv5/plugin/api/ExtensionContext.java).
++
++- Plugins liegen im Ordner **`plugins`** im YaBS-Ordner (*Einstellungen › Plugin-Manager › Ordner öffnen*).
++- *Einstellungen › Plugin-Manager* zeigt alle Plugins mit ihrem Zustand. Dort lassen sich Plugins aktivieren, deaktivieren, neu laden, bearbeiten und entfernen; ein Plugin wird installiert, indem man eine Datei auswählt oder eine `.jar`- / `.groovy`-Datei auf die Seite zieht.
++- Befehle von Plugins erscheinen im Menü **Plugins** und in **Alles durchsuchen** (`Umschalt Umschalt`).
++- YaBS lädt die Plugins nach dem Start **im Hintergrund**; die Statuszeile zeigt den Fortschritt (*Plugins werden geladen (2/5): …*). Das Fenster ist währenddessen bedienbar.
++- Ein fehlerhaftes Plugin wird mit seiner Fehlermeldung als *fehlgeschlagen* markiert; YaBS und die anderen Plugins laufen weiter.
++- Alles, was ein Plugin hinzufügt, wird beim Stoppen (deaktivieren, neu laden, entfernen) wieder entfernt – ein Plugin kann also ohne Neustart von YaBS entwickelt und neu geladen werden.
++- Jedes Plugin hat eine **ID**. Zwei Plugins mit derselben ID laufen nie gleichzeitig. Wird ein Jar installiert, dessen Plugin die ID eines Plugins aus einer anderen Datei hat (z. B. die Java-Version eines Groovy-Skripts), ersetzt es dieses Plugin; die alte Datei bleibt als `<Name>.replaced` erhalten.
++
++## Ein Plugin in Groovy – 30 Sekunden
++
++*Einstellungen › Plugin-Manager › Neues Groovy-Plugin…* legt ein lauffähiges Plugin aus einer Vorlage an und öffnet es im **Plugin-Editor von YaBS**: Groovy-Hervorhebung, Zeilennummern, *Beispiel einfügen* (Befehl, Suchergebnisse, Reaktion auf neue Datensätze, Einstellungsseite, eigener Tab, Record-Modifier, gespeicherte Werte, Hintergrundarbeit), *Prüfen* (F5) zeigt die Zeile eines Fehlers, *Speichern und starten* (`Strg+S`) lädt das Plugin sofort neu. *Bearbeiten* öffnet vorhandene Groovy-Plugins dort; *Anderer Editor* öffnet die Datei im eigenen Editor. Bei großen Skripten (ab etwa 60.000 Zeichen) schaltet der Editor die Hervorhebung ab, damit das Tippen schnell bleibt – sehr große Plugins schreibt man besser in Java.
++
++Oder `plugins/hallo.groovy` selbst anlegen:
++
++```groovy
++// @name Hallo
++// @description Sagt Hallo und bemerkt neue Rechnungen
++// @version 1.0
++// @author Sie
++// @minYabsVersion 2.0.10
++
++// ein Befehl: Menü "Plugins" und Alles durchsuchen
++yabs.addCommand('Hallo sagen', 'Ein erster Befehl', {
++    yabs.notify('Hallo aus Groovy!')
++})
++
++// auf neue Datensätze reagieren (und erzeugte Dateien, geänderte und gelöschte Datensätze)
++yabs.onActivity({ entry ->
++    if (entry.kind == mpv5.handler.Activity.Kind.CREATED && entry.detail == 'Rechnung') {
++        yabs.notify('Neue Rechnung: ' + entry.text)
++    }
++})
++
++// Ergebnisse in Alles durchsuchen
++yabs.addSearchProvider({ text ->
++    text == 'wetter' ? [new mpv5.plugin.api.SearchResult('Wetter öffnen', 'wttr.in', {
++        java.awt.Desktop.desktop.browse(new URI('https://wttr.in'))
++    })] : []
++})
++
++// läuft, wenn das Plugin stoppt (dasselbe wie yabs.onStop { ... })
++onStop = { }
++```
++
++Speichern und im Plugin-Manager **Neu laden** klicken – fertig.
++
++- Die Kommentarzeilen oben (`// @name`, `@description`, `@version`, `@author`, `@id`, `@minYabsVersion`) beschreiben das Plugin; die ID ist ohne Angabe `groovy.<Dateiname>`.
++- Das Skript läuft beim Start des Plugins; **`yabs`** ist der `ExtensionContext`, **`plugin`** das Plugin selbst. Closures funktionieren überall, wo die Schnittstelle eine Funktion erwartet.
++- Ein Skript kann auch ein Objekt zurückgeben (`return`), das `YabsExtension` implementiert – dann ist dieses Objekt das Plugin.
++
++## Ein Plugin in Java
++
++1. [`mpv5.plugin.api.YabsExtension`](https://github.com/anti43/openyabs/blob/master/src/main/java/mpv5/plugin/api/YabsExtension.java) implementieren:
++
++```java
++package com.example;
++
++import mpv5.plugin.api.ExtensionContext;
++import mpv5.plugin.api.YabsExtension;
++
++public class Hallo implements YabsExtension {
++    public String id()             { return "com.example.hallo"; }
++    public String name()           { return "Hallo"; }
++    public String description()    { return "Sagt Hallo"; }
++    public String minYabsVersion() { return "2.0.10"; }
++
++    public void start(ExtensionContext ctx) {
++        ctx.addCommand("Hallo sagen", "Ein erster Befehl", () -> ctx.notify("Hallo!"));
++        ctx.onStop(() -> { /* schließen, was das Plugin selbst geöffnet hat */ });
++    }
++}
++```
++
++2. Die Klasse in **`META-INF/services/mpv5.plugin.api.YabsExtension`** eintragen (eine Klasse pro Zeile – ein Jar kann mehrere Plugins enthalten):
++
++```
++com.example.Hallo
++```
++
++3. Gegen `openyabs.jar` (und bei Bedarf `lib/*`) kompilieren, ein Jar bauen, in `plugins` legen oder im Plugin-Manager installieren.
++
++Ein minimales `build.gradle`:
++
++```groovy
++plugins { id 'java' }
++dependencies { compileOnly files('/pfad/zu/openyabs/openyabs.jar') }
++java { toolchain { languageVersion = JavaLanguageVersion.of(21) } }
++```
++
++## Groovy und Java im Vergleich
++
++| | Groovy | Java |
++|---|---|---|
++| Die Schnittstelle | `yabs` (der `ExtensionContext`) | das `ctx`, das `start` bekommt |
++| ID, Name, Beschreibung, Version, Autor | `// @id`, `// @name`, `// @description`, `// @version`, `// @author` | `id()`, `name()`, `description()`, `version()`, `author()` |
++| Mindestversion von YaBS | `// @minYabsVersion 2.0.10` | `minYabsVersion()` |
++| Start | das Skript läuft | `start(ctx)` |
++| Stopp | `onStop = { … }` oder `yabs.onStop { … }` | `stop()` oder `ctx.onStop(() -> …)` |
++| Funktionen | Closures `{ x -> … }` | Lambdas `x -> …` |
++| Weitergabe | eine `.groovy`-Datei | ein `.jar` mit `META-INF/services/mpv5.plugin.api.YabsExtension` |
++
++## Was der Kontext bietet
++
++### Beiträge (werden beim Stoppen des Plugins wieder entfernt)
++
++| Methode | Was sie tut |
++|---|---|
++| `addCommand(titel, beschreibung, aktion)` | ein Befehl im Menü *Plugins* und in Alles durchsuchen (läuft im Swing-Thread) |
++| `addSearchProvider(text -> List<SearchResult>)` | Ergebnisse in Alles durchsuchen (läuft im Hintergrund; schnell halten). `new SearchResult(titel, detail, () -> …)` |
++| `addSettingsPage(titel, beschreibung, () -> JComponent)` | eine Seite in den *Einstellungen* (Gruppe *Plugins*), über die Suche der Einstellungen zu finden |
++| `onActivity(entry -> …)` | erfährt von angelegten / geänderten / gelöschten Datensätzen, erzeugten Dateien (PDF, ODT, E-Rechnungen) und Meldungen – siehe [`Activity.Entry`](https://github.com/anti43/openyabs/blob/master/src/main/java/mpv5/handler/Activity.java): `kind`, `text`, `detail`, `file`, `context`, `id` (Swing-Thread) |
++| `addRecordModifier(DatabaseObjectModifier)` | wirkt beim Speichern, Anlegen und Löschen von Datensätzen mit: `modifyOnSave`, `modifyOnDelete` (`ChangeNotApprovedException` werfen, um die Änderung zu verhindern), `executeAfterCreate`, `executeAfterSave`, `modifyOnExplode`, `modifyOnResolve` |
++| `onView(ansicht -> …)` | erfährt, wenn eine Datensatz-Ansicht (`DataPanel`) geöffnet wird oder einen anderen Datensatz zeigt, auch für Ansichten, die beim Start des Plugins schon offen sind – siehe *Datensatz-Ansichten* unten |
++| `onStop(() -> …)` | läuft, wenn das Plugin stoppt, deaktiviert, neu geladen wird oder nicht starten kann |
++
++### Aktionen und Hilfen
++
++| Methode | Was sie tut |
++|---|---|
++| `openTab(titel, komponente)` | öffnet einen Tab im Hauptfenster |
++| `notify(meldung)` | eine Meldung in der Statuszeile und der Aktivitätenliste |
++| `popup(meldung)` / `error(meldung)` | ein Benachrichtigungsfenster (und die Aktivitätenliste) |
++| `notify(meldung, datensatz)` | ein Benachrichtigungsfenster zu einem Datensatz, mit dem Datensatz protokolliert (ein Klick öffnet ihn) |
++| `select(sql)` | führt ein `SELECT` auf der YaBS-Datenbank aus, liefert `Object[][]` (nie null) |
++| `execute(sql)` | führt eine Anweisung aus (`CREATE TABLE`, `INSERT`, `UPDATE` …) |
++| `ui(() -> …)` | führt Code im Swing-Thread aus (sofort, wenn schon dort) |
++| `background(arbeit, danach)` | erledigt Arbeit im Hintergrund und macht mit dem Ergebnis im Swing-Thread weiter; Fehler werden gemeldet |
++| `currentView()` | die Datensatz-Ansicht im ausgewählten Tab, oder null |
++| `refreshView(datensatz)` | zeigt den Datensatz im ausgewählten Tab neu an, wenn dieser ihn zeigt (z. B. nachdem das Plugin ihn geändert hat) |
++| `openFile(datei)` | öffnet eine Datei mit ihrem Programm (PDFs: der PDF-Betrachter aus *Einstellungen › Externe Programme*) |
++| `settings()` | Einstellungen des Plugins (Schlüssel/Wert), auf diesem Rechner gespeichert: `get`, `set`, `getBoolean`, `setBoolean` |
++| `dataFolder()` | ein Ordner für eigene Dateien des Plugins |
++| `yabsVersion()` | die Version von YaBS |
++
++`select` und `execute` nehmen einfaches SQL: Eingaben von Benutzern nur maskiert (`'` verdoppelt) in eine Abfrage übernehmen, oder die normalen YaBS-Klassen verwenden.
++
++### Datensatz-Ansichten
++
++In `onView` kann ein Plugin die Ansicht (`mpv5.ui.panels.DataPanel`) markieren; YaBS entfernt diese Markierungen, bevor es die Plugins erneut aufruft:
++
++| Methode der Ansicht | Was sie tut |
++|---|---|
++| `getDataOwner()` | der gezeigte Datensatz (`Item`, `Contact`, `Product`, `Expense`, `Revenue` …) |
++| `setPluginBadge(komponente)` | eine kleine Markierung im Kopf der Ansicht, neben dem Status |
++| `setPluginBanner(komponente)` | ein Banner unter der Befehlsleiste, z. B. mit Schaltflächen |
++| `setContentLocked(true)` | sperrt die Inhaltsfelder und Positionen (Zahlungsstatus, Mahnungen, Export bleiben bedienbar) |
++| `setLockedDocument(datei)` | für einen gesperrten Datensatz: Drucken, PDF, Vorschau und E-Rechnung öffnen diese archivierte Datei, statt eine neue zu erzeugen |
++| `setDataOwner(datensatz, true)` | zeigt einen Datensatz (neu) an |
++
++```groovy
++yabs.onView({ ansicht ->
++    def r = ansicht.getDataOwner()
++    if (r instanceof mpv5.db.objects.Item && r.__getIntstatus() == mpv5.db.objects.Item.STATUS_PAID) {
++        ansicht.setPluginBadge(new javax.swing.JLabel('bezahlt'))
++    }
++})
++```
++
++### Threads
++
++`start`, `stop`, Befehle, `onActivity`, `onView` und der zweite Teil von `background` laufen im Swing-Thread – kurz halten und für länger dauernde Datenbankarbeit `background` verwenden. Suchanbieter laufen im Hintergrund. `stop()` / `onStop` braucht ein Plugin nur für das, was es selbst angelegt hat (Threads, Timer, Verbindungen) – alles über den Kontext Registrierte entfernt YaBS.
++
++Datensätze, Kontexte und Abfragen sind die normalen YaBS-Klassen (`mpv5.db.common.DatabaseObject`, `Context`, `QueryHandler`, …); die Groovy-Konsole (*Einstellungen › GroovyConsole*) eignet sich gut zum Ausprobieren.
++
++## Beispiele
++
++- Das **Aktivitätsjournal** ([Quelltext](https://github.com/anti43/openyabs/blob/master/src/main/java/mpv5/plugin/builtin/ActivityJournal.java)) gehört zu YaBS: Es schreibt erzeugte Dateien und Datensätze in ein CSV-Journal, macht das Journal in Alles durchsuchen findbar und bietet einen Befehl und eine Einstellungsseite. Es lässt sich wie jedes andere Plugin deaktivieren.
++- Das **GoBD-Plugin** ([Quelltext](https://github.com/anti43/openyabs/tree/master/plugins/gobd), [Dokumentation](GoBD-Plugin)) ist ein großes Java-Plugin: Record-Modifier, `onActivity`, `onView` mit Badges, Bannern und Sperren, Befehle, eine Einstellungsseite, ein Tab, Suchergebnisse, eigene Datenbanktabellen und ein Timer. Es liegt YaBS als `plugins/gobd-compliance.jar` bei.
++
++## Klassische Plugins
++
++Plugins älterer YaBS-Versionen (eine Klasse `plugin.Main`, die `mpv5.pluginhandling.YabsPlugin` implementiert, in der Datenbank gespeichert) funktionieren weiterhin; sie stehen unten im Plugin-Manager.
+diff --git a/Writing-plugins-(EN).md b/Writing-plugins-(EN).md
+index 17c018b..8982bc9 100644
+--- a/Writing-plugins-(EN).md
++++ b/Writing-plugins-(EN).md
+@@ -1,22 +1,29 @@
++*Deutsch: [Plugins schreiben](Plugins-schreiben)*
++
+ # Writing plugins for YaBS
+ 
+-Plugins add **commands**, **search results**, **settings pages** and **reactions** to YaBS – in **Groovy** (a single file, no build) or in **Java** (a jar).
++Plugins add **commands**, **search results**, **settings pages**, **tabs**, **marks on record views** and **reactions** to YaBS – in **Groovy** (a single file, no build) or in **Java** (a jar). Both get **the same API**: the [`ExtensionContext`](https://github.com/anti43/openyabs/blob/master/src/main/java/mpv5/plugin/api/ExtensionContext.java).
+ 
+ - They live in the folder **`plugins`** in your YaBS folder (*Settings › Plugin Manager › Open folder*).
+ - *Settings › Plugin Manager* shows every plugin with its state. There you can enable, disable, reload, edit and remove plugins, and install one by choosing a file or dropping a `.jar` / `.groovy` file onto the page.
+ - Commands of plugins appear in the menu **Plugins** and in **Search anything** (`Shift Shift`).
++- YaBS loads the plugins **in the background** after the start; the status bar shows the progress (*Loading plugins (2/5): …*). The window can be used meanwhile.
+ - A plugin that fails is marked *failed* with its error message; YaBS and the other plugins go on.
+ - Everything a plugin adds is removed again when it stops (disable, reload, remove), so a plugin can be developed and reloaded without restarting YaBS.
++- Every plugin has an **id**. Two plugins with the same id never run together. Installing a jar whose plugin has the id of a plugin from another file (e.g. the Java version of a Groovy script) replaces that plugin; the old file is kept as `<name>.replaced`.
+ 
+ ## A plugin in Groovy – 30 seconds
+ 
+-*Settings › Plugin Manager › New Groovy plugin…* creates a working plugin from a template and opens it in the **plugin editor of YaBS**: Groovy highlighting, line numbers, *Insert example* (command, search results, reacting to new records, settings page, own tab, record modifier, stored values, background work), *Check* (F5) shows the line of an error, *Save and start* (`Ctrl+S`) reloads the plugin at once. *Edit* opens existing Groovy plugins there; *Other editor* opens the file in your own editor. Or create `plugins/hello.groovy` yourself:
++*Settings › Plugin Manager › New Groovy plugin…* creates a working plugin from a template and opens it in the **plugin editor of YaBS**: Groovy highlighting, line numbers, *Insert example* (command, search results, reacting to new records, settings page, own tab, record modifier, stored values, background work), *Check* (F5) shows the line of an error, *Save and start* (`Ctrl+S`) reloads the plugin at once. *Edit* opens existing Groovy plugins there; *Other editor* opens the file in your own editor. For large scripts (above about 60,000 characters) the editor switches the highlighting off so that typing stays fast – very large plugins are better written in Java.
++
++Or create `plugins/hello.groovy` yourself:
+ 
+ ```groovy
+ // @name Hello
+ // @description Says hello and notices new invoices
+ // @version 1.0
+ // @author You
++// @minYabsVersion 2.0.10
+ 
+ // a command: menu "Plugins" and Search anything
+ yabs.addCommand('Say hello', 'A first command', {
+@@ -37,14 +44,14 @@ yabs.addSearchProvider({ text ->
+     })] : []
+ })
+ 
+-// called when the plugin stops
++// called when the plugin stops (the same as yabs.onStop { ... })
+ onStop = { }
+ ```
+ 
+ Save, then click **Reload** in the Plugin Manager – done.
+ 
+-- The comment lines at the top (`// @name`, `@description`, `@version`, `@author`, `@id`) describe the plugin; the id defaults to `groovy.<file name>`.
+-- The script runs when the plugin starts, with **`yabs`** bound to the [`ExtensionContext`](https://github.com/anti43/openyabs/blob/master/src/main/java/mpv5/plugin/api/ExtensionContext.java). Closures work wherever the API expects a function.
++- The comment lines at the top (`// @name`, `@description`, `@version`, `@author`, `@id`, `@minYabsVersion`) describe the plugin; the id defaults to `groovy.<file name>`.
++- The script runs when the plugin starts, with **`yabs`** bound to the `ExtensionContext` and **`plugin`** to the plugin itself. Closures work wherever the API expects a function.
+ - A script may also `return` an object that implements `YabsExtension` – then that object is the plugin.
+ 
+ ## A plugin in Java
+@@ -58,12 +65,14 @@ import mpv5.plugin.api.ExtensionContext;
+ import mpv5.plugin.api.YabsExtension;
+ 
+ public class Hello implements YabsExtension {
+-    public String id()          { return "com.example.hello"; }
+-    public String name()        { return "Hello"; }
+-    public String description() { return "Says hello"; }
++    public String id()             { return "com.example.hello"; }
++    public String name()           { return "Hello"; }
++    public String description()    { return "Says hello"; }
++    public String minYabsVersion() { return "2.0.10"; }
+ 
+     public void start(ExtensionContext ctx) {
+         ctx.addCommand("Say hello", "A first command", () -> ctx.notify("Hello!"));
++        ctx.onStop(() -> { /* close what the plugin opened itself */ });
+     }
+ }
+ ```
+@@ -84,33 +93,85 @@ dependencies { compileOnly files('/path/to/openyabs/openyabs.jar') }
+ java { toolchain { languageVersion = JavaLanguageVersion.of(21) } }
+ ```
+ 
++## Groovy and Java side by side
++
++| | Groovy | Java |
++|---|---|---|
++| The API | `yabs` (the `ExtensionContext`) | the `ctx` passed to `start` |
++| Id, name, description, version, author | `// @id`, `// @name`, `// @description`, `// @version`, `// @author` | `id()`, `name()`, `description()`, `version()`, `author()` |
++| Minimum YaBS version | `// @minYabsVersion 2.0.10` | `minYabsVersion()` |
++| Start | the script runs | `start(ctx)` |
++| Stop | `onStop = { … }` or `yabs.onStop { … }` | `stop()` or `ctx.onStop(() -> …)` |
++| Functions | closures `{ x -> … }` | lambdas `x -> …` |
++| Distribution | one `.groovy` file | a `.jar` with `META-INF/services/mpv5.plugin.api.YabsExtension` |
++
+ ## What the context offers
+ 
++### Contributions (removed again when the plugin stops)
++
+ | Method | What it does |
+ |---|---|
+-| `addCommand(title, description, action)` | a command in the menu *Plugins* and in Search anything |
+-| `addSearchProvider(text -> List<SearchResult>)` | results in Search anything (runs in the background; keep it quick) |
++| `addCommand(title, description, action)` | a command in the menu *Plugins* and in Search anything (runs on the Swing thread) |
++| `addSearchProvider(text -> List<SearchResult>)` | results in Search anything (runs in the background; keep it quick). `new SearchResult(title, detail, () -> …)` |
+ | `addSettingsPage(title, description, () -> JComponent)` | a page in *Settings* (group *Plugins*), found by the settings search |
+-| `onActivity(entry -> …)` | told about created / changed / deleted records, created files (PDF, ODT, e-invoices) and messages – see [`Activity.Entry`](https://github.com/anti43/openyabs/blob/master/src/main/java/mpv5/handler/Activity.java): `kind`, `text`, `detail`, `file`, `context`, `id` |
+-| `addRecordModifier(DatabaseObjectModifier)` | take part when records are saved, deleted, created (check or change them) |
+-| `openTab(title, component)` | open a tab in the main window |
++| `onActivity(entry -> …)` | told about created / changed / deleted records, created files (PDF, ODT, e-invoices) and messages – see [`Activity.Entry`](https://github.com/anti43/openyabs/blob/master/src/main/java/mpv5/handler/Activity.java): `kind`, `text`, `detail`, `file`, `context`, `id` (Swing thread) |
++| `addRecordModifier(DatabaseObjectModifier)` | take part when records are saved, created, deleted: `modifyOnSave`, `modifyOnDelete` (throw `ChangeNotApprovedException` to stop the change), `executeAfterCreate`, `executeAfterSave`, `modifyOnExplode`, `modifyOnResolve` |
++| `onView(view -> …)` | told when a record view (`DataPanel`) is opened or shows another record, also for views open when the plugin starts – see *Record views* below |
++| `onStop(() -> …)` | runs when the plugin stops, is disabled, reloaded or fails to start |
++
++### Actions and helpers
++
++| Method | What it does |
++|---|---|
++| `openTab(title, component)` | opens a tab in the main window |
+ | `notify(message)` | a message in the status bar and the activity list |
+-| `settings()` | key/value settings of the plugin, stored on this computer |
++| `popup(message)` / `error(message)` | a notification pop-up (and the activity list) |
++| `notify(message, record)` | a pop-up about a record, logged with the record (a click opens it) |
++| `select(sql)` | runs a `SELECT` on the YaBS database, returns `Object[][]` (never null) |
++| `execute(sql)` | runs a statement (`CREATE TABLE`, `INSERT`, `UPDATE` …) |
++| `ui(() -> …)` | runs code on the Swing thread (now if already there) |
++| `background(work, then)` | runs work in the background and continues on the Swing thread with the result; errors are reported |
++| `currentView()` | the record view of the selected tab, or null |
++| `refreshView(record)` | shows the record again in the selected tab, if that tab shows it (e.g. after the plugin changed it) |
++| `openFile(file)` | opens a file with its program (PDFs: the PDF viewer of *Settings › External programs*) |
++| `settings()` | key/value settings of the plugin, stored on this computer: `get`, `set`, `getBoolean`, `setBoolean` |
+ | `dataFolder()` | a folder for the plugin's own files |
+-| `background(work, then)` | run work in the background and continue on the Swing thread; errors are reported |
++| `yabsVersion()` | the version of YaBS |
+ 
+-The lifecycle methods `start` and `stop` run on the Swing thread. A plugin only needs `stop()` for what it created itself (threads, connections) – everything registered through the context is removed by YaBS.
++`select` and `execute` take plain SQL: put user input into a query only escaped (`'` doubled), or use the normal YaBS classes.
+ 
+-Records, contexts and queries are the normal YaBS classes (`mpv5.db.common.DatabaseObject`, `Context`, `QueryHandler`, …); the Groovy console (*Settings › GroovyConsole*) is a good place to try things out.
++### Record views
++
++In `onView`, a plugin can mark the view (`mpv5.ui.panels.DataPanel`); YaBS clears these marks before it calls the plugins again:
+ 
+-## Built-in example
++| Method of the view | What it does |
++|---|---|
++| `getDataOwner()` | the record shown (`Item`, `Contact`, `Product`, `Expense`, `Revenue` …) |
++| `setPluginBadge(component)` | a small mark in the header of the view, next to the status |
++| `setPluginBanner(component)` | a banner below the command bar, e.g. with buttons |
++| `setContentLocked(true)` | locks the content fields and positions (payment status, reminders, export stay usable) |
++| `setLockedDocument(file)` | for a locked record: print, PDF, preview and e-invoice open this archived file instead of creating a new one |
++| `setDataOwner(record, true)` | shows a record (again) |
++
++```groovy
++yabs.onView({ view ->
++    def r = view.getDataOwner()
++    if (r instanceof mpv5.db.objects.Item && r.__getIntstatus() == mpv5.db.objects.Item.STATUS_PAID) {
++        view.setPluginBadge(new javax.swing.JLabel('paid'))
++    }
++})
++```
++
++### Threads
++
++`start`, `stop`, commands, `onActivity`, `onView` and the second part of `background` run on the Swing thread – keep them short and use `background` for database work that takes long. Search providers run in the background. A plugin only needs `stop()` / `onStop` for what it created itself (threads, timers, connections) – everything registered through the context is removed by YaBS.
++
++Records, contexts and queries are the normal YaBS classes (`mpv5.db.common.DatabaseObject`, `Context`, `QueryHandler`, …); the Groovy console (*Settings › GroovyConsole*) is a good place to try things out.
+ 
+-The **Activity journal** ([source](https://github.com/anti43/openyabs/blob/master/src/main/java/mpv5/plugin/builtin/ActivityJournal.java)) ships with YaBS. It uses most of the API:
+-- it writes created files and records to a CSV journal;
+-- it makes the journal searchable in Search anything;
+-- it offers a command and a settings page.
++## Examples
+ 
+-You can disable it like any other plugin.
++- The **Activity journal** ([source](https://github.com/anti43/openyabs/blob/master/src/main/java/mpv5/plugin/builtin/ActivityJournal.java)) ships with YaBS: it writes created files and records to a CSV journal, makes the journal searchable in Search anything, and offers a command and a settings page. You can disable it like any other plugin.
++- The **GoBD plugin** ([source](https://github.com/anti43/openyabs/tree/master/plugins/gobd), [documentation](GoBD-plugin-(EN))) is a large Java plugin: record modifier, `onActivity`, `onView` with badges, banners and locks, commands, a settings page, a tab, search results, its own database tables and a timer. It comes as `plugins/gobd-compliance.jar` with YaBS.
+ 
+ ## Classic plugins
+ 
+diff --git a/_Sidebar.md b/_Sidebar.md
+index f117ab7..97ce980 100644
+--- a/_Sidebar.md
++++ b/_Sidebar.md
+@@ -9,6 +9,7 @@
+ - [Datenbank](Datenbank)
+ - [E-Rechnung](E-Rechnung)
+ - [GoBD](Ist-Yabs-GoBD-konforme-Software%3F)
++- [GoBD-Plugin](GoBD-Plugin)
+ - [SEPA-Lastschrift](SEPA-Lastschrift)
+ - [Kontaktliste](Kontaktliste)
+ - [QR-Code](QR-Code)
+@@ -19,6 +20,7 @@
+ - [Spaltendefinition](Spaltendefinition)
+ - [Skripte](Skripte)
+ - [ScriptOnSavePlugin](ScriptOnSavePlugin)
++- [Plugins schreiben](Plugins-schreiben)
+ 
+ **English**
+ - [Documentation (EN)](Openyabs-documentation-(EN))
+@@ -33,3 +35,4 @@
+ - [Templates](Templates-(EN))
+ - [Scripts](Scripts-(EN))
+ - [Writing plugins](Writing-plugins-(EN))
++- [GoBD plugin](GoBD-plugin-(EN))
+-- 
+2.43.0
+
