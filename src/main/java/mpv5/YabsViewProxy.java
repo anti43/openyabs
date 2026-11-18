@@ -428,6 +428,21 @@ public class YabsViewProxy implements YabsView {
     }
 
     /**
+     * @param type Item.TYPE_*
+     * @param status Item.STATUS_*
+     * @return the view with initial status set
+     */
+    public JComponent newItemView(int type, int status) {
+        JComponent v = newItemView(type);
+        if (v instanceof mpv5.ui.panels.ModernItemPanel) {
+            ((mpv5.ui.panels.ModernItemPanel) v).setItemStatus(status);
+        } else if (v instanceof mpv5.ui.panels.ItemPanel2) {
+            ((mpv5.ui.panels.ItemPanel2) v).setItemStatus(status);
+        }
+        return v;
+    }
+
+    /**
      * The view of a product, filled with it: modern or classic, as configured
      *
      * @param p

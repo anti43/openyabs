@@ -110,7 +110,7 @@ public class MPControlPanel extends JPanel {
          * creates the panel to show, null for an action
          */
         final Supplier<ControlApplet> panel;
-        final Class<?> panelClass;
+        public final Class<?> panelClass;
         final Runnable action;
 
         Entry(String group, String title, String description, String icon, Class<?> panelClass, Supplier<ControlApplet> panel, Runnable action, Icon customIcon) {
@@ -319,6 +319,19 @@ public class MPControlPanel extends JPanel {
             mpv5.YabsViewProxy.instance().getIdentifierView().addOrShowTab(instanceOf(), Messages.CONTROL_PANEL.toString());
         }
         instanceOf().open(e);
+    }
+
+    /**
+     * Opens the control panel and navigates to the given panel class
+     * @param panelClass
+     */
+    public static void show(Class<?> panelClass) {
+        for (Entry e : entries()) {
+            if (e.panelClass == panelClass) {
+                show(e);
+                return;
+            }
+        }
     }
 
     // ------------------------------------------------------------------ view

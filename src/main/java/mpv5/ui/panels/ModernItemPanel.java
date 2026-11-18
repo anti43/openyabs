@@ -710,6 +710,12 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
             setDataOwner(dataOwner, true);
         }
     }
+
+    public void setItemStatus(int statusId) {
+        this.intstatus_ = statusId;
+        status.setSelectedItem(statusId);
+        updateHeader();
+    }
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Actions">
