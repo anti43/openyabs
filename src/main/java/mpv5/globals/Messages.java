@@ -394,7 +394,7 @@ public enum Messages {
     ZUGFERD_FIELD_CITY("City"),
     ZUGFERD_FIELD_EMAIL("Email"),
     ZUGFERD_FIELD_PHONE("Phone"),
-    ZUGFERD_FIELD_IBAN("IBAN"),
+    ZUGFERD_FIELD_IBAN("Bank account / IBAN missing (please enter in Tools > Control Panel > Company Info)"),
     ZUGFERD_MISSING_DATA("The following data is missing for a valid electronic invoice:"),
     ZUGFERD_CONTINUE_ANYWAY("Create the electronic invoice anyway?"),
     ZUGFERD_CREATED("Electronic invoice created"),

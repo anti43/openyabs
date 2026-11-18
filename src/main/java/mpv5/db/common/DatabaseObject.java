@@ -2973,9 +2973,21 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                                 }
                                 if (inv != null) {
                                     List<String> problems = mpv5.utils.export.ZugpferdFile.validate(inv);
-                                    if (problems.isEmpty() || !showDialog || Popup.Y_N_dialog(Messages.ZUGFERD_CONTINUE_ANYWAY)) {
+                                    if (problems.isEmpty() || !showDialog) {
                                         zugferd = true;
+                                        mpv5.handler.ItemService.ensureFinishedAndEndDate(item);
                                         new Job(new mpv5.utils.export.ZugpferdFile(item, inv, xf, mpv5.utils.export.ZugpferdFile.Format.ZUGFERD), x).executeSync();
+                                    } else {
+                                        StringBuilder text = new StringBuilder(Messages.ZUGFERD_MISSING_DATA.toString()).append("\n");
+                                        for (String problem : problems) {
+                                            text.append("\n - ").append(problem);
+                                        }
+                                        text.append("\n\n").append(Messages.ZUGFERD_CONTINUE_ANYWAY);
+                                        if (Popup.Y_N_dialog(text.toString())) {
+                                            zugferd = true;
+                                            mpv5.handler.ItemService.ensureFinishedAndEndDate(item);
+                                            new Job(new mpv5.utils.export.ZugpferdFile(item, inv, xf, mpv5.utils.export.ZugpferdFile.Format.ZUGFERD), x).executeSync();
+                                        }
                                     }
                                 }
                             }
