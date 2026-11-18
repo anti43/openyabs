@@ -116,6 +116,7 @@ public class ModernCommandBar extends JPanel {
     private final JPanel extras = new JPanel(new FlowLayout(FlowLayout.LEFT, ModernTheme.px(4), 0));
     private final JButton search;
     private final PrimaryButton save;
+    private final JButton saveAsNewButton;
     private final JButton favourite;
     private final JButton delete;
     private final JMenuItem lock;
@@ -125,9 +126,24 @@ public class ModernCommandBar extends JPanel {
     private boolean isFavourite;
     private boolean editable = true;
     private Runnable findAction;
+    private Runnable saveAsNewAction;
     private final JPanel copyBanner = new JPanel(new BorderLayout(ModernTheme.px(8), 0));
     private final javax.swing.JLabel copyText = new javax.swing.JLabel();
     private final JPanel pluginBanner = new JPanel(new BorderLayout());
+
+    /**
+     * Saves as a new record or opens a pending copy depending on the view.
+     */
+    private void triggerSaveAsNew() {
+        if (saveAsNewAction != null) {
+            saveAsNewAction.run();
+        } else if (view.getDataOwner() == null || !view.getDataOwner().isExisting()) {
+            RecordActions.saveAsNew(view);
+        } else {
+            createCopy();
+        }
+        updateCopyBanner();
+    }
 
     /**
      * Shows the record as copy (new, not saved yet)
@@ -196,6 +212,9 @@ public class ModernCommandBar extends JPanel {
             RecordActions.save(view);
             updateCopyBanner();
         });
+        saveAsNewButton = button(Messages.ACTION_SAVE_AS_NEW.toString(), "/images/16/filesaveas.png",
+                tip(Messages.ACTION_SAVE_AS_NEW.toString(), SAVE_AS_NEW));
+        saveAsNewButton.addActionListener(e -> triggerSaveAsNew());
         JButton revert = button(null, "/images/22/revert.png", tip(text("MPV5View.jButton22.toolTipText"), REVERT));
         revert.addActionListener(e -> {
             RecordActions.revert(view);
@@ -216,6 +235,7 @@ public class ModernCommandBar extends JPanel {
         left.add(search);
         left.add(separator());
         left.add(save);
+        left.add(saveAsNewButton);
         left.add(revert);
         left.add(separator());
         left.add(mail);
@@ -229,7 +249,7 @@ public class ModernCommandBar extends JPanel {
         JPopupMenu more = new JPopupMenu();
         JMenuItem saveAsNew = item(more, Messages.ACTION_SAVE_AS_NEW.toString(), "/images/16/filesaveas.png", SAVE_AS_NEW);
         saveAsNew.setToolTipText(Messages.ACTION_CREATE_COPY_TIP.toString());
-        saveAsNew.addActionListener(e -> createCopy());
+        saveAsNew.addActionListener(e -> triggerSaveAsNew());
         JMenuItem copy = item(more, text("DataPanelTB.but10.toolTipText"), "/images/16/editcopy.png", COPY);
         copy.addActionListener(e -> copy());
         JMenuItem paste = item(more, Messages.ACTION_PASTE.toString(), "/images/16/editpaste.png", PASTE);
@@ -333,7 +353,7 @@ public class ModernCommandBar extends JPanel {
                 updateCopyBanner();
             }
         });
-        shortcut(SAVE_AS_NEW, this::createCopy);
+        shortcut(SAVE_AS_NEW, this::triggerSaveAsNew);
         shortcut(REVERT, () -> {
             RecordActions.revert(view);
             updateCopyBanner();
@@ -531,6 +551,20 @@ public class ModernCommandBar extends JPanel {
      */
     public void setFindAction(Runnable action) {
         this.findAction = action;
+    }
+
+    /**
+     * @param action what "Save as new" does on this view
+     */
+    public void setSaveAsNewAction(Runnable action) {
+        this.saveAsNewAction = action;
+    }
+
+    /**
+     * @return the visible "Save as new" button in the command bar
+     */
+    public JButton getSaveAsNewButton() {
+        return saveAsNewButton;
     }
 
     /**

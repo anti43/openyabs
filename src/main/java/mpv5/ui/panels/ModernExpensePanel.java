@@ -19,6 +19,7 @@ package mpv5.ui.panels;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Desktop;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.datatransfer.DataFlavor;
@@ -92,6 +93,7 @@ import mpv5.ui.modern.ModernTheme;
 import mpv5.ui.modern.ResponsiveGrid;
 import mpv5.ui.modern.WrapLayout;
 import mpv5.ui.toolbars.ModernCommandBar;
+import mpv5.ui.toolbars.RecordActions;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.numberformat.FormatNumber;
@@ -104,7 +106,8 @@ import mpv5.utils.ui.TextFieldUtils;
  * <ul>
  *   <li>Horizontal split view with expense master list and filter on the left
  *       and expense details on the right.</li>
- *   <li>Card-based modern layout with responsive cards (details, amounts, bookkeeping).</li>
+ *   <li>Card-based modern layout with 4 responsive cards (details, organization/notes,
+ *       receipts, and PDF preview).</li>
  *   <li>Integrated receipts section: list of imported receipt files with SHA-256 checksums,
  *       file sizes and timestamps, directly openable with system viewer.</li>
  *   <li>Drag &amp; drop and file import automatically check for ZUGFeRD / XRechnung
@@ -149,11 +152,8 @@ public class ModernExpensePanel extends ModernDataPanel {
     private final JSplitPane splitPane;
     private final JPanel listPanel;
     private final JPanel detailPanel;
-
-    // Header components
-    private final JLabel titleLabel = new JLabel();
-    private final JLabel statusPill = new JLabel();
-    private final JLabel metaLabel = new JLabel();
+    private final ResponsiveGrid detailGrid = new ResponsiveGrid(340, 2).arrangeable("expense");
+    private String loadedCnumber = "";
 
     // Bound fields (names must match Expense fields with underscore)
     public String cname_;
@@ -213,6 +213,14 @@ public class ModernExpensePanel extends ModernDataPanel {
     private final JButton openReceiptBtn = new JButton("\u00d6ffnen");
     private final JButton verifyReceiptsBtn = new JButton("Pr\u00fcfen");
 
+    // PDF preview card components (like template manager)
+    private final JLabel previewImage = new JLabel();
+    private final JLabel previewCaption = new JLabel();
+    private final JButton previewLargerBtn = new JButton(Messages.TEMPLATES_PREVIEW_LARGER.toString());
+    private File previewPdf;
+    private File lastImportedPreviewFile;
+    private int previewRun;
+
     private BigDecimal currentTaxRate = BigDecimal.ZERO;
     private ArrayList<DatabaseObject> accountObjects;
 
@@ -223,21 +231,15 @@ public class ModernExpensePanel extends ModernDataPanel {
 
         initFields();
 
-        // Main layout
-        JPanel center = new JPanel(new BorderLayout());
-        center.setOpaque(false);
-        center.add(createHeader(), BorderLayout.NORTH);
-
         // Horizontal split: list of expenses on the left, details on the right
         listPanel = createListPanel();
         detailPanel = createDetailPanel();
         splitPane = horizontalSplit("expense", listPanel, detailPanel, 0.38);
-        center.add(splitPane, BorderLayout.CENTER);
-
-        add(center, BorderLayout.CENTER);
+        add(splitPane, BorderLayout.CENTER);
 
         tb = new ModernCommandBar(this);
         tb.setExportButtonsEnabled(false);
+        tb.setSaveAsNewAction(() -> RecordActions.saveAsNew(this));
         tb.setFindAction(() -> {
             searchField.requestFocusInWindow();
             searchField.selectAll();
@@ -254,6 +256,10 @@ public class ModernExpensePanel extends ModernDataPanel {
         refresh();
     }
 
+    public ModernCommandBar getCommandBar() {
+        return tb;
+    }
+
     public JSplitPane getSplitPane() {
         return splitPane;
     }
@@ -266,6 +272,10 @@ public class ModernExpensePanel extends ModernDataPanel {
         return detailPanel;
     }
 
+    public ResponsiveGrid getDetailGrid() {
+        return detailGrid;
+    }
+
     public JTable getExpenseTable() {
         return expenseTable;
     }
@@ -276,6 +286,18 @@ public class ModernExpensePanel extends ModernDataPanel {
 
     public JTextField getFilterField() {
         return searchField;
+    }
+
+    public JLabel getPreviewImage() {
+        return previewImage;
+    }
+
+    public JLabel getPreviewCaption() {
+        return previewCaption;
+    }
+
+    public File getPreviewPdf() {
+        return previewPdf;
     }
 
     private void initFields() {
@@ -311,7 +333,6 @@ public class ModernExpensePanel extends ModernDataPanel {
 
         paidCheckBox.setOpaque(false);
         paidCheckBox.setFont(ModernTheme.font(1, Font.BOLD));
-        paidCheckBox.addActionListener(e -> updateStatusPill());
 
         notesArea.setLineWrap(true);
         notesArea.setWrapStyleWord(true);
@@ -349,54 +370,6 @@ public class ModernExpensePanel extends ModernDataPanel {
             netValueField.setText(FormatNumber.formatLokalCurrency(net));
         } catch (Exception e) {
             netValueField.setText(FormatNumber.formatLokalCurrency(0d));
-        }
-    }
-
-    private JComponent createHeader() {
-        JPanel header = new JPanel(new BorderLayout(ModernTheme.px(14), 0));
-        header.setOpaque(false);
-        header.setBorder(ModernTheme.padding(8, 16));
-
-        JPanel center = new JPanel();
-        center.setOpaque(false);
-        center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
-
-        titleLabel.setFont(ModernTheme.font(13, Font.BOLD));
-        titleLabel.setForeground(ModernTheme.foreground());
-        titleLabel.setText("Neue Ausgabe");
-
-        metaLabel.setFont(ModernTheme.font(2, Font.PLAIN));
-        metaLabel.setForeground(ModernTheme.muted());
-
-        statusPill.setOpaque(true);
-        statusPill.setFont(ModernTheme.font(0, Font.BOLD));
-        statusPill.setBorder(BorderFactory.createEmptyBorder(ModernTheme.px(2), ModernTheme.px(8), ModernTheme.px(2), ModernTheme.px(8)));
-        updateStatusPill();
-
-        JPanel second = new JPanel(new FlowLayout(FlowLayout.LEFT, ModernTheme.px(8), 0));
-        second.setOpaque(false);
-        second.add(statusPill);
-        second.add(createPluginBadgeSlot());
-        second.add(metaLabel);
-
-        center.add(titleLabel);
-        center.add(Box.createVerticalStrut(ModernTheme.px(4)));
-        center.add(second);
-
-        header.add(center, BorderLayout.CENTER);
-        return header;
-    }
-
-    private void updateStatusPill() {
-        boolean paid = paidCheckBox.isSelected();
-        if (paid) {
-            statusPill.setText("BEZAHLT");
-            statusPill.setBackground(new Color(220, 252, 231));
-            statusPill.setForeground(new Color(22, 101, 52));
-        } else {
-            statusPill.setText("OFFEN");
-            statusPill.setBackground(new Color(254, 243, 199));
-            statusPill.setForeground(new Color(146, 64, 14));
         }
     }
 
@@ -724,28 +697,31 @@ public class ModernExpensePanel extends ModernDataPanel {
         JPanel p = new JPanel(new BorderLayout());
         p.setOpaque(false);
 
-        ResponsiveGrid grid = new ResponsiveGrid(340, 2).arrangeable("expense");
-
         // Card 1: Basisdaten & Betr\u00e4ge
         Card c1 = new Card("Ausgabendaten")
+                .headerAction(createPluginBadgeSlot())
                 .row(Card.field("ID", idField, 1), Card.field("Belegnummer", cnumberField, 2))
                 .row(Card.field("Brutto", brutValueField), Card.field("Netto", netValueField))
                 .row(Card.field("Steuersatz", taxRateSelect), Card.field("Konto", accountSelect))
                 .row(Card.field("Belegdatum", issueDateChooser), Card.field("Zahlungsdatum", payDateChooser))
                 .row(Card.field(null, paidCheckBox));
-        grid.add(c1);
+        detailGrid.add(c1);
 
         // Card 2: Organisation & Notizen
         Card c2 = new Card("Organisation & Notizen")
                 .row(Card.field("Gruppe", groupSelect), Card.field("Erfasst von", addedByLabel))
                 .row(Card.field("Beschreibung / Verwendungszweck", new JScrollPane(notesArea)));
-        grid.add(c2);
+        detailGrid.add(c2);
 
         // Card 3: Belege & Scans
         Card c3 = createReceiptsCard();
-        grid.add(c3);
+        detailGrid.add(c3);
 
-        p.add(scroll(grid), BorderLayout.CENTER);
+        // Card 4: PDF Preview (like template manager)
+        Card c4 = createPreviewCard();
+        detailGrid.add(c4);
+
+        p.add(scroll(detailGrid), BorderLayout.CENTER);
         return p;
     }
 
@@ -757,6 +733,12 @@ public class ModernExpensePanel extends ModernDataPanel {
         receiptsTable.getColumnModel().getColumn(0).setMaxWidth(50);
         receiptsTable.getColumnModel().getColumn(2).setMaxWidth(80);
         receiptsTable.getColumnModel().getColumn(3).setPreferredWidth(180);
+
+        receiptsTable.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                refreshPreview();
+            }
+        });
 
         receiptsTable.addMouseListener(new MouseAdapter() {
             @Override
@@ -790,6 +772,142 @@ public class ModernExpensePanel extends ModernDataPanel {
         card.addFull(hint);
         card.addFull(new JScrollPane(receiptsTable), 1);
         return card;
+    }
+
+    private Card createPreviewCard() {
+        previewImage.setHorizontalAlignment(JLabel.CENTER);
+        previewImage.setVerticalAlignment(JLabel.TOP);
+        previewImage.setBorder(BorderFactory.createLineBorder(ModernTheme.border()));
+        previewImage.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
+        previewImage.setToolTipText(Messages.TEMPLATES_PREVIEW_LARGER.toString());
+        previewImage.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                showLargerPreview();
+            }
+        });
+        previewCaption.setFont(ModernTheme.font(-1, Font.PLAIN));
+        previewCaption.setForeground(ModernTheme.muted());
+
+        previewLargerBtn.addActionListener(e -> showLargerPreview());
+        previewLargerBtn.setEnabled(false);
+
+        JPanel previewButtons = new JPanel(new WrapLayout(FlowLayout.LEFT, ModernTheme.px(6), ModernTheme.px(4)));
+        previewButtons.setOpaque(false);
+        previewButtons.add(previewLargerBtn);
+
+        JLabel hint = new JLabel("<html><small>" + Messages.TEMPLATES_PREVIEW_HINT.toString() + "</small></html>");
+        hint.setForeground(ModernTheme.muted());
+        hint.setBorder(BorderFactory.createEmptyBorder(0, 0, ModernTheme.px(4), 0));
+
+        return new Card(Messages.TEMPLATES_PREVIEW.toString())
+                .addFull(hint)
+                .addFull(previewImage)
+                .addFull(previewCaption)
+                .addFull(previewButtons);
+    }
+
+    private File resolvePreviewCandidate() {
+        int row = receiptsTable.getSelectedRow();
+        if (row >= 0 && row < currentReceipts.size()) {
+            Receipt r = currentReceipts.get(row);
+            if (r.exists()) {
+                return r.file();
+            }
+        }
+        for (Receipt r : currentReceipts) {
+            if (r.exists() && isPdfFile(r.file())) {
+                return r.file();
+            }
+        }
+        for (Receipt r : currentReceipts) {
+            if (r.exists()) {
+                return r.file();
+            }
+        }
+        if (lastImportedPreviewFile != null && lastImportedPreviewFile.isFile()) {
+            return lastImportedPreviewFile;
+        }
+        return null;
+    }
+
+    private static boolean isPdfFile(File file) {
+        return file != null && file.getName().toLowerCase(Locale.ROOT).endsWith(".pdf");
+    }
+
+    /**
+     * Updates the PDF preview card for the currently selected or attached receipt.
+     */
+    public void refreshPreview() {
+        refreshPreview(resolvePreviewCandidate());
+    }
+
+    /**
+     * Renders the first page of the given PDF receipt into the preview card
+     * (just like the template manager).
+     */
+    public void refreshPreview(final File file) {
+        final int run = ++previewRun;
+        previewPdf = null;
+        if (file == null || !file.isFile() || !isPdfFile(file)) {
+            previewImage.setIcon(null);
+            previewImage.setText(" ");
+            previewImage.setPreferredSize(null);
+            previewCaption.setText(" ");
+            previewLargerBtn.setEnabled(false);
+            return;
+        }
+        previewPdf = file;
+        previewLargerBtn.setEnabled(true);
+        final int width = Math.max(ModernTheme.px(240), Math.min(ModernTheme.px(520),
+                previewImage.getParent() == null || previewImage.getParent().getWidth() <= 0
+                ? ModernTheme.px(320) : previewImage.getParent().getWidth() - ModernTheme.px(24)));
+        previewImage.setIcon(null);
+        previewImage.setText(Messages.TEMPLATES_PREVIEW_LOADING.toString());
+        previewImage.setPreferredSize(new Dimension(width, (int) (width * 1.414)));
+        previewCaption.setText(" ");
+
+        new javax.swing.SwingWorker<Object[], Void>() {
+            @Override
+            protected Object[] doInBackground() throws Exception {
+                try (org.apache.pdfbox.pdmodel.PDDocument d = org.apache.pdfbox.Loader.loadPDF(file)) {
+                    float pageWidth = d.getPage(0).getMediaBox().getWidth();
+                    java.awt.image.BufferedImage img = new org.apache.pdfbox.rendering.PDFRenderer(d)
+                            .renderImage(0, width / pageWidth);
+                    return new Object[]{file, img, d.getNumberOfPages()};
+                }
+            }
+
+            @Override
+            protected void done() {
+                if (run != previewRun) {
+                    return;
+                }
+                try {
+                    Object[] r = get();
+                    previewPdf = (File) r[0];
+                    java.awt.image.BufferedImage img = (java.awt.image.BufferedImage) r[1];
+                    previewImage.setText(null);
+                    previewImage.setIcon(new javax.swing.ImageIcon(img));
+                    previewImage.setPreferredSize(new Dimension(img.getWidth() + 2, img.getHeight() + 2));
+                    previewCaption.setText(String.format(Messages.TEMPLATES_PREVIEW_CAPTION.toString(), r[2], file.getName()));
+                } catch (Exception e) {
+                    Log.Debug(ModernExpensePanel.this, e);
+                    Throwable c = e.getCause() != null ? e.getCause() : e;
+                    previewImage.setIcon(null);
+                    previewImage.setText("<html><div style='padding:8px'>" + Messages.TEMPLATES_PREVIEW_FAILED + "<br><font color='#b91c1c'>"
+                            + String.valueOf(c.getMessage()).replace("<", "&lt;") + "</font></div></html>");
+                    previewImage.setPreferredSize(null);
+                }
+                previewImage.revalidate();
+            }
+        }.execute();
+    }
+
+    private void showLargerPreview() {
+        if (previewPdf != null && previewPdf.exists()) {
+            mpv5.ui.dialogs.PdfPreview.show(previewPdf);
+        }
     }
 
     private void setupDragAndDrop() {
@@ -893,12 +1011,17 @@ public class ModernExpensePanel extends ModernDataPanel {
         if (source == null || !source.isFile()) {
             return;
         }
+        if (isPdfFile(source)) {
+            lastImportedPreviewFile = source;
+        }
         ZugpferdExpenseImport.ParsedInvoice parsed = ZugpferdExpenseImport.parse(source);
         if (parsed != null) {
             importParsedZugferdFile(source, parsed);
+            refreshPreview();
             return;
         }
         if (dataOwner == null || dataOwner.__getIDS() <= 0) {
+            refreshPreview();
             JOptionPane.showMessageDialog(this,
                     "Bitte speichern Sie die Ausgabe zuerst, bevor Sie Belege anh\u00e4ngen.",
                     "Ausgabe nicht gespeichert", JOptionPane.WARNING_MESSAGE);
@@ -1069,7 +1192,11 @@ public class ModernExpensePanel extends ModernDataPanel {
                     r.importedBy
                 });
             }
+            if (!currentReceipts.isEmpty() && receiptsTable.getSelectedRow() < 0) {
+                receiptsTable.setRowSelectionInterval(0, 0);
+            }
         }
+        refreshPreview();
     }
 
     private void applyContentLock(boolean locked) {
@@ -1091,6 +1218,7 @@ public class ModernExpensePanel extends ModernDataPanel {
 
     @Override
     public void setDataOwner(DatabaseObject object, boolean populate) {
+        lastImportedPreviewFile = null;
         dataOwner = (Expense) object;
         if (populate && dataOwner != null) {
             dataOwner.setPanelData(this);
@@ -1109,6 +1237,7 @@ public class ModernExpensePanel extends ModernDataPanel {
 
     @Override
     public void exposeData() {
+        loadedCnumber = cnumber_ != null ? cnumber_ : "";
         idField.setText(cname_ != null ? cname_ : (ids_ > 0 ? String.valueOf(ids_) : ""));
         cnumberField.setText(cnumber_ != null ? cnumber_ : "");
         notesArea.setText(description_ != null ? description_ : "");
@@ -1148,13 +1277,8 @@ public class ModernExpensePanel extends ModernDataPanel {
         if (hasDatabaseConnection()) {
             updateTaxRate();
         }
-        updateStatusPill();
 
-        String title = cnumber_ != null && !cnumber_.isEmpty() ? "Ausgabe " + cnumber_ : (ids_ > 0 ? "Ausgabe #" + ids_ : "Neue Ausgabe");
-        titleLabel.setText(title);
-        metaLabel.setText("ID: " + (ids_ > 0 ? ids_ : "-") + " | Erfasst am: "
-                + (dateadded_ != null ? DateConverter.getSQLDateString(dateadded_) : "-")
-                + " | Benutzer: " + username);
+        String title = cnumber_ != null && !cnumber_.isEmpty() ? "Ausgabe " + cnumber_ : (ids_ > 0 ? "Ausgabe #" + ids_ : "Ausgaben");
         setTabTitle(title);
     }
 
@@ -1187,7 +1311,7 @@ public class ModernExpensePanel extends ModernDataPanel {
 
         description_ = notesArea.getText();
         cnumber_ = cnumberField.getText().trim();
-        cname_ = cnumber_.isEmpty() ? (ids_ > 0 ? String.valueOf(ids_) : "Ausgabe") : cnumber_;
+        cname_ = cnumber_.isEmpty() ? (ids_ > 0 ? String.valueOf(ids_) : "") : cnumber_;
 
         try {
             netvalue_ = FormatNumber.parseDezimal(netValueField.getText());
@@ -1264,10 +1388,24 @@ public class ModernExpensePanel extends ModernDataPanel {
 
     @Override
     public void actionBeforeCreate() {
+        ids_ = -1;
+        String entered = cnumberField.getText().trim();
+        if (entered.isEmpty() || entered.equals(loadedCnumber)) {
+            cnumber_ = "";
+            cname_ = "";
+            if (dataOwner != null) {
+                dataOwner.setCnumber("");
+                dataOwner.setCname("");
+            }
+        }
     }
 
     @Override
     public void actionBeforeSave() {
+        if (ids_ <= 0 && cnumberField.getText().trim().isEmpty() && dataOwner != null) {
+            dataOwner.setCnumber("");
+            dataOwner.setCname("");
+        }
     }
 
     @Override
