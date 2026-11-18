@@ -9,6 +9,7 @@ import javax.swing.JComponent;
 import mpv5.YabsViewProxy;
 import mpv5.db.objects.Item;
 import mpv5.globals.LocalSettings;
+import mpv5.globals.Messages;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Company;
 import mpv5.ui.panels.MPControlPanel;
 import mpv5.ui.panels.ModernItemPanel;
@@ -45,6 +46,6 @@ class MenuNavigationTest {
     @Test
     void invoiceStatusInProgressConstant() {
         assertEquals(1, Item.STATUS_IN_PROGRESS);
-        assertEquals("In progress", Item.getStatusString(Item.STATUS_IN_PROGRESS));
+        assertEquals(Messages.STATUS_IN_PROGRESS.toString(), Item.getStatusString(Item.STATUS_IN_PROGRESS));
     }
 }
