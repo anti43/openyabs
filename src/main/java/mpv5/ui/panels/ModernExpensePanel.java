@@ -1034,6 +1034,7 @@ public class ModernExpensePanel extends ModernDataPanel {
                 if (!newExp.save(true) || newExp.__getIDS() <= 0) {
                     throw new IllegalStateException(Messages.RECEIPT_SAVE_FAILED.toString() + " (" + f.getName() + ")");
                 }
+                mpv5.handler.Activity.record(newExp, mpv5.handler.Activity.Kind.CREATED, String.format(Messages.RECEIPT_IMPORTED_SINGLE_EXPENSE.toString(), f.getAbsolutePath()));
                 ExpenseReceipts.attach(newExp, f);
                 importedExpenses.add(newExp);
             } catch (Exception ex) {
@@ -1185,6 +1186,7 @@ public class ModernExpensePanel extends ModernDataPanel {
                 }
                 if (dataOwner.save(true) && dataOwner.__getIDS() > 0) {
                     ids_ = dataOwner.__getIDS();
+                    mpv5.handler.Activity.record(dataOwner, mpv5.handler.Activity.Kind.CREATED, String.format(Messages.RECEIPT_IMPORTED_SINGLE_EXPENSE.toString(), source.getAbsolutePath()));
                     ExpenseReceipts.attach(dataOwner, source);
                     refresh();
                     setDataOwner(dataOwner, true);

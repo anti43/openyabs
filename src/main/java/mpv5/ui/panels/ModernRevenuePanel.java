@@ -1050,6 +1050,7 @@ public class ModernRevenuePanel extends ModernDataPanel {
                 if (!newRev.save(true) || newRev.__getIDS() <= 0) {
                     throw new IllegalStateException(Messages.RECEIPT_SAVE_FAILED.toString() + " (" + f.getName() + ")");
                 }
+                mpv5.handler.Activity.record(newRev, mpv5.handler.Activity.Kind.CREATED, String.format(Messages.RECEIPT_IMPORTED_SINGLE_REVENUE.toString(), f.getAbsolutePath()));
                 RevenueReceipts.attach(newRev, f);
                 importedRevenues.add(newRev);
             } catch (Exception ex) {
@@ -1196,6 +1197,7 @@ public class ModernRevenuePanel extends ModernDataPanel {
                 }
                 if (dataOwner.save(true) && dataOwner.__getIDS() > 0) {
                     ids_ = dataOwner.__getIDS();
+                    mpv5.handler.Activity.record(dataOwner, mpv5.handler.Activity.Kind.CREATED, String.format(Messages.RECEIPT_IMPORTED_SINGLE_REVENUE.toString(), source.getAbsolutePath()));
                     RevenueReceipts.attach(dataOwner, source);
                     refresh();
                     setDataOwner(dataOwner, true);
