@@ -253,6 +253,10 @@ public class ProductsOverview extends JPanel implements ListPanel {
         SwingUtilities.invokeLater(() -> TreeFormat.expandTree(gtree));
     }
 
+    public JTextField getSearchField() {
+        return search;
+    }
+
     private void resetFilters() {
         loading = true;
         try {

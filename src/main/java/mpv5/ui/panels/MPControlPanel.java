@@ -490,6 +490,10 @@ public class MPControlPanel extends JPanel {
         filter();
     }
 
+    public JTextField getSearchField() {
+        return search;
+    }
+
     private void filter() {
         String n = search.getText().trim();
         Object selected = list.getSelectedValue();

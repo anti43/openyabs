@@ -19,11 +19,16 @@ package mpv5.ui.dialogs;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
+import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GraphicsEnvironment;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.Window;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -35,6 +40,7 @@ import java.util.List;
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -46,6 +52,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
 import javax.swing.KeyStroke;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingUtilities;
@@ -58,6 +65,11 @@ import mpv5.globals.Messages;
 import mpv5.handler.SearchService;
 import mpv5.logging.Log;
 import mpv5.ui.modern.ModernTheme;
+import mpv5.ui.panels.ContactsList;
+import mpv5.ui.panels.MPControlPanel;
+import mpv5.ui.panels.ModernContactPanel;
+import mpv5.ui.panels.ModernProductPanel;
+import mpv5.ui.panels.ProductsOverview;
 
 /**
  * "Search anything" (double Shift, Ctrl+F): one field, results while typing -
@@ -73,6 +85,8 @@ public final class SearchAnything extends JDialog {
     private final DefaultListModel<Object> model = new DefaultListModel<Object>();
     private final JList<Object> list = new JList<Object>(model);
     private final JLabel status = new JLabel(" ");
+    private final JToggleButton pin = new JToggleButton("Pin");
+    private final JButton closeButton = new JButton("\u2715");
     private final Timer delay;
     private int searches;
 
@@ -108,62 +122,191 @@ public final class SearchAnything extends JDialog {
         }
     }
 
-    /**
-     * Opens the search window over the main window
-     */
-    public static void open() {
-        mpv5.ui.panels.SettingsIndex.build();
-        JFrame owner = (JFrame) mpv5.YabsViewProxy.instance().getIdentifierFrame();
-        if (instance == null || instance.getOwner() != owner) {
+    public static SearchAnything getInstance() {
+        return instance;
+    }
+
+    public static SearchAnything ensureInstance() {
+        JFrame owner = null;
+        try {
+            owner = (JFrame) mpv5.YabsViewProxy.instance().getIdentifierFrame();
+        } catch (Exception ignore) {
+        }
+        if (instance == null || (owner != null && instance.getOwner() != owner)) {
             instance = new SearchAnything(owner);
         }
-        instance.showOver(owner);
+        return instance;
+    }
+
+    public static boolean isOpen() {
+        return instance != null && instance.isVisible();
+    }
+
+    public static void focusField() {
+        if (isOpen()) {
+            instance.toFront();
+            instance.requestFocus();
+            instance.field.requestFocusInWindow();
+            instance.field.selectAll();
+        }
     }
 
     /**
-     * Opens the search window right below the given component (e.g. the
-     * search button of a record), kept on the screen
+     * Opens the search window centered on the current screen
+     */
+    public static void open() {
+        openCenter();
+    }
+
+    /**
+     * Opens the search window at the center of the current screen
+     */
+    public static void openCenter() {
+        mpv5.ui.panels.SettingsIndex.build();
+        SearchAnything dialog = ensureInstance();
+        dialog.showCenter();
+    }
+
+    /**
+     * Opens the search window right below the given component (e.g. menu or button),
+     * clamped to stay fully on screen
      *
      * @param anchor
      */
     public static void openAt(java.awt.Component anchor) {
         mpv5.ui.panels.SettingsIndex.build();
-        if (anchor == null || !anchor.isShowing()) {
-            open();
+        SearchAnything dialog = ensureInstance();
+        if (anchor == null) {
+            dialog.showCenter();
             return;
         }
-        JFrame owner = (JFrame) mpv5.YabsViewProxy.instance().getIdentifierFrame();
-        if (instance == null || instance.getOwner() != owner) {
-            instance = new SearchAnything(owner);
+        Point p = null;
+        Rectangle screen = null;
+        if (anchor.isShowing()) {
+            p = anchor.getLocationOnScreen();
+            screen = anchor.getGraphicsConfiguration().getBounds();
+        } else if (anchor instanceof JMenuItem && ((JMenuItem) anchor).getParent() instanceof javax.swing.JPopupMenu) {
+            Component invoker = ((javax.swing.JPopupMenu) ((JMenuItem) anchor).getParent()).getInvoker();
+            if (invoker != null && invoker.isShowing()) {
+                p = invoker.getLocationOnScreen();
+                screen = invoker.getGraphicsConfiguration().getBounds();
+            }
         }
-        Point p = anchor.getLocationOnScreen();
-        java.awt.Rectangle screen = anchor.getGraphicsConfiguration().getBounds();
-        int x = Math.max(screen.x, Math.min(p.x, screen.x + screen.width - instance.getWidth()));
-        int y = p.y + anchor.getHeight() + ModernTheme.px(2);
-        if (y + instance.getHeight() > screen.y + screen.height) {
-            y = Math.max(screen.y, p.y - instance.getHeight() - ModernTheme.px(2));
+        if (p == null) {
+            try {
+                java.awt.PointerInfo pi = java.awt.MouseInfo.getPointerInfo();
+                if (pi != null) {
+                    p = pi.getLocation();
+                    screen = pi.getDevice().getDefaultConfiguration().getBounds();
+                }
+            } catch (Exception ignore) {
+            }
         }
-        instance.showAt(x, y);
+        if (p == null) {
+            dialog.showCenter();
+            return;
+        }
+        if (screen == null) {
+            Window owner = dialog.getOwner();
+            if (owner != null && owner.isShowing()) {
+                screen = owner.getGraphicsConfiguration().getBounds();
+            } else {
+                try {
+                    screen = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().getBounds();
+                } catch (Exception ignore) {
+                    screen = new Rectangle(0, 0, 1024, 768);
+                }
+            }
+        }
+        int anchorHeight = anchor.isShowing() ? anchor.getHeight() : ModernTheme.px(24);
+        int x = Math.max(screen.x, Math.min(p.x, screen.x + screen.width - dialog.getWidth()));
+        int y = p.y + anchorHeight + ModernTheme.px(2);
+        if (y + dialog.getHeight() > screen.y + screen.height) {
+            y = Math.max(screen.y, p.y - dialog.getHeight() - ModernTheme.px(2));
+        }
+        dialog.showAt(x, y);
     }
 
-    private SearchAnything(JFrame owner) {
+    /**
+     * Opens the search window at the location of the clicked menu item or parent menu
+     */
+    public static void openAtMenu(JMenuItem item, JMenu menu) {
+        if (item != null && item.isShowing()) {
+            openAt(item);
+        } else if (menu != null && menu.isShowing()) {
+            openAt(menu);
+        } else {
+            openAt(item);
+        }
+    }
+
+    public SearchAnything(JFrame owner) {
         super(owner, Messages.SEARCH_ANYTHING.toString(), false);
         setUndecorated(true);
         JPanel p = new JPanel(new BorderLayout(0, ModernTheme.px(8)));
         p.setBackground(ModernTheme.cardBackground());
         p.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(ModernTheme.border()),
-                BorderFactory.createEmptyBorder(ModernTheme.px(12), ModernTheme.px(12), ModernTheme.px(8), ModernTheme.px(12))));
+                BorderFactory.createEmptyBorder(ModernTheme.px(8), ModernTheme.px(12), ModernTheme.px(8), ModernTheme.px(12))));
 
         JLabel title = new JLabel(Messages.SEARCH_ANYTHING.toString());
         title.setFont(ModernTheme.font(0, Font.BOLD));
         title.setForeground(ModernTheme.muted());
+
+        JPanel header = new JPanel(new BorderLayout());
+        header.setOpaque(false);
+        header.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
+        title.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
+        header.add(title, BorderLayout.WEST);
+
+        JPanel controls = new JPanel(new FlowLayout(FlowLayout.RIGHT, ModernTheme.px(4), 0));
+        controls.setOpaque(false);
+
+        pin.setFont(ModernTheme.font(-1, Font.PLAIN));
+        pin.setFocusable(false);
+        pin.setToolTipText("Stick to top");
+        pin.setMargin(new java.awt.Insets(ModernTheme.px(2), ModernTheme.px(6), ModernTheme.px(2), ModernTheme.px(6)));
+        pin.addActionListener(e -> setStickToTop(pin.isSelected()));
+
+        closeButton.setFont(ModernTheme.font(-1, Font.BOLD));
+        closeButton.setFocusable(false);
+        closeButton.setToolTipText("Close (Esc)");
+        closeButton.setMargin(new java.awt.Insets(ModernTheme.px(2), ModernTheme.px(6), ModernTheme.px(2), ModernTheme.px(6)));
+        closeButton.addActionListener(e -> close());
+
+        controls.add(pin);
+        controls.add(closeButton);
+        header.add(controls, BorderLayout.EAST);
+
+        MouseAdapter dragListener = new MouseAdapter() {
+            private Point dragOrigin;
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                dragOrigin = e.getPoint();
+            }
+
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                if (dragOrigin != null) {
+                    Point current = e.getLocationOnScreen();
+                    setLocation(current.x - dragOrigin.x, current.y - dragOrigin.y);
+                }
+            }
+        };
+        header.addMouseListener(dragListener);
+        header.addMouseMotionListener(dragListener);
+        title.addMouseListener(dragListener);
+        title.addMouseMotionListener(dragListener);
+        status.addMouseListener(dragListener);
+        status.addMouseMotionListener(dragListener);
+
         field.setFont(ModernTheme.font(6, Font.PLAIN));
         field.putClientProperty("JTextField.placeholderText", Messages.SEARCH_ANYTHING_HINT.toString());
         field.putClientProperty("JTextField.showClearButton", Boolean.TRUE);
         JPanel top = new JPanel(new BorderLayout(0, ModernTheme.px(6)));
         top.setOpaque(false);
-        top.add(title, BorderLayout.NORTH);
+        top.add(header, BorderLayout.NORTH);
         top.add(field, BorderLayout.CENTER);
 
         list.setCellRenderer(new Renderer());
@@ -217,12 +360,18 @@ public final class SearchAnything extends JDialog {
         bind(KeyEvent.VK_PAGE_DOWN, () -> move(8));
         bind(KeyEvent.VK_PAGE_UP, () -> move(-8));
         bind(KeyEvent.VK_ENTER, this::openSelected);
-        bind(KeyEvent.VK_ESCAPE, this::close);
-        //a click elsewhere closes it, like a popup
+        bind(KeyEvent.VK_ESCAPE, () -> {
+            if (!isStickToTop()) {
+                close();
+            }
+        });
+        //a click elsewhere closes it, unless stick to top is toggled
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowDeactivated(WindowEvent e) {
-                close();
+                if (!isStickToTop()) {
+                    close();
+                }
             }
         });
         pack();
@@ -244,24 +393,150 @@ public final class SearchAnything extends JDialog {
         list.getActionMap().put(name, a);
     }
 
-    private void showOver(JFrame owner) {
-        Point o = owner.getLocationOnScreen();
-        showAt(o.x + (owner.getWidth() - getWidth()) / 2, o.y + Math.max(ModernTheme.px(60), owner.getHeight() / 8));
+    public boolean isStickToTop() {
+        return pin.isSelected();
     }
 
-    private void showAt(int x, int y) {
+    public void setStickToTop(boolean sticky) {
+        pin.setSelected(sticky);
+        setAlwaysOnTop(sticky);
+        if (sticky && isVisible()) {
+            toFront();
+        }
+    }
+
+    public void close() {
+        delay.stop();
+        setVisible(false);
+    }
+
+    public JTextField getTextField() {
+        return field;
+    }
+
+    public JToggleButton getPinButton() {
+        return pin;
+    }
+
+    public JButton getCloseButton() {
+        return closeButton;
+    }
+
+    public void showCenter() {
+        Rectangle screen = null;
+        Window owner = getOwner();
+        if (owner != null && owner.isShowing()) {
+            screen = owner.getGraphicsConfiguration().getBounds();
+        } else {
+            try {
+                screen = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().getBounds();
+            } catch (Exception ignore) {
+            }
+        }
+        if (screen == null) {
+            screen = new Rectangle(0, 0, 1024, 768);
+        }
+        int x = screen.x + (screen.width - getWidth()) / 2;
+        int y = screen.y + (screen.height - getHeight()) / 2;
+        showAt(x, y);
+    }
+
+    public void showAt(int x, int y) {
         setLocation(x, y);
         field.selectAll();
+        if (isStickToTop()) {
+            setAlwaysOnTop(true);
+        }
         setVisible(true);
+        toFront();
+        requestFocus();
         SwingUtilities.invokeLater(field::requestFocusInWindow);
         if (model.isEmpty()) {
             search();
         }
     }
 
-    private void close() {
-        delay.stop();
-        setVisible(false);
+    public static JTextField findFilterBox(Component root) {
+        if (root == null) {
+            return null;
+        }
+        if (root instanceof MPControlPanel) {
+            return ((MPControlPanel) root).getSearchField();
+        }
+        if (root instanceof ProductsOverview) {
+            return ((ProductsOverview) root).getSearchField();
+        }
+        if (root instanceof ContactsList) {
+            return ((ContactsList) root).getFilterField();
+        }
+        if (root instanceof ModernContactPanel) {
+            return ((ModernContactPanel) root).getFilterField();
+        }
+        if (root instanceof ModernProductPanel) {
+            return ((ModernProductPanel) root).getFilterField();
+        }
+        if (root instanceof Container) {
+            return findFilterBoxInContainer((Container) root);
+        }
+        return null;
+    }
+
+    private static JTextField findFilterBoxInContainer(Container container) {
+        for (Component c : container.getComponents()) {
+            if (c instanceof JTextField && c.isEnabled() && c.isVisible()) {
+                JTextField tf = (JTextField) c;
+                String name = tf.getName() == null ? "" : tf.getName().toLowerCase();
+                String tip = tf.getToolTipText() == null ? "" : tf.getToolTipText().toLowerCase();
+                Object placeholderObj = tf.getClientProperty("JTextField.placeholderText");
+                String placeholder = placeholderObj == null ? "" : placeholderObj.toString().toLowerCase();
+                if (isFilterKeyword(name) || isFilterKeyword(tip) || isFilterKeyword(placeholder)) {
+                    return tf;
+                }
+            }
+            if (c instanceof Container) {
+                JTextField found = findFilterBoxInContainer((Container) c);
+                if (found != null) {
+                    return found;
+                }
+            }
+        }
+        return null;
+    }
+
+    private static boolean isFilterKeyword(String s) {
+        return s.contains("filter") || s.contains("search") || s.contains("such") || s.contains("find");
+    }
+
+    /**
+     * Contextual find behavior for Ctrl+F:
+     * - If active tab has a filter box, focus that filter box.
+     * - If no filter box, but Search Anything is open, focus Search Anything.
+     * - If no filter box and Search Anything is closed, open Search Anything.
+     */
+    public static void handleContextualFind() {
+        Component activeTab = null;
+        try {
+            Object showing = mpv5.ui.frames.MPView.getShowingTab();
+            if (showing instanceof JScrollPane) {
+                activeTab = ((JScrollPane) showing).getViewport().getView();
+            } else if (showing instanceof Component) {
+                activeTab = (Component) showing;
+            }
+        } catch (Exception ignore) {
+        }
+
+        JTextField filterBox = findFilterBox(activeTab);
+        if (filterBox != null && filterBox.isShowing() && filterBox.isEnabled()) {
+            filterBox.requestFocusInWindow();
+            filterBox.selectAll();
+            return;
+        }
+
+        if (isOpen()) {
+            focusField();
+        } else {
+            openCenter();
+        }
     }
 
     private void move(int by) {
@@ -549,7 +824,7 @@ public final class SearchAnything extends JDialog {
                         lastShift = 0;
                         Window w = e.getComponent() == null ? null : SwingUtilities.getWindowAncestor(e.getComponent());
                         if (!(w instanceof SearchAnything)) {
-                            SwingUtilities.invokeLater(SearchAnything::open);
+                            SwingUtilities.invokeLater(SearchAnything::openCenter);
                         }
                         return false;
                     }
@@ -557,6 +832,11 @@ public final class SearchAnything extends JDialog {
                     other = false;
                 } else if (e.getID() == KeyEvent.KEY_PRESSED) {
                     other = true;
+                    boolean ctrlOrMeta = e.isControlDown() || e.isMetaDown();
+                    if (e.getKeyCode() == KeyEvent.VK_F && ctrlOrMeta && e.isShiftDown()) {
+                        SwingUtilities.invokeLater(SearchAnything::openCenter);
+                        return true;
+                    }
                 }
                 return false;
             }

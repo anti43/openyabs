@@ -157,6 +157,10 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel, DataP
       add(list, java.awt.BorderLayout.CENTER);
    }
 
+   public javax.swing.JTextField getFilterField() {
+      return jTextField1;
+   }
+
    /**
     * A component with its label above
     */

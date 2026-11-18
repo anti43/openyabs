@@ -349,10 +349,10 @@ public class ModernCommandBar extends JPanel {
             if (findAction != null) {
                 findAction.run();
             } else {
-                showSearchPanel();
+                mpv5.ui.dialogs.SearchAnything.handleContextualFind();
             }
         });
-        shortcut(SEARCH_PANEL, this::showSearchPanel);
+        shortcut(SEARCH_PANEL, mpv5.ui.dialogs.SearchAnything::openCenter);
         shortcut(COPY, this::copy);
         shortcut(PASTE, () -> {
             if (!view.isContentLocked()) {
