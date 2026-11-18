@@ -59,7 +59,8 @@ public final class ProductPreview extends javax.swing.JPanel {
     public static String[] productColumns() {
         return new String[]{"ids", Messages.PRODUCTS_COL_NUMBER.toString(), Messages.PRODUCTS_COL_NAME.toString(), "EAN",
             Messages.PRODUCTS_COL_REFERENCE.toString(), Messages.PRODUCTS_COL_SUPPLIER.toString(), Messages.PRODUCTS_COL_GROUP.toString(),
-            Messages.PRODUCTS_COL_PURCHASE.toString(), Messages.PRODUCTS_COL_SALE.toString(), Messages.PRODUCTS_STOCK.toString()};
+            Messages.PRODUCTS_COL_PURCHASE.toString(), Messages.PRODUCTS_COL_SALE.toString(), Messages.PRODUCTS_STOCK.toString(),
+            Messages.PRODUCTS_COL_THRESHOLD.toString()};
     }
 
     private ProductPreview(JTable table, int idColumn) {
