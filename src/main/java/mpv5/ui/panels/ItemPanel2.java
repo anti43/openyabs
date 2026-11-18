@@ -532,6 +532,18 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         city.setText(dbo.getDefaultaddress().__getCity());
         street.setText(dbo.getDefaultaddress().__getStreet());
 
+        java.math.BigDecimal custRate = mpv5.handler.ContactService.customerTaxRate(dbo);
+        if (custRate != null && itemtable.getModel() instanceof mpv5.utils.models.MPTableModel) {
+            mpv5.utils.models.MPTableModel model = (mpv5.utils.models.MPTableModel) itemtable.getModel();
+            for (int r = 0; r < model.getRowCount(); r++) {
+                Object desc = model.getValueAt(r, 4);
+                Object ext = model.getValueAt(r, 5);
+                if ((desc != null && !desc.toString().trim().isEmpty()) || (ext != null && !ext.toString().trim().isEmpty())) {
+                    model.setValueAt(custRate, r, 6);
+                }
+            }
+        }
+
         //contactcity.setText(dbo.__getStreet() + ", " + dbo.__getCity() + ", " + dbo.__getCountry() + " (" + dbo.__getCNumber() + ")");
         if (inttype_ == Item.TYPE_INVOICE
                 || inttype_ == Item.TYPE_PART_PAYMENT
@@ -2734,8 +2746,9 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                 dataOwner.setContactsids(((Contact) dbo).__getIDS());
                 setDataOwner(dataOwner, true);
             } else if (dbo.getContext().equals(Context.getProduct())) {
+                java.math.BigDecimal rate = mpv5.handler.ContactService.customerTaxRate(dataOwner != null ? dataOwner.__getContactsids() : 0);
                 ((MPTableModel) itemtable.getModel()).addRow(
-                        new SubItem((Product) dbo).getRowData(((MPTableModel) itemtable.getModel()).getRowCount() + 1));
+                        new SubItem((Product) dbo, rate).getRowData(((MPTableModel) itemtable.getModel()).getRowCount() + 1));
                 ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
             } else if (dbo.getContext().equals(Context.getProductList())) {
                 try {

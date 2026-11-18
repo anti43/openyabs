@@ -246,15 +246,59 @@ public class ItemPositionsTable extends JPanel {
         return usedOrders;
     }
 
+    private BigDecimal customerTaxRate = null;
+
+    /**
+     * @return the customer tax rate override, or null if documents use product-specific rates
+     */
+    public BigDecimal getCustomerTaxRate() {
+        return customerTaxRate;
+    }
+
+    /**
+     * @param rate customer tax rate override, or null
+     */
+    public void setCustomerTaxRate(BigDecimal rate) {
+        this.customerTaxRate = rate;
+    }
+
+    /**
+     * Sets the customer tax rate override, updates existing positions to this rate,
+     * and recalculates totals.
+     *
+     * @param rate customer tax rate override
+     */
+    public void applyCustomerTaxRate(BigDecimal rate) {
+        this.customerTaxRate = rate;
+        if (rate == null) {
+            return;
+        }
+        MPTableModel model = getModel();
+        for (int r = 0; r < model.getRowCount(); r++) {
+            Object desc = model.getValueAt(r, 4);
+            Object ext = model.getValueAt(r, 5);
+            if ((desc != null && !desc.toString().trim().isEmpty()) || (ext != null && !ext.toString().trim().isEmpty())) {
+                model.setValueAt(rate, r, 6);
+            }
+        }
+        recalculate();
+    }
+
     /**
      * Six empty positions (a new document)
      */
     public final void setDefaultPositions() {
-        itemtable.setModel(SubItem.toModel(new SubItem[]{
+        SubItem[] items = new SubItem[]{
             SubItem.getDefaultItem(), SubItem.getDefaultItem(),
             SubItem.getDefaultItem(), SubItem.getDefaultItem(),
             SubItem.getDefaultItem(), SubItem.getDefaultItem()
-        }));
+        };
+        if (customerTaxRate != null) {
+            for (SubItem s : items) {
+                s.setTaxpercentvalue(customerTaxRate);
+            }
+        }
+        itemtable.setModel(SubItem.toModel(items));
         formatTable();
     }
 
@@ -388,6 +432,10 @@ public class ItemPositionsTable extends JPanel {
     public void addPosition(SubItem s) {
         if (!editable) {
             return;
+        }
+        if (customerTaxRate != null) {
+            s.setTaxpercentvalue(customerTaxRate);
+            SubItem.calculate(s);
         }
         getModel().addRow(s.getRowData(getModel().getRowCount() + 1));
         fireUpdate();
@@ -720,6 +768,7 @@ public class ItemPositionsTable extends JPanel {
         }
         //the price of a product follows its staggered prices when the quantity changes
         mpv5.handler.ItemService.followStaggeredPrices(getModel());
+        followCustomerTaxRate();
         taxcalculator.setSumFunction(m -> invoiceTotals(m, optional).tax);
         itemMultiplier.setSumFunction(m -> invoiceTotals(m, optional).gross);
 
@@ -729,7 +778,7 @@ public class ItemPositionsTable extends JPanel {
             @Override
             public void mouseReleased(MouseEvent e) {
                 if (!User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "ordersoverproducts")) {
-                    ProductSelectDialog.instanceOf(getModel(), itemtable.getSelectedRow(), e, 0, null, null);
+                    ProductSelectDialog.instanceOf(getModel(), itemtable.getSelectedRow(), e, 0, null, null, customerTaxRate);
                 } else {
                     Item o = (Item) Popup.SelectValue(Context.getOrder());
                     if (o != null) {
@@ -847,6 +896,24 @@ public class ItemPositionsTable extends JPanel {
             lines.add(new InvoiceMath.Line(quantity(v, optional), cell(v, 5), cell(v, 15), cell(v, 6)));
         }
         return InvoiceMath.totals(lines);
+    }
+
+    private void followCustomerTaxRate() {
+        getModel().addTableModelListener(e -> {
+            if (customerTaxRate == null || e.getType() != javax.swing.event.TableModelEvent.UPDATE) {
+                return;
+            }
+            int col = e.getColumn();
+            if (col == 10 || col == javax.swing.event.TableModelEvent.ALL_COLUMNS) {
+                for (int r = Math.max(0, e.getFirstRow()); r <= Math.min(e.getLastRow(), getModel().getRowCount() - 1); r++) {
+                    Object currentTax = getModel().getValueAt(r, 6);
+                    BigDecimal tax = currentTax != null ? FormatNumber.getBigDecimal(currentTax) : null;
+                    if (tax == null || tax.compareTo(customerTaxRate) != 0) {
+                        getModel().setValueAt(customerTaxRate, r, 6);
+                    }
+                }
+            }
+        });
     }
     // </editor-fold>
 }
