@@ -919,14 +919,13 @@ public class Main implements Runnable {
         };
         new Thread(runnable).start();
         if (!HEADLESS && !removeplugs) {
-            //the plugins (YabsExtension) of YaBS and of the plugins folder
-            SwingUtilities.invokeLater(() -> {
-                try {
-                    mpv5.plugin.ExtensionManager.instance().startAll();
-                } catch (Throwable t) {
-                    Log.Debug(Main.class, t);
-                }
-            });
+            //the plugins (YabsExtension) of YaBS and of the plugins folder: loaded in the
+            //background, the window is usable meanwhile (progress in the status bar)
+            try {
+                mpv5.plugin.ExtensionManager.instance().startAllInBackground();
+            } catch (Throwable t) {
+                Log.Debug(Main.class, t);
+            }
         }
         splash.dispose();
         if (!HEADLESS) {

@@ -76,6 +76,10 @@ public class ProductsOverview extends JPanel implements ListPanel {
     private final ChipToggle kindAll = new ChipToggle(Messages.PRODUCTS_KIND_ALL.toString());
     private final ChipToggle kindProducts = new ChipToggle(Messages.PRODUCTS_KIND_PRODUCTS.toString());
     private final ChipToggle kindServices = new ChipToggle(Messages.PRODUCTS_KIND_SERVICES.toString());
+    /**
+     * Only products whose stock reached the threshold (issue #148)
+     */
+    private final ChipToggle belowThreshold = new ChipToggle(Messages.PRODUCTS_BELOW_THRESHOLD.toString());
     private final LabeledCombobox supplier = new LabeledCombobox();
     private final LabeledCombobox manufacturer = new LabeledCombobox();
     private final DragNDropTreeForGroups gtree = new DragNDropTreeForGroups(1);
@@ -155,6 +159,9 @@ public class ProductsOverview extends JPanel implements ListPanel {
             c.addActionListener(e -> refresh());
         }
         kindAll.setSelected(true);
+        belowThreshold.setToolTipText(Messages.PRODUCTS_BELOW_THRESHOLD_TIP.toString());
+        belowThreshold.addActionListener(e -> refresh());
+        chips.add(belowThreshold);
         for (LabeledCombobox c : new LabeledCombobox[]{supplier, manufacturer}) {
             c.setSearchEnabled(true);
             c.setEditable(true);
@@ -262,6 +269,7 @@ public class ProductsOverview extends JPanel implements ListPanel {
         try {
             search.setText("");
             kindAll.setSelected(true);
+            belowThreshold.setSelected(false);
             supplier.setSelectedIndex(-1);
             manufacturer.setSelectedIndex(-1);
             gtree.clearSelection();
@@ -347,10 +355,44 @@ public class ProductsOverview extends JPanel implements ListPanel {
         } catch (NodataFoundException ex) {
             data = new Object[0][header.length];
         }
+        if (belowThreshold.isSelected()) {
+            data = belowThreshold(data);
+        }
         listtable.setModel(new MPTableModel(data, header));
         //the internal id is not shown
         TableFormat.stripColumn(listtable, 0);
         count.setText(String.format(Messages.PRODUCTS_COUNT.toString(), data.length));
+    }
+
+    /**
+     * @param data rows with the id of the product in the first column
+     * @return the rows of products whose stock reached the threshold: as the
+     * reorder warning ({@link Product#save(boolean)}), products with
+     * inventory and a threshold above 0, stock at or below it
+     */
+    private static Object[][] belowThreshold(Object[][] data) {
+        java.util.Set<String> ids = new java.util.HashSet<String>();
+        try {
+            Object[][] rows = QueryHandler.getConnection().freeSelectQuery(
+                    "SELECT ids FROM " + Context.getProduct().getDbIdentity()
+                    + " WHERE inttype = " + Product.TYPE_PRODUCT
+                    + " AND intinventorytype = 1 AND thresholdvalue > 0 AND stockvalue <= thresholdvalue",
+                    mpv5.usermanagement.MPSecurityManager.VIEW, null).getData();
+            if (rows != null) {
+                for (Object[] r : rows) {
+                    ids.add(String.valueOf(r[0]));
+                }
+            }
+        } catch (Exception ex) {
+            Log.Debug(ProductsOverview.class, ex.getMessage());
+        }
+        List<Object[]> l = new ArrayList<Object[]>();
+        for (Object[] r : data) {
+            if (r != null && r.length > 0 && ids.contains(String.valueOf(r[0]))) {
+                l.add(r);
+            }
+        }
+        return l.toArray(new Object[0][]);
     }
 
     private static Integer selectedId(LabeledCombobox c) {

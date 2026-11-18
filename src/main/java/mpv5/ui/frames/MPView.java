@@ -607,6 +607,8 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
         shortcuts.setAccelerator(mpv5.ui.toolbars.ModernCommandBar.HELP);
         shortcuts.addActionListener(e -> mpv5.ui.dialogs.ShortcutsDialog.show(getFrame().getRootPane()));
         helpmenu.add(shortcuts, 0);
+        //F1 in every window: the wiki page of the view, else the entry page of the wiki
+        mpv5.ui.misc.Help.install();
         //View > Layout: only the look (modern or system); the checked one is the look in use.
         //The modern views of contacts, products and documents are a user setting (Control Panel)
         final javax.swing.JRadioButtonMenuItem modernLook = new javax.swing.JRadioButtonMenuItem(Messages.LAF_MODERN.toString());
@@ -2923,11 +2925,7 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
 
     private void jMenuItem27ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem27ActionPerformed
 
-        try {
-            java.awt.Desktop.getDesktop().browse(new URI(Constants.WIKI));
-        } catch (Exception ex) {
-            Log.Debug(ex);
-        }
+        mpv5.ui.misc.Help.show(java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner());
 }//GEN-LAST:event_jMenuItem27ActionPerformed
 
     private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed

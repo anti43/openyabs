@@ -74,13 +74,7 @@ public class FileActionHandler {
      * @param f
      */
     public static void open(File f) {
-        if (Desktop.isDesktopSupported()) {
-            try {
-                Desktop.getDesktop().open(f);
-            } catch (IOException ex) {
-                Log.Debug(FileActionHandler.class, "Open File Error: ");
-                Log.Debug(FileActionHandler.class, ex);
-            }
-        }
+        //one place for opening files (PDF viewer of External programs, fallbacks)
+        FileDirectoryHandler.open(f);
     }
 }

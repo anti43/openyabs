@@ -146,7 +146,7 @@ public final class ActivityButton extends JButton {
                 return;
             }
             try {
-                Desktop.getDesktop().open(e.file);
+                mpv5.utils.files.FileDirectoryHandler.open(e.file);
             } catch (Exception ex) {
                 Log.Debug(ActivityButton.class, ex);
                 Popup.notice(Messages.NOT_POSSIBLE + ": " + e.file.getAbsolutePath());

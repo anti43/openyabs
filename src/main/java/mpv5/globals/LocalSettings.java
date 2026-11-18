@@ -60,6 +60,11 @@ public class LocalSettings {
     public static final String DBESCAPE = "dbescape";
     public static final String CLIENT = "client";
     public static final String CALCULATOR = "calculator";
+    /**
+     * The program which opens PDF files (empty: the default of the system);
+     * the path of the file is passed as argument, or replaces {file}
+     */
+    public static final String PDF_VIEWER = "pdfviewer";
     public static final String BASE_DIR = "basedir";
     public static final String BACKUP_DIR = "backupdir";
     /**
@@ -91,6 +96,7 @@ public class LocalSettings {
                 {CACHE_DIR, "Cache"},
                 {DBESCAPE, "true"},
                 {CALCULATOR, ""},
+                {PDF_VIEWER, ""},
                 {CMD_PASSWORD, ""},
                 {SUPPRESS_UPDATE_CHECK, "false"}, // MacOS
             //                {OFFICE_HOME, "/Applications/OpenOffice.org.app/Contents/"},

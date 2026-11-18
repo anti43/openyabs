@@ -392,20 +392,8 @@ public class ModernExpensePanel extends ModernDataPanel {
 
         ModernTheme.style(expenseTable);
         expenseTable.setAutoCreateRowSorter(true);
-        expenseTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        expenseTable.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                int row = expenseTable.getSelectedRow();
-                if (row >= 0) {
-                    int modelRow = expenseTable.convertRowIndexToModel(row);
-                    Object val = expenseTable.getModel().getValueAt(modelRow, 0);
-                    if (val instanceof DatabaseObject) {
-                        setDataOwner((DatabaseObject) val, true);
-                    }
-                }
-            }
-        });
+        //single click, arrow keys and Enter show the record
+        installRecordList(expenseTable);
 
         JComponent filterBar = createFilterBar();
 
@@ -1238,15 +1226,7 @@ public class ModernExpensePanel extends ModernDataPanel {
         }
         Receipt r = currentReceipts.get(row);
         if (r.exists()) {
-            if (Desktop.isDesktopSupported()) {
-                try {
-                    Desktop.getDesktop().open(r.file());
-                } catch (Exception ex) {
-                    Popup.notice("Belegdatei:\n" + r.archivePath);
-                }
-            } else {
-                Popup.notice("Belegdatei:\n" + r.archivePath);
-            }
+            mpv5.utils.files.FileDirectoryHandler.open(r.file());
         } else {
             JOptionPane.showMessageDialog(this,
                     "Belegdatei im Archiv nicht gefunden:\n" + r.archivePath,
@@ -1358,6 +1338,7 @@ public class ModernExpensePanel extends ModernDataPanel {
             }
             loadReceipts();
             notifyViewOpened();
+            selectRecordRow(expenseTable, dataOwner);
             validate();
         }
     }
@@ -1474,6 +1455,8 @@ public class ModernExpensePanel extends ModernDataPanel {
                 x.setTypes(Expense.class, String.class, Account.class, String.class, String.class, Boolean.class, Date.class, Date.class);
                 expenseTable.setModel(x);
                 applyExpenseFilter();
+                //keep the shown record highlighted in the new list
+                selectRecordRow(expenseTable, dataOwner);
             } catch (NodataFoundException e) {
                 Log.Debug(ModernExpensePanel.class, e.getMessage());
             }

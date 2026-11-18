@@ -106,6 +106,12 @@ public interface DataPanel {
     public static final String PROPERTY_CONTENT_LOCKED = "yabs.contentLocked";
 
     /**
+     * Client property key for the archived document file (e.g. the e-invoice)
+     * of a record locked by a plugin
+     */
+    public static final String PROPERTY_LOCKED_DOCUMENT = "yabs.lockedDocument";
+
+    /**
      * Shows or clears a banner component provided by a plugin at the top of
      * this view
      *
@@ -150,5 +156,30 @@ public interface DataPanel {
                 && Boolean.TRUE.equals(((javax.swing.JComponent) this).getClientProperty(PROPERTY_CONTENT_LOCKED));
     }
 
-}
+    /**
+     * Sets the archived document file of a locked record (e.g. the e-invoice
+     * a plugin archived when it locked the invoice). While the content is
+     * locked, print, PDF, preview and e-invoice open this file instead of
+     * creating a new one.
+     *
+     * @param file the archived file, or null to clear
+     */
+    public default void setLockedDocument(java.io.File file) {
+        if (this instanceof javax.swing.JComponent) {
+            ((javax.swing.JComponent) this).putClientProperty(PROPERTY_LOCKED_DOCUMENT, file);
+        }
+    }
 
+    /**
+     * @return the archived document file of the locked record, or null if the
+     * content is not locked or no file was set
+     */
+    public default java.io.File getLockedDocument() {
+        if (!isContentLocked() || !(this instanceof javax.swing.JComponent)) {
+            return null;
+        }
+        Object f = ((javax.swing.JComponent) this).getClientProperty(PROPERTY_LOCKED_DOCUMENT);
+        return f instanceof java.io.File ? (java.io.File) f : null;
+    }
+
+}

@@ -502,7 +502,12 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
      * The actions of a document: in the bar directly above the positions
      */
     private void createActions() {
-        previewButton.addActionListener(e -> preview(dataOwner.__getInttype()));
+        //a locked document with an archived file: show that file, do not create a new one
+        previewButton.addActionListener(e -> {
+            if (!mpv5.ui.toolbars.RecordActions.openLockedDocument(this)) {
+                preview(dataOwner.__getInttype());
+            }
+        });
         positions.addAction(previewButton);
 
         JPopupMenu docs = new JPopupMenu();
@@ -526,10 +531,32 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         pdf.addActionListener(e -> createEInvoice(ZugpferdFile.Format.ZUGFERD));
         JMenuItem check = new JMenuItem(Messages.ZUGFERD_VALIDATE_FILE.toString());
         check.addActionListener(e -> validateEInvoiceFile());
+        JMenuItem openLocked = new JMenuItem(Messages.LOCKED_DOCUMENT_OPEN.toString());
+        openLocked.addActionListener(e -> mpv5.ui.toolbars.RecordActions.openLockedDocument(this));
+        einvoice.add(openLocked);
         einvoice.add(xml);
         einvoice.add(pdf);
         einvoice.addSeparator();
         einvoice.add(check);
+        //locked with an archived e-invoice: only open the existing file, no new one
+        einvoice.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            @Override
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent e) {
+                java.io.File locked = getLockedDocument();
+                openLocked.setVisible(locked != null);
+                openLocked.setToolTipText(locked == null ? null : locked.getPath());
+                xml.setEnabled(locked == null);
+                pdf.setEnabled(locked == null);
+            }
+
+            @Override
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent e) {
+            }
+
+            @Override
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent e) {
+            }
+        });
         positions.addAction(menuButton(einvoiceButton, einvoice));
 
         JPopupMenu create = new JPopupMenu();
@@ -932,6 +959,9 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
 
     // <editor-fold defaultstate="collapsed" desc="E-invoice (as in ItemPanel2)">
     private void createEInvoice(final ZugpferdFile.Format format) {
+        if (mpv5.ui.toolbars.RecordActions.openLockedDocument(this)) {
+            return;
+        }
         if (dataOwner == null || !dataOwner.isExisting()) {
             Popup.notice(Messages.NOT_POSSIBLE + "\n" + Messages.NOT_SAVED_YET);
             return;

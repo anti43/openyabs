@@ -77,6 +77,15 @@ public final class GroovyPluginEditor extends JDialog {
     private final UndoManager undo = new UndoManager();
     private final JLabel status = new JLabel(" ");
     private String saved = "";
+    /**
+     * Changed since loading or saving (a flag: comparing the whole text on
+     * every key stroke is slow for large plugins)
+     */
+    private boolean dirty = false;
+    /**
+     * A check or a start runs in the background
+     */
+    private boolean busy = false;
 
     /**
      * Opens the editor for the plugin file
@@ -154,6 +163,7 @@ public final class GroovyPluginEditor extends JDialog {
         setContentPane(content);
 
         keys();
+        getRootPane().putClientProperty(mpv5.ui.misc.Help.PROPERTY_HELP_PAGE, "Writing-plugins-(EN)");
         load();
         setSize(new Dimension(ModernTheme.px(900), ModernTheme.px(680)));
         setLocationRelativeTo(owner);
@@ -185,22 +195,51 @@ public final class GroovyPluginEditor extends JDialog {
      */
     private static final class SafeFilter extends javax.swing.text.DocumentFilter {
 
+        /**
+         * The highlighting lexes the whole document on every change; above
+         * this size (characters) it is switched off, else typing freezes YaBS
+         */
+        static final int MAX_LENGTH = 60000;
+        /**
+         * A change which takes longer (ms) switches the highlighting off
+         */
+        static final long MAX_MILLIS = 250;
         private javax.swing.text.DocumentFilter filter;
 
         SafeFilter(javax.swing.text.DocumentFilter filter) {
             this.filter = filter;
         }
 
-        private void off(LinkageError e) {
-            Log.Debug(GroovyPluginEditor.class, "Highlighting off: " + e);
+        private void off(Object reason) {
+            Log.Debug(GroovyPluginEditor.class, "Highlighting off: " + reason);
             filter = null;
+        }
+
+        /**
+         * @return the highlighting filter, null if off or the document gets too large
+         */
+        private javax.swing.text.DocumentFilter filter(FilterBypass fb, String text) {
+            if (filter != null && fb.getDocument().getLength() + (text == null ? 0 : text.length()) > MAX_LENGTH) {
+                off("document too large");
+            }
+            return filter;
+        }
+
+        private void timed(long start) {
+            long ms = (System.nanoTime() - start) / 1000000L;
+            if (filter != null && ms > MAX_MILLIS) {
+                off("too slow (" + ms + " ms)");
+            }
         }
 
         @Override
         public void insertString(FilterBypass fb, int offset, String text, javax.swing.text.AttributeSet attr) throws javax.swing.text.BadLocationException {
-            if (filter != null) {
+            javax.swing.text.DocumentFilter f = filter(fb, text);
+            if (f != null) {
+                long start = System.nanoTime();
                 try {
-                    filter.insertString(fb, offset, text, attr);
+                    f.insertString(fb, offset, text, attr);
+                    timed(start);
                     return;
                 } catch (LinkageError e) {
                     off(e);
@@ -211,9 +250,12 @@ public final class GroovyPluginEditor extends JDialog {
 
         @Override
         public void remove(FilterBypass fb, int offset, int length) throws javax.swing.text.BadLocationException {
-            if (filter != null) {
+            javax.swing.text.DocumentFilter f = filter(fb, null);
+            if (f != null) {
+                long start = System.nanoTime();
                 try {
-                    filter.remove(fb, offset, length);
+                    f.remove(fb, offset, length);
+                    timed(start);
                     return;
                 } catch (LinkageError e) {
                     off(e);
@@ -224,9 +266,12 @@ public final class GroovyPluginEditor extends JDialog {
 
         @Override
         public void replace(FilterBypass fb, int offset, int length, String text, javax.swing.text.AttributeSet attrs) throws javax.swing.text.BadLocationException {
-            if (filter != null) {
+            javax.swing.text.DocumentFilter f = filter(fb, text);
+            if (f != null) {
+                long start = System.nanoTime();
                 try {
-                    filter.replace(fb, offset, length, text, attrs);
+                    f.replace(fb, offset, length, text, attrs);
+                    timed(start);
                     return;
                 } catch (LinkageError e) {
                     off(e);
@@ -254,18 +299,25 @@ public final class GroovyPluginEditor extends JDialog {
         editor.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
-                changed();
+                setDirty(true);
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
-                changed();
+                setDirty(true);
             }
 
             @Override
             public void changedUpdate(DocumentEvent e) {
             }
         });
+    }
+
+    private void setDirty(boolean on) {
+        if (dirty != on) {
+            dirty = on;
+            changed();
+        }
     }
 
     private void bind(KeyStroke k, String name, Runnable r) {
@@ -289,7 +341,7 @@ public final class GroovyPluginEditor extends JDialog {
     }
 
     private boolean isDirty() {
-        return !editor.getText().equals(saved);
+        return dirty;
     }
 
     private void hint() {
@@ -316,7 +368,12 @@ public final class GroovyPluginEditor extends JDialog {
         }
         editor.setCaretPosition(0);
         undo.discardAllEdits();
+        dirty = !editor.getText().equals(saved);
         changed();
+        if (editor.getDocument().getLength() > SafeFilter.MAX_LENGTH && editor instanceof javax.swing.JTextPane) {
+            status.setForeground(ModernTheme.muted());
+            status.setText(Messages.GEDIT_HIGHLIGHT_OFF.toString());
+        }
     }
 
     private void insert(String snippet) {
@@ -339,25 +396,68 @@ public final class GroovyPluginEditor extends JDialog {
      * @param tellOk show "no errors" as well
      * @return true if the script compiles
      */
-    private boolean check(boolean tellOk) {
-        try {
-            new groovy.lang.GroovyShell().parse(editor.getText(), "Plugin");
-            if (tellOk) {
-                ok(Messages.GEDIT_OK_SYNTAX.toString());
+    private void check(boolean tellOk) {
+        check(tellOk, null);
+    }
+
+    /**
+     * Compiles the script in the background (large plugins take seconds),
+     * then reports on the event thread
+     *
+     * @param tellOk show "no errors" as well
+     * @param then run on the event thread if the script compiles, may be null
+     */
+    private void check(boolean tellOk, Runnable then) {
+        if (busy) {
+            return;
+        }
+        busy = true;
+        final String text = editor.getText();
+        status.setForeground(ModernTheme.muted());
+        status.setText(Messages.GEDIT_CHECKING.toString());
+        setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.WAIT_CURSOR));
+        Thread t = new Thread(() -> {
+            Throwable problem = null;
+            try {
+                new groovy.lang.GroovyShell().parse(text, "Plugin");
+            } catch (Throwable e) {
+                problem = e;
             }
-            return true;
-        } catch (Throwable e) {
-            String m = e.getMessage() == null ? e.toString() : e.getMessage();
-            Matcher l = Pattern.compile("@ line (\\d+), column (\\d+)").matcher(m);
-            if (l.find()) {
-                int line = Integer.parseInt(l.group(1));
-                String first = m.replaceAll("(?s)^startup failed:\\s*", "").replaceAll("(?s)\\s*@ line.*", "").replaceAll("^Plugin: \\d+: ", "").trim();
-                error(String.format(Messages.GEDIT_ERROR_LINE.toString(), line, first));
-                gotoLine(line);
-            } else {
-                error(m.replaceAll("\\s+", " "));
-            }
-            return false;
+            final Throwable p = problem;
+            SwingUtilities.invokeLater(() -> {
+                busy = false;
+                setCursor(java.awt.Cursor.getDefaultCursor());
+                if (p != null) {
+                    report(p);
+                } else {
+                    if (tellOk) {
+                        ok(Messages.GEDIT_OK_SYNTAX.toString());
+                    } else {
+                        hint();
+                    }
+                    if (then != null) {
+                        then.run();
+                    }
+                }
+            });
+        }, "groovy-plugin-check");
+        t.setDaemon(true);
+        t.start();
+    }
+
+    /**
+     * Shows a compile error and goes to its line
+     */
+    private void report(Throwable e) {
+        String m = e.getMessage() == null ? e.toString() : e.getMessage();
+        Matcher l = Pattern.compile("@ line (\\d+), column (\\d+)").matcher(m);
+        if (l.find()) {
+            int line = Integer.parseInt(l.group(1));
+            String first = m.replaceAll("(?s)^startup failed:\\s*", "").replaceAll("(?s)\\s*@ line.*", "").replaceAll("^Plugin: \\d+: ", "").trim();
+            error(String.format(Messages.GEDIT_ERROR_LINE.toString(), line, first));
+            gotoLine(line);
+        } else {
+            error(m.replaceAll("\\s+", " "));
         }
     }
 
@@ -375,12 +475,16 @@ public final class GroovyPluginEditor extends JDialog {
      * Saves; if it compiles the plugin is (re)loaded and started
      */
     private void saveAndRun() {
-        if (!save()) {
+        if (busy || !save()) {
             return;
         }
-        if (!check(false)) {
-            return;
-        }
+        check(false, this::run);
+    }
+
+    /**
+     * (Re)loads and starts the saved plugin
+     */
+    private void run() {
         ExtensionManager m = ExtensionManager.instance();
         try {
             ExtensionManager.Installed installed = null;
@@ -415,6 +519,7 @@ public final class GroovyPluginEditor extends JDialog {
             file.getParentFile().mkdirs();
             Files.write(file.toPath(), editor.getText().getBytes(StandardCharsets.UTF_8));
             saved = editor.getText();
+            dirty = false;
             changed();
             return true;
         } catch (Exception e) {
@@ -455,11 +560,7 @@ public final class GroovyPluginEditor extends JDialog {
     }
 
     private static void browse(String url) {
-        try {
-            java.awt.Desktop.getDesktop().browse(new java.net.URI(url));
-        } catch (Exception e) {
-            Popup.notice(url);
-        }
+        mpv5.ui.misc.Help.browse(url);
     }
 
     private void ok(String text) {

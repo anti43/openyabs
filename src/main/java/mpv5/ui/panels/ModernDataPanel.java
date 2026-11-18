@@ -495,6 +495,125 @@ public abstract class ModernDataPanel extends JPanel implements DataPanel, Scrol
     }
 
     /**
+     * Set while the selection of a record list is changed by code, so the
+     * selection listener does not load the record again
+     */
+    private boolean syncingRecordSelection = false;
+
+    /**
+     * Makes a table a list of records (the first column holds the
+     * {@link mpv5.db.common.DatabaseObject}): selecting a row with a single
+     * click, the arrow keys or Enter shows that record in this view.
+     *
+     * @param table
+     */
+    protected final void installRecordList(final JTable table) {
+        table.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        table.setRowSelectionAllowed(true);
+        //the row of the shown record stays highlighted while editing the details (the look and
+        //feel shows a pale selection when the table has no focus, unless the colours are set)
+        Runnable colours = () -> {
+            java.awt.Color bg = javax.swing.UIManager.getColor("Table.selectionBackground");
+            java.awt.Color fg = javax.swing.UIManager.getColor("Table.selectionForeground");
+            if (bg != null) {
+                table.setSelectionBackground(new java.awt.Color(bg.getRGB(), true));
+            }
+            if (fg != null) {
+                table.setSelectionForeground(new java.awt.Color(fg.getRGB(), true));
+            }
+        };
+        colours.run();
+        table.addPropertyChangeListener("UI", e -> colours.run());
+        table.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting() && !syncingRecordSelection) {
+                showRecordOfRow(table, false);
+            }
+        });
+        //a click on the row already selected shows it, if the view shows another record (e.g. a new one)
+        table.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseReleased(java.awt.event.MouseEvent e) {
+                if (javax.swing.SwingUtilities.isLeftMouseButton(e) && table.rowAtPoint(e.getPoint()) == table.getSelectedRow()) {
+                    showRecordOfRow(table, false);
+                }
+            }
+        });
+        //Enter shows the selected record instead of moving to the next row
+        table.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+                .put(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ENTER, 0), "yabs.showRecord");
+        table.getInputMap(JComponent.WHEN_FOCUSED)
+                .put(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ENTER, 0), "yabs.showRecord");
+        table.getActionMap().put("yabs.showRecord", new javax.swing.AbstractAction() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                showRecordOfRow(table, true);
+            }
+        });
+    }
+
+    /**
+     * Shows the record of the selected row
+     *
+     * @param table
+     * @param always false: only if this view shows another record now
+     */
+    private void showRecordOfRow(JTable table, boolean always) {
+        mpv5.db.common.DatabaseObject o = recordAt(table, table.getSelectedRow());
+        if (o == null) {
+            return;
+        }
+        mpv5.db.common.DatabaseObject current = getDataOwner();
+        if (!always && current != null && current.getClass() == o.getClass()
+                && current.__getIDS() > 0 && current.__getIDS() == o.__getIDS()) {
+            return;
+        }
+        setDataOwner(o, true);
+    }
+
+    private static mpv5.db.common.DatabaseObject recordAt(JTable table, int viewRow) {
+        if (viewRow < 0 || viewRow >= table.getRowCount()) {
+            return null;
+        }
+        Object val = table.getModel().getValueAt(table.convertRowIndexToModel(viewRow), 0);
+        return val instanceof mpv5.db.common.DatabaseObject ? (mpv5.db.common.DatabaseObject) val : null;
+    }
+
+    /**
+     * Selects (highlights) the row of the record in a list installed with
+     * {@link #installRecordList(JTable)}, without loading it again; clears the
+     * selection if the record is not in the (filtered) list.
+     *
+     * @param table
+     * @param record may be null
+     */
+    protected final void selectRecordRow(JTable table, mpv5.db.common.DatabaseObject record) {
+        syncingRecordSelection = true;
+        try {
+            int found = -1;
+            if (record != null && record.__getIDS() > 0) {
+                for (int i = 0; i < table.getRowCount(); i++) {
+                    mpv5.db.common.DatabaseObject o = recordAt(table, i);
+                    if (o != null && o.getClass() == record.getClass() && o.__getIDS() == record.__getIDS()) {
+                        found = i;
+                        break;
+                    }
+                }
+            }
+            if (found >= 0) {
+                table.getSelectionModel().setSelectionInterval(found, found);
+                Rectangle r = table.getCellRect(found, 0, true);
+                table.scrollRectToVisible(r);
+            } else {
+                table.clearSelection();
+            }
+        } finally {
+            syncingRecordSelection = false;
+        }
+    }
+
+    /**
      * Resets plugin decorations from the previous record and notifies the
      * running plugins that this view now shows the current record
      */
@@ -502,6 +621,7 @@ public abstract class ModernDataPanel extends JPanel implements DataPanel, Scrol
         setPluginBanner(null);
         setPluginBadge(null);
         setContentLocked(false);
+        setLockedDocument(null);
         mpv5.plugin.ExtensionManager.instance().fireView(this);
         revalidate();
         repaint();

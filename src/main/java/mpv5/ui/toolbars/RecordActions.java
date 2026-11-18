@@ -120,6 +120,7 @@ public final class RecordActions {
         view.setPluginBanner(null);
         view.setPluginBadge(null);
         view.setContentLocked(false);
+        view.setLockedDocument(null);
         mpv5.plugin.ExtensionManager.instance().fireView(view);
         return true;
     }
@@ -290,6 +291,9 @@ public final class RecordActions {
      */
     public static void print(DataPanel view) {
         DatabaseObject dato = view.getDataOwner();
+        if (openLockedDocument(view)) {
+            return;
+        }
         if (dato.isExisting()) {
             view.print();
             final String fmessage = Messages.PRINTED + dato.__getCname();
@@ -314,6 +318,9 @@ public final class RecordActions {
      * @param view
      */
     public static void pdf(DataPanel view) {
+        if (openLockedDocument(view)) {
+            return;
+        }
         if (view.getDataOwner().isExisting() && view instanceof ExportablePanel) {
             ((ExportablePanel) view).pdf();
         }
@@ -325,6 +332,9 @@ public final class RecordActions {
      * @param view
      */
     public static void preview(DataPanel view) {
+        if (openLockedDocument(view)) {
+            return;
+        }
         if (view.getDataOwner().isExisting() && view instanceof ExportablePanel) {
             ((ExportablePanel) view).preview();
         }
@@ -334,6 +344,9 @@ public final class RecordActions {
      * @param view
      */
     public static void odt(DataPanel view) {
+        if (openLockedDocument(view)) {
+            return;
+        }
         if (view.getDataOwner().isExisting() && view instanceof ExportablePanel) {
             ((ExportablePanel) view).odt();
         }
@@ -402,5 +415,27 @@ public final class RecordActions {
                 view.showRequiredFields();
             }
         }
+    }
+
+    /**
+     * A locked record with an archived document (e.g. a finalized invoice with
+     * its e-invoice): no new file is created, the archived one is opened.
+     *
+     * @param view
+     * @return true if the view is locked with an archived document (opened, or
+     * reported missing), false to create the file as usual
+     */
+    public static boolean openLockedDocument(DataPanel view) {
+        java.io.File f = view == null ? null : view.getLockedDocument();
+        if (f == null) {
+            return false;
+        }
+        if (f.isFile()) {
+            mpv5.YabsViewProxy.instance().addMessage(Messages.LOCKED_DOCUMENT_OPENED + " " + f.getPath());
+            mpv5.utils.files.FileDirectoryHandler.open(f);
+        } else {
+            mpv5.ui.dialogs.Popup.notice(Messages.LOCKED_DOCUMENT_MISSING + "\n" + f.getPath());
+        }
+        return true;
     }
 }
