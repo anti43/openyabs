@@ -96,6 +96,8 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
     private Revenue dataOwner;
     private DataPanelTB tb;
     private ArrayList<DatabaseObject> accmod;
+    private JComponent currentBanner;
+    private JComponent currentBadge;
 
     /**
      * Creates new form ContactPanel
@@ -109,6 +111,34 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
         tb.disableButton(9);
         toolbarpane.add(tb, BorderLayout.CENTER);
         dataOwner = new Revenue();
+
+        addPropertyChangeListener(PROPERTY_PLUGIN_BANNER, evt -> {
+            if (currentBanner != null) {
+                toolbarpane.remove(currentBanner);
+                currentBanner = null;
+            }
+            if (evt.getNewValue() instanceof JComponent) {
+                currentBanner = (JComponent) evt.getNewValue();
+                toolbarpane.add(currentBanner, BorderLayout.SOUTH);
+            }
+            toolbarpane.revalidate();
+            toolbarpane.repaint();
+        });
+        addPropertyChangeListener(PROPERTY_PLUGIN_BADGE, evt -> {
+            if (currentBadge != null) {
+                toolbarpane.remove(currentBadge);
+                currentBadge = null;
+            }
+            if (evt.getNewValue() instanceof JComponent) {
+                currentBadge = (JComponent) evt.getNewValue();
+                toolbarpane.add(currentBadge, BorderLayout.EAST);
+            }
+            toolbarpane.revalidate();
+            toolbarpane.repaint();
+        });
+        addPropertyChangeListener(PROPERTY_CONTENT_LOCKED, evt -> {
+            applyContentLock(Boolean.TRUE.equals(evt.getNewValue()));
+        });
 
         addedby.setText(mpv5.db.objects.User.getCurrentUser().getName());
 
@@ -186,6 +216,26 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
         }
     }
 
+    private void applyContentLock(boolean locked) {
+        cname.setEnabled(!locked);
+        value.setEnabled(!locked);
+        taxrate.setEnabled(!locked);
+        accountselect.setEnabled(!locked);
+        groupnameselect.setEnabled(!locked);
+        dateadded.setEnabled(!locked);
+        contactname.setEnabled(!locked);
+        refOrder.setEnabled(!locked);
+        notes.setEditable(!locked);
+        // Payment status (status) and payment date (dateend) stay enabled for open-item tracking
+    }
+
+    private void notifyViewOpened() {
+        setContentLocked(false);
+        setPluginBanner(null);
+        setPluginBadge(null);
+        mpv5.plugin.ExtensionManager.instance().fireView(this);
+    }
+
     private void calculate() {
         try {
             netvalue.setText(FormatNumber.formatLokalCurrency(FormatNumber.parseDezimal(value.getText()).divide((tax.divide(Constants.BD100, 9, RoundingMode.HALF_UP)).add(BigDecimal.ONE), 9, RoundingMode.HALF_UP)));
@@ -218,6 +268,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
                     Popup.notice(Messages.LOCKED_BY);
                 }
 
+                notifyViewOpened();
                 validate();
             }
         } else if (object instanceof Item) {
@@ -825,6 +876,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
 
                 } catch (NodataFoundException ex) {
                 }
+                notifyViewOpened();
             }
         };
         SwingUtilities.invokeLater(runnable);
@@ -843,6 +895,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
 
                 } catch (NodataFoundException ex) {
                 }
+                notifyViewOpened();
             }
         };
         SwingUtilities.invokeLater(runnable);

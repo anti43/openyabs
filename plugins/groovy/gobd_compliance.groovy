@@ -1,6 +1,6 @@
 // @name GoBD-Konformitaet (Vollstaendiges MVP)
 // @description Erzwingt GoBD-Unveraenderbarkeit (Festschreibung bei Export), erlaubten Offene-Posten-/Zahlungsstatus-Workflow, Loesch-/Papierkorbschutz, Stammdaten-Snapshots, SHA-256-Hash-Verkettung, Archiv-Integritaet und GDPdU-Export
-// @version 1.4.2
+// @version 1.5.0
 // @author OpenYaBS Community
 // @id groovy.gobd-compliance
 // @minYabsVersion 2.0.9
@@ -10,24 +10,35 @@ import mpv5.db.common.Context
 import mpv5.db.common.DatabaseObject
 import mpv5.db.common.DatabaseObjectModifier
 import mpv5.db.common.NodataFoundException
+import mpv5.db.common.QueryCriteria
 import mpv5.db.common.QueryHandler
+import mpv5.db.objects.Account
 import mpv5.db.objects.Contact
 import mpv5.db.objects.Expense
 import mpv5.db.objects.Item
+import mpv5.db.objects.Revenue
 import mpv5.db.objects.SubItem
 import mpv5.db.objects.User
 import mpv5.handler.Activity
+import mpv5.handler.ExpenseReceipts
 import mpv5.logging.Log
 import mpv5.plugin.api.SearchResult
 import mpv5.ui.dialogs.Notificator
 import mpv5.ui.panels.ChangeNotApprovedException
 import mpv5.ui.panels.DataPanel
+import mpv5.ui.panels.RevenuePanel
 import mpv5.usermanagement.MPSecurityManager
+
+import org.apache.pdfbox.pdmodel.PDDocument
+import org.apache.pdfbox.pdmodel.common.filespecification.PDComplexFileSpecification
+import org.apache.pdfbox.pdmodel.common.filespecification.PDEmbeddedFile
+import org.w3c.dom.Document
 
 import javax.swing.BorderFactory
 import javax.swing.BoxLayout
 import javax.swing.JButton
 import javax.swing.JCheckBox
+import javax.swing.JComboBox
 import javax.swing.JComponent
 import javax.swing.JFileChooser
 import javax.swing.JLabel
@@ -35,13 +46,19 @@ import javax.swing.JOptionPane
 import javax.swing.JPanel
 import javax.swing.JScrollPane
 import javax.swing.JSplitPane
+import javax.swing.JTabbedPane
 import mpv5.ui.modern.ModernTheme
 import javax.swing.JTable
 import javax.swing.JTextField
 import javax.swing.ListSelectionModel
 import javax.swing.SwingUtilities
+import javax.swing.filechooser.FileNameExtensionFilter
 import javax.swing.table.DefaultTableCellRenderer
 import javax.swing.table.DefaultTableModel
+import javax.xml.parsers.DocumentBuilderFactory
+import javax.xml.xpath.XPath
+import javax.xml.xpath.XPathConstants
+import javax.xml.xpath.XPathFactory
 import java.awt.BorderLayout
 import java.awt.Color
 import java.awt.Component
@@ -51,7 +68,9 @@ import java.awt.FlowLayout
 import java.awt.Font
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
+import java.io.ByteArrayInputStream
 import java.math.BigDecimal
+import java.math.RoundingMode
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Path
@@ -63,7 +82,10 @@ import java.security.MessageDigest
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.util.Timer
+import java.util.TimerTask
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 
@@ -92,6 +114,8 @@ final Map<String, String> masterDataBeforeSave = [:].asSynchronized()
 // Re-Entrancy-Schutz fuer laufende Festschreibungen und Stornierungen
 final Set<Integer> finalizingIds = Collections.synchronizedSet(new HashSet<Integer>())
 boolean creatingStorno = false
+Timer incomeWatchTimer = null
+final Set<String> seenWatchFiles = Collections.synchronizedSet(new HashSet<String>())
 
 // Sichere SQL-Wrapper ueber QueryHandler.getConnection() (setzt Context.DEFAULT)
 def execSql = { String sql ->
@@ -126,12 +150,14 @@ def notifyDocumentEvent = { String msg, DatabaseObject source ->
 }
 
 // Aktualisiert den aktuell geoeffneten Tab, falls er den angegebenen Beleg anzeigt
-def reloadCurrentTabIfShowing = { Item doc ->
+def reloadCurrentTabIfShowing = { DatabaseObject doc ->
     if (doc == null || doc.__getIDS() <= 0) return
     Runnable updateUi = {
         try {
             DataPanel currentTab = YabsViewProxy.instance().getCurrentTab()
-            if (currentTab != null && currentTab.getDataOwner() instanceof Item && currentTab.getDataOwner().__getIDS() == doc.__getIDS()) {
+            if (currentTab != null && currentTab.getDataOwner() != null
+                    && currentTab.getDataOwner().getClass() == doc.getClass()
+                    && currentTab.getDataOwner().__getIDS() == doc.__getIDS()) {
                 currentTab.setDataOwner(doc, true)
             }
         } catch (Exception ignored) { }
@@ -222,6 +248,27 @@ def initSchema = {
             expense_snapshot VARCHAR(2000) NULL,
             imported_at TIMESTAMP NOT NULL,
             imported_by VARCHAR(100) NOT NULL
+        )
+    """)
+
+    // Einnahmen-Festschreibung & Belegarchiv (ZUGFeRD / XRechnung fuer Revenue):
+    // Archiviert die Originaldatei unveraendert unter <Archiv>/einnahmen/<Jahr>/ inkl. SHA256SUMS und Hash-Kette.
+    execSql("""
+        CREATE TABLE IF NOT EXISTS gobd_income_lock (
+            revenue_id BIGINT PRIMARY KEY,
+            chain_seq BIGINT NOT NULL,
+            document_number VARCHAR(100) NOT NULL,
+            status VARCHAR(20) NOT NULL,
+            imported_at TIMESTAMP NOT NULL,
+            imported_by VARCHAR(100) NOT NULL,
+            original_name VARCHAR(512) NOT NULL,
+            archive_path VARCHAR(1024) NOT NULL,
+            file_size BIGINT NOT NULL,
+            artifact_format VARCHAR(30) NOT NULL,
+            file_sha256 CHAR(64) NOT NULL UNIQUE,
+            chain_hash CHAR(64) NOT NULL,
+            prev_chain_hash CHAR(64) NOT NULL,
+            financial_snapshot VARCHAR(2000) NOT NULL
         )
     """)
 }
@@ -598,6 +645,419 @@ def finalizeDocument = { Item doc, Long cancelsDocId = null ->
 }
 
 // -----------------------------------------------------------------------------
+// 2b. ZUGFeRD PDF/A-3 & XRechnung XML Einnahmen-Importer & Belegarchiv (Revenue)
+// -----------------------------------------------------------------------------
+def computeRawSha256 = { byte[] fileBytes ->
+    MessageDigest digest = MessageDigest.getInstance("SHA-256")
+    digest.update(fileBytes)
+    StringBuilder hex = new StringBuilder(64)
+    for (byte b : digest.digest()) {
+        hex.append(String.format("%02x", b))
+    }
+    return hex.toString()
+}
+
+def getIncomeLockRecord = { long revId ->
+    def data = selectRows(
+        "SELECT revenue_id, chain_seq, document_number, status, imported_at, imported_by, original_name, archive_path, file_size, artifact_format, file_sha256, chain_hash, prev_chain_hash, financial_snapshot FROM gobd_income_lock WHERE revenue_id = ${revId}"
+    )
+    return (data && data.length > 0) ? data[0] : null
+}
+
+def getLatestIncomeChainHash = {
+    def data = selectRows(
+        "SELECT chain_hash FROM gobd_income_lock ORDER BY chain_seq DESC, imported_at DESC, revenue_id DESC"
+    )
+    return (data && data.length > 0 && data[0][0]) ? data[0][0].toString() : GENESIS_HASH
+}
+
+def getNextIncomeChainSeq = {
+    def data = selectRows("SELECT COALESCE(MAX(chain_seq), 0) FROM gobd_income_lock")
+    long currentMax = (data && data.length > 0 && data[0][0] != null) ? Long.parseLong(data[0][0].toString()) : 0L
+    return currentMax + 1L
+}
+
+def createRevenueFinancialSnapshot = { Revenue rev ->
+    return [
+        "Num=${rev.__getCnumber() ?: ''}",
+        "Date=${fmtDate(rev.__getDateadded())}",
+        "Acc=${rev.__getAccountsids()}",
+        "Net=${fmtDec(rev.__getNetvalue())}",
+        "TaxPct=${fmtDec(rev.__getTaxpercentvalue())}",
+        "Gross=${fmtDec(rev.__getBrutvalue())}",
+        "Desc=${(rev.__getDescription() ?: '').trim()}"
+    ].join("|")
+}
+
+def createExpenseFinancialSnapshot = { Expense exp ->
+    return [
+        "Num=${exp.__getCnumber() ?: ''}",
+        "Date=${fmtDate(exp.__getDateadded())}",
+        "Acc=${exp.__getAccountsids()}",
+        "Net=${fmtDec(exp.__getNetvalue())}",
+        "TaxPct=${fmtDec(exp.__getTaxpercentvalue())}",
+        "Gross=${fmtDec(exp.__getBrutvalue())}",
+        "Desc=${(exp.__getDescription() ?: '').trim()}"
+    ].join("|")
+}
+
+def defaultIncomeAccountId = {
+    try {
+        def rows = selectRows("SELECT ids FROM accounts WHERE intaccounttype = ${Account.INCOME} ORDER BY ids ASC")
+        if (rows && rows.length > 0 && rows[0][0] != null) {
+            return Integer.parseInt(rows[0][0].toString())
+        }
+    } catch (Exception ignored) { }
+    return 1
+}
+
+def extractEmbeddedEinvoiceXml = { Path pdfPath ->
+    PDDocument doc = null
+    try {
+        doc = PDDocument.load(pdfPath.toFile())
+        def names = doc.getDocumentCatalog()?.getNames()
+        def efTree = names?.getEmbeddedFiles()
+        if (efTree == null) return null
+
+        List<String> targetNames = ["factur-x.xml", "zugferd-invoice.xml", "xrechnung.xml"]
+        Map<String, PDComplexFileSpecification> allFiles = [:]
+        def collectFromNode
+        collectFromNode = { node ->
+            if (node == null) return
+            try {
+                Map<String, PDComplexFileSpecification> nodeMap = node.getNames()
+                if (nodeMap != null) {
+                    allFiles.putAll(nodeMap)
+                }
+            } catch (Exception ignored) { }
+            try {
+                def kids = node.getKids()
+                if (kids != null) {
+                    kids.each { child -> collectFromNode(child) }
+                }
+            } catch (Exception ignored) { }
+        }
+        collectFromNode(efTree)
+
+        PDComplexFileSpecification chosen = null
+        for (String preferred : targetNames) {
+            def entry = allFiles.find { k, v ->
+                String fn = (v?.getFileUnicode() ?: v?.getFile() ?: k ?: "").toLowerCase()
+                return fn == preferred || fn.endsWith("/" + preferred)
+            }
+            if (entry != null) {
+                chosen = entry.value
+                break
+            }
+        }
+        if (chosen == null) {
+            def fallback = allFiles.find { k, v ->
+                String fn = (v?.getFileUnicode() ?: v?.getFile() ?: k ?: "").toLowerCase()
+                return fn.endsWith(".xml")
+            }
+            chosen = fallback?.value
+        }
+        if (chosen == null) return null
+        PDEmbeddedFile ef = chosen.getEmbeddedFileUnicode() ?: chosen.getEmbeddedFile()
+        return ef?.toByteArray()
+    } catch (Exception ignored) {
+        return null
+    } finally {
+        if (doc != null) {
+            try { doc.close() } catch (Exception ignored) { }
+        }
+    }
+}
+
+def parseEinvoiceDate = { String raw ->
+    if (raw == null) return null
+    String s = raw.trim()
+    if (s.isEmpty()) return null
+    for (String pattern : ["yyyyMMdd", "yyyy-MM-dd", "dd.MM.yyyy"]) {
+        try {
+            SimpleDateFormat df = new SimpleDateFormat(pattern)
+            df.setLenient(false)
+            return df.parse(s.length() > 10 && pattern == "yyyy-MM-dd" ? s.substring(0, 10) : s)
+        } catch (Exception ignored) { }
+    }
+    return null
+}
+
+def parseEinvoiceDecimal = { String raw ->
+    if (raw == null) return null
+    String s = raw.trim().replace(",", ".")
+    if (s.isEmpty()) return null
+    try {
+        return new BigDecimal(s).setScale(2, RoundingMode.HALF_UP)
+    } catch (Exception ignored) {
+        return null
+    }
+}
+
+def parseEinvoiceXml = { byte[] xmlBytes ->
+    try {
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance()
+        dbf.setNamespaceAware(false)
+        try {
+            dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true)
+        } catch (Exception ignored) { }
+        Document dom = dbf.newDocumentBuilder().parse(new ByteArrayInputStream(xmlBytes))
+        XPath xp = XPathFactory.newInstance().newXPath()
+
+        def evalText = { List<String> exprs ->
+            for (String expr : exprs) {
+                try {
+                    String val = (String) xp.evaluate(expr, dom, XPathConstants.STRING)
+                    if (val != null && !val.trim().isEmpty()) {
+                        return val.trim()
+                    }
+                } catch (Exception ignored) { }
+            }
+            return ""
+        }
+
+        // BT-1: Rechnungsnummer / Belegnummer
+        String docNumber = evalText([
+            "//*[local-name()='ExchangedDocument']/*[local-name()='ID']",
+            "/*[local-name()='Invoice' or local-name()='CreditNote']/*[local-name()='ID']"
+        ])
+
+        // BT-2: Ausstellungsdatum
+        String issueDateStr = evalText([
+            "//*[local-name()='ExchangedDocument']/*[local-name()='IssueDateTime']/*[local-name()='DateTimeString']",
+            "/*[local-name()='Invoice' or local-name()='CreditNote']/*[local-name()='IssueDate']"
+        ])
+        Date issueDate = parseEinvoiceDate(issueDateStr)
+
+        // BT-9: Faelligkeitsdatum (optional)
+        String dueDateStr = evalText([
+            "//*[local-name()='SpecifiedTradePaymentTerms']/*[local-name()='DueDateDateTime']/*[local-name()='DateTimeString']",
+            "/*[local-name()='Invoice' or local-name()='CreditNote']/*[local-name()='DueDate']",
+            "//*[local-name()='PaymentMeans']/*[local-name()='PaymentDueDate']"
+        ])
+        Date dueDate = parseEinvoiceDate(dueDateStr) ?: issueDate
+
+        // BT-27 / BT-44: Name des Partners (SellerTradeParty oder BuyerTradeParty)
+        String sellerName = evalText([
+            "//*[local-name()='SellerTradeParty']/*[local-name()='Name']",
+            "//*[local-name()='AccountingSupplierParty']//*[local-name()='PartyName']/*[local-name()='Name']",
+            "//*[local-name()='AccountingSupplierParty']//*[local-name()='PartyLegalEntity']/*[local-name()='RegistrationName']"
+        ])
+        String buyerName = evalText([
+            "//*[local-name()='BuyerTradeParty']/*[local-name()='Name']",
+            "//*[local-name()='AccountingCustomerParty']//*[local-name()='PartyName']/*[local-name()='Name']",
+            "//*[local-name()='AccountingCustomerParty']//*[local-name()='PartyLegalEntity']/*[local-name()='RegistrationName']"
+        ])
+        String partnerName = sellerName ?: buyerName
+
+        // BT-109: Nettobetrag (TaxBasisTotalAmount / TaxExclusiveAmount)
+        String netStr = evalText([
+            "//*[local-name()='SpecifiedTradeSettlementHeaderMonetarySummation']/*[local-name()='TaxBasisTotalAmount']",
+            "//*[local-name()='LegalMonetaryTotal']/*[local-name()='TaxExclusiveAmount']",
+            "//*[local-name()='SpecifiedTradeSettlementHeaderMonetarySummation']/*[local-name()='LineTotalAmount']"
+        ])
+        BigDecimal netAmount = parseEinvoiceDecimal(netStr)
+
+        // BT-112: Bruttobetrag (GrandTotalAmount / TaxInclusiveAmount / PayableAmount)
+        String grossStr = evalText([
+            "//*[local-name()='SpecifiedTradeSettlementHeaderMonetarySummation']/*[local-name()='GrandTotalAmount']",
+            "//*[local-name()='LegalMonetaryTotal']/*[local-name()='TaxInclusiveAmount']",
+            "//*[local-name()='SpecifiedTradeSettlementHeaderMonetarySummation']/*[local-name()='DuePayableAmount']",
+            "//*[local-name()='LegalMonetaryTotal']/*[local-name()='PayableAmount']"
+        ])
+        BigDecimal grossAmount = parseEinvoiceDecimal(grossStr)
+
+        // BT-119: Steuersatz in Prozent
+        String taxRateStr = evalText([
+            "//*[local-name()='ApplicableTradeTax']/*[local-name()='RateApplicablePercent']",
+            "//*[local-name()='TaxSubtotal']/*[local-name()='TaxCategory']/*[local-name()='Percent']",
+            "//*[local-name()='ClassifiedTaxCategory']/*[local-name()='Percent']"
+        ])
+        BigDecimal taxPercent = parseEinvoiceDecimal(taxRateStr)
+        if (taxPercent == null) {
+            if (netAmount != null && grossAmount != null && netAmount.compareTo(BigDecimal.ZERO) > 0) {
+                taxPercent = grossAmount.subtract(netAmount)
+                    .multiply(new BigDecimal("100"))
+                    .divide(netAmount, 2, RoundingMode.HALF_UP)
+            } else {
+                taxPercent = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP)
+            }
+        }
+
+        List<String> errors = []
+        if (!docNumber) errors << "Pflichtfeld BT-1 (Rechnungsnummer / ExchangedDocument/ID) fehlt"
+        if (issueDate == null) errors << "Pflichtfeld BT-2 (Ausstellungsdatum / IssueDateTime) fehlt oder ungueltig"
+        if (netAmount == null) errors << "Pflichtfeld BT-109 (Nettobetrag / TaxBasisTotalAmount) fehlt"
+        if (grossAmount == null) errors << "Pflichtfeld BT-112 (Bruttobetrag / GrandTotalAmount) fehlt"
+
+        return [
+            valid        : errors.isEmpty(),
+            errors       : errors,
+            documentNumber: docNumber,
+            issueDate    : issueDate,
+            dueDate      : dueDate,
+            partnerName  : partnerName,
+            netAmount    : netAmount,
+            grossAmount  : grossAmount,
+            taxPercent   : taxPercent
+        ]
+    } catch (Exception ex) {
+        return [
+            valid : false,
+            errors: ["XML-Struktur konnte nicht nach EN 16931 gelesen werden: ${ex.getMessage()}"]
+        ]
+    }
+}
+
+def importZugferdIncomeFile = { Path sourceFile, Revenue targetRevenue = null, boolean silent = false ->
+    if (sourceFile == null || !Files.exists(sourceFile) || !Files.isRegularFile(sourceFile)) {
+        if (!silent) showError("GoBD-Einnahmen-Import: Datei existiert nicht (${sourceFile}).")
+        return null
+    }
+
+    byte[] fileBytes = Files.readAllBytes(sourceFile)
+    String fileSha256 = computeRawSha256(fileBytes)
+
+    // 1. Dublettenpruefung anhand SHA-256 (file_sha256)
+    def existingHashRows = selectRows("SELECT revenue_id, document_number FROM gobd_income_lock WHERE file_sha256 = '${esc(fileSha256)}'")
+    if (existingHashRows && existingHashRows.length > 0) {
+        if (!silent) {
+            showError("GoBD-Dublettenschutz:\nDie Datei '${sourceFile.getFileName()}' (SHA-256: ${fileSha256.substring(0, 12)}…) wurde bereits als Einnahme '${existingHashRows[0][1]}' (#${existingHashRows[0][0]}) importiert!")
+        }
+        return null
+    }
+
+    String origName = sourceFile.getFileName().toString()
+    String lowerName = origName.toLowerCase()
+    byte[] xmlBytes = null
+    String artifactFormat = "RECEIPT_FILE"
+
+    if (lowerName.endsWith(".pdf")) {
+        xmlBytes = extractEmbeddedEinvoiceXml(sourceFile)
+        if (xmlBytes != null) {
+            artifactFormat = "ZUGFERD_PDFA3"
+        }
+    } else if (lowerName.endsWith(".xml")) {
+        xmlBytes = fileBytes
+        artifactFormat = "XRECHNUNG_XML"
+    }
+
+    Map parsed = null
+    if (xmlBytes != null) {
+        parsed = parseEinvoiceXml(xmlBytes)
+        if (!parsed.valid) {
+            if (!silent) {
+                showError("GoBD-Einnahmen-Import abgelehnt (EN 16931 Validierungsfehler in '${origName}'):\n- " + parsed.errors.join("\n- "))
+            }
+            return null
+        }
+    } else if (targetRevenue == null) {
+        if (!silent) {
+            showError("GoBD-Einnahmen-Import abgelehnt:\nDatei '${origName}' enthaelt kein eingebettetes ZUGFeRD / Factur-X / XRechnung XML (factur-x.xml / zugferd-invoice.xml / xrechnung.xml).")
+        }
+        return null
+    }
+
+    String docNum = parsed != null ? parsed.documentNumber.toString() : (targetRevenue.__getCnumber() ?: origName)
+    def existingNumRows = selectRows("SELECT revenue_id, file_sha256 FROM gobd_income_lock WHERE document_number = '${esc(docNum)}'")
+    if (existingNumRows && existingNumRows.length > 0 && (targetRevenue == null || Long.parseLong(existingNumRows[0][0].toString()) != (long) targetRevenue.__getIDS())) {
+        if (!silent) {
+            showError("GoBD-Dublettenschutz:\nEine Einnahme mit der Belegnummer '${docNum}' ist bereits festgeschrieben (Einnahme #${existingNumRows[0][0]})!")
+        }
+        return null
+    }
+
+    Revenue rev = targetRevenue != null ? targetRevenue : new Revenue()
+    Date issueDate = parsed != null ? (Date) parsed.issueDate : (rev.__getDateadded() ?: new Date())
+    Date dueDate = parsed != null ? (Date) (parsed.dueDate ?: parsed.issueDate) : (rev.__getDateend() ?: issueDate)
+
+    if (parsed != null) {
+        String partner = parsed.partnerName?.toString()?.trim() ?: ""
+        String desc = partner ? "${partner} - E-Rechnung ${docNum} (${origName})" : "E-Rechnung ${docNum} (${origName})"
+        rev.setCnumber(docNum)
+        rev.setCname(docNum)
+        rev.setDescription(desc)
+        rev.setNetvalue((BigDecimal) parsed.netAmount)
+        rev.setTaxpercentvalue((BigDecimal) parsed.taxPercent)
+        rev.setBrutvalue((BigDecimal) parsed.grossAmount)
+        rev.setDateadded(issueDate)
+        rev.setDateend(dueDate)
+        if (rev.__getAccountsids() <= 0) {
+            rev.setAccountsids(defaultIncomeAccountId())
+        }
+        if (rev.__getGroupsids() <= 0) {
+            rev.setGroupsids(1)
+        }
+        if (targetRevenue == null) {
+            rev.setStatus(Item.STATUS_QUEUED)
+            rev.setIspaid(false)
+        }
+    }
+
+    if (!rev.save(true) || rev.__getIDS() <= 0) {
+        if (!silent) showError("GoBD-Einnahmen-Import: Einnahme '${docNum}' konnte nicht gespeichert werden.")
+        return null
+    }
+
+    // Sicherstellen, dass Ausstellungsdatum (BT-2), Faelligkeitsdatum (BT-9) und Belegnummer (BT-1) exakt persistiert sind
+    if (parsed != null) {
+        rev.setCnumber(docNum)
+        rev.setCname(docNum)
+        rev.setDateadded(issueDate)
+        rev.setDateend(dueDate)
+        rev.save(true)
+    }
+
+    int year = issueDate.toInstant().atZone(ZoneId.systemDefault()).getYear()
+    Path yearDir = getArchiveRoot().resolve("einnahmen").resolve(String.valueOf(year))
+    Files.createDirectories(yearDir)
+
+    String ext = origName.contains(".") ? origName.substring(origName.lastIndexOf(".") + 1).toLowerCase() : "pdf"
+    String safeBase = docNum.replaceAll("[^a-zA-Z0-9._-]", "_")
+    Path archivedFile = resolveUniqueArchivePath(yearDir, safeBase, ext)
+    Files.copy(sourceFile, archivedFile, StandardCopyOption.REPLACE_EXISTING)
+    makeReadOnly(archivedFile)
+
+    // SHA256SUMS im Jahresordner aktualisieren
+    Path sumsFile = yearDir.resolve("SHA256SUMS")
+    String sumsLine = "${fileSha256}  ${archivedFile.getFileName()}\n"
+    Files.write(
+        sumsFile,
+        sumsLine.getBytes(StandardCharsets.UTF_8),
+        Files.exists(sumsFile) ? StandardOpenOption.APPEND : StandardOpenOption.CREATE
+    )
+
+    long chainSeq = getNextIncomeChainSeq()
+    String prevChainHash = getLatestIncomeChainHash()
+    String chainHash = computeChainedSha256(fileBytes, prevChainHash)
+    String finSnap = createRevenueFinancialSnapshot(rev)
+
+    execSql("""
+        INSERT INTO gobd_income_lock
+            (revenue_id, chain_seq, document_number, status, imported_at, imported_by, original_name, archive_path, file_size, artifact_format, file_sha256, chain_hash, prev_chain_hash, financial_snapshot)
+        VALUES
+            (${rev.__getIDS()}, ${chainSeq}, '${esc(docNum)}', 'LOCKED', CURRENT_TIMESTAMP, '${esc(currentUser())}', '${esc(origName)}', '${esc(archivedFile.toString())}', ${fileBytes.length}, '${esc(artifactFormat)}', '${esc(fileSha256)}', '${esc(chainHash)}', '${esc(prevChainHash)}', '${esc(finSnap)}')
+    """)
+
+    logAudit("REVENUE", rev.__getIDS(), "INCOME_IMPORTED", null, finSnap, fileSha256, "Einnahme ${docNum} (${artifactFormat}) revisionssicher importiert und festgeschrieben.")
+    reloadCurrentTabIfShowing(rev)
+    try {
+        RevenuePanel.instanceOf().refresh()
+        RevenuePanel.instanceOf().setDataOwner(rev, true)
+    } catch (Exception ignored) { }
+
+    if (!silent) {
+        notifyDocumentEvent(
+            "GoBD-Einnahmen-Import erfolgreich:\nBeleg: ${docNum} (${artifactFormat})\nNetto: ${fmtDec(rev.__getNetvalue())} EUR | Brutto: ${fmtDec(rev.__getBrutvalue())} EUR\nSHA-256: ${fileSha256.substring(0, 16)}...\nArchiv: ${archivedFile.getFileName()}",
+            rev
+        )
+    } else {
+        notifyStatus("GoBD Auto-Import: Einnahme ${docNum} (${origName}) importiert und festgeschrieben.")
+    }
+    return rev
+}
+
+// -----------------------------------------------------------------------------
 // 3. Datensatz-Waechter ueber yabs.addRecordModifier(...)
 // -----------------------------------------------------------------------------
 def checkWriteAllowed = { DatabaseObject obj, boolean isDelete ->
@@ -677,14 +1137,93 @@ def checkWriteAllowed = { DatabaseObject obj, boolean isDelete ->
         }
     }
 
+    if (obj instanceof Revenue && obj.__getIDS() > 0) {
+        Revenue rev = (Revenue) obj
+        def incLock = getIncomeLockRecord(rev.__getIDS())
+        if (incLock != null) {
+            if (isDelete || isMovedToTrash(rev)) {
+                logAudit("REVENUE", rev.__getIDS(), "BLOCKED_DELETE", incLock[13]?.toString(), "Delete/Trash=true", incLock[10]?.toString(), "Loesch- oder Papierkorb-Versuch an GoBD-gesperrter Einnahme ${incLock[2]}.")
+                showError("GoBD-Loeschschutz (§§ 146, 147 AO):\nEinnahme ${incLock[2]} ist durch einen archivierten Originalbeleg festgeschrieben und darf weder geloescht noch in den Papierkorb verschoben werden!")
+                return false
+            }
+
+            def dbRows = selectRows(
+                "SELECT cnumber, dateadded, accountsids, netvalue, taxpercentvalue, brutvalue, description, status, dateend FROM revenues WHERE ids = ${rev.__getIDS()}"
+            )
+            if (dbRows && dbRows.length > 0) {
+                def db = dbRows[0]
+                String dbCore = [
+                    "Num=${db[0] ?: ''}",
+                    "Date=${fmtDate(db[1])}",
+                    "Acc=${db[2]}",
+                    "Net=${fmtDec(db[3])}",
+                    "TaxPct=${fmtDec(db[4])}",
+                    "Gross=${fmtDec(db[5])}",
+                    "Desc=${(db[6]?.toString() ?: '').trim()}"
+                ].join("|")
+                String newCore = createRevenueFinancialSnapshot(rev)
+
+                if (dbCore == newCore) {
+                    int oldStatus = db[7] != null ? Integer.parseInt(db[7].toString()) : 0
+                    int newStatus = rev.__getStatus()
+                    String oldEnd = fmtDate(db[8])
+                    String newEnd = fmtDate(rev.__getDateend())
+                    if (oldStatus != newStatus || oldEnd != newEnd) {
+                        logAudit("REVENUE", rev.__getIDS(), "INCOME_PAYMENT_STATUS_CHANGED", "status=${oldStatus}|dateend=${oldEnd}", "status=${newStatus}|dateend=${newEnd}", incLock[10]?.toString(), "Zahlungsstatus/Zahlungsdatum fuer Einnahme ${incLock[2]} protokolliert.")
+                        notifyStatus("GoBD-Audit: Zahlungsstatus fuer Einnahme ${incLock[2]} protokolliert.")
+                    }
+                    return true
+                }
+            }
+
+            logAudit("REVENUE", rev.__getIDS(), "BLOCKED_EDIT", incLock[13]?.toString(), createRevenueFinancialSnapshot(rev), incLock[10]?.toString(), "Unzulaessige Aenderung steuerrelevanter Felder an Einnahme ${incLock[2]}.")
+            showError("GoBD-Schutz (§ 146 Abs. 4 AO):\nEinnahme ${incLock[2]} ist festgeschrieben! Betraege, Steuersatz, Leistungsdatum, Konto, Nummer und Beschreibung duerfen nicht mehr geaendert werden.\n(Hinweis: Nur Zahlungsstatus und Zahlungsdatum bleiben aenderbar.)")
+            return false
+        }
+    }
+
     if (obj instanceof Expense && obj.__getIDS() > 0) {
         Expense exp = (Expense) obj
         def receiptRows = selectRows("SELECT ids, originalname, archivepath, sha256 FROM expense_receipts WHERE expensesids = ${exp.__getIDS()}")
         boolean hasReceipts = receiptRows && receiptRows.length > 0
-        if (isDelete || isMovedToTrash(exp)) {
-            if (hasReceipts) {
-                logAudit("EXPENSE", exp.__getIDS(), "BLOCKED_DELETE", "Receipts=${receiptRows.length}", "Delete/Trash=true", receiptRows[0][3]?.toString(), "Loeschung einer Ausgabe mit archivierten Belegen verhindert.")
+        if (hasReceipts) {
+            String firstReceiptHash = receiptRows[0][3]?.toString()
+            if (isDelete || isMovedToTrash(exp)) {
+                logAudit("EXPENSE", exp.__getIDS(), "BLOCKED_DELETE", "Receipts=${receiptRows.length}", "Delete/Trash=true", firstReceiptHash, "Loeschung einer Ausgabe mit archivierten Belegen verhindert.")
                 showError("GoBD-Schutz (Rz. 61-64 AO):\nAusgabe #${exp.__getIDS()} besitzt ${receiptRows.length} archivierte Eingangsbelege und darf nicht geloescht werden!")
+                return false
+            }
+
+            def dbRows = selectRows(
+                "SELECT cnumber, dateadded, accountsids, netvalue, taxpercentvalue, brutvalue, description, ispaid, dateend FROM expenses WHERE ids = ${exp.__getIDS()}"
+            )
+            if (dbRows && dbRows.length > 0) {
+                def db = dbRows[0]
+                String dbCore = [
+                    "Num=${db[0] ?: ''}",
+                    "Date=${fmtDate(db[1])}",
+                    "Acc=${db[2]}",
+                    "Net=${fmtDec(db[3])}",
+                    "TaxPct=${fmtDec(db[4])}",
+                    "Gross=${fmtDec(db[5])}",
+                    "Desc=${(db[6]?.toString() ?: '').trim()}"
+                ].join("|")
+                String newCore = createExpenseFinancialSnapshot(exp)
+
+                if (dbCore == newCore) {
+                    boolean oldPaid = db[7] != null && (db[7].toString() == "1" || db[7].toString().equalsIgnoreCase("true"))
+                    boolean newPaid = exp.__getIspaid()
+                    String oldEnd = fmtDate(db[8])
+                    String newEnd = fmtDate(exp.__getDateend())
+                    if (oldPaid != newPaid || oldEnd != newEnd) {
+                        logAudit("EXPENSE", exp.__getIDS(), "EXPENSE_PAYMENT_STATUS_CHANGED", "ispaid=${oldPaid}|dateend=${oldEnd}", "ispaid=${newPaid}|dateend=${newEnd}", firstReceiptHash, "Zahlungsstatus/Zahlungsdatum fuer Ausgabe ${exp.__getCnumber() ?: ('#' + exp.__getIDS())} protokolliert.")
+                        notifyStatus("GoBD-Audit: Zahlungsstatus fuer Ausgabe ${exp.__getCnumber() ?: ('#' + exp.__getIDS())} protokolliert.")
+                    }
+                    return true
+                }
+
+                logAudit("EXPENSE", exp.__getIDS(), "BLOCKED_EDIT", dbCore, newCore, firstReceiptHash, "Unzulaessige Aenderung steuerrelevanter Felder an Ausgabe ${exp.__getCnumber() ?: ('#' + exp.__getIDS())}.")
+                showError("GoBD-Schutz (§ 146 Abs. 4 AO):\nAusgabe ${exp.__getCnumber() ?: ('#' + exp.__getIDS())} ist mit ${receiptRows.length} archivierten Originalbeleg(en) verknuepft und festgeschrieben!\nBetraege, Steuersatz, Belegdatum, Konto, Nummer und Beschreibung duerfen nicht mehr geaendert werden.\n(Hinweis: Nur Zahlungsstatus und Zahlungsdatum bleiben aenderbar.)")
                 return false
             }
         }
@@ -982,6 +1521,33 @@ def buildGdpduIndexXml = { int exportYear ->
         </ForeignKey>
       </VariableLength>
     </Table>
+    <Table>
+      <URL>einnahmen.csv</URL>
+      <Name>Einnahmenjournal</Name>
+      <Description>Sonstige Einnahmen und gutgeschriebene ZUGFeRD-/XRechnung-Abrechnungen inkl. SHA-256-Hashkette</Description>
+      <UTF8/>
+      <DecimalSymbol>.</DecimalSymbol>
+      <DigitGroupingSymbol>,</DigitGroupingSymbol>
+      <VariableLength>
+        <ColumnDelimiter>;</ColumnDelimiter>
+        <RecordDelimiter>&#x0A;</RecordDelimiter>
+        <TextEncapsulator>"</TextEncapsulator>
+        <VariablePrimaryKey><Name>revenue_id</Name><Numeric><Accuracy>0</Accuracy></Numeric></VariablePrimaryKey>
+        <VariableColumn><Name>cnumber</Name><AlphaNumeric/></VariableColumn>
+        <VariableColumn><Name>description</Name><AlphaNumeric/></VariableColumn>
+        <VariableColumn><Name>date_added</Name><Date><Format>YYYY-MM-DD</Format></Date></VariableColumn>
+        <VariableColumn><Name>date_paid</Name><Date><Format>YYYY-MM-DD</Format></Date></VariableColumn>
+        <VariableColumn><Name>is_paid</Name><AlphaNumeric/></VariableColumn>
+        <VariableColumn><Name>account_id</Name><Numeric><Accuracy>0</Accuracy></Numeric></VariableColumn>
+        <VariableColumn><Name>net_amount</Name><Numeric><Accuracy>2</Accuracy></Numeric></VariableColumn>
+        <VariableColumn><Name>tax_percent</Name><Numeric><Accuracy>2</Accuracy></Numeric></VariableColumn>
+        <VariableColumn><Name>gross_amount</Name><Numeric><Accuracy>2</Accuracy></Numeric></VariableColumn>
+        <VariableColumn><Name>artifact_format</Name><AlphaNumeric/></VariableColumn>
+        <VariableColumn><Name>file_sha256</Name><AlphaNumeric/></VariableColumn>
+        <VariableColumn><Name>chain_hash</Name><AlphaNumeric/></VariableColumn>
+        <VariableColumn><Name>prev_chain_hash</Name><AlphaNumeric/></VariableColumn>
+      </VariableLength>
+    </Table>
   </Media>
 </DataSet>
 """
@@ -1098,15 +1664,18 @@ yabs.addCommand("GoBD: 3. Archiv-Integritaet pruefen", "Prueft alle archivierten
         def rows = selectRows(
             "SELECT document_id, document_number, archive_path, sha256_hash, prev_sha256_hash FROM gobd_document_lock ORDER BY COALESCE(chain_seq, document_id) ASC, finalized_at ASC, document_id ASC"
         )
+        def incomeRows = selectRows(
+            "SELECT revenue_id, document_number, archive_path, file_sha256, chain_hash, prev_chain_hash FROM gobd_income_lock ORDER BY chain_seq ASC, imported_at ASC, revenue_id ASC"
+        )
 
-        if (!rows || rows.length == 0) {
-            return "Keine festgeschriebenen Belege im GoBD-Archiv vorhanden."
+        if ((!rows || rows.length == 0) && (!incomeRows || incomeRows.length == 0)) {
+            return "Keine festgeschriebenen Belege oder Einnahmen im GoBD-Archiv vorhanden."
         }
 
         String expectedPrev = GENESIS_HASH
         int verifiedCount = 0
 
-        for (def row : rows) {
+        for (def row : (rows ?: [])) {
             String docNum = row[1].toString()
             Path file = Paths.get(row[2].toString())
             String storedHash = row[3].toString()
@@ -1125,7 +1694,36 @@ yabs.addCommand("GoBD: 3. Archiv-Integritaet pruefen", "Prueft alle archivierten
             expectedPrev = storedHash
             verifiedCount++
         }
-        return "OK: Alle ${verifiedCount} festgeschriebenen Belege und die SHA-256-Hash-Kette sind lueckenlos und unversehrt."
+
+        String expectedIncomePrev = GENESIS_HASH
+        int verifiedIncomeCount = 0
+        for (def iRow : (incomeRows ?: [])) {
+            String incNum = iRow[1].toString()
+            Path incFile = Paths.get(iRow[2].toString())
+            String expectedFileSha = iRow[3].toString()
+            String storedChainHash = iRow[4].toString()
+            String storedPrevChain = iRow[5].toString()
+
+            if (storedPrevChain != expectedIncomePrev) {
+                return "FEHLER: Kettenbruch in Einnahmen-Kette vor Einnahme ${incNum}! Erwartet: ${expectedIncomePrev}, Gefunden: ${storedPrevChain}"
+            }
+            if (!Files.exists(incFile)) {
+                return "FEHLER: Archivdatei fehlt fuer Einnahme ${incNum} (${incFile})!"
+            }
+            byte[] incBytes = Files.readAllBytes(incFile)
+            String actualFileSha = computeRawSha256(incBytes)
+            if (!actualFileSha.equalsIgnoreCase(expectedFileSha)) {
+                return "FEHLER: Datei-Manipulation erkannt bei Einnahme ${incNum}! Datei-SHA-256 weicht ab."
+            }
+            String actualChainHash = computeChainedSha256(incBytes, storedPrevChain)
+            if (!actualChainHash.equalsIgnoreCase(storedChainHash)) {
+                return "FEHLER: Ketten-Hash-Abweichung bei Einnahme ${incNum}!"
+            }
+            expectedIncomePrev = storedChainHash
+            verifiedIncomeCount++
+        }
+
+        return "OK: Alle ${verifiedCount} Ausgangsbelege und ${verifiedIncomeCount} Einnahmenbelege sowie deren SHA-256-Hash-Ketten sind lueckenlos und unversehrt."
     }, { String report ->
         if (report.startsWith("FEHLER")) {
             showError(report)
@@ -1228,6 +1826,20 @@ yabs.addCommand("GoBD: 4. Betriebspruefer-Export (Z3 / IDEA ZIP)", "Erzeugt ein 
             zos.write(sbRec.toString().getBytes(StandardCharsets.UTF_8))
             zos.closeEntry()
 
+            // Einnahmen (Revenues + gobd_income_lock) des Pruefungsjahres
+            def allRevenues = selectRows(
+                "SELECT r.ids, r.cnumber, r.description, r.dateadded, r.dateend, r.status, r.accountsids, r.netvalue, r.taxpercentvalue, r.brutvalue, l.artifact_format, l.file_sha256, l.chain_hash, l.prev_chain_hash, l.archive_path FROM revenues r LEFT JOIN gobd_income_lock l ON r.ids = l.revenue_id ORDER BY r.ids ASC"
+            )
+            def revenues = allRevenues.findAll { rv -> rv[3]?.toString()?.startsWith(String.valueOf(exportYear)) }
+            zos.putNextEntry(new ZipEntry("einnahmen.csv"))
+            StringBuilder sbRev = new StringBuilder("revenue_id;cnumber;description;date_added;date_paid;is_paid;account_id;net_amount;tax_percent;gross_amount;artifact_format;file_sha256;chain_hash;prev_chain_hash\n")
+            revenues.each { rv ->
+                boolean paid = rv[5] != null && rv[5].toString() == String.valueOf(Item.STATUS_PAID)
+                sbRev.append("${rv[0]};\"${csvCell(rv[1])}\";\"${csvCell(rv[2])}\";${fmtDate(rv[3])};${fmtDate(rv[4])};${paid ? 'JA' : 'NEIN'};${rv[6] ?: 0};${fmtDec(rv[7])};${fmtDec(rv[8])};${fmtDec(rv[9])};\"${csvCell(rv[10])}\";\"${csvCell(rv[11])}\";\"${csvCell(rv[12])}\";\"${csvCell(rv[13])}\"\n")
+            }
+            zos.write(sbRev.toString().getBytes(StandardCharsets.UTF_8))
+            zos.closeEntry()
+
             // Ausgangsbelege
             locks.each { r ->
                 Path belegFile = Paths.get(r[7].toString())
@@ -1248,6 +1860,18 @@ yabs.addCommand("GoBD: 4. Betriebspruefer-Export (Z3 / IDEA ZIP)", "Erzeugt ein 
                 }
             }
 
+            // Einnahmenbelege (Originale aus gobd_income_lock)
+            revenues.each { rv ->
+                if (rv[14] != null && !rv[14].toString().trim().isEmpty()) {
+                    Path incFile = Paths.get(rv[14].toString())
+                    if (Files.exists(incFile)) {
+                        zos.putNextEntry(new ZipEntry("belege/einnahmen/${incFile.getFileName()}"))
+                        zos.write(Files.readAllBytes(incFile))
+                        zos.closeEntry()
+                    }
+                }
+            }
+
             zos.putNextEntry(new ZipEntry("VERFAHRENSDOKUMENTATION_TECHNIK.txt"))
             String readme = [
                 "=======================================================================",
@@ -1257,10 +1881,10 @@ yabs.addCommand("GoBD: 4. Betriebspruefer-Export (Z3 / IDEA ZIP)", "Erzeugt ein 
                 "Export-Zeitpunkt: ${ts}",
                 "",
                 "1. Unveraenderbarkeit (§ 146 Abs. 4 AO):",
-                "   Festgeschriebene Belege (gobd_document_lock) und deren Positionen",
-                "   sind durch den DatabaseObjectModifier gegen steuerrelevante Aenderungen",
-                "   sowie gegen Loeschen und Papierkorb gesperrt. Reine Zahlungs- und",
-                "   Mahnstatus-Aenderungen bleiben erlaubt und werden protokolliert.",
+                "   Festgeschriebene Belege (gobd_document_lock, gobd_income_lock) und deren",
+                "   Positionen sind durch den DatabaseObjectModifier gegen steuerrelevante",
+                "   Aenderungen sowie gegen Loeschen und Papierkorb gesperrt. Reine Zahlungs-",
+                "   und Mahnstatus-Aenderungen bleiben erlaubt und werden protokolliert.",
                 "   Inhaltliche Korrekturen erfolgen ausschliesslich ueber Stornorechnungen (ST-*).",
                 "",
                 "2. Stammdaten-Snapshots:",
@@ -1269,8 +1893,8 @@ yabs.addCommand("GoBD: 4. Betriebspruefer-Export (Z3 / IDEA ZIP)", "Erzeugt ein 
                 "   archivierten Originalbeleg gespeichert.",
                 "",
                 "3. Kryptographische Integritaetssicherung (SHA-256 Hash-Kette):",
-                "   Jeder archivierte Originalbeleg unter /belege/ ist ueber die Formel",
-                "   SHA256(Datei_Bytes || prev_sha256_hash) verkettet (Genesis: 64 Nullen).",
+                "   Jeder archivierte Originalbeleg unter /belege/ und /belege/einnahmen/",
+                "   ist ueber die Formel SHA256(Datei_Bytes || prev_hash) verkettet.",
                 "",
                 "4. Maschinelle Auswertbarkeit (Z3-Zugriff / IDEA):",
                 "   Dieses Archiv enthaelt eine vollstaendige index.xml sowie die",
@@ -1290,34 +1914,299 @@ yabs.addCommand("GoBD: 4. Betriebspruefer-Export (Z3 / IDEA ZIP)", "Erzeugt ein 
     })
 })
 
-yabs.addCommand("GoBD: 5. Pruefer-Ansicht oeffnen (Z1 Read-Only Tab)", "Oeffnet eine schreibgeschuetzte Tabelle aller festgeschriebenen Belege", {
-    def lockRows = selectRows(
-        "SELECT document_id, document_number, status, finalized_at, finalized_by, artifact_format, sha256_hash, cancels_document_id FROM gobd_document_lock ORDER BY COALESCE(chain_seq, document_id) DESC, finalized_at DESC"
-    )
+yabs.addCommand("GoBD: 5. Pruefer-Ansicht oeffnen (Z1 Read-Only Tab)", "Oeffnet die schreibgeschuetzte 4-Tab GoBD-Z1-Prueferansicht (§ 147 Abs. 6 AO)", {
+    JPanel rootPanel = new JPanel(new BorderLayout(8, 8))
+    rootPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10))
 
-    String[] cols = ["ID", "Belegnummer", "Status", "Festgeschrieben am", "Benutzer", "Format", "SHA-256 Hash", "Storno-Bezug"] as String[]
-    JTable table = new JTable(lockRows, cols) {
+    JLabel summaryLabel = new JLabel("GoBD Z1-Prueferansicht (§ 147 Abs. 6 AO – Unmittelbarer schreibgeschuetzter Datenzugriff)")
+    summaryLabel.setFont(ModernTheme.font(1, Font.BOLD))
+
+    JComboBox<String> yearCombo = new JComboBox<String>(["Alle Jahre"] as String[])
+    JButton refreshBtn = ModernTheme.actionButton(new JButton("Aktualisieren"), null)
+    JButton openSelectedBtn = ModernTheme.actionButton(new JButton("Markierten Originalbeleg oeffnen"), null)
+
+    JPanel topBar = new JPanel(new BorderLayout(12, 0))
+    topBar.add(summaryLabel, BorderLayout.WEST)
+
+    JPanel topControls = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0))
+    topControls.add(new JLabel("Pruefungszeitraum:"))
+    topControls.add(yearCombo)
+    topControls.add(openSelectedBtn)
+    topControls.add(refreshBtn)
+    topBar.add(topControls, BorderLayout.EAST)
+
+    String[] invoiceCols = ["ID", "Belegnummer", "Status", "Festgeschrieben am", "Benutzer", "Format", "SHA-256 Hash", "Storno-Bezug", "Archivpfad"] as String[]
+    String[] incomeCols = ["Einnahme-ID", "Belegnummer", "Status", "Importiert am", "Benutzer", "Originaldatei", "Format", "Datei-SHA-256", "Ketten-Hash", "Archivpfad"] as String[]
+    String[] expenseCols = ["Ausgabe-ID", "Belegnummer", "Beschreibung", "Datum", "Brutto (EUR)", "Belegstatus", "Originaldatei", "SHA-256", "Archivpfad"] as String[]
+    String[] auditCols = ["ID", "Zeitstempel", "Benutzer", "Objekttyp", "Objekt-ID", "Aktion", "Alter Wert", "Neuer Wert", "Details"] as String[]
+
+    DefaultTableModel invoiceModel = new DefaultTableModel(invoiceCols, 0) {
         @Override
-        boolean isCellEditable(int row, int column) {
-            return false
+        boolean isCellEditable(int row, int column) { return false }
+    }
+    DefaultTableModel incomeModel = new DefaultTableModel(incomeCols, 0) {
+        @Override
+        boolean isCellEditable(int row, int column) { return false }
+    }
+    DefaultTableModel expenseModel = new DefaultTableModel(expenseCols, 0) {
+        @Override
+        boolean isCellEditable(int row, int column) { return false }
+    }
+    DefaultTableModel auditModel = new DefaultTableModel(auditCols, 0) {
+        @Override
+        boolean isCellEditable(int row, int column) { return false }
+    }
+
+    def createReadOnlyTable = { DefaultTableModel model, int archiveColIdx ->
+        JTable tbl = new JTable(model) {
+            @Override
+            boolean isCellEditable(int row, int column) { return false }
+
+            @Override
+            String getToolTipText(MouseEvent e) {
+                int vRow = rowAtPoint(e.getPoint())
+                if (vRow >= 0 && archiveColIdx >= 0) {
+                    int mRow = convertRowIndexToModel(vRow)
+                    Object p = getModel().getValueAt(mRow, archiveColIdx)
+                    if (p != null && !p.toString().trim().isEmpty()) {
+                        return "Doppelklick oeffnet Originalbeleg: ${p}"
+                    }
+                }
+                return super.getToolTipText(e)
+            }
+        }
+        tbl.setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
+        tbl.setAutoCreateRowSorter(true)
+        if (archiveColIdx >= 0 && archiveColIdx < tbl.getColumnModel().getColumnCount()) {
+            def col = tbl.getColumnModel().getColumn(archiveColIdx)
+            col.setMinWidth(0)
+            col.setMaxWidth(0)
+            col.setPreferredWidth(0)
+        }
+        return tbl
+    }
+
+    JTable invoiceTable = createReadOnlyTable(invoiceModel, 8)
+    JTable incomeTable = createReadOnlyTable(incomeModel, 9)
+    JTable expenseTable = createReadOnlyTable(expenseModel, 8)
+    JTable auditTable = createReadOnlyTable(auditModel, -1)
+
+    // Hervorhebung fehlender Eingangsbelege nach GoBD Rz. 61-64 ("Keine Buchung ohne Beleg")
+    expenseTable.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+        @Override
+        Component getTableCellRendererComponent(JTable tbl, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            Component c = super.getTableCellRendererComponent(tbl, value, isSelected, hasFocus, row, column)
+            if (!isSelected) {
+                int mRow = tbl.convertRowIndexToModel(row)
+                String statusVal = tbl.getModel().getValueAt(mRow, 5)?.toString() ?: ""
+                if (statusVal.contains("Fehlt")) {
+                    c.setBackground(new Color(254, 243, 199))
+                    c.setForeground(new Color(146, 64, 14))
+                } else {
+                    c.setBackground(new Color(220, 252, 231))
+                    c.setForeground(new Color(22, 101, 52))
+                }
+            }
+            return c
+        }
+    })
+
+    def openArchiveFromTable = { JTable tbl, int archiveColIdx ->
+        if (tbl == null || archiveColIdx < 0) return
+        int vRow = tbl.getSelectedRow()
+        if (vRow < 0) {
+            notifyPopup("Bitte markieren Sie zuerst eine Zeile mit verknuepftem Originalbeleg.")
+            return
+        }
+        int mRow = tbl.convertRowIndexToModel(vRow)
+        String archivePath = tbl.getModel().getValueAt(mRow, archiveColIdx)?.toString()?.trim() ?: ""
+        if (archivePath.isEmpty()) {
+            showError("GoBD-Pruefung (Rz. 61): Zu diesem Datensatz ist kein archivierter Originalbeleg hinterlegt!")
+            return
+        }
+        Path f = Paths.get(archivePath)
+        if (!Files.exists(f)) {
+            showError("Archivierte Originaldatei nicht gefunden:\n${archivePath}")
+            return
+        }
+        if (Desktop.isDesktopSupported()) {
+            try {
+                Desktop.getDesktop().open(f.toFile())
+            } catch (Exception ex) {
+                notifyPopup("Archivierte Belegdatei:\n${f.toAbsolutePath()}")
+            }
+        } else {
+            notifyPopup("Archivierte Belegdatei:\n${f.toAbsolutePath()}")
         }
     }
-    JPanel panel = new JPanel(new BorderLayout(8, 8))
-    panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10))
-    panel.add(new JLabel("GoBD Z1-Prueferansicht (Schreibgeschuetztes Belegjournal - ${lockRows.length} Belege)"), BorderLayout.NORTH)
-    panel.add(new JScrollPane(table), BorderLayout.CENTER)
-    yabs.openTab("GoBD Z1-Prueferjournal", panel)
+
+    [
+        [table: invoiceTable, col: 8],
+        [table: incomeTable,  col: 9],
+        [table: expenseTable, col: 8]
+    ].each { Map entry ->
+        JTable t = (JTable) entry.table
+        int colIdx = (int) entry.col
+        t.addMouseListener(new MouseAdapter() {
+            @Override
+            void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2 && t.getSelectedRow() >= 0) {
+                    openArchiveFromTable(t, colIdx)
+                }
+            }
+        })
+    }
+
+    JTabbedPane tabs = new JTabbedPane()
+    tabs.addTab("1. Ausgangsrechnungen & Stornos", new JScrollPane(invoiceTable))
+    tabs.addTab("2. Importierte Einnahmen (ZUGFeRD)", new JScrollPane(incomeTable))
+    tabs.addTab("3. Ausgaben & Eingangsbelege", new JScrollPane(expenseTable))
+    tabs.addTab("4. GoBD Audit-Protokoll", new JScrollPane(auditTable))
+
+    tabs.addChangeListener({
+        openSelectedBtn.setEnabled(tabs.getSelectedIndex() in [0, 1, 2])
+    })
+
+    openSelectedBtn.addActionListener({
+        int idx = tabs.getSelectedIndex()
+        if (idx == 0) openArchiveFromTable(invoiceTable, 8)
+        else if (idx == 1) openArchiveFromTable(incomeTable, 9)
+        else if (idx == 2) openArchiveFromTable(expenseTable, 8)
+    })
+
+    boolean updatingYears = false
+    def reloadZ1Data = {
+        String selectedYear = (yearCombo.getSelectedItem()?.toString() ?: "Alle Jahre").trim()
+        boolean filterByYear = (selectedYear != "Alle Jahre" && !selectedYear.isEmpty())
+
+        def invRows = [] as Object[][]
+        try {
+            invRows = selectRows(
+                "SELECT document_id, document_number, status, finalized_at, finalized_by, artifact_format, sha256_hash, cancels_document_id, archive_path FROM gobd_document_lock ORDER BY COALESCE(chain_seq, document_id) DESC, finalized_at DESC"
+            )
+        } catch (Exception ignored) { }
+
+        def incRows = [] as Object[][]
+        try {
+            incRows = selectRows(
+                "SELECT revenue_id, document_number, status, imported_at, imported_by, original_name, artifact_format, file_sha256, chain_hash, archive_path FROM gobd_income_lock ORDER BY chain_seq DESC, imported_at DESC"
+            )
+        } catch (Exception ignored) { }
+
+        def expRows = [] as Object[][]
+        try {
+            expRows = selectRows(
+                "SELECT e.ids, e.cnumber, e.description, e.dateadded, e.brutvalue, r.originalname, r.sha256, r.archivepath FROM expenses e LEFT JOIN expense_receipts r ON e.ids = r.expensesids WHERE COALESCE(e.invisible, 0) = 0 ORDER BY e.ids DESC"
+            )
+        } catch (Exception ignored) { }
+
+        def audRows = [] as Object[][]
+        try {
+            audRows = selectRows(
+                "SELECT id, created_at, user_id, entity_type, entity_id, action, old_value, new_value, details FROM gobd_audit_log ORDER BY id DESC"
+            )
+        } catch (Exception ignored) { }
+
+        Set<String> years = new TreeSet<String>(Collections.reverseOrder())
+        def collectYear = { Object tsObj ->
+            String s = fmtDate(tsObj)
+            if (s.length() >= 4 && s.substring(0, 4).isInteger()) {
+                years.add(s.substring(0, 4))
+            }
+        }
+        invRows?.each { collectYear(it[3]) }
+        incRows?.each { collectYear(it[3]) }
+        expRows?.each { collectYear(it[3]) }
+        audRows?.each { collectYear(it[1]) }
+
+        updatingYears = true
+        try {
+            yearCombo.removeAllItems()
+            yearCombo.addItem("Alle Jahre")
+            years.each { String y -> yearCombo.addItem(y) }
+            if (filterByYear && years.contains(selectedYear)) {
+                yearCombo.setSelectedItem(selectedYear)
+            } else {
+                yearCombo.setSelectedItem("Alle Jahre")
+                filterByYear = false
+            }
+        } finally {
+            updatingYears = false
+        }
+
+        invoiceModel.setRowCount(0)
+        (invRows ?: []).findAll { !filterByYear || fmtDate(it[3]).startsWith(selectedYear) }.each { r ->
+            invoiceModel.addRow([r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7] ?: "", r[8] ?: ""] as Object[])
+        }
+
+        incomeModel.setRowCount(0)
+        (incRows ?: []).findAll { !filterByYear || fmtDate(it[3]).startsWith(selectedYear) }.each { r ->
+            incomeModel.addRow([r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9] ?: ""] as Object[])
+        }
+
+        expenseModel.setRowCount(0)
+        int missingReceipts = 0
+        (expRows ?: []).findAll { !filterByYear || fmtDate(it[3]).startsWith(selectedYear) }.each { r ->
+            String origName = r[5]?.toString()?.trim() ?: ""
+            String sha = r[6]?.toString()?.trim() ?: ""
+            String archPath = r[7]?.toString()?.trim() ?: ""
+            boolean hasReceipt = !origName.isEmpty() && !archPath.isEmpty()
+            if (!hasReceipt) missingReceipts++
+            String receiptStatus = hasReceipt ? "🔒 Archiviert" : "⚠️ Fehlt (Rz. 61)"
+            expenseModel.addRow([
+                r[0],
+                r[1] ?: "",
+                r[2] ?: "",
+                fmtDate(r[3]),
+                fmtDec(r[4]),
+                receiptStatus,
+                origName,
+                sha,
+                archPath
+            ] as Object[])
+        }
+
+        auditModel.setRowCount(0)
+        (audRows ?: []).findAll { !filterByYear || fmtDate(it[1]).startsWith(selectedYear) }.each { r ->
+            auditModel.addRow([r[0], r[1], r[2], r[3], r[4], r[5], r[6] ?: "", r[7] ?: "", r[8] ?: ""] as Object[])
+        }
+
+        tabs.setTitleAt(0, "1. Ausgangsrechnungen & Stornos (${invoiceModel.getRowCount()})")
+        tabs.setTitleAt(1, "2. Importierte Einnahmen / ZUGFeRD (${incomeModel.getRowCount()})")
+        tabs.setTitleAt(2, "3. Ausgaben & Eingangsbelege (${expenseModel.getRowCount()}${missingReceipts > 0 ? ' | ⚠️ ' + missingReceipts + ' ohne Beleg' : ''})")
+        tabs.setTitleAt(3, "4. GoBD Audit-Protokoll (${auditModel.getRowCount()})")
+
+        summaryLabel.setText(
+            "GoBD Z1-Prueferansicht (§ 147 Abs. 6 AO) – ${invoiceModel.getRowCount()} Ausgangsbelege | " +
+            "${incomeModel.getRowCount()} ZUGFeRD-Einnahmen | ${expenseModel.getRowCount()} Ausgaben | ${auditModel.getRowCount()} Audit-Eintraege"
+        )
+    }
+
+    yearCombo.addActionListener({
+        if (!updatingYears) {
+            reloadZ1Data()
+        }
+    })
+    refreshBtn.addActionListener({
+        reloadZ1Data()
+    })
+
+    reloadZ1Data()
+    rootPanel.add(topBar, BorderLayout.NORTH)
+    rootPanel.add(tabs, BorderLayout.CENTER)
+    yabs.openTab("GoBD Z1-Prueferjournal", rootPanel)
 })
 
-yabs.addCommand("GoBD: 6. Eingangsbelege pruefen (SHA256SUMS)", "Prueft alle archivierten Eingangsbelege gegen die Datenbank und die SHA256SUMS-Dateien", {
+yabs.addCommand("GoBD: 6. Eingangsbelege pruefen (SHA256SUMS)", "Prueft alle archivierten Eingangsbelege und Einnahmenbelege gegen die Datenbank und die SHA256SUMS-Dateien", {
     yabs.background({
         def receiptRows = selectRows("SELECT ids, expensesids, originalname, archivepath, filesize, sha256 FROM expense_receipts ORDER BY ids ASC")
-        if (!receiptRows || receiptRows.length == 0) {
-            return "Keine archivierten Eingangsbelege in der Datenbank erfasst."
+        def incomeRows = selectRows("SELECT revenue_id, document_number, original_name, archive_path, file_size, file_sha256 FROM gobd_income_lock ORDER BY chain_seq ASC")
+        if ((!receiptRows || receiptRows.length == 0) && (!incomeRows || incomeRows.length == 0)) {
+            return "Keine archivierten Eingangsbelege oder Einnahmenbelege in der Datenbank erfasst."
         }
         int verified = 0
         List<String> errors = []
-        for (def row : receiptRows) {
+        for (def row : (receiptRows ?: [])) {
             long rId = Long.parseLong(row[0].toString())
             long expId = Long.parseLong(row[1].toString())
             String origName = row[2].toString()
@@ -1329,19 +2218,12 @@ yabs.addCommand("GoBD: 6. Eingangsbelege pruefen (SHA256SUMS)", "Prueft alle arc
                 continue
             }
             byte[] bytes = Files.readAllBytes(f)
-            MessageDigest md = MessageDigest.getInstance("SHA-256")
-            md.update(bytes)
-            StringBuilder sb = new StringBuilder(64)
-            for (byte b : md.digest()) {
-                sb.append(String.format("%02x", b))
-            }
-            String actualSha = sb.toString()
+            String actualSha = computeRawSha256(bytes)
             if (!actualSha.equalsIgnoreCase(expectedSha)) {
                 errors << "Beleg #${rId} (${origName}, Ausgabe #${expId}): SHA-256 stimmt NICHT ueberein!"
                 continue
             }
 
-            // Check SHA256SUMS file in folder
             Path parentDir = f.getParent()
             Path sumsFile = parentDir.resolve("SHA256SUMS")
             if (Files.exists(sumsFile)) {
@@ -1353,10 +2235,44 @@ yabs.addCommand("GoBD: 6. Eingangsbelege pruefen (SHA256SUMS)", "Prueft alle arc
             }
             verified++
         }
+
+        int verifiedIncome = 0
+        for (def iRow : (incomeRows ?: [])) {
+            long revId = Long.parseLong(iRow[0].toString())
+            String docNum = iRow[1].toString()
+            String origName = iRow[2].toString()
+            Path f = Paths.get(iRow[3].toString())
+            String expectedSha = iRow[5].toString()
+
+            if (!Files.exists(f)) {
+                errors << "Einnahme ${docNum} (#${revId}, ${origName}): Datei fehlt im Archiv (${f})!"
+                continue
+            }
+            byte[] bytes = Files.readAllBytes(f)
+            String actualSha = computeRawSha256(bytes)
+            if (!actualSha.equalsIgnoreCase(expectedSha)) {
+                errors << "Einnahme ${docNum} (#${revId}, ${origName}): SHA-256 stimmt NICHT ueberein!"
+                continue
+            }
+
+            Path parentDir = f.getParent()
+            Path sumsFile = parentDir.resolve("SHA256SUMS")
+            if (!Files.exists(sumsFile)) {
+                errors << "Einnahme ${docNum} (#${revId}): SHA256SUMS fehlt in ${parentDir}!"
+                continue
+            }
+            String content = new String(Files.readAllBytes(sumsFile), StandardCharsets.UTF_8)
+            if (!content.contains(expectedSha)) {
+                errors << "Einnahme ${docNum} (#${revId}): SHA-256 fehlt in ${sumsFile}!"
+                continue
+            }
+            verifiedIncome++
+        }
+
         if (errors.isEmpty()) {
-            return "OK: Alle ${verified} Eingangsbelege sind vollstaendig vorhanden und kryptographisch intakt."
+            return "OK: Alle ${verified} Ausgaben-Belege und ${verifiedIncome} Einnahmen-Belege sind vollstaendig vorhanden und gegen SHA256SUMS geprueft."
         } else {
-            return "FEHLER: Integritaetsprobleme bei Eingangsbelegen:\n- " + errors.join("\n- ")
+            return "FEHLER: Integritaetsprobleme bei Belegen:\n- " + errors.join("\n- ")
         }
     }, { String report ->
         if (report.startsWith("FEHLER")) {
@@ -1367,10 +2283,65 @@ yabs.addCommand("GoBD: 6. Eingangsbelege pruefen (SHA256SUMS)", "Prueft alle arc
     })
 })
 
+yabs.addCommand("GoBD: 7. ZUGFeRD / XRechnung als Einnahme importieren", "Importiert ZUGFeRD-PDF/A-3 oder XRechnung-XML als GoBD-festgeschriebene Einnahme (Revenue)", {
+    JFileChooser chooser = new JFileChooser()
+    String watchDir = yabs.settings().get("gobd.incomeWatchPath", "")
+    if (watchDir && Files.exists(Paths.get(watchDir))) {
+        chooser.setCurrentDirectory(Paths.get(watchDir).toFile())
+    }
+    chooser.setDialogTitle("ZUGFeRD PDF/A-3 oder XRechnung XML als Einnahme importieren")
+    chooser.setMultiSelectionEnabled(true)
+    chooser.setFileFilter(new FileNameExtensionFilter("E-Rechnungen (ZUGFeRD PDF/A-3, XRechnung XML)", "pdf", "xml"))
+    if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+        File[] selected = chooser.getSelectedFiles()
+        if ((selected == null || selected.length == 0) && chooser.getSelectedFile() != null) {
+            selected = [chooser.getSelectedFile()] as File[]
+        }
+        selected?.each { File f ->
+            importZugferdIncomeFile(f.toPath(), null, false)
+        }
+    }
+})
+
+// Optionaler Hintergrund-Watcher fuer automatischen ZUGFeRD-/XRechnung-Einnahmen-Import
+def configureIncomeWatchTimer = {
+    if (incomeWatchTimer != null) {
+        try { incomeWatchTimer.cancel() } catch (Exception ignored) { }
+        incomeWatchTimer = null
+    }
+    boolean enabled = yabs.settings().getBoolean("gobd.autoImportIncome", false)
+    String watchPathStr = yabs.settings().get("gobd.incomeWatchPath", "").trim()
+    if (!enabled || watchPathStr.isEmpty()) return
+
+    Path watchDir = Paths.get(watchPathStr)
+    if (!Files.isDirectory(watchDir)) return
+
+    incomeWatchTimer = new Timer("gobd-income-watch", true)
+    incomeWatchTimer.scheduleAtFixedRate(new TimerTask() {
+        @Override
+        void run() {
+            try {
+                if (!Files.isDirectory(watchDir)) return
+                Files.list(watchDir).withCloseable { stream ->
+                    stream.filter { Path p ->
+                        String fn = p.getFileName().toString().toLowerCase()
+                        Files.isRegularFile(p) && (fn.endsWith(".pdf") || fn.endsWith(".xml"))
+                    }.forEach { Path p ->
+                        String key = p.toAbsolutePath().toString() + ":" + Files.size(p)
+                        if (seenWatchFiles.add(key)) {
+                            importZugferdIncomeFile(p, null, true)
+                        }
+                    }
+                }
+            } catch (Exception ignored) { }
+        }
+    }, 5000L, 15000L)
+}
+
 // -----------------------------------------------------------------------------
 // 7. Einstellungsseite unter Settings > Plugins (yabs.addSettingsPage)
 // -----------------------------------------------------------------------------
-yabs.addSettingsPage("GoBD-Konformitaet", "Einstellungen fuer automatische Beleg-Festschreibung und GoBD-Archivpfad", {
+yabs.addSettingsPage("GoBD-Konformitaet", "Einstellungen fuer automatische Beleg-Festschreibung, GoBD-Archivpfad und ZUGFeRD-Einnahmen-Import", {
     JPanel panel = new JPanel()
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS))
     panel.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12))
@@ -1432,9 +2403,73 @@ yabs.addSettingsPage("GoBD-Konformitaet", "Einstellungen fuer automatische Beleg
     Dimension pref = rowPanel.getPreferredSize()
     rowPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, (int) pref.getHeight()))
 
+    // ZUGFeRD / XRechnung Einnahmen-Ueberwachungsordner (gobd.incomeWatchPath & gobd.autoImportIncome)
+    boolean currentAutoIncome = yabs.settings().getBoolean("gobd.autoImportIncome", false)
+    JCheckBox autoIncomeCheck = new JCheckBox("ZUGFeRD / XRechnung Einnahmen-Belege aus Ueberwachungsordner automatisch importieren", currentAutoIncome)
+    autoIncomeCheck.setAlignmentX(Component.LEFT_ALIGNMENT)
+    autoIncomeCheck.setBorder(BorderFactory.createEmptyBorder(14, 0, 4, 0))
+    autoIncomeCheck.addActionListener({
+        yabs.settings().setBoolean("gobd.autoImportIncome", autoIncomeCheck.isSelected())
+        configureIncomeWatchTimer()
+        notifyStatus("GoBD Einnahmen-Auto-Import Einstellung gespeichert.")
+    })
+
+    JLabel watchLabel = new JLabel("Ueberwachungsordner fuer ZUGFeRD / XRechnung Einnahmen (gobd.incomeWatchPath):")
+    watchLabel.setAlignmentX(Component.LEFT_ALIGNMENT)
+    watchLabel.setBorder(BorderFactory.createEmptyBorder(6, 0, 4, 0))
+
+    JPanel watchRowPanel = new JPanel(new BorderLayout(6, 0))
+    watchRowPanel.setAlignmentX(Component.LEFT_ALIGNMENT)
+    JTextField watchPathField = new JTextField(yabs.settings().get("gobd.incomeWatchPath", ""), 30)
+    watchRowPanel.add(watchPathField, BorderLayout.CENTER)
+
+    JPanel watchBtnPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 4, 0))
+    JButton browseWatchBtn = new JButton("...")
+    JButton saveWatchBtn = new JButton("Speichern")
+
+    def saveIncomeWatchPath = { String newWatchStr ->
+        try {
+            String trimmed = newWatchStr?.trim() ?: ""
+            if (!trimmed.isEmpty()) {
+                Path wp = Paths.get(trimmed).toAbsolutePath()
+                Files.createDirectories(wp)
+                yabs.settings().set("gobd.incomeWatchPath", wp.toString())
+                watchPathField.setText(wp.toString())
+            } else {
+                yabs.settings().set("gobd.incomeWatchPath", "")
+                watchPathField.setText("")
+            }
+            configureIncomeWatchTimer()
+            notifyStatus("GoBD Einnahmen-Ueberwachungsordner gespeichert.")
+        } catch (Exception ex) {
+            showError("Ungueltiger Ordnerpfad fuer Einnahmen-Import:\n${ex.getMessage()}")
+        }
+    }
+
+    browseWatchBtn.addActionListener({
+        JFileChooser chooser = new JFileChooser(watchPathField.getText() ?: getArchiveRoot().toString())
+        chooser.setDialogTitle("Ueberwachungsordner fuer Einnahmen auswaehlen")
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY)
+        chooser.setAcceptAllFileFilterUsed(false)
+        if (chooser.showOpenDialog(panel) == JFileChooser.APPROVE_OPTION && chooser.getSelectedFile() != null) {
+            saveIncomeWatchPath(chooser.getSelectedFile().getAbsolutePath())
+        }
+    })
+    saveWatchBtn.addActionListener({
+        saveIncomeWatchPath(watchPathField.getText())
+    })
+    watchBtnPanel.add(browseWatchBtn)
+    watchBtnPanel.add(saveWatchBtn)
+    watchRowPanel.add(watchBtnPanel, BorderLayout.EAST)
+    Dimension watchPref = watchRowPanel.getPreferredSize()
+    watchRowPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, (int) watchPref.getHeight()))
+
     panel.add(autoLockCheck)
     panel.add(pathLabel)
     panel.add(rowPanel)
+    panel.add(autoIncomeCheck)
+    panel.add(watchLabel)
+    panel.add(watchRowPanel)
     return (JComponent) panel
 })
 
@@ -1448,9 +2483,13 @@ yabs.addSearchProvider({ String text ->
     def rows = selectRows(
         "SELECT document_id, document_number, status, finalized_at, archive_path FROM gobd_document_lock WHERE LOWER(document_number) LIKE '%${esc(q)}%' ORDER BY COALESCE(chain_seq, document_id) DESC, finalized_at DESC"
     )
+    def incomeRows = selectRows(
+        "SELECT revenue_id, document_number, status, imported_at, archive_path FROM gobd_income_lock WHERE LOWER(document_number) LIKE '%${esc(q)}%' ORDER BY chain_seq DESC, imported_at DESC"
+    )
 
-    return (rows ?: []).collect { r ->
-        new SearchResult(
+    List<SearchResult> results = []
+    (rows ?: []).each { r ->
+        results << new SearchResult(
             "GoBD-Beleg ${r[1]} [${r[2]}]",
             "Festgeschrieben am ${r[3]} – Klick oeffnet Originalbeleg",
             {
@@ -1461,10 +2500,23 @@ yabs.addSearchProvider({ String text ->
             }
         )
     }
+    (incomeRows ?: []).each { ir ->
+        results << new SearchResult(
+            "GoBD-Einnahme ${ir[1]} [${ir[2]}]",
+            "Importiert am ${ir[3]} – Klick oeffnet Originalbeleg",
+            {
+                Path f = Paths.get(ir[4].toString())
+                if (Files.exists(f) && Desktop.isDesktopSupported()) {
+                    Desktop.getDesktop().open(f.toFile())
+                }
+            }
+        )
+    }
+    return results
 })
 
 // -----------------------------------------------------------------------------
-// 9. Visuelle Sperranzeige & Feldsperre in den Modern-Panels (yabs.onView)
+// 9. Visuelle Sperranzeige & Feldsperre in den Panels (yabs.onView)
 // -----------------------------------------------------------------------------
 yabs.onView({ DataPanel panel ->
     if (panel == null) return
@@ -1486,7 +2538,13 @@ yabs.onView({ DataPanel panel ->
         boolean hasReceipts = receipts && receipts.length > 0
 
         if (hasReceipts) {
-            // Ausgabe mit revisionssicher archiviertem Beleg
+            String firstArchivePath = receipts[0][2]?.toString() ?: ""
+            String firstSha = receipts[0][3]?.toString() ?: ""
+            String shortSha = firstSha.length() >= 12 ? firstSha.substring(0, 12) : firstSha
+
+            // Ausgabe mit revisionssicher archiviertem Beleg: Finanzfelder & Belegentfernung sperren
+            panel.setContentLocked(true)
+
             JLabel badge = new JLabel("🔒 GoBD BELEGABLAGE (${receipts.length})")
             badge.setOpaque(true)
             badge.setBackground(new Color(220, 252, 231))
@@ -1496,7 +2554,7 @@ yabs.onView({ DataPanel panel ->
                 BorderFactory.createLineBorder(new Color(74, 222, 128), 1, true),
                 BorderFactory.createEmptyBorder(ModernTheme.px(2), ModernTheme.px(8), ModernTheme.px(2), ModernTheme.px(8))
             ))
-            badge.setToolTipText("GoBD Rz. 61–64 (Keine Buchung ohne Beleg) | ${receipts.length} Beleg(e) revisionssicher archiviert")
+            badge.setToolTipText("GoBD Rz. 61–64 & § 146 Abs. 4 AO | ${receipts.length} Beleg(e) revisionssicher archiviert | SHA-256: ${firstSha}")
             panel.setPluginBadge(badge)
 
             JPanel banner = new JPanel(new BorderLayout(ModernTheme.px(12), 0))
@@ -1505,13 +2563,41 @@ yabs.onView({ DataPanel panel ->
                 BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(74, 222, 128)),
                 ModernTheme.padding(5, 12)
             ))
-            JLabel info = new JLabel("🔒 GoBD-Konform: Diese Ausgabe besitzt ${receipts.length} verknuepfte(n) Originalbeleg(e) im Jahresarchiv (gesichert via SHA256SUMS).")
+            JLabel info = new JLabel(
+                "🔒 GoBD-Festschreibung: Ausgabe besitzt ${receipts.length} verknuepfte(n) Originalbeleg(e) im Jahresarchiv (SHA-256: ${shortSha}…). " +
+                "Betraege, Steuer, Konto & Belegentfernung sind gesperrt; Zahlungsstatus und Zahlungsdatum bleiben buchbar."
+            )
             info.setFont(ModernTheme.font(1, Font.BOLD))
             info.setForeground(new Color(22, 101, 52))
             banner.add(info, BorderLayout.CENTER)
+
+            JPanel actions = new JPanel(new FlowLayout(FlowLayout.RIGHT, ModernTheme.px(6), 0))
+            actions.setOpaque(false)
+            JButton openBtn = ModernTheme.actionButton(new JButton("Originalbeleg oeffnen"), null)
+            openBtn.setToolTipText(firstArchivePath)
+            openBtn.addActionListener({
+                Path f = Paths.get(firstArchivePath)
+                if (Files.exists(f)) {
+                    if (Desktop.isDesktopSupported()) {
+                        try {
+                            Desktop.getDesktop().open(f.toFile())
+                        } catch (Exception ex) {
+                            notifyPopup("Archivierte Belegdatei:\n${f.toAbsolutePath()}")
+                        }
+                    } else {
+                        notifyPopup("Archivierte Belegdatei:\n${f.toAbsolutePath()}")
+                    }
+                } else {
+                    showError("Archivdatei nicht gefunden:\n${firstArchivePath}")
+                }
+            })
+            actions.add(openBtn)
+            banner.add(actions, BorderLayout.EAST)
             panel.setPluginBanner(banner)
         } else {
-            // Ausgabe OHNE Beleg: Warnung nach GoBD Rz. 61
+            // Ausgabe OHNE Beleg: Felder offen lassen, Warnung nach GoBD Rz. 61 anzeigen
+            panel.setContentLocked(false)
+
             JLabel badge = new JLabel("⚠️ GoBD: OHNE BELEG")
             badge.setOpaque(true)
             badge.setBackground(new Color(254, 243, 199))
@@ -1534,6 +2620,144 @@ yabs.onView({ DataPanel panel ->
             info.setFont(ModernTheme.font(1, Font.PLAIN))
             info.setForeground(new Color(146, 64, 14))
             banner.add(info, BorderLayout.CENTER)
+
+            JPanel actions = new JPanel(new FlowLayout(FlowLayout.RIGHT, ModernTheme.px(6), 0))
+            actions.setOpaque(false)
+            JButton attachBtn = ModernTheme.actionButton(new JButton("Beleg verknuepfen & festschreiben"), null)
+            attachBtn.addActionListener({
+                JFileChooser chooser = new JFileChooser()
+                chooser.setDialogTitle("Eingangsbeleg / Scan fuer Ausgabe auswaehlen (PDF, XML, Bild)")
+                chooser.setFileFilter(new FileNameExtensionFilter("Belegdateien (PDF, XML, PNG, JPG)", "pdf", "xml", "png", "jpg", "jpeg"))
+                if (chooser.showOpenDialog(panel instanceof Component ? (Component) panel : null) == JFileChooser.APPROVE_OPTION && chooser.getSelectedFile() != null) {
+                    try {
+                        def rec = ExpenseReceipts.attach(exp, chooser.getSelectedFile())
+                        if (rec != null) {
+                            logAudit("EXPENSE", exp.__getIDS(), "EXPENSE_RECEIPT_ATTACHED", null, createExpenseFinancialSnapshot(exp), rec.sha256, "Eingangsbeleg ${rec.originalName} verknuepft und Ausgabe festgeschrieben.")
+                            panel.setDataOwner(exp, true)
+                            notifyDocumentEvent("GoBD-Eingangsbeleg archiviert & Ausgabe festgeschrieben:\nDatei: ${rec.originalName}\nSHA-256: ${rec.sha256.substring(0, 16)}...", exp)
+                        }
+                    } catch (Exception ex) {
+                        showError("Fehler beim Archivieren des Eingangsbelegs:\n${ex.getMessage()}")
+                    }
+                }
+            })
+            actions.add(attachBtn)
+            banner.add(actions, BorderLayout.EAST)
+            panel.setPluginBanner(banner)
+        }
+        return
+    }
+
+    // -------------------------------------------------------------------------
+    // A2. Einnahmen / Gutschriften (Revenue) - GoBD Rz. 61–64 & § 146 Abs. 4 AO
+    // -------------------------------------------------------------------------
+    if (owner instanceof Revenue) {
+        Revenue rev = (Revenue) owner
+        if (rev.__getIDS() <= 0) {
+            panel.setContentLocked(false)
+            panel.setPluginBadge(null)
+            panel.setPluginBanner(null)
+            return
+        }
+
+        def incLock = getIncomeLockRecord(rev.__getIDS())
+        if (incLock != null) {
+            String docNum = incLock[2]?.toString() ?: rev.__getCnumber()
+            String archivePath = incLock[7]?.toString() ?: ""
+            String format = incLock[9]?.toString() ?: "ZUGFERD_PDFA3"
+            String fileSha = incLock[10]?.toString() ?: ""
+            String shortSha = fileSha.length() >= 12 ? fileSha.substring(0, 12) : fileSha
+
+            panel.setContentLocked(true)
+
+            JLabel badge = new JLabel("🔒 GoBD EINGANGS-RECHNUNG (ZUGFeRD)")
+            badge.setOpaque(true)
+            badge.setBackground(new Color(220, 252, 231))
+            badge.setForeground(new Color(22, 101, 52))
+            badge.setFont(ModernTheme.font(0, Font.BOLD))
+            badge.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(74, 222, 128), 1, true),
+                BorderFactory.createEmptyBorder(ModernTheme.px(2), ModernTheme.px(8), ModernTheme.px(2), ModernTheme.px(8))
+            ))
+            badge.setToolTipText("GoBD § 146 Abs. 4 AO | Einnahme ${docNum} (${format}) | SHA-256: ${fileSha}")
+            panel.setPluginBadge(badge)
+
+            JPanel banner = new JPanel(new BorderLayout(ModernTheme.px(12), 0))
+            banner.setBackground(new Color(220, 252, 231))
+            banner.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(74, 222, 128)),
+                ModernTheme.padding(6, 12)
+            ))
+            JLabel info = new JLabel(
+                "🔒 GoBD-Festschreibung: Einnahme ${docNum} (${format}, SHA-256: ${shortSha}…) ist mit einem Originalbeleg im Jahresarchiv verknuepft. " +
+                "Betraege, Steuer, Konto & Datum sind gesperrt; Zahlungsstatus und Zahlungsdatum bleiben buchbar."
+            )
+            info.setFont(ModernTheme.font(1, Font.BOLD))
+            info.setForeground(new Color(22, 101, 52))
+            banner.add(info, BorderLayout.CENTER)
+
+            JPanel actions = new JPanel(new FlowLayout(FlowLayout.RIGHT, ModernTheme.px(6), 0))
+            actions.setOpaque(false)
+            JButton openBtn = ModernTheme.actionButton(new JButton("Originalbeleg oeffnen"), null)
+            openBtn.setToolTipText(archivePath)
+            openBtn.addActionListener({
+                Path f = Paths.get(archivePath)
+                if (Files.exists(f)) {
+                    if (Desktop.isDesktopSupported()) {
+                        try {
+                            Desktop.getDesktop().open(f.toFile())
+                        } catch (Exception ex) {
+                            notifyPopup("Archivierte Belegdatei:\n${f.toAbsolutePath()}")
+                        }
+                    } else {
+                        notifyPopup("Archivierte Belegdatei:\n${f.toAbsolutePath()}")
+                    }
+                } else {
+                    showError("Archivdatei nicht gefunden:\n${archivePath}")
+                }
+            })
+            actions.add(openBtn)
+            banner.add(actions, BorderLayout.EAST)
+            panel.setPluginBanner(banner)
+        } else {
+            panel.setContentLocked(false)
+
+            JLabel badge = new JLabel("⚠️ GoBD: OHNE BELEG")
+            badge.setOpaque(true)
+            badge.setBackground(new Color(254, 243, 199))
+            badge.setForeground(new Color(146, 64, 14))
+            badge.setFont(ModernTheme.font(0, Font.BOLD))
+            badge.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(245, 158, 11), 1, true),
+                BorderFactory.createEmptyBorder(ModernTheme.px(2), ModernTheme.px(8), ModernTheme.px(2), ModernTheme.px(8))
+            ))
+            badge.setToolTipText("GoBD Rz. 61–64: Keine Buchung ohne Beleg! Bitte verknuepfen Sie eine ZUGFeRD-/XRechnung-Datei oder einen Beleg.")
+            panel.setPluginBadge(badge)
+
+            JPanel banner = new JPanel(new BorderLayout(ModernTheme.px(12), 0))
+            banner.setBackground(new Color(254, 243, 199))
+            banner.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(245, 158, 11)),
+                ModernTheme.padding(6, 12)
+            ))
+            JLabel info = new JLabel("⚠️ GoBD-Hinweis: Zu dieser Einnahme ist noch kein Originalbeleg hinterlegt (Grundsatz: „Keine Buchung ohne Beleg“, GoBD Rz. 61–64).")
+            info.setFont(ModernTheme.font(1, Font.PLAIN))
+            info.setForeground(new Color(146, 64, 14))
+            banner.add(info, BorderLayout.CENTER)
+
+            JPanel actions = new JPanel(new FlowLayout(FlowLayout.RIGHT, ModernTheme.px(6), 0))
+            actions.setOpaque(false)
+            JButton linkBtn = ModernTheme.actionButton(new JButton("ZUGFeRD / Beleg verknuepfen"), null)
+            linkBtn.addActionListener({
+                JFileChooser chooser = new JFileChooser()
+                chooser.setDialogTitle("ZUGFeRD / XRechnung / Beleg fuer Einnahme auswaehlen")
+                chooser.setFileFilter(new FileNameExtensionFilter("Belegdateien (PDF, XML, PNG, JPG)", "pdf", "xml", "png", "jpg", "jpeg"))
+                if (chooser.showOpenDialog(panel instanceof Component ? (Component) panel : null) == JFileChooser.APPROVE_OPTION && chooser.getSelectedFile() != null) {
+                    importZugferdIncomeFile(chooser.getSelectedFile().toPath(), rev, false)
+                }
+            })
+            actions.add(linkBtn)
+            banner.add(actions, BorderLayout.EAST)
             panel.setPluginBanner(banner)
         }
         return
@@ -1680,10 +2904,19 @@ yabs.onView({ DataPanel panel ->
 
 // Initialisierung beim Starten des Plugins ausfuehren
 initSchema()
-notifyStatus("GoBD-Konformitaets-Plugin (v1.4.2) vollstaendig geladen.")
+configureIncomeWatchTimer()
+notifyStatus("GoBD-Konformitaets-Plugin (v1.5.0) vollstaendig geladen.")
 
 // Aufraeum-Closure beim Stoppen/Deaktivieren/Neuladen des Plugins
 onStop = {
+    try {
+        logAudit("PLUGIN", 0L, "PLUGIN_STOPPED", "STATE=RUNNING", "STATE=STOPPED", null, "GoBD-Konformitaets-Plugin wurde gestoppt oder deaktiviert.")
+    } catch (Exception ignored) { }
+    if (incomeWatchTimer != null) {
+        try { incomeWatchTimer.cancel() } catch (Exception ignored) { }
+        incomeWatchTimer = null
+    }
+    seenWatchFiles.clear()
     creatingStorno = false
     finalizingIds.clear()
     lastGeneratedFiles.clear()

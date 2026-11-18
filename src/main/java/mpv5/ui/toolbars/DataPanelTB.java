@@ -73,6 +73,19 @@ public class DataPanelTB extends javax.swing.JPanel implements ActionListener, I
             commonActionsToolbar.remove(pdfButton);
             commonActionsToolbar.validate();
         }
+
+        if (parents instanceof javax.swing.JComponent) {
+            ((javax.swing.JComponent) parents).addPropertyChangeListener(DataPanel.PROPERTY_CONTENT_LOCKED, evt -> {
+                boolean locked = Boolean.TRUE.equals(evt.getNewValue());
+                if (locked) {
+                    but5.setEnabled(false);
+                    but6.setEnabled(false);
+                } else if (parents.getDataOwner() == null || !parents.getDataOwner().isReadOnly()) {
+                    but5.setEnabled(true);
+                    but6.setEnabled(!DatabaseObject.isAutoLockEnabled());
+                }
+            });
+        }
     }
 
     /**
@@ -95,9 +108,10 @@ public class DataPanelTB extends javax.swing.JPanel implements ActionListener, I
      * @param on
      */
     public void setEditable(boolean on) {
+        boolean contentLocked = parents != null && parents.isContentLocked();
         but3.setEnabled(on);
-        but5.setEnabled(on);
-        but6.setEnabled(on);
+        but5.setEnabled(on && !contentLocked);
+        but6.setEnabled(on && !contentLocked);
     }
 
     /**

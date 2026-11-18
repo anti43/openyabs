@@ -305,6 +305,43 @@ class ExtensionManagerTest {
         String code = new String(Files.readAllBytes(gobd), StandardCharsets.UTF_8);
         // Compiles (but does not run) the script; throws on syntax/compile errors.
         assertNotNull(new groovy.lang.GroovyShell().parse(code, "gobd_compliance.groovy"));
+        assertTrue(code.contains("CREATE TABLE IF NOT EXISTS gobd_income_lock"));
+        assertTrue(code.contains("INCOME_IMPORTED"));
+        assertTrue(code.contains("INCOME_PAYMENT_STATUS_CHANGED"));
+        assertTrue(code.contains("GoBD: 7. ZUGFeRD / XRechnung als Einnahme importieren"));
+        assertTrue(code.contains("<URL>einnahmen.csv</URL>"));
+        assertTrue(code.contains("belege/einnahmen/"));
+        assertTrue(code.contains("gobd.incomeWatchPath"));
+        assertTrue(code.contains("gobd.autoImportIncome"));
+        assertTrue(code.contains("owner instanceof Revenue"));
+        assertTrue(code.contains("1. Ausgangsrechnungen & Stornos"));
+        assertTrue(code.contains("2. Importierte Einnahmen"));
+        assertTrue(code.contains("3. Ausgaben & Eingangsbelege"));
+        assertTrue(code.contains("4. GoBD Audit-Protokoll"));
+        assertTrue(code.contains("Markierten Originalbeleg oeffnen"));
+        assertTrue(code.contains("Alle Jahre"));
+        assertTrue(code.contains("EXPENSE_PAYMENT_STATUS_CHANGED"));
+        assertTrue(code.contains("EXPENSE_RECEIPT_ATTACHED"));
+        assertTrue(code.contains("PLUGIN_STOPPED"));
+    }
+
+    @Test
+    void revenuePreservesPrepopulatedNumberAndMapsPaidStatus() {
+        mpv5.db.objects.Revenue rev = new mpv5.db.objects.Revenue();
+        rev.setCnumber("GUT-2026-0042");
+        rev.setCname("GUT-2026-0042");
+        rev.ensureUniqueness();
+        assertEquals("GUT-2026-0042", rev.__getCnumber());
+        assertEquals("GUT-2026-0042", rev.__getCname());
+
+        assertFalse(rev.isIspaid());
+        rev.setIspaid(true);
+        assertTrue(rev.isIspaid());
+        assertTrue(rev.__getIspaid());
+        assertEquals(mpv5.db.objects.Item.STATUS_PAID, rev.__getStatus());
+        rev.setIspaid(false);
+        assertFalse(rev.isIspaid());
+        assertEquals(mpv5.db.objects.Item.STATUS_QUEUED, rev.__getStatus());
     }
 
     @Test
