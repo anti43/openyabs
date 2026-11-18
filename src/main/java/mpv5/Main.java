@@ -945,6 +945,11 @@ public class Main implements Runnable {
             } catch (Exception e) {
                 Log.Debug(e);
             }
+            try {
+                mpv5.handler.ZugpferdExpenseImport.startAutoImport();
+            } catch (Exception e) {
+                Log.Debug(e);
+            }
         }
 
         //newer release on GitHub? (release builds only, can be switched off)

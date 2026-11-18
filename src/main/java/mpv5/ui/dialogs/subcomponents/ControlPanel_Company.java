@@ -71,6 +71,8 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
      */
     private final LabeledTextField creditorid = new LabeledTextField();
     private final javax.swing.JCheckBox defaultZugpferd = new javax.swing.JCheckBox(Messages.COMPANY_DEFAULT_ZUGFERD.toString());
+    private final mpv5.ui.beans.LabeledTextChooser zugpferdImportFolder = new mpv5.ui.beans.LabeledTextChooser();
+    private final javax.swing.JCheckBox autoImportZugpferd = new javax.swing.JCheckBox(Messages.ZUGFERD_IMPORT_AUTO.toString());
     private final JPanel actions;
 
     public ControlPanel_Company() {
@@ -123,9 +125,21 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
                 .row(Applets.field(taxadvsior), Applets.field(taxadvjob));
         defaultZugpferd.setToolTipText(Messages.COMPANY_DEFAULT_ZUGFERD_HINT.toString());
         defaultZugpferd.setOpaque(false);
+        zugpferdImportFolder.setMode(mpv5.ui.dialogs.DialogForFile.DIRECTORIES_ONLY);
+        zugpferdImportFolder.set_Label("");
+        autoImportZugpferd.setOpaque(false);
+        JButton importNow = new JButton(Messages.ZUGFERD_IMPORT_NOW.toString());
+        importNow.addActionListener(e -> importZugferdNow());
+        JPanel importNowRow = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
+        importNowRow.setOpaque(false);
+        importNowRow.add(importNow);
         Card einvoice = new Card(Messages.COMPANY_CARD_EINVOICE.toString())
                 .addFull(defaultZugpferd)
-                .addFull(Applets.hint(Messages.COMPANY_DEFAULT_ZUGFERD_HINT.toString()));
+                .addFull(Applets.hint(Messages.COMPANY_DEFAULT_ZUGFERD_HINT.toString()))
+                .row(Card.field(Messages.ZUGFERD_IMPORT_FOLDER.toString(), zugpferdImportFolder))
+                .addFull(autoImportZugpferd)
+                .addFull(Applets.hint(Messages.ZUGFERD_IMPORT_HINT.toString()))
+                .addFull(importNowRow);
         String info = "* " + Messages.COMPANY_REQUIRED_LEGEND + "  \u00b7  " + bundle.getString("ControlPanel_Company.jTextArea1.text");
         add(Applets.page(info, 380, company, contact, bank, tax, einvoice), BorderLayout.CENTER);
 
@@ -292,6 +306,22 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
             User.getCurrentUser().setProperty("companyinfo." + f.getName(), f.getText() == null ? "" : f.getText());
         }
         mpv5.utils.export.EInvoiceDelivery.setZugpferdDefault(defaultZugpferd.isSelected());
+        mpv5.handler.ZugpferdExpenseImport.setFolderPath(zugpferdImportFolder.get_Text(false));
+        mpv5.handler.ZugpferdExpenseImport.setAutoImportEnabled(autoImportZugpferd.isSelected());
+        mpv5.globals.LocalSettings.save();
+        mpv5.handler.ZugpferdExpenseImport.startAutoImport();
+    }
+
+    private void importZugferdNow() {
+        mpv5.handler.ZugpferdExpenseImport.setFolderPath(zugpferdImportFolder.get_Text(false));
+        java.io.File dir = mpv5.handler.ZugpferdExpenseImport.folder();
+        if (dir == null || !dir.isDirectory()) {
+            Popup.notice(this, Messages.ZUGFERD_IMPORT_FOLDER_NOT_SET.toString());
+            return;
+        }
+        mpv5.handler.ZugpferdExpenseImport.Result res = mpv5.handler.ZugpferdExpenseImport.importFromFolder(dir);
+        mpv5.ui.panels.ModernExpensePanel.refreshIfOpen();
+        Popup.notice(this, res.summary());
     }
 
     @Override
@@ -313,6 +343,8 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
                 }
             }
             defaultZugpferd.setSelected(mpv5.utils.export.EInvoiceDelivery.isZugpferdDefault());
+            zugpferdImportFolder.set_Text(mpv5.handler.ZugpferdExpenseImport.folderPath());
+            autoImportZugpferd.setSelected(mpv5.handler.ZugpferdExpenseImport.isAutoImportEnabled());
         } catch (Exception e) {
             Log.Debug(this, e);
         }

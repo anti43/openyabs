@@ -72,6 +72,7 @@ import mpv5.globals.Headers;
 import mpv5.globals.Messages;
 import mpv5.handler.ExpenseReceipts;
 import mpv5.handler.ExpenseReceipts.Receipt;
+import mpv5.handler.ZugpferdExpenseImport;
 import mpv5.i18n.LanguageManager;
 import mpv5.logging.Log;
 import mpv5.ui.beans.LabeledCombobox;
@@ -118,6 +119,15 @@ public class ModernExpensePanel extends ModernDataPanel {
         return instance;
     }
 
+    /**
+     * Refreshes the expense panel if it has already been instantiated.
+     */
+    public static synchronized void refreshIfOpen() {
+        if (instance != null) {
+            instance.refresh();
+        }
+    }
+
     private Expense dataOwner;
     private final ModernCommandBar tb;
 
@@ -157,6 +167,7 @@ public class ModernExpensePanel extends ModernDataPanel {
 
     // Master list
     private final JTable expenseTable = new MPTable(this);
+    private final JButton importZugferdBtn = new JButton(Messages.ZUGFERD_IMPORT_BUTTON.toString());
 
     // Receipts table
     private final DefaultTableModel receiptsModel = new DefaultTableModel(
@@ -354,6 +365,9 @@ public class ModernExpensePanel extends ModernDataPanel {
         });
 
         Card card = new Card("Ausgaben");
+        importZugferdBtn.setToolTipText(Messages.ZUGFERD_IMPORT_HINT.toString());
+        importZugferdBtn.addActionListener(e -> importZugferdDialog());
+        card.headerAction(importZugferdBtn);
         card.addFull(new JScrollPane(expenseTable), 1);
         p.add(card, BorderLayout.CENTER);
         return p;
@@ -440,8 +454,12 @@ public class ModernExpensePanel extends ModernDataPanel {
                     dtde.acceptDrop(DnDConstants.ACTION_COPY);
                     if (dtde.getTransferable().isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
                         List<File> files = (List<File>) dtde.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
-                        for (File f : files) {
-                            importReceiptFile(f);
+                        if (dataOwner == null || dataOwner.__getIDS() <= 0) {
+                            importZugferdFiles(files);
+                        } else {
+                            for (File f : files) {
+                                importReceiptFile(f);
+                            }
                         }
                         dtde.dropComplete(true);
                     } else {
@@ -453,6 +471,53 @@ public class ModernExpensePanel extends ModernDataPanel {
                 }
             }
         });
+        new DropTarget(expenseTable, DnDConstants.ACTION_COPY, new DropTargetAdapter() {
+            @Override
+            @SuppressWarnings("unchecked")
+            public void drop(DropTargetDropEvent dtde) {
+                try {
+                    dtde.acceptDrop(DnDConstants.ACTION_COPY);
+                    if (dtde.getTransferable().isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+                        List<File> files = (List<File>) dtde.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
+                        importZugferdFiles(files);
+                        dtde.dropComplete(true);
+                    } else {
+                        dtde.rejectDrop();
+                    }
+                } catch (Exception ex) {
+                    Log.Debug(ModernExpensePanel.class, ex);
+                    dtde.dropComplete(false);
+                }
+            }
+        });
+    }
+
+    private void importZugferdDialog() {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setDialogTitle(Messages.ZUGFERD_IMPORT_CHOOSER.toString());
+        chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        chooser.setMultiSelectionEnabled(true);
+        File configured = ZugpferdExpenseImport.folder();
+        if (configured != null && configured.exists()) {
+            chooser.setCurrentDirectory(configured.isDirectory() ? configured : configured.getParentFile());
+        }
+        if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            File[] selected = chooser.getSelectedFiles();
+            if (selected != null && selected.length > 0) {
+                importZugferdFiles(java.util.Arrays.asList(selected));
+            } else if (chooser.getSelectedFile() != null) {
+                importZugferdFiles(java.util.Collections.singletonList(chooser.getSelectedFile()));
+            }
+        }
+    }
+
+    private void importZugferdFiles(List<File> files) {
+        ZugpferdExpenseImport.Result res = ZugpferdExpenseImport.importFiles(files);
+        if (!res.expenses.isEmpty()) {
+            refresh();
+            setDataOwner(res.expenses.get(res.expenses.size() - 1), true);
+        }
+        Popup.notice(res.summary());
     }
 
     private void importReceiptDialog() {
