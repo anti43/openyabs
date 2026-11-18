@@ -320,6 +320,9 @@ class ExtensionManagerTest {
         assertTrue(code.contains("4. GoBD Audit-Protokoll"));
         assertTrue(code.contains("Markierten Originalbeleg oeffnen"));
         assertTrue(code.contains("Alle Jahre"));
+        assertTrue(code.contains("EXPENSE_PAYMENT_STATUS_CHANGED"));
+        assertTrue(code.contains("EXPENSE_RECEIPT_ATTACHED"));
+        assertTrue(code.contains("PLUGIN_STOPPED"));
     }
 
     @Test

@@ -20,6 +20,7 @@ import mpv5.db.objects.Revenue
 import mpv5.db.objects.SubItem
 import mpv5.db.objects.User
 import mpv5.handler.Activity
+import mpv5.handler.ExpenseReceipts
 import mpv5.logging.Log
 import mpv5.plugin.api.SearchResult
 import mpv5.ui.dialogs.Notificator
@@ -688,6 +689,18 @@ def createRevenueFinancialSnapshot = { Revenue rev ->
     ].join("|")
 }
 
+def createExpenseFinancialSnapshot = { Expense exp ->
+    return [
+        "Num=${exp.__getCnumber() ?: ''}",
+        "Date=${fmtDate(exp.__getDateadded())}",
+        "Acc=${exp.__getAccountsids()}",
+        "Net=${fmtDec(exp.__getNetvalue())}",
+        "TaxPct=${fmtDec(exp.__getTaxpercentvalue())}",
+        "Gross=${fmtDec(exp.__getBrutvalue())}",
+        "Desc=${(exp.__getDescription() ?: '').trim()}"
+    ].join("|")
+}
+
 def defaultIncomeAccountId = {
     try {
         def rows = selectRows("SELECT ids FROM accounts WHERE intaccounttype = ${Account.INCOME} ORDER BY ids ASC")
@@ -1173,10 +1186,44 @@ def checkWriteAllowed = { DatabaseObject obj, boolean isDelete ->
         Expense exp = (Expense) obj
         def receiptRows = selectRows("SELECT ids, originalname, archivepath, sha256 FROM expense_receipts WHERE expensesids = ${exp.__getIDS()}")
         boolean hasReceipts = receiptRows && receiptRows.length > 0
-        if (isDelete || isMovedToTrash(exp)) {
-            if (hasReceipts) {
-                logAudit("EXPENSE", exp.__getIDS(), "BLOCKED_DELETE", "Receipts=${receiptRows.length}", "Delete/Trash=true", receiptRows[0][3]?.toString(), "Loeschung einer Ausgabe mit archivierten Belegen verhindert.")
+        if (hasReceipts) {
+            String firstReceiptHash = receiptRows[0][3]?.toString()
+            if (isDelete || isMovedToTrash(exp)) {
+                logAudit("EXPENSE", exp.__getIDS(), "BLOCKED_DELETE", "Receipts=${receiptRows.length}", "Delete/Trash=true", firstReceiptHash, "Loeschung einer Ausgabe mit archivierten Belegen verhindert.")
                 showError("GoBD-Schutz (Rz. 61-64 AO):\nAusgabe #${exp.__getIDS()} besitzt ${receiptRows.length} archivierte Eingangsbelege und darf nicht geloescht werden!")
+                return false
+            }
+
+            def dbRows = selectRows(
+                "SELECT cnumber, dateadded, accountsids, netvalue, taxpercentvalue, brutvalue, description, ispaid, dateend FROM expenses WHERE ids = ${exp.__getIDS()}"
+            )
+            if (dbRows && dbRows.length > 0) {
+                def db = dbRows[0]
+                String dbCore = [
+                    "Num=${db[0] ?: ''}",
+                    "Date=${fmtDate(db[1])}",
+                    "Acc=${db[2]}",
+                    "Net=${fmtDec(db[3])}",
+                    "TaxPct=${fmtDec(db[4])}",
+                    "Gross=${fmtDec(db[5])}",
+                    "Desc=${(db[6]?.toString() ?: '').trim()}"
+                ].join("|")
+                String newCore = createExpenseFinancialSnapshot(exp)
+
+                if (dbCore == newCore) {
+                    boolean oldPaid = db[7] != null && (db[7].toString() == "1" || db[7].toString().equalsIgnoreCase("true"))
+                    boolean newPaid = exp.__getIspaid()
+                    String oldEnd = fmtDate(db[8])
+                    String newEnd = fmtDate(exp.__getDateend())
+                    if (oldPaid != newPaid || oldEnd != newEnd) {
+                        logAudit("EXPENSE", exp.__getIDS(), "EXPENSE_PAYMENT_STATUS_CHANGED", "ispaid=${oldPaid}|dateend=${oldEnd}", "ispaid=${newPaid}|dateend=${newEnd}", firstReceiptHash, "Zahlungsstatus/Zahlungsdatum fuer Ausgabe ${exp.__getCnumber() ?: ('#' + exp.__getIDS())} protokolliert.")
+                        notifyStatus("GoBD-Audit: Zahlungsstatus fuer Ausgabe ${exp.__getCnumber() ?: ('#' + exp.__getIDS())} protokolliert.")
+                    }
+                    return true
+                }
+
+                logAudit("EXPENSE", exp.__getIDS(), "BLOCKED_EDIT", dbCore, newCore, firstReceiptHash, "Unzulaessige Aenderung steuerrelevanter Felder an Ausgabe ${exp.__getCnumber() ?: ('#' + exp.__getIDS())}.")
+                showError("GoBD-Schutz (§ 146 Abs. 4 AO):\nAusgabe ${exp.__getCnumber() ?: ('#' + exp.__getIDS())} ist mit ${receiptRows.length} archivierten Originalbeleg(en) verknuepft und festgeschrieben!\nBetraege, Steuersatz, Belegdatum, Konto, Nummer und Beschreibung duerfen nicht mehr geaendert werden.\n(Hinweis: Nur Zahlungsstatus und Zahlungsdatum bleiben aenderbar.)")
                 return false
             }
         }
@@ -2491,7 +2538,13 @@ yabs.onView({ DataPanel panel ->
         boolean hasReceipts = receipts && receipts.length > 0
 
         if (hasReceipts) {
-            // Ausgabe mit revisionssicher archiviertem Beleg
+            String firstArchivePath = receipts[0][2]?.toString() ?: ""
+            String firstSha = receipts[0][3]?.toString() ?: ""
+            String shortSha = firstSha.length() >= 12 ? firstSha.substring(0, 12) : firstSha
+
+            // Ausgabe mit revisionssicher archiviertem Beleg: Finanzfelder & Belegentfernung sperren
+            panel.setContentLocked(true)
+
             JLabel badge = new JLabel("🔒 GoBD BELEGABLAGE (${receipts.length})")
             badge.setOpaque(true)
             badge.setBackground(new Color(220, 252, 231))
@@ -2501,7 +2554,7 @@ yabs.onView({ DataPanel panel ->
                 BorderFactory.createLineBorder(new Color(74, 222, 128), 1, true),
                 BorderFactory.createEmptyBorder(ModernTheme.px(2), ModernTheme.px(8), ModernTheme.px(2), ModernTheme.px(8))
             ))
-            badge.setToolTipText("GoBD Rz. 61–64 (Keine Buchung ohne Beleg) | ${receipts.length} Beleg(e) revisionssicher archiviert")
+            badge.setToolTipText("GoBD Rz. 61–64 & § 146 Abs. 4 AO | ${receipts.length} Beleg(e) revisionssicher archiviert | SHA-256: ${firstSha}")
             panel.setPluginBadge(badge)
 
             JPanel banner = new JPanel(new BorderLayout(ModernTheme.px(12), 0))
@@ -2510,13 +2563,41 @@ yabs.onView({ DataPanel panel ->
                 BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(74, 222, 128)),
                 ModernTheme.padding(5, 12)
             ))
-            JLabel info = new JLabel("🔒 GoBD-Konform: Diese Ausgabe besitzt ${receipts.length} verknuepfte(n) Originalbeleg(e) im Jahresarchiv (gesichert via SHA256SUMS).")
+            JLabel info = new JLabel(
+                "🔒 GoBD-Festschreibung: Ausgabe besitzt ${receipts.length} verknuepfte(n) Originalbeleg(e) im Jahresarchiv (SHA-256: ${shortSha}…). " +
+                "Betraege, Steuer, Konto & Belegentfernung sind gesperrt; Zahlungsstatus und Zahlungsdatum bleiben buchbar."
+            )
             info.setFont(ModernTheme.font(1, Font.BOLD))
             info.setForeground(new Color(22, 101, 52))
             banner.add(info, BorderLayout.CENTER)
+
+            JPanel actions = new JPanel(new FlowLayout(FlowLayout.RIGHT, ModernTheme.px(6), 0))
+            actions.setOpaque(false)
+            JButton openBtn = ModernTheme.actionButton(new JButton("Originalbeleg oeffnen"), null)
+            openBtn.setToolTipText(firstArchivePath)
+            openBtn.addActionListener({
+                Path f = Paths.get(firstArchivePath)
+                if (Files.exists(f)) {
+                    if (Desktop.isDesktopSupported()) {
+                        try {
+                            Desktop.getDesktop().open(f.toFile())
+                        } catch (Exception ex) {
+                            notifyPopup("Archivierte Belegdatei:\n${f.toAbsolutePath()}")
+                        }
+                    } else {
+                        notifyPopup("Archivierte Belegdatei:\n${f.toAbsolutePath()}")
+                    }
+                } else {
+                    showError("Archivdatei nicht gefunden:\n${firstArchivePath}")
+                }
+            })
+            actions.add(openBtn)
+            banner.add(actions, BorderLayout.EAST)
             panel.setPluginBanner(banner)
         } else {
-            // Ausgabe OHNE Beleg: Warnung nach GoBD Rz. 61
+            // Ausgabe OHNE Beleg: Felder offen lassen, Warnung nach GoBD Rz. 61 anzeigen
+            panel.setContentLocked(false)
+
             JLabel badge = new JLabel("⚠️ GoBD: OHNE BELEG")
             badge.setOpaque(true)
             badge.setBackground(new Color(254, 243, 199))
@@ -2539,6 +2620,29 @@ yabs.onView({ DataPanel panel ->
             info.setFont(ModernTheme.font(1, Font.PLAIN))
             info.setForeground(new Color(146, 64, 14))
             banner.add(info, BorderLayout.CENTER)
+
+            JPanel actions = new JPanel(new FlowLayout(FlowLayout.RIGHT, ModernTheme.px(6), 0))
+            actions.setOpaque(false)
+            JButton attachBtn = ModernTheme.actionButton(new JButton("Beleg verknuepfen & festschreiben"), null)
+            attachBtn.addActionListener({
+                JFileChooser chooser = new JFileChooser()
+                chooser.setDialogTitle("Eingangsbeleg / Scan fuer Ausgabe auswaehlen (PDF, XML, Bild)")
+                chooser.setFileFilter(new FileNameExtensionFilter("Belegdateien (PDF, XML, PNG, JPG)", "pdf", "xml", "png", "jpg", "jpeg"))
+                if (chooser.showOpenDialog(panel instanceof Component ? (Component) panel : null) == JFileChooser.APPROVE_OPTION && chooser.getSelectedFile() != null) {
+                    try {
+                        def rec = ExpenseReceipts.attach(exp, chooser.getSelectedFile())
+                        if (rec != null) {
+                            logAudit("EXPENSE", exp.__getIDS(), "EXPENSE_RECEIPT_ATTACHED", null, createExpenseFinancialSnapshot(exp), rec.sha256, "Eingangsbeleg ${rec.originalName} verknuepft und Ausgabe festgeschrieben.")
+                            panel.setDataOwner(exp, true)
+                            notifyDocumentEvent("GoBD-Eingangsbeleg archiviert & Ausgabe festgeschrieben:\nDatei: ${rec.originalName}\nSHA-256: ${rec.sha256.substring(0, 16)}...", exp)
+                        }
+                    } catch (Exception ex) {
+                        showError("Fehler beim Archivieren des Eingangsbelegs:\n${ex.getMessage()}")
+                    }
+                }
+            })
+            actions.add(attachBtn)
+            banner.add(actions, BorderLayout.EAST)
             panel.setPluginBanner(banner)
         }
         return
@@ -2647,7 +2751,7 @@ yabs.onView({ DataPanel panel ->
             linkBtn.addActionListener({
                 JFileChooser chooser = new JFileChooser()
                 chooser.setDialogTitle("ZUGFeRD / XRechnung / Beleg fuer Einnahme auswaehlen")
-                chooser.setFileFilter(new FileNameExtensionFilter("Belegdateien (PDF, XML)", "pdf", "xml"))
+                chooser.setFileFilter(new FileNameExtensionFilter("Belegdateien (PDF, XML, PNG, JPG)", "pdf", "xml", "png", "jpg", "jpeg"))
                 if (chooser.showOpenDialog(panel instanceof Component ? (Component) panel : null) == JFileChooser.APPROVE_OPTION && chooser.getSelectedFile() != null) {
                     importZugferdIncomeFile(chooser.getSelectedFile().toPath(), rev, false)
                 }
@@ -2805,6 +2909,9 @@ notifyStatus("GoBD-Konformitaets-Plugin (v1.5.0) vollstaendig geladen.")
 
 // Aufraeum-Closure beim Stoppen/Deaktivieren/Neuladen des Plugins
 onStop = {
+    try {
+        logAudit("PLUGIN", 0L, "PLUGIN_STOPPED", "STATE=RUNNING", "STATE=STOPPED", null, "GoBD-Konformitaets-Plugin wurde gestoppt oder deaktiviert.")
+    } catch (Exception ignored) { }
     if (incomeWatchTimer != null) {
         try { incomeWatchTimer.cancel() } catch (Exception ignored) { }
         incomeWatchTimer = null

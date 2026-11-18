@@ -1031,6 +1031,7 @@ public class ModernExpensePanel extends ModernDataPanel {
             Receipt r = ExpenseReceipts.attach(dataOwner, source);
             if (r != null) {
                 loadReceipts();
+                notifyViewOpened();
                 Popup.notice("Beleg archiviert: " + r.originalName + "\nSHA-256: " + r.sha256.substring(0, 16) + "...");
             }
         } catch (Exception ex) {
@@ -1145,6 +1146,7 @@ public class ModernExpensePanel extends ModernDataPanel {
         if (confirm == JOptionPane.YES_OPTION) {
             ExpenseReceipts.detach(dataOwner, r.id);
             loadReceipts();
+            notifyViewOpened();
         }
     }
 
