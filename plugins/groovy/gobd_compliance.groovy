@@ -1051,10 +1051,10 @@ def importZugferdIncomeFile = { Path sourceFile, Revenue targetRevenue = null, b
     } catch (Exception ignored) { }
 
     if (!silent) {
-        notifyDocumentEvent(
-            "GoBD-Einnahmen-Import erfolgreich:\nBeleg: ${docNum} (${artifactFormat})\nNetto: ${fmtDec(rev.__getNetvalue())} EUR | Brutto: ${fmtDec(rev.__getBrutvalue())} EUR\nSHA-256: ${fileSha256.substring(0, 16)}...\nArchiv: ${archivedFile.getFileName()}",
-            rev
-        )
+        String notifMsg = (parsed == null) ?
+            "GoBD-Einnahmen-Beleg archiviert:\nBeleg: ${docNum} (${artifactFormat})\nNetto: ${fmtDec(rev.__getNetvalue())} EUR | Brutto: ${fmtDec(rev.__getBrutvalue())} EUR\nSHA-256: ${fileSha256.substring(0, 16)}...\nArchiv: ${archivedFile.getFileName()}\n(Hinweis: Einfacher PDF-Beleg - Werte koennen nicht automatisch auf rechnerische Richtigkeit geprueft werden.)" :
+            "GoBD-Einnahmen-Import erfolgreich:\nBeleg: ${docNum} (${artifactFormat})\nNetto: ${fmtDec(rev.__getNetvalue())} EUR | Brutto: ${fmtDec(rev.__getBrutvalue())} EUR\nSHA-256: ${fileSha256.substring(0, 16)}...\nArchiv: ${archivedFile.getFileName()}"
+        notifyDocumentEvent(notifMsg, rev)
     } else {
         notifyStatus("GoBD Auto-Import: Einnahme ${docNum} (${origName}) importiert und festgeschrieben.")
     }
@@ -2640,11 +2640,19 @@ yabs.onView({ DataPanel panel ->
                 chooser.setFileFilter(new FileNameExtensionFilter("Belegdateien (PDF, XML, PNG, JPG)", "pdf", "xml", "png", "jpg", "jpeg"))
                 if (chooser.showOpenDialog(panel instanceof Component ? (Component) panel : null) == JFileChooser.APPROVE_OPTION && chooser.getSelectedFile() != null) {
                     try {
-                        def rec = ExpenseReceipts.attach(exp, chooser.getSelectedFile())
+                        File selFile = chooser.getSelectedFile()
+                        def rec = ExpenseReceipts.attach(exp, selFile)
                         if (rec != null) {
-                            logAudit("EXPENSE", exp.__getIDS(), "EXPENSE_RECEIPT_ATTACHED", null, createExpenseFinancialSnapshot(exp), rec.sha256, "Eingangsbeleg ${rec.originalName} verknuepft und Ausgabe festgeschrieben.")
+                            boolean isPlainPdf = selFile.getName().toLowerCase().endsWith(".pdf") && ZugpferdExpenseImport.parse(selFile) == null
+                            String auditMsg = isPlainPdf ?
+                                "Eingangsbeleg ${rec.originalName} (einfaches PDF - rechnerische Richtigkeit der Belegwerte nicht automatisiert geprueft) verknuepft und Ausgabe festgeschrieben." :
+                                "Eingangsbeleg ${rec.originalName} verknuepft und Ausgabe festgeschrieben."
+                            logAudit("EXPENSE", exp.__getIDS(), "EXPENSE_RECEIPT_ATTACHED", null, createExpenseFinancialSnapshot(exp), rec.sha256, auditMsg)
                             panel.setDataOwner(exp, true)
-                            notifyDocumentEvent("GoBD-Eingangsbeleg archiviert & Ausgabe festgeschrieben:\nDatei: ${rec.originalName}\nSHA-256: ${rec.sha256.substring(0, 16)}...", exp)
+                            String notif = isPlainPdf ?
+                                "GoBD-Eingangsbeleg archiviert & Ausgabe festgeschrieben:\nDatei: ${rec.originalName}\nSHA-256: ${rec.sha256.substring(0, 16)}...\n(Hinweis: Einfacher PDF-Beleg - Werte koennen nicht automatisch auf rechnerische Richtigkeit geprueft werden.)" :
+                                "GoBD-Eingangsbeleg archiviert & Ausgabe festgeschrieben:\nDatei: ${rec.originalName}\nSHA-256: ${rec.sha256.substring(0, 16)}..."
+                            notifyDocumentEvent(notif, exp)
                         }
                     } catch (Exception ex) {
                         showError("Fehler beim Archivieren des Eingangsbelegs:\n${ex.getMessage()}")
