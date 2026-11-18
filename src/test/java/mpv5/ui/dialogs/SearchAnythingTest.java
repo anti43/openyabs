@@ -6,7 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
+import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.awt.Rectangle;
 import javax.swing.JButton;
@@ -22,6 +24,7 @@ class SearchAnythingTest {
 
     @Test
     void testDialogCreationAndControls() {
+        assumeFalse(GraphicsEnvironment.isHeadless());
         SearchAnything dialog = SearchAnything.ensureInstance();
         assertNotNull(dialog, "Dialog instance should not be null");
         assertNotNull(dialog.getTextField(), "Search field should exist");
@@ -41,6 +44,7 @@ class SearchAnythingTest {
 
     @Test
     void testStickToTopToggle() {
+        assumeFalse(GraphicsEnvironment.isHeadless());
         SearchAnything dialog = SearchAnything.ensureInstance();
         assertFalse(dialog.isStickToTop(), "Initially stick to top should be false");
 
@@ -86,6 +90,7 @@ class SearchAnythingTest {
 
     @Test
     void testShowCenterCalculatesBounds() {
+        assumeFalse(GraphicsEnvironment.isHeadless());
         SearchAnything dialog = SearchAnything.ensureInstance();
         Rectangle screen = new Rectangle(0, 0, 1920, 1080);
         int expectedX = (screen.width - dialog.getWidth()) / 2;
@@ -95,6 +100,7 @@ class SearchAnythingTest {
 
     @Test
     void testCloseHidesDialog() {
+        assumeFalse(GraphicsEnvironment.isHeadless());
         SearchAnything dialog = SearchAnything.ensureInstance();
         dialog.close();
         assertFalse(dialog.isVisible(), "Dialog should not be visible after close()");
