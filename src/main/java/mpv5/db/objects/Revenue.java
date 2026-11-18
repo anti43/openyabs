@@ -359,7 +359,7 @@ public class Revenue extends DatabaseObject implements Formattable {
      *
      * @return true if status is {@link Item#STATUS_PAID}
      */
-    @mpv5.db.common.Persistable(false)
+    @Persistable(false)
     public boolean __getIspaid() {
         return status == Item.STATUS_PAID;
     }
@@ -367,7 +367,7 @@ public class Revenue extends DatabaseObject implements Formattable {
     /**
      * @return true if status is {@link Item#STATUS_PAID}
      */
-    @mpv5.db.common.Persistable(false)
+    @Persistable(false)
     public boolean isIspaid() {
         return status == Item.STATUS_PAID;
     }
