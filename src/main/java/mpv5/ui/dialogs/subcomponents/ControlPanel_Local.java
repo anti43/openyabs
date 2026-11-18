@@ -447,8 +447,12 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
 
         LocalSettings.setProperty(LocalSettings.PRINT_DEVAPP, TypeConversion.booleanToString(printdev.isSelected()));
         LocalSettings.setProperty(LocalSettings.DBAUTOLOCK, TypeConversion.booleanToString(autolock.isSelected()));
-        LocalSettings.setProperty(LocalSettings.BASE_DIR, savebasedir.get_Text(true));
-        LocalSettings.setProperty(LocalSettings.BACKUP_DIR, backupbasedir.get_Text(true));
+        if (savebasedir.hasText()) {
+            LocalSettings.setProperty(LocalSettings.BASE_DIR, savebasedir.get_Text(true));
+        }
+        if (backupbasedir.hasText()) {
+            LocalSettings.setProperty(LocalSettings.BACKUP_DIR, backupbasedir.get_Text(true));
+        }
         LocalSettings.setProperty(LocalSettings.SUPPRESS_UPDATE_CHECK, TypeConversion.booleanToString(!updateCheck.isSelected()));
 
         boolean oldSimple = LocalSettings.isSimpleNavigation();
@@ -486,6 +490,36 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
     }
 
     /**
+     * Central folders & paths link card
+     */
+    private mpv5.ui.modern.Card foldersLinkCard() {
+        mpv5.ui.modern.Card card = new mpv5.ui.modern.Card(mpv5.globals.Messages.FOLDERS_TITLE.toString());
+        card.addFull(mpv5.ui.modern.Applets.hint(mpv5.globals.Messages.FOLDERS_LOCAL_SUMMARY.toString()));
+
+        String base = LocalSettings.getProperty(LocalSettings.BASE_DIR);
+        String receipts = mpv5.handler.ExpenseReceipts.folderPattern();
+        String zip = mpv5.db.common.DatabaseBackup.folderPattern();
+
+        javax.swing.JLabel summary = new javax.swing.JLabel("<html><small>"
+                + "<b>" + esc(mpv5.globals.Messages.FOLDERS_CARD_BASE.toString()) + ":</b> " + esc(base == null || base.isEmpty() ? "-" : base) + "<br>"
+                + "<b>" + esc(mpv5.globals.Messages.FOLDERS_CARD_RECEIPTS.toString()) + ":</b> " + esc(receipts) + "<br>"
+                + "<b>" + esc(mpv5.globals.Messages.FOLDERS_CARD_ZIPBACKUP.toString()) + ":</b> " + esc(zip)
+                + "</small></html>");
+        summary.setForeground(mpv5.ui.modern.ModernTheme.muted());
+        card.addFull(summary);
+
+        javax.swing.JButton manage = new javax.swing.JButton(mpv5.globals.Messages.FOLDERS_MANAGE_BTN.toString());
+        manage.setIcon(new mpv5.utils.images.MPIcon("/images/22/folder_yellow.png").getIcon(16));
+        manage.addActionListener(e -> mpv5.ui.panels.MPControlPanel.instanceOf().openDetails(new ControlPanel_Folders()));
+
+        javax.swing.JPanel row = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
+        row.setOpaque(false);
+        row.add(manage);
+        card.addFull(row);
+        return card;
+    }
+
+    /**
      * The parts of the form as cards, the buttons in the action bar
      */
     private void modernLayout() {
@@ -497,7 +531,7 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
         add(mpv5.ui.modern.Applets.page(null, 420,
                 navigationCard(),
                 mpv5.ui.modern.Applets.wrap(null, jPanel2), mpv5.ui.modern.Applets.wrap(null, jPanel3),
-                mpv5.ui.modern.Applets.wrap(null, jPanel4), mpv5.ui.modern.Applets.wrap(null, jPanel5), localFilesCard(), updatesCard()), java.awt.BorderLayout.CENTER);
+                mpv5.ui.modern.Applets.wrap(null, jPanel4), foldersLinkCard(), localFilesCard(), updatesCard()), java.awt.BorderLayout.CENTER);
         mpv5.ui.modern.PrimaryButton save = new mpv5.ui.modern.PrimaryButton(jButton1.getText(), "/images/16/filesave.png");
         save.addActionListener(e -> jButton1.doClick());
         actions = mpv5.ui.modern.Applets.actionBar(new javax.swing.JComponent[]{jButton4}, new javax.swing.JComponent[]{jButton3, jButton2, save});

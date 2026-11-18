@@ -267,6 +267,8 @@ public class MPControlPanel extends JPanel {
 
         String system = Messages.SETTINGS_GROUP_SYSTEM.toString();
         l.add(panel(system, "jButton1", Messages.SETTINGS_D_LOCAL, "internet", ControlPanel_Local.class, ControlPanel_Local::new));
+        l.add(new Entry(system, Messages.FOLDERS_TITLE.toString(), Messages.FOLDERS_DESC.toString(), "folder_yellow",
+                mpv5.ui.dialogs.subcomponents.ControlPanel_Folders.class, mpv5.ui.dialogs.subcomponents.ControlPanel_Folders::new, null, null));
         //the update check is in the local settings: its own entry, so "update" finds it
         l.add(new Entry(system, Messages.UPDATE_CARD.toString(), Messages.SETTINGS_D_UPDATES.toString(), "internet",
                 ControlPanel_Local.class, ControlPanel_Local::new, null, null));

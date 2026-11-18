@@ -779,10 +779,22 @@ public class ModernExpensePanel extends ModernDataPanel {
         openReceiptBtn.addActionListener(e -> openSelectedReceipt());
         verifyReceiptsBtn.addActionListener(e -> verifyAllReceipts());
 
+        JButton folderBtn = new JButton();
+        folderBtn.setIcon(new mpv5.utils.images.MPIcon("/images/22/folder_yellow.png").getIcon(16));
+        folderBtn.setToolTipText(mpv5.globals.Messages.FOLDERS_TITLE.toString() + " \u2026");
+        folderBtn.addActionListener(e -> {
+            try {
+                mpv5.ui.panels.MPControlPanel.instanceOf().openDetails(new mpv5.ui.dialogs.subcomponents.ControlPanel_Folders());
+            } catch (Exception ex) {
+                Log.Debug(ModernExpensePanel.class, ex);
+            }
+        });
+
         actions.add(addReceiptBtn);
         actions.add(openReceiptBtn);
         actions.add(removeReceiptBtn);
         actions.add(verifyReceiptsBtn);
+        actions.add(folderBtn);
 
         card.headerAction(actions);
 
