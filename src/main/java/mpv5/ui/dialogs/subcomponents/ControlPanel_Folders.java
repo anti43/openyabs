@@ -26,9 +26,12 @@ import java.io.File;
 import java.util.Date;
 import java.util.Map;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import mpv5.Main;
@@ -38,6 +41,7 @@ import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.handler.ExpenseReceipts;
 import mpv5.handler.LocalFiles;
+import mpv5.handler.ZugpferdExpenseImport;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.Popup;
@@ -55,8 +59,9 @@ import mpv5.utils.images.MPIcon;
  * <ul>
  *   <li>Base save directory for exported documents (PDF, ODT, e-invoices)</li>
  *   <li>Expense receipts archive directory (with year structure and SHA256 verification)</li>
+ *   <li>Incoming e-invoices (ZUGFeRD / Factur-X / XRechnung) folder with automatic import</li>
  *   <li>Database ZIP backups directory</li>
- *   <li>Temporary files and cache directory</li>
+ *   <li>Temporary files and cache directory with safe cleanup</li>
  *   <li>Legacy database backup directory</li>
  * </ul>
  */
@@ -71,6 +76,11 @@ public class ControlPanel_Folders extends JPanel implements ControlApplet {
     private final JTextField receiptsField = new JTextField();
     private final JLabel receiptsHint = new JLabel();
 
+    private final JTextField einvoiceField = new JTextField();
+    private final JLabel einvoiceHint = new JLabel();
+    private final JCheckBox autoImportEinvoice = new JCheckBox(Messages.ZUGFERD_IMPORT_AUTO.toString());
+    private final JButton importEinvoiceNow = new JButton(Messages.ZUGFERD_IMPORT_NOW.toString());
+
     private final JTextField zipBackupField = new JTextField();
     private final JLabel zipBackupHint = new JLabel();
 
@@ -82,30 +92,35 @@ public class ControlPanel_Folders extends JPanel implements ControlApplet {
     private final JLabel legacyBackupHint = new JLabel();
 
     private final JPanel actions;
+    private final Timer hintDebounceTimer;
 
     public ControlPanel_Folders() {
         super(new BorderLayout());
         setOpaque(false);
 
+        hintDebounceTimer = new Timer(250, e -> updateHints());
+        hintDebounceTimer.setRepeats(false);
+
         DocumentListener dl = new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
-                updateHints();
+                scheduleHintsUpdate();
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
-                updateHints();
+                scheduleHintsUpdate();
             }
 
             @Override
             public void changedUpdate(DocumentEvent e) {
-                updateHints();
+                scheduleHintsUpdate();
             }
         };
 
         baseField.getDocument().addDocumentListener(dl);
         receiptsField.getDocument().addDocumentListener(dl);
+        einvoiceField.getDocument().addDocumentListener(dl);
         zipBackupField.getDocument().addDocumentListener(dl);
         cacheField.getDocument().addDocumentListener(dl);
         legacyBackupField.getDocument().addDocumentListener(dl);
@@ -124,14 +139,29 @@ public class ControlPanel_Folders extends JPanel implements ControlApplet {
                         createPathRow(receiptsField, () -> browseFolder(receiptsField), () -> openFolder(resolvedReceiptsDir()))))
                 .addFull(receiptsHint);
 
-        // Card 3: Database Backups (ZIP)
+        // Card 3: Incoming E-Invoices (ZUGFeRD / Factur-X / XRechnung)
+        autoImportEinvoice.setOpaque(false);
+        importEinvoiceNow.addActionListener(e -> importEinvoiceNow());
+        JPanel einvoiceBtnRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        einvoiceBtnRow.setOpaque(false);
+        einvoiceBtnRow.add(importEinvoiceNow);
+
+        Card einvoiceCard = new Card(Messages.FOLDERS_CARD_EINVOICE.toString())
+                .addFull(Applets.hint(Messages.ZUGFERD_IMPORT_HINT.toString()))
+                .row(Card.field(Messages.ZUGFERD_IMPORT_FOLDER.toString(),
+                        createPathRow(einvoiceField, () -> browseFolder(einvoiceField), () -> openFolder(resolvedEinvoiceDir()))))
+                .addFull(autoImportEinvoice)
+                .addFull(einvoiceHint)
+                .addFull(einvoiceBtnRow);
+
+        // Card 4: Database Backups (ZIP)
         Card zipCard = new Card(Messages.FOLDERS_CARD_ZIPBACKUP.toString())
                 .addFull(Applets.hint(Messages.ZIPBACKUP_DESC.toString()))
                 .row(Card.field(Messages.FOLDERS_CARD_ZIPBACKUP.toString(),
                         createPathRow(zipBackupField, () -> browseFolder(zipBackupField), () -> openFolder(resolvedZipBackupDir()))))
                 .addFull(zipBackupHint);
 
-        // Card 4: Temporary Files & Cache
+        // Card 5: Temporary Files & Cache
         wipeCacheBtn.setText(Messages.LOCALFILES_DELETE.toString());
         wipeCacheBtn.addActionListener(e -> wipeCache());
         JPanel cacheBtnRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
@@ -145,19 +175,19 @@ public class ControlPanel_Folders extends JPanel implements ControlApplet {
                 .addFull(cacheHint)
                 .addFull(cacheBtnRow);
 
-        // Card 5: Legacy Database Backups
+        // Card 6: Legacy Database Backups
         Card legacyCard = new Card(Messages.FOLDERS_CARD_LEGACY_BACKUP.toString())
                 .addFull(Applets.hint(Messages.FOLDER_BACKUP_SET.toString()))
                 .row(Card.field(Messages.FOLDERS_CARD_LEGACY_BACKUP.toString(),
                         createPathRow(legacyBackupField, () -> browseFolder(legacyBackupField), () -> openFolder(resolvedLegacyBackupDir()))))
                 .addFull(legacyBackupHint);
 
-        // Card 6: Supported Path Variables
+        // Card 7: Supported Path Variables
         Card varsCard = new Card(Messages.FOLDERS_VARS_TITLE.toString())
                 .addFull(Applets.hint(Messages.FOLDERS_VARS_HINT.toString()));
 
         add(Applets.page(Messages.FOLDERS_DESC.toString(), 420,
-                baseCard, receiptsCard, zipCard, cacheCard, legacyCard, varsCard), BorderLayout.CENTER);
+                baseCard, receiptsCard, einvoiceCard, zipCard, cacheCard, legacyCard, varsCard), BorderLayout.CENTER);
 
         // Action bar
         JButton appDirBtn = new JButton(Main.MPPATH == null ? ".yabs" : new File(Main.MPPATH).getName());
@@ -174,6 +204,14 @@ public class ControlPanel_Folders extends JPanel implements ControlApplet {
         actions = Applets.actionBar(new javax.swing.JComponent[]{appDirBtn}, new javax.swing.JComponent[]{resetBtn, saveBtn});
 
         reset();
+    }
+
+    private void scheduleHintsUpdate() {
+        if (hintDebounceTimer.isRunning()) {
+            hintDebounceTimer.restart();
+        } else {
+            hintDebounceTimer.start();
+        }
     }
 
     private JPanel createPathRow(JTextField field, Runnable onBrowse, Runnable onOpen) {
@@ -240,6 +278,17 @@ public class ControlPanel_Folders extends JPanel implements ControlApplet {
         return ExpenseReceipts.resolve(receiptsField.getText(), dbname, new Date());
     }
 
+    private File resolvedEinvoiceDir() {
+        String p = einvoiceField.getText().trim();
+        if (p.isEmpty()) {
+            return null;
+        }
+        if (p.contains("[")) {
+            return ExpenseReceipts.resolve(p, LocalSettings.getProperty(LocalSettings.DBNAME), new Date());
+        }
+        return new File(p);
+    }
+
     private File resolvedZipBackupDir() {
         String dbname = LocalSettings.getProperty(LocalSettings.DBNAME);
         return DatabaseBackup.resolve(zipBackupField.getText(), dbname, new Date());
@@ -277,16 +326,19 @@ public class ControlPanel_Folders extends JPanel implements ControlApplet {
         receiptsHint.setText("<html><small>" + String.format(Messages.ZIPBACKUP_FOLDER_HINT.toString(),
                 esc(rDir.getPath())) + "</small></html>");
 
+        // Einvoice hint
+        File eDir = resolvedEinvoiceDir();
+        if (eDir != null) {
+            einvoiceHint.setText("<html><small>" + String.format(Messages.ZIPBACKUP_FOLDER_HINT.toString(),
+                    esc(eDir.getPath())) + "</small></html>");
+        } else {
+            einvoiceHint.setText("<html><small>" + Messages.ZUGFERD_IMPORT_FOLDER_NOT_SET.toString() + "</small></html>");
+        }
+
         // Zip Backup hint
         File zDir = resolvedZipBackupDir();
         zipBackupHint.setText("<html><small>" + String.format(Messages.ZIPBACKUP_FOLDER_HINT.toString(),
                 esc(zDir.getPath())) + "</small></html>");
-
-        // Cache hint
-        File cDir = resolvedCacheDir();
-        LocalFiles.Summary s = LocalFiles.summarize(cDir);
-        cacheHint.setText("<html><small><b>" + esc(cDir.getPath()) + "</b><br>"
-                + String.format(Messages.LOCALFILES_COUNT.toString(), s.files, LocalFiles.size(s.bytes)) + "</small></html>");
 
         // Legacy backup hint
         String leg = legacyBackupField.getText().trim();
@@ -297,10 +349,72 @@ public class ControlPanel_Folders extends JPanel implements ControlApplet {
             legacyBackupHint.setText("<html><small>" + Messages.FOLDER_BACKUP_SET.toString()
                     + "<br><b>" + esc(resolvedLegacyBackupDir().getPath()) + "</b></small></html>");
         }
+
+        // Cache summary computed asynchronously so typing does not stutter
+        final File cDir = resolvedCacheDir();
+        cacheHint.setText("<html><small><b>" + esc(cDir.getPath()) + "</b></small></html>");
+        new Thread(() -> {
+            LocalFiles.Summary s = LocalFiles.summarize(cDir);
+            SwingUtilities.invokeLater(() -> {
+                cacheHint.setText("<html><small><b>" + esc(cDir.getPath()) + "</b><br>"
+                        + String.format(Messages.LOCALFILES_COUNT.toString(), s.files, LocalFiles.size(s.bytes)) + "</small></html>");
+            });
+        }, "Folders-Cache-Scan").start();
+    }
+
+    private void importEinvoiceNow() {
+        File dir = resolvedEinvoiceDir();
+        if (dir == null || !dir.isDirectory()) {
+            Popup.notice(this, Messages.ZUGFERD_IMPORT_FOLDER_NOT_SET.toString());
+            return;
+        }
+        ZugpferdExpenseImport.setFolderPath(einvoiceField.getText().trim());
+        ZugpferdExpenseImport.Result res = ZugpferdExpenseImport.importFromFolder(dir);
+        mpv5.ui.panels.ModernExpensePanel.refreshIfOpen();
+        Popup.notice(this, res.summary());
+    }
+
+    private boolean isProtectedDir(File dir) {
+        if (dir == null) {
+            return true;
+        }
+        try {
+            File canon = dir.getCanonicalFile();
+            for (File root : File.listRoots()) {
+                if (canon.equals(root.getCanonicalFile())) {
+                    return true;
+                }
+            }
+            File home = new File(System.getProperty("user.home")).getCanonicalFile();
+            if (canon.equals(home)) {
+                return true;
+            }
+            if (Main.MPPATH != null && canon.equals(new File(Main.MPPATH).getCanonicalFile())) {
+                return true;
+            }
+            File base = resolvedBaseDir().getCanonicalFile();
+            if (canon.equals(base)) {
+                return true;
+            }
+            File receipts = resolvedReceiptsDir().getCanonicalFile();
+            if (canon.equals(receipts)) {
+                return true;
+            }
+            File backups = resolvedZipBackupDir().getCanonicalFile();
+            if (canon.equals(backups)) {
+                return true;
+            }
+        } catch (Exception ignored) {
+        }
+        return false;
     }
 
     private void wipeCache() {
         File dir = resolvedCacheDir();
+        if (isProtectedDir(dir)) {
+            Popup.notice(Messages.FOLDERS_SAFE_WIPE_DENIED.toString());
+            return;
+        }
         LocalFiles.Summary s = LocalFiles.summarize(dir);
         if (s.files == 0) {
             Popup.notice(Messages.LOCALFILES_EMPTY.toString());
@@ -330,16 +444,16 @@ public class ControlPanel_Folders extends JPanel implements ControlApplet {
     public void save() {
         LocalSettings.setProperty(LocalSettings.BASE_DIR, baseField.getText().trim());
         String receipts = receiptsField.getText().trim();
-        LocalSettings.setProperty(ExpenseReceipts.KEY_DIR, receipts.isEmpty() ? ExpenseReceipts.DEFAULT_DIR : receipts);
+        ExpenseReceipts.setFolderPattern(receipts.isEmpty() ? ExpenseReceipts.DEFAULT_DIR : receipts);
+        ZugpferdExpenseImport.setFolderPath(einvoiceField.getText().trim());
+        ZugpferdExpenseImport.setAutoImportEnabled(autoImportEinvoice.isSelected());
         String zip = zipBackupField.getText().trim();
         LocalSettings.setProperty(DatabaseBackup.KEY_DIR, zip.isEmpty() ? DatabaseBackup.DEFAULT_DIR : zip);
-        String cache = cacheField.getText().trim();
-        if (!cache.isEmpty()) {
-            LocalSettings.setProperty(LocalSettings.CACHE_DIR, cache);
-        }
+        LocalSettings.setProperty(LocalSettings.CACHE_DIR, cacheField.getText().trim());
         LocalSettings.setProperty(LocalSettings.BACKUP_DIR, legacyBackupField.getText().trim());
         LocalSettings.apply();
         LocalSettings.save();
+        ZugpferdExpenseImport.startAutoImport();
         mpv5.YabsViewProxy.instance().addMessage(Messages.FOLDERS_SAVED.toString(), Color.GREEN);
         updateHints();
     }
@@ -348,10 +462,12 @@ public class ControlPanel_Folders extends JPanel implements ControlApplet {
     public final void reset() {
         baseField.setText(LocalSettings.getProperty(LocalSettings.BASE_DIR));
         receiptsField.setText(ExpenseReceipts.folderPattern());
+        einvoiceField.setText(ZugpferdExpenseImport.folderPath());
+        autoImportEinvoice.setSelected(ZugpferdExpenseImport.isAutoImportEnabled());
         zipBackupField.setText(DatabaseBackup.folderPattern());
         cacheField.setText(LocalSettings.hasProperty(LocalSettings.CACHE_DIR)
                 ? LocalSettings.getProperty(LocalSettings.CACHE_DIR)
-                : (Main.MPPATH != null ? Main.MPPATH + File.separator + "Cache" : ""));
+                : "");
         legacyBackupField.setText(LocalSettings.getProperty(LocalSettings.BACKUP_DIR));
         updateHints();
     }

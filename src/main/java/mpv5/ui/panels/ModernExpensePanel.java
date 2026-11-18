@@ -214,7 +214,6 @@ public class ModernExpensePanel extends ModernDataPanel {
     private final JTable receiptsTable = new JTable(receiptsModel);
     private final List<Receipt> currentReceipts = new ArrayList<Receipt>();
     private final JButton addReceiptBtn = new JButton("Beleg verkn\u00fcpfen...");
-    private final JButton removeReceiptBtn = new JButton("Entfernen");
     private final JButton openReceiptBtn = new JButton("\u00d6ffnen");
     private final JButton verifyReceiptsBtn = new JButton("Pr\u00fcfen");
 
@@ -777,7 +776,6 @@ public class ModernExpensePanel extends ModernDataPanel {
         actions.setOpaque(false);
 
         addReceiptBtn.addActionListener(e -> importReceiptDialog());
-        removeReceiptBtn.addActionListener(e -> removeSelectedReceipt());
         openReceiptBtn.addActionListener(e -> openSelectedReceipt());
         verifyReceiptsBtn.addActionListener(e -> verifyAllReceipts());
 
@@ -786,7 +784,7 @@ public class ModernExpensePanel extends ModernDataPanel {
         folderBtn.setToolTipText(mpv5.globals.Messages.FOLDERS_TITLE.toString() + " \u2026");
         folderBtn.addActionListener(e -> {
             try {
-                mpv5.ui.panels.MPControlPanel.instanceOf().openDetails(new mpv5.ui.dialogs.subcomponents.ControlPanel_Folders());
+                mpv5.ui.panels.MPControlPanel.show(mpv5.ui.dialogs.subcomponents.ControlPanel_Folders.class);
             } catch (Exception ex) {
                 Log.Debug(ModernExpensePanel.class, ex);
             }
@@ -794,7 +792,6 @@ public class ModernExpensePanel extends ModernDataPanel {
 
         actions.add(addReceiptBtn);
         actions.add(openReceiptBtn);
-        actions.add(removeReceiptBtn);
         actions.add(verifyReceiptsBtn);
         actions.add(folderBtn);
 
@@ -1334,7 +1331,6 @@ public class ModernExpensePanel extends ModernDataPanel {
         groupSelect.setEnabled(!locked);
         issueDateChooser.setEnabled(!locked);
         notesArea.setEditable(!locked);
-        removeReceiptBtn.setEnabled(!locked);
         // Payment status & date remain editable for open-item workflow
     }
 

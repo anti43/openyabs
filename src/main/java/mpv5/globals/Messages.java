@@ -1752,6 +1752,7 @@ public enum Messages {
     FOLDERS_CARD_BASE("Documents & Exports"),
     FOLDERS_CARD_RECEIPTS("Expense Receipts Archive"),
     FOLDERS_RECEIPTS_HINT("Archived receipts are stored organized by year, made read-only, and recorded in SHA256SUMS."),
+    FOLDERS_CARD_EINVOICE("Incoming E-Invoices"),
     FOLDERS_CARD_ZIPBACKUP("Database Backups (ZIP)"),
     FOLDERS_CARD_CACHE("Temporary Files & Cache"),
     FOLDERS_CARD_LEGACY_BACKUP("Legacy Database Backup"),
@@ -1759,7 +1760,8 @@ public enum Messages {
     FOLDERS_VARS_HINT("Variables: [APPDIR] (~/.yabs), [HOME], [DBNAME], [YEAR], [MONTH], [DAY]"),
     FOLDERS_SAVED("Folder settings saved."),
     FOLDERS_OPEN("Open"),
-    FOLDERS_CHOOSE("Browse...");
+    FOLDERS_CHOOSE("Browse..."),
+    FOLDERS_SAFE_WIPE_DENIED("Wiping this folder is not allowed because it is a system or root directory.");
 
 
     /**

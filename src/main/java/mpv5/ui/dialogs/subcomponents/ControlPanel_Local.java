@@ -25,7 +25,6 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
 
     public ControlPanel_Local() {
         initComponents();
-        folderCard();
         modernLayout();
         setVisible(true);
         setValues(LocalSettings.getPropertyStore());
@@ -353,44 +352,8 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
         autolock.setSelected(TypeConversion.stringToBoolean(values.getProperty(LocalSettings.DBAUTOLOCK)));
         escape.setSelected(TypeConversion.stringToBoolean(values.getProperty(LocalSettings.DBESCAPE)));
 
-        savebasedir.set_Text(values.getProperty(LocalSettings.BASE_DIR));
-        backupbasedir.set_Text(values.getProperty(LocalSettings.BACKUP_DIR));
         updateCheck.setSelected(!TypeConversion.stringToBoolean(values.getProperty(LocalSettings.SUPPRESS_UPDATE_CHECK)));
         simpleNavCheck.setSelected(LocalSettings.isSimpleNavigation());
-        showFolders();
-    }
-
-    private final javax.swing.JLabel baseHint = new javax.swing.JLabel();
-    private final javax.swing.JLabel backupHint = new javax.swing.JLabel();
-
-    /**
-     * The folder fields, each with the folder that is used now (also when the
-     * field is empty)
-     */
-    private void folderCard() {
-        jPanel5.removeAll();
-        jPanel5.setLayout(new javax.swing.BoxLayout(jPanel5, javax.swing.BoxLayout.PAGE_AXIS));
-        for (javax.swing.JComponent c : new javax.swing.JComponent[]{savebasedir, baseHint, backupbasedir, backupHint}) {
-            c.setAlignmentX(java.awt.Component.LEFT_ALIGNMENT);
-            if (c instanceof javax.swing.JLabel) {
-                c.setForeground(mpv5.ui.modern.ModernTheme.muted());
-                c.setBorder(javax.swing.BorderFactory.createEmptyBorder(2, 4, 10, 0));
-            } else {
-                c.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, c.getPreferredSize().height));
-            }
-            jPanel5.add(c);
-        }
-    }
-
-    private void showFolders() {
-        String base = savebasedir.get_Text(false);
-        baseHint.setText("<html>" + (base == null || base.trim().isEmpty()
-                ? String.format(mpv5.globals.Messages.FOLDER_BASE_EMPTY.toString(), esc(mpv5.utils.files.LastDirectory.get().getPath()))
-                : mpv5.globals.Messages.FOLDER_BASE_SET.toString()) + "</html>");
-        String backup = backupbasedir.get_Text(false);
-        backupHint.setText("<html>" + (backup == null || backup.trim().isEmpty()
-                ? String.format(mpv5.globals.Messages.FOLDER_BACKUP_EMPTY.toString(), esc(mpv5.utils.files.LastDirectory.get().getPath()))
-                : mpv5.globals.Messages.FOLDER_BACKUP_SET.toString()) + "</html>");
     }
 
     private static String esc(String s) {
@@ -447,12 +410,6 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
 
         LocalSettings.setProperty(LocalSettings.PRINT_DEVAPP, TypeConversion.booleanToString(printdev.isSelected()));
         LocalSettings.setProperty(LocalSettings.DBAUTOLOCK, TypeConversion.booleanToString(autolock.isSelected()));
-        if (savebasedir.hasText()) {
-            LocalSettings.setProperty(LocalSettings.BASE_DIR, savebasedir.get_Text(true));
-        }
-        if (backupbasedir.hasText()) {
-            LocalSettings.setProperty(LocalSettings.BACKUP_DIR, backupbasedir.get_Text(true));
-        }
         LocalSettings.setProperty(LocalSettings.SUPPRESS_UPDATE_CHECK, TypeConversion.booleanToString(!updateCheck.isSelected()));
 
         boolean oldSimple = LocalSettings.isSimpleNavigation();
@@ -465,7 +422,6 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
         }
 
         LocalSettings.apply();
-        showFolders();
     }
 
     @Override
@@ -510,7 +466,7 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
 
         javax.swing.JButton manage = new javax.swing.JButton(mpv5.globals.Messages.FOLDERS_MANAGE_BTN.toString());
         manage.setIcon(new mpv5.utils.images.MPIcon("/images/22/folder_yellow.png").getIcon(16));
-        manage.addActionListener(e -> mpv5.ui.panels.MPControlPanel.instanceOf().openDetails(new ControlPanel_Folders()));
+        manage.addActionListener(e -> mpv5.ui.panels.MPControlPanel.show(ControlPanel_Folders.class));
 
         javax.swing.JPanel row = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
         row.setOpaque(false);
@@ -531,50 +487,10 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
         add(mpv5.ui.modern.Applets.page(null, 420,
                 navigationCard(),
                 mpv5.ui.modern.Applets.wrap(null, jPanel2), mpv5.ui.modern.Applets.wrap(null, jPanel3),
-                mpv5.ui.modern.Applets.wrap(null, jPanel4), foldersLinkCard(), localFilesCard(), updatesCard()), java.awt.BorderLayout.CENTER);
+                mpv5.ui.modern.Applets.wrap(null, jPanel4), foldersLinkCard(), updatesCard()), java.awt.BorderLayout.CENTER);
         mpv5.ui.modern.PrimaryButton save = new mpv5.ui.modern.PrimaryButton(jButton1.getText(), "/images/16/filesave.png");
         save.addActionListener(e -> jButton1.doClick());
         actions = mpv5.ui.modern.Applets.actionBar(new javax.swing.JComponent[]{jButton4}, new javax.swing.JComponent[]{jButton3, jButton2, save});
-    }
-
-    /**
-     * The temporary files of this computer: where they are, what they are,
-     * and deleting them with a list of what goes and what stays
-     */
-    private mpv5.ui.modern.Card localFilesCard() {
-        final java.io.File dir = mpv5.utils.files.FileDirectoryHandler.getTempDirAsFile();
-        final javax.swing.JLabel info = new javax.swing.JLabel();
-        Runnable count = () -> {
-            mpv5.handler.LocalFiles.Summary s = mpv5.handler.LocalFiles.summarize(dir);
-            info.setText(String.format(mpv5.globals.Messages.LOCALFILES_COUNT.toString(), s.files, mpv5.handler.LocalFiles.size(s.bytes)));
-        };
-        count.run();
-        javax.swing.JButton wipe = mpv5.ui.modern.Applets.danger(new javax.swing.JButton(mpv5.globals.Messages.LOCALFILES_DELETE.toString()));
-        wipe.addActionListener(e -> {
-            mpv5.handler.LocalFiles.Summary s = mpv5.handler.LocalFiles.summarize(dir);
-            StringBuilder kinds = new StringBuilder();
-            for (java.util.Map.Entry<String, Integer> k : s.kinds.entrySet()) {
-                kinds.append("\n   ").append(k.getValue()).append(" \u00d7 ").append(k.getKey());
-            }
-            String text = String.format(mpv5.globals.Messages.LOCALFILES_CONFIRM.toString(), dir.getAbsolutePath(),
-                    s.files, mpv5.handler.LocalFiles.size(s.bytes)) + kinds + "\n\n" + mpv5.globals.Messages.LOCALFILES_STAYS;
-            if (s.files == 0) {
-                mpv5.ui.dialogs.Popup.notice(mpv5.globals.Messages.LOCALFILES_EMPTY.toString());
-            } else if (mpv5.ui.dialogs.Popup.Y_N_dialog(text, mpv5.globals.Messages.LOCALFILES_DELETE.toString())) {
-                int left = mpv5.handler.LocalFiles.wipe(dir);
-                mpv5.YabsViewProxy.instance().addMessage(left == 0 ? mpv5.globals.Messages.LOCALFILES_DONE.toString()
-                        : String.format(mpv5.globals.Messages.LOCALFILES_LEFT.toString(), left));
-                count.run();
-            }
-        });
-        javax.swing.JPanel row = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
-        row.setOpaque(false);
-        row.add(wipe);
-        return new mpv5.ui.modern.Card(mpv5.globals.Messages.LOCALFILES_TITLE.toString())
-                .addFull(mpv5.ui.modern.Applets.hint(mpv5.globals.Messages.LOCALFILES_HINT.toString()))
-                .addFull(pathLabel(dir))
-                .addFull(info)
-                .addFull(row);
     }
 
     private final javax.swing.JCheckBox updateCheck = new javax.swing.JCheckBox(mpv5.globals.Messages.UPDATE_SWITCH.toString(), true);
@@ -594,11 +510,5 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
                 .addFull(updateCheck)
                 .addFull(mpv5.ui.modern.Applets.hint(mpv5.globals.Messages.UPDATE_HINT.toString()))
                 .addFull(row);
-    }
-
-    private static javax.swing.JLabel pathLabel(java.io.File dir) {
-        javax.swing.JLabel l = new javax.swing.JLabel(dir.getAbsolutePath());
-        l.setToolTipText(dir.getAbsolutePath());
-        return l;
     }
 }

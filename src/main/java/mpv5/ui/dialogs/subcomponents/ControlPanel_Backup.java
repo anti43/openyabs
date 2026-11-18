@@ -83,7 +83,7 @@ public class ControlPanel_Backup extends JPanel implements ControlApplet {
         });
         JButton allFolders = new JButton(Messages.FOLDERS_TITLE.toString() + " \u2026");
         allFolders.setIcon(new mpv5.utils.images.MPIcon("/images/22/folder_yellow.png").getIcon(16));
-        allFolders.addActionListener(e -> mpv5.ui.panels.MPControlPanel.instanceOf().openDetails(new ControlPanel_Folders()));
+        allFolders.addActionListener(e -> mpv5.ui.panels.MPControlPanel.show(ControlPanel_Folders.class));
         JPanel foldersRow = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
         foldersRow.setOpaque(false);
         foldersRow.add(allFolders);
