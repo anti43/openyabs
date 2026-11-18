@@ -1369,6 +1369,8 @@ public enum Messages {
     WEBSHOPS_CARD_SHOPS("Web shops"),
     WEBSHOPS_CARD_DETAILS("Connection"),
     PLUGINS_FAILED("Plugin %s failed:"),
+    PLUGINS_LOADING("Loading plugins (%d/%d): %s ..."),
+    PLUGINS_STARTED("Plugins started: %d of %d"),
     PLUGINS_MENU("Plugins"),
     PLUGINS_NO_COMMANDS("No plugin commands"),
     PLUGINS_MANAGE("Manage plugins"),

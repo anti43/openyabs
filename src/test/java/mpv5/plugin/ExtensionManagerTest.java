@@ -242,6 +242,38 @@ class ExtensionManagerTest {
     }
 
     @Test
+    void startAllInBackgroundCompilesAndStartsGroovyPlugins() throws Exception {
+        File plugins = dir.resolve("plugins").toFile();
+        plugins.mkdirs();
+        Files.write(new File(plugins, "bg.groovy").toPath(), ("// @name Background\n"
+                + "yabs.addCommand('From the background', '', { })\n").getBytes(StandardCharsets.UTF_8));
+        TestHost h = new TestHost();
+        ExtensionManager m = new ExtensionManager(plugins, h);
+        m.startAllInBackground();
+        long until = System.currentTimeMillis() + 30000;
+        while (m.commands().isEmpty() && System.currentTimeMillis() < until) {
+            Thread.sleep(50);
+        }
+        assertEquals("From the background", m.commands().get(0).title);
+        assertEquals(ExtensionManager.State.RUNNING, m.list().get(0).getState());
+        //the progress went to the host, then the summary
+        assertTrue(h.messages.stream().anyMatch(x -> x.contains("1/1")));
+    }
+
+    @Test
+    void aPreparedGroovyScriptRunsOnceCompiledAndAgainAfterReload() throws Exception {
+        File script = new File(dir.toFile(), "prep.groovy");
+        Files.write(script.toPath(), "yabs.notify('run')\n".getBytes(StandardCharsets.UTF_8));
+        TestHost h = new TestHost();
+        ExtensionManager m = new ExtensionManager(dir.resolve("plugins").toFile(), h);
+        ExtensionManager.Installed i = m.install(script).get(0);
+        assertEquals(ExtensionManager.State.RUNNING, i.getState());
+        ExtensionManager.Installed again = m.reload(i);
+        assertEquals(ExtensionManager.State.RUNNING, again.getState());
+        assertEquals(2, h.messages.stream().filter("run"::equals).count());
+    }
+
+    @Test
     void aBrokenGroovyScriptFails() throws Exception {
         File plugins = dir.resolve("plugins").toFile();
         File script = new File(dir.toFile(), "broken.groovy");

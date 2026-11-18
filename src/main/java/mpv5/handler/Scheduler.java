@@ -38,8 +38,8 @@ public class Scheduler extends Thread {
     @Override
     @SuppressWarnings("empty-statement")
     public void run() {
-        checkForOverdueEvents(null);
-        checkForCreateBillEvents(null);
+        //the dashboard loads its data in the background itself (HomeScreen.refresh, started by
+        //getInstance in the constructor): no extra queries before it is shown (issue #159)
         //wait for the application without burning a CPU core (was an empty busy loop)
         while (!YabsApplication.getApplication().isReady()) {
             try {

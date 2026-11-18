@@ -388,6 +388,80 @@ public final class ExtensionManager {
     }
 
     /**
+     * Discovers and starts all enabled plugins without blocking the user
+     * interface (issue #159): finding the plugins and compiling the Groovy
+     * scripts runs in the background, the progress shows in the status bar;
+     * the plugins then start one after the other on the event thread (where
+     * they may build their user interface).
+     */
+    public void startAllInBackground() {
+        Thread t = new Thread(() -> {
+            try {
+                discover();
+                List<Installed> todo = new ArrayList<Installed>();
+                for (Installed i : installed) {
+                    if (i.state == State.STOPPED) {
+                        todo.add(i);
+                    }
+                }
+                int n = 0;
+                for (Installed i : todo) {
+                    n++;
+                    notifyHost(String.format(mpv5.globals.Messages.PLUGINS_LOADING.toString(), n, todo.size(), name(i)));
+                    if (i.extension instanceof GroovyExtension) {
+                        try {
+                            ((GroovyExtension) i.extension).prepare();
+                        } catch (Throwable e) {
+                            //start compiles again and reports the error
+                            Log.Debug(ExtensionManager.class, e);
+                        }
+                    }
+                }
+                final int total = todo.size();
+                ui(() -> {
+                    hookActivity();
+                    int running = 0;
+                    for (Installed i : todo) {
+                        if (i.state == State.STOPPED && start(i)) {
+                            running++;
+                        } else if (i.state == State.RUNNING) {
+                            running++;
+                        }
+                    }
+                    fireChanged();
+                    //views opened while the plugins were loading: let the plugins decorate them
+                    if (host != null && !viewListeners.isEmpty()) {
+                        try {
+                            for (DataPanel v : host.openViews()) {
+                                fireView(v);
+                            }
+                        } catch (Throwable e) {
+                            Log.Debug(ExtensionManager.class, e);
+                        }
+                    }
+                    if (total > 0) {
+                        notifyHost(String.format(mpv5.globals.Messages.PLUGINS_STARTED.toString(), running, total));
+                    }
+                });
+            } catch (Throwable e) {
+                Log.Debug(ExtensionManager.class, e);
+            }
+        }, "yabs-plugins");
+        t.setDaemon(true);
+        t.start();
+    }
+
+    private void notifyHost(String message) {
+        if (host != null) {
+            try {
+                host.notify(message);
+            } catch (Throwable e) {
+                Log.Debug(ExtensionManager.class, e);
+            }
+        }
+    }
+
+    /**
      * Discovers and starts all enabled plugins
      */
     public void startAll() {

@@ -51,6 +51,11 @@ public final class GroovyExtension implements YabsExtension {
     private final Map<String, String> tags = new HashMap<String, String>();
     private Binding binding;
     private YabsExtension delegate;
+    /**
+     * The script compiled in advance ({@link #prepare()}), used by the next
+     * start
+     */
+    private groovy.lang.Script compiled;
 
     /**
      * @param file the script
@@ -116,13 +121,35 @@ public final class GroovyExtension implements YabsExtension {
         return file;
     }
 
+    /**
+     * Compiles the script, so that {@link #start(ExtensionContext)} only runs
+     * it: compiling a large script takes seconds and is done in the
+     * background at startup (issue #159)
+     *
+     * @throws Exception if it does not compile
+     */
+    public synchronized void prepare() throws Exception {
+        if (compiled == null) {
+            compiled = new GroovyShell(GroovyExtension.class.getClassLoader()).parse(file);
+        }
+    }
+
     @Override
     public void start(ExtensionContext ctx) throws Exception {
         binding = new Binding();
         binding.setVariable("yabs", ctx);
         binding.setVariable("plugin", this);
-        GroovyShell shell = new GroovyShell(GroovyExtension.class.getClassLoader(), binding);
-        Object result = shell.evaluate(file);
+        groovy.lang.Script script;
+        synchronized (this) {
+            script = compiled;
+            //a later start (reload after editing) compiles the file again
+            compiled = null;
+        }
+        if (script == null) {
+            script = new GroovyShell(GroovyExtension.class.getClassLoader(), binding).parse(file);
+        }
+        script.setBinding(binding);
+        Object result = script.run();
         if (result instanceof YabsExtension) {
             delegate = (YabsExtension) result;
             delegate.start(ctx);
