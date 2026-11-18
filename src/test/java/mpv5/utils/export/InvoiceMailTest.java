@@ -100,8 +100,9 @@ class InvoiceMailTest {
     void parsesStoredDelivery() {
         assertEquals(EInvoiceDelivery.ZUGFERD, EInvoiceDelivery.parse("zugferd"));
         assertEquals(EInvoiceDelivery.PDF_AND_XRECHNUNG, EInvoiceDelivery.parse("PDF_AND_XRECHNUNG"));
-        assertEquals(EInvoiceDelivery.PDF, EInvoiceDelivery.parse(null));
-        assertEquals(EInvoiceDelivery.PDF, EInvoiceDelivery.parse("something"));
+        assertEquals(EInvoiceDelivery.DEFAULT, EInvoiceDelivery.parse(null));
+        assertEquals(EInvoiceDelivery.DEFAULT, EInvoiceDelivery.parse("something"));
+        assertEquals(EInvoiceDelivery.PDF, EInvoiceDelivery.parse(null).resolve());
         assertFalse(EInvoiceDelivery.PDF.isEInvoice());
         assertEquals(ZugpferdFile.Format.ZUGFERD, EInvoiceDelivery.ZUGFERD.getFormat());
     }

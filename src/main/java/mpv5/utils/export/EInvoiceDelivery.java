@@ -28,6 +28,10 @@ import mpv5.logging.Log;
 public enum EInvoiceDelivery {
 
     /**
+     * uses the default from the control panel
+     */
+    DEFAULT(Messages.EINVOICE_DELIVERY_DEFAULT, null),
+    /**
      * the invoice PDF from the template (no e-invoice)
      */
     PDF(Messages.EINVOICE_DELIVERY_PDF, null),
@@ -48,6 +52,10 @@ public enum EInvoiceDelivery {
      * Value property (on the contact) holding the delivery
      */
     public static final String KEY = "einvoice.delivery";
+    /**
+     * Setting key for making ZUGFeRD the default for PDF export and email
+     */
+    public static final String KEY_DEFAULT_ZUGFERD = "companyinfo.zugpferd_default";
     private final Messages label;
     private final ZugpferdFile.Format format;
 
@@ -70,6 +78,43 @@ public enum EInvoiceDelivery {
         return format != null;
     }
 
+    /**
+     * @return true if ZUGFeRD is configured as the global default for PDF export and email
+     */
+    public static boolean isZugpferdDefault() {
+        try {
+            String v = mpv5.db.objects.User.getCurrentUser().getProperty(KEY_DEFAULT_ZUGFERD);
+            if (v == null || v.trim().isEmpty()) {
+                v = mpv5.globals.GlobalSettings.getProperty(KEY_DEFAULT_ZUGFERD);
+            }
+            return Boolean.parseBoolean(v);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * @param enabled true to make ZUGFeRD default for PDF export and email
+     */
+    public static void setZugpferdDefault(boolean enabled) {
+        try {
+            mpv5.db.objects.User.getCurrentUser().setProperty(KEY_DEFAULT_ZUGFERD, String.valueOf(enabled));
+            mpv5.globals.GlobalSettings.setProperty(KEY_DEFAULT_ZUGFERD, String.valueOf(enabled));
+        } catch (Exception e) {
+            Log.Debug(EInvoiceDelivery.class, e);
+        }
+    }
+
+    /**
+     * @return the effective delivery resolving DEFAULT against the global control panel setting
+     */
+    public EInvoiceDelivery resolve() {
+        if (this == DEFAULT) {
+            return isZugpferdDefault() ? ZUGFERD : PDF;
+        }
+        return this;
+    }
+
     @Override
     public String toString() {
         return label.toString();
@@ -77,7 +122,7 @@ public enum EInvoiceDelivery {
 
     /**
      * @param value stored value (enum name), may be null
-     * @return the delivery, {@link #PDF} for unknown values
+     * @return the delivery, {@link #DEFAULT} for unknown values or null
      */
     public static EInvoiceDelivery parse(Object value) {
         if (value != null) {
@@ -87,16 +132,27 @@ public enum EInvoiceDelivery {
                 }
             }
         }
-        return PDF;
+        return DEFAULT;
     }
 
     /**
      * @param contact
-     * @return the delivery configured for the contact, {@link #PDF} if none
+     * @return the delivery configured for the contact, {@link #DEFAULT} if none
      */
     public static EInvoiceDelivery forContact(DatabaseObject contact) {
+        if (contact == null) {
+            return DEFAULT;
+        }
         //independent of the context the contact was opened with (customer, supplier, ...)
         return parse(ContactProperty.get(contact, KEY));
+    }
+
+    /**
+     * @param contact
+     * @return the effective delivery for the contact (resolving DEFAULT to ZUGFERD or PDF)
+     */
+    public static EInvoiceDelivery effectiveFor(DatabaseObject contact) {
+        return forContact(contact).resolve();
     }
 
     /**
@@ -106,6 +162,6 @@ public enum EInvoiceDelivery {
      * @param delivery
      */
     public static void save(DatabaseObject contact, EInvoiceDelivery delivery) {
-        ContactProperty.set(contact, KEY, delivery == null || delivery == PDF ? null : delivery.name());
+        ContactProperty.set(contact, KEY, delivery == null || delivery == DEFAULT ? null : delivery.name());
     }
 }

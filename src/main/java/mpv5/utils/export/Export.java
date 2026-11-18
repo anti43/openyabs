@@ -312,7 +312,7 @@ public final class Export extends HashMap<String, Object> implements Waitable {
         if (!(dataOwner instanceof mpv5.db.objects.Item) || !ZugpferdFile.supports((mpv5.db.objects.Item) dataOwner)) {
             return pdf;
         }
-        EInvoiceDelivery delivery = EInvoiceDelivery.forContact(contact);
+        EInvoiceDelivery delivery = EInvoiceDelivery.effectiveFor(contact);
         if (!delivery.isEInvoice()) {
             return pdf;
         }
