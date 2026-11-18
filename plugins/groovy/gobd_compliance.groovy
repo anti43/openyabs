@@ -37,6 +37,7 @@ import javax.swing.BorderFactory
 import javax.swing.BoxLayout
 import javax.swing.JButton
 import javax.swing.JCheckBox
+import javax.swing.JComboBox
 import javax.swing.JComponent
 import javax.swing.JFileChooser
 import javax.swing.JLabel
@@ -44,6 +45,7 @@ import javax.swing.JOptionPane
 import javax.swing.JPanel
 import javax.swing.JScrollPane
 import javax.swing.JSplitPane
+import javax.swing.JTabbedPane
 import mpv5.ui.modern.ModernTheme
 import javax.swing.JTable
 import javax.swing.JTextField
@@ -1865,23 +1867,287 @@ yabs.addCommand("GoBD: 4. Betriebspruefer-Export (Z3 / IDEA ZIP)", "Erzeugt ein 
     })
 })
 
-yabs.addCommand("GoBD: 5. Pruefer-Ansicht oeffnen (Z1 Read-Only Tab)", "Oeffnet eine schreibgeschuetzte Tabelle aller festgeschriebenen Belege", {
-    def lockRows = selectRows(
-        "SELECT document_id, document_number, status, finalized_at, finalized_by, artifact_format, sha256_hash, cancels_document_id FROM gobd_document_lock ORDER BY COALESCE(chain_seq, document_id) DESC, finalized_at DESC"
-    )
+yabs.addCommand("GoBD: 5. Pruefer-Ansicht oeffnen (Z1 Read-Only Tab)", "Oeffnet die schreibgeschuetzte 4-Tab GoBD-Z1-Prueferansicht (§ 147 Abs. 6 AO)", {
+    JPanel rootPanel = new JPanel(new BorderLayout(8, 8))
+    rootPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10))
 
-    String[] cols = ["ID", "Belegnummer", "Status", "Festgeschrieben am", "Benutzer", "Format", "SHA-256 Hash", "Storno-Bezug"] as String[]
-    JTable table = new JTable(lockRows, cols) {
+    JLabel summaryLabel = new JLabel("GoBD Z1-Prueferansicht (§ 147 Abs. 6 AO – Unmittelbarer schreibgeschuetzter Datenzugriff)")
+    summaryLabel.setFont(ModernTheme.font(1, Font.BOLD))
+
+    JComboBox<String> yearCombo = new JComboBox<String>(["Alle Jahre"] as String[])
+    JButton refreshBtn = ModernTheme.actionButton(new JButton("Aktualisieren"), null)
+    JButton openSelectedBtn = ModernTheme.actionButton(new JButton("Markierten Originalbeleg oeffnen"), null)
+
+    JPanel topBar = new JPanel(new BorderLayout(12, 0))
+    topBar.add(summaryLabel, BorderLayout.WEST)
+
+    JPanel topControls = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0))
+    topControls.add(new JLabel("Pruefungszeitraum:"))
+    topControls.add(yearCombo)
+    topControls.add(openSelectedBtn)
+    topControls.add(refreshBtn)
+    topBar.add(topControls, BorderLayout.EAST)
+
+    String[] invoiceCols = ["ID", "Belegnummer", "Status", "Festgeschrieben am", "Benutzer", "Format", "SHA-256 Hash", "Storno-Bezug", "Archivpfad"] as String[]
+    String[] incomeCols = ["Einnahme-ID", "Belegnummer", "Status", "Importiert am", "Benutzer", "Originaldatei", "Format", "Datei-SHA-256", "Ketten-Hash", "Archivpfad"] as String[]
+    String[] expenseCols = ["Ausgabe-ID", "Belegnummer", "Beschreibung", "Datum", "Brutto (EUR)", "Belegstatus", "Originaldatei", "SHA-256", "Archivpfad"] as String[]
+    String[] auditCols = ["ID", "Zeitstempel", "Benutzer", "Objekttyp", "Objekt-ID", "Aktion", "Alter Wert", "Neuer Wert", "Details"] as String[]
+
+    DefaultTableModel invoiceModel = new DefaultTableModel(invoiceCols, 0) {
         @Override
-        boolean isCellEditable(int row, int column) {
-            return false
+        boolean isCellEditable(int row, int column) { return false }
+    }
+    DefaultTableModel incomeModel = new DefaultTableModel(incomeCols, 0) {
+        @Override
+        boolean isCellEditable(int row, int column) { return false }
+    }
+    DefaultTableModel expenseModel = new DefaultTableModel(expenseCols, 0) {
+        @Override
+        boolean isCellEditable(int row, int column) { return false }
+    }
+    DefaultTableModel auditModel = new DefaultTableModel(auditCols, 0) {
+        @Override
+        boolean isCellEditable(int row, int column) { return false }
+    }
+
+    def createReadOnlyTable = { DefaultTableModel model, int archiveColIdx ->
+        JTable tbl = new JTable(model) {
+            @Override
+            boolean isCellEditable(int row, int column) { return false }
+
+            @Override
+            String getToolTipText(MouseEvent e) {
+                int vRow = rowAtPoint(e.getPoint())
+                if (vRow >= 0 && archiveColIdx >= 0) {
+                    int mRow = convertRowIndexToModel(vRow)
+                    Object p = getModel().getValueAt(mRow, archiveColIdx)
+                    if (p != null && !p.toString().trim().isEmpty()) {
+                        return "Doppelklick oeffnet Originalbeleg: ${p}"
+                    }
+                }
+                return super.getToolTipText(e)
+            }
+        }
+        tbl.setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
+        tbl.setAutoCreateRowSorter(true)
+        if (archiveColIdx >= 0 && archiveColIdx < tbl.getColumnModel().getColumnCount()) {
+            def col = tbl.getColumnModel().getColumn(archiveColIdx)
+            col.setMinWidth(0)
+            col.setMaxWidth(0)
+            col.setPreferredWidth(0)
+        }
+        return tbl
+    }
+
+    JTable invoiceTable = createReadOnlyTable(invoiceModel, 8)
+    JTable incomeTable = createReadOnlyTable(incomeModel, 9)
+    JTable expenseTable = createReadOnlyTable(expenseModel, 8)
+    JTable auditTable = createReadOnlyTable(auditModel, -1)
+
+    // Hervorhebung fehlender Eingangsbelege nach GoBD Rz. 61-64 ("Keine Buchung ohne Beleg")
+    expenseTable.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+        @Override
+        Component getTableCellRendererComponent(JTable tbl, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            Component c = super.getTableCellRendererComponent(tbl, value, isSelected, hasFocus, row, column)
+            if (!isSelected) {
+                int mRow = tbl.convertRowIndexToModel(row)
+                String statusVal = tbl.getModel().getValueAt(mRow, 5)?.toString() ?: ""
+                if (statusVal.contains("Fehlt")) {
+                    c.setBackground(new Color(254, 243, 199))
+                    c.setForeground(new Color(146, 64, 14))
+                } else {
+                    c.setBackground(new Color(220, 252, 231))
+                    c.setForeground(new Color(22, 101, 52))
+                }
+            }
+            return c
+        }
+    })
+
+    def openArchiveFromTable = { JTable tbl, int archiveColIdx ->
+        if (tbl == null || archiveColIdx < 0) return
+        int vRow = tbl.getSelectedRow()
+        if (vRow < 0) {
+            notifyPopup("Bitte markieren Sie zuerst eine Zeile mit verknuepftem Originalbeleg.")
+            return
+        }
+        int mRow = tbl.convertRowIndexToModel(vRow)
+        String archivePath = tbl.getModel().getValueAt(mRow, archiveColIdx)?.toString()?.trim() ?: ""
+        if (archivePath.isEmpty()) {
+            showError("GoBD-Pruefung (Rz. 61): Zu diesem Datensatz ist kein archivierter Originalbeleg hinterlegt!")
+            return
+        }
+        Path f = Paths.get(archivePath)
+        if (!Files.exists(f)) {
+            showError("Archivierte Originaldatei nicht gefunden:\n${archivePath}")
+            return
+        }
+        if (Desktop.isDesktopSupported()) {
+            try {
+                Desktop.getDesktop().open(f.toFile())
+            } catch (Exception ex) {
+                notifyPopup("Archivierte Belegdatei:\n${f.toAbsolutePath()}")
+            }
+        } else {
+            notifyPopup("Archivierte Belegdatei:\n${f.toAbsolutePath()}")
         }
     }
-    JPanel panel = new JPanel(new BorderLayout(8, 8))
-    panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10))
-    panel.add(new JLabel("GoBD Z1-Prueferansicht (Schreibgeschuetztes Belegjournal - ${lockRows.length} Belege)"), BorderLayout.NORTH)
-    panel.add(new JScrollPane(table), BorderLayout.CENTER)
-    yabs.openTab("GoBD Z1-Prueferjournal", panel)
+
+    [
+        [table: invoiceTable, col: 8],
+        [table: incomeTable,  col: 9],
+        [table: expenseTable, col: 8]
+    ].each { Map entry ->
+        JTable t = (JTable) entry.table
+        int colIdx = (int) entry.col
+        t.addMouseListener(new MouseAdapter() {
+            @Override
+            void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2 && t.getSelectedRow() >= 0) {
+                    openArchiveFromTable(t, colIdx)
+                }
+            }
+        })
+    }
+
+    JTabbedPane tabs = new JTabbedPane()
+    tabs.addTab("1. Ausgangsrechnungen & Stornos", new JScrollPane(invoiceTable))
+    tabs.addTab("2. Importierte Einnahmen (ZUGFeRD)", new JScrollPane(incomeTable))
+    tabs.addTab("3. Ausgaben & Eingangsbelege", new JScrollPane(expenseTable))
+    tabs.addTab("4. GoBD Audit-Protokoll", new JScrollPane(auditTable))
+
+    tabs.addChangeListener({
+        openSelectedBtn.setEnabled(tabs.getSelectedIndex() in [0, 1, 2])
+    })
+
+    openSelectedBtn.addActionListener({
+        int idx = tabs.getSelectedIndex()
+        if (idx == 0) openArchiveFromTable(invoiceTable, 8)
+        else if (idx == 1) openArchiveFromTable(incomeTable, 9)
+        else if (idx == 2) openArchiveFromTable(expenseTable, 8)
+    })
+
+    boolean updatingYears = false
+    def reloadZ1Data = {
+        String selectedYear = (yearCombo.getSelectedItem()?.toString() ?: "Alle Jahre").trim()
+        boolean filterByYear = (selectedYear != "Alle Jahre" && !selectedYear.isEmpty())
+
+        def invRows = [] as Object[][]
+        try {
+            invRows = selectRows(
+                "SELECT document_id, document_number, status, finalized_at, finalized_by, artifact_format, sha256_hash, cancels_document_id, archive_path FROM gobd_document_lock ORDER BY COALESCE(chain_seq, document_id) DESC, finalized_at DESC"
+            )
+        } catch (Exception ignored) { }
+
+        def incRows = [] as Object[][]
+        try {
+            incRows = selectRows(
+                "SELECT revenue_id, document_number, status, imported_at, imported_by, original_name, artifact_format, file_sha256, chain_hash, archive_path FROM gobd_income_lock ORDER BY chain_seq DESC, imported_at DESC"
+            )
+        } catch (Exception ignored) { }
+
+        def expRows = [] as Object[][]
+        try {
+            expRows = selectRows(
+                "SELECT e.ids, e.cnumber, e.description, e.dateadded, e.brutvalue, r.originalname, r.sha256, r.archivepath FROM expenses e LEFT JOIN expense_receipts r ON e.ids = r.expensesids WHERE COALESCE(e.invisible, 0) = 0 ORDER BY e.ids DESC"
+            )
+        } catch (Exception ignored) { }
+
+        def audRows = [] as Object[][]
+        try {
+            audRows = selectRows(
+                "SELECT id, created_at, user_id, entity_type, entity_id, action, old_value, new_value, details FROM gobd_audit_log ORDER BY id DESC"
+            )
+        } catch (Exception ignored) { }
+
+        Set<String> years = new TreeSet<String>(Collections.reverseOrder())
+        def collectYear = { Object tsObj ->
+            String s = fmtDate(tsObj)
+            if (s.length() >= 4 && s.substring(0, 4).isInteger()) {
+                years.add(s.substring(0, 4))
+            }
+        }
+        invRows?.each { collectYear(it[3]) }
+        incRows?.each { collectYear(it[3]) }
+        expRows?.each { collectYear(it[3]) }
+        audRows?.each { collectYear(it[1]) }
+
+        updatingYears = true
+        try {
+            yearCombo.removeAllItems()
+            yearCombo.addItem("Alle Jahre")
+            years.each { String y -> yearCombo.addItem(y) }
+            if (filterByYear && years.contains(selectedYear)) {
+                yearCombo.setSelectedItem(selectedYear)
+            } else {
+                yearCombo.setSelectedItem("Alle Jahre")
+                filterByYear = false
+            }
+        } finally {
+            updatingYears = false
+        }
+
+        invoiceModel.setRowCount(0)
+        (invRows ?: []).findAll { !filterByYear || fmtDate(it[3]).startsWith(selectedYear) }.each { r ->
+            invoiceModel.addRow([r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7] ?: "", r[8] ?: ""] as Object[])
+        }
+
+        incomeModel.setRowCount(0)
+        (incRows ?: []).findAll { !filterByYear || fmtDate(it[3]).startsWith(selectedYear) }.each { r ->
+            incomeModel.addRow([r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9] ?: ""] as Object[])
+        }
+
+        expenseModel.setRowCount(0)
+        int missingReceipts = 0
+        (expRows ?: []).findAll { !filterByYear || fmtDate(it[3]).startsWith(selectedYear) }.each { r ->
+            String origName = r[5]?.toString()?.trim() ?: ""
+            String sha = r[6]?.toString()?.trim() ?: ""
+            String archPath = r[7]?.toString()?.trim() ?: ""
+            boolean hasReceipt = !origName.isEmpty() && !archPath.isEmpty()
+            if (!hasReceipt) missingReceipts++
+            String receiptStatus = hasReceipt ? "🔒 Archiviert" : "⚠️ Fehlt (Rz. 61)"
+            expenseModel.addRow([
+                r[0],
+                r[1] ?: "",
+                r[2] ?: "",
+                fmtDate(r[3]),
+                fmtDec(r[4]),
+                receiptStatus,
+                origName,
+                sha,
+                archPath
+            ] as Object[])
+        }
+
+        auditModel.setRowCount(0)
+        (audRows ?: []).findAll { !filterByYear || fmtDate(it[1]).startsWith(selectedYear) }.each { r ->
+            auditModel.addRow([r[0], r[1], r[2], r[3], r[4], r[5], r[6] ?: "", r[7] ?: "", r[8] ?: ""] as Object[])
+        }
+
+        tabs.setTitleAt(0, "1. Ausgangsrechnungen & Stornos (${invoiceModel.getRowCount()})")
+        tabs.setTitleAt(1, "2. Importierte Einnahmen / ZUGFeRD (${incomeModel.getRowCount()})")
+        tabs.setTitleAt(2, "3. Ausgaben & Eingangsbelege (${expenseModel.getRowCount()}${missingReceipts > 0 ? ' | ⚠️ ' + missingReceipts + ' ohne Beleg' : ''})")
+        tabs.setTitleAt(3, "4. GoBD Audit-Protokoll (${auditModel.getRowCount()})")
+
+        summaryLabel.setText(
+            "GoBD Z1-Prueferansicht (§ 147 Abs. 6 AO) – ${invoiceModel.getRowCount()} Ausgangsbelege | " +
+            "${incomeModel.getRowCount()} ZUGFeRD-Einnahmen | ${expenseModel.getRowCount()} Ausgaben | ${auditModel.getRowCount()} Audit-Eintraege"
+        )
+    }
+
+    yearCombo.addActionListener({
+        if (!updatingYears) {
+            reloadZ1Data()
+        }
+    })
+    refreshBtn.addActionListener({
+        reloadZ1Data()
+    })
+
+    reloadZ1Data()
+    rootPanel.add(topBar, BorderLayout.NORTH)
+    rootPanel.add(tabs, BorderLayout.CENTER)
+    yabs.openTab("GoBD Z1-Prueferjournal", rootPanel)
 })
 
 yabs.addCommand("GoBD: 6. Eingangsbelege pruefen (SHA256SUMS)", "Prueft alle archivierten Eingangsbelege und Einnahmenbelege gegen die Datenbank und die SHA256SUMS-Dateien", {

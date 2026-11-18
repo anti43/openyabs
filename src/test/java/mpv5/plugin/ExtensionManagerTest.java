@@ -314,6 +314,12 @@ class ExtensionManagerTest {
         assertTrue(code.contains("gobd.incomeWatchPath"));
         assertTrue(code.contains("gobd.autoImportIncome"));
         assertTrue(code.contains("owner instanceof Revenue"));
+        assertTrue(code.contains("1. Ausgangsrechnungen & Stornos"));
+        assertTrue(code.contains("2. Importierte Einnahmen"));
+        assertTrue(code.contains("3. Ausgaben & Eingangsbelege"));
+        assertTrue(code.contains("4. GoBD Audit-Protokoll"));
+        assertTrue(code.contains("Markierten Originalbeleg oeffnen"));
+        assertTrue(code.contains("Alle Jahre"));
     }
 
     @Test
