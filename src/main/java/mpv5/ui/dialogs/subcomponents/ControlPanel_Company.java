@@ -5,11 +5,15 @@ import java.awt.Component;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JPanel;
+import mpv5.Main;
+import mpv5.i18n.LanguageManager;
 import mpv5.ui.modern.Applets;
 import mpv5.ui.modern.Card;
 import mpv5.ui.modern.ModernTheme;
 import mpv5.ui.modern.PrimaryButton;
+import mpv5.utils.models.MPComboBoxModelItem;
 import javax.swing.SwingUtilities;
 import mpv5.data.PropertyStore;
 import mpv5.db.common.Context;
@@ -45,7 +49,7 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
     private final LabeledTextField street = field("street", "ControlPanel_Company.street._Label", true);
     private final LabeledTextField city = field("city", "ControlPanel_Company.city._Label", true);
     private final LabeledTextField zip = field("zip", "ControlPanel_Company.zip._Label", true);
-    private final LabeledTextField country = field("country", "ControlPanel_Company.country._Label", true);
+    private final JComboBox country = new JComboBox();
     private final LabeledTextField phoneprefix = field("phoneprefix", "ControlPanel_Company.phoneprefix._Label", false);
     private final LabeledTextField phone = field("phone", "ControlPanel_Company.phone._Label", true);
     private final LabeledTextField email = field("email", "ControlPanel_Company.email._Label", true);
@@ -71,8 +75,6 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
      */
     private final LabeledTextField creditorid = new LabeledTextField();
     private final javax.swing.JCheckBox defaultZugpferd = new javax.swing.JCheckBox(Messages.COMPANY_DEFAULT_ZUGFERD.toString());
-    private final mpv5.ui.beans.LabeledTextChooser zugpferdImportFolder = new mpv5.ui.beans.LabeledTextChooser();
-    private final javax.swing.JCheckBox autoImportZugpferd = new javax.swing.JCheckBox(Messages.ZUGFERD_IMPORT_AUTO.toString());
     private final JPanel actions;
 
     public ControlPanel_Company() {
@@ -95,12 +97,23 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
         creditorid.setName(mpv5.utils.export.SepaDirectDebit.KEY_CREDITOR_ID);
         fields.add(creditorid);
 
+        ModernTheme.roomyCombo(country);
+        loadCountries();
+
+        String countryLabel;
+        try {
+            countryLabel = bundle.getString("ControlPanel_Company.country._Label");
+        } catch (Exception e) {
+            countryLabel = "Country";
+        }
+        countryLabel += " *";
+
         Card company = new Card(Messages.COMPANY_CARD_COMPANY.toString())
                 .row(Applets.field(business))
                 .row(Applets.field(firstname), Applets.field(name))
                 .row(Applets.field(street))
                 .row(Applets.field(zip, 1), Applets.field(city, 2))
-                .row(Applets.field(country));
+                .row(Card.field(countryLabel, country));
         Card contact = new Card(Messages.COMPANY_CARD_CONTACT.toString())
                 .row(Applets.field(phoneprefix, 1), Applets.field(phone, 2))
                 .row(Applets.field(fax))
@@ -125,21 +138,16 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
                 .row(Applets.field(taxadvsior), Applets.field(taxadvjob));
         defaultZugpferd.setToolTipText(Messages.COMPANY_DEFAULT_ZUGFERD_HINT.toString());
         defaultZugpferd.setOpaque(false);
-        zugpferdImportFolder.setMode(mpv5.ui.dialogs.DialogForFile.DIRECTORIES_ONLY);
-        zugpferdImportFolder.set_Label("");
-        autoImportZugpferd.setOpaque(false);
-        JButton importNow = new JButton(Messages.ZUGFERD_IMPORT_NOW.toString());
-        importNow.addActionListener(e -> importZugferdNow());
-        JPanel importNowRow = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
-        importNowRow.setOpaque(false);
-        importNowRow.add(importNow);
+        JButton foldersBtn = new JButton(Messages.FOLDERS_TITLE.toString() + " \u2026");
+        foldersBtn.setIcon(new mpv5.utils.images.MPIcon("/images/22/folder_yellow.png").getIcon(16));
+        foldersBtn.addActionListener(e -> mpv5.ui.panels.MPControlPanel.show(ControlPanel_Folders.class));
+        JPanel foldersRow = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
+        foldersRow.setOpaque(false);
+        foldersRow.add(foldersBtn);
         Card einvoice = new Card(Messages.COMPANY_CARD_EINVOICE.toString())
                 .addFull(defaultZugpferd)
                 .addFull(Applets.hint(Messages.COMPANY_DEFAULT_ZUGFERD_HINT.toString()))
-                .row(Card.field(Messages.ZUGFERD_IMPORT_FOLDER.toString(), zugpferdImportFolder))
-                .addFull(autoImportZugpferd)
-                .addFull(Applets.hint(Messages.ZUGFERD_IMPORT_HINT.toString()))
-                .addFull(importNowRow);
+                .addFull(foldersRow);
         String info = "* " + Messages.COMPANY_REQUIRED_LEGEND + "  \u00b7  " + bundle.getString("ControlPanel_Company.jTextArea1.text");
         add(Applets.page(info, 380, company, contact, bank, tax, einvoice), BorderLayout.CENTER);
 
@@ -155,13 +163,11 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
         FieldCheck.attach(banknumber, Iban::isValidBic, Messages.COMPANY_BIC_TOOLTIP.toString(),
                 Messages.COMPANY_BIC_INVALID_HINT.toString());
 
-        JButton resetItems = Applets.danger(new JButton(bundle.getString("ControlPanel_Company.jButton2.text")));
-        resetItems.addActionListener(e -> resetItems());
         JButton reset = new JButton(bundle.getString("ControlPanel_Company.jButton3.text"));
         reset.addActionListener(e -> reset());
         PrimaryButton save = new PrimaryButton(bundle.getString("ControlPanel_Company.jButton1.text"), "/images/16/filesave.png");
         save.addActionListener(e -> save());
-        actions = Applets.actionBar(new javax.swing.JComponent[]{resetItems}, new javax.swing.JComponent[]{reset, save});
+        actions = Applets.actionBar(new javax.swing.JComponent[]{}, new javax.swing.JComponent[]{reset, save});
         add(actions, BorderLayout.SOUTH);
 
         setValues(User.getCurrentUser().getProperties().getProperties("companyinfo."));
@@ -191,27 +197,6 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
         setSettings();
         User.getCurrentUser().saveProperties();
         mpv5.YabsViewProxy.instance().addMessage(Messages.COMPANY_SAVED.toString());
-    }
-
-    private void resetItems() {
-        if (mpv5.ui.dialogs.Popup.Y_N_dialog("Really delete all invoices, orders and offers from the database? This is irreversible!!! Contacts and Products will not be affected.", Messages.ARE_YOU_SURE)) {
-            if (Popup.Y_N_dialog(Messages.ARE_YOU_SURE)) {
-                Popup.notice(QueryHandler.instanceOf().freeQuery("delete from items", MPSecurityManager.ADMINISTRATE, "Item reset done.").getMessage());
-                final String fmessage = "ITEM RESET: removed all invoices, orders and offers from database";
-                final String fdbid = "items";
-                final int fids = 0;
-                final int fgids = 1;
-
-                Runnable runnable = new Runnable() {
-
-                    @Override
-                    public void run() {
-                        QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, mpv5.db.objects.User.getCurrentUser().__getCname(), fdbid, fids, fgids);
-                    }
-                };
-                SwingUtilities.invokeLater(runnable);
-            }
-        }
     }
 
     /**
@@ -305,23 +290,9 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
         for (LabeledTextField f : fields) {
             User.getCurrentUser().setProperty("companyinfo." + f.getName(), f.getText() == null ? "" : f.getText());
         }
+        User.getCurrentUser().setProperty("companyinfo.country", getSelectedCountry());
         mpv5.utils.export.EInvoiceDelivery.setZugpferdDefault(defaultZugpferd.isSelected());
-        mpv5.handler.ZugpferdExpenseImport.setFolderPath(zugpferdImportFolder.get_Text(false));
-        mpv5.handler.ZugpferdExpenseImport.setAutoImportEnabled(autoImportZugpferd.isSelected());
         mpv5.globals.LocalSettings.save();
-        mpv5.handler.ZugpferdExpenseImport.startAutoImport();
-    }
-
-    private void importZugferdNow() {
-        mpv5.handler.ZugpferdExpenseImport.setFolderPath(zugpferdImportFolder.get_Text(false));
-        java.io.File dir = mpv5.handler.ZugpferdExpenseImport.folder();
-        if (dir == null || !dir.isDirectory()) {
-            Popup.notice(this, Messages.ZUGFERD_IMPORT_FOLDER_NOT_SET.toString());
-            return;
-        }
-        mpv5.handler.ZugpferdExpenseImport.Result res = mpv5.handler.ZugpferdExpenseImport.importFromFolder(dir);
-        mpv5.ui.panels.ModernExpensePanel.refreshIfOpen();
-        Popup.notice(this, res.summary());
     }
 
     @Override
@@ -342,12 +313,126 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
                     }
                 }
             }
+            String countryVal = null;
+            if (values != null && values.getList() != null) {
+                for (String[] v : values.getList()) {
+                    if ("country".equalsIgnoreCase(v[0])) {
+                        countryVal = v[1];
+                        break;
+                    }
+                }
+            }
+            selectCountry(countryVal);
             defaultZugpferd.setSelected(mpv5.utils.export.EInvoiceDelivery.isZugpferdDefault());
-            zugpferdImportFolder.set_Text(mpv5.handler.ZugpferdExpenseImport.folderPath());
-            autoImportZugpferd.setSelected(mpv5.handler.ZugpferdExpenseImport.isAutoImportEnabled());
         } catch (Exception e) {
             Log.Debug(this, e);
         }
+    }
+
+    private void loadCountries() {
+        try {
+            country.setModel(LanguageManager.getCountriesAsComboBoxModel());
+        } catch (Exception e) {
+            Log.Debug(this, e);
+        }
+        if (country.getItemCount() == 0) {
+            try {
+                java.io.InputStream in = Main.class.getResourceAsStream("/extra/countries.xml");
+                if (in != null) {
+                    org.jdom.Document doc = new org.jdom.input.SAXBuilder().build(in);
+                    if (doc != null) {
+                        String[][] list = new mpv5.utils.xml.XMLReader().toArray(doc.getRootElement().getChild("countries"));
+                        for (String[] c : list) {
+                            country.addItem(new MPComboBoxModelItem(c[2], c[1]));
+                        }
+                    }
+                }
+            } catch (Exception ignored) {
+            }
+        }
+        if (country.getItemCount() == 0) {
+            country.addItem(new MPComboBoxModelItem("276", "Germany"));
+            country.addItem(new MPComboBoxModelItem("40", "Austria"));
+            country.addItem(new MPComboBoxModelItem("756", "Switzerland"));
+        }
+    }
+
+    private void selectCountry(String countryVal) {
+        if (country.getItemCount() == 0) {
+            loadCountries();
+        }
+        if (countryVal == null || countryVal.trim().isEmpty()) {
+            try {
+                countryVal = User.getCurrentUser().__getDefcountry();
+            } catch (Exception ignored) {
+            }
+        }
+        if (countryVal == null || countryVal.trim().isEmpty()) {
+            countryVal = "276";
+        }
+        countryVal = countryVal.trim();
+
+        // 1. Exact match on value/name
+        for (int i = 0; i < country.getItemCount(); i++) {
+            Object o = country.getItemAt(i);
+            if (o instanceof MPComboBoxModelItem) {
+                MPComboBoxModelItem it = (MPComboBoxModelItem) o;
+                if (it.getValue().equalsIgnoreCase(countryVal)) {
+                    country.setSelectedIndex(i);
+                    return;
+                }
+            } else if (o != null && o.toString().equalsIgnoreCase(countryVal)) {
+                country.setSelectedIndex(i);
+                return;
+            }
+        }
+
+        // 2. Exact match on ID / ISO numeric
+        for (int i = 0; i < country.getItemCount(); i++) {
+            Object o = country.getItemAt(i);
+            if (o instanceof MPComboBoxModelItem) {
+                MPComboBoxModelItem it = (MPComboBoxModelItem) o;
+                if (String.valueOf(it.getId()).equalsIgnoreCase(countryVal)) {
+                    country.setSelectedIndex(i);
+                    return;
+                }
+            }
+        }
+
+        // 3. Match on ISO-2 code (e.g. "DE" vs "Germany" or "276")
+        String targetCode = ZugpferdFile.toCountryCode(countryVal);
+        if (!targetCode.isEmpty()) {
+            for (int i = 0; i < country.getItemCount(); i++) {
+                Object o = country.getItemAt(i);
+                if (o instanceof MPComboBoxModelItem) {
+                    MPComboBoxModelItem it = (MPComboBoxModelItem) o;
+                    if (targetCode.equalsIgnoreCase(ZugpferdFile.toCountryCode(it.getValue()))
+                            || targetCode.equalsIgnoreCase(ZugpferdFile.toCountryCode(String.valueOf(it.getId())))) {
+                        country.setSelectedIndex(i);
+                        return;
+                    }
+                }
+            }
+        }
+
+        // 4. Custom / unknown country not in list: add it and select it
+        MPComboBoxModelItem custom = new MPComboBoxModelItem(countryVal, countryVal);
+        country.addItem(custom);
+        country.setSelectedItem(custom);
+    }
+
+    public String getSelectedCountry() {
+        Object sel = country.getSelectedItem();
+        if (sel instanceof MPComboBoxModelItem) {
+            return ((MPComboBoxModelItem) sel).getValue();
+        } else if (sel != null) {
+            return sel.toString().trim();
+        }
+        return "";
+    }
+
+    public JComboBox getCountryComboBox() {
+        return country;
     }
 
     @Override

@@ -124,21 +124,23 @@ class ModernRevenuePanelTest {
         table.setModel(model);
         panel.applyRevenueFilter();
 
-        // Initially all 3 revenues are visible
-        assertEquals(3, table.getRowCount());
+        // Initially filtered by current year: r1 and r2 visible, r3 (last year) hidden
+        assertEquals(2, table.getRowCount());
 
-        // Filter by content
+        // Filter by content within current year
         panel.filterByContent("Consulting");
         assertEquals(1, table.getRowCount());
         assertSame(r1, table.getValueAt(0, 0));
 
-        panel.filterByContent("REV-303");
-        assertEquals(1, table.getRowCount());
-        assertSame(r3, table.getValueAt(0, 0));
-
         // Clear filter -> all 3 visible again
         panel.clearFilter();
         assertEquals(3, table.getRowCount());
+
+        // Filter by content across all time
+        panel.filterByContent("REV-303");
+        assertEquals(1, table.getRowCount());
+        assertSame(r3, table.getValueAt(0, 0));
+        panel.clearFilter();
 
         // Filter by current year -> r1 and r2 visible, r3 (last year) hidden
         panel.filterCurrentYear();

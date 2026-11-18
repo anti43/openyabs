@@ -199,7 +199,7 @@ public class ModernExpensePanel extends ModernDataPanel {
     private final ChipToggle filterMonthChip = new ChipToggle("Akt. Monat");
     private final ChipToggle filterDateChip = new ChipToggle("Zeitraum");
     private final ButtonGroup filterGroup = new ButtonGroup();
-    private DateFilterMode dateFilterMode = DateFilterMode.ALL;
+    private DateFilterMode dateFilterMode = DateFilterMode.CURRENT_YEAR;
     private boolean updatingFilterDates = false;
     private final PrimaryButton importZugferdBtn = new PrimaryButton(Messages.ZUGFERD_IMPORT_BUTTON.toString(), "/images/16/xml.png");
 
@@ -214,7 +214,6 @@ public class ModernExpensePanel extends ModernDataPanel {
     private final JTable receiptsTable = new JTable(receiptsModel);
     private final List<Receipt> currentReceipts = new ArrayList<Receipt>();
     private final JButton addReceiptBtn = new JButton("Beleg verkn\u00fcpfen...");
-    private final JButton removeReceiptBtn = new JButton("Entfernen");
     private final JButton openReceiptBtn = new JButton("\u00d6ffnen");
     private final JButton verifyReceiptsBtn = new JButton("Pr\u00fcfen");
 
@@ -418,9 +417,13 @@ public class ModernExpensePanel extends ModernDataPanel {
         importZugferdBtn.setToolTipText(Messages.ZUGFERD_IMPORT_HINT.toString());
         importZugferdBtn.addActionListener(e -> importZugferdDialog());
 
-        JPanel importRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        JPanel importRow = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0)) {
+            @Override
+            public Dimension getMaximumSize() {
+                return new Dimension(Integer.MAX_VALUE, getPreferredSize().height);
+            }
+        };
         importRow.setOpaque(false);
-        importRow.setAlignmentX(Component.LEFT_ALIGNMENT);
         importRow.setBorder(BorderFactory.createEmptyBorder(0, 0, ModernTheme.px(8), 0));
         importRow.add(importZugferdBtn);
         filterBar.add(importRow);
@@ -459,7 +462,7 @@ public class ModernExpensePanel extends ModernDataPanel {
         filterGroup.add(filterYearChip);
         filterGroup.add(filterMonthChip);
         filterGroup.add(filterDateChip);
-        filterAllChip.setSelected(true);
+        filterYearChip.setSelected(true);
 
         filterAllChip.addActionListener(e -> {
             dateFilterMode = DateFilterMode.ALL;
@@ -765,7 +768,6 @@ public class ModernExpensePanel extends ModernDataPanel {
         actions.setOpaque(false);
 
         addReceiptBtn.addActionListener(e -> importReceiptDialog());
-        removeReceiptBtn.addActionListener(e -> removeSelectedReceipt());
         openReceiptBtn.addActionListener(e -> openSelectedReceipt());
         verifyReceiptsBtn.addActionListener(e -> verifyAllReceipts());
 
@@ -774,7 +776,7 @@ public class ModernExpensePanel extends ModernDataPanel {
         folderBtn.setToolTipText(mpv5.globals.Messages.FOLDERS_TITLE.toString() + " \u2026");
         folderBtn.addActionListener(e -> {
             try {
-                mpv5.ui.panels.MPControlPanel.instanceOf().openDetails(new mpv5.ui.dialogs.subcomponents.ControlPanel_Folders());
+                mpv5.ui.panels.MPControlPanel.show(mpv5.ui.dialogs.subcomponents.ControlPanel_Folders.class);
             } catch (Exception ex) {
                 Log.Debug(ModernExpensePanel.class, ex);
             }
@@ -782,7 +784,6 @@ public class ModernExpensePanel extends ModernDataPanel {
 
         actions.add(addReceiptBtn);
         actions.add(openReceiptBtn);
-        actions.add(removeReceiptBtn);
         actions.add(verifyReceiptsBtn);
         actions.add(folderBtn);
 
@@ -1314,7 +1315,6 @@ public class ModernExpensePanel extends ModernDataPanel {
         groupSelect.setEnabled(!locked);
         issueDateChooser.setEnabled(!locked);
         notesArea.setEditable(!locked);
-        removeReceiptBtn.setEnabled(!locked);
         // Payment status & date remain editable for open-item workflow
     }
 
