@@ -107,8 +107,8 @@ public final class ExtensionManager {
          */
         public final File jar;
         final URLClassLoader loader;
-        State state = State.STOPPED;
-        String error;
+        volatile State state = State.STOPPED;
+        volatile String error;
 
         Installed(YabsExtension extension, File jar, URLClassLoader loader) {
             this.extension = extension;

@@ -250,14 +250,21 @@ class ExtensionManagerTest {
         TestHost h = new TestHost();
         ExtensionManager m = new ExtensionManager(plugins, h);
         m.startAllInBackground();
+        //the built-in plugins of YaBS start too: wait until the script runs (or failed)
         long until = System.currentTimeMillis() + 30000;
-        while (m.commands().isEmpty() && System.currentTimeMillis() < until) {
+        ExtensionManager.Installed bg = null;
+        while (System.currentTimeMillis() < until) {
+            bg = m.list().stream().filter(i -> "groovy.bg".equals(i.id())).findFirst().orElse(null);
+            if (bg != null && bg.getState() != ExtensionManager.State.STOPPED) {
+                break;
+            }
             Thread.sleep(50);
         }
-        assertEquals("From the background", m.commands().get(0).title);
-        assertEquals(ExtensionManager.State.RUNNING, m.list().get(0).getState());
-        //the progress went to the host, then the summary
-        assertTrue(h.messages.stream().anyMatch(x -> x.contains("1/1")));
+        assertNotNull(bg);
+        assertEquals(ExtensionManager.State.RUNNING, bg.getState(), String.valueOf(bg.getError()));
+        assertTrue(m.commands().stream().anyMatch(c -> "From the background".equals(c.title)));
+        //the progress went to the host
+        assertTrue(h.messages.stream().anyMatch(x -> x.contains("Background")));
     }
 
     @Test
