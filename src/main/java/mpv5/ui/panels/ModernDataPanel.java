@@ -503,6 +503,8 @@ public abstract class ModernDataPanel extends JPanel implements DataPanel, Scrol
         setPluginBadge(null);
         setContentLocked(false);
         mpv5.plugin.ExtensionManager.instance().fireView(this);
+        revalidate();
+        repaint();
     }
 
     /**
