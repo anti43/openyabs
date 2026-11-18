@@ -229,17 +229,6 @@ public final class ItemService {
     }
 
     /**
-     * Creates an invoice, deposit, part payment or credit note from the
-     * document: the source is set to finished. Asks (with the given callback)
-     * whether activity lists of the order and earlier deposits / part
-     * payments are to be taken over.
-     *
-     * @param source with the data of the view (getPanelData)
-     * @param itemType Item.TYPE_INVOICE, _DEPOSIT, _PART_PAYMENT or _CREDIT
-     * @param positions the positions of the view; activity lists are added
-     * to it
-     * @param ask shows a yes/no question
-    /**
      * Ensures an invoice has status "finished" (abgeschlossen) and end date is set.
      * If end date is empty or older than the worked-on date (datetodo / dateadded),
      * it is updated to the due date (if calculable and not before worked-on) or the worked-on date.
@@ -280,6 +269,19 @@ public final class ItemService {
         }
     }
 
+    /**
+     * Creates an invoice, deposit, part payment or credit note from the
+     * document: the source is set to finished. Asks (with the given callback)
+     * whether activity lists of the order and earlier deposits / part
+     * payments are to be taken over.
+     *
+     * @param source with the data of the view (getPanelData)
+     * @param itemType Item.TYPE_INVOICE, _DEPOSIT, _PART_PAYMENT or _CREDIT
+     * @param positions the positions of the view; activity lists are added
+     * to it
+     * @param ask shows a yes/no question
+     * @return the new, saved document, null for other types
+     */
     public static Item toInvoice(Item source, int itemType, MPTableModel positions, Predicate<String> ask) {
         source.setIntstatus(Item.STATUS_FINISHED);
         source.save();
