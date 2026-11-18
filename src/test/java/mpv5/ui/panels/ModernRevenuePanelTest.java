@@ -202,8 +202,8 @@ class ModernRevenuePanelTest {
 
         assertTrue(texts.stream().anyMatch(t -> t.contains("Eingangsbelege & Abrechnungen")),
                 "Receipts card title should be 'Eingangsbelege & Abrechnungen'");
-        assertTrue(texts.stream().anyMatch(t -> t.contains("Beleg hinzuf\u00fcgen")),
-                "Add receipt button should use proper umlaut 'ü'");
+        assertTrue(texts.stream().anyMatch(t -> t.contains("Beleg verkn\u00fcpfen")),
+                "Link receipt button should use proper umlaut 'ü'");
         assertTrue(texts.stream().anyMatch(t -> t.contains("\u00d6ffnen")),
                 "Open receipt button should use proper umlaut 'Ö'");
         assertTrue(texts.stream().anyMatch(t -> t.contains("Pr\u00fcfen")),
@@ -217,6 +217,8 @@ class ModernRevenuePanelTest {
                     "ModernRevenuePanel.java should not contain GoBD references");
             assertFalse(src.contains("Neue Einnahme"),
                     "ModernRevenuePanel.java should not contain the 'Neue Einnahme' header");
+            assertFalse(src.contains("TEMPLATES_PREVIEW_HINT"),
+                    "ModernRevenuePanel.java should not contain the template hint");
             assertFalse(src.contains("anhaengen"));
             assertFalse(src.contains("auswaehlen"));
             assertFalse(src.contains("Verknuepfung"));
@@ -235,6 +237,8 @@ class ModernRevenuePanelTest {
 
         assertFalse(texts.stream().anyMatch(t -> t.contains("Neue Einnahme")),
                 "Header 'Neue Einnahme' must be removed");
+        assertFalse(texts.stream().anyMatch(t -> t.contains("20 Beispielpositionen")),
+                "Template preview hint must be removed from preview card");
 
         assertNotNull(panel.getCommandBar());
         assertNotNull(panel.getCommandBar().getSaveAsNewButton());
@@ -242,6 +246,10 @@ class ModernRevenuePanelTest {
                 "'Save as new' button must be visible in the command bar");
         assertEquals(mpv5.globals.Messages.ACTION_SAVE_AS_NEW.toString(),
                 panel.getCommandBar().getSaveAsNewButton().getText());
+
+        // Import e-invoice button is a large prominent green PrimaryButton
+        assertNotNull(panel.getImportZugferdButton());
+        assertTrue(panel.getImportZugferdButton() instanceof mpv5.ui.modern.PrimaryButton);
 
         // Right detail grid has 4 cards including the PDF preview card
         assertNotNull(panel.getDetailGrid());

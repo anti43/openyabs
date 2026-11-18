@@ -286,7 +286,6 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
 
         //the preview is the tallest card: last
         grid.addFullWidth(new Card(Messages.TEMPLATES_PREVIEW.toString())
-                .addFull(hint(Messages.TEMPLATES_PREVIEW_HINT.toString()))
                 .addFull(previewImage)
                 .addFull(previewCaption)
                 .addFull(previewButtons));
