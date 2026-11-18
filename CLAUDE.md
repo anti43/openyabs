@@ -12,3 +12,4 @@
 ## Testing
 
 - Do not run the full test suite (`./gradlew test`) for layout or text changes: compiling (`./gradlew compileJava`) is enough. For logic changes run only the tests of the touched area (`--tests ...`); the full suite only for changes that affect many parts.
+- **Run tests in GitHub CI, not in the session.** Locally only compile (`./gradlew compileJava`); push and let the CI workflow run the tests.
