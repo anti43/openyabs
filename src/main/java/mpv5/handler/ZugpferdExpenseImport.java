@@ -184,6 +184,10 @@ public final class ZugpferdExpenseImport {
             if (!num.isEmpty()) {
                 e.setCnumber(num);
                 e.setCname(num);
+            } else {
+                String fallback = "EXP-" + System.currentTimeMillis();
+                e.setCnumber(fallback);
+                e.setCname(fallback);
             }
             e.setDescription(buildDescription());
             e.setNetvalue(netAmount);
@@ -206,6 +210,10 @@ public final class ZugpferdExpenseImport {
             if (!num.isEmpty()) {
                 r.setCnumber(num);
                 r.setCname(num);
+            } else {
+                String fallback = "REV-" + System.currentTimeMillis();
+                r.setCnumber(fallback);
+                r.setCname(fallback);
             }
             r.setDescription(buildDescription());
             r.setNetvalue(netAmount);
@@ -213,6 +221,8 @@ public final class ZugpferdExpenseImport {
             r.setTaxpercentvalue(taxRate);
             r.setAccountsids(accountId > 0 ? accountId : 1);
             r.setGroupsids(groupId > 0 ? groupId : 1);
+            r.setContactsids(-1);
+            r.setRefOrderids(-1);
             r.setDateadded(issueDate != null ? issueDate : new Date());
             r.setDateend(dueDate != null ? dueDate : r.__getDateadded());
             r.setStatus(mpv5.db.objects.Item.STATUS_QUEUED);

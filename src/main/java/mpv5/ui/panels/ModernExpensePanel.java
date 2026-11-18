@@ -429,10 +429,11 @@ public class ModernExpensePanel extends ModernDataPanel {
         importZugferdBtn.setToolTipText(Messages.ZUGFERD_IMPORT_HINT.toString());
         importZugferdBtn.addActionListener(e -> importZugferdDialog());
 
-        JPanel importRow = new JPanel(new BorderLayout());
+        JPanel importRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         importRow.setOpaque(false);
+        importRow.setAlignmentX(Component.LEFT_ALIGNMENT);
         importRow.setBorder(BorderFactory.createEmptyBorder(0, 0, ModernTheme.px(8), 0));
-        importRow.add(importZugferdBtn, BorderLayout.CENTER);
+        importRow.add(importZugferdBtn);
         filterBar.add(importRow);
 
         // Row 1: Content search field
@@ -1017,8 +1018,8 @@ public class ModernExpensePanel extends ModernDataPanel {
                     continue;
                 }
                 Expense newExp = parsed.toExpense(defaultExpenseAccountId(), 1);
-                if (!newExp.save(true)) {
-                    throw new IllegalStateException("Ausgabe konnte nicht gespeichert werden: " + f.getName());
+                if (!newExp.save(true) || newExp.__getIDS() <= 0) {
+                    throw new IllegalStateException("Ausgabe konnte nicht in der Datenbank gespeichert werden: " + f.getName());
                 }
                 ExpenseReceipts.attach(newExp, f);
                 importedExpenses.add(newExp);
@@ -1172,12 +1173,14 @@ public class ModernExpensePanel extends ModernDataPanel {
                 if (dataOwner.__getGroupsids() <= 0) {
                     dataOwner.setGroupsids(1);
                 }
-                if (dataOwner.save(true)) {
+                if (dataOwner.save(true) && dataOwner.__getIDS() > 0) {
                     ids_ = dataOwner.__getIDS();
                     ExpenseReceipts.attach(dataOwner, source);
                     refresh();
                     setDataOwner(dataOwner, true);
                     Popup.notice("E-Rechnung importiert: " + source.getName());
+                } else {
+                    Popup.error(this, "Ausgabe konnte nicht in der Datenbank gespeichert werden.");
                 }
             } catch (Exception ex) {
                 Log.Debug(ModernExpensePanel.class, ex);
@@ -1191,6 +1194,18 @@ public class ModernExpensePanel extends ModernDataPanel {
         }
         if (accountsids_ > 0) {
             return accountsids_;
+        }
+        try {
+            ArrayList<DatabaseObject> exp = DatabaseObject.getObjects(Context.getAccounts(), new QueryCriteria("intaccounttype", Account.EXPENSE));
+            if (exp != null && !exp.isEmpty()) {
+                accountObjects = exp;
+                return exp.get(0).__getIDS();
+            }
+            ArrayList<DatabaseObject> all = DatabaseObject.getObjects(Context.getAccounts());
+            if (all != null && !all.isEmpty()) {
+                return all.get(0).__getIDS();
+            }
+        } catch (Exception ignored) {
         }
         return 1;
     }

@@ -475,10 +475,11 @@ public class ModernRevenuePanel extends ModernDataPanel {
         importZugferdBtn.setToolTipText(Messages.ZUGFERD_IMPORT_HINT.toString());
         importZugferdBtn.addActionListener(e -> importZugferdDialog());
 
-        JPanel importRow = new JPanel(new BorderLayout());
+        JPanel importRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         importRow.setOpaque(false);
+        importRow.setAlignmentX(Component.LEFT_ALIGNMENT);
         importRow.setBorder(BorderFactory.createEmptyBorder(0, 0, ModernTheme.px(8), 0));
-        importRow.add(importZugferdBtn, BorderLayout.CENTER);
+        importRow.add(importZugferdBtn);
         filterBar.add(importRow);
 
         ModernTheme.roomy(searchField);
@@ -1045,8 +1046,8 @@ public class ModernRevenuePanel extends ModernDataPanel {
                     continue;
                 }
                 Revenue newRev = parsed.toRevenue(defaultIncomeAccountId(), 1);
-                if (!newRev.save(true)) {
-                    throw new IllegalStateException("Einnahme konnte nicht gespeichert werden: " + f.getName());
+                if (!newRev.save(true) || newRev.__getIDS() <= 0) {
+                    throw new IllegalStateException("Einnahme konnte nicht in der Datenbank gespeichert werden: " + f.getName());
                 }
                 RevenueReceipts.attach(newRev, f);
                 importedRevenues.add(newRev);
@@ -1195,12 +1196,14 @@ public class ModernRevenuePanel extends ModernDataPanel {
                 if (dataOwner.__getGroupsids() <= 0) {
                     dataOwner.setGroupsids(1);
                 }
-                if (dataOwner.save(true)) {
+                if (dataOwner.save(true) && dataOwner.__getIDS() > 0) {
                     ids_ = dataOwner.__getIDS();
                     RevenueReceipts.attach(dataOwner, source);
                     refresh();
                     setDataOwner(dataOwner, true);
                     Popup.notice("E-Rechnung als Einnahme importiert: " + source.getName());
+                } else {
+                    Popup.error(this, "Einnahme konnte nicht in der Datenbank gespeichert werden.");
                 }
             } catch (Exception ex) {
                 Log.Debug(ModernRevenuePanel.class, ex);
@@ -1211,6 +1214,21 @@ public class ModernRevenuePanel extends ModernDataPanel {
     private int defaultIncomeAccountId() {
         if (accountObjects != null && !accountObjects.isEmpty()) {
             return accountObjects.get(0).__getIDS();
+        }
+        if (accountsids_ > 0) {
+            return accountsids_;
+        }
+        try {
+            ArrayList<DatabaseObject> inc = DatabaseObject.getObjects(Context.getAccounts(), new QueryCriteria("intaccounttype", Account.INCOME));
+            if (inc != null && !inc.isEmpty()) {
+                accountObjects = inc;
+                return inc.get(0).__getIDS();
+            }
+            ArrayList<DatabaseObject> all = DatabaseObject.getObjects(Context.getAccounts());
+            if (all != null && !all.isEmpty()) {
+                return all.get(0).__getIDS();
+            }
+        } catch (Exception ignored) {
         }
         return 1;
     }
