@@ -46,7 +46,7 @@ import mpv5.utils.date.DateConverter;
 
 /**
  * Manages receipts (scanned vouchers, PDF invoices, XML e-invoices, photos)
- * attached to expenses (GoBD Rz. 61–64, "Keine Buchung ohne Beleg").
+ * attached to expenses.
  * <p>
  * Storage design:
  * <ul>
