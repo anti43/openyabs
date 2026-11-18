@@ -439,20 +439,8 @@ public class ModernRevenuePanel extends ModernDataPanel {
 
         ModernTheme.style(revenueTable);
         revenueTable.setAutoCreateRowSorter(true);
-        revenueTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        revenueTable.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                int row = revenueTable.getSelectedRow();
-                if (row >= 0) {
-                    int modelRow = revenueTable.convertRowIndexToModel(row);
-                    Object val = revenueTable.getModel().getValueAt(modelRow, 0);
-                    if (val instanceof DatabaseObject) {
-                        setDataOwner((DatabaseObject) val, true);
-                    }
-                }
-            }
-        });
+        //single click, arrow keys and Enter show the record
+        installRecordList(revenueTable);
 
         JComponent filterBar = createFilterBar();
 
@@ -1373,6 +1361,7 @@ public class ModernRevenuePanel extends ModernDataPanel {
             }
             loadReceipts();
             notifyViewOpened();
+            selectRecordRow(revenueTable, dataOwner);
             validate();
         }
     }
@@ -1543,6 +1532,8 @@ public class ModernRevenuePanel extends ModernDataPanel {
                 MPTableModel x = new MPTableModel(Revenue.getRevenues(), Headers.REVENUE);
                 revenueTable.setModel(x);
                 applyRevenueFilter();
+                //keep the shown record highlighted in the new list
+                selectRecordRow(revenueTable, dataOwner);
             } catch (NodataFoundException e) {
                 Log.Debug(ModernRevenuePanel.class, e.getMessage());
             }

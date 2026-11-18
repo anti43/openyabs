@@ -2837,6 +2837,14 @@ yabs.onView({ DataPanel panel ->
 
         // 1. Inhaltliche Felder & Positionen im UI sperren (Zahlungsstatus/Mahnungen bleiben frei)
         panel.setContentLocked(true)
+        // Drucken/PDF/Vorschau/E-Rechnung erzeugen keine neue Datei, sondern oeffnen den archivierten Beleg
+        if (archivePath) {
+            try {
+                panel.setLockedDocument(new File(archivePath))
+            } catch (MissingMethodException ignored) {
+                // aeltere yabs-Version ohne DataPanel.setLockedDocument
+            }
+        }
 
         // 2. Kompaktes GoBD-Badge in der Kopfzeile neben dem Status-Pill
         Color badgeBg = cancelled ? new Color(254, 226, 226) : new Color(254, 243, 199)
