@@ -140,6 +140,7 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
     private boolean loading;
 
     public ControlPanel_Templates() {
+        putClientProperty(mpv5.ui.misc.Help.PROPERTY_HELP_PAGE, "Vorlagen|Templates-(EN)");
         if (MPSecurityManager.checkAdminAccess()) {
             build();
             type.setModel(new DefaultComboBoxModel<MPComboBoxModelItem>(MPComboBoxModelItem.toItems(TemplateHandler.getTypes())));

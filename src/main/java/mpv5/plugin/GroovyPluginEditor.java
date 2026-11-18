@@ -163,6 +163,7 @@ public final class GroovyPluginEditor extends JDialog {
         setContentPane(content);
 
         keys();
+        getRootPane().putClientProperty(mpv5.ui.misc.Help.PROPERTY_HELP_PAGE, "Writing-plugins-(EN)");
         load();
         setSize(new Dimension(ModernTheme.px(900), ModernTheme.px(680)));
         setLocationRelativeTo(owner);
@@ -559,11 +560,7 @@ public final class GroovyPluginEditor extends JDialog {
     }
 
     private static void browse(String url) {
-        try {
-            java.awt.Desktop.getDesktop().browse(new java.net.URI(url));
-        } catch (Exception e) {
-            Popup.notice(url);
-        }
+        mpv5.ui.misc.Help.browse(url);
     }
 
     private void ok(String text) {
