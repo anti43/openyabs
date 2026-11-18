@@ -1722,7 +1722,15 @@ public enum Messages {
     FIRSTSTART_IMPORT132_STEP("Taking over the data of YaBS 1.3.2"),
     FIRSTSTART_IMPORT132_DONE("The data of YaBS 1.3.2 was taken over, the old database is unchanged. YaBS starts signed in as \"%s\". All users of YaBS 1.3.2 sign in with their old names and passwords."),
     CONNMGR_IMPORT132("Import from YaBS 1.3.2 \u2026"),
-    CONNMGR_IMPORT132_TIP("A new database with all data of an old YaBS 1.3.2 (Derby) database; the old database stays unchanged");
+    CONNMGR_IMPORT132_TIP("A new database with all data of an old YaBS 1.3.2 (Derby) database; the old database stays unchanged"),
+    ZUGFERD_IMPORT_FOLDER("Folder for incoming e-invoices (ZUGFeRD / XRechnung)"),
+    ZUGFERD_IMPORT_AUTO("Automatically import e-invoices from this folder as expenses"),
+    ZUGFERD_IMPORT_HINT("PDF files with ZUGFeRD / Factur-X and XML e-invoices (XRechnung) in this folder are imported as expenses and archived with SHA-256 checksums. Already imported files are skipped."),
+    ZUGFERD_IMPORT_NOW("Import now"),
+    ZUGFERD_IMPORT_BUTTON("Import ZUGFeRD / E-invoice \u2026"),
+    ZUGFERD_IMPORT_CHOOSER("Choose ZUGFeRD / XRechnung files or folder (PDF, XML)"),
+    ZUGFERD_IMPORT_FOLDER_NOT_SET("Please choose an existing folder for incoming e-invoices first."),
+    ZUGFERD_IMPORT_RESULT("%d e-invoice(s) imported as expenses (%d already imported, %d skipped).");
 
 
     /**

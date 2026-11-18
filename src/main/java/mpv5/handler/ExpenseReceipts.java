@@ -264,6 +264,29 @@ public final class ExpenseReceipts {
         return list;
     }
 
+    /**
+     * Checks whether a receipt with the given SHA-256 checksum is already
+     * recorded in {@code expense_receipts}.
+     *
+     * @param sha256 64-character hex SHA-256 checksum
+     * @return true if already imported
+     */
+    public static boolean existsBySha256(String sha256) {
+        if (sha256 == null || sha256.trim().isEmpty()) {
+            return false;
+        }
+        ensureTable();
+        try {
+            ReturnValue rv = db().freeSelectQuery(
+                    "SELECT ids FROM expense_receipts WHERE sha256 = " + q(sha256.trim().toLowerCase(Locale.ROOT)),
+                    MPSecurityManager.VIEW, null);
+            return rv != null && rv.hasData() && rv.getData() != null && rv.getData().length > 0;
+        } catch (Exception e) {
+            Log.Debug(ExpenseReceipts.class, e);
+            return false;
+        }
+    }
+
     private static Date date(Object o) {
         if (o instanceof Date) {
             return (Date) o;

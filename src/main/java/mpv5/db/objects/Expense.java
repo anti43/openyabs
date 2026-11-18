@@ -147,8 +147,12 @@ public class Expense extends DatabaseObject implements Formattable {
 
     @Override
     public void ensureUniqueness() {
-        setCnumber(getFormatHandler().next());
-        setCname(__getCnumber());
+        if (cnumber == null || cnumber.trim().isEmpty()) {
+            setCnumber(getFormatHandler().next());
+        }
+        if (__getCname() == null || __getCname().trim().isEmpty() || "<not set>".equals(__getCname())) {
+            setCname(__getCnumber());
+        }
     }
 
     /**
