@@ -180,14 +180,10 @@ public final class ZugpferdExpenseImport {
          */
         public Expense toExpense(int accountId, int groupId) {
             Expense e = new Expense();
-            String num = cut(invoiceNumber.isEmpty() && sourceFile != null ? stripExtension(sourceFile.getName()) : invoiceNumber, 250);
+            String num = cut(invoiceNumber, 250);
             if (!num.isEmpty()) {
                 e.setCnumber(num);
                 e.setCname(num);
-            } else {
-                String fallback = "EXP-" + System.currentTimeMillis();
-                e.setCnumber(fallback);
-                e.setCname(fallback);
             }
             e.setDescription(buildDescription());
             e.setNetvalue(netAmount);
@@ -206,14 +202,10 @@ public final class ZugpferdExpenseImport {
          */
         public Revenue toRevenue(int accountId, int groupId) {
             Revenue r = new Revenue();
-            String num = cut(invoiceNumber.isEmpty() && sourceFile != null ? stripExtension(sourceFile.getName()) : invoiceNumber, 250);
+            String num = cut(invoiceNumber, 250);
             if (!num.isEmpty()) {
                 r.setCnumber(num);
                 r.setCname(num);
-            } else {
-                String fallback = "REV-" + System.currentTimeMillis();
-                r.setCnumber(fallback);
-                r.setCname(fallback);
             }
             r.setDescription(buildDescription());
             r.setNetvalue(netAmount);

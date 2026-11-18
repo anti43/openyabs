@@ -1020,7 +1020,7 @@ public class ModernExpensePanel extends ModernDataPanel {
                 }
                 Expense newExp = parsed.toExpense(defaultExpenseAccountId(), 1);
                 if (!newExp.save(true) || newExp.__getIDS() <= 0) {
-                    throw new IllegalStateException("Ausgabe konnte nicht in der Datenbank gespeichert werden: " + f.getName());
+                    throw new IllegalStateException(Messages.RECEIPT_SAVE_FAILED.toString() + " (" + f.getName() + ")");
                 }
                 ExpenseReceipts.attach(newExp, f);
                 importedExpenses.add(newExp);
@@ -1033,20 +1033,17 @@ public class ModernExpensePanel extends ModernDataPanel {
         if (!importedExpenses.isEmpty()) {
             refresh();
             setDataOwner(importedExpenses.get(importedExpenses.size() - 1), true);
-            Popup.notice(importedExpenses.size() + " E-Rechnung(en) erfolgreich als neue Ausgabe(n) importiert.");
+            Popup.notice(String.format(Messages.RECEIPT_IMPORTED_EXPENSES_SUCCESS.toString(), importedExpenses.size()));
         }
 
         if (!deniedFiles.isEmpty()) {
             JOptionPane.showMessageDialog(this,
-                    "Folgende Datei(en) sind keine g\u00fcltigen ZUGFeRD- oder E-Rechnungen (XML oder PDF mit eingebettetem XML) und wurden abgelehnt:\n- "
-                    + String.join("\n- ", deniedFiles)
-                    + "\n\nEinfache PDFs oder Beleg-Scans k\u00f6nnen \u00fcber 'Beleg verkn\u00fcpfen' an eine bestehende Ausgabe angeh\u00e4ngt werden.",
-                    "Keine g\u00fcltige E-Rechnung", JOptionPane.WARNING_MESSAGE);
+                    String.format(Messages.RECEIPT_INVALID_INVOICE_BODY.toString(), String.join("\n- ", deniedFiles)),
+                    Messages.RECEIPT_INVALID_INVOICE_TITLE.toString(), JOptionPane.WARNING_MESSAGE);
         } else if (!alreadyImported.isEmpty() && importedExpenses.isEmpty()) {
             JOptionPane.showMessageDialog(this,
-                    "Die ausgew\u00e4hlte(n) E-Rechnung(en) wurden bereits importiert:\n- "
-                    + String.join("\n- ", alreadyImported),
-                    "Bereits importiert", JOptionPane.INFORMATION_MESSAGE);
+                    String.format(Messages.RECEIPT_ALREADY_IMPORTED_NOTICE.toString(), String.join("\n- ", alreadyImported)),
+                    Messages.RECEIPT_ALREADY_IMPORTED_NOTICE.toString(), JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
@@ -1093,8 +1090,8 @@ public class ModernExpensePanel extends ModernDataPanel {
             }
             refreshPreview();
             JOptionPane.showMessageDialog(this,
-                    "Bitte speichern Sie die Ausgabe zuerst, bevor Sie Belege verkn\u00fcpfen.",
-                    "Ausgabe nicht gespeichert", JOptionPane.WARNING_MESSAGE);
+                    Messages.RECEIPT_NOT_SAVED_BEFORE_ATTACH.toString(),
+                    Messages.RECEIPT_NOT_SAVED_TITLE.toString(), JOptionPane.WARNING_MESSAGE);
             return;
         }
         try {
@@ -1102,9 +1099,9 @@ public class ModernExpensePanel extends ModernDataPanel {
             Receipt r = ExpenseReceipts.attach(dataOwner, source);
             if (r != null) {
                 if (isPlainPdf) {
-                    String checkNote = "[Beleg: " + source.getName() + " (einfacher PDF-Beleg verkn\u00fcpft - Rechnerische Richtigkeit der Belegwerte kann nicht automatisch gepr\u00fcft werden)]";
+                    String checkNote = String.format(Messages.RECEIPT_PLAIN_PDF_NOTE.toString(), source.getName());
                     String curNotes = notesArea.getText();
-                    if (!curNotes.contains("Rechnerische Richtigkeit")) {
+                    if (!curNotes.contains("Rechnerische Richtigkeit") && !curNotes.contains("correctness of receipt")) {
                         String updated = (curNotes == null || curNotes.trim().isEmpty()) ? checkNote : curNotes.trim() + "\n" + checkNote;
                         notesArea.setText(updated);
                         dataOwner.setDescription(updated);
@@ -1116,12 +1113,12 @@ public class ModernExpensePanel extends ModernDataPanel {
                     loadReceipts();
                     notifyViewOpened();
                     refreshPreview(source);
-                    Popup.notice("Beleg archiviert: " + r.originalName + "\n(Hinweis: Einfacher PDF-Beleg - Werte k\u00f6nnen nicht automatisch auf rechnerische Richtigkeit gepr\u00fcft werden.)");
+                    Popup.notice(String.format(Messages.RECEIPT_PLAIN_PDF_ARCHIVED.toString(), r.originalName));
                 } else {
                     loadReceipts();
                     notifyViewOpened();
                     refreshPreview(source);
-                    Popup.notice("Beleg archiviert: " + r.originalName + "\nSHA-256: " + r.sha256.substring(0, 16) + "...");
+                    Popup.notice(String.format(Messages.RECEIPT_ARCHIVED.toString(), r.originalName) + "\nSHA-256: " + r.sha256.substring(0, 16) + "...");
                 }
             }
         } catch (Exception ex) {
@@ -1179,9 +1176,9 @@ public class ModernExpensePanel extends ModernDataPanel {
                     ExpenseReceipts.attach(dataOwner, source);
                     refresh();
                     setDataOwner(dataOwner, true);
-                    Popup.notice("E-Rechnung importiert: " + source.getName());
+                    Popup.notice(String.format(Messages.RECEIPT_IMPORTED_SINGLE_EXPENSE.toString(), source.getName()));
                 } else {
-                    Popup.error(this, "Ausgabe konnte nicht in der Datenbank gespeichert werden.");
+                    Popup.error(this, Messages.RECEIPT_SAVE_FAILED.toString());
                 }
             } catch (Exception ex) {
                 Log.Debug(ModernExpensePanel.class, ex);

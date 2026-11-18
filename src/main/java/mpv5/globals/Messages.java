@@ -1730,7 +1730,20 @@ public enum Messages {
     ZUGFERD_IMPORT_BUTTON("Import ZUGFeRD / E-invoice \u2026"),
     ZUGFERD_IMPORT_CHOOSER("Choose ZUGFeRD / XRechnung files or folder (PDF, XML)"),
     ZUGFERD_IMPORT_FOLDER_NOT_SET("Please choose an existing folder for incoming e-invoices first."),
-    ZUGFERD_IMPORT_RESULT("%d e-invoice(s) imported as expenses (%d already imported, %d skipped).");
+    ZUGFERD_IMPORT_RESULT("%d e-invoice(s) imported as expenses (%d already imported, %d skipped)."),
+    RECEIPT_NOT_SAVED_BEFORE_ATTACH("Please save the record first before attaching receipts."),
+    RECEIPT_NOT_SAVED_TITLE("Record not saved"),
+    RECEIPT_SAVE_FAILED("The record could not be saved to the database."),
+    RECEIPT_INVALID_INVOICE_TITLE("No valid e-invoice"),
+    RECEIPT_INVALID_INVOICE_BODY("The following file(s) are not valid ZUGFeRD or e-invoices (XML or PDF with embedded XML) and were rejected:\n- %s\n\nPlain PDFs or scans can be attached to an existing record via \"Attach receipt\"."),
+    RECEIPT_ALREADY_IMPORTED_NOTICE("The selected e-invoice has already been imported: %s"),
+    RECEIPT_IMPORTED_EXPENSES_SUCCESS("%d e-invoice(s) successfully imported as new expense(s)."),
+    RECEIPT_IMPORTED_REVENUES_SUCCESS("%d e-invoice(s) successfully imported as new revenue(s)."),
+    RECEIPT_IMPORTED_SINGLE_EXPENSE("E-invoice imported as expense: %s"),
+    RECEIPT_IMPORTED_SINGLE_REVENUE("E-invoice imported as revenue: %s"),
+    RECEIPT_PLAIN_PDF_ARCHIVED("Receipt archived: %s\n(Note: Plain PDF receipt - values cannot be verified automatically.)"),
+    RECEIPT_PLAIN_PDF_NOTE("[Receipt: %s (plain PDF receipt attached - correctness of receipt amounts cannot be verified automatically)]"),
+    RECEIPT_ARCHIVED("Receipt archived: %s");
 
 
     /**

@@ -198,29 +198,10 @@ public final class RevenueReceipts {
                         + "imported_by VARCHAR(100) NOT NULL, "
                         + "PRIMARY KEY (ids))",
                         MPSecurityManager.VIEW, null);
+                tableChecked = true;
             } catch (Exception ex2) {
                 Log.Debug(RevenueReceipts.class, "revenue_receipts table check: " + ex2.getMessage());
             }
-        }
-        try {
-            db().freeQuery("ALTER TABLE revenues ADD COLUMN dateend DATE", MPSecurityManager.VIEW, null);
-        } catch (Exception ignored) {
-        }
-        try {
-            db().freeQuery("ALTER TABLE revenues ADD COLUMN status SMALLINT DEFAULT 0", MPSecurityManager.VIEW, null);
-        } catch (Exception ignored) {
-        }
-        try {
-            db().freeQuery("ALTER TABLE revenues ADD COLUMN ispaid SMALLINT DEFAULT 0", MPSecurityManager.VIEW, null);
-        } catch (Exception ignored) {
-        }
-        try {
-            db().freeQuery("ALTER TABLE revenues ADD COLUMN contactsids BIGINT", MPSecurityManager.VIEW, null);
-        } catch (Exception ignored) {
-        }
-        try {
-            db().freeQuery("ALTER TABLE revenues ADD COLUMN reforderids BIGINT", MPSecurityManager.VIEW, null);
-        } catch (Exception ignored) {
         }
     }
 
