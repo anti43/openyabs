@@ -1045,6 +1045,10 @@ def importZugferdIncomeFile = { Path sourceFile, Revenue targetRevenue = null, b
         RevenuePanel.instanceOf().refresh()
         RevenuePanel.instanceOf().setDataOwner(rev, true)
     } catch (Exception ignored) { }
+    try {
+        mpv5.ui.panels.ModernRevenuePanel.instanceOf().refresh()
+        mpv5.ui.panels.ModernRevenuePanel.instanceOf().setDataOwner(rev, true)
+    } catch (Exception ignored) { }
 
     if (!silent) {
         notifyDocumentEvent(
@@ -1140,15 +1144,19 @@ def checkWriteAllowed = { DatabaseObject obj, boolean isDelete ->
     if (obj instanceof Revenue && obj.__getIDS() > 0) {
         Revenue rev = (Revenue) obj
         def incLock = getIncomeLockRecord(rev.__getIDS())
-        if (incLock != null) {
+        def receiptRows = selectRows("SELECT ids, originalname, archivepath, sha256 FROM revenue_receipts WHERE revenuesids = ${rev.__getIDS()}")
+        boolean hasReceipts = receiptRows && receiptRows.length > 0
+        if (incLock != null || hasReceipts) {
+            String lockHash = incLock ? incLock[10]?.toString() : receiptRows[0][3]?.toString()
+            String docNum = incLock ? incLock[2]?.toString() : (rev.__getCnumber() ?: "#" + rev.__getIDS())
             if (isDelete || isMovedToTrash(rev)) {
-                logAudit("REVENUE", rev.__getIDS(), "BLOCKED_DELETE", incLock[13]?.toString(), "Delete/Trash=true", incLock[10]?.toString(), "Loesch- oder Papierkorb-Versuch an GoBD-gesperrter Einnahme ${incLock[2]}.")
-                showError("GoBD-Loeschschutz (§§ 146, 147 AO):\nEinnahme ${incLock[2]} ist durch einen archivierten Originalbeleg festgeschrieben und darf weder geloescht noch in den Papierkorb verschoben werden!")
+                logAudit("REVENUE", rev.__getIDS(), "BLOCKED_DELETE", incLock ? incLock[13]?.toString() : "Receipts=${receiptRows.length}", "Delete/Trash=true", lockHash, "Loesch- oder Papierkorb-Versuch an GoBD-gesperrter Einnahme ${docNum}.")
+                showError("GoBD-Loeschschutz (§§ 146, 147 AO):\nEinnahme ${docNum} ist durch einen archivierten Originalbeleg festgeschrieben und darf weder geloescht noch in den Papierkorb verschoben werden!")
                 return false
             }
 
             def dbRows = selectRows(
-                "SELECT cnumber, dateadded, accountsids, netvalue, taxpercentvalue, brutvalue, description, status, dateend FROM revenues WHERE ids = ${rev.__getIDS()}"
+                "SELECT cnumber, dateadded, accountsids, netvalue, taxpercentvalue, brutvalue, description, status, dateend, ispaid FROM revenues WHERE ids = ${rev.__getIDS()}"
             )
             if (dbRows && dbRows.length > 0) {
                 def db = dbRows[0]
@@ -1168,16 +1176,18 @@ def checkWriteAllowed = { DatabaseObject obj, boolean isDelete ->
                     int newStatus = rev.__getStatus()
                     String oldEnd = fmtDate(db[8])
                     String newEnd = fmtDate(rev.__getDateend())
-                    if (oldStatus != newStatus || oldEnd != newEnd) {
-                        logAudit("REVENUE", rev.__getIDS(), "INCOME_PAYMENT_STATUS_CHANGED", "status=${oldStatus}|dateend=${oldEnd}", "status=${newStatus}|dateend=${newEnd}", incLock[10]?.toString(), "Zahlungsstatus/Zahlungsdatum fuer Einnahme ${incLock[2]} protokolliert.")
-                        notifyStatus("GoBD-Audit: Zahlungsstatus fuer Einnahme ${incLock[2]} protokolliert.")
+                    boolean oldPaid = db[9] != null && (db[9].toString() == "1" || db[9].toString().equalsIgnoreCase("true"))
+                    boolean newPaid = rev.__getIspaid()
+                    if (oldStatus != newStatus || oldEnd != newEnd || oldPaid != newPaid) {
+                        logAudit("REVENUE", rev.__getIDS(), "INCOME_PAYMENT_STATUS_CHANGED", "status=${oldStatus}|ispaid=${oldPaid}|dateend=${oldEnd}", "status=${newStatus}|ispaid=${newPaid}|dateend=${newEnd}", lockHash, "Zahlungsstatus/Zahlungsdatum fuer Einnahme ${docNum} protokolliert.")
+                        notifyStatus("GoBD-Audit: Zahlungsstatus fuer Einnahme ${docNum} protokolliert.")
                     }
                     return true
                 }
             }
 
-            logAudit("REVENUE", rev.__getIDS(), "BLOCKED_EDIT", incLock[13]?.toString(), createRevenueFinancialSnapshot(rev), incLock[10]?.toString(), "Unzulaessige Aenderung steuerrelevanter Felder an Einnahme ${incLock[2]}.")
-            showError("GoBD-Schutz (§ 146 Abs. 4 AO):\nEinnahme ${incLock[2]} ist festgeschrieben! Betraege, Steuersatz, Leistungsdatum, Konto, Nummer und Beschreibung duerfen nicht mehr geaendert werden.\n(Hinweis: Nur Zahlungsstatus und Zahlungsdatum bleiben aenderbar.)")
+            logAudit("REVENUE", rev.__getIDS(), "BLOCKED_EDIT", incLock ? incLock[13]?.toString() : "Receipts=${receiptRows.length}", createRevenueFinancialSnapshot(rev), lockHash, "Unzulaessige Aenderung steuerrelevanter Felder an Einnahme ${docNum}.")
+            showError("GoBD-Schutz (§ 146 Abs. 4 AO):\nEinnahme ${docNum} ist festgeschrieben! Betraege, Steuersatz, Leistungsdatum, Konto, Nummer und Beschreibung duerfen nicht mehr geaendert werden.\n(Hinweis: Nur Zahlungsstatus und Zahlungsdatum bleiben aenderbar.)")
             return false
         }
     }
@@ -2661,16 +2671,18 @@ yabs.onView({ DataPanel panel ->
         }
 
         def incLock = getIncomeLockRecord(rev.__getIDS())
-        if (incLock != null) {
-            String docNum = incLock[2]?.toString() ?: rev.__getCnumber()
-            String archivePath = incLock[7]?.toString() ?: ""
-            String format = incLock[9]?.toString() ?: "ZUGFERD_PDFA3"
-            String fileSha = incLock[10]?.toString() ?: ""
+        def receipts = selectRows("SELECT ids, originalname, archivepath, sha256, filesize FROM revenue_receipts WHERE revenuesids = ${rev.__getIDS()}")
+        boolean hasReceipts = (receipts && receipts.length > 0)
+        if (incLock != null || hasReceipts) {
+            String docNum = incLock ? (incLock[2]?.toString() ?: rev.__getCnumber()) : (rev.__getCnumber() ?: "#" + rev.__getIDS())
+            String archivePath = incLock ? (incLock[7]?.toString() ?: "") : (receipts ? receipts[0][2]?.toString() : "")
+            String format = incLock ? (incLock[9]?.toString() ?: "ZUGFERD_PDFA3") : "RECEIPT_FILE"
+            String fileSha = incLock ? (incLock[10]?.toString() ?: "") : (receipts ? receipts[0][3]?.toString() : "")
             String shortSha = fileSha.length() >= 12 ? fileSha.substring(0, 12) : fileSha
 
             panel.setContentLocked(true)
 
-            JLabel badge = new JLabel("🔒 GoBD EINGANGS-RECHNUNG (ZUGFeRD)")
+            JLabel badge = new JLabel(incLock ? "🔒 GoBD E-RECHNUNG" : "🔒 GoBD BELEG-ARCHIV")
             badge.setOpaque(true)
             badge.setBackground(new Color(220, 252, 231))
             badge.setForeground(new Color(22, 101, 52))
@@ -2688,10 +2700,10 @@ yabs.onView({ DataPanel panel ->
                 BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(74, 222, 128)),
                 ModernTheme.padding(6, 12)
             ))
-            JLabel info = new JLabel(
-                "🔒 GoBD-Festschreibung: Einnahme ${docNum} (${format}, SHA-256: ${shortSha}…) ist mit einem Originalbeleg im Jahresarchiv verknuepft. " +
-                "Betraege, Steuer, Konto & Datum sind gesperrt; Zahlungsstatus und Zahlungsdatum bleiben buchbar."
-            )
+            String infoText = incLock ?
+                "🔒 GoBD-Festschreibung: Einnahme ${docNum} (${format}, SHA-256: ${shortSha}…) ist mit einem Originalbeleg im Jahresarchiv verknuepft. Betraege, Steuer, Konto & Datum sind gesperrt; Zahlungsstatus und Zahlungsdatum bleiben buchbar." :
+                "🔒 GoBD-Festschreibung: Einnahme ${docNum} ist mit ${receipts.length} archivierten Beleg(en) verknuepft. Betraege, Steuer, Konto & Datum sind gesperrt; Zahlungsstatus und Zahlungsdatum bleiben buchbar."
+            JLabel info = new JLabel(infoText)
             info.setFont(ModernTheme.font(1, Font.BOLD))
             info.setForeground(new Color(22, 101, 52))
             banner.add(info, BorderLayout.CENTER)

@@ -45,6 +45,7 @@ import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria;
 import mpv5.db.objects.Account;
 import mpv5.db.objects.Expense;
+import mpv5.db.objects.Revenue;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
@@ -194,6 +195,28 @@ public final class ZugpferdExpenseImport {
             e.setDateend(dueDate);
             e.setIspaid(false);
             return e;
+        }
+
+        /**
+         * Creates a {@link Revenue} populated with the parsed invoice data.
+         */
+        public Revenue toRevenue(int accountId, int groupId) {
+            Revenue r = new Revenue();
+            String num = cut(invoiceNumber.isEmpty() && sourceFile != null ? stripExtension(sourceFile.getName()) : invoiceNumber, 250);
+            if (!num.isEmpty()) {
+                r.setCnumber(num);
+                r.setCname(num);
+            }
+            r.setDescription(buildDescription());
+            r.setNetvalue(netAmount);
+            r.setBrutvalue(grossAmount);
+            r.setTaxpercentvalue(taxRate);
+            r.setAccountsids(accountId > 0 ? accountId : 1);
+            r.setGroupsids(groupId > 0 ? groupId : 1);
+            r.setDateadded(issueDate != null ? issueDate : new Date());
+            r.setDateend(dueDate != null ? dueDate : r.__getDateadded());
+            r.setStatus(mpv5.db.objects.Item.STATUS_QUEUED);
+            return r;
         }
     }
 

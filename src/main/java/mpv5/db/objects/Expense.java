@@ -73,6 +73,9 @@ public class Expense extends DatabaseObject implements Formattable {
 
     @Override
     public JComponent getView() {
+        if (mpv5.YabsViewProxy.instance().isModernUi()) {
+            return mpv5.ui.panels.ModernExpensePanel.instanceOf();
+        }
         return ExpensePanel.instanceOf();
     }
 
