@@ -1071,7 +1071,7 @@ public class ModernRevenuePanel extends ModernDataPanel {
         } else if (!alreadyImported.isEmpty() && importedRevenues.isEmpty()) {
             JOptionPane.showMessageDialog(this,
                     String.format(Messages.RECEIPT_ALREADY_IMPORTED_NOTICE.toString(), String.join("\n- ", alreadyImported)),
-                    Messages.RECEIPT_ALREADY_IMPORTED_NOTICE.toString(), JOptionPane.INFORMATION_MESSAGE);
+                    Messages.RECEIPT_ALREADY_IMPORTED_TITLE.toString(), JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
@@ -1124,7 +1124,7 @@ public class ModernRevenuePanel extends ModernDataPanel {
                 if (isPlainPdf) {
                     String checkNote = String.format(Messages.RECEIPT_PLAIN_PDF_NOTE.toString(), source.getName());
                     String curNotes = notesArea.getText();
-                    if (!curNotes.contains("Rechnerische Richtigkeit") && !curNotes.contains("correctness of receipt")) {
+                    if (!curNotes.contains(checkNote)) {
                         String updated = (curNotes == null || curNotes.trim().isEmpty()) ? checkNote : curNotes.trim() + "\n" + checkNote;
                         notesArea.setText(updated);
                         dataOwner.setDescription(updated);
@@ -1226,7 +1226,8 @@ public class ModernRevenuePanel extends ModernDataPanel {
             if (all != null && !all.isEmpty()) {
                 return all.get(0).__getIDS();
             }
-        } catch (Exception ignored) {
+        } catch (Exception ex) {
+            Log.Debug(ModernRevenuePanel.class, ex);
         }
         return 1;
     }

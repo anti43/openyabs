@@ -377,10 +377,14 @@ def nextSequenceNumber = { String prefix, int year ->
     return String.format("%s-%d-%05d", prefix, year, maxNum + 1)
 }
 
+// GoBD applies to invoices and credit notes (incl. our own Storno documents), never to orders/offers
+def isGobdItemType = { int type ->
+    return type == Item.TYPE_INVOICE || type == Item.TYPE_CREDIT
+}
+
 def isTaxRelevantDocument = { DatabaseObject obj ->
     if (obj instanceof Item) {
-        int type = ((Item) obj).__getInttype()
-        return type == Item.TYPE_INVOICE
+        return isGobdItemType(((Item) obj).__getInttype())
     }
     String ctxName = obj?.getContext()?.getDbIdentity()?.toLowerCase() ?: ""
     return ctxName.contains("expense") || ctxName.contains("revenue")
@@ -584,7 +588,7 @@ def archiveImmutableArtifact = { Item doc, int year, String safeDocNum, String c
 }
 
 def finalizeDocument = { Item doc, Long cancelsDocId = null ->
-    if (doc == null || doc.__getInttype() != Item.TYPE_INVOICE) {
+    if (doc == null || !isGobdItemType(doc.__getInttype())) {
         return false
     }
     if (!finalizingIds.add(doc.__getIDS())) {
@@ -600,34 +604,14 @@ def finalizeDocument = { Item doc, Long cancelsDocId = null ->
         String rawNumber = doc.__getCnumber()?.trim() ?: ""
         boolean numberAssigned = false
         if (!rawNumber || rawNumber.toUpperCase().startsWith("ENTWURF") || rawNumber.toUpperCase().startsWith("DRAFT")) {
-            String prefix = "RE"
+            String prefix = (doc.__getInttype() == Item.TYPE_CREDIT) ? "ST" : "RE"
             String assignedNumber = nextSequenceNumber(prefix, year)
             doc.setCnumber(assignedNumber)
             numberAssigned = true
         }
 
-        // Status auf 'abgeschlossen' setzen und Enddatum pruefen/setzen
-        doc.setIntstatus(Item.STATUS_FINISHED)
-        Date workedOn = doc.__getDatetodo() ?: doc.__getDateadded() ?: new Date()
-        Date end = doc.__getDateend()
-        if (end == null || (workedOn != null && end.before(workedOn))) {
-            Date targetEnd = null
-            try {
-                Contact c = doc.getContact()
-                int payterm = c != null ? c.__getPayterm() : 0
-                if (payterm > 0) {
-                    Date base = doc.__getDateadded() ?: workedOn
-                    Date due = mpv5.utils.date.DateConverter.addDays(base, payterm)
-                    if (due != null && !due.before(workedOn)) {
-                        targetEnd = due
-                    }
-                }
-            } catch (Exception ignored) { }
-            if (targetEnd == null) {
-                targetEnd = workedOn ?: new Date()
-            }
-            doc.setDateend(targetEnd)
-        }
+        // Status auf 'abgeschlossen' setzen und Enddatum pruefen/setzen (ohne eigenes Speichern)
+        mpv5.handler.ItemService.ensureFinishedAndEndDate(doc, false)
         doc.save(true)
 
         List<String> validationErrors = validateMandatoryFields(doc)
@@ -1330,13 +1314,14 @@ yabs.onActivity({ Activity.Entry entry ->
 
     Item doc = null
     String invCtx = Context.getInvoice()?.getDbIdentity()?.toLowerCase() ?: "invoice"
+    String credCtx = Context.getCredit()?.getDbIdentity()?.toLowerCase() ?: "credit"
 
-    if (entry.id > 0 && entryCtx == invCtx) {
+    if (entry.id > 0 && (entryCtx == invCtx || entryCtx == credCtx)) {
         try {
             DatabaseObject dbo = DatabaseObject.getObject(entry.context ?: Context.getInvoice(), (int) entry.id)
             if (dbo instanceof Item) {
                 Item item = (Item) dbo
-                if (item.__getInttype() == Item.TYPE_INVOICE) {
+                if (isGobdItemType(item.__getInttype())) {
                     doc = item
                     lastGeneratedFiles.put((long) doc.__getIDS(), entry.file.toPath())
                 }
@@ -1347,7 +1332,7 @@ yabs.onActivity({ Activity.Entry entry ->
             DataPanel currentTab = YabsViewProxy.instance().getCurrentTab()
             if (currentTab != null && currentTab.getDataOwner() instanceof Item) {
                 Item tabItem = (Item) currentTab.getDataOwner()
-                if (tabItem.__getIDS() > 0 && tabItem.__getInttype() == Item.TYPE_INVOICE) {
+                if (tabItem.__getIDS() > 0 && isGobdItemType(tabItem.__getInttype())) {
                     doc = tabItem
                     lastGeneratedFiles.put((long) doc.__getIDS(), entry.file.toPath())
                 }
@@ -1355,7 +1340,7 @@ yabs.onActivity({ Activity.Entry entry ->
         } catch (Exception ignored) { }
     }
 
-    if (doc == null || doc.__getIDS() <= 0 || doc.__getInttype() != Item.TYPE_INVOICE) return
+    if (doc == null || doc.__getIDS() <= 0 || !isGobdItemType(doc.__getInttype())) return
     if (creatingStorno || finalizingIds.contains((int) doc.__getIDS())) return
 
     if (getLockRecord(doc.__getIDS()) == null) {
@@ -1603,8 +1588,8 @@ def buildGdpduIndexXml = { int exportYear ->
 // -----------------------------------------------------------------------------
 def selectInvoiceDialog = { String title, boolean onlyLocked ->
     String sql = onlyLocked
-        ? "SELECT i.ids, i.cnumber, (COALESCE(i.netvalue, 0) - COALESCE(i.discountvalue, 0) + COALESCE(i.taxvalue, 0)) FROM items i INNER JOIN gobd_document_lock g ON i.ids = g.document_id WHERE g.status = 'FINALIZED' AND i.inttype = ${Item.TYPE_INVOICE}"
-        : "SELECT i.ids, i.cnumber, (COALESCE(i.netvalue, 0) - COALESCE(i.discountvalue, 0) + COALESCE(i.taxvalue, 0)) FROM items i LEFT JOIN gobd_document_lock g ON i.ids = g.document_id WHERE g.document_id IS NULL AND i.inttype = ${Item.TYPE_INVOICE} ORDER BY i.ids DESC"
+        ? "SELECT i.ids, i.cnumber, (COALESCE(i.netvalue, 0) - COALESCE(i.discountvalue, 0) + COALESCE(i.taxvalue, 0)) FROM items i INNER JOIN gobd_document_lock g ON i.ids = g.document_id WHERE g.status = 'FINALIZED' AND i.inttype IN (${Item.TYPE_INVOICE}, ${Item.TYPE_CREDIT})"
+        : "SELECT i.ids, i.cnumber, (COALESCE(i.netvalue, 0) - COALESCE(i.discountvalue, 0) + COALESCE(i.taxvalue, 0)) FROM items i LEFT JOIN gobd_document_lock g ON i.ids = g.document_id WHERE g.document_id IS NULL AND i.inttype IN (${Item.TYPE_INVOICE}, ${Item.TYPE_CREDIT}) ORDER BY i.ids DESC"
     def rows = selectRows(sql)
     if (!rows || rows.length == 0) {
         notifyPopup(onlyLocked ? "Keine festgeschriebenen Rechnungen vorhanden." : "Keine offenen (unfestgeschriebenen) Rechnungen vorhanden.")
@@ -2825,7 +2810,7 @@ yabs.onView({ DataPanel panel ->
         return
     }
     Item doc = (Item) owner
-    if (doc.__getInttype() != Item.TYPE_INVOICE || doc.__getIDS() <= 0) {
+    if (!isGobdItemType(doc.__getInttype()) || doc.__getIDS() <= 0) {
         panel.setContentLocked(false)
         panel.setPluginBadge(null)
         panel.setPluginBanner(null)

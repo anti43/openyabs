@@ -229,21 +229,42 @@ public final class ItemService {
     }
 
     /**
+     * Ensures an invoice has status "finished" (abgeschlossen) and a plausible
+     * end date, and saves the item if something changed. Orders, offers and
+     * other non-invoice types are left untouched.
+     *
+     * @param item the item to finalize
+     * @return true if the item is (now) finished with a valid end date
+     * @see #ensureFinishedAndEndDate(Item, boolean)
+     */
+    public static boolean ensureFinishedAndEndDate(Item item) {
+        return ensureFinishedAndEndDate(item, true);
+    }
+
+    /**
      * Ensures an invoice has status "finished" (abgeschlossen) and end date is set.
      * If end date is empty or older than the worked-on date (datetodo / dateadded),
      * it is updated to the due date (if calculable and not before worked-on) or the worked-on date.
+     * The method is idempotent: if nothing needs to change, nothing is saved,
+     * so already finalized (locked) documents are not written again.
      *
      * @param item the item to finalize
+     * @param save false if the caller saves the item itself
+     * @return true if the item is (now) finished with a valid end date
      */
-    public static void ensureFinishedAndEndDate(Item item) {
-        if (item == null) {
-            return;
+    public static boolean ensureFinishedAndEndDate(Item item, boolean save) {
+        if (item == null || !isInvoiceLike(item.__getInttype())) {
+            return false;
         }
-        item.setIntstatus(Item.STATUS_FINISHED);
+        boolean changed = false;
+        if (item.__getIntstatus() != Item.STATUS_FINISHED) {
+            item.setIntstatus(Item.STATUS_FINISHED);
+            changed = true;
+        }
         Date workedOn = item.__getDatetodo() != null ? item.__getDatetodo()
                 : (item.__getDateadded() != null ? item.__getDateadded() : new Date());
         Date end = item.__getDateend();
-        if (end == null || (workedOn != null && end.before(workedOn))) {
+        if (end == null || end.before(workedOn)) {
             Date targetEnd = null;
             try {
                 Contact contact = item.getContact();
@@ -255,18 +276,29 @@ public final class ItemService {
                         targetEnd = due;
                     }
                 }
-            } catch (Exception ignored) {
+            } catch (Exception ex) {
+                Log.Debug(ItemService.class, ex);
             }
-            if (targetEnd == null) {
-                targetEnd = workedOn != null ? workedOn : new Date();
+            item.setDateend(targetEnd != null ? targetEnd : workedOn);
+            changed = true;
+        }
+        if (changed && save && item.__getIDS() > 0) {
+            try {
+                if (!item.save(true)) {
+                    Log.Debug(ItemService.class, "Could not save finished status / end date of item " + item.__getIDS());
+                    return false;
+                }
+            } catch (Exception ex) {
+                Log.Debug(ItemService.class, ex);
+                return false;
             }
-            item.setDateend(targetEnd);
         }
-        try {
-            item.save(true);
-        } catch (Exception ex) {
-            Log.Debug(ItemService.class, ex);
-        }
+        return true;
+    }
+
+    private static boolean isInvoiceLike(int type) {
+        return type == Item.TYPE_INVOICE || type == Item.TYPE_CREDIT
+                || type == Item.TYPE_DEPOSIT || type == Item.TYPE_PART_PAYMENT;
     }
 
     /**
