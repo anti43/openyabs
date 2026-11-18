@@ -1237,15 +1237,7 @@ public class ModernRevenuePanel extends ModernDataPanel {
         }
         Receipt r = currentReceipts.get(row);
         if (r.exists()) {
-            if (Desktop.isDesktopSupported()) {
-                try {
-                    Desktop.getDesktop().open(r.file());
-                } catch (Exception ex) {
-                    Popup.notice("Belegdatei:\n" + r.archivePath);
-                }
-            } else {
-                Popup.notice("Belegdatei:\n" + r.archivePath);
-            }
+            mpv5.utils.files.FileDirectoryHandler.open(r.file());
         } else {
             JOptionPane.showMessageDialog(this,
                     "Belegdatei im Archiv nicht gefunden:\n" + r.archivePath,

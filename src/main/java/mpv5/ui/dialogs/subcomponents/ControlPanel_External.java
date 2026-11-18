@@ -325,6 +325,7 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
             labeledTextField1.setText(LocalSettings.getProperty(LocalSettings.OFFICE_HOST));
             labeledTextField2.setText(LocalSettings.getProperty(LocalSettings.OFFICE_PORT));
             labeledTextField3.setText(LocalSettings.getProperty(LocalSettings.CALCULATOR));
+            pdfViewer.set_Text(LocalSettings.hasProperty(LocalSettings.PDF_VIEWER) ? LocalSettings.getProperty(LocalSettings.PDF_VIEWER) : "");
             auto.setSelected(LocalSettings.getBooleanProperty(LocalSettings.OFFICE_AUTOSTART));
         } catch (Exception e) {
             Log.Debug(this, e);
@@ -354,6 +355,7 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private mpv5.ui.beans.LabeledTextChooser labeledTextChooser2;
+    private final mpv5.ui.beans.LabeledTextChooser pdfViewer = new mpv5.ui.beans.LabeledTextChooser();
     private mpv5.ui.beans.LabeledTextField labeledTextField1;
     private mpv5.ui.beans.LabeledTextField labeledTextField2;
     private mpv5.ui.beans.LabeledTextField labeledTextField3;
@@ -378,6 +380,7 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
         LocalSettings.setProperty(LocalSettings.OFFICE_HOST, labeledTextField1.getText());
         LocalSettings.setProperty(LocalSettings.OFFICE_PORT, labeledTextField2.getText());
         LocalSettings.setProperty(LocalSettings.CALCULATOR, labeledTextField3.getText());
+        LocalSettings.setProperty(LocalSettings.PDF_VIEWER, pdfViewer.get_Text(false).trim());
         LocalSettings.setProperty(LocalSettings.OFFICE_AUTOSTART, String.valueOf(auto.isSelected()));
         checkOS();
 
@@ -434,7 +437,13 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
                 .addFull(jCheckBox3)
                 .row(mpv5.ui.modern.Applets.field(labeledTextField1, 2), mpv5.ui.modern.Applets.field(labeledTextField2, 1))
                 .addFull(mpv5.ui.modern.Applets.hint(Messages.EXTERNAL_REMOTE_HINT.toString()));
-        add(mpv5.ui.modern.Applets.page(null, 380, office, remote), java.awt.BorderLayout.CENTER);
+        pdfViewer.set_Label(Messages.EXTERNAL_PDF_VIEWER.toString());
+        labeledTextField3.set_Label(b.getString("ControlPanel_External.labeledTextField3._Label"));
+        mpv5.ui.modern.Card programs = new mpv5.ui.modern.Card(Messages.EXTERNAL_PROGRAMS.toString())
+                .addFull(pdfViewer)
+                .addFull(mpv5.ui.modern.Applets.hint(Messages.EXTERNAL_PDF_VIEWER_HINT.toString()))
+                .addFull(labeledTextField3);
+        add(mpv5.ui.modern.Applets.page(null, 380, office, remote, programs), java.awt.BorderLayout.CENTER);
         mpv5.ui.modern.PrimaryButton save = new mpv5.ui.modern.PrimaryButton(jButton1.getText(), "/images/16/filesave.png");
         save.addActionListener(e -> jButton1.doClick());
         actions = mpv5.ui.modern.Applets.actionBar(new javax.swing.JComponent[]{}, new javax.swing.JComponent[]{jButton3, jButton2, save});

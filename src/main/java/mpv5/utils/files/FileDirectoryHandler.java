@@ -351,16 +351,97 @@ public abstract class FileDirectoryHandler {
      * @param file
      */
     public static void open(File file) {
+        if (file == null) {
+            return;
+        }
+        //PDF files: the viewer set in External programs, if any (issue #147)
+        if (file.isFile() && file.getName().toLowerCase(java.util.Locale.ROOT).endsWith(".pdf")) {
+            String viewer = mpv5.globals.LocalSettings.hasProperty(mpv5.globals.LocalSettings.PDF_VIEWER)
+                    ? mpv5.globals.LocalSettings.getProperty(mpv5.globals.LocalSettings.PDF_VIEWER) : "";
+            if (viewer != null && !viewer.trim().isEmpty()) {
+                try {
+                    new ProcessBuilder(viewerCommand(viewer, file)).start();
+                    return;
+                } catch (Exception ex) {
+                    Log.Debug(FileDirectoryHandler.class, "PDF viewer " + viewer + ": " + ex.getMessage());
+                }
+            }
+        }
         if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.OPEN)) {
             try {
                 Desktop.getDesktop().open(file);
+                return;
             } catch (Exception ex) {
                 Log.Debug(FileDirectoryHandler.class, ex.getMessage());
-                Popup.notice(Messages.FILE_OPEN_FAILED + file.getPath());
             }
+        }
+        //the desktop of Java does not work on every Linux desktop: the opener of the system
+        String os = System.getProperty("os.name", "").toLowerCase(java.util.Locale.ROOT);
+        if (!os.contains("win")) {
+            try {
+                new ProcessBuilder(os.contains("mac") ? "open" : "xdg-open", file.getAbsolutePath()).start();
+                return;
+            } catch (Exception ex) {
+                Log.Debug(FileDirectoryHandler.class, ex.getMessage());
+            }
+        }
+        if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.OPEN)) {
+            Popup.notice(Messages.FILE_OPEN_FAILED + file.getPath());
         } else {
             new DialogForFile().saveFile(file);
         }
+    }
+
+    /**
+     * The command line of a viewer program: the program and its arguments
+     * (quotes group words); the path of the file replaces {file}, or is added
+     * at the end
+     *
+     * @param viewer e.g. "evince", "/usr/bin/okular --unique" or
+     * "\"C:\\Program Files\\Viewer\\viewer.exe\" /open {file}"
+     * @param file
+     * @return the command
+     */
+    public static java.util.List<String> viewerCommand(String viewer, File file) {
+        java.util.List<String> cmd = new java.util.ArrayList<String>();
+        StringBuilder word = new StringBuilder();
+        boolean quoted = false;
+        boolean inWord = false;
+        for (char c : viewer.trim().toCharArray()) {
+            if (c == '"') {
+                quoted = !quoted;
+                inWord = true;
+            } else if (Character.isWhitespace(c) && !quoted) {
+                if (inWord) {
+                    cmd.add(word.toString());
+                    word.setLength(0);
+                    inWord = false;
+                }
+            } else {
+                word.append(c);
+                inWord = true;
+            }
+        }
+        if (inWord) {
+            cmd.add(word.toString());
+        }
+        //a path with blanks, not quoted, e.g. C:\Program Files\Viewer\viewer.exe
+        if (cmd.size() > 1 && !viewer.contains("\"") && new File(viewer.trim()).isFile()) {
+            cmd.clear();
+            cmd.add(viewer.trim());
+        }
+        String path = file.getAbsolutePath();
+        boolean placed = false;
+        for (int i = 0; i < cmd.size(); i++) {
+            if (cmd.get(i).contains("{file}")) {
+                cmd.set(i, cmd.get(i).replace("{file}", path));
+                placed = true;
+            }
+        }
+        if (!placed) {
+            cmd.add(path);
+        }
+        return cmd;
     }
 
     /**
