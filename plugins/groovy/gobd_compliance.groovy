@@ -377,9 +377,12 @@ def nextSequenceNumber = { String prefix, int year ->
     return String.format("%s-%d-%05d", prefix, year, maxNum + 1)
 }
 
-// GoBD applies to invoices and credit notes (incl. our own Storno documents), never to orders/offers
+// GoBD applies to all issued invoices: invoices, credit notes (incl. our own Storno documents),
+// deposit (Anzahlung) and part payment (Abschlag) invoices - these are invoices under par. 14 UStG
+// and must be kept unchanged (par. 14b UStG, par. 147 AO). Never orders/offers/confirmations.
+def GOBD_ITEM_TYPES = [Item.TYPE_INVOICE, Item.TYPE_CREDIT, Item.TYPE_DEPOSIT, Item.TYPE_PART_PAYMENT]
 def isGobdItemType = { int type ->
-    return type == Item.TYPE_INVOICE || type == Item.TYPE_CREDIT
+    return GOBD_ITEM_TYPES.contains(type)
 }
 
 def isTaxRelevantDocument = { DatabaseObject obj ->
@@ -1314,9 +1317,12 @@ yabs.onActivity({ Activity.Entry entry ->
 
     Item doc = null
     String invCtx = Context.getInvoice()?.getDbIdentity()?.toLowerCase() ?: "invoice"
-    String credCtx = Context.getCredit()?.getDbIdentity()?.toLowerCase() ?: "credit"
+    Set<String> invoiceCtxs = [invCtx,
+        Context.getCredit()?.getDbIdentity()?.toLowerCase() ?: "credit",
+        Context.getDeposit()?.getDbIdentity()?.toLowerCase() ?: "deposit",
+        Context.getPartPayment()?.getDbIdentity()?.toLowerCase() ?: "partpayment"] as Set
 
-    if (entry.id > 0 && (entryCtx == invCtx || entryCtx == credCtx)) {
+    if (entry.id > 0 && invoiceCtxs.contains(entryCtx)) {
         try {
             DatabaseObject dbo = DatabaseObject.getObject(entry.context ?: Context.getInvoice(), (int) entry.id)
             if (dbo instanceof Item) {
@@ -1588,8 +1594,8 @@ def buildGdpduIndexXml = { int exportYear ->
 // -----------------------------------------------------------------------------
 def selectInvoiceDialog = { String title, boolean onlyLocked ->
     String sql = onlyLocked
-        ? "SELECT i.ids, i.cnumber, (COALESCE(i.netvalue, 0) - COALESCE(i.discountvalue, 0) + COALESCE(i.taxvalue, 0)) FROM items i INNER JOIN gobd_document_lock g ON i.ids = g.document_id WHERE g.status = 'FINALIZED' AND i.inttype IN (${Item.TYPE_INVOICE}, ${Item.TYPE_CREDIT})"
-        : "SELECT i.ids, i.cnumber, (COALESCE(i.netvalue, 0) - COALESCE(i.discountvalue, 0) + COALESCE(i.taxvalue, 0)) FROM items i LEFT JOIN gobd_document_lock g ON i.ids = g.document_id WHERE g.document_id IS NULL AND i.inttype IN (${Item.TYPE_INVOICE}, ${Item.TYPE_CREDIT}) ORDER BY i.ids DESC"
+        ? "SELECT i.ids, i.cnumber, (COALESCE(i.netvalue, 0) - COALESCE(i.discountvalue, 0) + COALESCE(i.taxvalue, 0)) FROM items i INNER JOIN gobd_document_lock g ON i.ids = g.document_id WHERE g.status = 'FINALIZED' AND i.inttype IN (${GOBD_ITEM_TYPES.join(', ')})"
+        : "SELECT i.ids, i.cnumber, (COALESCE(i.netvalue, 0) - COALESCE(i.discountvalue, 0) + COALESCE(i.taxvalue, 0)) FROM items i LEFT JOIN gobd_document_lock g ON i.ids = g.document_id WHERE g.document_id IS NULL AND i.inttype IN (${GOBD_ITEM_TYPES.join(', ')}) ORDER BY i.ids DESC"
     def rows = selectRows(sql)
     if (!rows || rows.length == 0) {
         notifyPopup(onlyLocked ? "Keine festgeschriebenen Rechnungen vorhanden." : "Keine offenen (unfestgeschriebenen) Rechnungen vorhanden.")
@@ -2887,7 +2893,7 @@ yabs.onView({ DataPanel panel ->
         })
         actions.add(openArchiveBtn)
 
-        if (!cancelled && doc.__getInttype() == Item.TYPE_INVOICE) {
+        if (!cancelled && doc.__getInttype() != Item.TYPE_CREDIT) {
             JButton stornoBtn = ModernTheme.actionButton(new JButton("Stornorechnung erstellen"), null)
             stornoBtn.addActionListener({
                 int confirm = JOptionPane.showConfirmDialog(
