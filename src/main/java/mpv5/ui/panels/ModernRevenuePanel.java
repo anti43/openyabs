@@ -370,7 +370,7 @@ public class ModernRevenuePanel extends ModernDataPanel {
             }
         });
 
-        statusSelect.addActionListener(e -> {
+        statusSelect.getComboBox().addActionListener(e -> {
             try {
                 if (statusSelect.getSelectedItem() != null) {
                     int st = Integer.parseInt(statusSelect.getSelectedItem().getId());
@@ -1007,6 +1007,22 @@ public class ModernRevenuePanel extends ModernDataPanel {
         }
     }
 
+    private void importReceiptDialog() {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setDialogTitle("Eingangsbeleg / Scan ausw\u00e4hlen (PDF, XML, Bild)");
+        chooser.setMultiSelectionEnabled(true);
+        if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            File[] files = chooser.getSelectedFiles();
+            if (files != null && files.length > 0) {
+                for (File f : files) {
+                    importReceiptFile(f);
+                }
+            } else if (chooser.getSelectedFile() != null) {
+                importReceiptFile(chooser.getSelectedFile());
+            }
+        }
+    }
+
     public void importReceiptFile(File source) {
         if (source == null || !source.isFile()) {
             return;
@@ -1221,13 +1237,6 @@ public class ModernRevenuePanel extends ModernDataPanel {
         notesArea.setEditable(!locked);
         removeReceiptBtn.setEnabled(!locked);
         // Payment status (statusSelect / paidCheckBox) and payment date (payDateChooser) remain editable for open-item tracking
-    }
-
-    private void notifyViewOpened() {
-        setContentLocked(false);
-        setPluginBanner(null);
-        setPluginBadge(null);
-        mpv5.plugin.ExtensionManager.instance().fireView(this);
     }
 
     @Override
