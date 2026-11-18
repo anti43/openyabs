@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import mpv5.db.common.Context;
+import mpv5.db.common.DatabaseConnection;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.objects.Contact;
@@ -315,8 +316,16 @@ public final class CsvExport {
         return german ? str.replace('.', ',') : str;
     }
 
+    private static boolean hasDatabaseConnection() {
+        try {
+            return DatabaseConnection.getConnector() != null && DatabaseConnection.getConnector().getConnection() != null;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     private static String resolveTaxValue(int taxId) {
-        if (taxId <= 0) {
+        if (taxId <= 0 || !hasDatabaseConnection()) {
             return "";
         }
         try {
@@ -331,7 +340,7 @@ public final class CsvExport {
     }
 
     private static String resolveContactName(int contactId) {
-        if (contactId <= 0) {
+        if (contactId <= 0 || !hasDatabaseConnection()) {
             return "";
         }
         try {
@@ -351,7 +360,7 @@ public final class CsvExport {
     }
 
     private static String resolveGroupName(int groupId) {
-        if (groupId <= 0) {
+        if (groupId <= 0 || !hasDatabaseConnection()) {
             return "";
         }
         try {
@@ -370,7 +379,7 @@ public final class CsvExport {
         if (!name.isEmpty()) {
             return name;
         }
-        if (productGroupId > 0) {
+        if (productGroupId > 0 && hasDatabaseConnection()) {
             try {
                 DatabaseObject pg = DatabaseObject.getObject(Context.getProductGroup(), productGroupId);
                 if (pg != null && pg.__getCname() != null && !pg.__getCname().trim().isEmpty()) {
