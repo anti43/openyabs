@@ -76,9 +76,11 @@ public final class RecordActions {
         DatabaseObject dato = view.getDataOwner();
         boolean d = dato.getPanelData(view);
         dato.setIDS(-1);
+        dato.ReadOnly(false);
         view.actionBeforeCreate();
         if (d && dato.save()) {
             try {
+                view.setContentLocked(false);
                 view.actionAfterCreate();
                 view.setDataOwner(dato, true);
             } catch (Exception e) {

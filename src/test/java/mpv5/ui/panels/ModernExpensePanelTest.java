@@ -215,6 +215,8 @@ class ModernExpensePanelTest {
             String src = new String(Files.readAllBytes(srcFile.toPath()), StandardCharsets.UTF_8);
             assertFalse(src.toLowerCase().contains("gobd"),
                     "ModernExpensePanel.java should not contain GoBD references");
+            assertFalse(src.contains("Neue Ausgabe"),
+                    "ModernExpensePanel.java should not contain the 'Neue Ausgabe' header");
             assertFalse(src.contains("anhaengen"));
             assertFalse(src.contains("auswaehlen"));
             assertFalse(src.contains("Verknuepfung"));
@@ -223,6 +225,41 @@ class ModernExpensePanelTest {
             assertFalse(src.contains("ueberein"));
             assertFalse(src.contains("Integritaet"));
         }
+    }
+
+    @Test
+    void hasNoHeaderAndIncludesSaveAsNewButtonAndFourDetailCardsWithPdfPreview() throws Exception {
+        ModernExpensePanel panel = new ModernExpensePanel();
+        List<String> texts = new ArrayList<String>();
+        collectComponentTexts(panel, texts);
+
+        assertFalse(texts.stream().anyMatch(t -> t.contains("Neue Ausgabe")),
+                "Header 'Neue Ausgabe' must be removed");
+
+        assertNotNull(panel.getCommandBar());
+        assertNotNull(panel.getCommandBar().getSaveAsNewButton());
+        assertTrue(panel.getCommandBar().getSaveAsNewButton().isVisible(),
+                "'Save as new' button must be visible in the command bar");
+        assertEquals(mpv5.globals.Messages.ACTION_SAVE_AS_NEW.toString(),
+                panel.getCommandBar().getSaveAsNewButton().getText());
+
+        // Right detail grid has 4 cards including the PDF preview card
+        assertNotNull(panel.getDetailGrid());
+        assertEquals(4, panel.getDetailGrid().getComponentCount(),
+                "Right detail grid must contain 4 cards");
+        Component fourth = panel.getDetailGrid().getComponent(3);
+        assertTrue(fourth instanceof mpv5.ui.modern.Card);
+        assertEquals(mpv5.globals.Messages.TEMPLATES_PREVIEW.toString(),
+                ((mpv5.ui.modern.Card) fourth).getTitle());
+
+        // Render a PDF in the preview card
+        File pdfFile = tempDir.resolve("sample-receipt.pdf").toFile();
+        try (org.apache.pdfbox.pdmodel.PDDocument doc = new org.apache.pdfbox.pdmodel.PDDocument()) {
+            doc.addPage(new org.apache.pdfbox.pdmodel.PDPage());
+            doc.save(pdfFile);
+        }
+        panel.refreshPreview(pdfFile);
+        assertEquals(pdfFile, panel.getPreviewPdf());
     }
 
     private static Expense createExpense(String number, String desc, BigDecimal gross, Date date) {
