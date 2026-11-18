@@ -454,6 +454,9 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                 chosen = new File(chosen.getPath() + "." + format.getExtension());
             }
             final File target = chosen;
+            mpv5.handler.ItemService.ensureFinishedAndEndDate(dataOwner);
+            dataOwner.setPanelData(this);
+            exposeData();
             new Job(new ZugpferdFile(dataOwner, invoice, target, format), new Waiter() {
                 @Override
                 public void set(Object object, Exception exception) throws Exception {

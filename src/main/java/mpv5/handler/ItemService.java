@@ -239,8 +239,47 @@ public final class ItemService {
      * @param positions the positions of the view; activity lists are added
      * to it
      * @param ask shows a yes/no question
-     * @return the new, saved document, null for other types
+    /**
+     * Ensures an invoice has status "finished" (abgeschlossen) and end date is set.
+     * If end date is empty or older than the worked-on date (datetodo / dateadded),
+     * it is updated to the due date (if calculable and not before worked-on) or the worked-on date.
+     *
+     * @param item the item to finalize
      */
+    public static void ensureFinishedAndEndDate(Item item) {
+        if (item == null) {
+            return;
+        }
+        item.setIntstatus(Item.STATUS_FINISHED);
+        Date workedOn = item.__getDatetodo() != null ? item.__getDatetodo()
+                : (item.__getDateadded() != null ? item.__getDateadded() : new Date());
+        Date end = item.__getDateend();
+        if (end == null || (workedOn != null && end.before(workedOn))) {
+            Date targetEnd = null;
+            try {
+                Contact contact = item.getContact();
+                int payterm = contact != null ? contact.__getPayterm() : 0;
+                if (payterm > 0) {
+                    Date base = item.__getDateadded() != null ? item.__getDateadded() : workedOn;
+                    Date due = DateConverter.addDays(base, payterm);
+                    if (due != null && !due.before(workedOn)) {
+                        targetEnd = due;
+                    }
+                }
+            } catch (Exception ignored) {
+            }
+            if (targetEnd == null) {
+                targetEnd = workedOn != null ? workedOn : new Date();
+            }
+            item.setDateend(targetEnd);
+        }
+        try {
+            item.save(true);
+        } catch (Exception ex) {
+            Log.Debug(ItemService.class, ex);
+        }
+    }
+
     public static Item toInvoice(Item source, int itemType, MPTableModel positions, Predicate<String> ask) {
         source.setIntstatus(Item.STATUS_FINISHED);
         source.save();

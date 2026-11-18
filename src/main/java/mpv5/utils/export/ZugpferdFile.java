@@ -190,6 +190,7 @@ public class ZugpferdFile implements Waitable {
                 }
             }
             Log.Debug(this, "E-Rechnung written: " + target);
+            mpv5.handler.ItemService.ensureFinishedAndEndDate(item);
             try {
                 validation = EInvoiceValidator.validate(target);
             } catch (Throwable t) {

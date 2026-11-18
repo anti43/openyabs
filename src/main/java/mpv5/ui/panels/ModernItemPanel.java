@@ -985,6 +985,10 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
                 chosen = new File(chosen.getPath() + "." + format.getExtension());
             }
             final File target = chosen;
+            ItemService.ensureFinishedAndEndDate(dataOwner);
+            dataOwner.setPanelData(this);
+            exposeData();
+            updateHeader();
             new Job(new ZugpferdFile(dataOwner, invoice, target, format), new Waiter() {
                 @Override
                 public void set(Object object, Exception exception) throws Exception {

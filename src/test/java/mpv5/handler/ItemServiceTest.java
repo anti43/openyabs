@@ -45,4 +45,40 @@ class ItemServiceTest {
         none.used = BigDecimal.ONE;
         assertEquals(0f, (Float) none.toArray()[5], 0.001f);
     }
+
+    @Test
+    void ensureFinishedAndEndDateSetsStatusAndEnddate() {
+        Item item = new Item();
+        item.setIntstatus(Item.STATUS_QUEUED);
+        java.util.Calendar cal = java.util.Calendar.getInstance();
+        cal.set(2026, java.util.Calendar.NOVEMBER, 1, 10, 0, 0);
+        Date workedOn = cal.getTime();
+        item.setDatetodo(workedOn);
+        item.setDateend(null);
+
+        ItemService.ensureFinishedAndEndDate(item);
+
+        assertEquals(Item.STATUS_FINISHED, item.__getIntstatus());
+        assertEquals(workedOn, item.__getDateend());
+
+        // Stale enddate (older than workedOn) must be updated to workedOn
+        cal.set(2026, java.util.Calendar.OCTOBER, 20, 10, 0, 0);
+        Date oldEnd = cal.getTime();
+        item.setDateend(oldEnd);
+
+        ItemService.ensureFinishedAndEndDate(item);
+
+        assertEquals(Item.STATUS_FINISHED, item.__getIntstatus());
+        assertEquals(workedOn, item.__getDateend());
+
+        // Valid future enddate (after workedOn) is preserved
+        cal.set(2026, java.util.Calendar.NOVEMBER, 15, 10, 0, 0);
+        Date futureEnd = cal.getTime();
+        item.setDateend(futureEnd);
+
+        ItemService.ensureFinishedAndEndDate(item);
+
+        assertEquals(Item.STATUS_FINISHED, item.__getIntstatus());
+        assertEquals(futureEnd, item.__getDateend());
+    }
 }
