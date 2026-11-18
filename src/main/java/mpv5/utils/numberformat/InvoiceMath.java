@@ -18,6 +18,7 @@ package mpv5.utils.numberformat;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -142,9 +143,9 @@ public final class InvoiceMath {
         /**
          * tax rate -&gt; [taxable amount, tax]
          */
-        public final Map<BigDecimal, BigDecimal[]> byRate;
+        public final TreeMap<BigDecimal, BigDecimal[]> byRate;
 
-        Totals(BigDecimal amount, BigDecimal discount, BigDecimal net, BigDecimal tax, Map<BigDecimal, BigDecimal[]> byRate) {
+        Totals(BigDecimal amount, BigDecimal discount, BigDecimal net, BigDecimal tax, TreeMap<BigDecimal, BigDecimal[]> byRate) {
             this.amount = amount;
             this.discount = discount;
             this.net = net;
@@ -162,7 +163,7 @@ public final class InvoiceMath {
         BigDecimal amount = BigDecimal.ZERO.setScale(2);
         BigDecimal discount = BigDecimal.ZERO.setScale(2);
         BigDecimal net = BigDecimal.ZERO.setScale(2);
-        Map<BigDecimal, BigDecimal[]> byRate = new TreeMap<BigDecimal, BigDecimal[]>();
+        TreeMap<BigDecimal, BigDecimal[]> byRate = new TreeMap<BigDecimal, BigDecimal[]>();
         for (Line l : lines) {
             BigDecimal lineNet = lineNet(l.quantity, l.price, l.discountPercent);
             amount = amount.add(lineAmount(l.quantity, l.price));
@@ -183,5 +184,49 @@ public final class InvoiceMath {
             tax = tax.add(t);
         }
         return new Totals(amount, discount, net, tax, byRate);
+    }
+
+    /**
+     * The totals of one VAT rate (one line of the VAT breakdown of an invoice,
+     * § 14 Abs. 4 Nr. 8 UStG, EN 16931 BG-23)
+     */
+    public static final class RateTotal {
+
+        /**
+         * the rate in percent, without trailing zeros (19, 7, 0, 7.7)
+         */
+        public final BigDecimal rate;
+        /**
+         * the sum of the line nets of the rate (BT-116)
+         */
+        public final BigDecimal net;
+        /**
+         * the tax: net x rate, rounded once (BT-117)
+         */
+        public final BigDecimal tax;
+        /**
+         * net + tax
+         */
+        public final BigDecimal gross;
+
+        RateTotal(BigDecimal rate, BigDecimal net, BigDecimal tax) {
+            this.rate = rate;
+            this.net = net;
+            this.tax = tax;
+            this.gross = net.add(tax);
+        }
+    }
+
+    /**
+     * @param lines
+     * @return the totals per VAT rate, the highest rate first (19 %, 7 %, 0 %);
+     * the same values as {@link Totals#byRate} and the e-invoice
+     */
+    public static List<RateTotal> byRateDescending(List<Line> lines) {
+        List<RateTotal> l = new ArrayList<RateTotal>();
+        for (Map.Entry<BigDecimal, BigDecimal[]> e : totals(lines).byRate.descendingMap().entrySet()) {
+            l.add(new RateTotal(e.getKey(), e.getValue()[0], e.getValue()[1]));
+        }
+        return l;
     }
 }

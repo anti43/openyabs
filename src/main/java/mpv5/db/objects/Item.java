@@ -758,6 +758,9 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
         }
 
         map.put("taxgroups", taxGroupsText);
+        //the VAT breakdown per rate (§ 14 Abs. 4 Nr. 8 UStG), the highest rate first; the keys
+        //above (tax, taxgroupN, taxgroupvalueN, taxgroups) stay for older templates
+        putVatGroups(map, lines);
 
         Locale l = Locale.getDefault();
         if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("item.date.locale")) {
@@ -786,6 +789,80 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
         putPaymentFields(map, df);
 
         return super.resolveReferences(map);
+    }
+
+    /**
+     * The names of the fields of a VAT group: in the list {@code vatgroups}
+     * (a table row of the template repeated per rate: {@code <vatgroups.rate>}
+     * ...) and as {@code item.vatgroup1.rate}, {@code item.vatgroup2.rate} ...
+     */
+    public static final String[] VATGROUP_FIELDS = {"rate", "ratevalue", "name", "net", "netf", "vat", "vatf", "gross", "grossf"};
+
+    /**
+     * Template fields of the VAT breakdown (one group per rate, net, VAT and
+     * gross as on the e-invoice): item.vatgroups (the list for a repeated
+     * table row), item.vatgroupN.rate / .ratevalue / .name / .net / .netf /
+     * .vat / .vatf / .gross / .grossf, item.vatgroupcount and
+     * item.hasmultipletaxrates ("true" / "false")
+     *
+     * @param map
+     * @param lines the positions
+     */
+    static void putVatGroups(Map<String, Object> map, List<mpv5.utils.numberformat.InvoiceMath.Line> lines) {
+        List<mpv5.utils.numberformat.InvoiceMath.RateTotal> groups = mpv5.utils.numberformat.InvoiceMath.byRateDescending(lines);
+        List<Map<String, String>> rows = new ArrayList<Map<String, String>>();
+        for (int i = 0; i < groups.size(); i++) {
+            Map<String, String> row = vatGroup(groups.get(i));
+            rows.add(row);
+            for (Map.Entry<String, String> e : row.entrySet()) {
+                map.put("vatgroup" + (i + 1) + "." + e.getKey(), e.getValue());
+            }
+        }
+        map.put("vatgroups", rows);
+        map.put("vatgroupcount", groups.size());
+        map.put("hasmultipletaxrates", String.valueOf(groups.size() > 1));
+    }
+
+    /**
+     * @param g
+     * @return the fields of one VAT group ({@link #VATGROUP_FIELDS})
+     */
+    static Map<String, String> vatGroup(mpv5.utils.numberformat.InvoiceMath.RateTotal g) {
+        Map<String, String> row = new java.util.LinkedHashMap<String, String>();
+        row.put("rate", FormatNumber.formatDezimal(g.rate) + " %");
+        row.put("ratevalue", g.rate.stripTrailingZeros().toPlainString());
+        row.put("name", vatGroupName(g.rate));
+        row.put("net", FormatNumber.formatDezimal(g.net));
+        row.put("netf", FormatNumber.formatLokalCurrency(g.net));
+        row.put("vat", FormatNumber.formatDezimal(g.tax));
+        row.put("vatf", FormatNumber.formatLokalCurrency(g.tax));
+        row.put("gross", FormatNumber.formatDezimal(g.gross));
+        row.put("grossf", FormatNumber.formatLokalCurrency(g.gross));
+        return row;
+    }
+
+    /**
+     * @param rate
+     * @return the name of the tax rate in the settings (Taxes), else "VAT
+     * 19,00 %" / "Tax free"
+     */
+    static String vatGroupName(BigDecimal rate) {
+        try {
+            if (mpv5.db.common.DatabaseConnection.getConnector() != null
+                    && mpv5.db.common.DatabaseConnection.getConnector().getConnection() != null) {
+                for (DatabaseObject o : DatabaseObject.getObjects(Context.getTaxes())) {
+                    Tax t = (Tax) o;
+                    if (t.__getTaxvalue() != null && t.__getTaxvalue().compareTo(rate) == 0
+                            && t.__getCname() != null && !t.__getCname().trim().isEmpty()) {
+                        return t.__getCname().trim();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            //no tax rates: the default name
+        }
+        return rate.signum() == 0 ? mpv5.globals.Messages.VAT_GROUP_FREE.toString()
+                : String.format(mpv5.globals.Messages.VAT_GROUP_NAME.toString(), FormatNumber.formatDezimal(rate) + " %");
     }
 
     /**

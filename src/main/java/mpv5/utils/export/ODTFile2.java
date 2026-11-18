@@ -79,6 +79,11 @@ import org.odftoolkit.odfdom.doc.OdfTextDocument;
 public class ODTFile2 extends Exportable {
 
     public static final String KEY_TABLE = "xtable";
+    /**
+     * The VAT breakdown: a table row of the template with {@code <vatgroups.rate>},
+     * {@code <vatgroups.netf>} ... is repeated for each VAT rate of the document
+     */
+    public static final String KEY_VATGROUPS = "vatgroups";
     private static final long serialVersionUID = 1L;
     private File f = null;
     private FileOutputStream outtmp;
@@ -204,6 +209,11 @@ public class ODTFile2 extends Exportable {
             if (table2 != null) {
                 filltable(2, cols, table2, metadata, context);
             }
+            //the VAT breakdown, one row per rate (fields "vatgroups.*" in a table row)
+            for (String f : mpv5.db.objects.Item.VATGROUP_FIELDS) {
+                metadata.addFieldAsList(KEY_VATGROUPS + "." + f);
+            }
+            context.put(KEY_VATGROUPS, vatGroups(templateData));
             //a table of the template without data (a letter on a template with positions, a journal
             //without rows): no rows, instead of "$xtable1.C0" ... in the document
             for (int index = 1; index <= 2; index++) {
@@ -251,7 +261,8 @@ public class ODTFile2 extends Exportable {
 
                 if (!val.getName().startsWith("{")
                         && !val.getName().endsWith(".img")
-                        && !val.getName().startsWith(KEY_TABLE)) {
+                        && !val.getName().startsWith(KEY_TABLE)
+                        && !val.getName().startsWith(KEY_VATGROUPS + ".")) {
                     Object value = templateData.get(key);
                     if (value == null && doBlank) {
                         value = "";
@@ -269,6 +280,29 @@ public class ODTFile2 extends Exportable {
         } catch (XDocReportException | NoClassDefFoundError ex) {
             Log.Debug(ex);
         }
+    }
+
+    /**
+     * @param data the template data: the document's list is stored as
+     * {@code <context>.vatgroups} ("item.vatgroups", "reminder.item.vatgroups")
+     * @return the VAT groups of the document (removed from the data), an empty
+     * list if there are none
+     */
+    static java.util.List<?> vatGroups(java.util.Map<String, Object> data) {
+        java.util.List<?> found = null;
+        String foundKey = null;
+        for (java.util.Iterator<java.util.Map.Entry<String, Object>> it = data.entrySet().iterator(); it.hasNext();) {
+            java.util.Map.Entry<String, Object> e = it.next();
+            if ((e.getKey().equals(KEY_VATGROUPS) || e.getKey().endsWith("." + KEY_VATGROUPS)) && e.getValue() instanceof java.util.List) {
+                //the shortest key: the document itself, not a referenced one
+                if (foundKey == null || e.getKey().length() < foundKey.length()) {
+                    found = (java.util.List<?>) e.getValue();
+                    foundKey = e.getKey();
+                }
+                it.remove();
+            }
+        }
+        return found == null ? new ArrayList<Object>() : found;
     }
 
     /**

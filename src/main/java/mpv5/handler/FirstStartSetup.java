@@ -269,9 +269,15 @@ public final class FirstStartSetup {
     public static final String INVOICE_TEMPLATE = "/extra/templates/invoice.odt";
     /**
      * The table columns of the documents: position, quantity, text, price,
-     * net total (the 5-column table of the bundled templates)
+     * tax rate, net total (the 6-column table of the bundled templates; the
+     * tax rate of each position belongs on the invoice, § 14 Abs. 4 UStG)
      */
-    public static final String ITEM_FORMAT = "1,2,4,5,6";
+    public static final String ITEM_FORMAT = "1,2,4,5,7,6";
+    /**
+     * The table columns of the purchase order demo: position, quantity, text,
+     * price, net total (5 columns)
+     */
+    public static final String POSITIONS_FORMAT = "1,2,4,5,6";
     /**
      * The activity list: position, quantity, text, price, gross total
      */
@@ -292,6 +298,8 @@ public final class FirstStartSetup {
                 return JOURNAL_FORMAT;
             case Constants.TYPE_ACTIVITY:
                 return ACTIVITY_FORMAT;
+            case Constants.TYPE_PRODUCT_ORDER:
+                return POSITIONS_FORMAT;
             default:
                 return ITEM_FORMAT;
         }

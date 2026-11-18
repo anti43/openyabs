@@ -53,7 +53,9 @@ ITEM_EXTRA = ['item.netvaluef', 'item.taxvaluef', 'item.grosvaluef', 'item.disco
               'item.contact.invoiceaddress.city', 'item.contact.invoiceaddress.country',
               'item.paymentiban', 'item.paymentbic', 'item.paymentbank', 'item.paymentaccountname', 'item.paymentdays',
               'item.paymentduedate', 'item.paymentterms', 'item.skontopercent', 'item.skontodays', 'item.skontodate',
-              'item.skontoamount', 'item.skontopayamount', 'group', 'addedby', 'addedbyfull']
+              'item.skontoamount', 'item.skontopayamount', 'group', 'addedby', 'addedbyfull',
+              'item.vatgroupcount', 'item.hasmultipletaxrates', 'item.vatgroup1.rate', 'item.vatgroup1.ratevalue',
+              'item.vatgroup1.name', 'item.vatgroup1.netf', 'item.vatgroup1.vatf', 'item.vatgroup1.grossf']
 COMPANY = ['companyinfo.' + k for k in ['business', 'firstname', 'name', 'street', 'zip', 'city', 'country', 'phoneprefix', 'phone',
            'fax', 'email', 'account', 'banknumber', 'bankname', 'account1', 'taxnumber', 'taxauthority', 'taxmandant',
            'taxadvsior', 'taxadvjob', 'payterm', 'sepacreditorid']]
@@ -94,6 +96,63 @@ def reference(title, groups, tid=None, tname=None):
                      '<table:table-cell table:style-name="RefT.C" office:value-type="string"><text:p text:style-name="PRefVal">%s</text:p></table:table-cell></table:table-row>' % (esc(f), ph(f)))
         x.append('</table:table>')
     return ''.join(x)
+
+# ---- the VAT per rate (§ 14 Abs. 4 Nr. 8 UStG): a column with the rate of each position, and below the
+# totals one row per VAT rate (the row with <vatgroups.*> is repeated for each rate) and the sum
+VAT_STYLES = ('<style:style style:name="Tabelle1.F" style:family="table-column"><style:table-column-properties style:column-width="1.4cm" style:rel-column-width="794*"/></style:style>'
+              '<style:style style:name="xtable1.F" style:family="table-column"><style:table-column-properties style:column-width="1.4cm"/></style:style>'
+              '<style:style style:name="VatT" style:family="table"><style:table-properties style:width="10.5cm" fo:margin-top="0.3cm" table:align="right"/></style:style>'
+              '<style:style style:name="VatT.A" style:family="table-column"><style:table-column-properties style:column-width="3cm"/></style:style>'
+              '<style:style style:name="VatT.B" style:family="table-column"><style:table-column-properties style:column-width="2.5cm"/></style:style>'
+              '<style:style style:name="VatT.H" style:family="table-cell"><style:table-cell-properties fo:padding="0.05cm" fo:border-left="none" fo:border-right="none" fo:border-top="none" fo:border-bottom="0.002cm solid #000000"/></style:style>'
+              '<style:style style:name="VatT.C" style:family="table-cell"><style:table-cell-properties fo:padding="0.05cm" fo:border="none"/></style:style>'
+              '<style:style style:name="VatT.S" style:family="table-cell"><style:table-cell-properties fo:padding="0.05cm" fo:border-left="none" fo:border-right="none" fo:border-bottom="none" fo:border-top="0.002cm solid #000000"/></style:style>'
+              '<style:style style:name="VatP" style:family="paragraph" style:parent-style-name="Standard"><style:paragraph-properties fo:text-align="end"/><style:text-properties fo:font-size="9pt"/></style:style>'
+              '<style:style style:name="VatPL" style:family="paragraph" style:parent-style-name="Standard"><style:text-properties fo:font-size="9pt"/></style:style>'
+              '<style:style style:name="VatPB" style:family="paragraph" style:parent-style-name="Standard"><style:paragraph-properties fo:text-align="end"/><style:text-properties fo:font-size="9pt" fo:font-weight="bold"/></style:style>'
+              '<style:style style:name="VatPBL" style:family="paragraph" style:parent-style-name="Standard"><style:text-properties fo:font-size="9pt" fo:font-weight="bold"/></style:style>')
+
+def vat_layout(c):
+    """the tax rate column in the positions (format 1,2,4,5,7,6) and the VAT table after the totals"""
+    # the text column gives 1.4 cm to the rate column
+    for old, new in (('<style:table-column-properties style:column-width="8.49cm" style:rel-column-width="4813*"/>',
+                      '<style:table-column-properties style:column-width="7.09cm" style:rel-column-width="4019*"/>'),
+                     ('<style:table-column-properties style:column-width="8.467cm"/>',
+                      '<style:table-column-properties style:column-width="7.067cm"/>')):
+        assert c.count(old) == 1, old
+        c = c.replace(old, new)
+    c = c.replace('</office:automatic-styles>', VAT_STYLES + '</office:automatic-styles>', 1)
+    # header: "USt." before "Gesamt"
+    old = '<table:table-column table:style-name="Tabelle1.D"/><table:table-column table:style-name="Tabelle1.E"/>'
+    assert c.count(old) == 1
+    c = c.replace(old, '<table:table-column table:style-name="Tabelle1.D"/><table:table-column table:style-name="Tabelle1.F"/><table:table-column table:style-name="Tabelle1.E"/>')
+    old = '<table:table-cell table:style-name="Tabelle1.A1" office:value-type="string"><text:p text:style-name="P21">Gesamt</text:p></table:table-cell>'
+    assert c.count(old) == 1
+    c = c.replace(old, '<table:table-cell table:style-name="Tabelle1.A1" office:value-type="string"><text:p text:style-name="P21">USt.</text:p></table:table-cell>' + old)
+    # the positions: one more cell before the last one of each row
+    a = c.index('<table:table table:name="xtable1"')
+    b = c.index('</table:table>', a)
+    t = c[a:b]
+    old = '<table:table-column table:style-name="xtable1.D"/><table:table-column table:style-name="xtable1.E"/>'
+    assert t.count(old) == 1
+    t = t.replace(old, '<table:table-column table:style-name="xtable1.D"/><table:table-column table:style-name="xtable1.F"/><table:table-column table:style-name="xtable1.E"/>')
+    cell = '<table:table-cell table:style-name="xtable1.A1" office:value-type="string"><text:p text:style-name="P20"/></table:table-cell>'
+    t = t.replace(cell + '</table:table-row>', cell + cell + '</table:table-row>')
+    assert t.count(cell) == 6
+    c = c[:a] + t + c[b:]
+    # the VAT table after the totals
+    def vcell(text, p='VatP', st='VatT.C'):
+        return '<table:table-cell table:style-name="%s" office:value-type="string"><text:p text:style-name="%s">%s</text:p></table:table-cell>' % (st, p, text)
+    vat = ('<table:table table:name="MwSt" table:style-name="VatT"><table:table-column table:style-name="VatT.A"/>'
+           '<table:table-column table:style-name="VatT.B" table:number-columns-repeated="3"/>'
+           '<table:table-row>' + vcell('Steuersatz', 'VatPBL', 'VatT.H') + vcell('Netto', 'VatPB', 'VatT.H') + vcell('MwSt.', 'VatPB', 'VatT.H') + vcell('Brutto', 'VatPB', 'VatT.H') + '</table:table-row>'
+           '<table:table-row>' + vcell(ph('vatgroups.name'), 'VatPL') + vcell(ph('vatgroups.netf')) + vcell(ph('vatgroups.vatf')) + vcell(ph('vatgroups.grossf')) + '</table:table-row>'
+           '<table:table-row>' + vcell('Gesamt', 'VatPBL', 'VatT.S') + vcell(ph('item.netvaluef'), 'VatPB', 'VatT.S') + vcell(ph('item.taxvaluef'), 'VatPB', 'VatT.S') + vcell(ph('item.grosvaluef'), 'VatPB', 'VatT.S') + '</table:table-row>'
+           '</table:table>')
+    m = TOTALS.search(c)
+    assert m
+    c = c[:m.end()] + vat + c[m.end():]
+    return c
 
 LOGO = ('<text:p text:style-name="P23"><draw:frame draw:style-name="frLogo" draw:name="Logo" text:anchor-type="as-char" svg:width="4.2cm" svg:height="1.4cm" draw:z-index="3">'
         '<draw:image xlink:href="Pictures/logo.png" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/></draw:frame></text:p>')
@@ -231,6 +290,8 @@ def make(fname, title, kind, groups, prefix=None, cprefix=None, blocks=None, tot
             c = c.replace('>Rechnungsbetrag<', '>%s<' % esc(total_label), 1)
         if totals is not None:
             c = TOTALS.sub(lambda m: body(totals), c, 1)
+        if kind == 'item':
+            c = vat_layout(c)
     if prefix:
         c = c.replace('&lt;item.contact.', '&lt;' + cprefix).replace('&lt;item.', '&lt;' + prefix)
     c = c.replace('</office:automatic-styles>', STYLES + BSTYLES + '</office:automatic-styles>', 1)
@@ -350,7 +411,7 @@ def write_odt(fname, c):
     zo.close()
     open(os.path.join(OUT, fname), 'wb').write(out.getvalue())
     return len(out.getvalue())
-inv = content.replace(SENDER[0], SENDER[1], 1)
+inv = vat_layout(content.replace(SENDER[0], SENDER[1], 1))
 inv, n = DUPLICATE_NAME.subn('', inv, 1)
 assert n == 1
 made.append((0, 'Rechnung (Standard)', 'invoice.odt', write_odt('invoice.odt', inv)))
