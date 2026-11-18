@@ -180,8 +180,11 @@ public class Expense extends DatabaseObject implements Formattable {
         o[0] = this;
         o[1] = description;
         try {
-            o[2] = getObject(Context.getAccounts(), accountsids);
-        } catch (NodataFoundException ex) {
+            if (accountsids > 0 && mpv5.db.common.DatabaseConnection.getConnector() != null
+                    && mpv5.db.common.DatabaseConnection.getConnector().getConnection() != null) {
+                o[2] = getObject(Context.getAccounts(), accountsids);
+            }
+        } catch (Exception ex) {
             Log.Debug(this, ex.getMessage());
         }
         o[3] = FormatNumber.formatDezimal(brutvalue);

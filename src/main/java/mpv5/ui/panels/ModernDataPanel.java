@@ -234,6 +234,69 @@ public abstract class ModernDataPanel extends JPanel implements DataPanel, Scrol
     }
 
     /**
+     * @param left
+     * @param right
+     * @param ratio the part of the width the left side gets initially
+     * @return the horizontal split pane (left/right)
+     */
+    protected static JSplitPane horizontalSplit(JComponent left, JComponent right, final double ratio) {
+        return horizontalSplit(null, left, right, ratio);
+    }
+
+    /**
+     * @param key the view (e.g. "expense"): the position of the divider is
+     * saved for the user and used again; null: not saved
+     * @param left
+     * @param right
+     * @param ratio the part of the width the left side gets the first time
+     * @return the horizontal split pane (left/right)
+     */
+    protected static JSplitPane horizontalSplit(final String key, JComponent left, JComponent right, final double ratio) {
+        final String prop = "org.openyabs.layout.hsplit." + key;
+        double start = ratio;
+        if (key != null) {
+            try {
+                String s = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(prop);
+                if (s != null) {
+                    double d = Double.parseDouble(s);
+                    if (d >= 0.05 && d <= 0.95) {
+                        start = d;
+                    }
+                }
+            } catch (Exception e) {
+                //default
+            }
+        }
+        final double first = start;
+        final JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, left, right);
+        split.setResizeWeight(ratio);
+        split.setBorder(BorderFactory.createEmptyBorder(0, ModernTheme.px(8), ModernTheme.px(8), ModernTheme.px(8)));
+        split.setOpaque(false);
+        split.setContinuousLayout(true);
+        split.addComponentListener(new java.awt.event.ComponentAdapter() {
+            @Override
+            public void componentResized(java.awt.event.ComponentEvent e) {
+                if (split.getWidth() > 0) {
+                    split.removeComponentListener(this);
+                    split.setDividerLocation(first);
+                    if (key != null) {
+                        split.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, ev -> {
+                            int w = split.getWidth() - split.getDividerSize();
+                            if (w > 0 && split.isShowing()) {
+                                double r = (double) split.getDividerLocation() / w;
+                                if (r >= 0.05 && r <= 0.95) {
+                                    mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(prop, String.format(java.util.Locale.ROOT, "%.3f", r));
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        });
+        return split;
+    }
+
+    /**
      * @param identifier the view (for the stored column layout)
      * @return a table which shows the content of a cell as tooltip
      */

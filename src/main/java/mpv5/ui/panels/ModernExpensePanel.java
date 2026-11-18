@@ -18,7 +18,6 @@ package mpv5.ui.panels;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -38,9 +37,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
@@ -54,10 +55,15 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.RowFilter;
 import javax.swing.SwingUtilities;
-import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 import mpv5.db.common.Context;
+import mpv5.db.common.DatabaseConnection;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria;
@@ -73,17 +79,18 @@ import mpv5.globals.Messages;
 import mpv5.handler.ExpenseReceipts;
 import mpv5.handler.ExpenseReceipts.Receipt;
 import mpv5.handler.ZugpferdExpenseImport;
-import mpv5.i18n.LanguageManager;
 import mpv5.logging.Log;
+import mpv5.ui.beans.DateChooser;
 import mpv5.ui.beans.LabeledCombobox;
 import mpv5.ui.beans.LabeledDateChooser;
 import mpv5.ui.beans.LabeledTextField;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.misc.MPTable;
-import mpv5.ui.misc.TableViewPersistenceHandler;
 import mpv5.ui.modern.Card;
+import mpv5.ui.modern.ChipToggle;
 import mpv5.ui.modern.ModernTheme;
 import mpv5.ui.modern.ResponsiveGrid;
+import mpv5.ui.modern.WrapLayout;
 import mpv5.ui.toolbars.ModernCommandBar;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.models.MPTableModel;
@@ -95,12 +102,14 @@ import mpv5.utils.ui.TextFieldUtils;
  * <p>
  * Key features:
  * <ul>
+ *   <li>Horizontal split view with expense master list and filter on the left
+ *       and expense details on the right.</li>
  *   <li>Card-based modern layout with responsive cards (details, amounts, bookkeeping).</li>
  *   <li>Integrated receipts section: list of imported receipt files with SHA-256 checksums,
  *       file sizes and timestamps, directly openable with system viewer.</li>
- *   <li>Drag & drop receipt import directly onto the receipts card or receipt table.</li>
- *   <li>Support for plugin banner, badge and content-lock hooks (e.g. GoBD compliance).</li>
- *   <li>Split view with expense master list on the left and detail on the right.</li>
+ *   <li>Drag &amp; drop and file import automatically check for ZUGFeRD / XRechnung
+ *       format and populate/import the expense data when available.</li>
+ *   <li>Support for plugin banner, badge and content-lock hooks.</li>
  * </ul>
  * <p>
  * Public fields ending with an underscore are data-bound via
@@ -128,8 +137,18 @@ public class ModernExpensePanel extends ModernDataPanel {
         }
     }
 
+    private enum DateFilterMode {
+        ALL,
+        CURRENT_YEAR,
+        CURRENT_MONTH,
+        CUSTOM
+    }
+
     private Expense dataOwner;
     private final ModernCommandBar tb;
+    private final JSplitPane splitPane;
+    private final JPanel listPanel;
+    private final JPanel detailPanel;
 
     // Header components
     private final JLabel titleLabel = new JLabel();
@@ -165,13 +184,23 @@ public class ModernExpensePanel extends ModernDataPanel {
     private final JTextArea notesArea = new JTextArea(4, 25);
     private final JLabel addedByLabel = new JLabel();
 
-    // Master list
+    // Master list & filters
     private final JTable expenseTable = new MPTable(this);
+    private final JTextField searchField = new JTextField(14);
+    private final DateChooser fromDateChooser = new DateChooser();
+    private final DateChooser toDateChooser = new DateChooser();
+    private final ChipToggle filterAllChip = new ChipToggle("Alle");
+    private final ChipToggle filterYearChip = new ChipToggle("Akt. Jahr");
+    private final ChipToggle filterMonthChip = new ChipToggle("Akt. Monat");
+    private final ChipToggle filterDateChip = new ChipToggle("Zeitraum");
+    private final ButtonGroup filterGroup = new ButtonGroup();
+    private DateFilterMode dateFilterMode = DateFilterMode.ALL;
+    private boolean updatingFilterDates = false;
     private final JButton importZugferdBtn = new JButton(Messages.ZUGFERD_IMPORT_BUTTON.toString());
 
     // Receipts table
     private final DefaultTableModel receiptsModel = new DefaultTableModel(
-            new Object[]{"ID", "Dateiname", "Groesse", "SHA-256", "Importiert am", "Benutzer"}, 0) {
+            new Object[]{"ID", "Dateiname", "Gr\u00f6\u00dfe", "SHA-256", "Importiert am", "Benutzer"}, 0) {
         @Override
         public boolean isCellEditable(int row, int col) {
             return false;
@@ -179,10 +208,10 @@ public class ModernExpensePanel extends ModernDataPanel {
     };
     private final JTable receiptsTable = new JTable(receiptsModel);
     private final List<Receipt> currentReceipts = new ArrayList<Receipt>();
-    private final JButton addReceiptBtn = new JButton("Beleg hinzufuegen...");
+    private final JButton addReceiptBtn = new JButton("Beleg hinzuf\u00fcgen...");
     private final JButton removeReceiptBtn = new JButton("Entfernen");
-    private final JButton openReceiptBtn = new JButton("Oeffnen");
-    private final JButton verifyReceiptsBtn = new JButton("Pruefen");
+    private final JButton openReceiptBtn = new JButton("\u00d6ffnen");
+    private final JButton verifyReceiptsBtn = new JButton("Pr\u00fcfen");
 
     private BigDecimal currentTaxRate = BigDecimal.ZERO;
     private ArrayList<DatabaseObject> accountObjects;
@@ -199,16 +228,20 @@ public class ModernExpensePanel extends ModernDataPanel {
         center.setOpaque(false);
         center.add(createHeader(), BorderLayout.NORTH);
 
-        // Body split: list on left, detail on right
-        JPanel listPanel = createListPanel();
-        JPanel detailPanel = createDetailPanel();
-        JSplitPane split = split("expense", listPanel, detailPanel, 0.32);
-        center.add(split, BorderLayout.CENTER);
+        // Horizontal split: list of expenses on the left, details on the right
+        listPanel = createListPanel();
+        detailPanel = createDetailPanel();
+        splitPane = horizontalSplit("expense", listPanel, detailPanel, 0.38);
+        center.add(splitPane, BorderLayout.CENTER);
 
         add(center, BorderLayout.CENTER);
 
         tb = new ModernCommandBar(this);
         tb.setExportButtonsEnabled(false);
+        tb.setFindAction(() -> {
+            searchField.requestFocusInWindow();
+            searchField.selectAll();
+        });
         add(tb, BorderLayout.NORTH);
 
         // Listen for lock changes to update editability
@@ -219,6 +252,30 @@ public class ModernExpensePanel extends ModernDataPanel {
 
         setupDragAndDrop();
         refresh();
+    }
+
+    public JSplitPane getSplitPane() {
+        return splitPane;
+    }
+
+    public JPanel getListPanel() {
+        return listPanel;
+    }
+
+    public JPanel getDetailPanel() {
+        return detailPanel;
+    }
+
+    public JTable getExpenseTable() {
+        return expenseTable;
+    }
+
+    public JTextField getSearchField() {
+        return searchField;
+    }
+
+    public JTextField getFilterField() {
+        return searchField;
     }
 
     private void initFields() {
@@ -349,6 +406,7 @@ public class ModernExpensePanel extends ModernDataPanel {
         p.setBorder(ModernTheme.padding(6, 6));
 
         ModernTheme.style(expenseTable);
+        expenseTable.setAutoCreateRowSorter(true);
         expenseTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         expenseTable.addMouseListener(new MouseAdapter() {
             @Override
@@ -364,13 +422,302 @@ public class ModernExpensePanel extends ModernDataPanel {
             }
         });
 
+        JComponent filterBar = createFilterBar();
+
         Card card = new Card("Ausgaben");
         importZugferdBtn.setToolTipText(Messages.ZUGFERD_IMPORT_HINT.toString());
         importZugferdBtn.addActionListener(e -> importZugferdDialog());
         card.headerAction(importZugferdBtn);
+        card.addFull(filterBar);
         card.addFull(new JScrollPane(expenseTable), 1);
         p.add(card, BorderLayout.CENTER);
         return p;
+    }
+
+    private JComponent createFilterBar() {
+        JPanel filterBar = new JPanel();
+        filterBar.setOpaque(false);
+        filterBar.setLayout(new BoxLayout(filterBar, BoxLayout.Y_AXIS));
+        filterBar.setBorder(BorderFactory.createEmptyBorder(0, 0, ModernTheme.px(6), 0));
+
+        // Row 1: Content search field
+        ModernTheme.roomy(searchField);
+        searchField.setToolTipText("Filter nach Inhalt (Nummer, Beschreibung, Konto, Betrag, Datum)");
+        searchField.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                applyExpenseFilter();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                applyExpenseFilter();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                applyExpenseFilter();
+            }
+        });
+        searchField.addActionListener(e -> applyExpenseFilter());
+
+        JPanel searchRow = new JPanel(new BorderLayout(ModernTheme.px(6), 0));
+        searchRow.setOpaque(false);
+        searchRow.add(ModernTheme.fieldLabel("Filter:"), BorderLayout.WEST);
+        searchRow.add(searchField, BorderLayout.CENTER);
+        JButton clearBtn = link("Zur\u00fccksetzen", null);
+        clearBtn.addActionListener(e -> clearFilter());
+        searchRow.add(clearBtn, BorderLayout.EAST);
+
+        // Row 2: Quick date filter chips (Alle, Akt. Jahr, Akt. Monat, Zeitraum)
+        filterGroup.add(filterAllChip);
+        filterGroup.add(filterYearChip);
+        filterGroup.add(filterMonthChip);
+        filterGroup.add(filterDateChip);
+        filterAllChip.setSelected(true);
+
+        filterAllChip.addActionListener(e -> {
+            dateFilterMode = DateFilterMode.ALL;
+            applyExpenseFilter();
+        });
+        filterYearChip.addActionListener(e -> filterCurrentYear());
+        filterMonthChip.addActionListener(e -> filterCurrentMonth());
+        filterDateChip.addActionListener(e -> {
+            dateFilterMode = DateFilterMode.CUSTOM;
+            applyExpenseFilter();
+        });
+
+        JPanel chipsRow = new JPanel(new WrapLayout(FlowLayout.LEFT, ModernTheme.px(4), ModernTheme.px(2)));
+        chipsRow.setOpaque(false);
+        chipsRow.add(filterAllChip);
+        chipsRow.add(filterYearChip);
+        chipsRow.add(filterMonthChip);
+        chipsRow.add(filterDateChip);
+
+        // Row 3: Custom date range (Von - Bis)
+        updatingFilterDates = true;
+        try {
+            Date now = new Date();
+            fromDateChooser.setDate(DateConverter.getStartOfYear(now));
+            toDateChooser.setDate(now);
+        } finally {
+            updatingFilterDates = false;
+        }
+        fromDateChooser.getSpinner().addChangeListener(e -> {
+            if (!updatingFilterDates) {
+                dateFilterMode = DateFilterMode.CUSTOM;
+                filterDateChip.setSelected(true);
+                applyExpenseFilter();
+            }
+        });
+        toDateChooser.getSpinner().addChangeListener(e -> {
+            if (!updatingFilterDates) {
+                dateFilterMode = DateFilterMode.CUSTOM;
+                filterDateChip.setSelected(true);
+                applyExpenseFilter();
+            }
+        });
+
+        JPanel dateRow = new JPanel(new WrapLayout(FlowLayout.LEFT, ModernTheme.px(4), ModernTheme.px(2)));
+        dateRow.setOpaque(false);
+        dateRow.add(ModernTheme.fieldLabel("Von:"));
+        dateRow.add(fromDateChooser);
+        dateRow.add(ModernTheme.fieldLabel("Bis:"));
+        dateRow.add(toDateChooser);
+
+        filterBar.add(searchRow);
+        filterBar.add(Box.createVerticalStrut(ModernTheme.px(4)));
+        filterBar.add(chipsRow);
+        filterBar.add(dateRow);
+        return filterBar;
+    }
+
+    /**
+     * Filters the expense table by text content.
+     */
+    public void filterByContent(String query) {
+        searchField.setText(query == null ? "" : query);
+        applyExpenseFilter();
+    }
+
+    /**
+     * Filters the expense table to the current calendar year.
+     */
+    public void filterCurrentYear() {
+        Date now = new Date();
+        updatingFilterDates = true;
+        try {
+            fromDateChooser.setDate(DateConverter.getStartOfYear(now));
+            toDateChooser.setDate(DateConverter.getEndOfYear(now));
+        } finally {
+            updatingFilterDates = false;
+        }
+        dateFilterMode = DateFilterMode.CURRENT_YEAR;
+        filterYearChip.setSelected(true);
+        applyExpenseFilter();
+    }
+
+    /**
+     * Filters the expense table to the current calendar month.
+     */
+    public void filterCurrentMonth() {
+        Date now = new Date();
+        updatingFilterDates = true;
+        try {
+            fromDateChooser.setDate(DateConverter.getStartOfMonth(now));
+            toDateChooser.setDate(DateConverter.getEndOfMonth(now));
+        } finally {
+            updatingFilterDates = false;
+        }
+        dateFilterMode = DateFilterMode.CURRENT_MONTH;
+        filterMonthChip.setSelected(true);
+        applyExpenseFilter();
+    }
+
+    /**
+     * Filters the expense table to the given inclusive date range.
+     */
+    public void filterByDateRange(Date from, Date to) {
+        updatingFilterDates = true;
+        try {
+            if (from != null) {
+                fromDateChooser.setDate(from);
+            }
+            if (to != null) {
+                toDateChooser.setDate(to);
+            }
+        } finally {
+            updatingFilterDates = false;
+        }
+        dateFilterMode = DateFilterMode.CUSTOM;
+        filterDateChip.setSelected(true);
+        applyExpenseFilter();
+    }
+
+    /**
+     * Clears both content and date filters.
+     */
+    public void clearFilter() {
+        dateFilterMode = DateFilterMode.ALL;
+        filterAllChip.setSelected(true);
+        searchField.setText("");
+        applyExpenseFilter();
+    }
+
+    @SuppressWarnings("unchecked")
+    public void applyExpenseFilter() {
+        TableModel model = expenseTable.getModel();
+        if (model == null) {
+            return;
+        }
+        TableRowSorter<TableModel> sorter;
+        if (expenseTable.getRowSorter() instanceof TableRowSorter
+                && ((TableRowSorter<?>) expenseTable.getRowSorter()).getModel() == model) {
+            sorter = (TableRowSorter<TableModel>) expenseTable.getRowSorter();
+        } else {
+            sorter = new TableRowSorter<TableModel>(model);
+            expenseTable.setRowSorter(sorter);
+        }
+
+        final String query = searchField.getText() == null ? "" : searchField.getText().trim().toLowerCase(Locale.ROOT);
+        final DateFilterMode mode = dateFilterMode;
+        final Date start;
+        final Date end;
+        Date now = new Date();
+        if (mode == DateFilterMode.CURRENT_YEAR) {
+            start = DateConverter.getStartOfYear(now);
+            end = DateConverter.getEndOfYear(now);
+        } else if (mode == DateFilterMode.CURRENT_MONTH) {
+            start = DateConverter.getStartOfMonth(now);
+            end = DateConverter.getEndOfMonth(now);
+        } else if (mode == DateFilterMode.CUSTOM) {
+            Date f = fromDateChooser.getDate();
+            Date t = toDateChooser.getDate();
+            if (f != null && t != null && f.after(t)) {
+                Date tmp = f;
+                f = t;
+                t = tmp;
+            }
+            start = f != null ? DateConverter.getStartOfDay(f) : null;
+            end = t != null ? DateConverter.getEndOfDay(t) : null;
+        } else {
+            start = null;
+            end = null;
+        }
+
+        if (query.isEmpty() && mode == DateFilterMode.ALL) {
+            sorter.setRowFilter(null);
+            return;
+        }
+
+        sorter.setRowFilter(new RowFilter<TableModel, Integer>() {
+            @Override
+            public boolean include(Entry<? extends TableModel, ? extends Integer> entry) {
+                if (mode != DateFilterMode.ALL) {
+                    Date rowDate = extractRowDate(entry);
+                    if (rowDate == null) {
+                        return false;
+                    }
+                    if (start != null && rowDate.before(start)) {
+                        return false;
+                    }
+                    if (end != null && rowDate.after(end)) {
+                        return false;
+                    }
+                }
+                if (!query.isEmpty()) {
+                    return matchesContent(entry, query);
+                }
+                return true;
+            }
+        });
+    }
+
+    private static Date extractRowDate(RowFilter.Entry<? extends TableModel, ? extends Integer> entry) {
+        if (entry.getValueCount() > 6 && entry.getValue(6) instanceof Date) {
+            return (Date) entry.getValue(6);
+        }
+        if (entry.getValueCount() > 0 && entry.getValue(0) instanceof Expense) {
+            Expense exp = (Expense) entry.getValue(0);
+            if (exp.__getDateadded() != null) {
+                return exp.__getDateadded();
+            }
+            if (exp.__getDateend() != null) {
+                return exp.__getDateend();
+            }
+        }
+        if (entry.getValueCount() > 7 && entry.getValue(7) instanceof Date) {
+            return (Date) entry.getValue(7);
+        }
+        return null;
+    }
+
+    private static boolean matchesContent(RowFilter.Entry<? extends TableModel, ? extends Integer> entry, String query) {
+        StringBuilder sb = new StringBuilder(128);
+        for (int i = 0; i < entry.getValueCount(); i++) {
+            Object val = entry.getValue(i);
+            if (val == null) {
+                continue;
+            }
+            sb.append(val).append(' ');
+            if (val instanceof Expense) {
+                Expense exp = (Expense) val;
+                if (exp.__getCnumber() != null) sb.append(exp.__getCnumber()).append(' ');
+                if (exp.__getCname() != null) sb.append(exp.__getCname()).append(' ');
+                if (exp.__getDescription() != null) sb.append(exp.__getDescription()).append(' ');
+            } else if (val instanceof Date) {
+                Date d = (Date) val;
+                sb.append(DateConverter.getDefDateString(d)).append(' ');
+                sb.append(DateConverter.getSQLDateString(d)).append(' ');
+            }
+        }
+        String haystack = sb.toString().toLowerCase(Locale.ROOT);
+        for (String token : query.split("\\s+")) {
+            if (!token.isEmpty() && !haystack.contains(token)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private JPanel createDetailPanel() {
@@ -379,7 +726,7 @@ public class ModernExpensePanel extends ModernDataPanel {
 
         ResponsiveGrid grid = new ResponsiveGrid(340, 2).arrangeable("expense");
 
-        // Card 1: Basisdaten & Betraege
+        // Card 1: Basisdaten & Betr\u00e4ge
         Card c1 = new Card("Ausgabendaten")
                 .row(Card.field("ID", idField, 1), Card.field("Belegnummer", cnumberField, 2))
                 .row(Card.field("Brutto", brutValueField), Card.field("Netto", netValueField))
@@ -403,7 +750,7 @@ public class ModernExpensePanel extends ModernDataPanel {
     }
 
     private Card createReceiptsCard() {
-        Card card = new Card("Eingangsbelege & Scans (GoBD Rz. 61–64: Keine Buchung ohne Beleg)");
+        Card card = new Card("Eingangsbelege & Scans");
 
         ModernTheme.style(receiptsTable);
         receiptsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -435,8 +782,8 @@ public class ModernExpensePanel extends ModernDataPanel {
 
         card.headerAction(actions);
 
-        JLabel hint = new JLabel("<html><small>Dateien koennen per Drag &amp; Drop direkt in diese Tabelle gezogen werden. "
-                + "Die Belege werden unveraenderbar im Jahresarchiv abgelegt und per SHA256SUMS gesichert.</small></html>");
+        JLabel hint = new JLabel("<html><small>Dateien k\u00f6nnen per Drag &amp; Drop direkt in diese Tabelle gezogen werden. "
+                + "Die Belege werden unver\u00e4nderbar im Jahresarchiv abgelegt und per SHA256SUMS gesichert.</small></html>");
         hint.setForeground(ModernTheme.muted());
         hint.setBorder(BorderFactory.createEmptyBorder(0, 0, ModernTheme.px(4), 0));
 
@@ -446,6 +793,9 @@ public class ModernExpensePanel extends ModernDataPanel {
     }
 
     private void setupDragAndDrop() {
+        if (java.awt.GraphicsEnvironment.isHeadless()) {
+            return;
+        }
         new DropTarget(receiptsTable, DnDConstants.ACTION_COPY, new DropTargetAdapter() {
             @Override
             @SuppressWarnings("unchecked")
@@ -454,12 +804,8 @@ public class ModernExpensePanel extends ModernDataPanel {
                     dtde.acceptDrop(DnDConstants.ACTION_COPY);
                     if (dtde.getTransferable().isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
                         List<File> files = (List<File>) dtde.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
-                        if (dataOwner == null || dataOwner.__getIDS() <= 0) {
-                            importZugferdFiles(files);
-                        } else {
-                            for (File f : files) {
-                                importReceiptFile(f);
-                            }
+                        for (File f : files) {
+                            importReceiptFile(f);
                         }
                         dtde.dropComplete(true);
                     } else {
@@ -479,7 +825,9 @@ public class ModernExpensePanel extends ModernDataPanel {
                     dtde.acceptDrop(DnDConstants.ACTION_COPY);
                     if (dtde.getTransferable().isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
                         List<File> files = (List<File>) dtde.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
-                        importZugferdFiles(files);
+                        for (File f : files) {
+                            importReceiptFile(f);
+                        }
                         dtde.dropComplete(true);
                     } else {
                         dtde.rejectDrop();
@@ -521,31 +869,39 @@ public class ModernExpensePanel extends ModernDataPanel {
     }
 
     private void importReceiptDialog() {
-        if (dataOwner == null || dataOwner.__getIDS() <= 0) {
-            JOptionPane.showMessageDialog(this,
-                    "Bitte speichern Sie die Ausgabe zuerst, bevor Sie Belege anhaengen.",
-                    "Ausgabe nicht gespeichert", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
         JFileChooser chooser = new JFileChooser();
-        chooser.setDialogTitle("Eingangsbeleg / Scan auswaehlen (PDF, XML, Bild)");
+        chooser.setDialogTitle("Eingangsbeleg / Scan ausw\u00e4hlen (PDF, XML, Bild)");
         chooser.setMultiSelectionEnabled(true);
         if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             File[] files = chooser.getSelectedFiles();
-            for (File f : files) {
-                importReceiptFile(f);
+            if (files != null && files.length > 0) {
+                for (File f : files) {
+                    importReceiptFile(f);
+                }
+            } else if (chooser.getSelectedFile() != null) {
+                importReceiptFile(chooser.getSelectedFile());
             }
         }
     }
 
-    private void importReceiptFile(File source) {
-        if (dataOwner == null || dataOwner.__getIDS() <= 0) {
-            JOptionPane.showMessageDialog(this,
-                    "Bitte speichern Sie die Ausgabe zuerst, bevor Sie Belege anhaengen.",
-                    "Ausgabe nicht gespeichert", JOptionPane.WARNING_MESSAGE);
+    /**
+     * Imports a file into the expense panel: checks whether the file contains
+     * ZUGFeRD / XRechnung invoice data and imports/populates the expense data
+     * if possible; otherwise attaches it as a receipt to the current expense.
+     */
+    public void importReceiptFile(File source) {
+        if (source == null || !source.isFile()) {
             return;
         }
-        if (source == null || !source.isFile()) {
+        ZugpferdExpenseImport.ParsedInvoice parsed = ZugpferdExpenseImport.parse(source);
+        if (parsed != null) {
+            importParsedZugferdFile(source, parsed);
+            return;
+        }
+        if (dataOwner == null || dataOwner.__getIDS() <= 0) {
+            JOptionPane.showMessageDialog(this,
+                    "Bitte speichern Sie die Ausgabe zuerst, bevor Sie Belege anh\u00e4ngen.",
+                    "Ausgabe nicht gespeichert", JOptionPane.WARNING_MESSAGE);
             return;
         }
         try {
@@ -559,6 +915,69 @@ public class ModernExpensePanel extends ModernDataPanel {
             JOptionPane.showMessageDialog(this,
                     "Fehler beim Importieren des Belegs:\n" + ex.getMessage(),
                     "Importfehler", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void importParsedZugferdFile(File source, ZugpferdExpenseImport.ParsedInvoice parsed) {
+        if (dataOwner == null) {
+            dataOwner = new Expense();
+        }
+        cnumber_ = parsed.invoiceNumber != null && !parsed.invoiceNumber.trim().isEmpty()
+                ? parsed.invoiceNumber.trim()
+                : source.getName();
+        cname_ = cnumber_;
+        description_ = parsed.buildDescription();
+        brutvalue_ = parsed.grossAmount != null ? parsed.grossAmount.setScale(2, RoundingMode.HALF_UP) : BigDecimal.ZERO;
+        taxpercentvalue_ = parsed.taxRate != null ? parsed.taxRate.setScale(2, RoundingMode.HALF_UP) : BigDecimal.ZERO;
+        currentTaxRate = taxpercentvalue_;
+        if (parsed.netAmount != null && parsed.netAmount.compareTo(BigDecimal.ZERO) > 0) {
+            netvalue_ = parsed.netAmount.setScale(2, RoundingMode.HALF_UP);
+        } else {
+            BigDecimal divisor = BigDecimal.ONE.add(taxpercentvalue_.divide(Constants.BD100, 9, RoundingMode.HALF_UP));
+            netvalue_ = brutvalue_.divide(divisor, 2, RoundingMode.HALF_UP);
+        }
+        dateadded_ = parsed.issueDate != null ? parsed.issueDate : new Date();
+        dateend_ = parsed.dueDate != null ? parsed.dueDate : dateadded_;
+        ispaid_ = false;
+
+        dataOwner.setCnumber(cnumber_);
+        dataOwner.setCname(cname_);
+        dataOwner.setDescription(description_);
+        dataOwner.setBrutvalue(brutvalue_);
+        dataOwner.setNetvalue(netvalue_);
+        dataOwner.setTaxpercentvalue(taxpercentvalue_);
+        dataOwner.setDateadded(dateadded_);
+        dataOwner.setDateend(dateend_);
+        dataOwner.setIspaid(ispaid_);
+
+        exposeData();
+
+        if (hasDatabaseConnection()) {
+            try {
+                if (dataOwner.__getAccountsids() <= 0) {
+                    dataOwner.setAccountsids(accountsids_ > 0 ? accountsids_ : 1);
+                }
+                if (dataOwner.__getGroupsids() <= 0) {
+                    dataOwner.setGroupsids(1);
+                }
+                if (dataOwner.save(true)) {
+                    ids_ = dataOwner.__getIDS();
+                    ExpenseReceipts.attach(dataOwner, source);
+                    refresh();
+                    setDataOwner(dataOwner, true);
+                    Popup.notice("E-Rechnung importiert: " + source.getName());
+                }
+            } catch (Exception ex) {
+                Log.Debug(ModernExpensePanel.class, ex);
+            }
+        }
+    }
+
+    private static boolean hasDatabaseConnection() {
+        try {
+            return DatabaseConnection.getConnector() != null && DatabaseConnection.getConnector().getConnection() != null;
+        } catch (Exception e) {
+            return false;
         }
     }
 
@@ -588,7 +1007,7 @@ public class ModernExpensePanel extends ModernDataPanel {
     private void removeSelectedReceipt() {
         if (isContentLocked()) {
             JOptionPane.showMessageDialog(this,
-                    "Ausgabe ist gesperrt; Belege koennen nicht entfernt werden.",
+                    "Ausgabe ist gesperrt; Belege k\u00f6nnen nicht entfernt werden.",
                     "Gesperrt", JOptionPane.WARNING_MESSAGE);
             return;
         }
@@ -598,8 +1017,8 @@ public class ModernExpensePanel extends ModernDataPanel {
         }
         Receipt r = currentReceipts.get(row);
         int confirm = JOptionPane.showConfirmDialog(this,
-                "Soll die Verknuepfung zum Beleg '" + r.originalName + "' geloescht werden?\n(Die physische Datei verbleibt zur Revisionssicherheit im Archiv.)",
-                "Belegverknuepfung loeschen", JOptionPane.YES_NO_OPTION);
+                "Soll die Verkn\u00fcpfung zum Beleg '" + r.originalName + "' gel\u00f6scht werden?\n(Die physische Datei verbleibt zur Revisionssicherheit im Archiv.)",
+                "Belegverkn\u00fcpfung l\u00f6schen", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
             ExpenseReceipts.detach(dataOwner, r.id);
             loadReceipts();
@@ -617,26 +1036,26 @@ public class ModernExpensePanel extends ModernDataPanel {
             if (!r.exists()) {
                 errors.add(r.originalName + ": Datei fehlt im Archiv (" + r.archivePath + ")");
             } else if (!ExpenseReceipts.verify(r)) {
-                errors.add(r.originalName + ": SHA-256 Checksumme stimmt NICHT ueberein!");
+                errors.add(r.originalName + ": SHA-256 Checksumme stimmt NICHT \u00fcberein!");
             } else {
                 ok++;
             }
         }
         if (errors.isEmpty()) {
             JOptionPane.showMessageDialog(this,
-                    "Integritaet OK: Alle " + ok + " Belege vorhanden und kryptographisch unversehrt.",
-                    "GoBD-Belegpruefung", JOptionPane.INFORMATION_MESSAGE);
+                    "Integrit\u00e4t OK: Alle " + ok + " Belege vorhanden und kryptographisch unversehrt.",
+                    "Belegpr\u00fcfung", JOptionPane.INFORMATION_MESSAGE);
         } else {
             JOptionPane.showMessageDialog(this,
-                    "Integritaetsfehler bei Belegen:\n- " + String.join("\n- ", errors),
-                    "GoBD-Pruefung FEHLGESCHLAGEN", JOptionPane.ERROR_MESSAGE);
+                    "Integrit\u00e4tsfehler bei Belegen:\n- " + String.join("\n- ", errors),
+                    "Belegpr\u00fcfung fehlgeschlagen", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     private void loadReceipts() {
         receiptsModel.setRowCount(0);
         currentReceipts.clear();
-        if (dataOwner != null && dataOwner.__getIDS() > 0) {
+        if (dataOwner != null && dataOwner.__getIDS() > 0 && hasDatabaseConnection()) {
             List<Receipt> list = ExpenseReceipts.of(dataOwner.__getIDS());
             currentReceipts.addAll(list);
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -710,7 +1129,8 @@ public class ModernExpensePanel extends ModernDataPanel {
         } catch (Exception ignored) {
         }
 
-        addedByLabel.setText(User.getUsername(intaddedby_));
+        String username = hasDatabaseConnection() ? User.getUsername(intaddedby_) : "";
+        addedByLabel.setText(username);
         if (dateadded_ != null) {
             issueDateChooser.setDate(dateadded_);
         }
@@ -720,17 +1140,21 @@ public class ModernExpensePanel extends ModernDataPanel {
         paidCheckBox.setSelected(ispaid_);
 
         try {
-            taxRateSelect.setSelectedItem(Tax.getTaxId(taxpercentvalue_));
+            if (hasDatabaseConnection()) {
+                taxRateSelect.setSelectedItem(Tax.getTaxId(taxpercentvalue_));
+            }
         } catch (Exception ignored) {
         }
-        updateTaxRate();
+        if (hasDatabaseConnection()) {
+            updateTaxRate();
+        }
         updateStatusPill();
 
         String title = cnumber_ != null && !cnumber_.isEmpty() ? "Ausgabe " + cnumber_ : (ids_ > 0 ? "Ausgabe #" + ids_ : "Neue Ausgabe");
         titleLabel.setText(title);
         metaLabel.setText("ID: " + (ids_ > 0 ? ids_ : "-") + " | Erfasst am: "
                 + (dateadded_ != null ? DateConverter.getSQLDateString(dateadded_) : "-")
-                + " | Benutzer: " + User.getUsername(intaddedby_));
+                + " | Benutzer: " + username);
         setTabTitle(title);
     }
 
@@ -788,6 +1212,9 @@ public class ModernExpensePanel extends ModernDataPanel {
 
     @Override
     public void refresh() {
+        if (!hasDatabaseConnection()) {
+            return;
+        }
         SwingUtilities.invokeLater(() -> {
             groupSelect.triggerSearch();
             taxRateSelect.triggerSearch();
@@ -795,6 +1222,7 @@ public class ModernExpensePanel extends ModernDataPanel {
                 MPTableModel x = new MPTableModel(Expense.getExpenses(), Headers.EXPENSE);
                 x.setTypes(Expense.class, String.class, Account.class, String.class, String.class, Boolean.class, Date.class, Date.class);
                 expenseTable.setModel(x);
+                applyExpenseFilter();
             } catch (NodataFoundException e) {
                 Log.Debug(ModernExpensePanel.class, e.getMessage());
             }
