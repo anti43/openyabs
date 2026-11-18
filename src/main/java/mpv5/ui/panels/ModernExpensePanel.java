@@ -1185,6 +1185,16 @@ public class ModernExpensePanel extends ModernDataPanel {
         }
     }
 
+    private int defaultExpenseAccountId() {
+        if (accountObjects != null && !accountObjects.isEmpty()) {
+            return accountObjects.get(0).__getIDS();
+        }
+        if (accountsids_ > 0) {
+            return accountsids_;
+        }
+        return 1;
+    }
+
     private static boolean hasDatabaseConnection() {
         try {
             return DatabaseConnection.getConnector() != null && DatabaseConnection.getConnector().getConnection() != null;
