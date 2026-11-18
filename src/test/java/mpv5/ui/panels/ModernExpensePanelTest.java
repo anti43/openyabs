@@ -124,21 +124,23 @@ class ModernExpensePanelTest {
         table.setModel(model);
         panel.applyExpenseFilter();
 
-        // Initially all 3 expenses are visible
-        assertEquals(3, table.getRowCount());
+        // Initially filtered by current year: e1 and e2 visible, e3 (last year) hidden
+        assertEquals(2, table.getRowCount());
 
-        // Filter by content
+        // Filter by content within current year
         panel.filterByContent("Druckerpapier");
         assertEquals(1, table.getRowCount());
         assertSame(e1, table.getValueAt(0, 0));
 
-        panel.filterByContent("INV-303");
-        assertEquals(1, table.getRowCount());
-        assertSame(e3, table.getValueAt(0, 0));
-
         // Clear filter -> all 3 visible again
         panel.clearFilter();
         assertEquals(3, table.getRowCount());
+
+        // Filter by content across all time
+        panel.filterByContent("INV-303");
+        assertEquals(1, table.getRowCount());
+        assertSame(e3, table.getValueAt(0, 0));
+        panel.clearFilter();
 
         // Filter by current year -> e1 and e2 visible, e3 (last year) hidden
         panel.filterCurrentYear();

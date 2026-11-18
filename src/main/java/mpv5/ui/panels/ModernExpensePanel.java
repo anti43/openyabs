@@ -199,7 +199,7 @@ public class ModernExpensePanel extends ModernDataPanel {
     private final ChipToggle filterMonthChip = new ChipToggle("Akt. Monat");
     private final ChipToggle filterDateChip = new ChipToggle("Zeitraum");
     private final ButtonGroup filterGroup = new ButtonGroup();
-    private DateFilterMode dateFilterMode = DateFilterMode.ALL;
+    private DateFilterMode dateFilterMode = DateFilterMode.CURRENT_YEAR;
     private boolean updatingFilterDates = false;
     private final PrimaryButton importZugferdBtn = new PrimaryButton(Messages.ZUGFERD_IMPORT_BUTTON.toString(), "/images/16/xml.png");
 
@@ -474,7 +474,7 @@ public class ModernExpensePanel extends ModernDataPanel {
         filterGroup.add(filterYearChip);
         filterGroup.add(filterMonthChip);
         filterGroup.add(filterDateChip);
-        filterAllChip.setSelected(true);
+        filterYearChip.setSelected(true);
 
         filterAllChip.addActionListener(e -> {
             dateFilterMode = DateFilterMode.ALL;
