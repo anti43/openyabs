@@ -395,6 +395,9 @@ public final class ExpenseReceipts {
             throw new IllegalStateException("Failed to insert receipt record into database.");
         }
 
+        // activity log: archived file incl. its path (also written to the activity journal)
+        mpv5.handler.Activity.file(destFile, expense);
+
         List<Receipt> current = of(expense.__getIDS());
         return current.isEmpty() ? null : current.get(current.size() - 1);
     }
