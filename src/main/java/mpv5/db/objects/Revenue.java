@@ -77,6 +77,9 @@ public class Revenue extends DatabaseObject implements Formattable {
 
     @Override
     public JComponent getView() {
+        if (mpv5.YabsViewProxy.instance().isModernUi()) {
+            return mpv5.ui.panels.ModernRevenuePanel.instanceOf();
+        }
         return RevenuePanel.instanceOf();
     }
 
