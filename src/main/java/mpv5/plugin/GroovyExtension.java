@@ -104,6 +104,11 @@ public final class GroovyExtension implements YabsExtension {
         return delegate != null ? delegate.author() : tag("author", "");
     }
 
+    @Override
+    public String minYabsVersion() {
+        return delegate != null ? delegate.minYabsVersion() : tag("minyabsversion", tag("minyabs", tag("minversion", null)));
+    }
+
     /**
      * @return the script
      */

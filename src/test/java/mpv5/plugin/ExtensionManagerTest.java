@@ -306,4 +306,63 @@ class ExtensionManagerTest {
         // Compiles (but does not run) the script; throws on syntax/compile errors.
         assertNotNull(new groovy.lang.GroovyShell().parse(code, "gobd_compliance.groovy"));
     }
+
+    @Test
+    void versionCompatibilityLogic() {
+        assertTrue(ExtensionManager.isDevBuild("2.0-dev"));
+        assertTrue(ExtensionManager.isDevBuild("2.0.4-dev.250"));
+        assertTrue(ExtensionManager.isDevBuild("dev"));
+        assertTrue(ExtensionManager.isDevBuild("2.1.0-SNAPSHOT"));
+        assertFalse(ExtensionManager.isDevBuild("2.0.8"));
+        assertFalse(ExtensionManager.isDevBuild("2.0.9"));
+
+        // No requirement specified
+        assertTrue(ExtensionManager.isVersionCompatible("2.0.8", null));
+        assertTrue(ExtensionManager.isVersionCompatible("2.0.8", ""));
+        assertTrue(ExtensionManager.isVersionCompatible("2.0.8", "   "));
+
+        // Release comparisons
+        assertFalse(ExtensionManager.isVersionCompatible("2.0.8", "2.0.9"));
+        assertTrue(ExtensionManager.isVersionCompatible("2.0.9", "2.0.9"));
+        assertTrue(ExtensionManager.isVersionCompatible("2.0.10", "2.0.9"));
+        assertTrue(ExtensionManager.isVersionCompatible("2.1.0", "2.0.9"));
+
+        // Dev build comparisons
+        assertTrue(ExtensionManager.isVersionCompatible("2.0-dev", "2.0.9"));
+        assertTrue(ExtensionManager.isVersionCompatible("2.0.9-dev.1", "2.0.9"));
+        assertTrue(ExtensionManager.isVersionCompatible("3.0-dev", "2.0.9"));
+        assertFalse(ExtensionManager.isVersionCompatible("2.0-dev", "3.0.0"));
+    }
+
+    @Test
+    void pluginFailsWhenMinYabsVersionNotSatisfied() {
+        TestHost h = new TestHost();
+        ExtensionManager m = new ExtensionManager(dir.toFile(), h);
+        ExtensionManager.Installed i = m.register(new YabsExtension() {
+            public String id() { return "future.plugin"; }
+            public String name() { return "Future Plugin"; }
+            @Override
+            public String minYabsVersion() { return "99.0.0"; }
+            public void start(ExtensionContext ctx) {}
+        });
+
+        assertFalse(m.start(i));
+        assertEquals(ExtensionManager.State.FAILED, i.getState());
+        assertNotNull(i.getError());
+        assertTrue(i.getError().contains("Requires YaBS 99.0.0 or newer"));
+        assertEquals(1, h.errors.size());
+    }
+
+    @Test
+    void groovyExtensionExtractsMinYabsVersionTag() throws Exception {
+        File f = dir.resolve("sample.groovy").toFile();
+        Files.write(f.toPath(), (
+            "// @name Sample\n"
+            + "// @minYabsVersion 2.0.9\n"
+            + "yabs.notify('hello')\n"
+        ).getBytes(StandardCharsets.UTF_8));
+
+        GroovyExtension ext = new GroovyExtension(f);
+        assertEquals("2.0.9", ext.minYabsVersion());
+    }
 }

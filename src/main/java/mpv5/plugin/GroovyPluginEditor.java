@@ -555,6 +555,7 @@ public final class GroovyPluginEditor extends JDialog {
                 + "// @description What this plugin does\n"
                 + "// @version 1.0\n"
                 + "// @author \n"
+                + "// @minYabsVersion 2.0.9\n"
                 + "//\n"
                 + "// A YaBS plugin in Groovy. The variable 'yabs' is the plugin API:\n"
                 + "//   yabs.addCommand(title, description, { ... })     command in the menu Plugins and in Search anything\n"

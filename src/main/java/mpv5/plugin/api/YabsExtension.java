@@ -70,6 +70,14 @@ public interface YabsExtension {
     }
 
     /**
+     * @return the minimum YaBS release version required by this extension (e.g. "2.0.9"),
+     * or null if any version is supported
+     */
+    default String minYabsVersion() {
+        return null;
+    }
+
+    /**
      * Starts the plugin: register commands, pages, listeners ... (called on
      * the Swing thread)
      *
