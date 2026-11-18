@@ -36,6 +36,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -60,6 +62,7 @@ import javax.swing.RowFilter;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
@@ -91,6 +94,7 @@ import mpv5.ui.beans.MPCombobox;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.misc.MPTable;
 import mpv5.ui.modern.Card;
+import mpv5.ui.modern.PrimaryButton;
 import mpv5.ui.modern.ChipToggle;
 import mpv5.ui.modern.ModernTheme;
 import mpv5.ui.modern.ResponsiveGrid;
@@ -210,7 +214,7 @@ public class ModernRevenuePanel extends ModernDataPanel {
     private final ButtonGroup filterGroup = new ButtonGroup();
     private DateFilterMode dateFilterMode = DateFilterMode.ALL;
     private boolean updatingFilterDates = false;
-    private final JButton importZugferdBtn = new JButton(Messages.ZUGFERD_IMPORT_BUTTON.toString());
+    private final PrimaryButton importZugferdBtn = new PrimaryButton(Messages.ZUGFERD_IMPORT_BUTTON.toString(), "/images/16/xml.png");
 
     // Receipts table
     private final DefaultTableModel receiptsModel = new DefaultTableModel(
@@ -222,7 +226,7 @@ public class ModernRevenuePanel extends ModernDataPanel {
     };
     private final JTable receiptsTable = new JTable(receiptsModel);
     private final List<Receipt> currentReceipts = new ArrayList<Receipt>();
-    private final JButton addReceiptBtn = new JButton("Beleg hinzuf\u00fcgen...");
+    private final JButton addReceiptBtn = new JButton("Beleg verkn\u00fcpfen...");
     private final JButton removeReceiptBtn = new JButton("Entfernen");
     private final JButton openReceiptBtn = new JButton("\u00d6ffnen");
     private final JButton verifyReceiptsBtn = new JButton("Pr\u00fcfen");
@@ -310,6 +314,14 @@ public class ModernRevenuePanel extends ModernDataPanel {
 
     public File getPreviewPdf() {
         return previewPdf;
+    }
+
+    public PrimaryButton getImportZugferdButton() {
+        return importZugferdBtn;
+    }
+
+    public JButton getAddReceiptButton() {
+        return addReceiptBtn;
     }
 
     private void initFields() {
@@ -444,9 +456,6 @@ public class ModernRevenuePanel extends ModernDataPanel {
         JComponent filterBar = createFilterBar();
 
         Card card = new Card("Einnahmen");
-        importZugferdBtn.setToolTipText(Messages.ZUGFERD_IMPORT_HINT.toString());
-        importZugferdBtn.addActionListener(e -> importZugferdDialog());
-        card.headerAction(importZugferdBtn);
         card.addFull(filterBar);
         card.addFull(new JScrollPane(revenueTable), 1);
         p.add(card, BorderLayout.CENTER);
@@ -458,6 +467,19 @@ public class ModernRevenuePanel extends ModernDataPanel {
         filterBar.setOpaque(false);
         filterBar.setLayout(new BoxLayout(filterBar, BoxLayout.Y_AXIS));
         filterBar.setBorder(BorderFactory.createEmptyBorder(0, 0, ModernTheme.px(6), 0));
+
+        // Row 0: Large prominent green button for ZUGFeRD / E-Rechnung import
+        importZugferdBtn.setColor(new Color(22, 163, 74));
+        importZugferdBtn.setFont(ModernTheme.font(1, Font.BOLD));
+        importZugferdBtn.setBorder(BorderFactory.createEmptyBorder(ModernTheme.px(9), ModernTheme.px(16), ModernTheme.px(9), ModernTheme.px(16)));
+        importZugferdBtn.setToolTipText(Messages.ZUGFERD_IMPORT_HINT.toString());
+        importZugferdBtn.addActionListener(e -> importZugferdDialog());
+
+        JPanel importRow = new JPanel(new BorderLayout());
+        importRow.setOpaque(false);
+        importRow.setBorder(BorderFactory.createEmptyBorder(0, 0, ModernTheme.px(8), 0));
+        importRow.add(importZugferdBtn, BorderLayout.CENTER);
+        filterBar.add(importRow);
 
         ModernTheme.roomy(searchField);
         searchField.setToolTipText("Filter nach Inhalt (Nummer, Beschreibung, Konto, Betrag, Datum, Kunde)");
@@ -831,12 +853,7 @@ public class ModernRevenuePanel extends ModernDataPanel {
         previewButtons.setOpaque(false);
         previewButtons.add(previewLargerBtn);
 
-        JLabel hint = new JLabel("<html><small>" + Messages.TEMPLATES_PREVIEW_HINT.toString() + "</small></html>");
-        hint.setForeground(ModernTheme.muted());
-        hint.setBorder(BorderFactory.createEmptyBorder(0, 0, ModernTheme.px(4), 0));
-
         return new Card(Messages.TEMPLATES_PREVIEW.toString())
-                .addFull(hint)
                 .addFull(previewImage)
                 .addFull(previewCaption)
                 .addFull(previewButtons);
@@ -971,9 +988,7 @@ public class ModernRevenuePanel extends ModernDataPanel {
                     dtde.acceptDrop(DnDConstants.ACTION_COPY);
                     if (dtde.getTransferable().isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
                         List<File> files = (List<File>) dtde.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
-                        for (File f : files) {
-                            importReceiptFile(f);
-                        }
+                        importZugferdFiles(files);
                         dtde.dropComplete(true);
                     } else {
                         dtde.rejectDrop();
@@ -989,7 +1004,8 @@ public class ModernRevenuePanel extends ModernDataPanel {
     private void importZugferdDialog() {
         JFileChooser chooser = new JFileChooser();
         chooser.setDialogTitle(Messages.ZUGFERD_IMPORT_CHOOSER.toString());
-        chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        chooser.setFileFilter(new FileNameExtensionFilter("E-Rechnungen (ZUGFeRD PDF, XRechnung XML)", "pdf", "xml"));
         chooser.setMultiSelectionEnabled(true);
         File configured = ZugpferdExpenseImport.folder();
         if (configured != null && configured.exists()) {
@@ -998,18 +1014,77 @@ public class ModernRevenuePanel extends ModernDataPanel {
         if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             File[] selected = chooser.getSelectedFiles();
             if (selected != null && selected.length > 0) {
-                for (File f : selected) {
-                    importReceiptFile(f);
-                }
+                importZugferdFiles(Arrays.asList(selected));
             } else if (chooser.getSelectedFile() != null) {
-                importReceiptFile(chooser.getSelectedFile());
+                importZugferdFiles(Collections.singletonList(chooser.getSelectedFile()));
             }
         }
     }
 
+    private void importZugferdFiles(List<File> files) {
+        if (files == null || files.isEmpty()) {
+            return;
+        }
+        List<Revenue> importedRevenues = new ArrayList<Revenue>();
+        List<String> alreadyImported = new ArrayList<String>();
+        List<String> deniedFiles = new ArrayList<String>();
+
+        for (File f : files) {
+            if (f == null || !f.isFile()) {
+                continue;
+            }
+            ZugpferdExpenseImport.ParsedInvoice parsed = ZugpferdExpenseImport.parse(f);
+            if (parsed == null) {
+                deniedFiles.add(f.getName());
+                continue;
+            }
+            try {
+                String sha = RevenueReceipts.sha256(f);
+                if (RevenueReceipts.existsBySha256(sha)) {
+                    alreadyImported.add(f.getName() + " (" + (parsed.invoiceNumber != null && !parsed.invoiceNumber.isEmpty() ? parsed.invoiceNumber : sha.substring(0, 10)) + ")");
+                    continue;
+                }
+                Revenue newRev = parsed.toRevenue(defaultIncomeAccountId(), 1);
+                if (!newRev.save(true)) {
+                    throw new IllegalStateException("Einnahme konnte nicht gespeichert werden: " + f.getName());
+                }
+                RevenueReceipts.attach(newRev, f);
+                importedRevenues.add(newRev);
+            } catch (Exception ex) {
+                Log.Debug(ModernRevenuePanel.class, ex);
+                deniedFiles.add(f.getName() + " (" + ex.getMessage() + ")");
+            }
+        }
+
+        if (!importedRevenues.isEmpty()) {
+            refresh();
+            setDataOwner(importedRevenues.get(importedRevenues.size() - 1), true);
+            Popup.notice(importedRevenues.size() + " E-Rechnung(en) erfolgreich als neue Einnahme(n) importiert.");
+        }
+
+        if (!deniedFiles.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                    "Folgende Datei(en) sind keine g\u00fcltigen ZUGFeRD- oder E-Rechnungen (XML oder PDF mit eingebettetem XML) und wurden abgelehnt:\n- "
+                    + String.join("\n- ", deniedFiles)
+                    + "\n\nEinfache PDFs oder Beleg-Scans k\u00f6nnen \u00fcber 'Beleg verkn\u00fcpfen' an eine bestehende Einnahme angeh\u00e4ngt werden.",
+                    "Keine g\u00fcltige E-Rechnung", JOptionPane.WARNING_MESSAGE);
+        } else if (!alreadyImported.isEmpty() && importedRevenues.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                    "Die ausgew\u00e4hlte(n) E-Rechnung(en) wurden bereits importiert:\n- "
+                    + String.join("\n- ", alreadyImported),
+                    "Bereits importiert", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+
     private void importReceiptDialog() {
+        if (dataOwner == null || dataOwner.__getIDS() <= 0) {
+            JOptionPane.showMessageDialog(this,
+                    "Bitte speichern Sie die Einnahme zuerst, bevor Sie Belege verkn\u00fcpfen.",
+                    "Einnahme nicht gespeichert", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
         JFileChooser chooser = new JFileChooser();
-        chooser.setDialogTitle("Eingangsbeleg / Scan ausw\u00e4hlen (PDF, XML, Bild)");
+        chooser.setDialogTitle("Beleg verkn\u00fcpfen (PDF, XML, Bild)");
         chooser.setMultiSelectionEnabled(true);
         if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             File[] files = chooser.getSelectedFiles();
@@ -1030,30 +1105,50 @@ public class ModernRevenuePanel extends ModernDataPanel {
         if (isPdfFile(source)) {
             lastImportedPreviewFile = source;
         }
-        ZugpferdExpenseImport.ParsedInvoice parsed = ZugpferdExpenseImport.parse(source);
-        if (parsed != null) {
-            importParsedZugferdFile(source, parsed);
-            refreshPreview();
-            return;
-        }
         if (dataOwner == null || dataOwner.__getIDS() <= 0) {
+            ZugpferdExpenseImport.ParsedInvoice parsed = ZugpferdExpenseImport.parse(source);
+            if (parsed != null) {
+                importParsedZugferdFile(source, parsed);
+                refreshPreview();
+                return;
+            }
             refreshPreview();
             JOptionPane.showMessageDialog(this,
-                    "Bitte speichern Sie die Einnahme zuerst, bevor Sie Belege anh\u00e4ngen.",
+                    "Bitte speichern Sie die Einnahme zuerst, bevor Sie Belege verkn\u00fcpfen.",
                     "Einnahme nicht gespeichert", JOptionPane.WARNING_MESSAGE);
             return;
         }
         try {
+            boolean isPlainPdf = isPdfFile(source) && ZugpferdExpenseImport.parse(source) == null;
             Receipt r = RevenueReceipts.attach(dataOwner, source);
             if (r != null) {
-                loadReceipts();
-                notifyViewOpened();
-                Popup.notice("Beleg archiviert: " + r.originalName + "\nSHA-256: " + r.sha256.substring(0, 16) + "...");
+                if (isPlainPdf) {
+                    String checkNote = "[Beleg: " + source.getName() + " (einfacher PDF-Beleg verkn\u00fcpft - Rechnerische Richtigkeit der Belegwerte kann nicht automatisch gepr\u00fcft werden)]";
+                    String curNotes = notesArea.getText();
+                    if (!curNotes.contains("Rechnerische Richtigkeit")) {
+                        String updated = (curNotes == null || curNotes.trim().isEmpty()) ? checkNote : curNotes.trim() + "\n" + checkNote;
+                        notesArea.setText(updated);
+                        dataOwner.setDescription(updated);
+                        try {
+                            dataOwner.save(true);
+                        } catch (Exception ignored) {
+                        }
+                    }
+                    loadReceipts();
+                    notifyViewOpened();
+                    refreshPreview(source);
+                    Popup.notice("Beleg archiviert: " + r.originalName + "\n(Hinweis: Einfacher PDF-Beleg - Werte k\u00f6nnen nicht automatisch auf rechnerische Richtigkeit gepr\u00fcft werden.)");
+                } else {
+                    loadReceipts();
+                    notifyViewOpened();
+                    refreshPreview(source);
+                    Popup.notice("Beleg archiviert: " + r.originalName + "\nSHA-256: " + r.sha256.substring(0, 16) + "...");
+                }
             }
         } catch (Exception ex) {
             Log.Debug(ModernRevenuePanel.class, ex);
             JOptionPane.showMessageDialog(this,
-                    "Fehler beim Importieren des Belegs:\n" + ex.getMessage(),
+                    "Fehler beim Verkn\u00fcpfen des Belegs:\n" + ex.getMessage(),
                     "Importfehler", JOptionPane.ERROR_MESSAGE);
         }
     }
