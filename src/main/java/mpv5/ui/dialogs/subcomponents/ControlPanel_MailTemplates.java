@@ -1,11 +1,21 @@
 package mpv5.ui.dialogs.subcomponents;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JEditorPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import mpv5.data.PropertyStore;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -40,14 +50,22 @@ public class ControlPanel_MailTemplates extends javax.swing.JPanel implements Co
      */
     public final String UNAME = "mailtemplates";
     private MailMessage dataOwner;
+    private final JTabbedPane editorTabs = new JTabbedPane();
+    private final JEditorPane previewPane = new JEditorPane();
+    private final JCheckBox resolvePlaceholders = new JCheckBox("Sample placeholders", true);
 
     public ControlPanel_MailTemplates() {
         initComponents();
         modernLayout();
-        refresh();
-        groupname.setSearchEnabled(true);
-        groupname.setContext(Context.getGroup());
-        groupname.triggerSearch();
+        try {
+            if (mpv5.db.common.DatabaseConnection.getConnector() != null && mpv5.db.objects.User.getCurrentUser() != null) {
+                refresh();
+                groupname.setSearchEnabled(true);
+                groupname.setContext(Context.getGroup());
+                groupname.triggerSearch();
+            }
+        } catch (Throwable ignore) {
+        }
         setVisible(true);
     }
 
@@ -358,6 +376,7 @@ public class ControlPanel_MailTemplates extends javax.swing.JPanel implements Co
             
             fullname.setText(cname_);
             descr.setText(description_);
+            renderPreview();
         } catch (Exception e) {
             Log.Debug(this, e);
         }
@@ -378,6 +397,9 @@ public class ControlPanel_MailTemplates extends javax.swing.JPanel implements Co
     public void refresh() {
         ArrayList<DatabaseObject> temps;
         try {
+            if (mpv5.db.common.DatabaseConnection.getConnector() == null || mpv5.db.objects.User.getCurrentUser() == null) {
+                return;
+            }
             QueryCriteria c = new QueryCriteria("usersids", mpv5.db.objects.User.getCurrentUser().__getIDS());
             temps = DatabaseObject.getObjects(Context.getMessage());
             Object[][] data = new Object[temps.size()][3];
@@ -390,7 +412,7 @@ public class ControlPanel_MailTemplates extends javax.swing.JPanel implements Co
             }
 
             templates.setModel(new MPTableModel(data, Headers.MAILTEMPLATES.getValue()));
-        } catch (NodataFoundException ex) {
+        } catch (Throwable ex) {
             Log.Debug(this, ex.getMessage());
         }
     }
@@ -431,16 +453,243 @@ public class ControlPanel_MailTemplates extends javax.swing.JPanel implements Co
         mpv5.ui.modern.ModernTheme.style(templates);
         jScrollPane4.setBorder(javax.swing.BorderFactory.createLineBorder(mpv5.ui.modern.ModernTheme.border()));
         groupname.getComboBox().setPreferredSize(null);
-        jScrollPane2.setPreferredSize(new java.awt.Dimension(mpv5.ui.modern.ModernTheme.px(300), mpv5.ui.modern.ModernTheme.px(260)));
+
+        // Editor tab: text area with HTML formatting toolbar
+        descr.setFont(new Font(Font.MONOSPACED, Font.PLAIN, mpv5.ui.modern.ModernTheme.font(0, Font.PLAIN).getSize()));
+        descr.setLineWrap(true);
+        descr.setWrapStyleWord(true);
+        jScrollPane2.setBorder(javax.swing.BorderFactory.createLineBorder(mpv5.ui.modern.ModernTheme.border()));
+
+        JPanel formatToolbar = new JPanel(new FlowLayout(FlowLayout.LEFT, mpv5.ui.modern.ModernTheme.px(4), mpv5.ui.modern.ModernTheme.px(2)));
+        formatToolbar.setOpaque(false);
+
+        JButton boldBtn = formatButton("B", "<b>", "</b>", "Bold");
+        boldBtn.setFont(new Font(Font.DIALOG, Font.BOLD, mpv5.ui.modern.ModernTheme.font(0, Font.BOLD).getSize()));
+        JButton italicBtn = formatButton("I", "<i>", "</i>", "Italic");
+        italicBtn.setFont(new Font(Font.DIALOG, Font.ITALIC, mpv5.ui.modern.ModernTheme.font(0, Font.ITALIC).getSize()));
+        JButton underlineBtn = formatButton("U", "<u>", "</u>", "Underline");
+        JButton pBtn = formatButton("P", "<p>", "</p>", "Paragraph");
+        JButton brBtn = formatButton("BR", "<br>\n", "", "Line break");
+        JButton linkBtn = createLinkButton();
+        JButton tagBtn = createPlaceholderButton();
+
+        formatToolbar.add(boldBtn);
+        formatToolbar.add(italicBtn);
+        formatToolbar.add(underlineBtn);
+        formatToolbar.add(pBtn);
+        formatToolbar.add(brBtn);
+        formatToolbar.add(linkBtn);
+        formatToolbar.add(tagBtn);
+
+        JPanel sourcePanel = new JPanel(new BorderLayout(0, mpv5.ui.modern.ModernTheme.px(2)));
+        sourcePanel.setOpaque(false);
+        sourcePanel.add(formatToolbar, BorderLayout.NORTH);
+        sourcePanel.add(jScrollPane2, BorderLayout.CENTER);
+
+        // Preview tab: HTML preview pane with controls
+        previewPane.setEditable(false);
+        previewPane.setContentType("text/html");
+        previewPane.putClientProperty(javax.swing.JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
+        previewPane.setFont(mpv5.ui.modern.ModernTheme.font(1, Font.PLAIN));
+        previewPane.addHyperlinkListener(e -> {
+            if (e.getEventType() == javax.swing.event.HyperlinkEvent.EventType.ACTIVATED && e.getURL() != null) {
+                try {
+                    java.awt.Desktop.getDesktop().browse(e.getURL().toURI());
+                } catch (Exception ex) {
+                    Log.Debug(ControlPanel_MailTemplates.class, ex);
+                }
+            }
+        });
+
+        JPanel previewToolbar = new JPanel(new FlowLayout(FlowLayout.LEFT, mpv5.ui.modern.ModernTheme.px(6), mpv5.ui.modern.ModernTheme.px(2)));
+        previewToolbar.setOpaque(false);
+        resolvePlaceholders.setOpaque(false);
+        resolvePlaceholders.addActionListener(e -> renderPreview());
+        JButton refreshPreview = new JButton("↻");
+        refreshPreview.setToolTipText("Refresh preview");
+        refreshPreview.setFocusable(false);
+        refreshPreview.setMargin(new java.awt.Insets(mpv5.ui.modern.ModernTheme.px(2), mpv5.ui.modern.ModernTheme.px(6), mpv5.ui.modern.ModernTheme.px(2), mpv5.ui.modern.ModernTheme.px(6)));
+        refreshPreview.addActionListener(e -> renderPreview());
+        previewToolbar.add(resolvePlaceholders);
+        previewToolbar.add(refreshPreview);
+
+        JScrollPane previewScroll = new JScrollPane(previewPane);
+        previewScroll.setBorder(javax.swing.BorderFactory.createLineBorder(mpv5.ui.modern.ModernTheme.border()));
+
+        JPanel previewPanel = new JPanel(new BorderLayout(0, mpv5.ui.modern.ModernTheme.px(2)));
+        previewPanel.setOpaque(false);
+        previewPanel.add(previewToolbar, BorderLayout.NORTH);
+        previewPanel.add(previewScroll, BorderLayout.CENTER);
+
+        editorTabs.removeAll();
+        editorTabs.addTab(Messages.MAIL_PREVIEW_SOURCE.toString(), sourcePanel);
+        editorTabs.addTab(Messages.MAIL_PREVIEW_RENDERED.toString(), previewPanel);
+        editorTabs.setPreferredSize(new Dimension(mpv5.ui.modern.ModernTheme.px(420), mpv5.ui.modern.ModernTheme.px(300)));
+        editorTabs.addChangeListener(e -> {
+            if (editorTabs.getSelectedIndex() == 1) {
+                renderPreview();
+            }
+        });
+
         mpv5.ui.modern.Card details = new mpv5.ui.modern.Card(b.getString("ControlPanel_MailTemplates.jPanel4.border.title_1"))
                 .row(mpv5.ui.modern.Applets.field(fullname, 2), mpv5.ui.modern.Card.field(groupname.get_Label(), groupname.getComboBox(), 1))
-                .row(mpv5.ui.modern.Card.field(jLabel1.getText(), jScrollPane2))
+                .row(mpv5.ui.modern.Card.field(jLabel1.getText(), editorTabs))
                 .addFull(mpv5.ui.modern.Applets.hint(Messages.MAILTEMPLATES_HINT.toString()));
         add(mpv5.ui.modern.Applets.treePage(b.getString("ControlPanel_MailTemplates.jScrollPane4.border.title_1"), jScrollPane4, null, details), java.awt.BorderLayout.CENTER);
         mpv5.ui.modern.Applets.danger(jButton4);
         mpv5.ui.modern.PrimaryButton save = new mpv5.ui.modern.PrimaryButton(jButton2.getText(), "/images/16/filesave.png");
         save.addActionListener(e -> jButton2.doClick());
         actions = mpv5.ui.modern.Applets.actionBar(new javax.swing.JComponent[]{jButton4}, new javax.swing.JComponent[]{jButton3, jButton7, save});
+    }
+
+    private JButton formatButton(String label, String openTag, String closeTag, String tooltip) {
+        JButton b = new JButton(label);
+        b.setToolTipText(tooltip);
+        b.setFocusable(false);
+        b.setMargin(new java.awt.Insets(mpv5.ui.modern.ModernTheme.px(2), mpv5.ui.modern.ModernTheme.px(6), mpv5.ui.modern.ModernTheme.px(2), mpv5.ui.modern.ModernTheme.px(6)));
+        b.addActionListener(e -> wrapSelection(openTag, closeTag));
+        return b;
+    }
+
+    private void wrapSelection(String openTag, String closeTag) {
+        int start = descr.getSelectionStart();
+        int end = descr.getSelectionEnd();
+        String selected = descr.getSelectedText();
+        if (selected == null || selected.isEmpty()) {
+            descr.insert(openTag + closeTag, start);
+            descr.setCaretPosition(start + openTag.length());
+        } else {
+            descr.replaceRange(openTag + selected + closeTag, start, end);
+            descr.setSelectionStart(start + openTag.length());
+            descr.setSelectionEnd(start + openTag.length() + selected.length());
+        }
+        descr.requestFocusInWindow();
+    }
+
+    private JButton createLinkButton() {
+        JButton b = new JButton("Link");
+        b.setToolTipText("Insert link <a href=\"...\">");
+        b.setFocusable(false);
+        b.setMargin(new java.awt.Insets(mpv5.ui.modern.ModernTheme.px(2), mpv5.ui.modern.ModernTheme.px(6), mpv5.ui.modern.ModernTheme.px(2), mpv5.ui.modern.ModernTheme.px(6)));
+        b.addActionListener(e -> {
+            String selected = descr.getSelectedText();
+            String url = "https://";
+            wrapSelection("<a href=\"" + url + "\">", "</a>");
+        });
+        return b;
+    }
+
+    private JButton createPlaceholderButton() {
+        JButton b = new JButton("{...}");
+        b.setToolTipText("Insert placeholder tag");
+        b.setFocusable(false);
+        b.setMargin(new java.awt.Insets(mpv5.ui.modern.ModernTheme.px(2), mpv5.ui.modern.ModernTheme.px(6), mpv5.ui.modern.ModernTheme.px(2), mpv5.ui.modern.ModernTheme.px(6)));
+        b.addActionListener(e -> {
+            javax.swing.JPopupMenu menu = new javax.swing.JPopupMenu();
+            String[] tags = {
+                "{item.cnumber}",
+                "{item.cname}",
+                "{contact.cname}",
+                "{contact.mailaddress}",
+                "{user.cname}",
+                "{item.totalnet}",
+                "{item.totaltax}",
+                "{item.totalbrut}",
+                "{date}"
+            };
+            for (String tag : tags) {
+                javax.swing.JMenuItem item = new javax.swing.JMenuItem(tag);
+                item.addActionListener(ev -> wrapSelection(tag, ""));
+                menu.add(item);
+            }
+            menu.show(b, 0, b.getHeight());
+        });
+        return b;
+    }
+
+    public void renderPreview() {
+        String text = descr.getText();
+        if (text == null) {
+            text = "";
+        }
+        if (resolvePlaceholders.isSelected()) {
+            text = resolveSamplePlaceholders(text);
+        }
+        String html;
+        if (mpv5.mail.SimpleMail.isHtml(text)) {
+            html = text;
+        } else {
+            html = "<html><body style=\"font-family: sans-serif; font-size: 13px; line-height: 1.5; padding: 10px;\">"
+                    + text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\n", "<br>")
+                    + "</body></html>";
+        }
+        try {
+            previewPane.setContentType("text/html");
+            previewPane.setText(html);
+        } catch (Exception e) {
+            Log.Debug(this, e);
+            previewPane.setContentType("text/plain");
+            previewPane.setText(text);
+        }
+        previewPane.setCaretPosition(0);
+    }
+
+    public static String resolveSamplePlaceholders(String text) {
+        if (text == null) {
+            return "";
+        }
+        String s = text;
+        String[][] samples = {
+            {"{item.cnumber}", "RE-2026-0042"},
+            {"[item.cnumber]", "RE-2026-0042"},
+            {"<item.cnumber>", "RE-2026-0042"},
+            {"{item.cname}", "Invoice / Rechnung"},
+            {"[item.cname]", "Invoice / Rechnung"},
+            {"<item.cname>", "Invoice / Rechnung"},
+            {"{contact.cname}", "Musterfirma GmbH"},
+            {"[contact.cname]", "Musterfirma GmbH"},
+            {"<contact.cname>", "Musterfirma GmbH"},
+            {"{contact.prename}", "Erika"},
+            {"[contact.prename]", "Erika"},
+            {"<contact.prename>", "Erika"},
+            {"{contact.name}", "Mustermann"},
+            {"[contact.name]", "Mustermann"},
+            {"<contact.name>", "Mustermann"},
+            {"{contact.mailaddress}", "erika@musterfirma.de"},
+            {"[contact.mailaddress]", "erika@musterfirma.de"},
+            {"<contact.mailaddress>", "erika@musterfirma.de"},
+            {"{user.cname}", "Max Admin"},
+            {"[user.cname]", "Max Admin"},
+            {"<user.cname>", "Max Admin"},
+            {"{item.totalnet}", "1.000,00 €"},
+            {"[item.totalnet]", "1.000,00 €"},
+            {"<item.totalnet>", "1.000,00 €"},
+            {"{item.totaltax}", "190,00 €"},
+            {"[item.totaltax]", "190,00 €"},
+            {"<item.totaltax>", "190,00 €"},
+            {"{item.totalbrut}", "1.190,00 €"},
+            {"[item.totalbrut]", "1.190,00 €"},
+            {"<item.totalbrut>", "1.190,00 €"},
+            {"{date}", "17.11.2026"},
+            {"[date]", "17.11.2026"},
+            {"<date>", "17.11.2026"}
+        };
+        for (String[] pair : samples) {
+            s = s.replace(pair[0], pair[1]);
+        }
+        return s;
+    }
+
+    public JTabbedPane getEditorTabs() {
+        return editorTabs;
+    }
+
+    public JEditorPane getPreviewPane() {
+        return previewPane;
+    }
+
+    public javax.swing.JTextArea getSourceArea() {
+        return descr;
     }
 
     @Override
