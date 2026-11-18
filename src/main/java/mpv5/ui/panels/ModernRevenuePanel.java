@@ -476,9 +476,13 @@ public class ModernRevenuePanel extends ModernDataPanel {
         importZugferdBtn.setToolTipText(Messages.ZUGFERD_IMPORT_HINT.toString());
         importZugferdBtn.addActionListener(e -> importZugferdDialog());
 
-        JPanel importRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        JPanel importRow = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0)) {
+            @Override
+            public Dimension getMaximumSize() {
+                return new Dimension(Integer.MAX_VALUE, getPreferredSize().height);
+            }
+        };
         importRow.setOpaque(false);
-        importRow.setAlignmentX(Component.LEFT_ALIGNMENT);
         importRow.setBorder(BorderFactory.createEmptyBorder(0, 0, ModernTheme.px(8), 0));
         importRow.add(importZugferdBtn);
         filterBar.add(importRow);

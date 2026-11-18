@@ -125,21 +125,25 @@ public class ControlPanel_Folders extends JPanel implements ControlApplet {
         cacheField.getDocument().addDocumentListener(dl);
         legacyBackupField.getDocument().addDocumentListener(dl);
 
-        // Card 1: Documents & Exports
+        // Card 1: Supported Path Variables (top)
+        Card varsCard = new Card(Messages.FOLDERS_VARS_TITLE.toString())
+                .addFull(Applets.hint(Messages.FOLDERS_VARS_HINT.toString()));
+
+        // Card 2: Documents & Exports
         Card baseCard = new Card(Messages.FOLDERS_CARD_BASE.toString())
                 .addFull(Applets.hint(Messages.FILENAME_INFO.toString().split("\n\n")[0]))
                 .row(Card.field(Messages.FOLDERS_CARD_BASE.toString(),
                         createPathRow(baseField, () -> browseFolder(baseField), () -> openFolder(resolvedBaseDir()))))
                 .addFull(baseHint);
 
-        // Card 2: Expense Receipts Archive
+        // Card 3: Expense Receipts Archive
         Card receiptsCard = new Card(Messages.FOLDERS_CARD_RECEIPTS.toString())
                 .addFull(Applets.hint(Messages.FOLDERS_RECEIPTS_HINT.toString()))
                 .row(Card.field(Messages.FOLDERS_CARD_RECEIPTS.toString(),
                         createPathRow(receiptsField, () -> browseFolder(receiptsField), () -> openFolder(resolvedReceiptsDir()))))
                 .addFull(receiptsHint);
 
-        // Card 3: Incoming E-Invoices (ZUGFeRD / Factur-X / XRechnung)
+        // Card 4: Incoming E-Invoices (ZUGFeRD / Factur-X / XRechnung)
         autoImportEinvoice.setOpaque(false);
         importEinvoiceNow.addActionListener(e -> importEinvoiceNow());
         JPanel einvoiceBtnRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
@@ -154,14 +158,14 @@ public class ControlPanel_Folders extends JPanel implements ControlApplet {
                 .addFull(einvoiceHint)
                 .addFull(einvoiceBtnRow);
 
-        // Card 4: Database Backups (ZIP)
+        // Card 5: Database Backups (ZIP)
         Card zipCard = new Card(Messages.FOLDERS_CARD_ZIPBACKUP.toString())
                 .addFull(Applets.hint(Messages.ZIPBACKUP_DESC.toString()))
                 .row(Card.field(Messages.FOLDERS_CARD_ZIPBACKUP.toString(),
                         createPathRow(zipBackupField, () -> browseFolder(zipBackupField), () -> openFolder(resolvedZipBackupDir()))))
                 .addFull(zipBackupHint);
 
-        // Card 5: Temporary Files & Cache
+        // Card 6: Temporary Files & Cache
         wipeCacheBtn.setText(Messages.LOCALFILES_DELETE.toString());
         wipeCacheBtn.addActionListener(e -> wipeCache());
         JPanel cacheBtnRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
@@ -175,19 +179,15 @@ public class ControlPanel_Folders extends JPanel implements ControlApplet {
                 .addFull(cacheHint)
                 .addFull(cacheBtnRow);
 
-        // Card 6: Legacy Database Backups
+        // Card 7: Legacy Database Backups
         Card legacyCard = new Card(Messages.FOLDERS_CARD_LEGACY_BACKUP.toString())
                 .addFull(Applets.hint(Messages.FOLDER_BACKUP_SET.toString()))
                 .row(Card.field(Messages.FOLDERS_CARD_LEGACY_BACKUP.toString(),
                         createPathRow(legacyBackupField, () -> browseFolder(legacyBackupField), () -> openFolder(resolvedLegacyBackupDir()))))
                 .addFull(legacyBackupHint);
 
-        // Card 7: Supported Path Variables
-        Card varsCard = new Card(Messages.FOLDERS_VARS_TITLE.toString())
-                .addFull(Applets.hint(Messages.FOLDERS_VARS_HINT.toString()));
-
         add(Applets.page(Messages.FOLDERS_DESC.toString(), 420,
-                baseCard, receiptsCard, einvoiceCard, zipCard, cacheCard, legacyCard, varsCard), BorderLayout.CENTER);
+                varsCard, baseCard, receiptsCard, einvoiceCard, zipCard, cacheCard, legacyCard), BorderLayout.CENTER);
 
         // Action bar
         JButton appDirBtn = new JButton(Main.MPPATH == null ? ".yabs" : new File(Main.MPPATH).getName());
