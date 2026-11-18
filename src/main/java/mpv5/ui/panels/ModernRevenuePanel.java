@@ -18,7 +18,6 @@ package mpv5.ui.panels;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -476,11 +475,10 @@ public class ModernRevenuePanel extends ModernDataPanel {
         importZugferdBtn.setToolTipText(Messages.ZUGFERD_IMPORT_HINT.toString());
         importZugferdBtn.addActionListener(e -> importZugferdDialog());
 
-        JPanel importRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        JPanel importRow = new JPanel(new BorderLayout());
         importRow.setOpaque(false);
-        importRow.setAlignmentX(Component.LEFT_ALIGNMENT);
         importRow.setBorder(BorderFactory.createEmptyBorder(0, 0, ModernTheme.px(8), 0));
-        importRow.add(importZugferdBtn);
+        importRow.add(importZugferdBtn, BorderLayout.CENTER);
         filterBar.add(importRow);
 
         ModernTheme.roomy(searchField);
@@ -1047,8 +1045,8 @@ public class ModernRevenuePanel extends ModernDataPanel {
                     continue;
                 }
                 Revenue newRev = parsed.toRevenue(defaultIncomeAccountId(), 1);
-                if (!newRev.save(true) || newRev.__getIDS() <= 0) {
-                    throw new IllegalStateException(Messages.RECEIPT_SAVE_FAILED.toString() + " (" + f.getName() + ")");
+                if (!newRev.save(true)) {
+                    throw new IllegalStateException("Einnahme konnte nicht gespeichert werden: " + f.getName());
                 }
                 RevenueReceipts.attach(newRev, f);
                 importedRevenues.add(newRev);
@@ -1061,17 +1059,20 @@ public class ModernRevenuePanel extends ModernDataPanel {
         if (!importedRevenues.isEmpty()) {
             refresh();
             setDataOwner(importedRevenues.get(importedRevenues.size() - 1), true);
-            Popup.notice(String.format(Messages.RECEIPT_IMPORTED_REVENUES_SUCCESS.toString(), importedRevenues.size()));
+            Popup.notice(importedRevenues.size() + " E-Rechnung(en) erfolgreich als neue Einnahme(n) importiert.");
         }
 
         if (!deniedFiles.isEmpty()) {
             JOptionPane.showMessageDialog(this,
-                    String.format(Messages.RECEIPT_INVALID_INVOICE_BODY.toString(), String.join("\n- ", deniedFiles)),
-                    Messages.RECEIPT_INVALID_INVOICE_TITLE.toString(), JOptionPane.WARNING_MESSAGE);
+                    "Folgende Datei(en) sind keine g\u00fcltigen ZUGFeRD- oder E-Rechnungen (XML oder PDF mit eingebettetem XML) und wurden abgelehnt:\n- "
+                    + String.join("\n- ", deniedFiles)
+                    + "\n\nEinfache PDFs oder Beleg-Scans k\u00f6nnen \u00fcber 'Beleg verkn\u00fcpfen' an eine bestehende Einnahme angeh\u00e4ngt werden.",
+                    "Keine g\u00fcltige E-Rechnung", JOptionPane.WARNING_MESSAGE);
         } else if (!alreadyImported.isEmpty() && importedRevenues.isEmpty()) {
             JOptionPane.showMessageDialog(this,
-                    String.format(Messages.RECEIPT_ALREADY_IMPORTED_NOTICE.toString(), String.join("\n- ", alreadyImported)),
-                    Messages.RECEIPT_ALREADY_IMPORTED_TITLE.toString(), JOptionPane.INFORMATION_MESSAGE);
+                    "Die ausgew\u00e4hlte(n) E-Rechnung(en) wurden bereits importiert:\n- "
+                    + String.join("\n- ", alreadyImported),
+                    "Bereits importiert", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
@@ -1113,8 +1114,8 @@ public class ModernRevenuePanel extends ModernDataPanel {
             }
             refreshPreview();
             JOptionPane.showMessageDialog(this,
-                    Messages.RECEIPT_NOT_SAVED_BEFORE_ATTACH.toString(),
-                    Messages.RECEIPT_NOT_SAVED_TITLE.toString(), JOptionPane.WARNING_MESSAGE);
+                    "Bitte speichern Sie die Einnahme zuerst, bevor Sie Belege verkn\u00fcpfen.",
+                    "Einnahme nicht gespeichert", JOptionPane.WARNING_MESSAGE);
             return;
         }
         try {
@@ -1122,9 +1123,9 @@ public class ModernRevenuePanel extends ModernDataPanel {
             Receipt r = RevenueReceipts.attach(dataOwner, source);
             if (r != null) {
                 if (isPlainPdf) {
-                    String checkNote = String.format(Messages.RECEIPT_PLAIN_PDF_NOTE.toString(), source.getName());
+                    String checkNote = "[Beleg: " + source.getName() + " (einfacher PDF-Beleg verkn\u00fcpft - Rechnerische Richtigkeit der Belegwerte kann nicht automatisch gepr\u00fcft werden)]";
                     String curNotes = notesArea.getText();
-                    if (!curNotes.contains(checkNote)) {
+                    if (!curNotes.contains("Rechnerische Richtigkeit")) {
                         String updated = (curNotes == null || curNotes.trim().isEmpty()) ? checkNote : curNotes.trim() + "\n" + checkNote;
                         notesArea.setText(updated);
                         dataOwner.setDescription(updated);
@@ -1136,12 +1137,12 @@ public class ModernRevenuePanel extends ModernDataPanel {
                     loadReceipts();
                     notifyViewOpened();
                     refreshPreview(source);
-                    Popup.notice(String.format(Messages.RECEIPT_PLAIN_PDF_ARCHIVED.toString(), r.originalName));
+                    Popup.notice("Beleg archiviert: " + r.originalName + "\n(Hinweis: Einfacher PDF-Beleg - Werte k\u00f6nnen nicht automatisch auf rechnerische Richtigkeit gepr\u00fcft werden.)");
                 } else {
                     loadReceipts();
                     notifyViewOpened();
                     refreshPreview(source);
-                    Popup.notice(String.format(Messages.RECEIPT_ARCHIVED.toString(), r.originalName) + "\nSHA-256: " + r.sha256.substring(0, 16) + "...");
+                    Popup.notice("Beleg archiviert: " + r.originalName + "\nSHA-256: " + r.sha256.substring(0, 16) + "...");
                 }
             }
         } catch (Exception ex) {
@@ -1194,14 +1195,12 @@ public class ModernRevenuePanel extends ModernDataPanel {
                 if (dataOwner.__getGroupsids() <= 0) {
                     dataOwner.setGroupsids(1);
                 }
-                if (dataOwner.save(true) && dataOwner.__getIDS() > 0) {
+                if (dataOwner.save(true)) {
                     ids_ = dataOwner.__getIDS();
                     RevenueReceipts.attach(dataOwner, source);
                     refresh();
                     setDataOwner(dataOwner, true);
-                    Popup.notice(String.format(Messages.RECEIPT_IMPORTED_SINGLE_REVENUE.toString(), source.getName()));
-                } else {
-                    Popup.error(this, Messages.RECEIPT_SAVE_FAILED.toString());
+                    Popup.notice("E-Rechnung als Einnahme importiert: " + source.getName());
                 }
             } catch (Exception ex) {
                 Log.Debug(ModernRevenuePanel.class, ex);
@@ -1212,22 +1211,6 @@ public class ModernRevenuePanel extends ModernDataPanel {
     private int defaultIncomeAccountId() {
         if (accountObjects != null && !accountObjects.isEmpty()) {
             return accountObjects.get(0).__getIDS();
-        }
-        if (accountsids_ > 0) {
-            return accountsids_;
-        }
-        try {
-            ArrayList<DatabaseObject> inc = DatabaseObject.getObjects(Context.getAccounts(), new QueryCriteria("intaccounttype", Account.INCOME));
-            if (inc != null && !inc.isEmpty()) {
-                accountObjects = inc;
-                return inc.get(0).__getIDS();
-            }
-            ArrayList<DatabaseObject> all = DatabaseObject.getObjects(Context.getAccounts());
-            if (all != null && !all.isEmpty()) {
-                return all.get(0).__getIDS();
-            }
-        } catch (Exception ex) {
-            Log.Debug(ModernRevenuePanel.class, ex);
         }
         return 1;
     }

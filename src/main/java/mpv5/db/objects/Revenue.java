@@ -44,8 +44,8 @@ public class Revenue extends DatabaseObject implements Formattable {
     private String cnumber;
     private String cname;
     private int accountsids;
-    private int contactsids = -1;
-    private int refOrderids = -1;
+    private int contactsids;
+    private int refOrderids;
     private FormatHandler formatHandler;
     private Date dateadded;
     private Date dateend;
@@ -300,7 +300,7 @@ public class Revenue extends DatabaseObject implements Formattable {
      * with this hack it does not check the id if its null)
      */
     public Integer __getContactsids() {
-        if (contactsids > 0) {
+        if (contactsids >= 0) {
             return contactsids;
         } else {
             return (Integer) null;
@@ -324,7 +324,7 @@ public class Revenue extends DatabaseObject implements Formattable {
      * with this hack it does not check the id if its null)
      */
     public Integer __getRefOrderids() {
-        if (refOrderids > 0) {
+        if (refOrderids >= 0) {
             return refOrderids;
         } else {
             return (Integer) null;

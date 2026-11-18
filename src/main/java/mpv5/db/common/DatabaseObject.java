@@ -922,10 +922,6 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                             message = this.__getCname() + Messages.INSERTED;
                         }
                         ids = QueryHandler.instanceOf().clone(getContext()).insert(collect(), message);
-                        if (ids <= 0) {
-                            Log.Debug(this, "Insert failed for " + getContext() + " (returned id <= 0)");
-                            return false;
-                        }
                         IDENTITY = new Entity<Context, Integer>(getContext(), ids);
                         Log.Debug(this, "The inserted row has id: " + IDENTITY);
                     } else {

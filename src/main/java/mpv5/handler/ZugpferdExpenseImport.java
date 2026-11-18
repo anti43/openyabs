@@ -180,7 +180,7 @@ public final class ZugpferdExpenseImport {
          */
         public Expense toExpense(int accountId, int groupId) {
             Expense e = new Expense();
-            String num = cut(invoiceNumber, 250);
+            String num = cut(invoiceNumber.isEmpty() && sourceFile != null ? stripExtension(sourceFile.getName()) : invoiceNumber, 250);
             if (!num.isEmpty()) {
                 e.setCnumber(num);
                 e.setCname(num);
@@ -202,7 +202,7 @@ public final class ZugpferdExpenseImport {
          */
         public Revenue toRevenue(int accountId, int groupId) {
             Revenue r = new Revenue();
-            String num = cut(invoiceNumber, 250);
+            String num = cut(invoiceNumber.isEmpty() && sourceFile != null ? stripExtension(sourceFile.getName()) : invoiceNumber, 250);
             if (!num.isEmpty()) {
                 r.setCnumber(num);
                 r.setCname(num);
@@ -213,8 +213,6 @@ public final class ZugpferdExpenseImport {
             r.setTaxpercentvalue(taxRate);
             r.setAccountsids(accountId > 0 ? accountId : 1);
             r.setGroupsids(groupId > 0 ? groupId : 1);
-            r.setContactsids(-1);
-            r.setRefOrderids(-1);
             r.setDateadded(issueDate != null ? issueDate : new Date());
             r.setDateend(dueDate != null ? dueDate : r.__getDateadded());
             r.setStatus(mpv5.db.objects.Item.STATUS_QUEUED);
