@@ -28,10 +28,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 import mpv5.Main;
 import mpv5.db.common.Context;
 import mpv5.db.common.QueryHandler;
@@ -55,7 +53,6 @@ import mpv5.utils.date.DateConverter;
  *   <li>Alongside the files an append-only {@code SHA256SUMS} manifest is maintained.</li>
  *   <li>The database table {@code revenue_receipts} holds only metadata, reference,
  *       file path and the cryptographic SHA-256 checksum.</li>
- *   <li>Also seamlessly surfaces files locked via {@code gobd_income_lock} if present.</li>
  * </ul>
  */
 public final class RevenueReceipts {
@@ -164,14 +161,13 @@ public final class RevenueReceipts {
 
     /**
      * @param revenueId
-     * @return all receipts linked to the revenue, including any gobd_income_lock file
+     * @return all receipts linked to the revenue
      */
     public static List<Receipt> of(int revenueId) {
         if (revenueId <= 0) {
             return Collections.emptyList();
         }
         List<Receipt> list = new ArrayList<Receipt>();
-        Set<String> seenHashes = new HashSet<String>();
         try {
             ReturnValue rv = db().freeSelectQuery(
                     "SELECT ids, revenuesids, originalname, archivepath, filesize, sha256, mimetype, imported_at, imported_by "
@@ -189,44 +185,11 @@ public final class RevenueReceipts {
                     Date at = date(row[7]);
                     String by = row[8] != null ? String.valueOf(row[8]) : "";
                     list.add(new Receipt(id, revId, orig, path, size, hash, mime, at, by));
-                    if (!hash.isEmpty()) {
-                        seenHashes.add(hash.toLowerCase(Locale.ROOT));
-                    }
                 }
             }
         } catch (Exception e) {
             Log.Debug(RevenueReceipts.class, e);
         }
-
-        // Also check if gobd_income_lock (table of the GoBD plugin) has an archived file for this revenue
-        if (!lockTableExists()) {
-            return list;
-        }
-        try {
-            ReturnValue rvLock = db().freeSelectQuery(
-                    "SELECT revenue_id, original_name, archive_path, file_size, file_sha256, artifact_format, imported_at, imported_by "
-                    + "FROM gobd_income_lock WHERE revenue_id = " + revenueId,
-                    MPSecurityManager.VIEW, null);
-            if (rvLock != null && rvLock.hasData()) {
-                for (Object[] row : rvLock.getData()) {
-                    int revId = Integer.parseInt(String.valueOf(row[0]));
-                    String orig = row[1] != null ? String.valueOf(row[1]) : "";
-                    String path = row[2] != null ? String.valueOf(row[2]) : "";
-                    long size = row[3] != null ? Long.parseLong(String.valueOf(row[3])) : 0L;
-                    String hash = row[4] != null ? String.valueOf(row[4]) : "";
-                    String format = row[5] != null ? String.valueOf(row[5]) : "";
-                    Date at = date(row[6]);
-                    String by = row[7] != null ? String.valueOf(row[7]) : "";
-                    if (!hash.isEmpty() && seenHashes.add(hash.toLowerCase(Locale.ROOT))) {
-                        String mime = detectMime(orig.isEmpty() ? path : orig);
-                        list.add(new Receipt(-revId, revId, orig.isEmpty() ? "GoBD-" + format : orig, path, size, hash, mime, at, by));
-                    }
-                }
-            }
-        } catch (Exception ignored) {
-            // gobd_income_lock might not exist yet if plugin not installed
-        }
-
         return list;
     }
 
@@ -238,31 +201,11 @@ public final class RevenueReceipts {
             ReturnValue rv = db().freeSelectQuery(
                     "SELECT ids FROM revenue_receipts WHERE sha256 = " + q(sha256.trim().toLowerCase(Locale.ROOT)),
                     MPSecurityManager.VIEW, null);
-            if (rv != null && rv.hasData() && rv.getData() != null && rv.getData().length > 0) {
-                return true;
-            }
+            return rv != null && rv.hasData() && rv.getData() != null && rv.getData().length > 0;
         } catch (Exception e) {
             Log.Debug(RevenueReceipts.class, e);
-        }
-        if (!lockTableExists()) {
             return false;
         }
-        try {
-            ReturnValue rv2 = db().freeSelectQuery(
-                    "SELECT revenue_id FROM gobd_income_lock WHERE file_sha256 = " + q(sha256.trim().toLowerCase(Locale.ROOT)),
-                    MPSecurityManager.VIEW, null);
-            return rv2 != null && rv2.hasData() && rv2.getData() != null && rv2.getData().length > 0;
-        } catch (Exception ignored) {
-            return false;
-        }
-    }
-
-    /**
-     * @return true if the table of the GoBD plugin exists: without the plugin
-     * it is not queried (no database error in the log)
-     */
-    private static boolean lockTableExists() {
-        return mpv5.db.common.DatabaseConnection.tableExists("gobd_income_lock");
     }
 
     private static Date date(Object o) {
