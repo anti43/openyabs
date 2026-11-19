@@ -859,8 +859,6 @@ public enum Messages {
     JOURNAL_TAX_RATES_INCOME("Income by tax rate (net / VAT):"),
     JOURNAL_TAX_RATES_EXPENSES("Expenses by tax rate (net / input VAT):"),
     JOURNAL_TAX_RATE_UNKNOWN("without items"),
-    JOURNAL_EINVOICE_CHECK("E-invoice: %d invoices to businesses above 250 EUR, %d as e-invoice, %d without (hover for the rules)"),
-    JOURNAL_EINVOICE_INFO("Since 2025 businesses in Germany must be able to receive e-invoices. Invoices to other businesses in Germany must be e-invoices (XRechnung or ZUGFeRD EN 16931) from 2027 (previous year turnover above 800,000 EUR) or 2028 (all). Exempt: small-amount invoices up to 250 EUR gross, tickets, invoices to consumers. The cash book and cash receipts need no e-invoice (GoBD, TSE and the DSFinV-K export apply). Set the e-invoice format at the contact (tab E-Invoice)."),
     TEMPLATE_CHOOSE("Several %s templates are assigned to you for this group. Which one do you want to use?"),
     TEMPLATE_CHOOSE_TITLE("Choose template"),
     BOM_SECTION_GENERAL("Bill of materials"),

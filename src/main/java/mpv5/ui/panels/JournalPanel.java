@@ -223,7 +223,6 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
      */
     private final List<Component> othersColumn = new ArrayList<Component>();
     private final JLabel taxRates = new JLabel(" ");
-    private final JLabel einvoiceCheck = new JLabel(" ");
     private final JLabel exportResult = new JLabel(" ");
     private File exportedFile;
     //contact overview
@@ -809,9 +808,6 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         //the sums: income, expenses, result, open items, volume
         taxRates.setFont(ModernTheme.font(-1, Font.PLAIN));
         taxRates.setForeground(ModernTheme.muted());
-        einvoiceCheck.setFont(ModernTheme.font(-1, Font.PLAIN));
-        einvoiceCheck.setForeground(ModernTheme.muted());
-        einvoiceCheck.setToolTipText("<html><div style='width:420px'>" + Messages.JOURNAL_EINVOICE_INFO + "</div>"); //NOI18N
         exportResult.setName("exportResult"); //NOI18N
         exportResult.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
@@ -826,7 +822,6 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         info.add(taxRates);
         JPanel info2 = new JPanel(new BorderLayout(gap, 0));
         info2.setOpaque(false);
-        info2.add(einvoiceCheck, BorderLayout.WEST);
         info2.add(exportResult, BorderLayout.CENTER);
         Card sums = new Card(null)
                 .addFull(sumsGrid())
@@ -1033,7 +1028,6 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         List<Entry> entries;
         Totals totals;
         Map<BigDecimal, String> labels;
-        JournalAdviserPackage.EInvoiceCheck check;
     }
 
     private void setData() {
@@ -1223,11 +1217,6 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         rates(list, l.labels.keySet());
         l.entries = list;
         l.totals = JournalCalc.compute(list, paidInParts);
-        try {
-            l.check = new JournalAdviserPackage(list, l.totals, f.time.getStart(), f.time.getEnd(), new ArrayList<String>(), l.labels).checkEInvoices();
-        } catch (Exception e) {
-            Log.Debug(JournalPanel.class, e);
-        }
         return l;
     }
 
@@ -1532,14 +1521,6 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         }
         taxRates.setText(rates(Messages.JOURNAL_TAX_RATES_INCOME.toString(), t.incomeByRate, l.labels)
                 + "     " + rates(Messages.JOURNAL_TAX_RATES_EXPENSES.toString(), t.expensesByRate, l.labels));
-
-        JournalAdviserPackage.EInvoiceCheck c = l.check;
-        if (c == null || c.invoices == 0) {
-            einvoiceCheck.setText(" ");
-        } else {
-            einvoiceCheck.setText(String.format(Messages.JOURNAL_EINVOICE_CHECK.toString(), c.b2b, c.b2bEInvoice, c.b2b - c.b2bEInvoice));
-            einvoiceCheck.setForeground(c.b2bWithoutEInvoice.isEmpty() ? ModernTheme.muted() : Applets.DANGER);
-        }
     }
 
     private static String rates(String label, Map<BigDecimal, BigDecimal[]> m, Map<BigDecimal, String> labels) {
