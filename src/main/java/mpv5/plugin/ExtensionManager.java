@@ -743,6 +743,34 @@ public final class ExtensionManager {
      * @throws IOException if it can not be copied or has no plugin
      */
     public synchronized List<Installed> install(File jar) throws IOException {
+        return installFile(jar);
+    }
+
+    /**
+     * @param f
+     * @return true for a Groovy plugin or a jar with a YaBS plugin
+     * (META-INF/services), i.e. a file for {@link #install(File)}, not for the
+     * classic plugins of the database (class plugin.Main)
+     */
+    public static boolean isExtensionFile(File f) {
+        if (f == null || !f.isFile()) {
+            return false;
+        }
+        String n = f.getName().toLowerCase(java.util.Locale.ROOT);
+        if (n.endsWith(".groovy")) {
+            return true;
+        }
+        if (!n.endsWith(".jar")) {
+            return false;
+        }
+        try (java.util.jar.JarFile j = new java.util.jar.JarFile(f)) {
+            return j.getEntry("META-INF/services/" + YabsExtension.class.getName()) != null;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    private List<Installed> installFile(File jar) throws IOException {
         //a jar of the same name is replaced
         File target = new File(folder, jar.getName());
         for (Installed x : new ArrayList<Installed>(installed)) {

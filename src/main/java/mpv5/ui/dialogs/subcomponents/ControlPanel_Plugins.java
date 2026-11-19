@@ -21,6 +21,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.Font;
 import java.awt.datatransfer.DataFlavor;
 import java.io.File;
@@ -51,7 +52,6 @@ import mpv5.ui.misc.RichList;
 import mpv5.ui.modern.Applets;
 import mpv5.ui.modern.Card;
 import mpv5.ui.modern.ModernTheme;
-import mpv5.ui.modern.PrimaryButton;
 
 /**
  * The plugin manager: the plugins of YaBS and of the plugins folder (jars and
@@ -75,43 +75,70 @@ public final class ControlPanel_Plugins extends JPanel implements ControlApplet 
 
         list.setLayout(new BoxLayout(list, BoxLayout.Y_AXIS));
         list.setOpaque(false);
+
+        //the three ways to add a plugin, side by side and of the same weight
+        JPanel add = new JPanel(new GridLayout(1, 3, ModernTheme.px(10), 0));
+        add.setOpaque(false);
+        add.add(tile(Messages.PLUGINS_NEW_GROOVY.toString(), Messages.PLUGINS_NEW_GROOVY_HINT.toString(), RichList.GREEN, "G", this::newGroovy));
+        add.add(tile(Messages.PLUGINS_IMPORT_GROOVY.toString(), Messages.PLUGINS_IMPORT_GROOVY_HINT.toString(), RichList.GREEN, "G",
+                () -> chooseAndInstall(Messages.PLUGINS_GROOVY_FILES.toString(), "groovy")));
+        add.add(tile(Messages.PLUGINS_IMPORT_JAR.toString(), Messages.PLUGINS_IMPORT_JAR_HINT.toString(), RichList.PURPLE, "J",
+                () -> chooseAndInstall(Messages.PLUGINS_JAR_FILES.toString(), "jar")));
+        Card adding = new Card(Messages.PLUGINS_ADD.toString())
+                .addFull(Applets.hint(Messages.PLUGINS_HINT.toString()))
+                .addFull(add);
+
         JLabel folder = new JLabel(String.format(Messages.PLUGINS_FOLDER.toString(), manager.folder().getAbsolutePath()));
         folder.setForeground(ModernTheme.muted());
         Card plugins = new Card(Messages.PLUGINS_TITLE.toString())
-                .addFull(Applets.hint(Messages.PLUGINS_HINT.toString()))
-                .addFull(folder)
-                .addFull(list);
-        Card classic;
+                .addFull(list)
+                .addFull(folder);
+
+        JPanel cards = new JPanel();
+        cards.setLayout(new BoxLayout(cards, BoxLayout.Y_AXIS));
+        cards.setOpaque(false);
+        cards.setBorder(ModernTheme.padding(12, 14));
+        cards.add(adding);
+        cards.add(Box.createVerticalStrut(ModernTheme.px(12)));
+        cards.add(plugins);
+
+        //the classic plugins of the database: rarely needed, so folded
         ControlPanel_ClassicPlugins old = null;
         try {
             old = new ControlPanel_ClassicPlugins();
         } catch (Throwable t) {
             Log.Debug(this, t);
         }
-        JPanel page = Applets.page(null, 520, plugins);
         if (old != null) {
-            JPanel oldPage = new JPanel(new BorderLayout());
+            final JPanel oldPage = new JPanel(new BorderLayout());
             oldPage.setOpaque(false);
             oldPage.add(old, BorderLayout.CENTER);
             Component oldActions = old.getAndRemoveActionPanel();
             if (oldActions != null) {
                 oldPage.add(oldActions, BorderLayout.SOUTH);
             }
-            classic = new Card(Messages.PLUGINS_CLASSIC.toString())
+            oldPage.setVisible(false);
+            Card classic = new Card(Messages.PLUGINS_CLASSIC.toString())
                     .addFull(Applets.hint(Messages.PLUGINS_CLASSIC_HINT.toString()))
                     .addFull(oldPage);
-            JPanel both = new JPanel(new BorderLayout(0, ModernTheme.px(12)));
-            both.setOpaque(false);
-            both.add(page, BorderLayout.NORTH);
-            JPanel c = new JPanel(new BorderLayout());
-            c.setOpaque(false);
-            c.setBorder(ModernTheme.padding(0, 14));
-            c.add(classic, BorderLayout.NORTH);
-            both.add(c, BorderLayout.CENTER);
-            add(both, BorderLayout.CENTER);
-        } else {
-            add(page, BorderLayout.CENTER);
+            final JButton toggle = new JButton(Messages.PLUGINS_CLASSIC_SHOW.toString());
+            toggle.addActionListener(e -> {
+                oldPage.setVisible(!oldPage.isVisible());
+                toggle.setText(oldPage.isVisible() ? Messages.PLUGINS_CLASSIC_HIDE.toString() : Messages.PLUGINS_CLASSIC_SHOW.toString());
+                revalidate();
+                repaint();
+            });
+            classic.getHeader().add(toggle, BorderLayout.EAST);
+            cards.add(Box.createVerticalStrut(ModernTheme.px(12)));
+            cards.add(classic);
         }
+        for (Component c : cards.getComponents()) {
+            ((JComponent) c).setAlignmentX(LEFT_ALIGNMENT);
+        }
+        JPanel top = new JPanel(new BorderLayout());
+        top.setBackground(ModernTheme.background());
+        top.add(cards, BorderLayout.NORTH);
+        add(top, BorderLayout.CENTER);
 
         //drop a jar or a .groovy file to install it
         setTransferHandler(new TransferHandler() {
@@ -139,11 +166,7 @@ public final class ControlPanel_Plugins extends JPanel implements ControlApplet 
 
         JButton openFolder = new JButton(Messages.PLUGINS_OPEN_FOLDER.toString());
         openFolder.addActionListener(e -> open(manager.folder()));
-        JButton newGroovy = new JButton(Messages.PLUGINS_NEW_GROOVY.toString());
-        newGroovy.addActionListener(e -> newGroovy());
-        PrimaryButton install = new PrimaryButton(Messages.PLUGINS_INSTALL.toString(), null);
-        install.addActionListener(e -> chooseAndInstall());
-        actions = Applets.actionBar(new JComponent[]{openFolder}, new JComponent[]{newGroovy, install});
+        actions = Applets.actionBar(new JComponent[]{openFolder}, new JComponent[]{});
 
         refresh();
     }
@@ -204,6 +227,11 @@ public final class ControlPanel_Plugins extends JPanel implements ControlApplet 
             err.setForeground(RichList.RED);
             text.add(err);
         }
+        for (Component c : text.getComponents()) {
+            ((JComponent) c).setAlignmentX(LEFT_ALIGNMENT);
+        }
+        //long descriptions are cut, not making the page wider than the window
+        text.setMinimumSize(new java.awt.Dimension(ModernTheme.px(120), 0));
         r.add(text, BorderLayout.CENTER);
 
         JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT, ModernTheme.px(6), 0));
@@ -261,9 +289,37 @@ public final class ControlPanel_Plugins extends JPanel implements ControlApplet 
         }
     }
 
-    private void chooseAndInstall() {
+    /**
+     * A button with a title, a line of explanation and a badge; the three of
+     * them (new Groovy plugin, import Groovy, import jar) have the same size
+     */
+    private static JButton tile(String title, String hint, Color color, String badge, Runnable action) {
+        JButton b = new JButton();
+        b.setLayout(new BorderLayout(ModernTheme.px(10), 0));
+        b.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(ModernTheme.border()), ModernTheme.padding(10, 12)));
+        b.setHorizontalAlignment(JButton.LEFT);
+        b.add(new JLabel(new RichList.Badge(badge, color, ModernTheme.px(28))), BorderLayout.WEST);
+        JPanel text = new JPanel();
+        text.setOpaque(false);
+        text.setLayout(new BoxLayout(text, BoxLayout.Y_AXIS));
+        JLabel t = new JLabel(title.replaceAll("\\.\\.\\.$", ""));
+        t.setFont(ModernTheme.font(1, Font.BOLD));
+        text.add(t);
+        //a fixed width, so the hint wraps and the tiles stay of the same size
+        JLabel h = new JLabel("<html><body style='width:" + ModernTheme.px(170) + "px'>" + hint.replace("&", "&amp;").replace("<", "&lt;") + "</html>");
+        h.setForeground(ModernTheme.muted());
+        h.setFont(ModernTheme.font(-1, Font.PLAIN));
+        text.add(h);
+        b.add(text, BorderLayout.CENTER);
+        b.setToolTipText(title);
+        b.getAccessibleContext().setAccessibleName(title);
+        b.addActionListener(e -> action.run());
+        return b;
+    }
+
+    private void chooseAndInstall(String description, String extension) {
         JFileChooser c = new JFileChooser();
-        c.setFileFilter(new FileNameExtensionFilter(Messages.PLUGINS_FILES.toString(), "jar", "groovy"));
+        c.setFileFilter(new FileNameExtensionFilter(description, extension));
         if (c.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             install(c.getSelectedFile());
         }

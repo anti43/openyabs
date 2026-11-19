@@ -462,4 +462,34 @@ class ExtensionManagerTest {
         GroovyExtension ext = new GroovyExtension(f);
         assertEquals("2.0.9", ext.minYabsVersion());
     }
+
+    /**
+     * The classic import (plugin.Main) hands these files to the plugin list,
+     * e.g. gobd-compliance.jar
+     */
+    @Test
+    public void pluginFilesAreToldFromClassicPlugins() throws Exception {
+        File api = dir.resolve("api.jar").toFile();
+        try (JarOutputStream j = new JarOutputStream(new FileOutputStream(api))) {
+            j.putNextEntry(new JarEntry("META-INF/services/" + YabsExtension.class.getName()));
+            j.write("org.example.Plugin\n".getBytes(StandardCharsets.UTF_8));
+            j.closeEntry();
+        }
+        File classic = dir.resolve("classic.jar").toFile();
+        try (JarOutputStream j = new JarOutputStream(new FileOutputStream(classic))) {
+            j.putNextEntry(new JarEntry("plugin/Main.class"));
+            j.write(new byte[]{1});
+            j.closeEntry();
+        }
+        File groovy = dir.resolve("x.groovy").toFile();
+        Files.write(groovy.toPath(), "//".getBytes(StandardCharsets.UTF_8));
+        File other = dir.resolve("x.txt").toFile();
+        Files.write(other.toPath(), "x".getBytes(StandardCharsets.UTF_8));
+
+        assertTrue(ExtensionManager.isExtensionFile(api));
+        assertTrue(ExtensionManager.isExtensionFile(groovy));
+        assertFalse(ExtensionManager.isExtensionFile(classic));
+        assertFalse(ExtensionManager.isExtensionFile(other));
+        assertFalse(ExtensionManager.isExtensionFile(dir.resolve("missing.jar").toFile()));
+    }
 }
