@@ -68,7 +68,7 @@ class WorkflowGobdTest {
             gobd[0] = m.register(new org.openyabs.gobd.GobdCompliance());
             assertTrue(mpv5.ui.dialogs.Popup.silently(() -> m.start(gobd[0])), String.valueOf(gobd[0].getError()));
             return null;
-        }, true);
+        }, true, null);
         Object g = field(gobd[0].extension, "gobd");
         java.lang.reflect.Constructor<?> ac = Class.forName("org.openyabs.gobd.Audit").getDeclaredConstructor(g.getClass());
         ac.setAccessible(true);

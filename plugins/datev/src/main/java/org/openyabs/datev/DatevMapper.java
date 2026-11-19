@@ -321,7 +321,7 @@ public final class DatevMapper {
                     }
 
                     // BU-Schlüssel
-                    String bu = resolveBuKey(rate, isExpense, config, effectiveGegenkontoObj);
+                    String bu = resolveBuKey(rate, isExpense, config, effectiveGegenkontoObj, gegenkonto);
 
                     // EU-Land u. UStID for 0% EU deliveries (e.g. SKR03 8125 / SKR04 4125)
                     String euVatField = "";
@@ -419,12 +419,18 @@ public final class DatevMapper {
         return contact.equals("barverkauf") || contact.startsWith("barverkauf ");
     }
 
-    private static String resolveBuKey(BigDecimal rate, boolean isExpense, DatevConfig config, Account effectiveAccount) {
+    private static String resolveBuKey(BigDecimal rate, boolean isExpense, DatevConfig config, Account effectiveAccount, String gegenkonto) {
         if (rate == null || rate.signum() == 0) {
             return "";
         }
         if (config.useAutomaticAccounts && effectiveAccount != null
                 && DatevConfig.rateMatches(effectiveAccount.__getTaxvalue(), rate)) {
+            return "";
+        }
+        //the automatic account of the rate in SKR03 / SKR04 (8400, 8300, 3400, 3300 / 4400, 4300, 5400, 5300)
+        //books the tax itself; DATEV rejects a BU key on it, also when the chart of YaBS does not have it
+        if (config.useAutomaticAccounts && gegenkonto != null && gegenkonto.trim().equals(
+                DatevConfig.canonicalAccount(isExpense ? Account.EXPENSE : Account.INCOME, JournalCalc.rateKey(rate), "04".equals(config.kontenrahmen)))) {
             return "";
         }
         BigDecimal key = JournalCalc.rateKey(rate);

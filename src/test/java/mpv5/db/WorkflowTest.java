@@ -76,7 +76,7 @@ class WorkflowTest {
 
     @Test
     void aWorkingDay() throws Exception {
-        workingDay(tmp, null, false);
+        workingDay(tmp, null, false, null);
     }
 
     /**
@@ -87,9 +87,11 @@ class WorkflowTest {
      * @param afterInstall runs after the installation (starts a plugin), may be
      * null
      * @param gobd true if the GoBD plugin runs
+     * @param beforeTrash runs with the paid invoice before step 8, may be null
      * @return the invoice
      */
-    static Item workingDay(Path tmp, java.util.concurrent.Callable<?> afterInstall, boolean gobd) throws Exception {
+    static Item workingDay(Path tmp, java.util.concurrent.Callable<?> afterInstall, boolean gobd,
+            java.util.function.Consumer<Item> beforeTrash) throws Exception {
         //the panels need a display (locally e.g. xvfb-run ./gradlew test --tests mpv5.db.WorkflowTest)
         org.junit.jupiter.api.Assumptions.assumeFalse(java.awt.GraphicsEnvironment.isHeadless(), "needs a display");
         //files written outside the temp folder are recorded with their checksum
@@ -291,6 +293,10 @@ class WorkflowTest {
         JournalCalc.Totals byPay = JournalLoader.loadAllResult(new vTimeframe(DateConverter.getStartOfYear(now), DateConverter.getEndOfYear(now)), true).totals;
         assertMoney("290.00", byPay.incomeNet, "income net by payment date");
         assertMoney("150.00", byPay.expenseNet, "expense net by payment date");
+
+        if (beforeTrash != null) {
+            beforeTrash.accept((Item) DatabaseObject.getObject(Context.getInvoice(), invoice.__getIDS()));
+        }
 
         //8. the paid invoice into the trash bin
         Item toDelete = (Item) DatabaseObject.getObject(Context.getInvoice(), invoice.__getIDS());
