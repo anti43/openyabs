@@ -191,6 +191,7 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
     private final SelectionList groups = new SelectionList(Messages.JOURNAL_GROUPS_HINT.toString());
     private final SelectionList accounts = new SelectionList(Messages.JOURNAL_ACCOUNTS_HINT.toString());
     private final JCheckBox includechildgroups = new JCheckBox(Messages.JOURNAL_CHILD_GROUPS.toString(), true);
+    private final JCheckBox includechildaccounts = new JCheckBox(Messages.JOURNAL_CHILD_ACCOUNTS.toString(), true);
     //table
     private final JTable jTable1;
     private final JScrollPane tableScroll;
@@ -502,6 +503,8 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         expenseStatus.addActionListener(e -> filterChanged(true));
         includechildgroups.setOpaque(false);
         includechildgroups.addActionListener(e -> filterChanged(false));
+        includechildaccounts.setOpaque(false);
+        includechildaccounts.addActionListener(e -> filterChanged(false));
         users.addActionListener(e -> filterChanged(false));
         groups.setOnChange(() -> filterChanged(false));
         accounts.setOnChange(() -> filterChanged(false));
@@ -762,7 +765,8 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
                 .addFull(groups, 1)
                 .addFull(includechildgroups);
         Card accountsCard = new Card(Messages.JOURNAL_ACCOUNTS.toString())
-                .addFull(accounts, 1);
+                .addFull(accounts, 1)
+                .addFull(includechildaccounts);
         Dimension listSize = new Dimension(ModernTheme.px(160), ModernTheme.px(110));
         groups.setListSize(listSize);
         accounts.setListSize(listSize);
@@ -970,6 +974,28 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         boolean includeInvoices;
     }
 
+    /**
+     * @param a
+     * @return the account and all accounts below it (the accounts have a
+     * parent: "All accounts" is the parent of the others)
+     */
+    private List<Account> subAccounts(Account a) {
+        List<Account> r = new ArrayList<Account>();
+        r.add(a);
+        Set<Integer> seen = new HashSet<Integer>();
+        seen.add(a.__getIDS());
+        for (int i = 0; i < r.size(); i++) {
+            int parent = r.get(i).__getIDS();
+            for (Object o : accounts.getItems()) {
+                Account c = (Account) o;
+                if (c.__getIntparentaccount() == parent && seen.add(c.__getIDS())) {
+                    r.add(c);
+                }
+            }
+        }
+        return r;
+    }
+
     private Filter readFilter() {
         Filter f = new Filter();
         f.time = timeframeChooser1.getTime();
@@ -999,11 +1025,17 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         f.expenseStatus = expenseStatus.getSelectedIndex();
         f.incomeByPay = incomeByPay.isSelected();
         f.expenseByPay = expenseByPay.isSelected();
-        for (Object o : groups.getSelected()) {
+        //all selected: no restriction (also records without group or account)
+        for (Object o : groups.getFilter()) {
             f.groups.add((Group) o);
         }
         f.childGroups = includechildgroups.isSelected();
-        for (Object o : accounts.getSelected()) {
+        for (Object o : accounts.getFilter()) {
+            if (includechildaccounts.isSelected()) {
+                for (Account c : subAccounts((Account) o)) {
+                    f.accounts.add(c.__getIDS());
+                }
+            }
             f.accounts.add(((Account) o).__getIDS());
         }
         f.user = users.getSelectedItem() instanceof User ? (User) users.getSelectedItem() : null;
@@ -1074,7 +1106,7 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         vTimeframe t = timeframeChooser1.getTime();
         b.append(t.getStart().getTime()).append('-').append(t.getEnd().getTime());
         for (AbstractButton x : new AbstractButton[]{incInvoices, incCredits, incDeposits, incPartPayments, incRevenues, incOrders, incOffers,
-            incExpenses, incomeByPay, expenseByPay, includechildgroups, othersOpenOnly}) {
+            incExpenses, incomeByPay, expenseByPay, includechildgroups, includechildaccounts, othersOpenOnly}) {
             b.append(x.isSelected() ? '1' : '0');
         }
         b.append(incomeStatus.getSelectedIndex()).append(expenseStatus.getSelectedIndex()).append(users.getSelectedIndex());
@@ -1721,9 +1753,10 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
             l.add(Messages.JOURNAL_EXPENSES + ": " + Messages.JOURNAL_STATUS + " " + expenseStatus.getSelectedItem()
                     + " / " + (expenseByPay.isSelected() ? expenseByPay.getText() : expenseByDoc.getText()));
         }
-        l.add(Messages.JOURNAL_GROUPS + ": " + (groups.getSelected().isEmpty() ? Messages.ALL.toString() : groups.getSelected().toString())
-                + (includechildgroups.isSelected() ? " (+)" : ""));
-        l.add(Messages.JOURNAL_ACCOUNTS + ": " + (accounts.getSelected().isEmpty() ? Messages.ALL.toString() : accounts.getSelected().toString()));
+        l.add(Messages.JOURNAL_GROUPS + ": " + (groups.getFilter().isEmpty() ? Messages.ALL.toString() : groups.getFilter().toString()
+                + (includechildgroups.isSelected() ? " (+)" : "")));
+        l.add(Messages.JOURNAL_ACCOUNTS + ": " + (accounts.getFilter().isEmpty() ? Messages.ALL.toString() : accounts.getFilter().toString()
+                + (includechildaccounts.isSelected() ? " (+)" : "")));
         l.add(Messages.JOURNAL_USER + ": " + users.getSelectedItem());
         if (dataOwner != null) {
             l.add(String.valueOf(dataOwner.__getCname()));
@@ -1864,11 +1897,11 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         map.put("journal.datenow", DateConverter.getDefDateString(new Date())); //NOI18N
         map.put("journal.datefrom", DateConverter.getDefDateString(timeframeChooser1.getTime().getStart())); //NOI18N
         map.put("journal.dateto", DateConverter.getDefDateString(timeframeChooser1.getTime().getEnd())); //NOI18N
-        if (!groups.getSelected().isEmpty()) {
-            map.put("journal.group", join(groups.getSelected())); //NOI18N
+        if (!groups.getFilter().isEmpty()) {
+            map.put("journal.group", join(groups.getFilter())); //NOI18N
             if (includechildgroups.isSelected()) {
                 List<Object> children = new ArrayList<Object>();
-                for (Object g : groups.getSelected()) {
+                for (Object g : groups.getFilter()) {
                     try {
                         children.addAll(((Group) g).getChildGroups());
                     } catch (NodataFoundException e) {
@@ -1879,7 +1912,7 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
             }
         }
         map.put("journal.user", users.getSelectedItem() instanceof User ? String.valueOf(users.getSelectedItem()) : Messages.ALL.toString()); //NOI18N
-        map.put("journal.accounts", accounts.getSelected().isEmpty() ? Messages.ALL.toString() : join(accounts.getSelected())); //NOI18N
+        map.put("journal.accounts", accounts.getFilter().isEmpty() ? Messages.ALL.toString() : join(accounts.getFilter())); //NOI18N
 
         journalOrContactTemplate.injectData(map);
         //rows as sorted on screen, columns in the order of the model (not as moved
@@ -1932,32 +1965,14 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
 
     private void setPopup() {
         new TablePopUp(jTable1,
-                new String[]{Messages.DELETE.toString(),
-                    null, Messages.RELOAD.getValue(),
+                new String[]{Messages.RELOAD.getValue(),
                     null, Messages.EMAIL_SEND.getValue(),
                     Messages.SEPA_DD_CREATE.getValue(),
                     Messages.PDF_CREATE.getValue(),
                     Messages.ODT_CREATE.getValue(),
                     null, Messages.SET_STATUS_PAID.getValue()},
-                new java.awt.event.ActionListener[]{e -> delete(), null, e -> setData(), null, e -> email(), e -> sepa(),
+                new java.awt.event.ActionListener[]{e -> setData(), null, e -> email(), e -> sepa(),
                     e -> export(true), e -> export(false), null, e -> setPaid()});
-    }
-
-    private void delete() {
-        if (Popup.Y_N_dialog(Messages.REALLY_DELETE2 + " (" + jTable1.getSelectedRowCount() + ")")) { //NOI18N
-            for (int row : jTable1.getSelectedRows()) {
-                try {
-                    DatabaseObject obj = objectAt(row);
-                    if (obj != null) {
-                        obj.delete();
-                    }
-                } catch (Exception exc) {
-                    Log.Debug(exc);
-                    Popup.error(exc);
-                }
-            }
-            setData();
-        }
     }
 
     private void setPaid() {
@@ -2127,8 +2142,9 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
 
     /**
      * A searchable multiple-selection list (groups, accounts): a search field,
-     * the list and a hint; nothing selected means all. The selection survives
-     * the search.
+     * the list and a hint. All are selected at first, which means no
+     * restriction; a click selects one, Ctrl+click several. The selection
+     * survives the search.
      */
     static final class SelectionList extends JPanel {
 
@@ -2137,7 +2153,7 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         private final JList<Object> list = new JList<Object>(new DefaultListModel<Object>());
         private final JScrollPane scroll = new JScrollPane(list);
         private final JLabel state = new JLabel(" ");
-        private final JButton clear = new JButton(Messages.JOURNAL_SELECTION_CLEAR.toString());
+        private final JButton clear = new JButton(Messages.JOURNAL_SELECT_ALL.toString());
         private final List<Object> all = new ArrayList<Object>();
         private final Set<Object> selected = new LinkedHashSet<Object>();
         private final String hint;
@@ -2193,6 +2209,7 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
             clear.setMargin(new Insets(0, 0, 0, 0));
             clear.addActionListener(e -> {
                 selected.clear();
+                selected.addAll(all);
                 fill();
                 changed();
             });
@@ -2219,12 +2236,28 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         void setItems(List<Object> items) {
             all.clear();
             all.addAll(items);
-            selected.retainAll(all);
+            selected.clear();
+            selected.addAll(all);
             fill();
         }
 
         /**
-         * @return the selected items, empty: all
+         * @return all items
+         */
+        List<Object> getItems() {
+            return new ArrayList<Object>(all);
+        }
+
+        /**
+         * @return the selected items to filter by: empty if all (or none) are
+         * selected - no restriction
+         */
+        List<Object> getFilter() {
+            return selected.isEmpty() || selected.size() == all.size() ? new ArrayList<Object>() : new ArrayList<Object>(selected);
+        }
+
+        /**
+         * @return the selected items
          */
         List<Object> getSelected() {
             return new ArrayList<Object>(selected);
@@ -2264,8 +2297,9 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         }
 
         private void updateState() {
-            state.setText(selected.isEmpty() ? hint : String.format(Messages.JOURNAL_SELECTED.toString(), selected.size()));
-            clear.setVisible(!selected.isEmpty());
+            boolean everything = selected.isEmpty() || selected.size() == all.size();
+            state.setText(everything ? hint : String.format(Messages.JOURNAL_SELECTED.toString(), selected.size()));
+            clear.setVisible(!everything);
         }
     }
 }
