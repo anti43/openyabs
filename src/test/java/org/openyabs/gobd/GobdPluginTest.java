@@ -270,6 +270,19 @@ public class GobdPluginTest {
     }
 
     @Test
+    public void cancellationInvoicesHaveANumberFormatOfTheirOwn() {
+        //offered in the number formats (settings) like any other kind, not an item type
+        boolean listed = false;
+        for (mpv5.handler.FormatHandler.TYPES t : mpv5.handler.FormatHandler.TYPES.values()) {
+            listed |= t.getId() == mpv5.globals.Constants.TYPE_CANCELLATION;
+        }
+        assertTrue(listed);
+        assertNotEquals(mpv5.globals.Constants.TYPE_CREDIT, mpv5.globals.Constants.TYPE_CANCELLATION);
+        assertNotEquals(mpv5.globals.Constants.TYPE_PAYMENT, mpv5.globals.Constants.TYPE_CANCELLATION);
+        assertFalse(Gobd.isGobdItemType(mpv5.globals.Constants.TYPE_CANCELLATION));
+    }
+
+    @Test
     public void onlyInvoicesAreUnderGobd() {
         assertTrue(Gobd.isGobdItemType(mpv5.db.objects.Item.TYPE_INVOICE));
         assertTrue(Gobd.isGobdItemType(mpv5.db.objects.Item.TYPE_CREDIT));
