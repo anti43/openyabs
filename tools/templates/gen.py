@@ -418,3 +418,18 @@ made.append((0, 'Rechnung (Standard)', 'invoice.odt', write_odt('invoice.odt', i
 for m in made:
     print(m)
 print({t: len(cols.get(t, [])) for t in ['items', 'contacts', 'products', 'reminders', 'productorders', 'conversations', 'activitylists']})
+
+# ---- download copies for the wiki (tools/templates): the demo templates with readable
+# names and the receipt template of the cash register; same files as in the jar
+DOWNLOAD = os.path.join(REPO, 'tools/templates')
+def slug(t):
+    for a, b in (('ä', 'ae'), ('ö', 'oe'), ('ü', 'ue'), ('Ä', 'Ae'), ('Ö', 'Oe'), ('Ü', 'Ue'), ('ß', 'ss')):
+        t = t.replace(a, b)
+    return re.sub(r'[^A-Za-z0-9]+', '-', t).strip('-')
+for f in os.listdir(DOWNLOAD):
+    if f.endswith('.odt'):
+        os.remove(os.path.join(DOWNLOAD, f))
+for tid, title, fname, size in sorted(m for m in made if m[2].startswith('demo-')):
+    shutil.copyfile(os.path.join(OUT, fname), os.path.join(DOWNLOAD, 'Demo-%02d-%s.odt' % (tid, slug(title))))
+shutil.copyfile(os.path.join(REPO, 'src/main/resources/extra/Kassenbon.odt'), os.path.join(DOWNLOAD, 'Kassenbon.odt'))
+print(sorted(os.listdir(DOWNLOAD)))
