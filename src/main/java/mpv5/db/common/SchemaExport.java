@@ -218,13 +218,16 @@ public final class SchemaExport {
     }
 
     /**
-     * @return the neutral type: BIGINT, INTEGER, VARCHAR(n), DOUBLE PRECISION,
+     * @return the neutral type: BIGINT, INTEGER, VARCHAR(n), CHAR(n), DOUBLE PRECISION,
      * TIMESTAMP, BLOB, CLOB
      */
     private static String type(String h2, String length) {
         switch (h2) {
             case "CHARACTER VARYING":
                 return "VARCHAR(" + length + ")";
+            case "CHARACTER":
+                //CHAR without length is one character
+                return "CHAR(" + length + ")";
             case "BINARY LARGE OBJECT":
                 return "BLOB";
             case "CHARACTER LARGE OBJECT":
