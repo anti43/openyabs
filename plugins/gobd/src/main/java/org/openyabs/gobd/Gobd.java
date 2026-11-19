@@ -327,7 +327,8 @@ public final class Gobd {
             "CREATE UNIQUE INDEX IF NOT EXISTS gobd_receipt_ref ON gobd_receipt (receipt_ref)",
             "CREATE UNIQUE INDEX IF NOT EXISTS gobd_revenue_receipt_seq ON gobd_revenue_receipt (chain_seq)",
             "CREATE UNIQUE INDEX IF NOT EXISTS gobd_revenue_receipt_ref ON gobd_revenue_receipt (receipt_ref)",
-            "CREATE UNIQUE INDEX IF NOT EXISTS gobd_audit_log_prev ON gobd_audit_log (prev_hash)"}) {
+            //older entries have no prev_hash: NULLS DISTINCT (MODE=Derby counts NULLs as equal)
+            "ALTER TABLE gobd_audit_log ADD CONSTRAINT IF NOT EXISTS gobd_audit_log_prev_u UNIQUE NULLS DISTINCT (prev_hash)"}) {
             try {
                 u(index);
             } catch (GobdException e) {
@@ -373,8 +374,9 @@ public final class Gobd {
         }
         try {
             Db.tx(c -> {
-                //first out of the way (no clash with the unique index of an earlier run)
-                Db.update(c, "UPDATE gobd_document_lock SET chain_seq = NULL");
+                //first out of the way (no clash with the unique index of an earlier run;
+                //not NULL: MODE=Derby does not allow two NULLs in a unique index)
+                Db.update(c, "UPDATE gobd_document_lock SET chain_seq = -document_id");
                 for (int i = 0; i < ordered.size(); i++) {
                     Db.update(c, "UPDATE gobd_document_lock SET chain_seq = ? WHERE document_id = ?", (long) (i + 1), ordered.get(i)[0]);
                 }
@@ -422,7 +424,7 @@ public final class Gobd {
         //CHAR(64): no blanks, no other lengths (they would come back padded)
         String fh = blank(fileHash) || fileHash.trim().length() != 64 ? null : fileHash.trim();
         for (int attempt = 0;; attempt++) {
-            Object[] last = Db.first(c, "SELECT row_hash FROM gobd_audit_log WHERE row_hash IS NOT NULL ORDER BY id DESC LIMIT 1");
+            Object[] last = Db.first(c, "SELECT row_hash FROM gobd_audit_log WHERE row_hash IS NOT NULL ORDER BY id DESC FETCH FIRST 1 ROWS ONLY");
             String prev = last == null ? GobdUtil.GENESIS_HASH : str(last[0]);
             Timestamp now = nowSeconds();
             String hash = GobdUtil.recordHash(auditRecord(now, user, type, entityId, act, o, n, fh, d), prev);
@@ -487,7 +489,7 @@ public final class Gobd {
      * @return {next chain_seq, hash of the last link (GENESIS if none)}
      */
     static Object[] chainEnd(Connection c, String table, String hashColumn) throws SQLException {
-        Object[] last = Db.first(c, "SELECT chain_seq, " + hashColumn + " FROM " + table + " WHERE chain_seq IS NOT NULL ORDER BY chain_seq DESC LIMIT 1");
+        Object[] last = Db.first(c, "SELECT chain_seq, " + hashColumn + " FROM " + table + " WHERE chain_seq IS NOT NULL ORDER BY chain_seq DESC FETCH FIRST 1 ROWS ONLY");
         if (last == null || blank(str(last[1]))) {
             return new Object[]{1L, GobdUtil.GENESIS_HASH};
         }
