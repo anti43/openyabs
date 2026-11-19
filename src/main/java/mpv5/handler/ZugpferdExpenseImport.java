@@ -448,6 +448,7 @@ public final class ZugpferdExpenseImport {
                     result.skippedNotEInvoice++;
                     continue;
                 case FAILED:
+                case INVALID:
                     result.errors.add(r.message());
                     break;
                 default:

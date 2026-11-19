@@ -1246,6 +1246,18 @@ public class ModernContactPanel extends ModernDataPanel {
 
     @Override
     public void actionBeforeSave() throws ChangeNotApprovedException {
+        //a customer who receives e-invoices: the data an e-invoice needs must be complete
+        Object delivery = einvoiceDelivery.getSelectedItem();
+        if (delivery instanceof EInvoiceDelivery && ((EInvoiceDelivery) delivery).resolve().isEInvoice() && customer.isSelected()) {
+            collectData();
+            mpv5.utils.export.EInvoiceContactCheck.Result check = mpv5.utils.export.EInvoiceContactCheck.check(
+                    (prename_ == null ? "" : prename_ + " ") + (cname_ == null ? "" : cname_), company_, street_, zip_, city_, country_,
+                    mailaddress_, taxnumber_, "", null);
+            if (check.hasErrors()) {
+                Popup.warn(Messages.EINVOICE_CUSTOMER_INCOMPLETE + "\n - " + String.join("\n - ", check.getMessages()));
+                throw new ChangeNotApprovedException(dataOwner);
+            }
+        }
         if (dataOwner.isExisting()
                 && User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "dowarnings")
                 && !Popup.Y_N_dialog(Messages.REALLY_CHANGE)) {

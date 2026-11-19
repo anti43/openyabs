@@ -88,6 +88,11 @@ public final class EInvoiceImport {
          */
         NOT_EINVOICE,
         /**
+         * an e-invoice without number or amounts, or with amounts that do not
+         * add up: not booked
+         */
+        INVALID,
+        /**
          * could not be saved
          */
         FAILED
@@ -133,6 +138,8 @@ public final class EInvoiceImport {
                     return String.format(Messages.EINVOICE_OWN_INVOICE.toString(), file.getName(), what);
                 case NOT_EINVOICE:
                     return String.format(Messages.EINVOICE_NOT_EINVOICE.toString(), file.getName());
+                case INVALID:
+                    return String.format(Messages.EINVOICE_INVALID_DATA.toString(), file.getName(), detail);
                 default:
                     return String.format(Messages.EINVOICE_IMPORT_FAILED.toString(), file.getName(), detail);
             }
@@ -186,6 +193,10 @@ public final class EInvoiceImport {
         if (inv == null) {
             return new Result(file, Outcome.NOT_EINVOICE, fallback, null, null, null);
         }
+        String invalid = invalid(inv);
+        if (invalid != null) {
+            return new Result(file, Outcome.INVALID, fallback, null, inv, invalid);
+        }
         Kind detected = kindOf(inv, ZugpferdFileCompany.get());
         Kind kind = detected != null ? detected : fallback != null ? fallback : Kind.EXPENSE;
         if (kind == Kind.INCOME) {
@@ -205,6 +216,25 @@ public final class EInvoiceImport {
             Log.Debug(EInvoiceImport.class, e);
             return new Result(file, Outcome.FAILED, kind, null, inv, e.getMessage());
         }
+    }
+
+    /**
+     * @param inv
+     * @return why the invoice can not be booked, null if it can: a number,
+     * amounts, and net + tax = gross (to the cent, a little tolerance for
+     * rounding of several rates)
+     */
+    static String invalid(ParsedInvoice inv) {
+        if (inv.invoiceNumber.isEmpty()) {
+            return Messages.EINVOICE_INVALID_NUMBER.toString();
+        }
+        if (inv.grossAmount.signum() == 0 && inv.netAmount.signum() == 0) {
+            return Messages.EINVOICE_INVALID_AMOUNTS.toString();
+        }
+        if (inv.netAmount.add(inv.taxAmount).subtract(inv.grossAmount).abs().compareTo(new java.math.BigDecimal("0.05")) > 0) {
+            return String.format(Messages.EINVOICE_INVALID_SUM.toString(), inv.netAmount, inv.taxAmount, inv.grossAmount);
+        }
+        return null;
     }
 
     /**

@@ -1006,7 +1006,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
     }
 
     /**
-     * Asks if data is missing, then where to save; creates the e-invoice in
+     * Refuses if data is missing, else asks where to save; creates the e-invoice in
      * the background
      */
     private void createEInvoice(final ZugpferdFile.Format format, final org.mustangproject.Invoice invoice, List<String> problems) {
@@ -1015,10 +1015,9 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
             for (String problem : problems) {
                 text.append("\n - ").append(problem);
             }
-            text.append("\n\n").append(Messages.ZUGFERD_CONTINUE_ANYWAY);
-            if (!Popup.Y_N_dialog(text.toString())) {
-                return;
-            }
+            //an e-invoice with missing data would be rejected: not created
+            Popup.warn(Messages.EINVOICE_NOT_CREATED + ", " + text);
+            return;
         }
         File dir = User.getSaveDir(dataOwner);
         dir.mkdirs();
