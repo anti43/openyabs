@@ -1099,10 +1099,13 @@ public final class Gobd {
                     return stornoNumber;
                 }
             });
-            storno.setNetvalue(nz(original.__getNetvalue()).negate());
-            storno.setTaxvalue(nz(original.__getTaxvalue()).negate());
-            storno.setDiscountvalue(nz(original.__getDiscountvalue()).negate());
-            storno.setDiscountGrosvalue(nz(original.__getDiscountGrosvalue()).negate());
+            //a credit note is a reduction by its type: the amounts as in the invoice (positive). Negative
+            //amounts were counted twice negative (the journal showed the cancellation as receivable, the
+            //e-invoice credit note had negative amounts)
+            storno.setNetvalue(nz(original.__getNetvalue()));
+            storno.setTaxvalue(nz(original.__getTaxvalue()));
+            storno.setDiscountvalue(nz(original.__getDiscountvalue()));
+            storno.setDiscountGrosvalue(nz(original.__getDiscountGrosvalue()));
             storno.setDescription("Stornorechnung zu Rechnung Nr. " + original.__getCnumber());
             storno.save(true);
             if (storno.__getIDS() <= 0) {
@@ -1116,7 +1119,7 @@ public final class Gobd {
                 rev.setCname(blank(line.__getCname()) ? " " : line.__getCname());
                 rev.setMeasure(str(line.__getMeasure()));
                 rev.setDescription(str(line.__getDescription()));
-                rev.setQuantityvalue(nz(line.__getQuantityvalue()).negate());
+                rev.setQuantityvalue(nz(line.__getQuantityvalue()));
                 rev.setExternalvalue(nz(line.__getExternalvalue()));
                 rev.setInternalvalue(nz(line.__getInternalvalue()));
                 rev.setDiscount(nz(line.__getDiscount()));
