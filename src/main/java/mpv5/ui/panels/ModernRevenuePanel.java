@@ -204,7 +204,7 @@ public class ModernRevenuePanel extends ModernDataPanel {
     private final JLabel addedByLabel = new JLabel();
 
     // Master list & filters
-    private final JTable revenueTable = new MPTable(this);
+    private final JTable revenueTable = new mpv5.ui.misc.PaidRows(this);
     private final JTextField searchField = new JTextField(14);
     private final DateChooser fromDateChooser = new DateChooser();
     private final DateChooser toDateChooser = new DateChooser();
