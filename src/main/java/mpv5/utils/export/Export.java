@@ -160,7 +160,11 @@ public final class Export extends HashMap<String, Object> implements Waitable {
     }
 
     public static void mail(Template preloadedTemplate, DatabaseObject dataOwner, Contact to, List<String> log, MailMessage m) {
-
+        if (log == null && m != null) {
+            mailInteractive(preloadedTemplate, dataOwner, to, m);
+            return;
+        }
+        ExportProgress.step(Messages.EXPORT_STEP_MAIL_ATTACH + ": " + dataOwner.__getCname());
         try {
             mpv5.YabsViewProxy.instance().setWaiting(true);
 
@@ -198,26 +202,9 @@ public final class Export extends HashMap<String, Object> implements Waitable {
                             }
                             pr.setSubject(VariablesHandler.parse(m.__getCname(), dataOwner, hm1));
                             pr.setText(VariablesHandler.parse(m.__getDescription(), dataOwner, hm1));
-                            if(log==null) {
-                                //single mail: shown before it is sent (recipient, subject,
-                                //text, the attached files); nothing goes out without "Send"
-                                final SimpleMail mail = pr;
-                                new Job(attachments, new Waiter() {
-                                    @Override
-                                    public void set(Object object, Exception exception) throws Exception {
-                                        if (exception != null) {
-                                            mail.set(object, exception);
-                                        } else if (mpv5.ui.dialogs.MailPreviewDialog.confirm(mail, attachmentFiles(object))) {
-                                            mail.set(object, null);
-                                        } else {
-                                            mpv5.YabsViewProxy.instance().addMessage(Messages.MAIL_PREVIEW_CANCELED.toString());
-                                        }
-                                    }
-                                }).execute();
-                            }
-                            else{
-                                new Job(attachments, (Waiter) pr).executeSync();
-                            }
+                            //batch (single mails: mailInteractive)
+                            ExportProgress.step(Messages.EXPORT_STEP_MAIL_SEND + ": " + dataOwner.__getCname());
+                            new Job(attachments, (Waiter) pr).executeSync();
                         } catch (Exception e) {
                             Popup.error(e);
                         }
@@ -246,6 +233,80 @@ public final class Export extends HashMap<String, Object> implements Waitable {
         } finally {
             mpv5.YabsViewProxy.instance().setWaiting(false);
         }
+    }
+
+    /**
+     * A single mail: the attachments are created in the background (with a
+     * progress), the mail is shown before it is sent (on the event dispatch
+     * thread) and sent in the background
+     */
+    private static void mailInteractive(final Template preloadedTemplate, final DatabaseObject dataOwner, final Contact cont, final MailMessage m) {
+        final String sender = mpv5.db.objects.User.getCurrentUser().__getMail();
+        if (sender == null || cont == null || cont.__getMailaddress() == null
+                || !Pattern.matches(EMAIL_PATTERN, sender) || !Pattern.matches(EMAIL_PATTERN, cont.__getMailaddress())) {
+            Popup.notice(Messages.NO_MAIL_DEFINED);
+            return;
+        }
+        final String title = Messages.EXPORT_MAIL + " " + dataOwner.__getCname();
+        mpv5.YabsViewProxy.instance().setWaiting(true);
+        ExportProgress.run(title, () -> {
+            ExportProgress.step(Messages.EXPORT_STEP_FIELDS);
+            Map<String, Object> hm1 = dataOwner.getFormFields();
+            File f2 = FileDirectoryHandler.getTempFile(((Formattable) dataOwner).getFormatHandler().toUserString(), "pdf");
+            Export ex = new Export(preloadedTemplate);
+            ex.putAll(hm1);
+            ex.setTemplate(preloadedTemplate.getExFile());
+            ex.setTargetFile(f2);
+            SimpleMail pr = new SimpleMail(null);
+            pr.setMailConfiguration(mpv5.db.objects.User.getCurrentUser().getMailConfiguration());
+            pr.setRecipientsAddress(cont.__getMailaddress());
+            pr.setSenderName(User.getCurrentUser().__getFullname());
+            //copies of every mail, e.g. Bcc to an archive mailbox (user settings > mail)
+            pr.setBccAddress(validAddresses(
+                    GlobalSettings.hasProperty(KEY_MAIL_BCC) ? GlobalSettings.getProperty(KEY_MAIL_BCC) : null));
+            pr.setCCAddress(validAddresses(
+                    GlobalSettings.hasProperty(KEY_MAIL_CC) ? GlobalSettings.getProperty(KEY_MAIL_CC) : null));
+            //invoices: PDF, e-invoice or both, as configured for the contact
+            Waitable attachments = invoiceAttachments(ex, dataOwner, cont, null);
+            if (attachments == null) {
+                return null;//e-invoice data incomplete, already reported
+            }
+            pr.setSubject(VariablesHandler.parse(m.__getCname(), dataOwner, hm1));
+            pr.setText(VariablesHandler.parse(m.__getDescription(), dataOwner, hm1));
+            ExportProgress.step(Messages.EXPORT_STEP_MAIL_ATTACH);
+            Exception failed = attachments.waitFor();
+            return new Object[]{pr, attachments, failed};
+        }, (r, failure) -> {
+            mpv5.YabsViewProxy.instance().setWaiting(false);
+            if (failure instanceof UnsupportedOperationException) {
+                Popup.notice(Messages.NOT_POSSIBLE + "\n" + Messages.NO_MAIL_CONFIG);
+                return;
+            } else if (failure != null) {
+                Popup.error(failure);
+                return;
+            }
+            if (r == null) {
+                return;
+            }
+            final SimpleMail mail = (SimpleMail) r[0];
+            final Object object = r[1];
+            if (r[2] != null) {
+                mail.set(object, (Exception) r[2]);
+            } else if (mpv5.ui.dialogs.MailPreviewDialog.confirm(mail, attachmentFiles(object))) {
+                //sending takes a moment (the mail server): not on the event dispatch thread
+                ExportProgress.background(title, () -> {
+                    ExportProgress.step(Messages.EXPORT_STEP_MAIL_SEND);
+                    mail.set(object, null);
+                    return null;
+                }, (v, sendFailure) -> {
+                    if (sendFailure != null) {
+                        Popup.error(sendFailure);
+                    }
+                });
+            } else {
+                mpv5.YabsViewProxy.instance().addMessage(Messages.MAIL_PREVIEW_CANCELED.toString());
+            }
+        });
     }
 
     /**
@@ -317,6 +378,7 @@ public final class Export extends HashMap<String, Object> implements Waitable {
             return pdf;
         }
         mpv5.db.objects.Item item = (mpv5.db.objects.Item) dataOwner;
+        ExportProgress.step(Messages.EXPORT_STEP_EINVOICE_CHECK);
         List<String> problems;
         org.mustangproject.Invoice invoice;
         try {
@@ -341,7 +403,15 @@ public final class Export extends HashMap<String, Object> implements Waitable {
                 text.append("\n - ").append(problem);
             }
             if (log == null) {
-                Popup.warn(text.toString());
+                try {
+                    //from the background (mail): the progress window hides meanwhile
+                    ExportProgress.onEdtAndWait(() -> {
+                        Popup.warn(text.toString());
+                        return null;
+                    });
+                } catch (Exception e) {
+                    Log.Debug(e);
+                }
             } else {
                 log.add(text.append("\n").toString());
             }
@@ -370,10 +440,11 @@ public final class Export extends HashMap<String, Object> implements Waitable {
      * "Kontaktdatenblatt-000001-Muster GmbH"
      */
     public static void print(final Template preloadedTemplate, final DatabaseObject dataOwner, final String name) {
-        Runnable runnable = new Runnable() {
+        java.util.concurrent.Callable<Object> runnable = new java.util.concurrent.Callable<Object>() {
 
             @Override
-            public void run() {
+            public Object call() {
+                ExportProgress.step(Messages.EXPORT_STEP_FIELDS);
                 Map<String, Object> hm1 = dataOwner.getFormFields();//new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
                 File f2 = FileDirectoryHandler.getTempFile(name, "pdf");
                 final Export ex = new Export(preloadedTemplate);
@@ -389,16 +460,18 @@ public final class Export extends HashMap<String, Object> implements Waitable {
                     Log.Debug(Export.class, "Not printed: " + failed);
                     Popup.error(failed != null ? failed : new Exception(String.format(Messages.EXPORT_FAILED.toString(),
                             preloadedTemplate.__getCname(), ex.getTargetFile())));
-                    return;
+                    return null;
                 }
                 try {
+                    ExportProgress.step(Messages.EXPORT_STEP_PRINT);
                     PrintJob2.print(ex.getTargetFile(), preloadedTemplate.__getPrinter());
                 } catch (Exception ex1) {
                     Log.Debug(ex1);
                 }
+                return null;
             }
         };
-        new Thread(runnable).start();
+        ExportProgress.background(Messages.EXPORT_PRINT + " " + name, runnable, null);
     }
 
     /**
@@ -462,7 +535,7 @@ public final class Export extends HashMap<String, Object> implements Waitable {
     }
 
     public static File print2(Template preloadedTemplate, DatabaseObject dataOwner, HashMap<String, Object> hm) {
-
+        ExportProgress.step(Messages.EXPORT_STEP_FIELDS + ": " + dataOwner.__getCname());
         Map<String, Object> hm1 = dataOwner.getFormFields();//new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
         File f2 = FileDirectoryHandler.getTempFile("pdf");
         final Export ex = new Export(preloadedTemplate);
@@ -481,19 +554,18 @@ public final class Export extends HashMap<String, Object> implements Waitable {
      * @param Printer
      */
     public static void print3(final List<File> prints, final String Printer) {
-        Runnable runnable = new Runnable() {
-
-            @Override
-            public void run() {
-                try {
-                    PrintJob2.print(mergeFiles(prints), Printer);
-                } catch (Exception fileNotFoundException) {
-                    Popup.error(fileNotFoundException);
-                    Log.Debug(fileNotFoundException);
-                }
+        ExportProgress.background(Messages.EXPORT_PRINT + " (" + prints.size() + ")", () -> {
+            try {
+                ExportProgress.step(Messages.EXPORT_STEP_MERGE);
+                File merged = mergeFiles(prints);
+                ExportProgress.step(Messages.EXPORT_STEP_PRINT);
+                PrintJob2.print(merged, Printer);
+            } catch (Exception fileNotFoundException) {
+                Popup.error(fileNotFoundException);
+                Log.Debug(fileNotFoundException);
             }
-        };
-        new Thread(runnable).start();
+            return null;
+        }, null);
     }
 
     /**
@@ -506,18 +578,22 @@ public final class Export extends HashMap<String, Object> implements Waitable {
         if (preloadedTemplate == null || preloadedTemplate.length == 0) {
             return;
         }
-        new Thread(() -> {
+        ExportProgress.background(Messages.EXPORT_PRINT + " " + documentName(preloadedTemplate[0], dataOwner), () -> {
             try {
+                ExportProgress.step(Messages.EXPORT_STEP_FIELDS);
+                dataOwner.getFormFields();
                 File merged = createMergedFile(preloadedTemplate, dataOwner);
                 if (merged == null) {
                     throw new FileNotFoundException("The documents could not be merged");
                 }
+                ExportProgress.step(Messages.EXPORT_STEP_PRINT);
                 PrintJob2.print(merged, preloadedTemplate[0].__getPrinter());
             } catch (Exception ex) {
                 Popup.error(ex);
                 Log.Debug(ex);
             }
-        }).start();
+            return null;
+        }, null);
     }
 
     /**
@@ -559,6 +635,7 @@ public final class Export extends HashMap<String, Object> implements Waitable {
         if (files.size() == 1) {
             return files.get(0);
         }
+        ExportProgress.step(Messages.EXPORT_STEP_MERGE);
         return mergeFiles(files);
     }
 
@@ -624,6 +701,44 @@ public final class Export extends HashMap<String, Object> implements Waitable {
         }
 
         return null;
+    }
+
+    /**
+     * Creates the PDF of the template (e.g. for the preview) off the event
+     * dispatch thread and hands it to the waiter on it. The steps (form
+     * fields and scripts, template, PDF) are shown in a progress window if
+     * it takes a moment, their times are logged.
+     *
+     * @param template loads the template (in the background), may return
+     * null if there is none
+     * @param dataOwner
+     * @param waiter gets the {@link Export} with the created file, e.g. a
+     * {@link mpv5.ui.panels.PreviewWaiter}
+     */
+    public static void createFileWithProgress(final java.util.concurrent.Callable<Template> template,
+            final DatabaseObject dataOwner, final Waiter waiter) {
+        String title = Messages.ACTION_PREVIEW + (dataOwner != null ? " " + dataOwner.__getCname() : "");
+        ExportProgress.run(title, () -> {
+            if (dataOwner != null) {
+                ExportProgress.step(Messages.EXPORT_STEP_FIELDS);
+                dataOwner.getFormFields();
+            }
+            ExportProgress.step(Messages.EXPORT_STEP_TEMPLATE);
+            Template t = template.call();
+            if (t == null) {
+                throw new FileNotFoundException(Messages.NO_TEMPLATE_LOADED.toString());
+            }
+            Job job = new Job(createFile(t, dataOwner), waiter);
+            job.doInBackground();
+            return job;
+        }, (job, failure) -> {
+            if (job != null) {
+                ExportProgress.step(waiter instanceof mpv5.ui.panels.PreviewWaiter ? Messages.EXPORT_STEP_OPEN : Messages.EXPORT_STEP_SAVE);
+                job.done();
+            } else if (failure != null) {
+                mpv5.YabsViewProxy.instance().addMessage(failure.getMessage(), java.awt.Color.YELLOW);
+            }
+        });
     }
 
     /**

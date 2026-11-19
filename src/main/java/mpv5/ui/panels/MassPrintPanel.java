@@ -490,45 +490,45 @@ public class MassPrintPanel
                 }
             }
         };
-        new Thread(runnable).start();
+        mpv5.utils.export.ExportProgress.background(Messages.MASSPRINT.toString(), () -> {
+            runnable.run();
+            return null;
+        }, null);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        Object[] sel = contactlist.getSelectedValues();
-        Template tpl = (Template) templates.getSelectedItem();
-        HashMap<String, Object> hm1;
-        List<Waitable> files = new ArrayList<Waitable>();
-        if (tpl != null) {
+        final Object[] sel = contactlist.getSelectedValues();
+        final Template tpl = (Template) templates.getSelectedItem();
+        if (tpl == null) {
+            Popup.error(this, Messages.NO_TEMPLATE_DEFINDED.toString());
+            return;
+        }
+        if (sel.length == 0) {
+            return;
+        }
+        //the configured folder for documents, else the folder chosen last
+        File dir = mpv5.utils.files.LastDirectory.configuredBaseDir();
+        final DialogForFile d = new DialogForFile(DialogForFile.DIRECTORIES_ONLY,
+                dir != null ? dir : mpv5.utils.files.LastDirectory.get());
+        //the form fields (scripts) of every contact, then the PDFs: in the background, with a progress
+        mpv5.utils.export.ExportProgress.execute(Messages.MASSPRINT + " (" + sel.length + ")", null, () -> {
+            List<Waitable> files = new ArrayList<Waitable>();
             for (int o = 0; o < sel.length; o++) {
                 try {
                     Contact cont = (Contact) (Contact.getObject(Context.getContact(), ((IdItem) sel[o]).getId()));
-                    hm1 = new HashMap<String, Object>();
+                    mpv5.utils.export.ExportProgress.step(Messages.EXPORT_STEP_FIELDS + ": " + cont.__getCname());
+                    HashMap<String, Object> hm1 = new HashMap<String, Object>();
                     hm1 = this.ReplaceVariablesInContent(hm1, cont);
                     files.add(Export.createFile(cont.__getCname(),
                             TemplateHandler.loadTemplate(tpl),
                             cont,
                             hm1));
-                    mpv5.YabsViewProxy.instance().getProgressbar().setValue((100 / sel.length) * (o + 1));
-                    mpv5.YabsViewProxy.instance().getProgressbar().setString(cont.__getCname());
-                    mpv5.YabsViewProxy.instance().getProgressbar().setStringPainted(true);
                 } catch (NodataFoundException ex) {
                     Log.Debug(this, ex);
                 }
             }
-        } else {
-            Popup.error(this, Messages.NO_TEMPLATE_DEFINDED.toString());
-        }
-
-        if (!files.isEmpty()) {
-            //the configured folder for documents, else the folder chosen last
-            File dir = mpv5.utils.files.LastDirectory.configuredBaseDir();
-            DialogForFile d = new DialogForFile(DialogForFile.DIRECTORIES_ONLY,
-                    dir != null ? dir : mpv5.utils.files.LastDirectory.get());
-            Job job = new Job(files, d, files.size() + " PDF " + Messages.SAVED);
-            job.execute();
-            mpv5.YabsViewProxy.instance().getProgressbar().setValue(100);
-            mpv5.YabsViewProxy.instance().getProgressbar().setString(Messages.DONE.toString());
-        }
+            return files.isEmpty() ? null : new Job(files, d, files.size() + " PDF " + Messages.SAVED);
+        }, Messages.EXPORT_STEP_SAVE);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void messageTplActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_messageTplActionPerformed

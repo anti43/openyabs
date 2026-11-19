@@ -1481,7 +1481,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
             if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
                 pr = new PreviewWaiter();
                 pr.setDataOwner(dataOwner);
-                new Job(Export.createFile(TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()), dataOwner), pr).execute();
+                Export.createFileWithProgress(() -> TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()), dataOwner, pr);
             } else {
                 Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
             }
@@ -1494,7 +1494,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
             if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), Constants.TYPE_PRODUCT_ORDER)) {
                 pr = new PreviewWaiter();
                 pr.setDataOwner(dataOwner);
-                new Job(Export.createFile(TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), Constants.TYPE_PRODUCT_ORDER), dataOwner), pr).execute();
+                Export.createFileWithProgress(() -> TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), Constants.TYPE_PRODUCT_ORDER), dataOwner, pr);
             } else {
                 Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
             }

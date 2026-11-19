@@ -80,6 +80,9 @@ public class Job extends SwingWorker<Object, Object> {
         try {
             for (int i = 0; i < objects.size(); i++) {
                 Waitable waitable = objects.get(i);
+                if (objects.size() > 1) {
+                    mpv5.utils.export.ExportProgress.step(String.format(mpv5.globals.Messages.EXPORT_STEP_DOCUMENT.toString(), i + 1, objects.size()));
+                }
                 code.add(waitable.waitFor());
             }
         } catch (Exception e) {

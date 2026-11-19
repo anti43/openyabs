@@ -412,21 +412,36 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
             return;
         }
 
-        List<String> problems;
-        final org.mustangproject.Invoice invoice;
-        try {
-            invoice = ZugpferdFile.createInvoice(dataOwner, format);
-            problems = ZugpferdFile.validate(invoice);
-            mpv5.db.objects.Contact contact = dataOwner.getContact();
+        final mpv5.db.objects.Item item = dataOwner;
+        //reading the data (database) and checking it: not on the event dispatch thread
+        mpv5.utils.export.ExportProgress.run(Messages.EXPORT_EINVOICE + " " + item.__getCnumber(), () -> {
+            mpv5.utils.export.ExportProgress.step(Messages.EXPORT_STEP_EINVOICE_DATA);
+            org.mustangproject.Invoice inv = ZugpferdFile.createInvoice(item, format);
+            mpv5.utils.export.ExportProgress.step(Messages.EXPORT_STEP_EINVOICE_CHECK);
+            List<String> found = ZugpferdFile.validate(inv);
+            mpv5.db.objects.Contact contact = item.getContact();
             String buyerVatId = ZugpferdFile.checkBuyerVatId(contact, contact.getInvoiceaddress());
             if (buyerVatId != null) {
-                problems.add(buyerVatId);
+                found.add(buyerVatId);
             }
-        } catch (Exception ex) {
-            Log.Debug(this, ex);
-            Popup.error(ex);
-            return;
-        }
+            return new Object[]{inv, found};
+        }, (r, failure) -> {
+            if (failure != null) {
+                Log.Debug(this, failure);
+                Popup.error(failure);
+            } else {
+                @SuppressWarnings("unchecked")
+                List<String> found = (List<String>) r[1];
+                createEInvoice(format, (org.mustangproject.Invoice) r[0], found);
+            }
+        });
+    }
+
+    /**
+     * Asks if data is missing, then where to save; creates the e-invoice in
+     * the background
+     */
+    private void createEInvoice(final ZugpferdFile.Format format, final org.mustangproject.Invoice invoice, List<String> problems) {
         if (!problems.isEmpty()) {
             StringBuilder text = new StringBuilder(Messages.ZUGFERD_MISSING_DATA.toString()).append("\n");
             for (String problem : problems) {
@@ -457,7 +472,8 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
             mpv5.handler.ItemService.ensureFinishedAndEndDate(dataOwner);
             dataOwner.setPanelData(this);
             exposeData();
-            new Job(new ZugpferdFile(dataOwner, invoice, target, format), new Waiter() {
+            final mpv5.db.objects.Item item = dataOwner;
+            mpv5.utils.export.ExportProgress.execute(Messages.EXPORT_EINVOICE + " " + target.getName(), null, () -> new Job(new ZugpferdFile(item, invoice, target, format), new Waiter() {
                 @Override
                 public void set(Object object, Exception exception) throws Exception {
                     if (exception != null) {
@@ -466,7 +482,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                         showEInvoiceValidation(target, ((ZugpferdFile) object).getValidation());
                     }
                 }
-            }).execute();
+            }), null);
         }
     }
 
@@ -490,7 +506,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         });
         if (d.chooseFile()) {
             final File file = d.getFile();
-            new Job(new EInvoiceValidator(file), new Waiter() {
+            mpv5.utils.export.ExportProgress.execute(Messages.ZUGFERD_VALIDATE_FILE + " " + file.getName(), Messages.EXPORT_STEP_VALIDATE, () -> new Job(new EInvoiceValidator(file), new Waiter() {
                 @Override
                 public void set(Object object, Exception exception) throws Exception {
                     if (exception != null) {
@@ -499,7 +515,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                         showEInvoiceValidation(file, ((EInvoiceValidator) object).getResult());
                     }
                 }
-            }).execute();
+            }), null);
         }
     }
 
@@ -3143,7 +3159,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
             if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), Constants.TYPE_DELIVERY_NOTE)) {
                 pr = new PreviewWaiter();
                 pr.setDataOwner(dataOwner);
-                new Job(Export.createFile(TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), Constants.TYPE_DELIVERY_NOTE), dataOwner), pr).execute();
+                Export.createFileWithProgress(() -> TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), Constants.TYPE_DELIVERY_NOTE), dataOwner, pr);
             } else {
                 Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
             }
@@ -3157,7 +3173,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
 
                 pr = new PreviewWaiter();
                 pr.setDataOwner(dataOwner);
-                new Job(Export.createFile(TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), Constants.TYPE_ORDER_CONFIRMATION), dataOwner), pr).execute();
+                Export.createFileWithProgress(() -> TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), Constants.TYPE_ORDER_CONFIRMATION), dataOwner, pr);
             } else {
                 Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
             }
@@ -3210,7 +3226,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
             if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
                 pr = new PreviewWaiter();
                 pr.setDataOwner(dataOwner);
-                new Job(Export.createFile(TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()), dataOwner), pr).execute();
+                Export.createFileWithProgress(() -> TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()), dataOwner, pr);
             } else {
                 Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
             }

@@ -129,6 +129,7 @@ public class ODTFile2 extends Exportable {
             mpv5.YabsViewProxy.instance().setWaiting(true);
             if (target.getAbsolutePath().endsWith(".pdf")) {
                 //closed before the file is read again (was left open)
+                mpv5.utils.export.ExportProgress.step(mpv5.globals.Messages.EXPORT_STEP_FILL);
                 try (FileOutputStream tmp = new FileOutputStream(f = FileDirectoryHandler.getTempFile("odt"))) {
                     outtmp = tmp;
                     fillFields(outtmp);
@@ -142,12 +143,14 @@ public class ODTFile2 extends Exportable {
                 if (changed > 0) {
                     Log.Debug(this, "Shapes with text in tables as text frames for the PDF: " + changed);
                 }
+                mpv5.utils.export.ExportProgress.step(mpv5.globals.Messages.EXPORT_STEP_CONVERT);
                 try (FileOutputStream pdf = new FileOutputStream(target)) {
                     PdfConverter.getInstance().convert(document, pdf, isEmbedAllFonts() ? pdfaOptions : options);
                 }
                 Log.Debug(this, "Completed pdf file: " + target);
                 Log.Debug(this, "Test access pdf file exists: " + target.exists() + " readable: " + target.canRead());
             } else {
+                mpv5.utils.export.ExportProgress.step(mpv5.globals.Messages.EXPORT_STEP_FILL);
                 try (FileOutputStream out = new FileOutputStream(target)) {
                     fillFields(out);
                 }

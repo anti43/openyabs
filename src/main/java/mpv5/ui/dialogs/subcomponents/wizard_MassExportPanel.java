@@ -304,14 +304,15 @@ public class wizard_MassExportPanel extends javax.swing.JPanel implements Wizard
                     //the serial mail of the overview: e-invoice per contact setting,
                     //incomplete e-invoices are not sent, log and cancel included
                     jTextArea2.append(mpv5.globals.Messages.MASSEXPORT_EMAIL_STARTED + " (" + mails.size() + ")\n");
-                    new mpv5.utils.jobs.Job(new mpv5.utils.export.EmailBatch(mails), new mpv5.utils.jobs.Waiter() {
+                    mpv5.utils.export.ExportProgress.execute(mpv5.globals.Messages.EXPORT_MAIL + " (" + mails.size() + ")", null,
+                            () -> new mpv5.utils.jobs.Job(new mpv5.utils.export.EmailBatch(mails), new mpv5.utils.jobs.Waiter() {
                         @Override
                         public void set(Object object, Exception exception) throws Exception {
                             if (exception != null) {
                                 Popup.error(exception);
                             }
                         }
-                    }, "Emails: " + mpv5.globals.Messages.DONE).execute();
+                    }, "Emails: " + mpv5.globals.Messages.DONE), null);
                 }
                 showResults(createdItems, started);
                 master.isEnd(true);

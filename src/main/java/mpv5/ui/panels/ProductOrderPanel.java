@@ -1759,7 +1759,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
             if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), Constants.TYPE_DELIVERY_NOTE)) {
                 pr = new PreviewWaiter();
                 pr.setDataOwner(dataOwner);
-                new Job(Export.createFile(TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), Constants.TYPE_DELIVERY_NOTE), dataOwner), pr).execute();
+                Export.createFileWithProgress(() -> TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), Constants.TYPE_DELIVERY_NOTE), dataOwner, pr);
             } else {
                 Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
             }
@@ -1773,7 +1773,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
 
                 pr = new PreviewWaiter();
                 pr.setDataOwner(dataOwner);
-                new Job(Export.createFile(TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), Constants.TYPE_ORDER_CONFIRMATION), dataOwner), pr).execute();
+                Export.createFileWithProgress(() -> TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), Constants.TYPE_ORDER_CONFIRMATION), dataOwner, pr);
             } else {
                 Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
             }
@@ -1823,7 +1823,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
             if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.getInttype())) {
                 pr = new PreviewWaiter();
                 pr.setDataOwner(dataOwner);
-                new Job(Export.createFile(TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.getInttype()), dataOwner), pr).execute();
+                Export.createFileWithProgress(() -> TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.getInttype()), dataOwner, pr);
             } else {
                 Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
             }

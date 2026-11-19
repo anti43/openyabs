@@ -930,7 +930,8 @@ public final class ContactService {
             return;
         }
         //loading the template reads the database and the file: not on the Swing thread
-        new Thread(() -> {
+        mpv5.utils.export.ExportProgress.background(Messages.CONTACT_SHEET + " " + contact.__getCname(), () -> {
+            mpv5.utils.export.ExportProgress.step(Messages.EXPORT_STEP_TEMPLATE);
             mpv5.db.objects.Template t = TemplateHandler.loadTemplate(contact);
             if (t != null) {
                 mpv5.utils.export.Export.print(t, contact);
@@ -940,6 +941,7 @@ public final class ContactService {
                     javax.swing.SwingUtilities.invokeLater(fallback);
                 }
             }
-        }, "print contact sheet").start();
+            return null;
+        }, null);
     }
 }

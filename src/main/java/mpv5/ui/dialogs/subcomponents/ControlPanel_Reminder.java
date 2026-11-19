@@ -304,16 +304,19 @@ public class ControlPanel_Reminder extends javax.swing.JPanel implements DataPan
             Template t = TemplateHandler.loadTemplate(group, Constants.TYPE_REMINDER);
             if (t != null) {
                 Exportable te = TemplateHandler.loadTemplate(group, Constants.TYPE_REMINDER).getExFile();
-                Map<String, Object> hm1 = dataOwner.getFormFields();//new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
-                File f2 = FileDirectoryHandler.getTempFile("pdf");
-                Export ex = new Export(t);
-                ex.putAll(hm1);
-                ex.setTemplate(te);
-                ex.setTargetFile(f2);
-                
                 pr = new PreviewWaiter();
                 pr.setDataOwner(dataOwner);
-                new Job(ex, pr).execute();
+                final PreviewWaiter fpr = pr;
+                //form fields and scripts: in the background
+                mpv5.utils.export.ExportProgress.execute(dataOwner.__getCname(), Messages.EXPORT_STEP_FIELDS, () -> {
+                    Map<String, Object> hm1 = dataOwner.getFormFields();//new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
+                    File f2 = FileDirectoryHandler.getTempFile("pdf");
+                    Export ex = new Export(t);
+                    ex.putAll(hm1);
+                    ex.setTemplate(te);
+                    ex.setTargetFile(f2);
+                    return new Job(ex, fpr);
+                }, Messages.EXPORT_STEP_OPEN);
             } else {
                 Popup.notice(Messages.NO_TEMPLATE_DEFINDED);
             }
@@ -335,7 +338,9 @@ public class ControlPanel_Reminder extends javax.swing.JPanel implements DataPan
                 HashMap<String, Object> hm1 = new HashMap<>();
                 File f2 = FileDirectoryHandler.getTempFile("pdf");
 
-                new Job(Export.createFile(dataOwner.__getCname(), t, dataOwner, hm1), new DialogForFile(mpv5.db.objects.User.getSaveDir(dataOwner), dataOwner.__getCname())).execute();
+                final DialogForFile target = new DialogForFile(mpv5.db.objects.User.getSaveDir(dataOwner), dataOwner.__getCname());
+                mpv5.utils.export.ExportProgress.execute(dataOwner.__getCname(), Messages.EXPORT_STEP_FIELDS,
+                        () -> new Job(Export.createFile(dataOwner.__getCname(), t, dataOwner, hm1), target), Messages.EXPORT_STEP_SAVE);
             } else {
                 Popup.notice(Messages.NO_TEMPLATE_DEFINDED);
             }
@@ -358,7 +363,9 @@ public class ControlPanel_Reminder extends javax.swing.JPanel implements DataPan
                 Exportable te = TemplateHandler.loadTemplate(group, Constants.TYPE_REMINDER).getExFile();
                 HashMap<String, Object> hm1 = new HashMap<>();
                 File f2 = FileDirectoryHandler.getTempFile("odt");
-                new Job(Export.sourceFile(dataOwner.__getCname(), t, dataOwner, hm1), new DialogForFile(mpv5.db.objects.User.getSaveDir(dataOwner), dataOwner.__getCname())).execute();
+                final DialogForFile target = new DialogForFile(mpv5.db.objects.User.getSaveDir(dataOwner), dataOwner.__getCname());
+                mpv5.utils.export.ExportProgress.execute(dataOwner.__getCname(), Messages.EXPORT_STEP_FIELDS,
+                        () -> new Job(Export.sourceFile(dataOwner.__getCname(), t, dataOwner, hm1), target), Messages.EXPORT_STEP_SAVE);
             } else {
                 Popup.notice(Messages.NO_TEMPLATE_DEFINDED);
             }
