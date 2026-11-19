@@ -99,7 +99,14 @@ public final class ScriptScope {
      */
     public static List<Integer> kinds(DatabaseObject o) {
         List<Integer> k = new ArrayList<Integer>();
-        int own = o.getContext() == null ? -1 : o.getContext().getId();
+        int own = -1;
+        try {
+            //a new record may have no context yet (an Item before it is loaded)
+            Context c = o.getContext();
+            own = c == null ? -1 : c.getId();
+        } catch (RuntimeException e) {
+            Log.Debug(ScriptScope.class, e.getMessage());
+        }
         if (o instanceof Item) {
             k.add(ALL_DOCUMENTS);
             k.add(documentKind(((Item) o).__getInttype(), own));
