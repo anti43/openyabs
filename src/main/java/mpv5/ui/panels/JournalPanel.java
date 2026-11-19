@@ -438,7 +438,7 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         view.setSelectedIndex(v < 0 || v > VIEW_CUSTOM ? VIEW_EUR : v);
         if (v == VIEW_CUSTOM) {
             AbstractButton[] bs = {incInvoices, incCredits, incDeposits, incPartPayments, incRevenues, incOrders, incOffers, incExpenses, incomeByPay, expenseByPay};
-            boolean[] defaults = {true, true, true, true, true, true, true, true, false, false};
+            boolean[] defaults = {true, true, true, true, true, false, false, true, false, false};
             for (int i = 0; i < bs.length; i++) {
                 bs[i].setSelected(p.getProperty(this, "custom" + i, Boolean.valueOf(defaults[i])));
             }
@@ -566,9 +566,9 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         for (JCheckBox b : new JCheckBox[]{incInvoices, incCredits, incDeposits, incPartPayments, incRevenues, incExpenses}) {
             b.setSelected(true);
         }
-        //not part of the result (gray), shown for the overview
-        incOrders.setSelected(true);
-        incOffers.setSelected(true);
+        //offers and orders: not part of the result, only on request (unticked: not loaded at all)
+        incOrders.setSelected(false);
+        incOffers.setSelected(false);
         switch (v) {
             case VIEW_EUR:
                 incomeStatus.setSelectedIndex(STATUS_PAID);
