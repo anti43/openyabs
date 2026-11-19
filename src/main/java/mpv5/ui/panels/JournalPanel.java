@@ -1916,7 +1916,8 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         journalOrContactTemplate.setContextName(Messages.TYPE_JOURNAL.toString());
         journalOrContactTemplate.injectTable(ODTFile2.KEY_TABLE + "1", new MPTableModel(d)); //NOI18N
         if (pdf) {
-            new Job(Export.createFile(journalOrContactTemplate, dataOwner), pr).execute();
+            final Template jt = journalOrContactTemplate;
+            Export.createFileWithProgress(() -> jt, dataOwner, pr);
         } else {
             new Job(Export.sourceFile(journalOrContactTemplate, dataOwner), pr).execute();
         }

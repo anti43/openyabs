@@ -178,12 +178,17 @@ public class ZugpferdFile implements Waitable {
         try {
             mpv5.YabsViewProxy.instance().setWaiting(true);
             validation = null;
+            if (prepared == null) {
+                ExportProgress.step(Messages.EXPORT_STEP_EINVOICE_DATA);
+            }
             Invoice invoice = prepared != null ? prepared : createInvoice(item, format);
             if (format == Format.XRECHNUNG) {
+                ExportProgress.step(Messages.EXPORT_STEP_EINVOICE_XML);
                 writeXml(invoice, target);
             } else {
                 File pdf = renderPdf(item);
                 try {
+                    ExportProgress.step(Messages.EXPORT_STEP_EINVOICE_EMBED);
                     writePdf(invoice, pdf, target);
                 } finally {
                     pdf.delete();
@@ -191,6 +196,7 @@ public class ZugpferdFile implements Waitable {
             }
             Log.Debug(this, "E-Rechnung written: " + target);
             try {
+                ExportProgress.step(Messages.EXPORT_STEP_VALIDATE);
                 validation = EInvoiceValidator.validate(target);
             } catch (Throwable t) {
                 //the file has been written, a missing validator must not hide that

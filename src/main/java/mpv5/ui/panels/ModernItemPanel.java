@@ -945,7 +945,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
             if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), templateType)) {
                 PreviewWaiter pr = new PreviewWaiter();
                 pr.setDataOwner(dataOwner);
-                new Job(Export.createFile(TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), templateType), dataOwner), pr).execute();
+                Export.createFileWithProgress(() -> TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), templateType), dataOwner, pr);
             } else {
                 Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + User.getCurrentUser() + ")");
             }

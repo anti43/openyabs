@@ -3143,7 +3143,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
             if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), Constants.TYPE_DELIVERY_NOTE)) {
                 pr = new PreviewWaiter();
                 pr.setDataOwner(dataOwner);
-                new Job(Export.createFile(TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), Constants.TYPE_DELIVERY_NOTE), dataOwner), pr).execute();
+                Export.createFileWithProgress(() -> TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), Constants.TYPE_DELIVERY_NOTE), dataOwner, pr);
             } else {
                 Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
             }
@@ -3157,7 +3157,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
 
                 pr = new PreviewWaiter();
                 pr.setDataOwner(dataOwner);
-                new Job(Export.createFile(TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), Constants.TYPE_ORDER_CONFIRMATION), dataOwner), pr).execute();
+                Export.createFileWithProgress(() -> TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), Constants.TYPE_ORDER_CONFIRMATION), dataOwner, pr);
             } else {
                 Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
             }
@@ -3210,7 +3210,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
             if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
                 pr = new PreviewWaiter();
                 pr.setDataOwner(dataOwner);
-                new Job(Export.createFile(TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()), dataOwner), pr).execute();
+                Export.createFileWithProgress(() -> TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()), dataOwner, pr);
             } else {
                 Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
             }

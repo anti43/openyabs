@@ -559,6 +559,7 @@ public final class Export extends HashMap<String, Object> implements Waitable {
         if (files.size() == 1) {
             return files.get(0);
         }
+        ExportProgress.step(Messages.EXPORT_STEP_MERGE);
         return mergeFiles(files);
     }
 
@@ -624,6 +625,44 @@ public final class Export extends HashMap<String, Object> implements Waitable {
         }
 
         return null;
+    }
+
+    /**
+     * Creates the PDF of the template (e.g. for the preview) off the event
+     * dispatch thread and hands it to the waiter on it. The steps (form
+     * fields and scripts, template, PDF) are shown in a progress window if
+     * it takes a moment, their times are logged.
+     *
+     * @param template loads the template (in the background), may return
+     * null if there is none
+     * @param dataOwner
+     * @param waiter gets the {@link Export} with the created file, e.g. a
+     * {@link mpv5.ui.panels.PreviewWaiter}
+     */
+    public static void createFileWithProgress(final java.util.concurrent.Callable<Template> template,
+            final DatabaseObject dataOwner, final Waiter waiter) {
+        String title = Messages.ACTION_PREVIEW + (dataOwner != null ? " " + dataOwner.__getCname() : "");
+        ExportProgress.run(title, () -> {
+            if (dataOwner != null) {
+                ExportProgress.step(Messages.EXPORT_STEP_FIELDS);
+                dataOwner.getFormFields();
+            }
+            ExportProgress.step(Messages.EXPORT_STEP_TEMPLATE);
+            Template t = template.call();
+            if (t == null) {
+                throw new FileNotFoundException(Messages.NO_TEMPLATE_LOADED.toString());
+            }
+            Job job = new Job(createFile(t, dataOwner), waiter);
+            job.doInBackground();
+            return job;
+        }, (job, failure) -> {
+            if (job != null) {
+                ExportProgress.step(waiter instanceof mpv5.ui.panels.PreviewWaiter ? Messages.EXPORT_STEP_OPEN : Messages.EXPORT_STEP_SAVE);
+                job.done();
+            } else if (failure != null) {
+                mpv5.YabsViewProxy.instance().addMessage(failure.getMessage(), java.awt.Color.YELLOW);
+            }
+        });
     }
 
     /**

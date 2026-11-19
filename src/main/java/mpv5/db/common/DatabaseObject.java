@@ -2938,7 +2938,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         if (this instanceof Templateable && TemplateHandler.isLoaded((Templateable) this)) {
             mpv5.ui.panels.PreviewWaiter pr = new mpv5.ui.panels.PreviewWaiter();
             pr.setDataOwner(this);
-            new Job(Export.createFile(null, TemplateHandler.loadTemplate((Templateable) this), this), pr).execute();
+            Export.createFileWithProgress(() -> TemplateHandler.loadTemplate((Templateable) this), this, pr);
         } else {
             YabsViewProxy.instance().addMessage(Messages.NO_TEMPLATE_LOADED + ": " + getClass().getSimpleName()
                     + " (" + mpv5.db.objects.User.getCurrentUser() + ")", Color.YELLOW);
@@ -2965,9 +2965,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         export(false, showDialog, null);
     }
 
-    private void export(boolean convertToPdf, boolean showDialog, mpv5.db.objects.Template[] appended) {
+    private void export(final boolean convertToPdf, final boolean showDialog, final mpv5.db.objects.Template[] appended) {
         if (this instanceof Templateable) {
-            Templateable me = (Templateable) this;
+            final Templateable me = (Templateable) this;
             if (TemplateHandler.isLoaded(me)) {
                 File d = User.getSaveDir(this);
                 d.mkdirs();
@@ -2975,92 +2975,122 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                     Notificator.raiseNotification(Messages.FILE_OPEN_FAILED + " " + d);
                     return;
                 }
-                File xf = new File(d, me.getFormatHandler().toUserString() + (convertToPdf ? ".pdf" : ".odt"));
+                final File xf = new File(d, me.getFormatHandler().toUserString() + (convertToPdf ? ".pdf" : ".odt"));
                 Log.Debug(this, "Export to: " + xf);
-                Waiter x;
+                final Waiter x;
                 if (showDialog) {
                     x = new DialogForFile(DialogForFile.FILES_ONLY, xf);
                 } else {
                     x = Export.wait(xf);
                 }
-                try {
-                    if (convertToPdf && appended != null && appended.length > 0) {
-                        mpv5.db.objects.Template[] all = new mpv5.db.objects.Template[appended.length + 1];
-                        all[0] = TemplateHandler.loadTemplate(me);
-                        System.arraycopy(appended, 0, all, 1, appended.length);
-                        File merged = Export.createMergedFile(all, this);
-                        if (merged != null) {
-                            //the dialog suggests the name of the given file
-                            String name = xf.getName().substring(0, xf.getName().length() - 4);
-                            File named = mpv5.utils.files.FileDirectoryHandler.copyFile2(merged,
-                                    mpv5.utils.files.FileDirectoryHandler.getTempFile(name, "pdf"), true);
-                            x.set(named, null);
-                        } else {
-                            x.set(null, new java.io.FileNotFoundException(xf.getName()));
-                        }
-                    } else if (convertToPdf) {
-                        boolean zugferd = false;
-                        if (this instanceof mpv5.db.objects.Item && mpv5.utils.export.ZugpferdFile.supports((mpv5.db.objects.Item) this)) {
-                            mpv5.db.objects.Item item = (mpv5.db.objects.Item) this;
-                            mpv5.db.objects.Contact contact = null;
-                            try {
-                                contact = item.getContact();
-                            } catch (Exception ignored) {
+                final DatabaseObject self = this;
+                //off the event dispatch thread, with the steps in a progress window and their times in the log
+                mpv5.utils.export.ExportProgress.run((convertToPdf ? "PDF " : "ODT ") + xf.getName(),
+                        () -> exportFile(me, convertToPdf, showDialog, appended, xf, x),
+                        (deliver, failure) -> {
+                            if (deliver != null) {
+                                mpv5.utils.export.ExportProgress.step(Messages.EXPORT_STEP_SAVE);
+                                deliver.run();
                             }
-                            if (contact != null && mpv5.utils.export.EInvoiceDelivery.effectiveFor(contact) == mpv5.utils.export.EInvoiceDelivery.ZUGFERD) {
-                                org.mustangproject.Invoice inv = null;
-                                try {
-                                    inv = mpv5.utils.export.ZugpferdFile.createInvoice(item, mpv5.utils.export.ZugpferdFile.Format.ZUGFERD);
-                                } catch (Exception ex) {
-                                    Log.Debug(DatabaseObject.class, ex);
-                                }
-                                if (inv != null) {
-                                    List<String> problems = mpv5.utils.export.ZugpferdFile.validate(inv);
-                                    if (problems.isEmpty() || !showDialog) {
-                                        zugferd = true;
-                                        mpv5.handler.ItemService.ensureFinishedAndEndDate(item);
-                                        new Job(new mpv5.utils.export.ZugpferdFile(item, inv, xf, mpv5.utils.export.ZugpferdFile.Format.ZUGFERD), x).executeSync();
-                                    } else {
-                                        StringBuilder text = new StringBuilder(Messages.ZUGFERD_MISSING_DATA.toString()).append("\n");
-                                        for (String problem : problems) {
-                                            text.append("\n - ").append(problem);
-                                        }
-                                        text.append("\n\n").append(Messages.ZUGFERD_CONTINUE_ANYWAY);
-                                        if (Popup.Y_N_dialog(text.toString())) {
-                                            zugferd = true;
-                                            mpv5.handler.ItemService.ensureFinishedAndEndDate(item);
-                                            new Job(new mpv5.utils.export.ZugpferdFile(item, inv, xf, mpv5.utils.export.ZugpferdFile.Format.ZUGFERD), x).executeSync();
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        if (!zugferd) {
-                            new Job(Export.createFile(null, TemplateHandler.loadTemplate(me), this), x).executeSync();
-                        }
-                    } else {
-                        new Job(Export.sourceFile(null, TemplateHandler.loadTemplate(me), this), x).executeSync();
-                    }
-                } catch (Exception exception) {
-                    Log.Debug(exception);
-                }
-
-                final String fmessage = Messages.PDF + __getCname() + " " + xf;
-                final String fdbid = getDbIdentity();
-                final int fids = __getIDS();
-                final int fgids = __getGroupsids();
-                Runnable runnable = new Runnable() {
-
-                    @Override
-                    public void run() {
-                        QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, mpv5.db.objects.User.getCurrentUser().__getCname(), fdbid, fids, fgids);
-                    }
-                };
-                new Thread(runnable).start();
+                            insertExportHistory(xf);
+                        });
             } else {
                 YabsViewProxy.instance().addMessage(Messages.NO_TEMPLATE_LOADED + ": " + getClass().getSimpleName() + " (" + mpv5.db.objects.User.getCurrentUser() + ")", Color.YELLOW);
             }
         }
+    }
+
+    /**
+     * Creates the file of {@link #export(boolean, boolean, Template[])}, not on
+     * the event dispatch thread
+     *
+     * @return what hands the file to the waiter (save dialog, copy to the
+     * folder), on the event dispatch thread; null if there is nothing to hand
+     * over
+     */
+    private Runnable exportFile(Templateable me, boolean convertToPdf, boolean showDialog,
+            mpv5.db.objects.Template[] appended, File xf, final Waiter x) throws Exception {
+        mpv5.utils.export.ExportProgress.step(Messages.EXPORT_STEP_FIELDS);
+        getFormFields();
+        mpv5.utils.export.ExportProgress.step(Messages.EXPORT_STEP_TEMPLATE);
+        mpv5.db.objects.Template template = TemplateHandler.loadTemplate(me);
+        if (convertToPdf && appended != null && appended.length > 0) {
+            mpv5.db.objects.Template[] all = new mpv5.db.objects.Template[appended.length + 1];
+            all[0] = template;
+            System.arraycopy(appended, 0, all, 1, appended.length);
+            File merged = Export.createMergedFile(all, this);
+            if (merged != null) {
+                //the dialog suggests the name of the given file
+                String name = xf.getName().substring(0, xf.getName().length() - 4);
+                final File named = mpv5.utils.files.FileDirectoryHandler.copyFile2(merged,
+                        mpv5.utils.files.FileDirectoryHandler.getTempFile(name, "pdf"), true);
+                return () -> setQuietly(x, named, null);
+            }
+            return () -> setQuietly(x, null, new java.io.FileNotFoundException(xf.getName()));
+        }
+        mpv5.utils.jobs.Waitable work = null;
+        if (convertToPdf && this instanceof mpv5.db.objects.Item && mpv5.utils.export.ZugpferdFile.supports((mpv5.db.objects.Item) this)) {
+            mpv5.db.objects.Item item = (mpv5.db.objects.Item) this;
+            mpv5.db.objects.Contact contact = null;
+            try {
+                contact = item.getContact();
+            } catch (Exception ignored) {
+            }
+            if (contact != null && mpv5.utils.export.EInvoiceDelivery.effectiveFor(contact) == mpv5.utils.export.EInvoiceDelivery.ZUGFERD) {
+                mpv5.utils.export.ExportProgress.step(Messages.EXPORT_STEP_EINVOICE_DATA);
+                org.mustangproject.Invoice inv = null;
+                try {
+                    inv = mpv5.utils.export.ZugpferdFile.createInvoice(item, mpv5.utils.export.ZugpferdFile.Format.ZUGFERD);
+                } catch (Exception ex) {
+                    Log.Debug(DatabaseObject.class, ex);
+                }
+                if (inv != null) {
+                    mpv5.utils.export.ExportProgress.step(Messages.EXPORT_STEP_EINVOICE_CHECK);
+                    List<String> problems = mpv5.utils.export.ZugpferdFile.validate(inv);
+                    boolean create = problems.isEmpty() || !showDialog;
+                    if (!create) {
+                        StringBuilder text = new StringBuilder(Messages.ZUGFERD_MISSING_DATA.toString()).append("\n");
+                        for (String problem : problems) {
+                            text.append("\n - ").append(problem);
+                        }
+                        text.append("\n\n").append(Messages.ZUGFERD_CONTINUE_ANYWAY);
+                        create = mpv5.utils.export.ExportProgress.onEdtAndWait(() -> Popup.Y_N_dialog(text.toString()));
+                    }
+                    if (!create) {
+                        //neither e-invoice nor plain PDF, as before
+                        return null;
+                    }
+                    mpv5.utils.export.ExportProgress.step(Messages.EXPORT_STEP_EINVOICE_STATUS);
+                    mpv5.handler.ItemService.ensureFinishedAndEndDate(item);
+                    work = new mpv5.utils.export.ZugpferdFile(item, inv, xf, mpv5.utils.export.ZugpferdFile.Format.ZUGFERD);
+                }
+            }
+        }
+        if (work == null) {
+            work = convertToPdf
+                    ? Export.createFile(null, template, this)
+                    : Export.sourceFile(null, template, this);
+        }
+        final mpv5.utils.jobs.Job job = new mpv5.utils.jobs.Job(work, x);
+        job.doInBackground();
+        return job::done;
+    }
+
+    private static void setQuietly(Waiter x, Object object, Exception failure) {
+        try {
+            x.set(object, failure);
+        } catch (Exception ex) {
+            Log.Debug(ex);
+        }
+    }
+
+    private void insertExportHistory(File xf) {
+        final String fmessage = Messages.PDF + __getCname() + " " + xf;
+        final String fdbid = getDbIdentity();
+        final int fids = __getIDS();
+        final int fgids = __getGroupsids();
+        new Thread(() -> QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage,
+                mpv5.db.objects.User.getCurrentUser().__getCname(), fdbid, fids, fgids)).start();
     }
 
     /**
