@@ -50,37 +50,58 @@ dependencies {
     implementation 'com.mysql:mysql-connector-j:8.4.0'
 }
 
-// The GoBD plugin (plugins/gobd, Java): its own jar, shipped in the plugins folder of the
-// distribution, so users can import it (Control Panel > Plugins). It compiles against YaBS.
-sourceSets {
-    gobd {
-        java.srcDir 'plugins/gobd/src/main/java'
-        resources.srcDir 'plugins/gobd/src/main/resources'
+// Plugins (plugins/<name>, Java): each directory with src/main/java becomes its own
+// source set and jar (build/plugins/<name>.jar), compiled against YaBS. The jars are
+// shipped in the plugins folder of the distribution, so users can import them
+// (Control Panel > Plugins), and all together in openyabs-plugins-<version>.zip,
+// a release asset for those who use an installer.
+// jar names that differ from the directory name (kept for existing installations and docs)
+def pluginJarNames = [gobd: 'gobd-compliance']
+def pluginNames = (file('plugins').listFiles() ?: [] as File[])
+        .findAll { it.isDirectory() && new File(it, 'src/main/java').isDirectory() }
+        .collect { it.name }
+        .sort()
+
+pluginNames.each { name ->
+    sourceSets.create(name) {
+        java.srcDir "plugins/${name}/src/main/java"
+        resources.srcDir "plugins/${name}/src/main/resources"
         compileClasspath += sourceSets.main.output + configurations.compileClasspath
         runtimeClasspath += sourceSets.main.output + configurations.runtimeClasspath
     }
-    test {
-        compileClasspath += sourceSets.gobd.output
-        runtimeClasspath += sourceSets.gobd.output
-    }
-}
+    // the tests (src/test) can test the plugins as well
+    sourceSets.test.compileClasspath += sourceSets[name].output
+    sourceSets.test.runtimeClasspath += sourceSets[name].output
 
-tasks.register('gobdPluginJar', Jar) {
-    group = 'build'
-    description = 'Builds build/plugins/gobd-compliance.jar, the GoBD plugin'
-    archiveFileName = 'gobd-compliance.jar'
-    destinationDirectory = layout.buildDirectory.dir('plugins')
-    from sourceSets.gobd.output
-    manifest {
-        attributes 'Implementation-Title' : 'YaBS GoBD plugin'
-        attributes 'Implementation-Version' : project.version
+    tasks.register("${name}PluginJar", Jar) {
+        group = 'build'
+        def jarName = (pluginJarNames[name] ?: name) + '.jar'
+        description = "Builds build/plugins/${jarName}, the plugin in plugins/${name}"
+        archiveFileName = jarName
+        destinationDirectory = layout.buildDirectory.dir('plugins')
+        from sourceSets[name].output
+        manifest {
+            attributes 'Implementation-Title' : "YaBS plugin ${name}"
+            attributes 'Implementation-Version' : project.version
+        }
     }
 }
-tasks.named('assemble') { dependsOn 'gobdPluginJar' }
-// also on its own next to the zip: a release asset for those who use an installer
-tasks.register('gobdPluginRelease', Copy) {
-    from(tasks.named('gobdPluginJar'))
-    into layout.buildDirectory.dir('distributions')
+def pluginJarTasks = pluginNames.collect { tasks.named("${it}PluginJar") }
+
+tasks.register('pluginJars') {
+    group = 'build'
+    description = 'Builds the jars of all plugins in plugins/ (build/plugins/*.jar)'
+    dependsOn pluginJarTasks
+}
+tasks.named('assemble') { dependsOn 'pluginJars' }
+
+// all plugin jars in one zip next to the distribution zip (release asset)
+tasks.register('pluginsZip', Zip) {
+    group = 'distribution'
+    description = 'Builds build/distributions/openyabs-plugins-<version>.zip with all plugin jars'
+    archiveFileName = "openyabs-plugins-${project.version}.zip"
+    destinationDirectory = layout.buildDirectory.dir('distributions')
+    from(pluginJarTasks)
 }
 
 // Java 21 is the minimum (Apache Derby 10.17 needs it); --release also
@@ -115,7 +136,7 @@ tasks.named('jar') { finalizedBy 'copyRuntimeLibs' }
 // Zip for distribution: openyabs/openyabs.jar, openyabs/lib/ and start scripts (src/dist).
 // Start with yabs.sh / yabs.bat or "java -jar openyabs.jar" (Java 21+).
 tasks.register('distributionZip', Zip) {
-    finalizedBy 'gobdPluginRelease'
+    finalizedBy 'pluginsZip'
     group = 'distribution'
     description = 'Builds build/distributions/openyabs-<version>.zip with the app jar, lib/ and start scripts'
     archiveFileName = "openyabs-${project.version}.zip"
@@ -129,9 +150,9 @@ tasks.register('distributionZip', Zip) {
         }
         from('README.md')
     }
-    // plugins users can import (Control Panel > Plugins): the GoBD plugin
+    // plugins users can import (Control Panel > Plugins): all plugins in plugins/
     into('openyabs/plugins') {
-        from(tasks.named('gobdPluginJar'))
+        from(pluginJarTasks)
     }
     into('openyabs/lib') {
         from('lib') {
