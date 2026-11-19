@@ -1,0 +1,1762 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mpv5 PUBLIC "-//http://code.google.com/p/mp-rechnungs-und-kundenverwaltung//DTD mpv5 V 1.0//EN" "http://yabs.copy-left.de/files/yabs_import_1.0.dtd">
+
+<mpv5>
+  <accounts>
+    <account id="2">
+      <taxvalue>19.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>0</intaccounttype>
+      <intaccountclass>135</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>9</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>EDV-Software</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="3">
+      <taxvalue>19.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>0</intaccounttype>
+      <intaccountclass>240</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>9</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Geschäftsbauten</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="4">
+      <taxvalue>19.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>0</intaccounttype>
+      <intaccountclass>440</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>9</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Maschinen</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="5">
+      <taxvalue>19.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>0</intaccounttype>
+      <intaccountclass>520</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>9</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Pkw</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="6">
+      <taxvalue>19.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>0</intaccounttype>
+      <intaccountclass>650</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>9</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Büroeinrichtung</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="7">
+      <taxvalue>19.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>0</intaccounttype>
+      <intaccountclass>670</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>9</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Geringwertige Wirtschaftsgüter</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="8">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>0</intaccounttype>
+      <intaccountclass>1200</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Forderungen aus Lieferungen und Leistungen</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="9">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>1401</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>66</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Abziehbare Vorsteuer 7%</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="10">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>1402</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>61</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Abziehbare Vorsteuer aus innergemeinschaftlichem Erwerb 7%</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="11">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>1404</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>61</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Abziehbare Vorsteuer aus innergemeinschaftlichem Erwerb 19%</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="12">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>1406</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>66</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Abziehbare Vorsteuer 19%</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="13">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>1407</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>67</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Abziehbare Vorsteuer nach § 13b UStG</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="14">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>1433</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>62</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Bezahlte Einfuhrumsatzsteuer</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="15">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>0</intaccounttype>
+      <intaccountclass>1460</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Geldtransit</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="16">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>0</intaccounttype>
+      <intaccountclass>1600</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Kasse</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="17">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>0</intaccounttype>
+      <intaccountclass>1610</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Nebenkasse 1</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="18">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>0</intaccounttype>
+      <intaccountclass>1800</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Bank</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="19">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>0</intaccounttype>
+      <intaccountclass>1810</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Bank 2</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="20">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>0</intaccounttype>
+      <intaccountclass>1820</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Bank 3</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="21">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>0</intaccounttype>
+      <intaccountclass>2100</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Privatentnahmen allgemein</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="22">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>0</intaccounttype>
+      <intaccountclass>2180</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Privateinlagen</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="23">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>0</intaccounttype>
+      <intaccountclass>3300</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Verbindlichkeiten aus Lieferungen und Leistungen</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="24">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>3</intaccounttype>
+      <intaccountclass>3801</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>861</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Umsatzsteuer 7%</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="25">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>3</intaccounttype>
+      <intaccountclass>3802</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>931</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Umsatzsteuer aus innergemeinschaftlichem Erwerb 7%</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="26">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>3</intaccounttype>
+      <intaccountclass>3804</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>891</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Umsatzsteuer aus innergemeinschaftlichem Erwerb 19%</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="27">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>3</intaccounttype>
+      <intaccountclass>3806</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>811</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Umsatzsteuer 19%</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="28">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>0</intaccounttype>
+      <intaccountclass>3820</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Umsatzsteuer-Vorauszahlungen</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="29">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>3</intaccounttype>
+      <intaccountclass>3837</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>85</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Umsatzsteuer nach § 13b UStG 19%</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="30">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>3</intaccounttype>
+      <intaccountclass>4100</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>48</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Steuerfreie Umsätze § 4 Nr. 8ff UStG</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="31">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>3</intaccounttype>
+      <intaccountclass>4105</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>48</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Steuerfreie Umsätze nach § 4 Nr. 12 UStG</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="32">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>3</intaccounttype>
+      <intaccountclass>4120</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>43</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Steuerfreie Umsätze § 4 Nr. 1a UStG (Ausfuhrlieferung)</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="33">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>3</intaccounttype>
+      <intaccountclass>4125</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>41</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Steuerfreie innergemeinschaftliche Lieferungen § 4 Nr. 1b UStG</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="34">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>3</intaccounttype>
+      <intaccountclass>4130</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>41</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Lieferungen des ersten Abnehmers bei innergemeinschaftlichen Dreiecksgeschäften § 25b Abs. 2 UStG</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="35">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>3</intaccounttype>
+      <intaccountclass>4135</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>44</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Steuerfreie innergemeinschaftliche Lieferungen von Neufahrzeugen an Abnehmer ohne USt-IdNr.</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="36">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>3</intaccounttype>
+      <intaccountclass>4150</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>43</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Sonstige steuerfreie Umsätze § 4 Nr. 2-7 UStG</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="37">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>3</intaccounttype>
+      <intaccountclass>4185</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Erlöse als Kleinunternehmer i.S.d. § 19 Abs. 1 UStG</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="38">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>3</intaccounttype>
+      <intaccountclass>4200</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Erlöse</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="39">
+      <taxvalue>7.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>3</intaccounttype>
+      <intaccountclass>4300</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>86</inttaxfid>
+      <inttaxuid>2</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Erlöse 7% USt</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="40">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>3</intaccounttype>
+      <intaccountclass>4336</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>21</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Erlöse aus im anderen EU-Land steuerpflichtigen sonstigen Leistungen (Reverse Charge)</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="41">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>3</intaccounttype>
+      <intaccountclass>4338</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>45</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Erlöse aus im Drittland steuerbaren Leistungen</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="42">
+      <taxvalue>19.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>3</intaccounttype>
+      <intaccountclass>4400</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>81</inttaxfid>
+      <inttaxuid>3</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Erlöse 19% USt</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="43">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>3</intaccounttype>
+      <intaccountclass>4500</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Provisionserlöse</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="44">
+      <taxvalue>7.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>3</intaccounttype>
+      <intaccountclass>4506</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>86</inttaxfid>
+      <inttaxuid>2</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Provisionserlöse 7% USt</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="45">
+      <taxvalue>19.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>3</intaccounttype>
+      <intaccountclass>4508</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>81</inttaxfid>
+      <inttaxuid>3</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Provisionserlöse 19% USt</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="46">
+      <taxvalue>19.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>3</intaccounttype>
+      <intaccountclass>4560</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>81</inttaxfid>
+      <inttaxuid>3</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Erlöse aus Abfallverwertung</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="47">
+      <taxvalue>7.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>3</intaccounttype>
+      <intaccountclass>4610</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>86</inttaxfid>
+      <inttaxuid>2</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Entnahme durch den Unternehmer für Zwecke außerhalb des Unternehmens (Waren) 7% USt</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="48">
+      <taxvalue>19.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>3</intaccounttype>
+      <intaccountclass>4620</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>81</inttaxfid>
+      <inttaxuid>3</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Entnahme durch den Unternehmer für Zwecke außerhalb des Unternehmens (Waren) 19% USt</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="49">
+      <taxvalue>19.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>3</intaccounttype>
+      <intaccountclass>4645</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>81</inttaxfid>
+      <inttaxuid>3</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Verwendung von Gegenständen für Zwecke außerhalb des Unternehmens 19% USt (Kfz-Nutzung)</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="50">
+      <taxvalue>7.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>3</intaccounttype>
+      <intaccountclass>4710</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>86</inttaxfid>
+      <inttaxuid>2</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Erlösschmälerungen 7% USt</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="51">
+      <taxvalue>19.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>3</intaccounttype>
+      <intaccountclass>4720</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>81</inttaxfid>
+      <inttaxuid>3</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Erlösschmälerungen 19% USt</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="52">
+      <taxvalue>7.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>4731</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>86</inttaxfid>
+      <inttaxuid>2</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Gewährte Skonti 7% USt</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="53">
+      <taxvalue>19.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>4736</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>81</inttaxfid>
+      <inttaxuid>3</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Gewährte Skonti 19% USt</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="54">
+      <taxvalue>7.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>4750</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>86</inttaxfid>
+      <inttaxuid>2</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Gewährte Boni 7% USt</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="55">
+      <taxvalue>19.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>4760</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>81</inttaxfid>
+      <inttaxuid>3</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Gewährte Boni 19% USt</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="56">
+      <taxvalue>7.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>4780</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>86</inttaxfid>
+      <inttaxuid>2</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Gewährte Rabatte 7% USt</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="57">
+      <taxvalue>19.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>4790</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>81</inttaxfid>
+      <inttaxuid>3</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Gewährte Rabatte 19% USt</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="58">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>3</intaccounttype>
+      <intaccountclass>4830</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Sonstige betriebliche Erträge</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="59">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>3</intaccounttype>
+      <intaccountclass>4840</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Erträge aus Kursdifferenzen</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="60">
+      <taxvalue>19.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>3</intaccounttype>
+      <intaccountclass>4900</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>81</inttaxfid>
+      <inttaxuid>3</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Erträge aus dem Abgang von Gegenständen des Anlagevermögens</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="61">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>5200</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Wareneingang</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="62">
+      <taxvalue>7.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>5300</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>8</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Wareneingang 7% Vorsteuer</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="63">
+      <taxvalue>19.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>5400</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>9</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Wareneingang 19% Vorsteuer</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="64">
+      <taxvalue>7.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>5420</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>93</inttaxfid>
+      <inttaxuid>8</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Innergemeinschaftlicher Erwerb 7% Vorsteuer und 7% Umsatzsteuer</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="65">
+      <taxvalue>19.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>5425</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>89</inttaxfid>
+      <inttaxuid>9</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Innergemeinschaftlicher Erwerb 19% Vorsteuer und 19% Umsatzsteuer</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="66">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>5550</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>91</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Steuerfreier innergemeinschaftlicher Erwerb</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="67">
+      <taxvalue>7.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>3</intaccounttype>
+      <intaccountclass>5731</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>8</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Erhaltene Skonti 7% Vorsteuer</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="68">
+      <taxvalue>19.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>3</intaccounttype>
+      <intaccountclass>5736</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>9</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Erhaltene Skonti 19% Vorsteuer</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="69">
+      <taxvalue>7.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>3</intaccounttype>
+      <intaccountclass>5750</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>8</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Erhaltene Boni 7% Vorsteuer</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="70">
+      <taxvalue>19.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>3</intaccounttype>
+      <intaccountclass>5760</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>9</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Erhaltene Boni 19% Vorsteuer</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="71">
+      <taxvalue>7.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>3</intaccounttype>
+      <intaccountclass>5780</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>8</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Erhaltene Rabatte 7% Vorsteuer</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="72">
+      <taxvalue>19.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>3</intaccounttype>
+      <intaccountclass>5790</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>9</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Erhaltene Rabatte 19% Vorsteuer</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="73">
+      <taxvalue>19.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>5800</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>9</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Bezugsnebenkosten</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="74">
+      <taxvalue>19.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>5900</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>9</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Fremdleistungen</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="75">
+      <taxvalue>19.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>5923</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>46</inttaxfid>
+      <inttaxuid>9</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Sonstige Leistungen eines im anderen EU-Land ansässigen Unternehmers 19% VSt/USt (§ 13b)</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="76">
+      <taxvalue>19.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>5925</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>84</inttaxfid>
+      <inttaxuid>9</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Leistungen eines im Ausland ansässigen Unternehmers 19% VSt/USt (§ 13b)</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="77">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>6010</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Löhne</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="78">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>6020</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Gehälter</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="79">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>6035</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Löhne für Minijobs</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="80">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>6110</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Gesetzliche soziale Aufwendungen</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="81">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>6120</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Beiträge zur Berufsgenossenschaft</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="82">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>6220</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Abschreibungen auf Sachanlagen</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="83">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>6260</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Sofortabschreibung geringwertiger Wirtschaftsgüter</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="84">
+      <taxvalue>19.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>6300</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>9</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Sonstige betriebliche Aufwendungen</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="85">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>6310</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Miete (unbewegliche Wirtschaftsgüter)</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="86">
+      <taxvalue>19.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>6325</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>9</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Gas, Strom, Wasser</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="87">
+      <taxvalue>19.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>6330</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>9</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Reinigung</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="88">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>6400</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Versicherungen</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="89">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>6420</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Beiträge</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="90">
+      <taxvalue>19.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>6470</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>9</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Reparaturen und Instandhaltungen von anderen Anlagen und Betriebs- und Geschäftsausstattung</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="91">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>6520</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Kfz-Versicherungen</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="92">
+      <taxvalue>19.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>6530</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>9</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Laufende Kfz-Betriebskosten</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="93">
+      <taxvalue>19.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>6540</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>9</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Kfz-Reparaturen</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="94">
+      <taxvalue>19.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>6570</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>9</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Sonstige Kfz-Kosten</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="95">
+      <taxvalue>19.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>6600</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>9</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Werbekosten</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="96">
+      <taxvalue>19.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>6640</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>9</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Bewirtungskosten</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="97">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>6644</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Nicht abzugsfähige Bewirtungskosten</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="98">
+      <taxvalue>19.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>6650</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>9</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Reisekosten Arbeitnehmer</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="99">
+      <taxvalue>19.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>6670</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>9</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Reisekosten Unternehmer</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="100">
+      <taxvalue>7.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>6680</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>8</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Reisekosten Unternehmer Übernachtungsaufwand</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="101">
+      <taxvalue>19.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>6710</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>9</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Verpackungsmaterial</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="102">
+      <taxvalue>19.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>6740</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>9</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Ausgangsfrachten</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="103">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>6800</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Porto</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="104">
+      <taxvalue>19.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>6805</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>9</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Telefon</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="105">
+      <taxvalue>19.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>6810</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>9</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Internetkosten</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="106">
+      <taxvalue>19.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>6815</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>9</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Bürobedarf</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="107">
+      <taxvalue>7.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>6820</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>8</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Zeitschriften, Bücher (Fachliteratur)</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="108">
+      <taxvalue>19.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>6821</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>9</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Fortbildungskosten</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="109">
+      <taxvalue>19.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>6825</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>9</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Rechts- und Beratungskosten</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="110">
+      <taxvalue>19.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>6827</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>9</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Abschluss- und Prüfungskosten</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="111">
+      <taxvalue>19.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>6830</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>9</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Buchführungskosten</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="112">
+      <taxvalue>19.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>6835</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>9</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Mieten für Einrichtungen (bewegliche Wirtschaftsgüter)</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="113">
+      <taxvalue>19.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>6837</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>9</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Aufwendungen für die zeitlich befristete Überlassung von Rechten (Lizenzen, Software)</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="114">
+      <taxvalue>19.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>6850</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>9</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Sonstiger Betriebsbedarf</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="115">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>6855</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Nebenkosten des Geldverkehrs</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="116">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>6880</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Aufwendungen aus Kursdifferenzen</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="117">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>7300</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Zinsen und ähnliche Aufwendungen</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+    <account id="118">
+      <taxvalue>0.0</taxvalue>
+      <description>SKR04</description>
+      <intaccounttype>2</intaccounttype>
+      <intaccountclass>7685</intaccountclass>
+      <intparentaccount>1</intparentaccount>
+      <intprofitfid>0</intprofitfid>
+      <inttaxfid>0</inttaxfid>
+      <inttaxuid>0</inttaxuid>
+      <frame>de_skr04</frame>
+      <cname>Kfz-Steuer</cname>
+      <groupsids>1</groupsids>
+      <dateadded>01.01.26</dateadded>
+      <intaddedby>1</intaddedby>
+    </account>
+  </accounts>
+</mpv5>

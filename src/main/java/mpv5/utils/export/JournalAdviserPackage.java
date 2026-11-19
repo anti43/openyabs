@@ -104,6 +104,8 @@ public final class JournalAdviserPackage {
     private final List<String> filters;
     private final Map<Integer, Contact> contacts = new HashMap<Integer, Contact>();
     private final Map<BigDecimal, String> rateLabels;
+    private List<mpv5.plugin.api.JournalExport> pluginExports;
+    private final List<String> pluginFiles = new ArrayList<String>();
     private int receipts;
     private int einvoices;
     private final List<String> problems = new ArrayList<String>();
@@ -134,6 +136,19 @@ public final class JournalAdviserPackage {
         this.to = to;
         this.filters = filters;
         this.rateLabels = rateLabels == null ? rateLabels() : rateLabels;
+    }
+
+    /**
+     * Overrides the plugin exports consulted during {@link #write(File)} (for
+     * tests; by default the running plugins of {@link mpv5.plugin.ExtensionManager}
+     * are used).
+     *
+     * @param exports
+     * @return this
+     */
+    public JournalAdviserPackage setPluginExports(List<mpv5.plugin.api.JournalExport> exports) {
+        this.pluginExports = exports;
+        return this;
     }
 
     /**
@@ -273,6 +288,7 @@ public final class JournalAdviserPackage {
         receipts = 0;
         einvoices = 0;
         problems.clear();
+        pluginFiles.clear();
         EInvoiceCheck check = checkEInvoices();
         Set<String> names = new HashSet<String>();
         File tmp = Files.createTempDirectory("yabs-journal").toFile();
@@ -283,12 +299,46 @@ public final class JournalAdviserPackage {
                     csvByRate().getBytes(StandardCharsets.UTF_8)));
             receipts(zip, names);
             eInvoices(zip, names, tmp);
+            pluginEntries(zip, names);
             put(zip, names, "zusammenfassung.txt", summary(check).getBytes(StandardCharsets.UTF_8));
         } finally {
             for (File f : tmp.listFiles() == null ? new File[0] : tmp.listFiles()) {
                 f.delete();
             }
             tmp.delete();
+        }
+    }
+
+    private void pluginEntries(ZipOutputStream zip, Set<String> names) {
+        List<mpv5.plugin.api.JournalExport> exports = pluginExports;
+        if (exports == null) {
+            try {
+                exports = mpv5.plugin.ExtensionManager.instance().journalExports();
+            } catch (Throwable t) {
+                Log.Debug(this, t.getMessage());
+                return;
+            }
+        }
+        if (exports == null || exports.isEmpty()) {
+            return;
+        }
+        mpv5.plugin.api.JournalExportContext ctx = new mpv5.plugin.api.JournalExportContext(
+                entries, totals, from, to, filters, rateLabels, null, null);
+        for (mpv5.plugin.api.JournalExport exp : exports) {
+            try {
+                Map<String, byte[]> extra = exp.adviserPackageEntries(ctx);
+                if (extra != null) {
+                    for (Map.Entry<String, byte[]> item : extra.entrySet()) {
+                        if (item.getKey() != null && item.getValue() != null) {
+                            put(zip, names, item.getKey(), item.getValue());
+                            pluginFiles.add(item.getKey());
+                        }
+                    }
+                }
+            } catch (Exception ex) {
+                Log.Debug(this, ex);
+                problems.add(exp.title() + ": " + ex.getMessage());
+            }
         }
     }
 
@@ -586,6 +636,9 @@ public final class JournalAdviserPackage {
         b.append("  journal_steuersaetze.csv  eine Zeile je Beleg und Steuersatz").append(nl);
         b.append("  belege/                ").append(receipts).append(" archivierte Belege (Originaldateien, auch empfangene E-Rechnungen)").append(nl);
         b.append("  e-rechnungen/          ").append(einvoices).append(" ausgehende E-Rechnungen (XRechnung, aus den Belegdaten erzeugt)").append(nl);
+        for (String pf : pluginFiles) {
+            b.append("  ").append(pf).append(nl);
+        }
         b.append(nl).append("E-Rechnung (Ausgangsrechnungen im Zeitraum)").append(nl);
         b.append("  Rechnungen gesamt: ").append(check.invoices).append(nl);
         b.append("  davon an Unternehmen über 250 EUR: ").append(check.b2b).append(", als E-Rechnung: ").append(check.b2bEInvoice).append(nl);

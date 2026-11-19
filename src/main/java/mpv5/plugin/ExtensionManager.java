@@ -47,6 +47,7 @@ import mpv5.handler.UpdateCheck;
 import mpv5.logging.Log;
 import java.util.Locale;
 import mpv5.plugin.api.ExtensionContext;
+import mpv5.plugin.api.JournalExport;
 import mpv5.plugin.api.PluginSettings;
 import mpv5.plugin.api.SearchResult;
 import mpv5.plugin.api.YabsExtension;
@@ -197,6 +198,7 @@ public final class ExtensionManager {
     private final List<Owned<Consumer<Activity.Entry>>> listeners = new CopyOnWriteArrayList<Owned<Consumer<Activity.Entry>>>();
     private final List<Owned<DatabaseObjectModifier>> modifiers = new CopyOnWriteArrayList<Owned<DatabaseObjectModifier>>();
     private final List<Owned<Consumer<DataPanel>>> viewListeners = new CopyOnWriteArrayList<Owned<Consumer<DataPanel>>>();
+    private final List<Owned<JournalExport>> journalExports = new CopyOnWriteArrayList<Owned<JournalExport>>();
     private final List<Runnable> changeListeners = new CopyOnWriteArrayList<Runnable>();
     private final File folder;
     private Host host;
@@ -858,6 +860,17 @@ public final class ExtensionManager {
     }
 
     /**
+     * @return the journal exports registered by running plugins
+     */
+    public List<JournalExport> journalExports() {
+        List<JournalExport> l = new ArrayList<JournalExport>();
+        for (Owned<JournalExport> e : journalExports) {
+            l.add(e.value);
+        }
+        return Collections.unmodifiableList(l);
+    }
+
+    /**
      * Asks the search providers of the plugins; a failing provider is skipped
      *
      * @param needle
@@ -952,6 +965,7 @@ public final class ExtensionManager {
         pages.removeIf(p -> p.owner.equals(owner));
         providers.removeIf(p -> p.owner.equals(owner));
         listeners.removeIf(p -> p.owner.equals(owner));
+        journalExports.removeIf(p -> p.owner.equals(owner));
         boolean hadViews = viewListeners.removeIf(p -> p.owner.equals(owner));
         for (Owned<DatabaseObjectModifier> m : modifiers) {
             if (m.owner.equals(owner)) {
@@ -994,6 +1008,9 @@ public final class ExtensionManager {
             n += p.owner.equals(owner) ? 1 : 0;
         }
         for (Owned<?> p : viewListeners) {
+            n += p.owner.equals(owner) ? 1 : 0;
+        }
+        for (Owned<?> p : journalExports) {
             n += p.owner.equals(owner) ? 1 : 0;
         }
         return n;
@@ -1129,6 +1146,14 @@ public final class ExtensionManager {
                         }
                     }
                 });
+            }
+        }
+
+        @Override
+        public void addJournalExport(JournalExport export) {
+            if (export != null) {
+                journalExports.add(new Owned<JournalExport>(owner, export));
+                fireChanged();
             }
         }
 
