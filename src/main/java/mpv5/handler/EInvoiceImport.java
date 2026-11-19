@@ -231,7 +231,12 @@ public final class EInvoiceImport {
         if (inv.grossAmount.signum() == 0 && inv.netAmount.signum() == 0) {
             return Messages.EINVOICE_INVALID_AMOUNTS.toString();
         }
-        if (inv.netAmount.add(inv.taxAmount).subtract(inv.grossAmount).abs().compareTo(new java.math.BigDecimal("0.05")) > 0) {
+        java.math.BigDecimal tolerance = new java.math.BigDecimal("0.05");
+        boolean bySum = inv.netAmount.add(inv.taxAmount).subtract(inv.grossAmount).abs().compareTo(tolerance) <= 0;
+        //without a stated VAT total (BT-110) the parser has no tax amount: net and rate tell
+        boolean byRate = inv.taxAmount.signum() == 0 && inv.taxRate.signum() > 0
+                && inv.netAmount.multiply(java.math.BigDecimal.ONE.add(inv.taxRate.movePointLeft(2))).subtract(inv.grossAmount).abs().compareTo(tolerance) <= 0;
+        if (!bySum && !byRate) {
             return String.format(Messages.EINVOICE_INVALID_SUM.toString(), inv.netAmount, inv.taxAmount, inv.grossAmount);
         }
         return null;
