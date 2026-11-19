@@ -136,7 +136,7 @@ public final class GobdCompliance implements YabsExtension {
                         }
                     }, zip -> {
                         g.logAudit("EXPORT", year, "Z3_EXPORTED", null, zip.getFileName().toString(), null, "Z3 Prueferexport erstellt: " + zip.getFileName());
-                        g.popup("GoBD Z3-Export erstellt:\n" + zip);
+                        g.notifyQuiet("GoBD Z3-Export erstellt: " + zip, null);
                         yabs.openFile(zip.getParent().toFile());
                     });
                 });

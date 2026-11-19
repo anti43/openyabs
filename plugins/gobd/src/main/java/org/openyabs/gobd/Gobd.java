@@ -184,6 +184,22 @@ public final class Gobd {
     }
 
     /**
+     * A success message without a dialog: the notification bar of YaBS, and
+     * the notification log of the record if there is one
+     *
+     * @param msg
+     * @param about the record, or null
+     */
+    void notifyQuiet(String msg, DatabaseObject about) {
+        String m = msg.replace("\n", " | ");
+        if (about != null && about.__getIDS() > 0) {
+            mpv5.ui.dialogs.Notificator.raiseNotification(m, false, true, about);
+        } else {
+            mpv5.ui.dialogs.Notificator.raiseNotification(m, false);
+        }
+    }
+
+    /**
      * @return the archive folder (settings, else the data folder of the
      * plugin), created on demand
      */
@@ -959,7 +975,7 @@ public final class Gobd {
             GobdUtil.makeReadOnly(a.path);
             lastGeneratedFiles.remove(docId);
             yabs.refreshView(doc);
-            yabs.notify("GoBD-Festschreibung erfolgreich:\nBeleg: " + number + " (" + a.format + ")\nSHA-256: "
+            notifyQuiet("GoBD-Festschreibung erfolgreich:\nBeleg: " + number + " (" + a.format + ")\nSHA-256: "
                     + hash.substring(0, 16) + "...\nArchiv: " + a.path.getFileName(), doc);
             return true;
         } catch (Exception e) {
@@ -1066,7 +1082,7 @@ public final class Gobd {
                 yabs.refreshView(original);
                 logAudit("INVOICE", original.__getIDS(), "CANCELLED", "STATUS=FINALIZED", "STATUS=CANCELLED BY " + storno.__getCnumber(),
                         str(origLock[9]), "Storniert durch Stornobeleg " + storno.__getCnumber());
-                yabs.notify("Beleg " + original.__getCnumber() + " storniert durch " + storno.__getCnumber() + ".", original);
+                notifyQuiet("Beleg " + original.__getCnumber() + " storniert durch " + storno.__getCnumber() + ".", original);
                 return true;
             }
             return false;
@@ -1312,7 +1328,7 @@ public final class Gobd {
         String amounts = "Netto: " + fmtDec(rev.__getNetvalue()) + " EUR | Brutto: " + fmtDec(rev.__getBrutvalue()) + " EUR\nSHA-256: "
                 + fileSha.substring(0, 16) + "...\nArchiv: " + archived.getFileName();
         if (!silent) {
-            yabs.notify(parsed == null
+            notifyQuiet(parsed == null
                     ? "GoBD-Einnahmen-Beleg archiviert:\nBeleg: " + docNum + " (" + format + ")\n" + amounts
                     + "\n(Hinweis: Einfacher PDF-Beleg - Werte koennen nicht automatisch auf rechnerische Richtigkeit geprueft werden.)"
                     : "GoBD-Einnahmen-Import erfolgreich:\nBeleg: " + docNum + " (" + format + ")\n" + amounts

@@ -151,18 +151,18 @@ final class Views {
             String sha = str(receipts[0][3]);
             //amounts, tax, account and removing the receipt are locked
             panel.setContentLocked(true);
-            panel.setPluginBadge(badge("🔒 GoBD BELEGABLAGE (" + receipts.length + ")", GREEN_BG, GREEN_FG, GREEN_LINE,
+            panel.setPluginBadge(badge("GoBD BELEGABLAGE (" + receipts.length + ")", GREEN_BG, GREEN_FG, GREEN_LINE,
                     "GoBD Rz. 61–64 & § 146 Abs. 4 AO | " + receipts.length + " Beleg(e) revisionssicher archiviert | SHA-256: " + sha));
-            panel.setPluginBanner(banner("🔒 GoBD-Festschreibung: Ausgabe besitzt " + receipts.length + " verknuepfte(n) Originalbeleg(e) im Jahresarchiv"
+            panel.setPluginBanner(banner("GoBD-Festschreibung: Ausgabe besitzt " + receipts.length + " verknuepfte(n) Originalbeleg(e) im Jahresarchiv"
                     + " (SHA-256: " + shortHash(sha) + "…). Betraege, Steuer, Konto & Belegentfernung sind gesperrt; Zahlungsstatus und Zahlungsdatum bleiben buchbar.",
                     true, GREEN_BG, GREEN_FG, GREEN_LINE, 5, openButton(path)));
             return;
         }
         panel.setContentLocked(false);
-        panel.setPluginBadge(badge("⚠️ GoBD: OHNE BELEG", AMBER_BG, AMBER_FG, AMBER_LINE,
+        panel.setPluginBadge(badge("GoBD: OHNE BELEG", AMBER_BG, AMBER_FG, AMBER_LINE,
                 "GoBD Rz. 61–64: Keine Buchung ohne Beleg! Bitte scannen oder fuegen Sie den Eingangsbeleg an."));
         JButton attach = button("Beleg verknuepfen & festschreiben", () -> attachExpenseReceipt(panel, exp));
-        panel.setPluginBanner(banner("⚠️ GoBD-Hinweis: Zu dieser Ausgabe ist noch kein Eingangsbeleg hinterlegt"
+        panel.setPluginBanner(banner("GoBD-Hinweis: Zu dieser Ausgabe ist noch kein Eingangsbeleg hinterlegt"
                 + " (Grundsatz: „Keine Buchung ohne Beleg“, GoBD Rz. 61–64).", false, AMBER_BG, AMBER_FG, AMBER_LINE, 5, attach));
     }
 
@@ -185,7 +185,7 @@ final class Views {
                     : "Eingangsbeleg " + rec.originalName + " verknuepft und Ausgabe festgeschrieben.");
             g.chainReceipts();
             panel.setDataOwner(exp, true);
-            g.yabs.notify("GoBD-Eingangsbeleg archiviert & Ausgabe festgeschrieben:\nDatei: " + rec.originalName + "\nSHA-256: " + rec.sha256.substring(0, 16) + "..."
+            g.notifyQuiet("GoBD-Eingangsbeleg archiviert & Ausgabe festgeschrieben:\nDatei: " + rec.originalName + "\nSHA-256: " + rec.sha256.substring(0, 16) + "..."
                     + (plainPdf ? "\n(Hinweis: Einfacher PDF-Beleg - Werte koennen nicht automatisch auf rechnerische Richtigkeit geprueft werden.)" : ""), exp);
         } catch (Exception ex) {
             g.error("Fehler beim Archivieren des Eingangsbelegs:\n" + ex.getMessage());
@@ -211,18 +211,18 @@ final class Views {
             String format = lock != null ? (blank(str(lock[9])) ? "ZUGFERD_PDFA3" : str(lock[9])) : "RECEIPT_FILE";
             String sha = lock != null ? str(lock[10]) : str(receipts[0][3]);
             panel.setContentLocked(true);
-            panel.setPluginBadge(badge(lock != null ? "🔒 GoBD E-RECHNUNG" : "🔒 GoBD BELEG-ARCHIV", GREEN_BG, GREEN_FG, GREEN_LINE,
+            panel.setPluginBadge(badge(lock != null ? "GoBD E-RECHNUNG" : "GoBD BELEG-ARCHIV", GREEN_BG, GREEN_FG, GREEN_LINE,
                     "GoBD § 146 Abs. 4 AO | Einnahme " + docNum + " (" + format + ") | SHA-256: " + sha));
             String text = lock != null
-                    ? "🔒 GoBD-Festschreibung: Einnahme " + docNum + " (" + format + ", SHA-256: " + shortHash(sha) + "…) ist mit einem Originalbeleg im Jahresarchiv"
+                    ? "GoBD-Festschreibung: Einnahme " + docNum + " (" + format + ", SHA-256: " + shortHash(sha) + "…) ist mit einem Originalbeleg im Jahresarchiv"
                     + " verknuepft. Betraege, Steuer, Konto & Datum sind gesperrt; Zahlungsstatus und Zahlungsdatum bleiben buchbar."
-                    : "🔒 GoBD-Festschreibung: Einnahme " + docNum + " ist mit " + receipts.length + " archivierten Beleg(en) verknuepft."
+                    : "GoBD-Festschreibung: Einnahme " + docNum + " ist mit " + receipts.length + " archivierten Beleg(en) verknuepft."
                     + " Betraege, Steuer, Konto & Datum sind gesperrt; Zahlungsstatus und Zahlungsdatum bleiben buchbar.";
             panel.setPluginBanner(banner(text, true, GREEN_BG, GREEN_FG, GREEN_LINE, 6, openButton(path)));
             return;
         }
         panel.setContentLocked(false);
-        panel.setPluginBadge(badge("⚠️ GoBD: OHNE BELEG", AMBER_BG, AMBER_FG, AMBER_LINE,
+        panel.setPluginBadge(badge("GoBD: OHNE BELEG", AMBER_BG, AMBER_FG, AMBER_LINE,
                 "GoBD Rz. 61–64: Keine Buchung ohne Beleg! Bitte verknuepfen Sie eine ZUGFeRD-/XRechnung-Datei oder einen Beleg."));
         JButton link = button("ZUGFeRD / Beleg verknuepfen", () -> {
             JFileChooser chooser = new JFileChooser();
@@ -232,7 +232,7 @@ final class Views {
                 g.importIncomeFile(chooser.getSelectedFile().toPath(), rev, false);
             }
         });
-        panel.setPluginBanner(banner("⚠️ GoBD-Hinweis: Zu dieser Einnahme ist noch kein Originalbeleg hinterlegt"
+        panel.setPluginBanner(banner("GoBD-Hinweis: Zu dieser Einnahme ist noch kein Originalbeleg hinterlegt"
                 + " (Grundsatz: „Keine Buchung ohne Beleg“, GoBD Rz. 61–64).", false, AMBER_BG, AMBER_FG, AMBER_LINE, 6, link));
     }
 
@@ -280,10 +280,10 @@ final class Views {
         Color bg = cancelled ? RED_BG : AMBER_BG;
         Color fg = cancelled ? RED_FG : AMBER_FG;
         Color line = cancelled ? RED_LINE : AMBER_LINE;
-        panel.setPluginBadge(badge(cancelled ? "🔒 GoBD STORNIERT" : "🔒 GoBD FESTGESCHRIEBEN", bg, fg, line,
+        panel.setPluginBadge(badge(cancelled ? "GoBD STORNIERT" : "GoBD FESTGESCHRIEBEN", bg, fg, line,
                 "GoBD § 146 Abs. 4 AO | Festgeschrieben am " + str(lock[3]) + " von " + str(lock[4]) + " | Format: " + format + " | SHA-256: " + sha));
         JButton open = openButton(path);
-        String text = "🔒 GoBD-Festschreibung (§ 146 Abs. 4 AO): Beleg " + docNum + " [" + state + "] ist unveraenderbar archiviert (" + format
+        String text = "GoBD-Festschreibung (§ 146 Abs. 4 AO): Beleg " + docNum + " [" + state + "] ist unveraenderbar archiviert (" + format
                 + ", SHA-256: " + shortHash(sha) + "…). Steuerrelevante Felder & Positionen sind gesperrt; Zahlungsstatus, Teilzahlungen & Mahnungen bleiben buchbar.";
         if (!cancelled && doc.__getInttype() != Item.TYPE_CREDIT) {
             JButton storno = button("Stornorechnung erstellen", () -> {

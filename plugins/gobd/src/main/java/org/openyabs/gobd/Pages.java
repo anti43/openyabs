@@ -281,7 +281,7 @@ final class Pages {
                     if (!has) {
                         missing++;
                     }
-                    exp.addRow(new Object[]{r[0], str(r[1]), str(r[2]), fmtDate(r[3]), fmtDec(r[4]), has ? "🔒 Archiviert" : "⚠️ Fehlt (Rz. 61)",
+                    exp.addRow(new Object[]{r[0], str(r[1]), str(r[2]), fmtDate(r[3]), fmtDec(r[4]), has ? "Archiviert" : "Fehlt (Rz. 61)",
                         orig, str(r[6]).trim(), arch});
                 }
             }
@@ -293,7 +293,7 @@ final class Pages {
             }
             tabs.setTitleAt(0, "1. Ausgangsrechnungen & Stornos (" + inv.getRowCount() + ")");
             tabs.setTitleAt(1, "2. Importierte Einnahmen / ZUGFeRD (" + inc.getRowCount() + ")");
-            tabs.setTitleAt(2, "3. Ausgaben & Eingangsbelege (" + exp.getRowCount() + (missing > 0 ? " | ⚠️ " + missing + " ohne Beleg" : "") + ")");
+            tabs.setTitleAt(2, "3. Ausgaben & Eingangsbelege (" + exp.getRowCount() + (missing > 0 ? " | " + missing + " ohne Beleg" : "") + ")");
             tabs.setTitleAt(3, "4. GoBD Audit-Protokoll (" + aud.getRowCount() + ")");
             summary.setText("GoBD Z1-Prueferansicht (§ 147 Abs. 6 AO) – " + inv.getRowCount() + " Ausgangsbelege | " + inc.getRowCount()
                     + " ZUGFeRD-Einnahmen | " + exp.getRowCount() + " Ausgaben | " + aud.getRowCount() + " Audit-Eintraege");
