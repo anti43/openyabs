@@ -61,7 +61,8 @@ public class FormatHandler {
         TYPE_DELIVERY_NOTE(Constants.TYPE_DELIVERY_NOTE, Messages.TYPE_DELIVERY.getValue()),
         TYPE_DEPOSIT(Constants.TYPE_DEPOSIT, Messages.TYPE_DEPOSIT.getValue()),
         TYPE_PART_PAYMENT(Constants.TYPE_PART_PAYMENT, Messages.TYPE_PART_PAYMENT.getValue()),
-        TYPE_CREDIT(Constants.TYPE_CREDIT, Messages.TYPE_CREDIT.getValue());
+        TYPE_CREDIT(Constants.TYPE_CREDIT, Messages.TYPE_CREDIT.getValue()),
+        TYPE_CANCELLATION(Constants.TYPE_CANCELLATION, Messages.TYPE_CANCELLATION.getValue());
         int ids;
         String names;
 
@@ -133,6 +134,43 @@ public class FormatHandler {
         this.source = forObject;
     }
 
+    /**
+     * A kind of number format that is not the type of the record (e.g. a
+     * cancellation invoice, which is a credit note), null: the type of the
+     * record
+     */
+    private Integer formatType;
+    /**
+     * The last number of that kind (the counter goes on from it), null: the
+     * last record of the type of the record
+     */
+    private java.util.function.Supplier<String> lastNumber;
+
+    /**
+     * The numbers of a kind that is not the type of the record, e.g.
+     * {@link Constants#TYPE_CANCELLATION} for a credit note that cancels an
+     * invoice. The variables of the format ([YEAR] ...) are of the record.
+     *
+     * @param forObject the record that gets the number
+     * @param formatType {@link TYPES}
+     * @param lastNumber the last number of that kind (null or empty if none)
+     */
+    public FormatHandler(DatabaseObject forObject, int formatType, java.util.function.Supplier<String> lastNumber) {
+        this.source = forObject;
+        this.formatType = formatType;
+        this.lastNumber = lastNumber;
+    }
+
+    /**
+     * @param forObject a record
+     * @param formatType {@link TYPES}
+     * @return true if a number format of the kind is stored for the current
+     * user or for all users (else the default format would be used)
+     */
+    public static synchronized boolean hasFormat(DatabaseObject forObject, int formatType) {
+        return new FormatHandler(forObject, formatType, null).getFormat() != DEFAULT_FORMAT;
+    }
+
     @Override
     public String toString() {
         return "Format: " + getFormat().format(43) + " for " + source + " (" + determineType(source) + ")";
@@ -202,7 +240,7 @@ public class FormatHandler {
 
     private synchronized YMessageFormat getFormat0() {
 
-        int typ = determineType(source);
+        int typ = getType();
         String key = mpv5.db.objects.User.getCurrentUser().__getIDS() + "@" + typ;
         String adminKey = User.ADMIN_ID + "@" + typ;
 
@@ -275,6 +313,12 @@ public class FormatHandler {
      */
     public synchronized int getNextNumber(YMessageFormat format) {
 
+        if (format.startValue() == null && lastNumber != null) {
+            //a kind of its own: go on from its last number, skip the numbers in use
+            String last = lastNumber.get();
+            Log.Debug(FormatHandler.class, "Last number of kind " + formatType + ": " + last);
+            return getNextNumber(format, last == null || last.trim().isEmpty() ? 0 : getIntegerPartOf(format, last.trim()));
+        }
         if (format.startValue() == null) {
             int newN = 0;
             DatabaseObject forThis = source;
@@ -441,7 +485,7 @@ public class FormatHandler {
      * @return the type
      */
     public int getType() {
-        return determineType(source);
+        return formatType != null ? formatType : determineType(source);
     }
 
 //    /**
