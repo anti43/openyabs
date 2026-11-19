@@ -198,7 +198,10 @@ public final class RevenueReceipts {
             Log.Debug(RevenueReceipts.class, e);
         }
 
-        // Also check if gobd_income_lock has an archived file for this revenue
+        // Also check if gobd_income_lock (table of the GoBD plugin) has an archived file for this revenue
+        if (!lockTableExists()) {
+            return list;
+        }
         try {
             ReturnValue rvLock = db().freeSelectQuery(
                     "SELECT revenue_id, original_name, archive_path, file_size, file_sha256, artifact_format, imported_at, imported_by "
@@ -241,6 +244,9 @@ public final class RevenueReceipts {
         } catch (Exception e) {
             Log.Debug(RevenueReceipts.class, e);
         }
+        if (!lockTableExists()) {
+            return false;
+        }
         try {
             ReturnValue rv2 = db().freeSelectQuery(
                     "SELECT revenue_id FROM gobd_income_lock WHERE file_sha256 = " + q(sha256.trim().toLowerCase(Locale.ROOT)),
@@ -249,6 +255,14 @@ public final class RevenueReceipts {
         } catch (Exception ignored) {
             return false;
         }
+    }
+
+    /**
+     * @return true if the table of the GoBD plugin exists: without the plugin
+     * it is not queried (no database error in the log)
+     */
+    private static boolean lockTableExists() {
+        return mpv5.db.common.DatabaseConnection.tableExists("gobd_income_lock");
     }
 
     private static Date date(Object o) {

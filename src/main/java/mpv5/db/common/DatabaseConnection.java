@@ -253,6 +253,22 @@ public class DatabaseConnection {
     * @param sql a statement of the structure or the updates
     * @return the statement with the configured table prefix
     */
+   /**
+    * Checks quietly (no error in the log) whether a table exists, e.g. the
+    * table of a plugin that may not be installed
+    *
+    * @param table
+    * @return true if the table can be queried
+    */
+   public static boolean tableExists(String table) {
+      try {
+         java.sql.Connection c = instanceOf().getConnection();
+         return c != null && DatabaseUpdater.tableExists(c, table, false);
+      } catch (Exception e) {
+         return false;
+      }
+   }
+
    public static String withPrefix(String sql) {
       String string = sql;
       if (prefix != null) {
