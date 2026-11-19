@@ -14,38 +14,68 @@
  *      You should have received a copy of the GNU General Public License
  *      along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
  */
- /*
- * HistoryPanel.java
- *
- * Created on 30.03.2009, 12:05:51
- */
 package mpv5.ui.panels;
 
-import java.math.BigDecimal;
-
-
-import mpv5.YabsViewProxy;
-import mpv5.handler.TemplateHandler;
-
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Rectangle;
 import java.io.File;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+import javax.swing.AbstractButton;
+import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.SwingUtilities;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.JToggleButton;
+import javax.swing.JTree;
+import javax.swing.JViewport;
+import javax.swing.ListSelectionModel;
+import javax.swing.RowFilter;
+import javax.swing.Scrollable;
+import javax.swing.SwingWorker;
+import javax.swing.Timer;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
+import mpv5.YabsViewProxy;
 import mpv5.db.common.Context;
-
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria2;
@@ -55,1491 +85,662 @@ import mpv5.db.common.Templateable;
 import mpv5.db.objects.Account;
 import mpv5.db.objects.Contact;
 import mpv5.db.objects.Expense;
-import mpv5.globals.Headers;
 import mpv5.db.objects.Group;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.Template;
 import mpv5.db.objects.User;
 import mpv5.globals.Constants;
 import mpv5.globals.GlobalSettings;
+import mpv5.globals.Headers;
 import mpv5.globals.Messages;
+import mpv5.handler.JournalCalc;
+import mpv5.handler.JournalCalc.Entry;
+import mpv5.handler.JournalCalc.Totals;
+import mpv5.handler.TemplateHandler;
 import mpv5.logging.Log;
+import mpv5.ui.beans.LabeledTextField;
+import mpv5.ui.beans.TimeframeChooser;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.Notificator;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.misc.MPTable;
+import mpv5.ui.misc.TableViewPersistenceHandler;
+import mpv5.ui.modern.Applets;
+import mpv5.ui.modern.Card;
+import mpv5.ui.modern.ChipToggle;
+import mpv5.ui.modern.ModernTheme;
 import mpv5.ui.popups.TablePopUp;
-import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.date.vTimeframe;
 import mpv5.utils.export.EmailBatch;
 import mpv5.utils.export.Export;
+import mpv5.utils.export.JournalAdviserPackage;
 import mpv5.utils.export.ODTFile2;
-import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.jobs.Job;
-import mpv5.utils.jobs.Waitable;
 import mpv5.utils.jobs.Waiter;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.models.MPTreeModel;
+import mpv5.utils.numberformat.FormatNumber;
 import mpv5.utils.tables.ExcelAdapter;
 import mpv5.utils.text.TypeConversion;
-import mpv5.ui.misc.TableViewPersistenceHandler;
-import mpv5.utils.models.MPComboBoxModelItem;
-import mpv5.utils.models.MPComboboxModel;
-import mpv5.utils.numberformat.FormatNumber;
 
 /**
- *
- * FIXME unpaid??
+ * The journal: invoices, credit notes, income, expenses and payments of a
+ * period, for the EÜR, an overview and the export to the tax adviser.
+ * <p>
+ * Outgoing documents (income side) and expenses are different records and
+ * have their own filters (which documents, status, date: document or payment
+ * date). Groups and accounts are filters of both and look the same: a
+ * searchable list each, none selected means all. The view presets set the
+ * filters for the usual tasks (EÜR: paid, by payment date; all documents;
+ * open items). Every change reloads the journal.
+ * <p>
+ * The journal of a contact (history) shows the outgoing documents of the
+ * contact and, as second tab, the overview tree of the contact.
  */
-public class JournalPanel extends javax.swing.JPanel implements ListPanel {
+public class JournalPanel extends JPanel implements ListPanel, Scrollable {
 
-    private static final long serialVersionUID = 1L;
-    private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
+    private static final long serialVersionUID = 2L;
+    private final java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
+
+    static final int VIEW_EUR = 0;
+    static final int VIEW_ALL = 1;
+    static final int VIEW_OPEN = 2;
+    static final int VIEW_CUSTOM = 3;
+    static final int STATUS_ALL = 0;
+    static final int STATUS_PAID = 1;
+    static final int STATUS_OPEN = 2;
+    static final int STATUS_CANCELLED = 3;
+    /**
+     * the table model columns (the journal template refers to them)
+     */
+    private static final int COL_EFFECT = 15;
+    private static final int MIN_WIDTH = 980;
+    private static final int MIN_HEIGHT = 620;
 
     public static JComponent instanceOf() {
         return new JournalPanel();
     }
-    private Contact dataOwner;
+    private final Contact dataOwner;
     private Template journalOrContactTemplate;
-    private Context contextInUse = Context.getInvoice();
+
+    //period and view
+    private final TimeframeChooser timeframeChooser1 = new TimeframeChooser();
+    private final ButtonGroup periodGroup = new ButtonGroup();
+    private final List<ChipToggle> periodChips = new ArrayList<ChipToggle>();
+    private final JComboBox<String> view = new JComboBox<String>();
+    private final JComboBox<Object> users = new JComboBox<Object>();
+    //income side
+    private final JCheckBox incInvoices = new JCheckBox(Item.getTypeString(Constants.TYPE_INVOICE));
+    private final JCheckBox incCredits = new JCheckBox(Item.getTypeString(Constants.TYPE_CREDIT));
+    private final JCheckBox incDeposits = new JCheckBox(Item.getTypeString(Constants.TYPE_DEPOSIT));
+    private final JCheckBox incPartPayments = new JCheckBox(Item.getTypeString(Constants.TYPE_PART_PAYMENT));
+    private final JCheckBox incRevenues = new JCheckBox(Messages.TYPE_REVENUE.toString());
+    private final JCheckBox incOrders = new JCheckBox(Item.getTypeString(Constants.TYPE_ORDER));
+    private final JCheckBox incOffers = new JCheckBox(Item.getTypeString(Constants.TYPE_OFFER));
+    private final JComboBox<Object> incomeStatus = new JComboBox<Object>(new Object[]{Messages.ALL, Messages.STATUS_PAID, Messages.STATUS_UNPAID, Messages.STATUS_CANCELLED});
+    private final JRadioButton incomeByDoc = new JRadioButton(Messages.JOURNAL_BY_DOCDATE.toString());
+    private final JRadioButton incomeByPay = new JRadioButton(Messages.JOURNAL_BY_PAYDATE.toString());
+    //expense side
+    private final JCheckBox incExpenses = new JCheckBox(Messages.JOURNAL_SHOW_EXPENSES.toString());
+    private final JComboBox<Object> expenseStatus = new JComboBox<Object>(new Object[]{Messages.ALL, Messages.STATUS_PAID, Messages.STATUS_UNPAID});
+    private final JRadioButton expenseByDoc = new JRadioButton(Messages.JOURNAL_BY_DOCDATE.toString());
+    private final JRadioButton expenseByPay = new JRadioButton(Messages.JOURNAL_BY_PAYDATE.toString());
+    //groups and accounts: the same control
+    private final SelectionList groups = new SelectionList(Messages.JOURNAL_GROUPS_HINT.toString());
+    private final SelectionList accounts = new SelectionList(Messages.JOURNAL_ACCOUNTS_HINT.toString());
+    private final JCheckBox includechildgroups = new JCheckBox(Messages.JOURNAL_CHILD_GROUPS.toString(), true);
+    //table
+    private final JTable jTable1;
+    private final JScrollPane tableScroll;
+    private final JTextField find = new JTextField(18);
+    private final JLabel count = new JLabel(" ");
+    private final JButton loadButton = new mpv5.ui.modern.PrimaryButton(Messages.JOURNAL_RELOAD.toString(), null);
+    private final JButton exportButton = new JButton(Messages.JOURNAL_EXPORT_BUTTON.toString());
+    private final JToggleButton filterToggle = new JToggleButton(Messages.JOURNAL_FILTERS.toString(), true);
+    private JComponent filterArea;
+    //sums
+    private final LabeledTextField revenueNetto = sum(Messages.JOURNAL_SUM_INCOME_NET);
+    private final LabeledTextField revenueTax = sum(Messages.JOURNAL_SUM_INCOME_TAX);
+    private final LabeledTextField revenueBrut = sum(Messages.JOURNAL_SUM_INCOME_GROSS);
+    private final LabeledTextField expNetto = sum(Messages.JOURNAL_SUM_EXPENSE_NET);
+    private final LabeledTextField expTax = sum(Messages.JOURNAL_SUM_EXPENSE_TAX);
+    private final LabeledTextField expBrut = sum(Messages.JOURNAL_SUM_EXPENSE_GROSS);
+    private final LabeledTextField profitNetto = sum(Messages.JOURNAL_SUM_PROFIT_NET);
+    private final LabeledTextField profitTax = sum(Messages.JOURNAL_SUM_PROFIT_TAX);
+    private final LabeledTextField profitBrut = sum(Messages.JOURNAL_SUM_PROFIT_GROSS);
+    private final LabeledTextField openReceivables = sum(Messages.JOURNAL_SUM_OPEN_RECEIVABLES);
+    private final LabeledTextField openPayables = sum(Messages.JOURNAL_SUM_OPEN_PAYABLES);
+    private final LabeledTextField volumeDiscount = sum(Messages.JOURNAL_SUM_DISCOUNT);
+    private final LabeledTextField volumeNetto = sum(Messages.JOURNAL_SUM_VOLUME_NET);
+    private final LabeledTextField taxVolume = sum(Messages.JOURNAL_SUM_VOLUME_TAX);
+    private final LabeledTextField volumeBrutto = sum(Messages.JOURNAL_SUM_VOLUME_GROSS);
+    private final JLabel taxRates = new JLabel(" ");
+    private final JLabel einvoiceCheck = new JLabel(" ");
+    private final JLabel exportResult = new JLabel(" ");
+    private File exportedFile;
+    //contact overview
+    private final JTree jTree1 = new JTree();
+    private final JRadioButton filternone = new JRadioButton();
+    private final JRadioButton filterinvoice = new JRadioButton();
+    private final JRadioButton filterorders = new JRadioButton();
+    private final JRadioButton filteroffers = new JRadioButton();
+
+    //state
+    private List<Entry> entries = new ArrayList<Entry>();
+    private Totals totals = new Totals();
+    private boolean adjusting;
+    private int generation;
+    private final Timer reloadTimer = new Timer(350, e -> setData());
 
     /**
-     * Creates new form HistoryPanel
+     * The general journal
      */
     public JournalPanel() {
-        initComponents();
-        setName("journalpanel"); //NOI18N
-        new ExcelAdapter(jTable1);
-        setPopup();
-        jPanel5.setEnabled(false);
-        jTabbedPane1.removeTabAt(0);
-        //no contact in the general journal: no contact row
-        jLabel3.setVisible(false);
-        jLabel4.setVisible(false);
-        jTabbedPane1.setSelectedComponent(jPanel4);
-        validate();
-        timeframeChooser1.setTime(new vTimeframe(DateConverter.getDate(DateConverter.getYear()), new Date()));
-        bydateend.setSelected(User.getCurrentUser().getProperties().getProperty(this, bydateend, Boolean.FALSE));
-        expbydateend.setSelected(User.getCurrentUser().getProperties().getProperty(this, expbydateend, Boolean.FALSE));
-        groups.setSearchEnabled(true);
-        groups.setContext(Context.getGroup());
-        groups.triggerSearch();
-        users.setSearchEnabled(true);
-        users.setContext(Context.getUser());
-        users.setModel();
-
-        MPComboBoxModelItem[] items = new MPComboBoxModelItem[3];
-        items[0] = new MPComboBoxModelItem(Context.getInvoice(), Messages.TYPE_INVOICE.toString());
-        items[1] = new MPComboBoxModelItem(Context.getOrder(), Messages.TYPE_ORDER.toString());
-        items[2] = new MPComboBoxModelItem(Context.getOffer(), Messages.TYPE_OFFER.toString());
-        types.setModel(new MPComboboxModel(items));
-       
-
-        try {
-            DefaultListModel al = new DefaultListModel();
-            ArrayList<DatabaseObject> accounts = DatabaseObject.getObjects(Context.getAccounts());
-            for (int i = 0; i < accounts.size(); i++) {
-                DatabaseObject databaseObject = accounts.get(i);
-                al.addElement((Account) databaseObject);
-            }
-            jList1.setModel(al);
-        } catch (NodataFoundException nodataFoundException) {
-            Log.Debug(this, nodataFoundException.getMessage());
-        }
-
-        statusc.getComboBox().setModel(new DefaultComboBoxModel(new Object[]{Messages.ALL, Messages.STATUS_PAID, Messages.STATUS_UNPAID, Messages.STATUS_CANCELLED}));
-        refresh(null, null);
-        loadTemplate();
-        ((MPTable) jTable1).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) jTable1, this));
-        modernLayout();
-
-    }
-
-    public JournalPanel(Contact dataOwner) {
-        this.dataOwner = dataOwner;
-        initComponents();
-        setName("journalpanel"); //NOI18N
-        jLabel4.setText(dataOwner.__getCname());
-         
-        new ExcelAdapter(jTable1);
-        setPopup();
-        validate();
-        
-        timeframeChooser1.setTime(new vTimeframe(DateConverter.getDate(String.valueOf(Calendar.getInstance().get(Calendar.YEAR)-10)), new Date()));
-        bydateend.setSelected(User.getCurrentUser().getProperties().getProperty(this, bydateend, Boolean.FALSE));
-        expbydateend.setSelected(User.getCurrentUser().getProperties().getProperty(this, expbydateend, Boolean.FALSE));
-        groups.setSearchEnabled(true);
-        groups.setContext(Context.getGroup());
-        groups.triggerSearch();
-        users.setSearchEnabled(true);
-        users.setContext(Context.getUser());
-        users.setModel();
-
-        MPComboBoxModelItem[] items = new MPComboBoxModelItem[3];
-        items[0] = new MPComboBoxModelItem(Context.getInvoice(), Messages.TYPE_INVOICE.toString());
-        items[1] = new MPComboBoxModelItem(Context.getOrder(), Messages.TYPE_ORDER.toString());
-        items[2] = new MPComboBoxModelItem(Context.getOffer(), Messages.TYPE_OFFER.toString());
-        types.setModel(new MPComboboxModel(items));
-       
-        try {
-            DefaultListModel al = new DefaultListModel();
-            ArrayList<DatabaseObject> accounts = DatabaseObject.getObjects(Context.getAccounts());
-            for (int i = 0; i < accounts.size(); i++) {
-                DatabaseObject databaseObject = accounts.get(i);
-                al.addElement((Account) databaseObject);
-            }
-            jList1.setModel(al);
-        } catch (NodataFoundException nodataFoundException) {
-            Log.Debug(this, nodataFoundException.getMessage());
-        }
-
-        statusc.getComboBox().setModel(new DefaultComboBoxModel(new Object[]{Messages.ALL, Messages.STATUS_PAID, Messages.STATUS_UNPAID, Messages.STATUS_CANCELLED}));
-        refresh(null, null);
-        loadTemplate();
-        ((MPTable) jTable1).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) jTable1, this));
- 
-
-        jTree1.setCellRenderer(MPTreeModel.getRenderer());
-        jTree1.setModel(new MPTreeModel(dataOwner, null, null));
-        jTree1.addMouseListener(MPTreeModel.getDefaultTreeListener(jTree1, dataOwner));
-//        TreeFormat.expandTree(jTree1);
-        loadTemplate();
-        ((MPTable) jTable1).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) jTable1, this));
-        modernLayout();
-
+        this(null);
     }
 
     /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
+     * @param dataOwner the contact of the journal (history), null for the
+     * general journal
      */
-    @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
-
-        buttonGroup1 = new javax.swing.ButtonGroup();
-        buttonGroup2 = new javax.swing.ButtonGroup();
-        jPanel1 = new javax.swing.JPanel();
-        jTabbedPane1 = new javax.swing.JTabbedPane();
-        jPanel5 = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTree1 = new javax.swing.JTree();
-        jPanel10 = new javax.swing.JPanel();
-        filternone = new javax.swing.JRadioButton();
-        filterinvoice = new javax.swing.JRadioButton();
-        filterorders = new javax.swing.JRadioButton();
-        filteroffers = new javax.swing.JRadioButton();
-        jPanel4 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new  mpv5.ui.misc.MPTable(this) {
+    public JournalPanel(Contact dataOwner) {
+        this.dataOwner = dataOwner;
+        setName("journalpanel"); //NOI18N
+        reloadTimer.setRepeats(false);
+        jTable1 = new MPTable(this) {
             private static final long serialVersionUID = 1L;
-            public Component prepareRenderer(TableCellRenderer renderer,
-                int rowIndex, int vColIndex) {
+
+            @Override
+            public Component prepareRenderer(TableCellRenderer renderer, int rowIndex, int vColIndex) {
                 Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);
                 if (c instanceof JComponent) {
-                    JComponent jc = (JComponent)c;
-                    jc.setToolTipText(String.valueOf(getValueAt(rowIndex, vColIndex)));
+                    ((JComponent) c).setToolTipText(String.valueOf(getValueAt(rowIndex, vColIndex)));
+                }
+                if (!isRowSelected(rowIndex)) {
+                    int m = convertRowIndexToModel(rowIndex);
+                    Entry e = m >= 0 && m < entries.size() ? entries.get(m) : null;
+                    Color fg = getForeground();
+                    if (e != null && !e.counted) {
+                        fg = ModernTheme.muted();
+                    } else if (e != null && convertColumnIndexToModel(vColIndex) == COL_EFFECT) {
+                        fg = e.effect.signum() < 0 ? Applets.DANGER : new Color(21, 128, 61);
+                    }
+                    c.setForeground(fg);
                 }
                 return c;
             }
         };
-        jPanel2 = new javax.swing.JPanel();
-        jPanel7 = new javax.swing.JPanel();
-        bydateend = new javax.swing.JCheckBox();
-        groups = new mpv5.ui.beans.MPCombobox();
-        jLabel8 = new javax.swing.JLabel();
-        statusc = new mpv5.ui.beans.MPCombobox();
-        includechildgroups = new javax.swing.JCheckBox();
-        jLabel2 = new javax.swing.JLabel();
-        users = new mpv5.ui.beans.MPCombobox();
-        jLabel6 = new javax.swing.JLabel();
-        expbydateend = new javax.swing.JCheckBox();
-        types = new mpv5.ui.beans.MPCombobox();
-        jPanel8 = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        timeframeChooser1 = new mpv5.ui.beans.TimeframeChooser();
-        jPanel6 = new javax.swing.JPanel();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList();
-        jButton1 = new mpv5.ui.modern.PrimaryButton("", null); //the main action: blue, Shift+Enter
-        count = new javax.swing.JLabel();
-        jPanel3 = new javax.swing.JPanel();
-        profitNetto = new mpv5.ui.beans.LabeledTextField();
-        volumeNetto = new mpv5.ui.beans.LabeledTextField();
-        volumeBrutto = new mpv5.ui.beans.LabeledTextField();
-        taxVolume = new mpv5.ui.beans.LabeledTextField();
-        volumeDiscount = new mpv5.ui.beans.LabeledTextField();
-        profitTax = new mpv5.ui.beans.LabeledTextField();
-        revenueTax = new mpv5.ui.beans.LabeledTextField();
-        revenueNetto = new mpv5.ui.beans.LabeledTextField();
-        revenueBrut = new mpv5.ui.beans.LabeledTextField();
-        expNetto = new mpv5.ui.beans.LabeledTextField();
-        expBrut = new mpv5.ui.beans.LabeledTextField();
-        expTax = new mpv5.ui.beans.LabeledTextField();
-
-        setName("Form"); // NOI18N
-
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("JournalPanel.jPanel1.border.title"))); // NOI18N
-        jPanel1.setName("jPanel1"); // NOI18N
-
-        jTabbedPane1.setName("jTabbedPane1"); // NOI18N
-
-        jPanel5.setName("jPanel5"); // NOI18N
-        jPanel5.setLayout(new java.awt.BorderLayout());
-
-        jScrollPane2.setName("jScrollPane2"); // NOI18N
-
-        javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("root");
-        jTree1.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
-        jTree1.setName("jTree1"); // NOI18N
-        jScrollPane2.setViewportView(jTree1);
-
-        jPanel5.add(jScrollPane2, java.awt.BorderLayout.CENTER);
-
-        jPanel10.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("JournalPanel.jPanel10.border.title"))); // NOI18N
-        jPanel10.setName("jPanel10"); // NOI18N
-        jPanel10.setPreferredSize(new java.awt.Dimension(874, 45));
-        jPanel10.setLayout(new javax.swing.BoxLayout(jPanel10, javax.swing.BoxLayout.LINE_AXIS));
-
-        buttonGroup2.add(filternone);
-        filternone.setSelected(true);
-        filternone.setText(bundle.getString("JournalPanel.filternone.text")); // NOI18N
-        filternone.setName("filternone"); // NOI18N
-        filternone.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                filternoneItemStateChanged(evt);
-            }
-        });
-        jPanel10.add(filternone);
-
-        buttonGroup2.add(filterinvoice);
-        filterinvoice.setText(bundle.getString("JournalPanel.filterinvoice.text")); // NOI18N
-        filterinvoice.setName("filterinvoice"); // NOI18N
-        filterinvoice.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                filterinvoiceItemStateChanged(evt);
-            }
-        });
-        jPanel10.add(filterinvoice);
-
-        buttonGroup2.add(filterorders);
-        filterorders.setText(bundle.getString("JournalPanel.filterorders.text")); // NOI18N
-        filterorders.setName("filterorders"); // NOI18N
-        filterorders.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                filterordersItemStateChanged(evt);
-            }
-        });
-        jPanel10.add(filterorders);
-
-        buttonGroup2.add(filteroffers);
-        filteroffers.setText(bundle.getString("JournalPanel.filteroffers.text")); // NOI18N
-        filteroffers.setName("filteroffers"); // NOI18N
-        filteroffers.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                filteroffersItemStateChanged(evt);
-            }
-        });
-        jPanel10.add(filteroffers);
-
-        jPanel5.add(jPanel10, java.awt.BorderLayout.NORTH);
-
-        jTabbedPane1.addTab(bundle.getString("JournalPanel.jPanel5.TabConstraints.tabTitle"), jPanel5); // NOI18N
-
-        jPanel4.setName("jPanel4"); // NOI18N
-        jPanel4.setLayout(new java.awt.BorderLayout(2, 0));
-
-        jScrollPane1.setName("jScrollPane1"); // NOI18N
-        jScrollPane1.setPreferredSize(new java.awt.Dimension(452, 430));
-
+        jTable1.setName("jTable1"); //NOI18N
         jTable1.setAutoCreateRowSorter(true);
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-
-            }
-        ));
         jTable1.setFillsViewportHeight(true);
-        jTable1.setName("jTable1"); // NOI18N
-        jTable1.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        jTable1.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jTable1MouseClicked(evt);
+                if (evt.getClickCount() > 1 && jTable1.getSelectedRow() >= 0) {
+                    int index = jTable1.convertRowIndexToModel(jTable1.getSelectedRow());
+                    Object obj = jTable1.getModel().getValueAt(index, 0);
+                    if (obj instanceof DatabaseObject) {
+                        YabsViewProxy.instance().addTab((DatabaseObject) obj);
+                    }
+                }
             }
         });
-        jScrollPane1.setViewportView(jTable1);
+        tableScroll = new JScrollPane(jTable1);
+        new ExcelAdapter(jTable1);
+        setPopup();
 
-        jPanel4.add(jScrollPane1, java.awt.BorderLayout.CENTER);
-
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("JournalPanel.jPanel2.border.title"))); // NOI18N
-        jPanel2.setName("jPanel2"); // NOI18N
-        jPanel2.setPreferredSize(new java.awt.Dimension(734, 200));
-        jPanel2.setRequestFocusEnabled(false);
-
-        jPanel7.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jPanel7.setName("jPanel7"); // NOI18N
-
-        bydateend.setFont(bydateend.getFont());
-        bydateend.setText(bundle.getString("JournalPanel.bydateend.text")); // NOI18N
-        bydateend.setName("bydateend"); // NOI18N
-        bydateend.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                bydateendItemStateChanged(evt);
-            }
-        });
-
-        groups.setFont(groups.getFont());
-        groups.setName("groups"); // NOI18N
-
-        jLabel8.setFont(jLabel8.getFont());
-        jLabel8.setText(bundle.getString("JournalPanel.jLabel8.text_1")); // NOI18N
-        jLabel8.setName("jLabel8"); // NOI18N
-        jLabel8.setPreferredSize(new java.awt.Dimension(150, 21));
-
-        statusc.setFont(statusc.getFont());
-        statusc.setName("statusc"); // NOI18N
-
-        includechildgroups.setFont(includechildgroups.getFont());
-        includechildgroups.setSelected(true);
-        includechildgroups.setText(bundle.getString("JournalPanel.includechildgroups.text")); // NOI18N
-        includechildgroups.setName("includechildgroups"); // NOI18N
-
-        jLabel2.setFont(jLabel2.getFont());
-        jLabel2.setText(bundle.getString("JournalPanel.jLabel2.text")); // NOI18N
-        jLabel2.setName("jLabel2"); // NOI18N
-        jLabel2.setPreferredSize(new java.awt.Dimension(150, 21));
-
-        users.setFont(users.getFont());
-        users.setName("users"); // NOI18N
-
-        jLabel6.setFont(jLabel6.getFont());
-        jLabel6.setText(bundle.getString("JournalPanel.jLabel6.text")); // NOI18N
-        jLabel6.setName("jLabel6"); // NOI18N
-        jLabel6.setPreferredSize(new java.awt.Dimension(150, 21));
-
-        expbydateend.setFont(expbydateend.getFont());
-        expbydateend.setText(bundle.getString("JournalPanel.expbydateend.text")); // NOI18N
-        expbydateend.setName("expbydateend"); // NOI18N
-        expbydateend.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                expbydateendItemStateChanged(evt);
-            }
-        });
-
-        types.setFont(types.getFont());
-        typesLabel.setText(Messages.JOURNAL_TYPES.toString());
-        typesLabel.setName("typesLabel"); // NOI18N
-        types.setName("types"); // NOI18N
-
-        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
-        jPanel7.setLayout(jPanel7Layout);
-        jPanel7Layout.setHorizontalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(typesLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(groups, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE)
-                    .addComponent(users, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE)
-                    .addComponent(statusc, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE)
-                    .addComponent(types, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(expbydateend, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(bydateend, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(includechildgroups, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
-        jPanel7Layout.setVerticalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(groups, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(includechildgroups))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(users, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(expbydateend))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(bydateend)
-                    .addComponent(statusc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(typesLabel)
-                    .addComponent(types, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-        );
-
-        jPanel8.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jPanel8.setName("jPanel8"); // NOI18N
-
-        jLabel3.setFont(jLabel3.getFont());
-        jLabel3.setText(bundle.getString("JournalPanel.jLabel3.text")); // NOI18N
-        jLabel3.setName("jLabel3"); // NOI18N
-
-        jLabel5.setFont(jLabel5.getFont());
-        jLabel5.setText(bundle.getString("JournalPanel.jLabel5.text")); // NOI18N
-        jLabel5.setName("jLabel5"); // NOI18N
-
-        jLabel4.setFont(jLabel4.getFont());
-        jLabel4.setText(bundle.getString("JournalPanel.jLabel4.text")); // NOI18N
-        jLabel4.setName("jLabel4"); // NOI18N
-
-        timeframeChooser1.setBackground(new java.awt.Color(255, 255, 255));
-        timeframeChooser1.setFont(timeframeChooser1.getFont());
-        timeframeChooser1.setName("timeframeChooser1"); // NOI18N
-
-        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
-        jPanel8.setLayout(jPanel8Layout);
-        jPanel8Layout.setHorizontalGroup(
-            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel8Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 162, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(timeframeChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(134, Short.MAX_VALUE))
-        );
-        jPanel8Layout.setVerticalGroup(
-            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel8Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel4))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(timeframeChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5))
-                .addContainerGap())
-        );
-
-        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("JournalPanel.jPanel6.border.title"))); // NOI18N
-        jPanel6.setName("jPanel6"); // NOI18N
-        jPanel6.setLayout(new java.awt.BorderLayout());
-
-        jScrollPane3.setName("jScrollPane3"); // NOI18N
-
-        jList1.setFont(jList1.getFont().deriveFont(jList1.getFont().getStyle() | java.awt.Font.BOLD));
-        jList1.setName("jList1"); // NOI18N
-        jList1.setSelectionBackground(new java.awt.Color(51, 51, 255));
-        jScrollPane3.setViewportView(jList1);
-
-        jPanel6.add(jScrollPane3, java.awt.BorderLayout.CENTER);
-
-        jButton1.setFont(jButton1.getFont());
-        jButton1.setText(bundle.getString("JournalPanel.jButton1.text")); // NOI18N
-        jButton1.setName("jButton1"); // NOI18N
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
-        count.setFont(count.getFont().deriveFont(count.getFont().getStyle() | java.awt.Font.BOLD));
-        count.setForeground(new java.awt.Color(102, 102, 102));
-        count.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        count.setText(bundle.getString("JournalPanel.count.text")); // NOI18N
-        count.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        count.setName("count"); // NOI18N
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(count, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(count, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addGap(0, 0, 0))
-        );
-
-        jPanel4.add(jPanel2, java.awt.BorderLayout.NORTH);
-
-        jPanel3.setName("jPanel3"); // NOI18N
-
-
-        profitNetto.set_Label(bundle.getString("JournalPanel.profitNetto._Label")); // NOI18N
-        profitNetto.setName("profitNetto"); // NOI18N
-
-        volumeNetto.set_Label(bundle.getString("JournalPanel.volumeNetto._Label")); // NOI18N
-        volumeNetto.setName("volumeNetto"); // NOI18N
-
-        volumeBrutto.set_Label(bundle.getString("JournalPanel.volumeBrutto._Label")); // NOI18N
-        volumeBrutto.setName("volumeBrutto"); // NOI18N
-
-        taxVolume.set_Label(bundle.getString("JournalPanel.taxVolume._Label")); // NOI18N
-        taxVolume.setName("taxVolume"); // NOI18N
-
-        volumeDiscount.set_Label(bundle.getString("JournalPanel.volumeDiscount._Label")); // NOI18N
-        volumeDiscount.setName("volumeDiscount"); // NOI18N
-
-        profitTax.set_Label(bundle.getString("JournalPanel.profitTax._Label")); // NOI18N
-        profitTax.setName("profitTax"); // NOI18N
-
-        revenueTax.set_Label(bundle.getString("JournalPanel.revenueTax._Label")); // NOI18N
-        revenueTax.setName("revenueTax"); // NOI18N
-
-        revenueNetto.set_Label(bundle.getString("JournalPanel.revenueNetto._Label")); // NOI18N
-        revenueNetto.setName("revenueNetto"); // NOI18N
-
-        revenueBrut.set_Label(bundle.getString("JournalPanel.revenueBrut._Label")); // NOI18N
-        revenueBrut.setName("revenueBrut"); // NOI18N
-
-        expNetto.set_Label(bundle.getString("JournalPanel.expNetto._Label")); // NOI18N
-        expNetto.setName("expNetto"); // NOI18N
-
-        expBrut.set_Label(bundle.getString("JournalPanel.expBrut._Label")); // NOI18N
-        expBrut.setName("expBrut"); // NOI18N
-
-        expTax.set_Label(bundle.getString("JournalPanel.expTax._Label")); // NOI18N
-        expTax.setName("expTax"); // NOI18N
-
-        layoutTotals();
-
-        jPanel4.add(jPanel3, java.awt.BorderLayout.SOUTH);
-
-        jTabbedPane1.addTab(bundle.getString("JournalPanel.jPanel4.TabConstraints.tabTitle"), jPanel4); // NOI18N
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1)
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 525, Short.MAX_VALUE)
-        );
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-    }// </editor-fold>//GEN-END:initComponents
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        initFilters();
+        build();
+        loadTemplate();
+        ((MPTable) jTable1).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) jTable1, this));
+        if (dataOwner != null) {
+            jTree1.setCellRenderer(MPTreeModel.getRenderer());
+            jTree1.setModel(new MPTreeModel(dataOwner, null, null));
+            jTree1.addMouseListener(MPTreeModel.getDefaultTreeListener(jTree1, dataOwner));
+        }
         setData();
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void expbydateendItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_expbydateendItemStateChanged
-        User.getCurrentUser().getProperties().changeProperty(this, expbydateend, expbydateend.isSelected());
-    }//GEN-LAST:event_expbydateendItemStateChanged
-
-    private void bydateendItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_bydateendItemStateChanged
-        User.getCurrentUser().getProperties().changeProperty(this, bydateend, bydateend.isSelected());
-    }//GEN-LAST:event_bydateendItemStateChanged
-
-    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
-        if (evt.getClickCount() > 1) {
-            int index = jTable1.convertRowIndexToModel(jTable1.getSelectedRow());
-            DatabaseObject obj = (DatabaseObject) jTable1.getModel().getValueAt(index, 0);
-            mpv5.YabsViewProxy.instance().addTab(obj);
-        }
-    }//GEN-LAST:event_jTable1MouseClicked
-
-    private void filteroffersItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_filteroffersItemStateChanged
-        filter();
-    }//GEN-LAST:event_filteroffersItemStateChanged
-
-    private void filterordersItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_filterordersItemStateChanged
-        filter();
-    }//GEN-LAST:event_filterordersItemStateChanged
-
-    private void filterinvoiceItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_filterinvoiceItemStateChanged
-        filter();
-    }//GEN-LAST:event_filterinvoiceItemStateChanged
-
-    private void filternoneItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_filternoneItemStateChanged
-        filter();
-    }//GEN-LAST:event_filternoneItemStateChanged
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.ButtonGroup buttonGroup1;
-    private javax.swing.ButtonGroup buttonGroup2;
-    private javax.swing.JCheckBox bydateend;
-    private javax.swing.JLabel count;
-    private mpv5.ui.beans.LabeledTextField expBrut;
-    private mpv5.ui.beans.LabeledTextField expNetto;
-    private mpv5.ui.beans.LabeledTextField expTax;
-    private javax.swing.JCheckBox expbydateend;
-    private javax.swing.JRadioButton filterinvoice;
-    private javax.swing.JRadioButton filternone;
-    private javax.swing.JRadioButton filteroffers;
-    private javax.swing.JRadioButton filterorders;
-    private mpv5.ui.beans.MPCombobox groups;
-    private javax.swing.JCheckBox includechildgroups;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JList jList1;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel10;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
-    private javax.swing.JPanel jPanel6;
-    private javax.swing.JPanel jPanel7;
-    private javax.swing.JPanel jPanel8;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTree jTree1;
-    private mpv5.ui.beans.LabeledTextField profitNetto;
-    private mpv5.ui.beans.LabeledTextField profitTax;
-    private mpv5.ui.beans.LabeledTextField revenueBrut;
-    private mpv5.ui.beans.LabeledTextField revenueNetto;
-    private mpv5.ui.beans.LabeledTextField revenueTax;
-    private mpv5.ui.beans.MPCombobox statusc;
-    private mpv5.ui.beans.LabeledTextField taxVolume;
-    private mpv5.ui.beans.TimeframeChooser timeframeChooser1;
-    private mpv5.ui.beans.MPCombobox types;
-    private mpv5.ui.beans.MPCombobox users;
-    private mpv5.ui.beans.LabeledTextField volumeBrutto;
-    private mpv5.ui.beans.LabeledTextField volumeDiscount;
-    private mpv5.ui.beans.LabeledTextField volumeNetto;
-    // End of variables declaration//GEN-END:variables
-
-    /**
-     * An amount of the journal query: exact, rounded to cents (the database
-     * computes net - discount etc. in floating point)
-     */
-    private static BigDecimal money(Object value) {
-        if (value == null || String.valueOf(value).trim().length() == 0) {
-            return BigDecimal.ZERO;
-        }
-        return new BigDecimal(String.valueOf(value)).setScale(2, java.math.RoundingMode.HALF_UP);
     }
 
-    /**
-     * Invoices with payments (part payments): their payments are the income
-     */
-    private java.util.Set<Integer> paidInParts = new java.util.HashSet<Integer>();
+    private static LabeledTextField sum(Messages label) {
+        LabeledTextField f = new LabeledTextField();
+        f.set_Label(label.toString());
+        f.setName(label.name());
+        f.getTextField().setEditable(false);
+        f.getTextField().setHorizontalAlignment(JTextField.RIGHT);
+        return f;
+    }
 
-    /**
-     * The payments received in the time frame as journal rows (on invoices of
-     * the journal's filters): income on the pay date, net and tax in the
-     * proportion of the invoice
-     */
-    private Object[][] paymentRows(Group forGroup, User forUser) {
-        paidInParts = new java.util.HashSet<Integer>();
-        if (!mpv5.db.common.DatabaseUpdater.hasTable("payments")) {
-            return new Object[0][17];
+    // <editor-fold defaultstate="collapsed" desc="Filters">
+    private void initFilters() {
+        mpv5.data.PropertyStore p = User.getCurrentUser().getProperties();
+        //period
+        hideArrow(timeframeChooser1);
+        String[] presets = {Messages.JOURNAL_MONTH.toString(), Messages.JOURNAL_LAST_MONTH.toString(), Messages.JOURNAL_QUARTER.toString(),
+            Messages.JOURNAL_LAST_QUARTER.toString(), Messages.JOURNAL_YEAR.toString(), Messages.JOURNAL_LAST_YEAR.toString()};
+        for (int i = 0; i < presets.length; i++) {
+            final int preset = i;
+            ChipToggle chip = new ChipToggle(presets[i]);
+            chip.addActionListener(e -> {
+                timeframeChooser1.setTime(period(preset, LocalDate.now()));
+                scheduleReload();
+            });
+            periodGroup.add(chip);
+            periodChips.add(chip);
         }
+        if (dataOwner == null) {
+            timeframeChooser1.setTime(period(4, LocalDate.now()));
+        } else {
+            //a contact: the last ten years
+            LocalDate now = LocalDate.now();
+            timeframeChooser1.setTime(new vTimeframe(date(now.minusYears(10).withDayOfYear(1)), date(now.withMonth(12).withDayOfMonth(31))));
+        }
+
+        //view presets
+        view.setModel(new DefaultComboBoxModel<String>(new String[]{Messages.JOURNAL_VIEW_EUR.toString(),
+            Messages.JOURNAL_VIEW_ALL.toString(), Messages.JOURNAL_VIEW_OPEN.toString(), Messages.JOURNAL_VIEW_CUSTOM.toString()}));
+        view.setName("view"); //NOI18N
+
+        //users
+        DefaultComboBoxModel<Object> um = new DefaultComboBoxModel<Object>();
+        um.addElement(Messages.ALL);
         try {
-            mpv5.db.common.ReturnValue rv = QueryHandler.instanceOf().clone(Context.getInvoice()).freeSelectQuery(
-                    "SELECT DISTINCT itemsids FROM payments", mpv5.usermanagement.MPSecurityManager.VIEW, null);
-            if (rv != null && rv.hasData()) {
-                for (Object[] r : rv.getData()) {
-                    paidInParts.add(Integer.valueOf(String.valueOf(r[0])));
-                }
+            for (DatabaseObject u : DatabaseObject.getObjects(Context.getUser())) {
+                um.addElement(u);
             }
-        } catch (Exception e) {
-            Log.Debug(this, e);
+        } catch (NodataFoundException e) {
+            Log.Debug(this, e.getMessage());
         }
-        Object status = statusc.getComboBox().getSelectedItem();
-        if (!contextInUse.equals(Context.getInvoice()) || paidInParts.isEmpty()
-                || Messages.STATUS_UNPAID.equals(status) || Messages.STATUS_CANCELLED.equals(status)) {
-            return new Object[0][17];
-        }
-        java.util.Set<Integer> groupIds = new java.util.HashSet<Integer>();
-        if (forGroup != null && !forGroup.__getCname().equals("")) { //NOI18N
-            groupIds.add(forGroup.__getIDS());
-            if (includechildgroups.isSelected()) {
-                try {
-                    for (Group g : forGroup.getChildGroups()) {
-                        groupIds.add(g.__getIDS());
-                    }
-                } catch (NodataFoundException e) {
-                    Log.Debug(this, e.getMessage());
-                }
-            }
-        }
-        java.util.Set<Integer> accountIds = new java.util.HashSet<Integer>();
-        for (Object a : jList1.getSelectedValues()) {
-            accountIds.add(((Account) a).__getIDS());
-        }
-        List<Object[]> rows = new ArrayList<Object[]>();
-        vTimeframe t = timeframeChooser1.getTime();
-        for (mpv5.handler.Payments.Payment p : mpv5.handler.Payments.between(t.getStart(), t.getEnd())) {
-            Item inv = mpv5.handler.Payments.invoice(p.invoice);
-            if (inv == null
-                    || (dataOwner != null && inv.__getContactsids() != dataOwner.__getIDS())
-                    || (!groupIds.isEmpty() && !groupIds.contains(inv.__getGroupsids()))
-                    || (!accountIds.isEmpty() && !accountIds.contains(inv.__getAccountsids()))
-                    || (forUser != null && !forUser.__getCname().equals("") && inv.__getIntaddedby() != forUser.__getIDS())) { //NOI18N
-                continue;
-            }
-            BigDecimal gross = inv.getGrossAmount();
-            BigDecimal net = gross.signum() == 0 ? p.amount
-                    : p.amount.multiply(inv.__getNetvalue().subtract(inv.__getDiscountvalue())).divide(gross, 2, java.math.RoundingMode.HALF_UP);
-            Contact k = null;
-            try {
-                k = inv.getContact();
-            } catch (Exception e) {
-                Log.Debug(this, e.getMessage());
-            }
-            String account = "";
-            try {
-                account = inv.getAccount().__getCname();
-            } catch (Exception e) {
-                Log.Debug(this, e.getMessage());
-            }
-            rows.add(new Object[]{inv, k == null ? "" : k.__getCname(), k == null ? "" : k.__getPrename(),
-                k == null ? "" : k.__getStreet(), k == null ? "" : k.__getCity(), k == null ? "" : k.__getCountry(),
-                DateConverter.getDefDateString(p.date), inv.getGroup() == null ? "" : inv.getGroup().__getCname(), account,
-                inv.__getCnumber(), Constants.TYPE_PAYMENT, Item.STATUS_PAID, net, p.amount.subtract(net), p.amount, BigDecimal.ZERO,
-                p.description});
-        }
-        return rows.toArray(new Object[0][]);
-    }
+        users.setModel(um);
 
-    private Object[][] parse(Object[][] data) {
-        //#entity date group account number type status value
-        BigDecimal profitnet = BigDecimal.ZERO;
-        BigDecimal revenuenet = BigDecimal.ZERO;
-        BigDecimal volumenet = BigDecimal.ZERO;
-        BigDecimal expensenet = BigDecimal.ZERO;
-        BigDecimal taxvolume = BigDecimal.ZERO;
-        BigDecimal profittax = BigDecimal.ZERO;
-        BigDecimal revenuetax = BigDecimal.ZERO;
-        BigDecimal expensetax = BigDecimal.ZERO;
-        BigDecimal volumebrut = BigDecimal.ZERO;
-        BigDecimal revenuebrut = BigDecimal.ZERO;
-        BigDecimal expensebrut = BigDecimal.ZERO;
-        BigDecimal discountvolume = BigDecimal.ZERO;
+        //date bases
+        ButtonGroup ig = new ButtonGroup();
+        ig.add(incomeByDoc);
+        ig.add(incomeByPay);
+        ButtonGroup eg = new ButtonGroup();
+        eg.add(expenseByDoc);
+        eg.add(expenseByPay);
 
-        Object[][] d = new Object[data.length][18];
+        //groups and accounts
+        List<Object> gl = new ArrayList<Object>();
         try {
-            for (int i = 0; i < d.length; i++) {
-                d[i][0] = data[i][0];
-                d[i][1] = data[i][1];
-                d[i][2] = data[i][2];
-                d[i][3] = data[i][3];
-                d[i][4] = data[i][4];
-                d[i][5] = data[i][5];
-                d[i][7] = data[i][7];
-                d[i][6] = DateConverter.getDate(data[i][6].toString());
-                d[i][8] = data[i][8];
-                d[i][9] = data[i][9];
-
-                int type = Integer.valueOf(data[i][10].toString());
-                switch (type) {
-                    case Constants.TYPE_REVENUE:
-                        d[i][10] = Messages.TYPE_REVENUE.toString();
-                        break;
-                    case Constants.TYPE_EXPENSE:
-                        d[i][10] = Messages.TYPE_EXPENSE.toString();
-                        break;
-                    case Constants.TYPE_PAYMENT:
-                        d[i][10] = Messages.TYPE_PAYMENT.toString();
-                        break;
-                    default:
-                        d[i][10] = Item.getTypeString(type);
-                        break;
-                }
-
-                BigDecimal netVolume = money(data[i][12]);
-                BigDecimal taxVal = money(data[i][13]);
-                BigDecimal brutVolume = money(data[i][14]);
-                BigDecimal discountVolume = money(data[i][15]);
-                d[i][11] = Item.getStatusString(Integer.valueOf(data[i][11].toString()));
-
-                if (null != Integer.valueOf(data[i][11].toString())) {
-                    switch (Integer.valueOf(data[i][11].toString())) {
-                        case Item.STATUS_PAID:
-                            if (type != Constants.TYPE_PAYMENT && data[i][0] instanceof Item
-                                    && paidInParts.contains(((Item) data[i][0]).__getIDS())) {
-                                //paid in parts: the payments are the income (on their pay dates), not the invoice
-                                d[i][15] = FormatNumber.formatLokalCurrency(0d);
-                            } else if (Integer.valueOf(data[i][10].toString()) == Item.TYPE_CREDIT) {
-                                profitnet = profitnet.subtract(netVolume);
-                                profittax = profittax.subtract(taxVal);
-                                expensenet = expensenet.add(netVolume);
-                                expensetax = expensetax.add(taxVal);
-                                expensebrut = expensebrut.add(brutVolume);
-                                d[i][15] = FormatNumber.formatLokalCurrency(netVolume.negate());
-                            } else {
-                                profitnet = profitnet.add(netVolume);
-                                profittax = profittax.add(taxVal);
-                                revenuenet = revenuenet.add(netVolume);
-                                revenuetax = revenuetax.add(taxVal);
-                                revenuebrut = revenuebrut.add(brutVolume);
-                                d[i][15] = FormatNumber.formatLokalCurrency(netVolume);
-                            }
-                            break;
-                        case 1000:
-                            d[i][15] = FormatNumber.formatLokalCurrency(netVolume.negate());
-                            profitnet = profitnet.subtract(netVolume);
-                            profittax = profittax.subtract(taxVal);
-                            expensenet = expensenet.add(netVolume);
-                            expensetax = expensetax.add(taxVal);
-                            expensebrut = expensebrut.add(brutVolume);
-                            d[i][11] = Item.getStatusString(Item.STATUS_PAID);
-                            break;
-                        case 2000:
-                            //unpaid expense: like an unpaid invoice, not (yet) part of
-                            //profit and expenses (cash basis), only of the volume
-                            d[i][15] = FormatNumber.formatLokalCurrency(0d);
-                            d[i][11] = Item.getStatusString(Item.STATUS_IN_PROGRESS);
-                            break;
-                        default:
-                            d[i][15] = FormatNumber.formatLokalCurrency(0d);
-                            break;
-                    }
-                }
-                d[i][12] = FormatNumber.formatLokalCurrency(netVolume);
-                d[i][13] = FormatNumber.formatLokalCurrency(taxVal);
-                d[i][14] = FormatNumber.formatLokalCurrency(brutVolume);
-                d[i][16] = FormatNumber.formatLokalCurrency(discountVolume);
-                type = Integer.valueOf(data[i][10].toString());
-                switch (type) {
-                    case Constants.TYPE_REVENUE:
-                    case Constants.TYPE_EXPENSE:
-                    case Constants.TYPE_PAYMENT:
-                        d[i][17] = data[i][16];
-                        break;
-                    default:
-                        if (GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.showitemasdesc"))
-                            d[i][17] = data[i][0];
-                        break;
-                }
-                //the volume: credit notes and expenses reduce it, cancelled documents do not count
-                int rowType = Integer.valueOf(data[i][10].toString());
-                int rowStatus = Integer.valueOf(data[i][11].toString());
-                //payments: part of the invoice already counted
-                if (rowStatus != Item.STATUS_CANCELLED && rowType != Constants.TYPE_PAYMENT) {
-                    if (rowType == Item.TYPE_CREDIT || rowType == Constants.TYPE_EXPENSE) {
-                        volumenet = volumenet.subtract(netVolume);
-                        volumebrut = volumebrut.subtract(brutVolume);
-                        taxvolume = taxvolume.subtract(taxVal);
-                        discountvolume = discountvolume.subtract(discountVolume);
-                    } else {
-                        volumenet = volumenet.add(netVolume);
-                        volumebrut = volumebrut.add(brutVolume);
-                        taxvolume = taxvolume.add(taxVal);
-                        discountvolume = discountvolume.add(discountVolume);
-                    }
-                }
-            }
-        } catch (Exception numberFormatException) {
-            Log.Debug(numberFormatException);
-            Log.Debug(this, Arrays.asList(data[0]));
+            gl.addAll(DatabaseObject.getObjects(Context.getGroup()));
+        } catch (NodataFoundException e) {
+            Log.Debug(this, e.getMessage());
         }
-
-        volumeNetto.setText(FormatNumber.formatDezimal(volumenet));
-        profitNetto.setText(FormatNumber.formatDezimal(profitnet));
-        revenueNetto.setText(FormatNumber.formatDezimal(revenuenet));
-        expNetto.setText(FormatNumber.formatDezimal(expensenet));
-        volumeBrutto.setText(FormatNumber.formatDezimal(volumebrut));
-        revenueBrut.setText(FormatNumber.formatDezimal(revenuebrut));
-        expBrut.setText(FormatNumber.formatDezimal(expensebrut));
-        taxVolume.setText(FormatNumber.formatDezimal(taxvolume));
-        profitTax.setText(FormatNumber.formatDezimal(profittax));
-        revenueTax.setText(FormatNumber.formatDezimal(revenuetax));
-        expTax.setText(FormatNumber.formatDezimal(expensetax));
-        volumeDiscount.setText(FormatNumber.formatDezimal(discountvolume));
-
-        return d;
-    }
-
-    private void refresh(final Group forGroup, final User forUser) {
-        Runnable runnable = new Runnable() {
-
-            @Override
-            public void run() {
-
-                contextInUse = (Context) types.getSelectedItemId();
-                
-                try {
-                    QueryCriteria2 itemsParams = new QueryCriteria2();
-                    Object[][] d = new Object[0][0];
-                    Object[][] d1 = new Object[0][0];
-                    Object[][] d2 = new Object[0][0];
-                    Object[][] d3 = new Object[0][0];
-                    Object[][] d4 = new Object[0][0];
-                    Object[][] d5 = new Object[0][0];
-
-                    if (!includechildgroups.isSelected()) {
-                        if (forGroup != null && !forGroup.__getCname().equals("")) { //NOI18N
-                            itemsParams.and(new QueryParameter(contextInUse, forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS)); //NOI18N
-                        }
-                    } else if (forGroup != null && !forGroup.__getCname().equals("")) { //NOI18N
-                        List<Group> gs = forGroup.getChildGroups();
-                        QueryParameter[] params = new QueryParameter[gs.size()];
-                        QueryParameter param1 = (new QueryParameter(contextInUse, forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS)); //NOI18N
-                        if (gs.size() >= 1) {
-                            for (int i = 0; i < gs.size(); i++) {
-                                Group group = gs.get(i);
-                                params[i] = (new QueryParameter(contextInUse, group.getDbIdentity() + "ids", group.__getIDS(), QueryParameter.EQUALS)); //NOI18N
-                            }
-                            //System.err.println(params);
-                            itemsParams.or(param1, params);
-                        } else {
-                            itemsParams.and(param1);
-                        }
-                    }
-
-                    if (forUser != null && !forUser.__getCname().equals("")) { //NOI18N
-                        itemsParams.and(new QueryParameter(contextInUse, "intaddedby", forUser.__getIDS(), QueryParameter.EQUALS)); //NOI18N
-                    }
-
-                    ArrayList<QueryParameter> l = new ArrayList<QueryParameter>();
-
-                    for (int i = 0; i < jList1.getSelectedValues().length; i++) {
-                        l.add(new QueryParameter(contextInUse, "accountsids", ((Account) jList1.getSelectedValues()[i]).__getIDS(), QueryParameter.EQUALS)); //NOI18N
-                    }
-                    if (l.size() > 1) {
-                        itemsParams.or(l);
-                    } else {
-                        itemsParams.and(l.toArray(new QueryParameter[0]));
-                    }
-
-                    if (dataOwner != null) {
-                        itemsParams.and(new QueryParameter(dataOwner.getContext(), "ids", dataOwner.__getIDS(), QueryParameter.EQUALS)); //NOI18N
-                    }
-
-                    boolean additional = true;
-                    if (statusc.getComboBox().getSelectedItem().equals(Messages.STATUS_PAID)) {
-                        itemsParams.and(new QueryParameter(contextInUse, "intstatus", Item.STATUS_PAID, QueryParameter.EQUALS)); //NOI18N
-                    } else if (statusc.getComboBox().getSelectedItem().equals(Messages.STATUS_UNPAID)) {
-//                        additional = false;
-                        itemsParams.or(
-                                new QueryParameter(contextInUse, "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS), //NOI18N
-                                new QueryParameter(contextInUse, "intstatus", Item.STATUS_PAUSED, QueryParameter.EQUALS), //NOI18N
-                                new QueryParameter(contextInUse, "intstatus", Item.STATUS_IN_PROGRESS, QueryParameter.EQUALS), //NOI18N
-                                new QueryParameter(contextInUse, "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS)); //NOI18N
-                    } else if (statusc.getComboBox().getSelectedItem().equals(Messages.STATUS_CANCELLED)) {
-//                        additional = false;
-                        itemsParams.and(new QueryParameter(contextInUse, "intstatus", Item.STATUS_CANCELLED, QueryParameter.EQUALS)); //NOI18N
-                    }
-
-                    try {
-                        Context c = contextInUse;
-                        itemsParams.setOrder("accountsids", true); //NOI18N
-                        c.addReference(Context.getGroup());
-                        c.addReference(Context.getAccounts());
-                        c.addReference(Context.getContact());
-
-                        try {
-                            String datecriterium = "dateadded"; //NOI18N
-                            if (bydateend.isSelected()) {
-                                datecriterium = "dateend"; //NOI18N
-                            }
-                            d = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL.replace("{date}", datecriterium), itemsParams, timeframeChooser1.getTime(), datecriterium).getData(); //NOI18N
-                        } catch (NodataFoundException nodataFoundException) {
-                            d = new Object[0][17];
-                        }
-
-                        DatabaseObject[] es = new DatabaseObject[d.length];
-                        for (int i = 0; i < d.length; i++) {
-                            es[i] = DatabaseObject.getObject(contextInUse, Integer.valueOf(d[i][0].toString()));
-                        }
-
-                        d = ArrayUtilities.replaceColumn(d, 0, es);
-                        if (!additional) {
-                            d = ArrayUtilities.removeRows(d, 11, Item.STATUS_PAID);
-                        }
-                    } catch (Exception ex) {
-                        Log.Debug(ex);
-                        throw ex;
-                    }
-                    try {
-                        Context c = Context.getDeposit();
-                        itemsParams.setOrder("accountsids", true); //NOI18N
-                        c.addReference(Context.getGroup());
-                        c.addReference(Context.getAccounts());
-                        c.addReference(Context.getContact());
-
-                        try {
-                            String datecriterium = "dateadded"; //NOI18N
-                            if (bydateend.isSelected()) {
-                                datecriterium = "dateend"; //NOI18N
-                            }
-                            d3 = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL.replace("{date}", datecriterium), itemsParams, timeframeChooser1.getTime(), datecriterium).getData(); //NOI18N
-                        } catch (NodataFoundException nodataFoundException) {
-                            d3 = new Object[0][17];
-                        }
-
-                        DatabaseObject[] es = new DatabaseObject[d3.length];
-                        for (int i = 0; i < d3.length; i++) {
-                            es[i] = DatabaseObject.getObject(contextInUse, Integer.valueOf(d3[i][0].toString()));
-                        }
-
-                        d3 = ArrayUtilities.replaceColumn(d3, 0, es);
-                        if (!additional) {
-                            d3 = ArrayUtilities.removeRows(d3, 11, Item.STATUS_PAID);
-                        }
-                    } catch (Exception ex) {
-                        Log.Debug(ex);
-                        throw ex;
-                    }
-                    try {
-                        Context c = Context.getPartPayment();
-                        itemsParams.setOrder("accountsids", true); //NOI18N
-                        c.addReference(Context.getGroup());
-                        c.addReference(Context.getAccounts());
-                        c.addReference(Context.getContact());
-
-                        try {
-                            String datecriterium = "dateadded"; //NOI18N
-                            if (bydateend.isSelected()) {
-                                datecriterium = "dateend"; //NOI18N
-                            }
-                            d4 = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL.replace("{date}", datecriterium), itemsParams, timeframeChooser1.getTime(), datecriterium).getData(); //NOI18N
-                        } catch (NodataFoundException nodataFoundException) {
-                            d4 = new Object[0][17];
-                        }
-
-                        DatabaseObject[] es = new DatabaseObject[d4.length];
-                        for (int i = 0; i < d4.length; i++) {
-                            es[i] = DatabaseObject.getObject(contextInUse, Integer.valueOf(d4[i][0].toString()));
-                        }
-
-                        d4 = ArrayUtilities.replaceColumn(d4, 0, es);
-                        if (!additional) {
-                            d4 = ArrayUtilities.removeRows(d4, 11, Item.STATUS_PAID);
-                        }
-                    } catch (Exception ex) {
-                        Log.Debug(ex);
-                        throw ex;
-                    }
-                    try {
-                        Context c = Context.getCredit();
-                        itemsParams.setOrder("accountsids", true); //NOI18N
-                        c.addReference(Context.getGroup());
-                        c.addReference(Context.getAccounts());
-                        c.addReference(Context.getContact());
-
-                        try {
-                            String datecriterium = "dateadded"; //NOI18N
-                            if (bydateend.isSelected()) {
-                                datecriterium = "dateend"; //NOI18N
-                            }
-                            d5 = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL.replace("{date}", datecriterium), itemsParams, timeframeChooser1.getTime(), datecriterium).getData(); //NOI18N
-                        } catch (NodataFoundException nodataFoundException) {
-                            d5 = new Object[0][17];
-                        }
-
-                        DatabaseObject[] es = new DatabaseObject[d5.length];
-                        for (int i = 0; i < d5.length; i++) {
-                            es[i] = DatabaseObject.getObject(contextInUse, Integer.valueOf(d5[i][0].toString()));
-                        }
-
-                        d5 = ArrayUtilities.replaceColumn(d5, 0, es);
-                        if (!additional) {
-                            d5 = ArrayUtilities.removeRows(d5, 11, Item.STATUS_PAID);
-                        }
-                    } catch (Exception ex) {
-                        Log.Debug(ex);
-                        throw ex;
-                    }
-                    d = ArrayUtilities.merge(ArrayUtilities.merge(ArrayUtilities.merge(d, d3), d4), d5);
-                    d = ArrayUtilities.merge(d, paymentRows(forGroup, forUser));
-
-                    if (dataOwner == null && additional) {
-                        try {
-                            Context c = Context.getExpense();
-                            itemsParams.setOrder("dateadded", true); //NOI18N
-                            c.addReference(Context.getGroup());
-                            c.addReference(Context.getAccounts());
-                            QueryCriteria2 expensesParams = new QueryCriteria2();
-                            ArrayList<QueryParameter> l1 = new ArrayList<QueryParameter>();
-                            for (int i = 0; i < jList1.getSelectedValues().length; i++) {
-                                l1.add(new QueryParameter(Context.getExpense(), "accountsids", ((Account) jList1.getSelectedValues()[i]).__getIDS(), QueryParameter.EQUALS)); //NOI18N
-                            }
-                            if (l1.size() > 1) {
-                                expensesParams.or(l1);
-                            } else {
-                                expensesParams.and(l1.toArray(new QueryParameter[0]));
-                            }
-                            if (forUser != null && !forUser.__getCname().equals("")) { //NOI18N
-                                expensesParams.and(new QueryParameter(c, "intaddedby", forUser.__getIDS(), QueryParameter.EQUALS)); //NOI18N
-                            }
-                            if (!includechildgroups.isSelected()) {
-                                if (forGroup != null && !forGroup.__getCname().equals("")) { //NOI18N
-                                    expensesParams.and(new QueryParameter(c, forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS)); //NOI18N
-                                }
-
-                            } else if (forGroup != null) {
-                                List<Group> gs = forGroup.getChildGroups();
-                                QueryParameter[] params = new QueryParameter[gs.size()];
-                                QueryParameter params1 = (new QueryParameter(c, forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS)); //NOI18N
-                                if (gs.size() >= 1) {
-                                    for (int i = 0; i < gs.size(); i++) {
-                                        Group group = gs.get(i);
-                                        params[i] = (new QueryParameter(c, group.getDbIdentity() + "ids", group.__getIDS(), QueryParameter.EQUALS)); //NOI18N
-                                    }
-                                    itemsParams.or(params1, params);
-                                } else {
-                                    expensesParams.and(params1);
-                                }
-                            }
-                            if (statusc.getComboBox().getSelectedItem().equals(Messages.STATUS_PAID)) {
-                                expensesParams.and(new QueryParameter(c, "ispaid", true, QueryParameter.EQUALS)); //NOI18N
-                            } else if (statusc.getComboBox().getSelectedItem().equals(Messages.STATUS_UNPAID)) {
-                                expensesParams.and(new QueryParameter(c, "ispaid", false, QueryParameter.EQUALS)); //NOI18N
-                            }
-
-                            try {
-                                String datecriterium = "dateadded"; //NOI18N
-                                if (bydateend.isSelected()) {
-                                    datecriterium = "dateend"; //NOI18N
-                                }
-                                d1 = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL3.replace("{date}", datecriterium), expensesParams, timeframeChooser1.getTime(), datecriterium).getData(); //NOI18N
-                            } catch (NodataFoundException nodataFoundException) {
-                                d1 = new Object[0][17];
-                            }
-
-//                            try {
-//                                d1 = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL3, expensesParams, timeframeChooser1.getTime()).getData();
-//                            } catch (NodataFoundException nodataFoundException) {
-//                                d1 = new Object[0][14];
-//                            }
-                            for (int i = 0; i < d1.length; i++) {
-                                d1[i][10] = Constants.TYPE_EXPENSE;
-
-                                if (TypeConversion.stringToBoolean(String.valueOf(d1[i][11]))) {
-                                    d1[i][11] = 1000;
-                                } else {
-                                    d1[i][11] = 2000;
-                                }
-                            }
-
-                            DatabaseObject[] es = new DatabaseObject[d1.length];
-                            for (int i = 0; i < d1.length; i++) {
-                                es[i] = DatabaseObject.getObject(Context.getExpense(), Integer.valueOf(d1[i][0].toString()));
-                            }
-                            d1 = ArrayUtilities.replaceColumn(d1, 0, es);
-
-                        } catch (Exception ex) {
-                            Log.Debug(this, ex);
-                            throw ex;
-                        }
-
-                        try {
-                            Context c = Context.getRevenue();
-                            itemsParams.setOrder("dateadded", true); //NOI18N
-                            c.addReference(Context.getGroup());
-                            c.addReference(Context.getAccounts());
-                            c.addReference(Context.getContact());
-                            QueryCriteria2 revenuesParams = new QueryCriteria2();
-                            ArrayList<QueryParameter> l2 = new ArrayList<QueryParameter>();
-                            for (int i = 0; i < jList1.getSelectedValues().length; i++) {
-                                l2.add(new QueryParameter(Context.getRevenue(), "accountsids", ((Account) jList1.getSelectedValues()[i]).__getIDS(), QueryParameter.EQUALS)); //NOI18N
-                            }
-                            if (l2.size() > 1) {
-                                revenuesParams.or(l2);
-                            } else {
-                                revenuesParams.and(l2.toArray(new QueryParameter[0]));
-                            }
-                            if (forUser != null && !forUser.__getCname().equals("")) { //NOI18N
-                                revenuesParams.and(new QueryParameter(c, "intaddedby", forUser.__getIDS(), QueryParameter.EQUALS)); //NOI18N
-                            }
-                            if (!includechildgroups.isSelected()) {
-                                if (forGroup != null && !forGroup.__getCname().equals("")) { //NOI18N
-                                    revenuesParams.and(new QueryParameter(c, forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS)); //NOI18N
-                                }
-                            } else if (forGroup != null) {
-                                List<Group> gs = forGroup.getChildGroups();
-                                QueryParameter[] params = new QueryParameter[gs.size()];
-                                QueryParameter params1 = (new QueryParameter(c, forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS)); //NOI18N
-                                if (gs.size() >= 1) {
-                                    for (int i = 0; i < gs.size(); i++) {
-                                        Group group = gs.get(i);
-                                        params[i] = (new QueryParameter(c, group.getDbIdentity() + "ids", group.__getIDS(), QueryParameter.EQUALS)); //NOI18N
-                                    }
-                                    revenuesParams.or(params1, params);
-                                } else {
-                                    revenuesParams.and(params1);
-                                }
-                            }
-                            if (statusc.getComboBox().getSelectedItem().equals(Messages.STATUS_PAID)) {
-                                revenuesParams.and(new QueryParameter(c, "status", Item.STATUS_PAID, QueryParameter.EQUALS)); //NOI18N
-                            } else if (statusc.getComboBox().getSelectedItem().equals(Messages.STATUS_UNPAID)) {
-                                revenuesParams.and(new QueryParameter(c, "status", Item.STATUS_PAID, QueryParameter.NOTEQUAL)); //NOI18N
-                            }
-                            try {
-                                String datecriterium = "dateadded"; //NOI18N
-                                if (bydateend.isSelected()) {
-                                    datecriterium = "dateend"; //NOI18N
-                                }
-                                d2 = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL2.replace("{date}", datecriterium), revenuesParams, timeframeChooser1.getTime(), datecriterium).getData(); //NOI18N
-                            } catch (NodataFoundException nodataFoundException) {
-                                d2 = new Object[0][17];
-                            }
-                            for (int i = 0; i < d2.length; i++) {
-                                d2[i][10] = Constants.TYPE_REVENUE;
-//                                d2[i][11] = Item.getStatusString(status) //not anymore ...
-                            }
-
-                            DatabaseObject[] es = new DatabaseObject[d2.length];
-                            for (int i = 0; i < d2.length; i++) {
-                                es[i] = DatabaseObject.getObject(Context.getRevenue(), Integer.valueOf(d2[i][0].toString()));
-                            }
-                            d2 = ArrayUtilities.replaceColumn(d2, 0, es);
-
-                        } catch (Exception ex) {
-                            Log.Debug(this, ex);
-                            throw ex;
-                        }
-
-                        d = ArrayUtilities.merge(ArrayUtilities.merge(d, d1), d2);
-                    }
-                    d = parse(d);
-                    jTable1.setModel(new MPTableModel(d, Headers.JOURNAL.getValue(),
-                            new Class[]{DatabaseObject.class, String.class, String.class, String.class, String.class, String.class, Date.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class}));
-                    //TableFormat.stripColumn(jTable1, 0);
-                    count.setText(String.format(Messages.JOURNAL_COUNT.toString(), d.length)); //NOI18N
-                } catch (Exception e) {
-                    Log.Debug(this, e);
-                    Popup.error(e);
-                }
-            }
-        };
-        SwingUtilities.invokeLater(runnable);
-    }
-
-    @Override
-    public void refresh() {
-        refresh(null, null);
-    }
-
-    @Override
-    public void flush() {
-        jTable1.setModel(new DefaultTableModel());
-    }
-
-    private void setPopup() {
-        TablePopUp tablePopUp = new TablePopUp(jTable1,
-                new String[]{Messages.DELETE.toString(),
-                    null, Messages.RELOAD.getValue(),
-                    null, Messages.EMAIL_SEND.getValue(),
-                    Messages.SEPA_DD_CREATE.getValue(),
-                    Messages.PDF_CREATE.getValue(),
-                    Messages.ODT_CREATE.getValue(),
-                    null, Messages.SET_STATUS_PAID.getValue(),},
-                new ActionListener[]{new ActionListener() {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    if (Popup.Y_N_dialog(Messages.REALLY_DELETE2 + " (" + jTable1.getSelectedRowCount() + ")")) { //NOI18N
-                        int[] rows = jTable1.getSelectedRows();
-                        for (int i = 0; i < rows.length; i++) {
-                            try {
-                                int index = jTable1.convertRowIndexToModel(rows[i]);
-                                DatabaseObject obj = (DatabaseObject) jTable1.getModel().getValueAt(index, 0);
-                                obj.delete();
-                                jTable1.getSelectionModel().removeSelectionInterval(rows[i] - 1, rows[i]);
-                            } catch (Exception exc) {
-                                Log.Debug(exc);
-                                Popup.error(exc);
-                            }
-                        }
-                        setData();
-                    }
-                }
-            }, null, new ActionListener() {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    setData();
-                }
-            },
-                    null,
-                    new ActionListener() {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    email();
-                }
-            },
-                    new ActionListener() {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    sepa();
-                }
-            },
-                    new ActionListener() {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    pdf();
-                }
-            },
-                    new ActionListener() {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    odt();
-                }
-            },
-                    null,
-                    new ActionListener() {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    if (Popup.Y_N_dialog(Messages.REALLY_CHANGE2 + " (" + jTable1.getSelectedRowCount() + ")")) { //NOI18N
-                        int[] rows = jTable1.getSelectedRows();
-                        for (int i = 0; i < rows.length; i++) {
-                            try {
-                                int index = jTable1.convertRowIndexToModel(rows[i]);
-                                DatabaseObject obj = (DatabaseObject) jTable1.getModel().getValueAt(index, 0);
-                                if (obj instanceof Item) {
-                                    Item dbi = (Item) obj;
-                                    if (dbi.__getIntstatus() != Item.STATUS_PAID) {
-                                        dbi.setIntstatus(Item.STATUS_PAID);
-                                        dbi.save();
-                                    }
-                                } else if (obj instanceof Expense) {
-                                    Expense dbi = (Expense) obj;
-                                    if (!dbi.__getIspaid()) {
-                                        dbi.setIspaid(true);
-                                        dbi.save();
-                                    }
-                                }
-                                jTable1.getSelectionModel().removeSelectionInterval(rows[i] - 1, rows[i]);
-                            } catch (Exception exc) {
-                                Log.Debug(exc);
-                                Popup.error(exc);
-                            }
-                        }
-                        setData();
-                    }
-                }
-            }
-                });
-
-    }
-
-    private void setData() {
+        groups.setItems(gl);
+        List<Object> al = new ArrayList<Object>();
         try {
-            Group g = null;
-            User u = null;
-
-            if (groups.getSelectedItem().isValid()) {
-                try {
-                    g = ((Group) Group.getObject(Context.getGroup(), Integer.valueOf(groups.getSelectedItem().getId())));
-                } catch (Exception nodataFoundException) {
-                    g = null;
-                }
-            }
-            try {
-                if (users.getSelectedItem().isValid()) {
-                    u = ((User) User.getObject(Context.getUser(), Integer.valueOf(users.getSelectedItem().getId())));
-                }
-            } catch (Exception nodataFoundException) {
-                u = null;
-            }
-            refresh(g, u);
-        } catch (Exception ignore) {
-            refresh(null, null);
+            al.addAll(DatabaseObject.getObjects(Context.getAccounts()));
+        } catch (NodataFoundException e) {
+            Log.Debug(this, e.getMessage());
         }
-    }
+        accounts.setItems(al);
 
-    /**
-     * The totals and the export area below the table: the export choice with
-     * the link to the last generated file, and the sums in four columns
-     * (volume, profit, revenue, expenses)
-     */
-    private void layoutTotals() {
-        jPanel3.setLayout(new BorderLayout(12, 4));
-        jPanel3.setBorder(javax.swing.BorderFactory.createEmptyBorder(6, 8, 6, 8));
+        //the last settings of the user
+        int v = p.getProperty(this, "view", Integer.valueOf(VIEW_EUR));
+        if (dataOwner != null) {
+            v = VIEW_ALL;
+        }
+        adjusting = true;
+        view.setSelectedIndex(v < 0 || v > VIEW_CUSTOM ? VIEW_EUR : v);
+        if (v == VIEW_CUSTOM) {
+            AbstractButton[] bs = {incInvoices, incCredits, incDeposits, incPartPayments, incRevenues, incOrders, incOffers, incExpenses, incomeByPay, expenseByPay};
+            boolean[] defaults = {true, true, true, true, true, false, false, true, false, false};
+            for (int i = 0; i < bs.length; i++) {
+                bs[i].setSelected(p.getProperty(this, "custom" + i, Boolean.valueOf(defaults[i])));
+            }
+            if (!incomeByPay.isSelected()) {
+                incomeByDoc.setSelected(true);
+            }
+            if (!expenseByPay.isSelected()) {
+                expenseByDoc.setSelected(true);
+            }
+            incomeStatus.setSelectedIndex(Math.max(0, Math.min(3, p.getProperty(this, "incomestatus", Integer.valueOf(0)))));
+            expenseStatus.setSelectedIndex(Math.max(0, Math.min(2, p.getProperty(this, "expensestatus", Integer.valueOf(0)))));
+        } else {
+            applyView(view.getSelectedIndex());
+        }
+        adjusting = false;
 
-        exportBox.setModel(new DefaultComboBoxModel(new Object[]{"",
-            Messages.JOURNAL_EXPORT_PRINT.toString(),
-            Messages.JOURNAL_EXPORT_CSV.toString(),
-            Messages.JOURNAL_EXPORT_HTML.toString(),
-            Messages.JOURNAL_EXPORT_TEMPLATE_PDF.toString(),
-            Messages.JOURNAL_EXPORT_TEMPLATE_ODT.toString()}));
-        exportBox.setName("exportBox"); //NOI18N
-        exportBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int i = exportBox.getSelectedIndex();
-                if (i > 0) {
-                    exportBox.setSelectedIndex(0);
-                    export(i);
-                }
+        //every change: custom view (if a filter of the view) and reload
+        view.addActionListener(e -> {
+            if (!adjusting) {
+                adjusting = true;
+                applyView(view.getSelectedIndex());
+                adjusting = false;
+                remember();
+                scheduleReload();
             }
         });
-        javax.swing.JPanel exp = new javax.swing.JPanel(new FlowLayout(FlowLayout.LEFT, 4, 0));
-        exp.setOpaque(false);
-        exp.add(new javax.swing.JLabel(Messages.JOURNAL_EXPORT.toString()));
-        exp.add(exportBox);
-        javax.swing.JPanel west = new javax.swing.JPanel(new BorderLayout());
-        west.setOpaque(false);
-        west.add(exp, BorderLayout.NORTH);
-        jPanel3.add(west, BorderLayout.WEST);
-
-        javax.swing.JPanel sums = new javax.swing.JPanel(new GridLayout(3, 4, 12, 2));
-        sums.setOpaque(false);
-        for (Component c : new Component[]{
-            volumeNetto, profitNetto, revenueNetto, expNetto,
-            taxVolume, profitTax, revenueTax, expTax,
-            volumeBrutto, volumeDiscount, revenueBrut, expBrut}) {
-            sums.add(c);
+        for (AbstractButton b : new AbstractButton[]{incInvoices, incCredits, incDeposits, incPartPayments, incRevenues,
+            incOrders, incOffers, incExpenses, incomeByDoc, incomeByPay, expenseByDoc, expenseByPay}) {
+            b.setOpaque(false);
+            b.addActionListener(e -> filterChanged(true));
         }
-        jPanel3.add(sums, BorderLayout.CENTER);
+        incomeStatus.addActionListener(e -> filterChanged(true));
+        expenseStatus.addActionListener(e -> filterChanged(true));
+        includechildgroups.setOpaque(false);
+        includechildgroups.addActionListener(e -> filterChanged(false));
+        users.addActionListener(e -> filterChanged(false));
+        groups.setOnChange(() -> filterChanged(false));
+        accounts.setOnChange(() -> filterChanged(false));
+        timeframeChooser1.addPropertyChangeListener(e -> {
+        });
+        loadButton.addActionListener(e -> setData());
+        filterToggle.addActionListener(e -> {
+            if (filterArea != null) {
+                filterArea.setVisible(filterToggle.isSelected());
+                revalidate();
+            }
+        });
+        find.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                applyFind();
+            }
 
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                applyFind();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                applyFind();
+            }
+        });
+        updateEnabled();
+    }
+
+    /**
+     * The arrow icon of the time frame chooser (a "go" button which is none)
+     */
+    private static void hideArrow(TimeframeChooser t) {
+        for (Component c : t.getComponents()) {
+            if (c instanceof JLabel) {
+                c.setVisible(false);
+            }
+        }
+        t.setOpaque(false);
+    }
+
+    /**
+     * @param preset 0 this month, 1 last month, 2 this quarter, 3 last
+     * quarter, 4 this year, 5 last year
+     * @param today
+     * @return the period
+     */
+    static vTimeframe period(int preset, LocalDate today) {
+        LocalDate start;
+        LocalDate end;
+        switch (preset) {
+            case 0:
+                start = today.withDayOfMonth(1);
+                end = start.plusMonths(1).minusDays(1);
+                break;
+            case 1:
+                start = today.withDayOfMonth(1).minusMonths(1);
+                end = start.plusMonths(1).minusDays(1);
+                break;
+            case 2:
+            case 3: {
+                int q = (today.getMonthValue() - 1) / 3;
+                start = LocalDate.of(today.getYear(), q * 3 + 1, 1);
+                if (preset == 3) {
+                    start = start.minusMonths(3);
+                }
+                end = start.plusMonths(3).minusDays(1);
+                break;
+            }
+            case 5:
+                start = LocalDate.of(today.getYear() - 1, 1, 1);
+                end = LocalDate.of(today.getYear() - 1, 12, 31);
+                break;
+            default:
+                start = LocalDate.of(today.getYear(), 1, 1);
+                end = LocalDate.of(today.getYear(), 12, 31);
+        }
+        return new vTimeframe(date(start), DateConverter.getEndOfDay(date(end)));
+    }
+
+    private static Date date(LocalDate d) {
+        return Date.from(d.atStartOfDay(ZoneId.systemDefault()).toInstant());
+    }
+
+    /**
+     * Sets the filters of a view
+     *
+     * @param v
+     */
+    private void applyView(int v) {
+        if (v == VIEW_CUSTOM) {
+            return;
+        }
+        for (JCheckBox b : new JCheckBox[]{incInvoices, incCredits, incDeposits, incPartPayments, incRevenues, incExpenses}) {
+            b.setSelected(true);
+        }
+        incOrders.setSelected(false);
+        incOffers.setSelected(false);
+        switch (v) {
+            case VIEW_EUR:
+                incomeStatus.setSelectedIndex(STATUS_PAID);
+                expenseStatus.setSelectedIndex(STATUS_PAID);
+                incomeByPay.setSelected(true);
+                expenseByPay.setSelected(true);
+                break;
+            case VIEW_OPEN:
+                incomeStatus.setSelectedIndex(STATUS_OPEN);
+                expenseStatus.setSelectedIndex(STATUS_OPEN);
+                incomeByDoc.setSelected(true);
+                expenseByDoc.setSelected(true);
+                break;
+            default:
+                incomeStatus.setSelectedIndex(STATUS_ALL);
+                expenseStatus.setSelectedIndex(STATUS_ALL);
+                incomeByDoc.setSelected(true);
+                expenseByDoc.setSelected(true);
+        }
+    }
+
+    /**
+     * A filter changed: a filter of the views makes the view "custom"
+     *
+     * @param ofView
+     */
+    private void filterChanged(boolean ofView) {
+        if (adjusting) {
+            return;
+        }
+        if (ofView && view.getSelectedIndex() != VIEW_CUSTOM) {
+            adjusting = true;
+            view.setSelectedIndex(VIEW_CUSTOM);
+            adjusting = false;
+        }
+        updateEnabled();
+        remember();
+        scheduleReload();
+    }
+
+    private void updateEnabled() {
+        boolean income = incInvoices.isSelected() || incCredits.isSelected() || incDeposits.isSelected() || incPartPayments.isSelected()
+                || incRevenues.isSelected() || incOrders.isSelected() || incOffers.isSelected();
+        incomeStatus.setEnabled(income);
+        incomeByDoc.setEnabled(income);
+        incomeByPay.setEnabled(income);
+        expenseStatus.setEnabled(incExpenses.isSelected());
+        expenseByDoc.setEnabled(incExpenses.isSelected());
+        expenseByPay.setEnabled(incExpenses.isSelected());
+    }
+
+    private void remember() {
+        if (dataOwner != null) {
+            return;
+        }
+        try {
+            mpv5.data.PropertyStore p = User.getCurrentUser().getProperties();
+            p.changeProperty(this, "view", view.getSelectedIndex());
+            AbstractButton[] bs = {incInvoices, incCredits, incDeposits, incPartPayments, incRevenues, incOrders, incOffers, incExpenses, incomeByPay, expenseByPay};
+            for (int i = 0; i < bs.length; i++) {
+                p.changeProperty(this, "custom" + i, bs[i].isSelected());
+            }
+            p.changeProperty(this, "incomestatus", incomeStatus.getSelectedIndex());
+            p.changeProperty(this, "expensestatus", expenseStatus.getSelectedIndex());
+        } catch (Exception e) {
+            Log.Debug(this, e.getMessage());
+        }
+    }
+
+    private void scheduleReload() {
+        reloadTimer.restart();
+    }
+
+    /**
+     * Highlights the period chip matching the period, none if it matches none
+     */
+    private void markPeriod() {
+        vTimeframe t = timeframeChooser1.getTime();
+        LocalDate today = LocalDate.now();
+        for (int i = 0; i < periodChips.size(); i++) {
+            vTimeframe p = period(i, today);
+            if (sameDay(p.getStart(), t.getStart()) && sameDay(p.getEnd(), t.getEnd())) {
+                periodChips.get(i).setSelected(true);
+                return;
+            }
+        }
+        periodGroup.clearSelection();
+    }
+
+    private static boolean sameDay(Date a, Date b) {
+        return a != null && b != null && DateConverter.getDefDateString(a).equals(DateConverter.getDefDateString(b));
+    }
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Layout">
+    private void build() {
+        removeAll();
+        int gap = ModernTheme.px(10);
+        setLayout(new BorderLayout(gap, gap));
+        setBorder(ModernTheme.padding(12, 14));
+        setBackground(ModernTheme.background());
+
+        //header: title, count, filters on/off, export, reload
+        JLabel title = new JLabel(dataOwner == null ? Messages.JOURNAL_TITLE.toString()
+                : String.format(Messages.JOURNAL_TITLE_CONTACT.toString(), dataOwner.__getCname()));
+        title.setFont(ModernTheme.font(9, Font.BOLD));
+        count.setForeground(ModernTheme.muted());
+        JPanel left = new JPanel(new FlowLayout(FlowLayout.LEFT, gap, 0));
+        left.setOpaque(false);
+        left.add(title);
+        left.add(count);
+        JPanel right = new JPanel(new FlowLayout(FlowLayout.RIGHT, ModernTheme.px(8), 0));
+        right.setOpaque(false);
+        filterToggle.setToolTipText(Messages.JOURNAL_FILTERS_TOGGLE.toString());
+        right.add(filterToggle);
+        right.add(exportButton);
+        right.add(loadButton);
+        exportButton.addActionListener(e -> exportMenu().show(exportButton, 0, exportButton.getHeight()));
+        JPanel header = new JPanel(new BorderLayout());
+        header.setOpaque(false);
+        header.add(left, BorderLayout.WEST);
+        header.add(right, BorderLayout.EAST);
+
+        //filters
+        for (JComponent c : new JComponent[]{view, users, incomeStatus, expenseStatus}) {
+            ModernTheme.roomyCombo(c);
+        }
+        JPanel chips = new JPanel(new mpv5.ui.modern.WrapLayout(FlowLayout.LEFT, ModernTheme.px(6), 0));
+        chips.setOpaque(false);
+        for (ChipToggle c : periodChips) {
+            chips.add(c);
+        }
+        Card period = new Card(Messages.JOURNAL_PERIOD.toString())
+                .row(Card.field(null, timeframeChooser1, 1.4), Card.field(null, chips, 3))
+                .row(Card.field(Messages.JOURNAL_VIEW.toString(), view, 1.4), Card.field(Messages.JOURNAL_USER.toString(), users, 1),
+                        Card.field(null, new JLabel(), 2));
+
+        Card income = new Card(Messages.JOURNAL_INCOME.toString())
+                .addFull(flow(incInvoices, incCredits))
+                .addFull(flow(incDeposits, incPartPayments))
+                .addFull(flow(incRevenues))
+                .row(Card.field(Messages.JOURNAL_STATUS.toString(), incomeStatus))
+                .row(Card.field(Messages.JOURNAL_DATE_BASIS.toString(), flow(incomeByDoc, incomeByPay)))
+                .section(Messages.JOURNAL_NOT_ACCOUNTING.toString())
+                .addFull(flow(incOrders, incOffers));
+        Card expenses = new Card(Messages.JOURNAL_EXPENSES.toString())
+                .addFull(flow(incExpenses))
+                .row(Card.field(Messages.JOURNAL_STATUS.toString(), expenseStatus))
+                .row(Card.field(Messages.JOURNAL_DATE_BASIS.toString(), flow(expenseByDoc, expenseByPay)));
+        Card groupsCard = new Card(Messages.JOURNAL_GROUPS.toString())
+                .addFull(groups, 1)
+                .addFull(includechildgroups);
+        Card accountsCard = new Card(Messages.JOURNAL_ACCOUNTS.toString())
+                .addFull(accounts, 1);
+        Dimension listSize = new Dimension(ModernTheme.px(160), ModernTheme.px(110));
+        groups.setListSize(listSize);
+        accounts.setListSize(listSize);
+
+        JPanel cards = new JPanel(new GridBagLayout());
+        cards.setOpaque(false);
+        List<Card> columns = new ArrayList<Card>();
+        columns.add(income);
+        if (dataOwner == null) {
+            columns.add(expenses);
+        } else {
+            //a contact: outgoing documents only
+            incRevenues.setSelected(false);
+            incRevenues.setVisible(false);
+            incExpenses.setSelected(false);
+        }
+        columns.add(groupsCard);
+        columns.add(accountsCard);
+        for (int i = 0; i < columns.size(); i++) {
+            GridBagConstraints gc = new GridBagConstraints();
+            gc.gridx = i;
+            gc.gridy = 0;
+            gc.fill = GridBagConstraints.BOTH;
+            gc.weightx = i == 0 ? 1.2 : 1;
+            gc.weighty = 1;
+            gc.insets = new Insets(0, i == 0 ? 0 : gap, 0, 0);
+            columns.get(i).setPreferredSize(new Dimension(ModernTheme.px(10), columns.get(i).getPreferredSize().height));
+            cards.add(columns.get(i), gc);
+        }
+        JPanel filters = new JPanel(new BorderLayout(0, gap));
+        filters.setOpaque(false);
+        filters.add(period, BorderLayout.NORTH);
+        filters.add(cards, BorderLayout.CENTER);
+        filterArea = filters;
+
+        //the table: one scroll bar (the panel follows the height of the tab)
+        ModernTheme.style(jTable1);
+        tableScroll.setBorder(BorderFactory.createLineBorder(ModernTheme.border()));
+        tableScroll.setPreferredSize(new Dimension(ModernTheme.px(400), ModernTheme.px(200)));
+        ModernTheme.roomy(find);
+        find.setToolTipText(Messages.JOURNAL_FIND.toString());
+        JPanel tools = new JPanel(new BorderLayout(gap, 0));
+        tools.setOpaque(false);
+        JPanel findRow = new JPanel(new FlowLayout(FlowLayout.LEFT, ModernTheme.px(6), 0));
+        findRow.setOpaque(false);
+        findRow.add(new JLabel(Messages.JOURNAL_FIND.toString()));
+        findRow.add(find);
+        tools.add(findRow, BorderLayout.WEST);
+        JLabel legend = new JLabel(Messages.JOURNAL_LEGEND.toString());
+        legend.setForeground(ModernTheme.muted());
+        legend.setFont(ModernTheme.font(-1, Font.PLAIN));
+        tools.add(legend, BorderLayout.EAST);
+        JPanel table = new JPanel(new BorderLayout(0, ModernTheme.px(6)));
+        table.setOpaque(false);
+        table.add(tools, BorderLayout.NORTH);
+        table.add(tableScroll, BorderLayout.CENTER);
+
+        //the sums: income, expenses, result, open items, volume
+        taxRates.setFont(ModernTheme.font(-1, Font.PLAIN));
+        taxRates.setForeground(ModernTheme.muted());
+        einvoiceCheck.setFont(ModernTheme.font(-1, Font.PLAIN));
+        einvoiceCheck.setForeground(ModernTheme.muted());
+        einvoiceCheck.setToolTipText("<html><div style='width:420px'>" + Messages.JOURNAL_EINVOICE_INFO + "</div>"); //NOI18N
         exportResult.setName("exportResult"); //NOI18N
-        exportResult.setBorder(javax.swing.BorderFactory.createEmptyBorder(4, 4, 0, 0));
         exportResult.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
@@ -1548,173 +749,755 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                 }
             }
         });
-        jPanel3.add(exportResult, BorderLayout.SOUTH);
-    }
-    /**
-     * The modern layout, for the general journal and the journal of a
-     * contact: a header (title, count, export, "Load" as the main action),
-     * the filters and the accounts as cards, the table, the totals in four
-     * columns. The components and their logic are the same as before.
-     */
-    private void modernLayout() {
-        removeAll();
-        setLayout(new BorderLayout(mpv5.ui.modern.ModernTheme.px(10), mpv5.ui.modern.ModernTheme.px(10)));
-        setBorder(mpv5.ui.modern.ModernTheme.padding(12, 14));
-        setBackground(mpv5.ui.modern.ModernTheme.background());
-
-        //header
-        javax.swing.JLabel title = new javax.swing.JLabel(dataOwner == null ? Messages.JOURNAL_TITLE.toString()
-                : String.format(Messages.JOURNAL_TITLE_CONTACT.toString(), dataOwner.__getCname()));
-        title.setFont(mpv5.ui.modern.ModernTheme.font(9, Font.BOLD));
-        count.setForeground(mpv5.ui.modern.ModernTheme.muted());
-        javax.swing.JPanel left = new javax.swing.JPanel(new FlowLayout(FlowLayout.LEFT, mpv5.ui.modern.ModernTheme.px(10), 0));
-        left.setOpaque(false);
-        left.add(title);
-        left.add(count);
-        javax.swing.JPanel header = new javax.swing.JPanel(new BorderLayout());
-        header.setOpaque(false);
-        header.add(left, BorderLayout.WEST);
-        //the main action (blue) sits in the filter card, on the right
-        javax.swing.JPanel load = new javax.swing.JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
-        load.setOpaque(false);
-        load.add(jButton1);
-        //the export: below the table, on the left
-        javax.swing.JPanel export = new javax.swing.JPanel(new FlowLayout(FlowLayout.LEFT, mpv5.ui.modern.ModernTheme.px(8), 0));
-        export.setOpaque(false);
-        export.add(new javax.swing.JLabel(Messages.JOURNAL_EXPORT.toString()));
-        export.add(exportBox);
-
-        //filters and accounts
-        for (javax.swing.JComponent c : new javax.swing.JComponent[]{groups, users, statusc, types}) {
-            mpv5.ui.modern.ModernTheme.roomyCombo(c);
-        }
-        javax.swing.JPanel groupRow = new javax.swing.JPanel(new BorderLayout(mpv5.ui.modern.ModernTheme.px(8), 0));
-        groupRow.setOpaque(false);
-        groupRow.add(groups, BorderLayout.CENTER);
-        groupRow.add(includechildgroups, BorderLayout.EAST);
-        for (javax.swing.AbstractButton b : new javax.swing.AbstractButton[]{includechildgroups, bydateend, expbydateend}) {
-            b.setOpaque(false);
-        }
-        javax.swing.JPanel options = new javax.swing.JPanel(new FlowLayout(FlowLayout.LEFT, mpv5.ui.modern.ModernTheme.px(12), 0));
-        options.setOpaque(false);
-        options.add(bydateend);
-        options.add(expbydateend);
-        mpv5.ui.modern.Card filters = new mpv5.ui.modern.Card(Messages.JOURNAL_FILTERS.toString())
-                .row(mpv5.ui.modern.Card.field(Messages.JOURNAL_PERIOD.toString(), timeframeChooser1, 2),
-                        mpv5.ui.modern.Card.field(typesLabel.getText().replace(":", ""), types))
-                .row(mpv5.ui.modern.Card.field(jLabel2.getText().replace(":", ""), groupRow, 2),
-                        mpv5.ui.modern.Card.field(jLabel8.getText().replace(":", ""), users))
-                .row(mpv5.ui.modern.Card.field(jLabel6.getText().replace(":", ""), statusc), mpv5.ui.modern.Card.field(null, options, 1),
-                        mpv5.ui.modern.Card.field(null, load, 1));
-        jList1.setSelectionBackground(javax.swing.UIManager.getColor("List.selectionBackground"));
-        jList1.setFont(mpv5.ui.modern.ModernTheme.font(0, Font.PLAIN));
-        jScrollPane3.setPreferredSize(new Dimension(mpv5.ui.modern.ModernTheme.px(200), mpv5.ui.modern.ModernTheme.px(110)));
-        mpv5.ui.modern.Card accounts = new mpv5.ui.modern.Card(Messages.JOURNAL_ACCOUNTS.toString())
-                .addFull(jScrollPane3, 1)
-                .addFull(mpv5.ui.modern.Applets.hint(Messages.JOURNAL_ACCOUNTS_HINT.toString()));
-        //filters and accounts share the width (about 60 : 40), so the filter fields do not stretch
-        javax.swing.JPanel top = new javax.swing.JPanel(new GridBagLayout());
-        top.setOpaque(false);
-        GridBagConstraints gc = new GridBagConstraints();
-        gc.fill = GridBagConstraints.BOTH;
-        gc.weighty = 1;
-        gc.gridx = 0;
-        gc.weightx = 0.6;
-        gc.insets = new Insets(0, 0, 0, mpv5.ui.modern.ModernTheme.px(10));
-        filters.setPreferredSize(new Dimension(0, filters.getPreferredSize().height));
-        top.add(filters, gc);
-        gc.gridx = 1;
-        gc.weightx = 0.4;
-        gc.insets = new Insets(0, 0, 0, 0);
-        accounts.setPreferredSize(new Dimension(0, filters.getPreferredSize().height));
-        top.add(accounts, gc);
-
-        //the table and the totals
-        mpv5.ui.modern.ModernTheme.style(jTable1);
-        jScrollPane1.setBorder(javax.swing.BorderFactory.createLineBorder(mpv5.ui.modern.ModernTheme.border()));
-        mpv5.ui.modern.Card totals = new mpv5.ui.modern.Card(Messages.JOURNAL_TOTALS.toString())
-                .row(mpv5.ui.modern.Applets.field(volumeNetto), mpv5.ui.modern.Applets.field(profitNetto),
-                        mpv5.ui.modern.Applets.field(revenueNetto), mpv5.ui.modern.Applets.field(expNetto))
-                .row(mpv5.ui.modern.Applets.field(taxVolume), mpv5.ui.modern.Applets.field(profitTax),
-                        mpv5.ui.modern.Applets.field(revenueTax), mpv5.ui.modern.Applets.field(expTax))
-                .row(mpv5.ui.modern.Applets.field(volumeBrutto), mpv5.ui.modern.Applets.field(volumeDiscount),
-                        mpv5.ui.modern.Applets.field(revenueBrut), mpv5.ui.modern.Applets.field(expBrut))
+        Card sums = new Card(Messages.JOURNAL_TOTALS.toString())
+                .row(Applets.field(revenueNetto), Applets.field(expNetto), Applets.field(profitNetto), Applets.field(openReceivables), Applets.field(volumeNetto))
+                .row(Applets.field(revenueTax), Applets.field(expTax), Applets.field(profitTax), Applets.field(openPayables), Applets.field(taxVolume))
+                .row(Applets.field(revenueBrut), Applets.field(expBrut), Applets.field(profitBrut), Applets.field(volumeDiscount), Applets.field(volumeBrutto))
+                .addFull(taxRates)
+                .addFull(einvoiceCheck)
                 .addFull(exportResult);
-        javax.swing.JPanel journal = new javax.swing.JPanel(new BorderLayout(0, mpv5.ui.modern.ModernTheme.px(10)));
+
+        JPanel journal = new JPanel(new BorderLayout(0, gap));
         journal.setOpaque(false);
-        journal.add(top, BorderLayout.NORTH);
-        javax.swing.JPanel table = new javax.swing.JPanel(new BorderLayout(0, mpv5.ui.modern.ModernTheme.px(6)));
-        table.setOpaque(false);
-        table.add(jScrollPane1, BorderLayout.CENTER);
-        table.add(export, BorderLayout.SOUTH);
+        journal.add(filters, BorderLayout.NORTH);
         journal.add(table, BorderLayout.CENTER);
-        journal.add(totals, BorderLayout.SOUTH);
+        journal.add(sums, BorderLayout.SOUTH);
 
         add(header, BorderLayout.NORTH);
         if (dataOwner == null) {
             add(journal, BorderLayout.CENTER);
         } else {
-            //a contact: the journal and the overview of the contact (tree) as tabs
-            javax.swing.JTabbedPane tabs = new javax.swing.JTabbedPane();
+            JTabbedPane tabs = new JTabbedPane();
             tabs.addTab(bundle.getString("JournalPanel.jPanel4.TabConstraints.tabTitle"), journal);
-            tabs.addTab(bundle.getString("JournalPanel.jPanel5.TabConstraints.tabTitle"), jPanel5);
+            tabs.addTab(bundle.getString("JournalPanel.jPanel5.TabConstraints.tabTitle"), contactOverview());
             add(tabs, BorderLayout.CENTER);
         }
         revalidate();
     }
 
-    private final javax.swing.JComboBox exportBox = new javax.swing.JComboBox();
-    private final javax.swing.JLabel exportResult = new javax.swing.JLabel(" ");
-    private File exportedFile;
-    private final javax.swing.JLabel typesLabel = new javax.swing.JLabel();
+    private static JPanel flow(JComponent... cs) {
+        JPanel p = new JPanel(new mpv5.ui.modern.WrapLayout(FlowLayout.LEFT, ModernTheme.px(4), 0));
+        p.setOpaque(false);
+        for (JComponent c : cs) {
+            c.setOpaque(false);
+            p.add(c);
+        }
+        return p;
+    }
 
     /**
-     * Run the export chosen in the combobox: 1 printer, 2 CSV, 3 HTML, 4
-     * template as PDF, 5 template as ODT. Files are saved where the user wants
-     * them and not opened; the link below the totals opens them.
-     *
-     * @param what
+     * The overview of a contact: its documents as tree, filtered by the radio
+     * buttons
      */
-    private void export(int what) {
-        try {
-            switch (what) {
-                case 1:
-                    jTable1.print();
-                    return;
-                case 2:
-                case 3: {
-                    String ext = what == 2 ? "csv" : "html"; //NOI18N
-                    DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY, "journal-" + DateConverter.getTodayFileDate() + "." + ext); //NOI18N
-                    if (!d.saveFile()) {
-                        return;
-                    }
-                    File f = d.getFile();
-                    if (what == 2) {
-                        mpv5.utils.files.FileReaderWriter r = new mpv5.utils.files.FileReaderWriter(f);
-                        StringBuilder title = new StringBuilder();
-                        for (int i = 0; i < jTable1.getColumnCount(); i++) {
-                            title.append(i > 0 ? "," : "").append(jTable1.getColumnName(i));
-                        }
-                        r.writeOnce(title.append("\n").toString());
-                        r.write(ArrayUtilities.tableModelToArray(jTable1), ",", true);
-                    } else {
-                        f = new mpv5.utils.files.TableHtmlWriter(jTable1, f, jTable1.getShowHorizontalLines(), jTable1.getShowVerticalLines()).createHtml();
-                    }
-                    showExported(f);
+    private JPanel contactOverview() {
+        JPanel p = new JPanel(new BorderLayout());
+        ButtonGroup g = new ButtonGroup();
+        JPanel radios = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        radios.setBorder(BorderFactory.createTitledBorder(bundle.getString("JournalPanel.jPanel10.border.title")));
+        filternone.setText(bundle.getString("JournalPanel.filternone.text"));
+        filterinvoice.setText(bundle.getString("JournalPanel.filterinvoice.text"));
+        filterorders.setText(bundle.getString("JournalPanel.filterorders.text"));
+        filteroffers.setText(bundle.getString("JournalPanel.filteroffers.text"));
+        filternone.setSelected(true);
+        for (JRadioButton b : new JRadioButton[]{filternone, filterinvoice, filterorders, filteroffers}) {
+            g.add(b);
+            radios.add(b);
+            b.addItemListener(e -> filter());
+        }
+        p.add(radios, BorderLayout.NORTH);
+        p.add(new JScrollPane(jTree1), BorderLayout.CENTER);
+        return p;
+    }
+
+    // Scrollable: the journal follows the size of the tab, the table scrolls;
+    // only a very small window scrolls the whole panel
+    @Override
+    public Dimension getPreferredScrollableViewportSize() {
+        return getPreferredSize();
+    }
+
+    @Override
+    public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
+        return ModernTheme.px(16);
+    }
+
+    @Override
+    public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
+        return ModernTheme.px(160);
+    }
+
+    @Override
+    public boolean getScrollableTracksViewportWidth() {
+        return getParent() instanceof JViewport && getParent().getWidth() >= ModernTheme.px(MIN_WIDTH);
+    }
+
+    @Override
+    public boolean getScrollableTracksViewportHeight() {
+        return getParent() instanceof JViewport && getParent().getHeight() >= Math.min(super.getPreferredSize().height, ModernTheme.px(MIN_HEIGHT));
+    }
+
+    @Override
+    public Dimension getPreferredSize() {
+        Dimension d = super.getPreferredSize();
+        return new Dimension(Math.min(d.width, ModernTheme.px(MIN_WIDTH)), d.height);
+    }
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Loading">
+    /**
+     * The filters, read on the event thread for the loading in the background
+     */
+    private static final class Filter {
+
+        vTimeframe time;
+        final List<Context> items = new ArrayList<Context>();
+        boolean revenues;
+        boolean expenses;
+        int incomeStatus;
+        int expenseStatus;
+        boolean incomeByPay;
+        boolean expenseByPay;
+        final List<Group> groups = new ArrayList<Group>();
+        boolean childGroups;
+        final Set<Integer> accounts = new LinkedHashSet<Integer>();
+        User user;
+        Contact contact;
+        boolean includeInvoices;
+    }
+
+    private Filter readFilter() {
+        Filter f = new Filter();
+        f.time = timeframeChooser1.getTime();
+        if (incInvoices.isSelected()) {
+            f.items.add(Context.getInvoice());
+        }
+        if (incCredits.isSelected()) {
+            f.items.add(Context.getCredit());
+        }
+        if (incDeposits.isSelected()) {
+            f.items.add(Context.getDeposit());
+        }
+        if (incPartPayments.isSelected()) {
+            f.items.add(Context.getPartPayment());
+        }
+        if (incOrders.isSelected()) {
+            f.items.add(Context.getOrder());
+        }
+        if (incOffers.isSelected()) {
+            f.items.add(Context.getOffer());
+        }
+        f.includeInvoices = incInvoices.isSelected();
+        f.revenues = incRevenues.isSelected() && dataOwner == null;
+        f.expenses = incExpenses.isSelected() && dataOwner == null;
+        f.incomeStatus = incomeStatus.getSelectedIndex();
+        f.expenseStatus = expenseStatus.getSelectedIndex();
+        f.incomeByPay = incomeByPay.isSelected();
+        f.expenseByPay = expenseByPay.isSelected();
+        for (Object o : groups.getSelected()) {
+            f.groups.add((Group) o);
+        }
+        f.childGroups = includechildgroups.isSelected();
+        for (Object o : accounts.getSelected()) {
+            f.accounts.add(((Account) o).__getIDS());
+        }
+        f.user = users.getSelectedItem() instanceof User ? (User) users.getSelectedItem() : null;
+        f.contact = dataOwner;
+        return f;
+    }
+
+    /**
+     * The result of a loading
+     */
+    private static final class Loaded {
+
+        List<Entry> entries;
+        Totals totals;
+        JournalAdviserPackage.EInvoiceCheck check;
+    }
+
+    private void setData() {
+        reloadTimer.stop();
+        markPeriod();
+        final Filter f = readFilter();
+        final int gen = ++generation;
+        loadButton.setEnabled(false);
+        count.setText(Messages.JOURNAL_LOADING.toString());
+        new SwingWorker<Loaded, Void>() {
+            @Override
+            protected Loaded doInBackground() throws Exception {
+                return load(f);
+            }
+
+            @Override
+            protected void done() {
+                if (gen != generation) {
                     return;
                 }
-                case 4:
-                case 5:
-                    exportTemplate(what == 4);
-                    return;
-                default:
+                loadButton.setEnabled(true);
+                try {
+                    show(get());
+                } catch (Exception e) {
+                    Log.Debug(JournalPanel.this, e);
+                    count.setText(" ");
+                    Popup.error(e);
+                }
+            }
+        }.execute();
+    }
+
+    /**
+     * Loads the journal (in the background)
+     *
+     * @param f
+     * @return the entries and their sums
+     * @throws Exception
+     */
+    private Loaded load(Filter f) throws Exception {
+        Set<Integer> groupIds = new HashSet<Integer>();
+        for (Group g : f.groups) {
+            groupIds.add(g.__getIDS());
+            if (f.childGroups) {
+                try {
+                    for (Group c : g.getChildGroups()) {
+                        groupIds.add(c.__getIDS());
+                    }
+                } catch (NodataFoundException e) {
+                    Log.Debug(this, e.getMessage());
+                }
+            }
+        }
+        List<Entry> list = new ArrayList<Entry>();
+        String incomeDate = f.incomeByPay ? "dateend" : "dateadded"; //NOI18N
+        for (Context c : f.items) {
+            c.addReference(Context.getGroup());
+            c.addReference(Context.getAccounts());
+            c.addReference(Context.getContact());
+            QueryCriteria2 p = criteria(c, f, groupIds);
+            if (f.contact != null) {
+                p.and(new QueryParameter(f.contact.getContext(), "ids", f.contact.__getIDS(), QueryParameter.EQUALS)); //NOI18N
+            }
+            for (Object[] r : select(c, Context.DETAILS_JOURNAL.replace("{date}", incomeDate), p, f.time, incomeDate)) { //NOI18N
+                Entry e = entry(r, DatabaseObject.getObject(c, Integer.valueOf(r[0].toString())));
+                if (matchesIncome(e, f.incomeStatus)) {
+                    list.add(e);
+                }
+            }
+        }
+        if (f.revenues) {
+            Context c = Context.getRevenue();
+            c.addReference(Context.getGroup());
+            c.addReference(Context.getAccounts());
+            c.addReference(Context.getContact());
+            for (Object[] r : select(c, Context.DETAILS_JOURNAL2.replace("{date}", incomeDate), criteria(c, f, groupIds), f.time, incomeDate)) { //NOI18N
+                r[10] = Constants.TYPE_REVENUE;
+                Entry e = entry(r, DatabaseObject.getObject(c, Integer.valueOf(r[0].toString())));
+                if (matchesIncome(e, f.incomeStatus)) {
+                    list.add(e);
+                }
+            }
+        }
+        Set<Integer> paidInParts = paidInParts();
+        if (f.includeInvoices && (f.incomeStatus == STATUS_ALL || f.incomeStatus == STATUS_PAID)) {
+            list.addAll(payments(f, groupIds, paidInParts));
+        }
+        if (f.expenses) {
+            Context c = Context.getExpense();
+            c.addReference(Context.getGroup());
+            c.addReference(Context.getAccounts());
+            String date = f.expenseByPay ? "dateend" : "dateadded"; //NOI18N
+            for (Object[] r : select(c, Context.DETAILS_JOURNAL3.replace("{date}", date), criteria(c, f, groupIds), f.time, date)) { //NOI18N
+                r[10] = Constants.TYPE_EXPENSE;
+                boolean paid = TypeConversion.stringToBoolean(String.valueOf(r[11]));
+                r[11] = paid ? JournalCalc.EXPENSE_PAID : JournalCalc.EXPENSE_UNPAID;
+                if (f.expenseStatus == STATUS_PAID && !paid || f.expenseStatus == STATUS_OPEN && paid) {
+                    continue;
+                }
+                Entry e = entry(r, DatabaseObject.getObject(c, Integer.valueOf(r[0].toString())));
+                e.contact = "";
+                e.prename = "";
+                e.street = "";
+                e.city = "";
+                e.country = "";
+                list.add(e);
+            }
+        }
+        list.sort((a, b) -> a.date == null || b.date == null ? 0 : a.date.compareTo(b.date));
+        //open amounts of invoices paid in parts
+        for (Entry e : list) {
+            if (e.obj instanceof Item && paidInParts.contains(e.itemId) && JournalCalc.isOpen(e)) {
+                try {
+                    e.open = mpv5.handler.Payments.open((Item) e.obj);
+                } catch (Exception ex) {
+                    Log.Debug(this, ex.getMessage());
+                }
+            }
+        }
+        Loaded l = new Loaded();
+        l.entries = list;
+        l.totals = JournalCalc.compute(list, paidInParts);
+        try {
+            l.check = new JournalAdviserPackage(list, l.totals, f.time.getStart(), f.time.getEnd(), new ArrayList<String>()).checkEInvoices();
+        } catch (Exception e) {
+            Log.Debug(this, e);
+        }
+        return l;
+    }
+
+    private static boolean matchesIncome(Entry e, int status) {
+        switch (status) {
+            case STATUS_PAID:
+                return e.status == Item.STATUS_PAID;
+            case STATUS_OPEN:
+                return e.status != Item.STATUS_PAID && e.status != Item.STATUS_CANCELLED;
+            case STATUS_CANCELLED:
+                return e.status == Item.STATUS_CANCELLED;
+            default:
+                return true;
+        }
+    }
+
+    /**
+     * Groups, accounts and the user: the filters of all records
+     */
+    private static QueryCriteria2 criteria(Context c, Filter f, Set<Integer> groupIds) {
+        QueryCriteria2 p = new QueryCriteria2();
+        List<QueryParameter> g = new ArrayList<QueryParameter>();
+        for (Integer id : groupIds) {
+            g.add(new QueryParameter(c, "groupsids", id, QueryParameter.EQUALS)); //NOI18N
+        }
+        or(p, g);
+        List<QueryParameter> a = new ArrayList<QueryParameter>();
+        for (Integer id : f.accounts) {
+            a.add(new QueryParameter(c, "accountsids", id, QueryParameter.EQUALS)); //NOI18N
+        }
+        or(p, a);
+        if (f.user != null) {
+            p.and(new QueryParameter(c, "intaddedby", f.user.__getIDS(), QueryParameter.EQUALS)); //NOI18N
+        }
+        p.setOrder("dateadded", true); //NOI18N
+        return p;
+    }
+
+    private static void or(QueryCriteria2 p, List<QueryParameter> l) {
+        if (l.size() == 1) {
+            p.and(l.get(0));
+        } else if (l.size() > 1) {
+            p.or(l.get(0), l.subList(1, l.size()));
+        }
+    }
+
+    private static Object[][] select(Context c, String columns, QueryCriteria2 p, vTimeframe t, String date) {
+        try {
+            return QueryHandler.instanceOf().clone(c).select(columns, p, t, date).getData();
+        } catch (NodataFoundException e) {
+            return new Object[0][17];
+        }
+    }
+
+    /**
+     * @param r a row of the journal queries
+     * @param obj the record
+     * @return the entry
+     */
+    private static Entry entry(Object[] r, Object obj) {
+        Entry e = new Entry();
+        e.obj = obj;
+        e.itemId = obj instanceof Item ? ((Item) obj).__getIDS() : 0;
+        e.contact = str(r[1]);
+        e.prename = str(r[2]);
+        e.street = str(r[3]);
+        e.city = str(r[4]);
+        e.country = str(r[5]);
+        e.date = r[6] instanceof Date ? (Date) r[6] : DateConverter.getDate(String.valueOf(r[6]));
+        e.group = str(r[7]);
+        e.account = str(r[8]);
+        e.number = str(r[9]);
+        e.type = Integer.parseInt(String.valueOf(r[10]));
+        e.status = Integer.parseInt(String.valueOf(r[11]));
+        e.net = JournalCalc.money(r[12]);
+        e.tax = JournalCalc.money(r[13]);
+        e.gross = JournalCalc.money(r[14]);
+        e.discount = JournalCalc.money(r[15]);
+        switch (e.type) {
+            case Constants.TYPE_REVENUE:
+            case Constants.TYPE_EXPENSE:
+            case Constants.TYPE_PAYMENT:
+                e.description = str(r[16]);
+                break;
+            default:
+                if (GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.showitemasdesc")) { //NOI18N
+                    e.description = String.valueOf(obj);
+                }
+        }
+        return e;
+    }
+
+    private static String str(Object o) {
+        return o == null || "null".equals(String.valueOf(o)) ? "" : String.valueOf(o); //NOI18N
+    }
+
+    /**
+     * @return the ids of the invoices with recorded payments
+     */
+    private Set<Integer> paidInParts() {
+        Set<Integer> s = new HashSet<Integer>();
+        if (!mpv5.db.common.DatabaseUpdater.hasTable("payments")) { //NOI18N
+            return s;
+        }
+        try {
+            mpv5.db.common.ReturnValue rv = QueryHandler.instanceOf().clone(Context.getInvoice()).freeSelectQuery(
+                    "SELECT DISTINCT itemsids FROM payments", mpv5.usermanagement.MPSecurityManager.VIEW, null); //NOI18N
+            if (rv != null && rv.hasData()) {
+                for (Object[] r : rv.getData()) {
+                    s.add(Integer.valueOf(String.valueOf(r[0])));
+                }
             }
         } catch (Exception e) {
-            Log.Debug(e);
-            exportedFile = null;
-            exportResult.setText(Messages.JOURNAL_EXPORT_FAILED + ": " + e.getMessage());
-            exportResult.setCursor(Cursor.getDefaultCursor());
+            Log.Debug(this, e);
         }
+        return s;
+    }
+
+    /**
+     * The payments received in the period (on invoices of the filters):
+     * income on the pay date, net and tax in the proportion of the invoice
+     */
+    private List<Entry> payments(Filter f, Set<Integer> groupIds, Set<Integer> paidInParts) {
+        List<Entry> rows = new ArrayList<Entry>();
+        if (paidInParts.isEmpty()) {
+            return rows;
+        }
+        for (mpv5.handler.Payments.Payment p : mpv5.handler.Payments.between(f.time.getStart(), f.time.getEnd())) {
+            Item inv = mpv5.handler.Payments.invoice(p.invoice);
+            if (inv == null
+                    || (f.contact != null && inv.__getContactsids() != f.contact.__getIDS())
+                    || (!groupIds.isEmpty() && !groupIds.contains(inv.__getGroupsids()))
+                    || (!f.accounts.isEmpty() && !f.accounts.contains(inv.__getAccountsids()))
+                    || (f.user != null && inv.__getIntaddedby() != f.user.__getIDS())) {
+                continue;
+            }
+            BigDecimal gross = inv.getGrossAmount();
+            BigDecimal net = gross.signum() == 0 ? p.amount
+                    : p.amount.multiply(inv.__getNetvalue().subtract(inv.__getDiscountvalue())).divide(gross, 2, java.math.RoundingMode.HALF_UP);
+            Entry e = new Entry();
+            e.obj = inv;
+            e.itemId = inv.__getIDS();
+            try {
+                Contact k = inv.getContact();
+                e.contact = k.__getCname();
+                e.prename = k.__getPrename();
+                e.street = k.__getStreet();
+                e.city = k.__getCity();
+                e.country = k.__getCountry();
+            } catch (Exception ex) {
+                Log.Debug(this, ex.getMessage());
+            }
+            try {
+                e.account = inv.getAccount().__getCname();
+            } catch (Exception ex) {
+                Log.Debug(this, ex.getMessage());
+            }
+            e.group = inv.getGroup() == null ? "" : inv.getGroup().__getCname();
+            e.date = p.date;
+            e.number = inv.__getCnumber();
+            e.type = Constants.TYPE_PAYMENT;
+            e.status = Item.STATUS_PAID;
+            e.net = net.setScale(2, java.math.RoundingMode.HALF_UP);
+            e.gross = p.amount.setScale(2, java.math.RoundingMode.HALF_UP);
+            e.tax = e.gross.subtract(e.net);
+            e.description = p.description;
+            rows.add(e);
+        }
+        return rows;
+    }
+
+    /**
+     * Shows a loaded journal
+     */
+    private void show(Loaded l) {
+        entries = l.entries;
+        totals = l.totals;
+        Object[][] d = new Object[entries.size()][];
+        for (int i = 0; i < d.length; i++) {
+            d[i] = row(entries.get(i));
+        }
+        jTable1.setModel(new MPTableModel(d, Headers.JOURNAL.getValue(),
+                new Class[]{DatabaseObject.class, String.class, String.class, String.class, String.class, String.class, Date.class, String.class,
+                    String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class}));
+        applyFind();
+
+        Totals t = totals;
+        revenueNetto.setText(FormatNumber.formatDezimal(t.incomeNet));
+        revenueTax.setText(FormatNumber.formatDezimal(t.incomeTax));
+        revenueBrut.setText(FormatNumber.formatDezimal(t.incomeGross));
+        expNetto.setText(FormatNumber.formatDezimal(t.expenseNet));
+        expTax.setText(FormatNumber.formatDezimal(t.expenseTax));
+        expBrut.setText(FormatNumber.formatDezimal(t.expenseGross));
+        profitNetto.setText(FormatNumber.formatDezimal(t.profitNet()));
+        profitTax.setText(FormatNumber.formatDezimal(t.profitTax()));
+        profitBrut.setText(FormatNumber.formatDezimal(t.profitGross()));
+        openReceivables.setText(FormatNumber.formatDezimal(t.openReceivables));
+        openPayables.setText(FormatNumber.formatDezimal(t.openPayables));
+        volumeDiscount.setText(FormatNumber.formatDezimal(t.discount));
+        volumeNetto.setText(FormatNumber.formatDezimal(t.volumeNet));
+        taxVolume.setText(FormatNumber.formatDezimal(t.volumeTax));
+        volumeBrutto.setText(FormatNumber.formatDezimal(t.volumeGross));
+        taxRates.setText(rates(Messages.JOURNAL_TAX_RATES_INCOME.toString(), t.incomeByRate)
+                + "     " + rates(Messages.JOURNAL_TAX_RATES_EXPENSES.toString(), t.expensesByRate));
+
+        JournalAdviserPackage.EInvoiceCheck c = l.check;
+        if (c == null || c.invoices == 0) {
+            einvoiceCheck.setText(" ");
+        } else {
+            einvoiceCheck.setText(String.format(Messages.JOURNAL_EINVOICE_CHECK.toString(), c.b2b, c.b2bEInvoice, c.b2b - c.b2bEInvoice));
+            einvoiceCheck.setForeground(c.b2bWithoutEInvoice.isEmpty() ? ModernTheme.muted() : Applets.DANGER);
+        }
+    }
+
+    private static String rates(String label, Map<Integer, BigDecimal[]> m) {
+        if (m.isEmpty()) {
+            return label + " -";
+        }
+        StringBuilder b = new StringBuilder(label);
+        boolean first = true;
+        for (Map.Entry<Integer, BigDecimal[]> r : m.entrySet()) {
+            b.append(first ? " " : "  ·  ");
+            b.append(r.getKey() == JournalCalc.MIXED ? Messages.JOURNAL_TAX_RATE_MIXED.toString() : r.getKey() + " %");
+            b.append(": ").append(FormatNumber.formatDezimal(r.getValue()[0])).append(" / ").append(FormatNumber.formatDezimal(r.getValue()[1]));
+            first = false;
+        }
+        return b.toString();
+    }
+
+    /**
+     * @param e
+     * @return the table row (the columns of {@link Headers#JOURNAL})
+     */
+    private static Object[] row(Entry e) {
+        String type;
+        switch (e.type) {
+            case Constants.TYPE_REVENUE:
+                type = Messages.TYPE_REVENUE.toString();
+                break;
+            case Constants.TYPE_EXPENSE:
+                type = Messages.TYPE_EXPENSE.toString();
+                break;
+            case Constants.TYPE_PAYMENT:
+                type = Messages.TYPE_PAYMENT.toString();
+                break;
+            default:
+                type = Item.getTypeString(e.type);
+        }
+        String status;
+        if (e.type == Constants.TYPE_EXPENSE) {
+            status = e.status == JournalCalc.EXPENSE_PAID ? Messages.STATUS_PAID.toString() : Messages.STATUS_UNPAID.toString();
+        } else {
+            status = Item.getStatusString(e.status);
+        }
+        return new Object[]{e.obj, e.contact, e.prename, e.street, e.city, e.country, e.date, e.group, e.account, e.number, type, status,
+            FormatNumber.formatLokalCurrency(e.net), FormatNumber.formatLokalCurrency(e.tax), FormatNumber.formatLokalCurrency(e.gross),
+            FormatNumber.formatLokalCurrency(e.effect), FormatNumber.formatLokalCurrency(e.discount), e.description};
+    }
+
+    /**
+     * Filters the rows by the text of the search field
+     */
+    private void applyFind() {
+        if (!(jTable1.getRowSorter() instanceof TableRowSorter)) {
+            count.setText(String.format(Messages.JOURNAL_COUNT.toString(), entries.size()));
+            return;
+        }
+        @SuppressWarnings("unchecked")
+        TableRowSorter<TableModel> s = (TableRowSorter<TableModel>) jTable1.getRowSorter();
+        String text = find.getText().trim();
+        if (text.isEmpty()) {
+            s.setRowFilter(null);
+            count.setText(String.format(Messages.JOURNAL_COUNT.toString(), entries.size()));
+        } else {
+            s.setRowFilter(RowFilter.regexFilter("(?i)" + java.util.regex.Pattern.quote(text))); //NOI18N
+            count.setText(String.format(Messages.JOURNAL_COUNT_FILTERED.toString(), jTable1.getRowCount(), entries.size()));
+        }
+    }
+
+    @Override
+    public void refresh() {
+        setData();
+    }
+
+    @Override
+    public void flush() {
+        jTable1.setModel(new DefaultTableModel());
+    }
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Export">
+    private JPopupMenu exportMenu() {
+        JPopupMenu m = new JPopupMenu();
+        m.add(item(Messages.JOURNAL_EXPORT_ADVISER, Messages.JOURNAL_EXPORT_ADVISER_TIP, () -> exportAdviser()));
+        m.addSeparator();
+        m.add(item(Messages.JOURNAL_EXPORT_CSV, null, () -> exportTable(true)));
+        m.add(item(Messages.JOURNAL_EXPORT_HTML, null, () -> exportTable(false)));
+        m.add(item(Messages.JOURNAL_EXPORT_TEMPLATE_PDF, null, () -> exportTemplate(true)));
+        m.add(item(Messages.JOURNAL_EXPORT_TEMPLATE_ODT, null, () -> exportTemplate(false)));
+        m.addSeparator();
+        m.add(item(Messages.JOURNAL_EXPORT_PRINT, null, () -> {
+            try {
+                jTable1.print();
+            } catch (Exception e) {
+                failed(e);
+            }
+        }));
+        return m;
+    }
+
+    private static JMenuItem item(Messages text, Messages tip, Runnable r) {
+        JMenuItem i = new JMenuItem(text.toString());
+        if (tip != null) {
+            i.setToolTipText("<html><div style='width:360px'>" + tip + "</div>"); //NOI18N
+        }
+        i.addActionListener(e -> r.run());
+        return i;
+    }
+
+    private void failed(Exception e) {
+        Log.Debug(e);
+        exportedFile = null;
+        exportResult.setText(Messages.JOURNAL_EXPORT_FAILED + ": " + e.getMessage());
+        exportResult.setCursor(Cursor.getDefaultCursor());
+    }
+
+    /**
+     * CSV (semicolon, for Excel) or HTML of the table as shown (sorted,
+     * searched, columns in their order)
+     *
+     * @param csv
+     */
+    private void exportTable(boolean csv) {
+        try {
+            String ext = csv ? "csv" : "html"; //NOI18N
+            DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY, "journal-" + DateConverter.getTodayFileDate() + "." + ext); //NOI18N
+            if (!d.saveFile()) {
+                return;
+            }
+            File f = d.getFile();
+            if (csv) {
+                StringBuilder b = new StringBuilder();
+                for (int c = 0; c < jTable1.getColumnCount(); c++) {
+                    b.append(c > 0 ? ";" : "").append(JournalAdviserPackage.cell(jTable1.getColumnName(c)));
+                }
+                b.append("\r\n");
+                for (int r = 0; r < jTable1.getRowCount(); r++) {
+                    Entry e = entries.get(jTable1.convertRowIndexToModel(r));
+                    for (int c = 0; c < jTable1.getColumnCount(); c++) {
+                        int mc = jTable1.convertColumnIndexToModel(c);
+                        Object v;
+                        switch (mc) {
+                            case 6:
+                                v = e.date == null ? "" : DateConverter.getDefDateString(e.date);
+                                break;
+                            case 12:
+                                v = JournalAdviserPackage.amount(e.net);
+                                break;
+                            case 13:
+                                v = JournalAdviserPackage.amount(e.tax);
+                                break;
+                            case 14:
+                                v = JournalAdviserPackage.amount(e.gross);
+                                break;
+                            case COL_EFFECT:
+                                v = JournalAdviserPackage.amount(e.effect);
+                                break;
+                            case 16:
+                                v = JournalAdviserPackage.amount(e.discount);
+                                break;
+                            default:
+                                v = jTable1.getModel().getValueAt(jTable1.convertRowIndexToModel(r), mc);
+                        }
+                        b.append(c > 0 ? ";" : "").append(JournalAdviserPackage.cell(v));
+                    }
+                    b.append("\r\n");
+                }
+                try (java.io.OutputStream out = java.nio.file.Files.newOutputStream(f.toPath())) {
+                    JournalAdviserPackage.writeCsv(out, b.toString());
+                }
+            } else {
+                f = new mpv5.utils.files.TableHtmlWriter(jTable1, f, jTable1.getShowHorizontalLines(), jTable1.getShowVerticalLines()).createHtml();
+            }
+            showExported(f);
+        } catch (Exception e) {
+            failed(e);
+        }
+    }
+
+    /**
+     * @return the filters as text (for the summary of the package)
+     */
+    private List<String> filterLines() {
+        List<String> l = new ArrayList<String>();
+        l.add(Messages.JOURNAL_VIEW + ": " + view.getSelectedItem());
+        List<String> types = new ArrayList<String>();
+        for (JCheckBox b : new JCheckBox[]{incInvoices, incCredits, incDeposits, incPartPayments, incRevenues, incOrders, incOffers, incExpenses}) {
+            if (b.isSelected() && b.isVisible()) {
+                types.add(b.getText());
+            }
+        }
+        l.add(Messages.JOURNAL_INCOME + ": " + String.join(", ", types) + " / " + Messages.JOURNAL_STATUS + " " + incomeStatus.getSelectedItem()
+                + " / " + (incomeByPay.isSelected() ? incomeByPay.getText() : incomeByDoc.getText()));
+        if (incExpenses.isSelected()) {
+            l.add(Messages.JOURNAL_EXPENSES + ": " + Messages.JOURNAL_STATUS + " " + expenseStatus.getSelectedItem()
+                    + " / " + (expenseByPay.isSelected() ? expenseByPay.getText() : expenseByDoc.getText()));
+        }
+        l.add(Messages.JOURNAL_GROUPS + ": " + (groups.getSelected().isEmpty() ? Messages.ALL.toString() : groups.getSelected().toString())
+                + (includechildgroups.isSelected() ? " (+)" : ""));
+        l.add(Messages.JOURNAL_ACCOUNTS + ": " + (accounts.getSelected().isEmpty() ? Messages.ALL.toString() : accounts.getSelected().toString()));
+        l.add(Messages.JOURNAL_USER + ": " + users.getSelectedItem());
+        if (dataOwner != null) {
+            l.add(String.valueOf(dataOwner.__getCname()));
+        }
+        return l;
+    }
+
+    /**
+     * The ZIP for the tax adviser: journal (CSV), summary, receipts and
+     * e-invoices of the loaded journal
+     */
+    private void exportAdviser() {
+        vTimeframe t = timeframeChooser1.getTime();
+        String name = "steuerberater-" + new java.text.SimpleDateFormat("yyyyMMdd").format(t.getStart()) + "-" //NOI18N
+                + new java.text.SimpleDateFormat("yyyyMMdd").format(t.getEnd()) + ".zip"; //NOI18N
+        DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY, name);
+        if (!d.saveFile()) {
+            return;
+        }
+        File f = d.getFile();
+        final File target = f.getName().toLowerCase().endsWith(".zip") ? f : new File(f.getParentFile(), f.getName() + ".zip"); //NOI18N
+        final JournalAdviserPackage p = new JournalAdviserPackage(new ArrayList<Entry>(entries), totals, t.getStart(), t.getEnd(), filterLines());
+        exportedFile = null;
+        exportResult.setText(Messages.JOURNAL_EXPORT_RUNNING.toString());
+        exportResult.setCursor(Cursor.getDefaultCursor());
+        new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                p.write(target);
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                try {
+                    get();
+                    showExported(target);
+                    String msg = String.format(Messages.JOURNAL_ADVISER_DONE.toString(), entries.size(), p.getReceipts(), p.getEInvoices());
+                    if (!p.getProblems().isEmpty()) {
+                        Popup.notice(p.getProblems(), msg);
+                    } else {
+                        YabsViewProxy.instance().addMessage(msg);
+                    }
+                } catch (Exception e) {
+                    failed(e);
+                }
+            }
+        }.execute();
     }
 
     /**
@@ -1761,7 +1544,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             }
             exportTemplate(pdf, target);
         } else {
-            Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")"); //NOI18N
+            Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + User.getCurrentUser() + ")"); //NOI18N
         }
     }
 
@@ -1772,102 +1555,174 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
      * @param target
      */
     void exportTemplate(final boolean pdf, final File target) {
-        if (journalOrContactTemplate != null) {
-            exportedFile = null;
-            exportResult.setText(Messages.JOURNAL_EXPORT_RUNNING.toString());
-            exportResult.setCursor(Cursor.getDefaultCursor());
-            final Waiter save = Export.wait(target);
-            Waiter pr = new Waiter() {
-                @Override
-                public void set(Object object, Exception exception) throws Exception {
-                    save.set(object, exception);
-                    showExported(exception == null ? target : null);
-                }
-            };
-            TreeMap<String, Object> map = new TreeMap<String, Object>();
-            map.put("journal.netvalue", volumeNetto.getText()); //NOI18N
-            map.put("journal.taxvalue", taxVolume.getText()); //NOI18N
-            map.put("journal.grosvalue", volumeBrutto.getText()); //NOI18N
-            map.put("journal.revenuevalue", revenueNetto.getText()); //NOI18N
-            map.put("journal.revenuetax", revenueTax.getText()); //NOI18N
-            map.put("journal.revenuegrosvalue", revenueBrut.getText()); //NOI18N
-            map.put("journal.expensevalue", expNetto.getText()); //NOI18N
-            map.put("journal.expensetax", expTax.getText()); //NOI18N
-            map.put("journal.expensegrosvalue", expBrut.getText()); //NOI18N
-            map.put("journal.profitvalue", profitNetto.getText());             //NOI18N
-            map.put("journal.profittax", profitTax.getText());             //NOI18N
-            map.put("journal.discountvalue", volumeDiscount.getText()); //NOI18N
-            map.put("journal.datenow", DateConverter.getDefDateString(new Date())); //NOI18N
-            map.put("journal.datefrom", DateConverter.getDefDateString(timeframeChooser1.getTime().getStart())); //NOI18N
-            map.put("journal.dateto", DateConverter.getDefDateString(timeframeChooser1.getTime().getEnd())); //NOI18N
-            if (groups.getSelectedItem().isValid()) {
-                try {
-                    Group g = (Group) Group.getObject(Context.getGroup(), Integer.valueOf(groups.getSelectedItem().getId()));
-                    map.put("journal.group", g.__getCname()); //NOI18N
-                    map.put("journal.childgroups", String.valueOf(g.getChildGroups())); //NOI18N
-                } catch (Exception nodataFoundException) {
-                }
+        if (journalOrContactTemplate == null) {
+            return;
+        }
+        exportedFile = null;
+        exportResult.setText(Messages.JOURNAL_EXPORT_RUNNING.toString());
+        exportResult.setCursor(Cursor.getDefaultCursor());
+        final Waiter save = Export.wait(target);
+        Waiter pr = new Waiter() {
+            @Override
+            public void set(Object object, Exception exception) throws Exception {
+                save.set(object, exception);
+                showExported(exception == null ? target : null);
             }
-            try {
-                Object user = users.getSelectedValue();
-                map.put("journal.user", user == null || String.valueOf(user).trim().isEmpty() || "null".equals(String.valueOf(user)) ? Messages.ALL.toString() : String.valueOf(user)); //NOI18N
-                List<Object> accounts = Arrays.asList(jList1.getSelectedValues());
-                map.put("journal.accounts", accounts.isEmpty() ? Messages.ALL.toString()
-                        : accounts.toString().substring(1, accounts.toString().length() - 1)); //NOI18N
-            } catch (Exception e) {
-                Log.Debug(e);
-                throw e;
-            }
-
-            journalOrContactTemplate.injectData(map);
-            //rows as sorted on screen, columns in the order of the model (not as moved
-            //on screen): the column format of the template refers to them
-            MPTableModel xx = (MPTableModel) jTable1.getModel();
-            Object[][] xxd = new Object[jTable1.getRowCount()][xx.getColumnCount()];
-            for (int i = 0; i < xxd.length; i++) {
-                for (int j = 0; j < xxd[i].length; j++) {
-                    xxd[i][j] = xx.getValueAt(jTable1.convertRowIndexToModel(i), j);
-                }
-            }
-            Object[][] d = new Object[xxd.length][];
-            for (int i = 0; i < xxd.length; i++) {
-                Object[] objects = xxd[i];
-                Object[] nd = new Object[objects.length];
-                for (int j = 1; j < objects.length; j++) {
-                    Object object = objects[j];
-                    if (object instanceof Date) {
-                        nd[j - 1] = DateConverter.getDefDateString((Date) object);
-                    } else {
-                        //empty, not the field name (e.g. the name of an expense)
-                        nd[j - 1] = object == null ? "" : object;
+        };
+        TreeMap<String, Object> map = new TreeMap<String, Object>();
+        map.put("journal.netvalue", volumeNetto.getText()); //NOI18N
+        map.put("journal.taxvalue", taxVolume.getText()); //NOI18N
+        map.put("journal.grosvalue", volumeBrutto.getText()); //NOI18N
+        map.put("journal.revenuevalue", revenueNetto.getText()); //NOI18N
+        map.put("journal.revenuetax", revenueTax.getText()); //NOI18N
+        map.put("journal.revenuegrosvalue", revenueBrut.getText()); //NOI18N
+        map.put("journal.expensevalue", expNetto.getText()); //NOI18N
+        map.put("journal.expensetax", expTax.getText()); //NOI18N
+        map.put("journal.expensegrosvalue", expBrut.getText()); //NOI18N
+        map.put("journal.profitvalue", profitNetto.getText()); //NOI18N
+        map.put("journal.profittax", profitTax.getText()); //NOI18N
+        map.put("journal.profitgrosvalue", profitBrut.getText()); //NOI18N
+        map.put("journal.discountvalue", volumeDiscount.getText()); //NOI18N
+        map.put("journal.openreceivables", openReceivables.getText()); //NOI18N
+        map.put("journal.openpayables", openPayables.getText()); //NOI18N
+        map.put("journal.datenow", DateConverter.getDefDateString(new Date())); //NOI18N
+        map.put("journal.datefrom", DateConverter.getDefDateString(timeframeChooser1.getTime().getStart())); //NOI18N
+        map.put("journal.dateto", DateConverter.getDefDateString(timeframeChooser1.getTime().getEnd())); //NOI18N
+        if (!groups.getSelected().isEmpty()) {
+            map.put("journal.group", join(groups.getSelected())); //NOI18N
+            if (includechildgroups.isSelected()) {
+                List<Object> children = new ArrayList<Object>();
+                for (Object g : groups.getSelected()) {
+                    try {
+                        children.addAll(((Group) g).getChildGroups());
+                    } catch (NodataFoundException e) {
+                        Log.Debug(this, e.getMessage());
                     }
                 }
-                d[i] = nd;
+                map.put("journal.childgroups", String.valueOf(children)); //NOI18N
             }
+        }
+        map.put("journal.user", users.getSelectedItem() instanceof User ? String.valueOf(users.getSelectedItem()) : Messages.ALL.toString()); //NOI18N
+        map.put("journal.accounts", accounts.getSelected().isEmpty() ? Messages.ALL.toString() : join(accounts.getSelected())); //NOI18N
 
-            journalOrContactTemplate.setContextName(Messages.TYPE_JOURNAL.toString());
-            journalOrContactTemplate.injectTable(ODTFile2.KEY_TABLE + "1", new MPTableModel(d));
-            if (pdf) {
-                new Job(Export.createFile(journalOrContactTemplate, dataOwner), pr).execute();
-            } else {
-                new Job(Export.sourceFile(journalOrContactTemplate, dataOwner), pr).execute();
+        journalOrContactTemplate.injectData(map);
+        //rows as sorted on screen, columns in the order of the model (not as moved
+        //on screen): the column format of the template refers to them
+        TableModel xx = jTable1.getModel();
+        Object[][] d = new Object[jTable1.getRowCount()][];
+        for (int i = 0; i < d.length; i++) {
+            Object[] nd = new Object[xx.getColumnCount()];
+            for (int j = 1; j < xx.getColumnCount(); j++) {
+                Object object = xx.getValueAt(jTable1.convertRowIndexToModel(i), j);
+                if (object instanceof Date) {
+                    nd[j - 1] = DateConverter.getDefDateString((Date) object);
+                } else {
+                    //empty, not the field name (e.g. the name of an expense)
+                    nd[j - 1] = object == null ? "" : object;
+                }
             }
+            d[i] = nd;
+        }
+        journalOrContactTemplate.setContextName(Messages.TYPE_JOURNAL.toString());
+        journalOrContactTemplate.injectTable(ODTFile2.KEY_TABLE + "1", new MPTableModel(d)); //NOI18N
+        if (pdf) {
+            new Job(Export.createFile(journalOrContactTemplate, dataOwner), pr).execute();
+        } else {
+            new Job(Export.sourceFile(journalOrContactTemplate, dataOwner), pr).execute();
         }
     }
 
-    private void loadTemplate() {
-        Runnable runnable = new Runnable() {
+    private static String join(List<Object> l) {
+        String s = l.toString();
+        return s.substring(1, s.length() - 1);
+    }
 
-            @Override
-            public void run() {
-                if (dataOwner != null) {
-                    journalOrContactTemplate = TemplateHandler.loadTemplate(Long.valueOf(dataOwner.templateGroupIds()), Constants.TYPE_CONTACT);
-                } else {
-                    journalOrContactTemplate = TemplateHandler.loadTemplate(Long.valueOf(User.getCurrentUser().__getGroupsids()), Constants.TYPE_JOURNAL);
+    private void loadTemplate() {
+        new Thread(() -> {
+            if (dataOwner != null) {
+                journalOrContactTemplate = TemplateHandler.loadTemplate(Long.valueOf(dataOwner.templateGroupIds()), Constants.TYPE_CONTACT);
+            } else {
+                journalOrContactTemplate = TemplateHandler.loadTemplate(Long.valueOf(User.getCurrentUser().__getGroupsids()), Constants.TYPE_JOURNAL);
+            }
+        }, "journal-template").start(); //NOI18N
+    }
+    // </editor-fold>
+
+    // <editor-fold defaultstate="collapsed" desc="Table actions">
+    private DatabaseObject objectAt(int viewRow) {
+        Object o = jTable1.getModel().getValueAt(jTable1.convertRowIndexToModel(viewRow), 0);
+        return o instanceof DatabaseObject ? (DatabaseObject) o : null;
+    }
+
+    private void setPopup() {
+        new TablePopUp(jTable1,
+                new String[]{Messages.DELETE.toString(),
+                    null, Messages.RELOAD.getValue(),
+                    null, Messages.EMAIL_SEND.getValue(),
+                    Messages.SEPA_DD_CREATE.getValue(),
+                    Messages.PDF_CREATE.getValue(),
+                    Messages.ODT_CREATE.getValue(),
+                    null, Messages.SET_STATUS_PAID.getValue()},
+                new java.awt.event.ActionListener[]{e -> delete(), null, e -> setData(), null, e -> email(), e -> sepa(),
+                    e -> export(true), e -> export(false), null, e -> setPaid()});
+    }
+
+    private void delete() {
+        if (Popup.Y_N_dialog(Messages.REALLY_DELETE2 + " (" + jTable1.getSelectedRowCount() + ")")) { //NOI18N
+            for (int row : jTable1.getSelectedRows()) {
+                try {
+                    DatabaseObject obj = objectAt(row);
+                    if (obj != null) {
+                        obj.delete();
+                    }
+                } catch (Exception exc) {
+                    Log.Debug(exc);
+                    Popup.error(exc);
                 }
             }
-        };
-        new Thread(runnable).start();
+            setData();
+        }
+    }
+
+    private void setPaid() {
+        if (Popup.Y_N_dialog(Messages.REALLY_CHANGE2 + " (" + jTable1.getSelectedRowCount() + ")")) { //NOI18N
+            for (int row : jTable1.getSelectedRows()) {
+                try {
+                    DatabaseObject obj = objectAt(row);
+                    if (obj instanceof Item) {
+                        Item dbi = (Item) obj;
+                        if (dbi.__getIntstatus() != Item.STATUS_PAID) {
+                            dbi.setIntstatus(Item.STATUS_PAID);
+                            dbi.save();
+                        }
+                    } else if (obj instanceof Expense) {
+                        Expense dbi = (Expense) obj;
+                        if (!dbi.__getIspaid()) {
+                            dbi.setIspaid(true);
+                            dbi.save();
+                        }
+                    }
+                } catch (Exception exc) {
+                    Log.Debug(exc);
+                    Popup.error(exc);
+                }
+            }
+            setData();
+        }
+    }
+
+    /**
+     * @return the selected unpaid invoices (no payments, no other records)
+     */
+    private Map<String, Object> selectedUnpaidInvoices() {
+        Map<String, Object> map = new HashMap<String, Object>();
+        for (int row : jTable1.getSelectedRows()) {
+            Entry e = entries.get(jTable1.convertRowIndexToModel(row));
+            if (e.obj instanceof Item && e.type == Constants.TYPE_INVOICE && ((Item) e.obj).__getIntstatus() != Item.STATUS_PAID) {
+                map.put(((Item) e.obj).__getCnumber(), e.obj);
+            }
+        }
+        return map;
     }
 
     /**
@@ -1878,14 +1733,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             Popup.notice(Messages.SELECT_AN_INVOICE);
             return;
         }
-        HashMap<String, Object> map = new HashMap<String, Object>();
-        for (int row : jTable1.getSelectedRows()) {
-            DatabaseObject obj = (DatabaseObject) jTable1.getModel().getValueAt(jTable1.convertRowIndexToModel(row), 0);
-            if (obj instanceof Item && obj.getContext().equals(contextInUse)
-                    && ((Item) obj).__getIntstatus() != Item.STATUS_PAID) {
-                map.put(((Item) obj).__getCnumber(), obj);
-            }
-        }
+        HashMap<String, Object> map = new HashMap<String, Object>(selectedUnpaidInvoices());
         if (map.isEmpty()) {
             Popup.notice(Messages.SEPA_DD_NOTHING);
             return;
@@ -1897,59 +1745,31 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             Popup.notice(problem);
             return;
         }
-        DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY, "sepa-lastschrift-" + java.time.LocalDate.now() + ".xml");
+        DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY, "sepa-lastschrift-" + LocalDate.now() + ".xml"); //NOI18N
         new Job(sepa, d).execute();
     }
 
     private void email() {
         if (jTable1.getSelectedRowCount() < 1) {
             Popup.notice(Messages.SELECT_AN_INVOICE);
-        } else {
-            YabsViewProxy.instance().setWaiting(true);
-            ArrayList<Item> items = new ArrayList<Item>();
-            for (int i = 0; i < jTable1.getSelectedRows().length; i++) {
-
-                int index = jTable1.convertRowIndexToModel(jTable1.getSelectedRows()[i]);
-                DatabaseObject obj = (DatabaseObject) jTable1.getModel().getValueAt(index, 0);
-                if (obj.getContext().equals(contextInUse)) {
-                    Item item = (Item) obj;
-                    if (item.__getIntstatus() != Item.STATUS_PAID) {
-                        items.add(item);
-                    }else{
-                        mpv5.YabsViewProxy.instance().addMessage("No email send for already paid invoice: " + item.getCname(), Color.YELLOW);
-                    }
-                }
-            }
-
-            HashMap<String, Object> map = new HashMap<String, Object>();
-            for (int i = 0; i < items.size(); i++) {
-                Item item = items.get(i);
-                map.put(item.__getCnumber(), item);
-            }
-
-            EmailBatch dta = new EmailBatch(map);
-            Job job = new Job(dta, new Waiter() {
-                @Override
-                public void set(Object object, Exception exceptions) throws Exception {
-                    YabsViewProxy.instance().setWaiting(true);
-                    if (exceptions != null) {
-                        Notificator.raiseNotification(exceptions, false);
-                        Log.Debug(exceptions);
-                    }
-                    YabsViewProxy.instance().setWaiting(false);
-                }
-            }, "Emails: " + Messages.DONE); //NOI18N
-            job.execute();
-
+            return;
         }
-    }
-
-    private void pdf() {
-        export(true);
-    }
-
-    private void odt() {
-        export(false);
+        HashMap<String, Object> map = new HashMap<String, Object>(selectedUnpaidInvoices());
+        if (map.isEmpty()) {
+            Popup.notice(Messages.SELECT_AN_INVOICE);
+            return;
+        }
+        YabsViewProxy.instance().setWaiting(true);
+        new Job(new EmailBatch(map), new Waiter() {
+            @Override
+            public void set(Object object, Exception exceptions) throws Exception {
+                if (exceptions != null) {
+                    Notificator.raiseNotification(exceptions, false);
+                    Log.Debug(exceptions);
+                }
+                YabsViewProxy.instance().setWaiting(false);
+            }
+        }, "Emails: " + Messages.DONE).execute(); //NOI18N
     }
 
     /**
@@ -1966,16 +1786,17 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         }
         final List<DatabaseObject> docs = new ArrayList<DatabaseObject>();
         List<String> noTemplate = new ArrayList<String>();
-        java.util.Set<String> dirs = new java.util.TreeSet<String>();
+        Set<String> dirs = new java.util.TreeSet<String>();
+        Set<DatabaseObject> seen = new HashSet<DatabaseObject>();
         for (int row : jTable1.getSelectedRows()) {
-            Object obj = jTable1.getModel().getValueAt(jTable1.convertRowIndexToModel(row), 0);
-            if (!(obj instanceof Templateable)) {
+            Entry e = entries.get(jTable1.convertRowIndexToModel(row));
+            if (!(e.obj instanceof Templateable) || e.type == Constants.TYPE_PAYMENT || !seen.add((DatabaseObject) e.obj)) {
                 continue;
             }
-            DatabaseObject dob = (DatabaseObject) obj;
+            DatabaseObject dob = (DatabaseObject) e.obj;
             //loads (and caches) the template; the export checks the cache
             if (TemplateHandler.loadTemplate((Templateable) dob) == null) {
-                noTemplate.add(dob.__getCname() + " (" + TemplateHandler.getName(((Templateable) dob).templateType()) + ")");
+                noTemplate.add(dob.__getCname() + " (" + TemplateHandler.getName(((Templateable) dob).templateType()) + ")"); //NOI18N
                 continue;
             }
             docs.add(dob);
@@ -1987,9 +1808,9 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         if (docs.isEmpty()) {
             return;
         }
-        StringBuilder q = new StringBuilder(String.format(Messages.JOURNAL_EXPORT_CONFIRM.toString(), docs.size(), pdf ? "PDF" : "ODT"));
+        StringBuilder q = new StringBuilder(String.format(Messages.JOURNAL_EXPORT_CONFIRM.toString(), docs.size(), pdf ? "PDF" : "ODT")); //NOI18N
         for (String d : dirs) {
-            q.append("\n  ").append(d);
+            q.append("\n  ").append(d); //NOI18N
         }
         if (!Popup.Y_N_dialog(q.toString())) {
             return;
@@ -2002,15 +1823,18 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                     dob.toOdt(false);
                 }
             }
-            mpv5.YabsViewProxy.instance().addMessage(docs.size() + (pdf ? " PDF " : " ODT ") + Messages.SAVED);
-        }, "journal-export").start();
+            YabsViewProxy.instance().addMessage(docs.size() + (pdf ? " PDF " : " ODT ") + Messages.SAVED); //NOI18N
+        }, "journal-export").start(); //NOI18N
     }
 
     private void filter() {
+        if (dataOwner == null) {
+            return;
+        }
         if (filterinvoice.isSelected()) {
             QueryCriteria2 p = new QueryCriteria2();
-            p.and(new QueryParameter(contextInUse, "intstatus", Item.STATUS_PAID, QueryParameter.NOTEQUAL)); //NOI18N
-            jTree1.setModel(new MPTreeModel(dataOwner, contextInUse, p));
+            p.and(new QueryParameter(Context.getInvoice(), "intstatus", Item.STATUS_PAID, QueryParameter.NOTEQUAL)); //NOI18N
+            jTree1.setModel(new MPTreeModel(dataOwner, Context.getInvoice(), p));
         } else if (filteroffers.isSelected()) {
             QueryCriteria2 p = new QueryCriteria2();
             p.and(new QueryParameter(Context.getOffer(), "intstatus", Item.STATUS_FINISHED, QueryParameter.NOTEQUAL)); //NOI18N
@@ -2019,8 +1843,153 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             QueryCriteria2 p = new QueryCriteria2();
             p.and(new QueryParameter(Context.getOrder(), "intstatus", Item.STATUS_FINISHED, QueryParameter.NOTEQUAL)); //NOI18N
             jTree1.setModel(new MPTreeModel(dataOwner, Context.getOrder(), p));
-        } else if (filternone.isSelected()) {
+        } else {
             jTree1.setModel(new MPTreeModel(dataOwner, null, null));
+        }
+    }
+    // </editor-fold>
+
+    /**
+     * A searchable multiple-selection list (groups, accounts): a search field,
+     * the list and a hint; nothing selected means all. The selection survives
+     * the search.
+     */
+    static final class SelectionList extends JPanel {
+
+        private static final long serialVersionUID = 1L;
+        private final JTextField search = new JTextField();
+        private final JList<Object> list = new JList<Object>(new DefaultListModel<Object>());
+        private final JScrollPane scroll = new JScrollPane(list);
+        private final JLabel state = new JLabel(" ");
+        private final JButton clear = new JButton(Messages.JOURNAL_SELECTION_CLEAR.toString());
+        private final List<Object> all = new ArrayList<Object>();
+        private final Set<Object> selected = new LinkedHashSet<Object>();
+        private final String hint;
+        private boolean filling;
+        private Runnable onChange;
+
+        SelectionList(String hint) {
+            super(new BorderLayout(0, ModernTheme.px(4)));
+            this.hint = hint;
+            setOpaque(false);
+            ModernTheme.roomy(search);
+            search.setToolTipText(Messages.JOURNAL_FIND.toString());
+            search.putClientProperty("JTextField.placeholderText", Messages.JOURNAL_FIND.toString()); //NOI18N
+            list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+            list.setFont(ModernTheme.font(0, Font.PLAIN));
+            list.setToolTipText(hint);
+            list.addListSelectionListener(e -> {
+                if (filling || e.getValueIsAdjusting()) {
+                    return;
+                }
+                DefaultListModel<Object> m = (DefaultListModel<Object>) list.getModel();
+                for (int i = 0; i < m.size(); i++) {
+                    if (list.isSelectedIndex(i)) {
+                        selected.add(m.get(i));
+                    } else {
+                        selected.remove(m.get(i));
+                    }
+                }
+                changed();
+            });
+            scroll.setBorder(BorderFactory.createLineBorder(ModernTheme.border()));
+            search.getDocument().addDocumentListener(new DocumentListener() {
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                    fill();
+                }
+
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                    fill();
+                }
+
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    fill();
+                }
+            });
+            clear.setBorderPainted(false);
+            clear.setContentAreaFilled(false);
+            clear.setFocusPainted(false);
+            clear.setForeground(ModernTheme.accent());
+            clear.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            clear.setMargin(new Insets(0, 0, 0, 0));
+            clear.addActionListener(e -> {
+                selected.clear();
+                fill();
+                changed();
+            });
+            state.setForeground(ModernTheme.muted());
+            state.setFont(ModernTheme.font(-1, Font.PLAIN));
+            JPanel bottom = new JPanel(new BorderLayout());
+            bottom.setOpaque(false);
+            bottom.add(state, BorderLayout.CENTER);
+            bottom.add(clear, BorderLayout.EAST);
+            add(search, BorderLayout.NORTH);
+            add(scroll, BorderLayout.CENTER);
+            add(bottom, BorderLayout.SOUTH);
+            updateState();
+        }
+
+        void setListSize(Dimension d) {
+            scroll.setPreferredSize(d);
+        }
+
+        void setOnChange(Runnable r) {
+            onChange = r;
+        }
+
+        void setItems(List<Object> items) {
+            all.clear();
+            all.addAll(items);
+            selected.retainAll(all);
+            fill();
+        }
+
+        /**
+         * @return the selected items, empty: all
+         */
+        List<Object> getSelected() {
+            return new ArrayList<Object>(selected);
+        }
+
+        private void fill() {
+            filling = true;
+            try {
+                String q = search.getText().trim().toLowerCase();
+                DefaultListModel<Object> m = new DefaultListModel<Object>();
+                List<Integer> sel = new ArrayList<Integer>();
+                for (Object o : all) {
+                    if (q.isEmpty() || String.valueOf(o).toLowerCase().contains(q)) {
+                        if (selected.contains(o)) {
+                            sel.add(m.size());
+                        }
+                        m.addElement(o);
+                    }
+                }
+                list.setModel(m);
+                int[] idx = new int[sel.size()];
+                for (int i = 0; i < idx.length; i++) {
+                    idx[i] = sel.get(i);
+                }
+                list.setSelectedIndices(idx);
+            } finally {
+                filling = false;
+            }
+            updateState();
+        }
+
+        private void changed() {
+            updateState();
+            if (onChange != null) {
+                onChange.run();
+            }
+        }
+
+        private void updateState() {
+            state.setText(selected.isEmpty() ? hint : String.format(Messages.JOURNAL_SELECTED.toString(), selected.size()));
+            clear.setVisible(!selected.isEmpty());
         }
     }
 }
