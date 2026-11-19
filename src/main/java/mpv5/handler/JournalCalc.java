@@ -43,14 +43,10 @@ public final class JournalCalc {
      */
     public static final int EXPENSE_UNPAID = 2000;
     /**
-     * The tax rates the amounts are sorted to (percent); others are "mixed"
+     * Orders the rates; the unknown rate (null: a document without items)
+     * comes last
      */
-    public static final int[] RATES = {0, 5, 7, 16, 19};
-    /**
-     * Key of the amounts whose tax does not fit one rate (several rates in one
-     * document)
-     */
-    public static final int MIXED = -1;
+    public static final java.util.Comparator<BigDecimal> RATE_ORDER = java.util.Comparator.nullsLast(java.util.Comparator.<BigDecimal>naturalOrder());
 
     private JournalCalc() {
     }
@@ -95,6 +91,13 @@ public final class JournalCalc {
         public String group = "";
         public String account = "";
         public String description = "";
+        /**
+         * the amounts by tax rate as stored with the record (expenses and
+         * income: their rate; documents: their items, scaled to the document
+         * amounts): rate in percent (null: unknown) - {net, tax}. Empty: one
+         * amount of unknown rate.
+         */
+        public Map<BigDecimal, BigDecimal[]> rates = new TreeMap<BigDecimal, BigDecimal[]>(RATE_ORDER);
         /**
          * set by {@link #compute}: the effect on the result (net, income
          * positive, expenses negative), 0 if not counted
@@ -161,13 +164,13 @@ public final class JournalCalc {
         public BigDecimal openReceivables = BigDecimal.ZERO;
         public BigDecimal openPayables = BigDecimal.ZERO;
         /**
-         * counted income by rate: rate (or {@link #MIXED}) - {net, tax}
+         * counted income by rate: rate (null: unknown) - {net, tax}
          */
-        public final Map<Integer, BigDecimal[]> incomeByRate = new TreeMap<Integer, BigDecimal[]>();
+        public final Map<BigDecimal, BigDecimal[]> incomeByRate = new TreeMap<BigDecimal, BigDecimal[]>(RATE_ORDER);
         /**
-         * counted expenses by rate: rate (or {@link #MIXED}) - {net, tax}
+         * counted expenses by rate: rate (null: unknown) - {net, tax}
          */
-        public final Map<Integer, BigDecimal[]> expensesByRate = new TreeMap<Integer, BigDecimal[]>();
+        public final Map<BigDecimal, BigDecimal[]> expensesByRate = new TreeMap<BigDecimal, BigDecimal[]>(RATE_ORDER);
 
         public BigDecimal profitNet() {
             return incomeNet.subtract(expenseNet);
@@ -200,27 +203,101 @@ public final class JournalCalc {
     }
 
     /**
-     * The tax rate of an amount: the rate of {@link #RATES} the tax fits (half
-     * a cent per line tolerance: 0.3 percent points), else {@link #MIXED}
-     *
-     * @param net
-     * @param tax
-     * @return the rate in percent or {@link #MIXED}
+     * @param rate
+     * @return the rate as key: without trailing zeros (19.00 and 19 are the
+     * same), null stays null
      */
-    public static int rateOf(BigDecimal net, BigDecimal tax) {
-        if (tax == null || tax.signum() == 0) {
-            return 0;
+    public static BigDecimal rateKey(BigDecimal rate) {
+        return rate == null ? null : rate.stripTrailingZeros().scale() < 0 ? rate.setScale(0) : rate.stripTrailingZeros();
+    }
+
+    /**
+     * Splits an amount in the proportion of weights, in cents, so that the
+     * parts add up to the amount exactly (the remaining cents go to the parts
+     * with the largest remainders)
+     *
+     * @param total
+     * @param weights
+     * @return the parts, in the order of the weights
+     */
+    public static List<BigDecimal> distribute(BigDecimal total, List<BigDecimal> weights) {
+        List<BigDecimal> parts = new java.util.ArrayList<BigDecimal>();
+        if (weights.isEmpty()) {
+            return parts;
         }
-        if (net == null || net.signum() == 0) {
-            return MIXED;
+        BigDecimal sum = BigDecimal.ZERO;
+        for (BigDecimal w : weights) {
+            sum = sum.add(w);
         }
-        double r = tax.doubleValue() / net.doubleValue() * 100d;
-        for (int rate : RATES) {
-            if (Math.abs(r - rate) < 0.3d) {
-                return rate;
+        long cents = total.setScale(2, RoundingMode.HALF_UP).movePointRight(2).longValueExact();
+        if (sum.signum() == 0) {
+            //no proportion: all on the first part
+            parts.add(BigDecimal.valueOf(cents, 2));
+            for (int i = 1; i < weights.size(); i++) {
+                parts.add(BigDecimal.ZERO.setScale(2));
             }
+            return parts;
         }
-        return MIXED;
+        long[] base = new long[weights.size()];
+        BigDecimal[] rest = new BigDecimal[weights.size()];
+        long assigned = 0;
+        for (int i = 0; i < base.length; i++) {
+            BigDecimal exact = BigDecimal.valueOf(cents).multiply(weights.get(i)).divide(sum, 10, RoundingMode.HALF_UP);
+            base[i] = exact.setScale(0, RoundingMode.FLOOR).longValueExact();
+            rest[i] = exact.subtract(BigDecimal.valueOf(base[i]));
+            assigned += base[i];
+        }
+        long left = cents - assigned;
+        while (left != 0) {
+            int best = 0;
+            for (int i = 1; i < base.length; i++) {
+                if (left > 0 ? rest[i].compareTo(rest[best]) > 0 : rest[i].compareTo(rest[best]) < 0) {
+                    best = i;
+                }
+            }
+            base[best] += left > 0 ? 1 : -1;
+            rest[best] = rest[best].subtract(BigDecimal.valueOf(left > 0 ? 1 : -1));
+            left += left > 0 ? -1 : 1;
+        }
+        for (long b : base) {
+            parts.add(BigDecimal.valueOf(b, 2));
+        }
+        return parts;
+    }
+
+    /**
+     * The amounts by rate of a record: its net and tax (as stored) split in
+     * the proportion of the amounts of its lines (items) by rate
+     *
+     * @param net the stored net amount of the record
+     * @param tax the stored tax amount of the record
+     * @param lines rate - {net, tax} of the lines, may be empty
+     * @return rate - {net, tax}, adding up to net and tax exactly; empty if
+     * there are no lines
+     */
+    public static Map<BigDecimal, BigDecimal[]> split(BigDecimal net, BigDecimal tax, Map<BigDecimal, BigDecimal[]> lines) {
+        Map<BigDecimal, BigDecimal[]> r = new TreeMap<BigDecimal, BigDecimal[]>(RATE_ORDER);
+        if (lines == null || lines.isEmpty()) {
+            return r;
+        }
+        List<BigDecimal> keys = new java.util.ArrayList<BigDecimal>(lines.keySet());
+        List<BigDecimal> nw = new java.util.ArrayList<BigDecimal>();
+        List<BigDecimal> tw = new java.util.ArrayList<BigDecimal>();
+        for (BigDecimal k : keys) {
+            nw.add(lines.get(k)[0]);
+            tw.add(lines.get(k)[1]);
+        }
+        List<BigDecimal> n = distribute(net, nw);
+        //the tax by the tax of the lines; without tax on the lines (e.g. all 0 %) by the net
+        boolean noLineTax = true;
+        for (BigDecimal w : tw) {
+            noLineTax &= w.signum() == 0;
+        }
+        List<BigDecimal> t = distribute(tax, noLineTax ? nw : tw);
+        for (int i = 0; i < keys.size(); i++) {
+            r.put(keys.get(i), new BigDecimal[]{n.get(i), t.get(i)});
+        }
+        return r;
     }
 
     /**
@@ -340,15 +417,21 @@ public final class JournalCalc {
         byRate(t.expensesByRate, e, false);
     }
 
-    private static void byRate(Map<Integer, BigDecimal[]> map, Entry e, boolean minus) {
-        int rate = rateOf(e.net, e.tax);
-        BigDecimal[] v = map.get(rate);
-        if (v == null) {
-            v = new BigDecimal[]{BigDecimal.ZERO, BigDecimal.ZERO};
-            map.put(rate, v);
+    private static void byRate(Map<BigDecimal, BigDecimal[]> map, Entry e, boolean minus) {
+        Map<BigDecimal, BigDecimal[]> rates = e.rates;
+        if (rates == null || rates.isEmpty()) {
+            rates = new TreeMap<BigDecimal, BigDecimal[]>(RATE_ORDER);
+            rates.put(null, new BigDecimal[]{e.net, e.tax});
         }
-        v[0] = add(v[0], e.net, minus);
-        v[1] = add(v[1], e.tax, minus);
+        for (Map.Entry<BigDecimal, BigDecimal[]> r : rates.entrySet()) {
+            BigDecimal[] v = map.get(r.getKey());
+            if (v == null) {
+                v = new BigDecimal[]{BigDecimal.ZERO, BigDecimal.ZERO};
+                map.put(r.getKey(), v);
+            }
+            v[0] = add(v[0], r.getValue()[0], minus);
+            v[1] = add(v[1], r.getValue()[1], minus);
+        }
     }
 
     private static BigDecimal add(BigDecimal sum, BigDecimal value, boolean minus) {

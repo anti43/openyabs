@@ -51,9 +51,11 @@ import org.mustangproject.Invoice;
 /**
  * The package for the tax adviser (Steuerberater) of a journal: one ZIP with
  * <ul>
- * <li>{@code journal.csv}: all entries (semicolon, decimal comma, UTF-8 with
- * BOM - opens in Excel and imports into DATEV Unternehmen online / other
- * bookkeeping software via a CSV import),</li>
+ * <li>{@code journal.csv}: one line per document (semicolon, decimal comma,
+ * UTF-8 with BOM - opens in Excel),</li>
+ * <li>{@code journal_steuersaetze.csv}: one line per document and tax rate
+ * (documents with several rates split by their items) - for the import into
+ * bookkeeping software,</li>
  * <li>{@code zusammenfassung.txt}: period, filters, EÜR sums, amounts by tax
  * rate, open items and the e-invoice check,</li>
  * <li>{@code belege/}: the archived receipts of expenses and income (incoming
@@ -101,6 +103,7 @@ public final class JournalAdviserPackage {
     private final Date to;
     private final List<String> filters;
     private final Map<Integer, Contact> contacts = new HashMap<Integer, Contact>();
+    private final Map<BigDecimal, String> rateLabels;
     private int receipts;
     private int einvoices;
     private final List<String> problems = new ArrayList<String>();
@@ -118,6 +121,43 @@ public final class JournalAdviserPackage {
         this.from = from;
         this.to = to;
         this.filters = filters;
+        this.rateLabels = rateLabels();
+    }
+
+    /**
+     * @return the names of the tax rates of the control panel (Taxes): rate -
+     * name
+     */
+    public static Map<BigDecimal, String> rateLabels() {
+        Map<BigDecimal, String> m = new java.util.TreeMap<BigDecimal, String>();
+        try {
+            for (mpv5.db.common.DatabaseObject o : mpv5.db.common.DatabaseObject.getObjects(mpv5.db.common.Context.getTaxes())) {
+                mpv5.db.objects.Tax tax = (mpv5.db.objects.Tax) o;
+                BigDecimal k = JournalCalc.rateKey(tax.__getTaxvalue());
+                if (k != null && !m.containsKey(k) && tax.__getCname() != null && tax.__getCname().trim().length() > 0) {
+                    m.put(k, tax.__getCname().trim());
+                }
+            }
+        } catch (Exception e) {
+            Log.Debug(JournalAdviserPackage.class, e.getMessage());
+        }
+        return m;
+    }
+
+    /**
+     * @param rate the stored rate, null: unknown (a document without items)
+     * @param labels the names of the control panel
+     * @param unknown the text for null
+     * @return "19 %" or "19 % (name)" with the name of the control panel
+     */
+    public static String rateLabel(BigDecimal rate, Map<BigDecimal, String> labels, String unknown) {
+        if (rate == null) {
+            return unknown;
+        }
+        BigDecimal k = JournalCalc.rateKey(rate);
+        String s = k.toPlainString().replace('.', ',') + " %";
+        String name = labels == null ? null : labels.get(k);
+        return name == null || name.equals(s) ? s : s + " (" + name + ")";
     }
 
     /**
@@ -221,6 +261,8 @@ public final class JournalAdviserPackage {
         try (ZipOutputStream zip = new ZipOutputStream(Files.newOutputStream(target.toPath()))) {
             byte[] csv = csv().getBytes(StandardCharsets.UTF_8);
             put(zip, names, "journal.csv", concat(new byte[]{(byte) 0xEF, (byte) 0xBB, (byte) 0xBF}, csv));
+            put(zip, names, "journal_steuersaetze.csv", concat(new byte[]{(byte) 0xEF, (byte) 0xBB, (byte) 0xBF},
+                    csvByRate().getBytes(StandardCharsets.UTF_8)));
             receipts(zip, names);
             eInvoices(zip, names, tmp);
             put(zip, names, "zusammenfassung.txt", summary(check).getBytes(StandardCharsets.UTF_8));
@@ -386,8 +428,22 @@ public final class JournalAdviserPackage {
         return "offen";
     }
 
-    static String rateName(int rate) {
-        return rate == JournalCalc.MIXED ? "gemischt" : rate + " %";
+    String rateName(BigDecimal rate) {
+        return rateLabel(rate, rateLabels, "unbekannt (ohne Positionen)");
+    }
+
+    /**
+     * @param e
+     * @return the amounts of the entry by rate (one of unknown rate if none
+     * are known)
+     */
+    static Map<BigDecimal, BigDecimal[]> ratesOf(Entry e) {
+        if (e.rates != null && !e.rates.isEmpty()) {
+            return e.rates;
+        }
+        Map<BigDecimal, BigDecimal[]> m = new java.util.TreeMap<BigDecimal, BigDecimal[]>(JournalCalc.RATE_ORDER);
+        m.put(null, new BigDecimal[]{e.net, e.tax});
+        return m;
     }
 
     /**
@@ -415,7 +471,7 @@ public final class JournalAdviserPackage {
     public String csv() {
         StringBuilder b = new StringBuilder();
         String[] head = {"Datum", "Belegdatum", "Zahlungsdatum", "Belegnummer", "Belegart", "Einnahme/Ausgabe", "Status",
-            "Zaehlt zum Ergebnis", "Kontakt", "Gruppe", "Konto", "Buchungstext", "Netto", "Steuersatz", "Steuer", "Brutto",
+            "Zaehlt zum Ergebnis", "Kontakt", "Gruppe", "Konto", "Buchungstext", "Netto", "Steuersaetze", "Steuer", "Brutto",
             "Ergebnis netto (EUeR)"};
         for (int i = 0; i < head.length; i++) {
             b.append(i > 0 ? ";" : "").append(cell(head[i]));
@@ -426,11 +482,49 @@ public final class JournalAdviserPackage {
             String contact = (e.contact + " " + e.prename).trim();
             Object[] row = {date(e.date), date(d[0]), date(d[1]), e.number, typeName(e), side(e), statusName(e),
                 e.counted ? "ja" : "nein", contact, e.group, e.account, e.description,
-                amount(e.net), rateName(JournalCalc.rateOf(e.net, e.tax)), amount(e.tax), amount(e.gross), amount(e.effect)};
+                amount(e.net), rateNames(e), amount(e.tax), amount(e.gross), amount(e.effect)};
             for (int i = 0; i < row.length; i++) {
                 b.append(i > 0 ? ";" : "").append(cell(row[i]));
             }
             b.append("\r\n");
+        }
+        return b.toString();
+    }
+
+    private String rateNames(Entry e) {
+        List<String> l = new ArrayList<String>();
+        for (BigDecimal r : ratesOf(e).keySet()) {
+            l.add(rateName(r));
+        }
+        return String.join(", ", l);
+    }
+
+    /**
+     * @return the journal by tax rate: one line per document and rate (without
+     * BOM)
+     */
+    public String csvByRate() {
+        StringBuilder b = new StringBuilder();
+        String[] head = {"Datum", "Belegnummer", "Belegart", "Einnahme/Ausgabe", "Status", "Zaehlt zum Ergebnis", "Kontakt", "Gruppe",
+            "Konto", "Buchungstext", "Steuersatz (%)", "Steuersatz", "Netto", "Steuer", "Brutto", "Ergebnis netto (EUeR)"};
+        for (int i = 0; i < head.length; i++) {
+            b.append(i > 0 ? ";" : "").append(cell(head[i]));
+        }
+        b.append("\r\n");
+        for (Entry e : entries) {
+            String contact = (e.contact + " " + e.prename).trim();
+            int sign = e.effect.signum();
+            for (Map.Entry<BigDecimal, BigDecimal[]> r : ratesOf(e).entrySet()) {
+                BigDecimal net = r.getValue()[0];
+                BigDecimal tax = r.getValue()[1];
+                Object[] row = {date(e.date), e.number, typeName(e), side(e), statusName(e), e.counted ? "ja" : "nein", contact, e.group,
+                    e.account, e.description, r.getKey() == null ? "" : r.getKey().toPlainString().replace('.', ','), rateName(r.getKey()),
+                    amount(net), amount(tax), amount(net.add(tax)), amount(sign == 0 ? BigDecimal.ZERO : sign < 0 ? net.negate() : net)};
+                for (int i = 0; i < row.length; i++) {
+                    b.append(i > 0 ? ";" : "").append(cell(row[i]));
+                }
+                b.append("\r\n");
+            }
         }
         return b.toString();
     }
@@ -458,19 +552,20 @@ public final class JournalAdviserPackage {
         b.append(line("Überschuss netto", totals.profitNet()));
         b.append(line("Umsatzsteuer - Vorsteuer", totals.profitTax()));
         b.append(nl).append("Einnahmen nach Steuersatz (netto / Umsatzsteuer)").append(nl);
-        for (Map.Entry<Integer, BigDecimal[]> r : totals.incomeByRate.entrySet()) {
-            b.append(String.format("  %-10s %15s %15s", rateName(r.getKey()), amount(r.getValue()[0]), amount(r.getValue()[1]))).append(nl);
+        for (Map.Entry<BigDecimal, BigDecimal[]> r : totals.incomeByRate.entrySet()) {
+            b.append(String.format("  %-30s %15s %15s", rateName(r.getKey()), amount(r.getValue()[0]), amount(r.getValue()[1]))).append(nl);
         }
         b.append(nl).append("Ausgaben nach Steuersatz (netto / Vorsteuer)").append(nl);
-        for (Map.Entry<Integer, BigDecimal[]> r : totals.expensesByRate.entrySet()) {
-            b.append(String.format("  %-10s %15s %15s", rateName(r.getKey()), amount(r.getValue()[0]), amount(r.getValue()[1]))).append(nl);
+        for (Map.Entry<BigDecimal, BigDecimal[]> r : totals.expensesByRate.entrySet()) {
+            b.append(String.format("  %-30s %15s %15s", rateName(r.getKey()), amount(r.getValue()[0]), amount(r.getValue()[1]))).append(nl);
         }
-        b.append("  (\"gemischt\": Belege mit mehreren Steuersätzen, bitte im Beleg prüfen)").append(nl);
+        b.append("  (Steuers\u00e4tze wie im Beleg gespeichert; Belege mit mehreren S\u00e4tzen nach ihren Positionen aufgeteilt)").append(nl);
         b.append(nl).append("Offene Posten der gezeigten Belege").append(nl);
         b.append(line("Offene Forderungen (brutto)", totals.openReceivables));
         b.append(line("Offene Verbindlichkeiten (brutto)", totals.openPayables));
         b.append(nl).append("Inhalt").append(nl);
-        b.append("  journal.csv            ").append(entries.size()).append(" Buchungen (Semikolon, Dezimalkomma, UTF-8)").append(nl);
+        b.append("  journal.csv            ").append(entries.size()).append(" Buchungen, eine Zeile je Beleg (Semikolon, Dezimalkomma, UTF-8)").append(nl);
+        b.append("  journal_steuersaetze.csv  eine Zeile je Beleg und Steuersatz").append(nl);
         b.append("  belege/                ").append(receipts).append(" archivierte Belege (Originaldateien, auch empfangene E-Rechnungen)").append(nl);
         b.append("  e-rechnungen/          ").append(einvoices).append(" ausgehende E-Rechnungen (XRechnung, aus den Belegdaten erzeugt)").append(nl);
         b.append(nl).append("E-Rechnung (Ausgangsrechnungen im Zeitraum)").append(nl);

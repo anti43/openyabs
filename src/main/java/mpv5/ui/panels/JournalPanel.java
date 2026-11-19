@@ -912,6 +912,7 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
 
         List<Entry> entries;
         Totals totals;
+        Map<BigDecimal, String> labels;
         JournalAdviserPackage.EInvoiceCheck check;
     }
 
@@ -1032,7 +1033,9 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
                 }
             }
         }
+        rates(list);
         Loaded l = new Loaded();
+        l.labels = JournalAdviserPackage.rateLabels();
         l.entries = list;
         l.totals = JournalCalc.compute(list, paidInParts);
         try {
@@ -1041,6 +1044,72 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
             Log.Debug(this, e);
         }
         return l;
+    }
+
+    /**
+     * The amounts by tax rate as stored: expenses and income have one rate,
+     * documents (and their payments) are split by the rates of their items
+     *
+     * @param list
+     */
+    private void rates(List<Entry> list) {
+        Set<Integer> ids = new HashSet<Integer>();
+        for (Entry e : list) {
+            if (e.obj instanceof Expense) {
+                e.rates.put(JournalCalc.rateKey(((Expense) e.obj).__getTaxpercentvalue()), new BigDecimal[]{e.net, e.tax});
+            } else if (e.obj instanceof mpv5.db.objects.Revenue) {
+                e.rates.put(JournalCalc.rateKey(((mpv5.db.objects.Revenue) e.obj).__getTaxpercentvalue()), new BigDecimal[]{e.net, e.tax});
+            } else if (e.itemId > 0) {
+                ids.add(e.itemId);
+            }
+        }
+        Map<Integer, Map<BigDecimal, BigDecimal[]>> lines = itemRates(ids);
+        for (Entry e : list) {
+            if (e.itemId > 0 && lines.containsKey(e.itemId)) {
+                e.rates = JournalCalc.split(e.net, e.tax, lines.get(e.itemId));
+            }
+        }
+    }
+
+    /**
+     * @param ids
+     * @return the net and tax of the items of the documents by rate:
+     * document - rate - {net, tax}
+     */
+    private Map<Integer, Map<BigDecimal, BigDecimal[]>> itemRates(Set<Integer> ids) {
+        Map<Integer, Map<BigDecimal, BigDecimal[]>> m = new HashMap<Integer, Map<BigDecimal, BigDecimal[]>>();
+        List<Integer> all = new ArrayList<Integer>(ids);
+        for (int from = 0; from < all.size(); from += 500) {
+            List<Integer> chunk = all.subList(from, Math.min(all.size(), from + 500));
+            StringBuilder in = new StringBuilder();
+            for (Integer id : chunk) {
+                in.append(in.length() > 0 ? "," : "").append(id.intValue());
+            }
+            try {
+                mpv5.db.common.ReturnValue rv = QueryHandler.instanceOf().clone(Context.getSubItem()).freeSelectQuery(
+                        "SELECT itemsids, taxpercentvalue, SUM(totalnetvalue), SUM(totalbrutvalue) FROM subitems WHERE invisible = 0 AND itemsids IN (" //NOI18N
+                        + in + ") GROUP BY itemsids, taxpercentvalue", mpv5.usermanagement.MPSecurityManager.VIEW, null); //NOI18N
+                if (rv == null || !rv.hasData()) {
+                    continue;
+                }
+                for (Object[] r : rv.getData()) {
+                    Integer id = Integer.valueOf(String.valueOf(r[0]));
+                    BigDecimal rate = JournalCalc.rateKey(new BigDecimal(String.valueOf(r[1])).setScale(2, java.math.RoundingMode.HALF_UP));
+                    BigDecimal net = JournalCalc.money(r[2]);
+                    BigDecimal tax = JournalCalc.money(r[3]).subtract(net);
+                    Map<BigDecimal, BigDecimal[]> rates = m.get(id);
+                    if (rates == null) {
+                        rates = new TreeMap<BigDecimal, BigDecimal[]>(JournalCalc.RATE_ORDER);
+                        m.put(id, rates);
+                    }
+                    BigDecimal[] v = rates.get(rate);
+                    rates.put(rate, v == null ? new BigDecimal[]{net, tax} : new BigDecimal[]{v[0].add(net), v[1].add(tax)});
+                }
+            } catch (Exception e) {
+                Log.Debug(this, e);
+            }
+        }
+        return m;
     }
 
     private static boolean matchesIncome(Entry e, int status) {
@@ -1242,8 +1311,8 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         volumeNetto.setText(FormatNumber.formatDezimal(t.volumeNet));
         taxVolume.setText(FormatNumber.formatDezimal(t.volumeTax));
         volumeBrutto.setText(FormatNumber.formatDezimal(t.volumeGross));
-        taxRates.setText(rates(Messages.JOURNAL_TAX_RATES_INCOME.toString(), t.incomeByRate)
-                + "     " + rates(Messages.JOURNAL_TAX_RATES_EXPENSES.toString(), t.expensesByRate));
+        taxRates.setText(rates(Messages.JOURNAL_TAX_RATES_INCOME.toString(), t.incomeByRate, l.labels)
+                + "     " + rates(Messages.JOURNAL_TAX_RATES_EXPENSES.toString(), t.expensesByRate, l.labels));
 
         JournalAdviserPackage.EInvoiceCheck c = l.check;
         if (c == null || c.invoices == 0) {
@@ -1254,15 +1323,15 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         }
     }
 
-    private static String rates(String label, Map<Integer, BigDecimal[]> m) {
+    private static String rates(String label, Map<BigDecimal, BigDecimal[]> m, Map<BigDecimal, String> labels) {
         if (m.isEmpty()) {
             return label + " -";
         }
         StringBuilder b = new StringBuilder(label);
         boolean first = true;
-        for (Map.Entry<Integer, BigDecimal[]> r : m.entrySet()) {
+        for (Map.Entry<BigDecimal, BigDecimal[]> r : m.entrySet()) {
             b.append(first ? " " : "  ·  ");
-            b.append(r.getKey() == JournalCalc.MIXED ? Messages.JOURNAL_TAX_RATE_MIXED.toString() : r.getKey() + " %");
+            b.append(JournalAdviserPackage.rateLabel(r.getKey(), labels, Messages.JOURNAL_TAX_RATE_UNKNOWN.toString()));
             b.append(": ").append(FormatNumber.formatDezimal(r.getValue()[0])).append(" / ").append(FormatNumber.formatDezimal(r.getValue()[1]));
             first = false;
         }

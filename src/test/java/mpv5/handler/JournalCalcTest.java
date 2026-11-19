@@ -26,12 +26,33 @@ class JournalCalcTest {
         return e;
     }
 
+    private static BigDecimal bd(String s) {
+        return new BigDecimal(s);
+    }
+
     @Test
-    void ratesSnapToTheGermanRates() {
-        assertEquals(19, JournalCalc.rateOf(new BigDecimal("100.00"), new BigDecimal("19.00")));
-        assertEquals(7, JournalCalc.rateOf(new BigDecimal("100.00"), new BigDecimal("7.01")));
-        assertEquals(0, JournalCalc.rateOf(new BigDecimal("100.00"), BigDecimal.ZERO));
-        assertEquals(JournalCalc.MIXED, JournalCalc.rateOf(new BigDecimal("200.00"), new BigDecimal("26.00")));
+    void distributeKeepsEveryCent() {
+        java.util.List<BigDecimal> p = JournalCalc.distribute(bd("100.00"), Arrays.asList(bd("1"), bd("1"), bd("1")));
+        assertEquals(Arrays.asList(bd("33.34"), bd("33.33"), bd("33.33")), p);
+        p = JournalCalc.distribute(bd("-10.00"), Arrays.asList(bd("1"), bd("2")));
+        assertEquals(bd("-10.00"), p.get(0).add(p.get(1)));
+        assertEquals(Arrays.asList(bd("5.00"), bd("0.00")), JournalCalc.distribute(bd("5.00"), Arrays.asList(bd("0"), bd("0"))));
+    }
+
+    @Test
+    void mixedDocumentIsSplitByItsItemsToTheStoredAmounts() {
+        java.util.Map<BigDecimal, BigDecimal[]> lines = new java.util.TreeMap<BigDecimal, BigDecimal[]>(JournalCalc.RATE_ORDER);
+        lines.put(bd("19"), new BigDecimal[]{bd("100.00"), bd("19.00")});
+        lines.put(bd("7"), new BigDecimal[]{bd("100.00"), bd("7.00")});
+        //10 % discount on the document: the stored amounts are 180.00 / 23.40
+        java.util.Map<BigDecimal, BigDecimal[]> r = JournalCalc.split(bd("180.00"), bd("23.40"), lines);
+        assertEquals(bd("90.00"), r.get(bd("19"))[0]);
+        assertEquals(bd("17.10"), r.get(bd("19"))[1]);
+        assertEquals(bd("90.00"), r.get(bd("7"))[0]);
+        assertEquals(bd("6.30"), r.get(bd("7"))[1]);
+        assertTrue(JournalCalc.split(bd("1"), bd("0"), null).isEmpty());
+        assertEquals(JournalCalc.rateKey(bd("19.00")), JournalCalc.rateKey(bd("19")));
+        assertEquals("16", JournalCalc.rateKey(bd("16.000")).toPlainString());
     }
 
     @Test
@@ -43,6 +64,9 @@ class JournalCalcTest {
         Entry expense = e(Constants.TYPE_EXPENSE, JournalCalc.EXPENSE_PAID, "20.00", "1.40");
         Entry unpaidExpense = e(Constants.TYPE_EXPENSE, JournalCalc.EXPENSE_UNPAID, "30.00", "5.70");
         Entry offer = e(Constants.TYPE_OFFER, Item.STATUS_PAID, "999.00", "0.00");
+        paid.rates.put(bd("19"), new BigDecimal[]{bd("100.00"), bd("19.00")});
+        credit.rates.put(bd("19"), new BigDecimal[]{bd("10.00"), bd("1.90")});
+        expense.rates.put(bd("7"), new BigDecimal[]{bd("20.00"), bd("1.40")});
         List<Entry> l = Arrays.asList(paid, open, cancelled, credit, expense, unpaidExpense, offer);
         Totals t = JournalCalc.compute(l, Collections.<Integer>emptySet());
         assertTrue(paid.counted);
@@ -59,8 +83,8 @@ class JournalCalcTest {
         assertEquals(new BigDecimal("-10.00"), credit.effect);
         assertEquals(new BigDecimal("59.50"), t.openReceivables);
         assertEquals(new BigDecimal("35.70"), t.openPayables);
-        assertEquals(new BigDecimal("90.00"), t.incomeByRate.get(19)[0]);
-        assertEquals(new BigDecimal("20.00"), t.expensesByRate.get(7)[0]);
+        assertEquals(new BigDecimal("90.00"), t.incomeByRate.get(bd("19"))[0]);
+        assertEquals(new BigDecimal("20.00"), t.expensesByRate.get(bd("7"))[0]);
     }
 
     @Test
