@@ -71,7 +71,8 @@ public final class FirstStartSetup {
     }
 
     /**
-     * Imports the bundled invoice template and assigns it to the user
+     * Imports the demo invoice template ("Demo - Rechnung", with the EPC QR
+     * code) and assigns it to the user
      *
      * @param owner
      * @param wait how long to wait for the import, 0: do not wait
@@ -79,7 +80,7 @@ public final class FirstStartSetup {
      * @throws Exception
      */
     public static boolean importTemplate(final User owner, long wait) throws Exception {
-        return importTemplate(owner, INVOICE_TEMPLATE, "template-de",
+        return importTemplate(owner, DEMO_INVOICE_TEMPLATE, "Demo - Rechnung",
                 ITEM_FORMAT, Constants.TYPE_INVOICE, wait) != null;
     }
 
@@ -153,7 +154,7 @@ public final class FirstStartSetup {
                 try {
                     if (t != null) {
                         t.setGroupsids(1);
-                        t.setCname("template-de".equals(name) ? f.getName() : name);
+                        t.setCname(name);
                         t.setMimetype(String.valueOf(type));
                         t.setFormat(format);
                         t.setDescription("Wizard insert");
@@ -214,11 +215,7 @@ public final class FirstStartSetup {
             Log.Debug(FirstStartSetup.class, e);
         }
         step(progress, Step.TEMPLATES);
-        try {
-            importTemplate(admin, 60000);
-        } catch (Exception e) {
-            Log.Debug(FirstStartSetup.class, e);
-        }
+        //the demo templates, the demo invoice is the assigned invoice template
         importDemoTemplates(admin);
     }
 
@@ -240,8 +237,7 @@ public final class FirstStartSetup {
 
     /**
      * Imports all demo templates and assigns them to the administrator for
-     * all groups (the invoice demo is imported, but the regular invoice
-     * template stays the assigned one)
+     * all groups (the demo invoice is the administrator's invoice template)
      *
      * @param admin
      */
@@ -250,7 +246,7 @@ public final class FirstStartSetup {
             int type = (Integer) d[0];
             try {
                 importTemplate(admin, String.format("/extra/templates/demo-%02d.odt", type), "Demo - " + d[1],
-                        demoFormat(type), type, 60000, type != Constants.TYPE_INVOICE);
+                        demoFormat(type), type, 60000, true);
             } catch (Exception e) {
                 Log.Debug(FirstStartSetup.class, e);
             }
@@ -267,6 +263,12 @@ public final class FirstStartSetup {
      * The regular invoice template, imported on the first start
      */
     public static final String INVOICE_TEMPLATE = "/extra/templates/invoice.odt";
+    /**
+     * The demo invoice template (with logo placeholder and EPC QR code), the
+     * invoice template assigned on the first start and at the first login of
+     * users without one
+     */
+    public static final String DEMO_INVOICE_TEMPLATE = "/extra/templates/demo-00.odt";
     /**
      * The table columns of the documents: position, quantity, text, price,
      * tax rate, net total (the 6-column table of the bundled templates; the

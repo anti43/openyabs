@@ -176,32 +176,8 @@ public class wizard_FirstSettings1 extends javax.swing.JPanel implements Wizarda
     }
 
     public void importInitialTemplate() throws Exception {
-
-        InputStream s = Main.class.getResourceAsStream(mpv5.handler.FirstStartSetup.INVOICE_TEMPLATE);
-        final File f = FileDirectoryHandler.getTempFile("template-de", "odt");
-        FileDirectoryHandler.copyFile(s, f);
-        Log.Debug(Main.class, "Importing language from: " + f.getCanonicalPath());
-
-        TemplateHandler.importTemplateAndAssign(f, new FutureCallback<Template>() {
-            @Override
-            public void call(Template t) {
-                Log.Debug(this, "Template callback");
-                t.setGroupsids(1);
-                t.setCname(f.getName());
-                t.setMimetype(String.valueOf(Constants.TYPE_INVOICE));
-                t.setFormat(mpv5.handler.FirstStartSetup.ITEM_FORMAT);
-                t.setDescription("Wizard insert");
-                t.save(true);
-
-                User object = User.getCurrentUser();
-                QueryData c = new QueryData();
-                c.add("usersids", object.__getIDS());
-                c.add("templatesids", t.__getIDS());
-                c.add("groupsids", 1);
-                c.add("cname", t.__getIDS() + "@" + object.__getIDS() + "@" + 1);
-                QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).insert(c, null);
-            }
-        });
+        //the demo invoice template (with QR code), assigned to the current user
+        mpv5.handler.FirstStartSetup.importTemplate(User.getCurrentUser(), 0);
     }
 
     public void importCountries() throws Exception {

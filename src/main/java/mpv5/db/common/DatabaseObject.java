@@ -2749,6 +2749,12 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             if (groovyShell == null) {
                 Binding binding = new Binding();
                 binding.setVariable("dbo", this);
+                //the fields by their template names: contact.ismale, item.contact.cname ...
+                try {
+                    binding.setVariable(getType(), new ScriptFields(this));
+                } catch (Exception e) {
+                    Log.Debug(this, e.getMessage());
+                }
                 MethodClosure cl = new MethodClosure(this, "getObject");
                 binding.setVariable("getObject", cl);
                 MethodClosure ff = new MethodClosure(this, "getFormFields");
