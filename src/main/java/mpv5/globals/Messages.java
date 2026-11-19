@@ -1524,6 +1524,7 @@ public enum Messages {
     EXTERNAL_PROGRAMS("Programs"),
     EXTERNAL_PDF_VIEWER("PDF viewer"),
     EXTERNAL_PDF_VIEWER_HINT("Program which opens PDF files, e.g. evince, okular or the path to a viewer. The path of the PDF is added as argument, or replaces {file}. Empty: the default program of the system."),
+    PDF_VIEWER_SUGGEST("The PDF could not be opened with the default program of the system; it is opened another way now. To open PDFs reliably, set up a PDF viewer (e.g. evince or okular) under Control Panel > External Programs.\n\nOpen the settings now?"),
     HELP_OPEN_FAILED("The browser could not be opened. The help is at:"),
     GEDIT_CHECKING("Checking the script ..."),
     GEDIT_HIGHLIGHT_OFF("Large plugin: syntax highlighting is off so that typing stays fast."),
