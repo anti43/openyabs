@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<office:document xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0"
+                 xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0"
+                 office:version="1.2"
+                 office:mimetype="application/vnd.oasis.opendocument.text">
+  <office:body>
+    <office:text>
+      <text:p>Aussteller (Bezeichnung und Anschrift der steuerbegünstigten Einrichtung):</text:p>
+      <text:p>[companyinfo.name] · [companyinfo.street] · [companyinfo.zip] [companyinfo.city]</text:p>
+      <text:h text:outline-level="1">Bestätigung über [ev.donationKind]</text:h>
+      <text:p>im Sinne des § 10b des Einkommensteuergesetzes an eine der in § 5 Abs. 1 Nr. 9 des Körperschaftsteuergesetzes bezeichneten Körperschaften, Personenvereinigungen oder Vermögensmassen</text:p>
+      <text:p>Name und Anschrift des Zuwendenden: [contact.cname], [contact.street], [contact.zip] [contact.city]</text:p>
+      <text:p>Betrag der Zuwendung – in Ziffern: [item.totalvalue] EUR | – in Buchstaben: [ev.amountInWords] | Tag der Zuwendung: [item.dateadded]</text:p>
+      <text:p>[ev.waiverNotice]</text:p>
+      <text:p>Wir sind wegen Förderung ([ev.purposeClause]) nach dem [ev.bescheidType] des Finanzamtes [ev.finanzamt], StNr. [ev.taxNumber], vom [ev.freistellungDate] (Veranlagungszeitraum: [ev.freistellungPeriod]) nach § 5 Abs. 1 Nr. 9 des Körperschaftsteuergesetzes von der Körperschaftsteuer befreit.</text:p>
+      <text:p>Es wird bestätigt, dass die Zuwendung nur zur Förderung ([ev.purposeClause]) verwendet wird.</text:p>
+      <text:p>Hinweis (§ 10b Abs. 4 EStG): Wer vorsätzlich oder grob fahrlässig eine unrichtige Zuwendungsbestätigung erstellt oder veranlasst, dass Zuwendungen nicht zu den angegebenen steuerbegünstigten Zwecken verwendet werden, haftet für die entgangene Steuer (30 % des zugewendeten Betrags).</text:p>
+      <text:p>Ort, Datum und Unterschrift des Zuwendungsempfängers: ___________________________</text:p>
+    </office:text>
+  </office:body>
+</office:document>
