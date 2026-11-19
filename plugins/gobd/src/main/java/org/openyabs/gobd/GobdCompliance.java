@@ -16,7 +16,6 @@
  */
 package org.openyabs.gobd;
 
-import static org.openyabs.gobd.GobdUtil.esc;
 import static org.openyabs.gobd.GobdUtil.str;
 
 import java.io.File;
@@ -184,14 +183,14 @@ public final class GobdCompliance implements YabsExtension {
             if (text == null || text.trim().length() < 2) {
                 return results;
             }
-            String q = esc(text.trim().toLowerCase());
-            for (Object[] r : g.rows("SELECT document_id, document_number, status, finalized_at, archive_path FROM gobd_document_lock"
-                    + " WHERE LOWER(document_number) LIKE '%" + q + "%' ORDER BY COALESCE(chain_seq, document_id) DESC, finalized_at DESC")) {
+            String q = "%" + GobdUtil.likeEscape(text.trim().toLowerCase()) + "%";
+            for (Object[] r : g.q("SELECT document_id, document_number, status, finalized_at, archive_path FROM gobd_document_lock"
+                    + " WHERE LOWER(document_number) LIKE ? ESCAPE '!' ORDER BY chain_seq DESC, finalized_at DESC", q)) {
                 results.add(new SearchResult("GoBD-Beleg " + r[1] + " [" + r[2] + "]", "Festgeschrieben am " + r[3] + " – Klick oeffnet Originalbeleg",
                         () -> g.openArchived(str(r[4]))));
             }
-            for (Object[] r : g.rows("SELECT revenue_id, document_number, status, imported_at, archive_path FROM gobd_income_lock"
-                    + " WHERE LOWER(document_number) LIKE '%" + q + "%' ORDER BY chain_seq DESC, imported_at DESC")) {
+            for (Object[] r : g.q("SELECT revenue_id, document_number, status, imported_at, archive_path FROM gobd_income_lock"
+                    + " WHERE LOWER(document_number) LIKE ? ESCAPE '!' ORDER BY chain_seq DESC, imported_at DESC", q)) {
                 results.add(new SearchResult("GoBD-Einnahme " + r[1] + " [" + r[2] + "]", "Importiert am " + r[3] + " – Klick oeffnet Originalbeleg",
                         () -> g.openArchived(str(r[4]))));
             }
@@ -200,6 +199,12 @@ public final class GobdCompliance implements YabsExtension {
 
         yabs.onView(views::decorate);
         g.configureIncomeWatch();
+        //receipts of expenses attached without the plugin (or before): into the hash chain
+        yabs.background(g::chainReceipts, n -> {
+            if (n > 0) {
+                g.status("GoBD: " + n + " Eingangsbeleg(e) in die Hash-Kette aufgenommen.");
+            }
+        });
         yabs.onStop(g::stop);
         g.status("GoBD-Konformitaets-Plugin (v" + version() + ") vollstaendig geladen.");
     }

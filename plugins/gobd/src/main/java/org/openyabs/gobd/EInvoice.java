@@ -61,6 +61,19 @@ public final class EInvoice {
         public BigDecimal netAmount;
         public BigDecimal grossAmount;
         public BigDecimal taxPercent;
+        /**
+         * A credit note (TypeCode 381 / UBL CreditNote): the amounts are
+         * negative
+         */
+        public boolean creditNote;
+        /**
+         * More than one tax rate: taxPercent is the effective rate
+         */
+        public boolean mixedTaxRates;
+        /**
+         * The tax rates of the invoice (header level), e.g. "7.00 %, 19.00 %"
+         */
+        public String taxRates = "";
 
         /**
          * @return true if all mandatory fields are there
@@ -68,6 +81,43 @@ public final class EInvoice {
         public boolean valid() {
             return errors.isEmpty();
         }
+    }
+
+    /**
+     * Whether a created invoice file shows the number: the number of the
+     * embedded / XML e-invoice, else the text of the PDF (blanks ignored)
+     *
+     * @param file a PDF or XML file
+     * @param number
+     * @return true if the file shows the number
+     */
+    public static boolean mentionsNumber(Path file, String number) {
+        if (file == null || number == null || number.trim().isEmpty()) {
+            return false;
+        }
+        String wanted = number.replaceAll("\\s+", "");
+        try {
+            String name = file.getFileName().toString().toLowerCase(Locale.ROOT);
+            byte[] xml = name.endsWith(".xml") ? java.nio.file.Files.readAllBytes(file) : name.endsWith(".pdf") ? extractEmbeddedXml(file) : null;
+            if (xml != null) {
+                Parsed p = parse(xml);
+                if (!p.documentNumber.isEmpty()) {
+                    return p.documentNumber.replaceAll("\\s+", "").equals(wanted);
+                }
+            }
+            if (name.endsWith(".pdf")) {
+                try (PDDocument doc = org.apache.pdfbox.Loader.loadPDF(file.toFile())) {
+                    String text = new org.apache.pdfbox.text.PDFTextStripper().getText(doc);
+                    return text.replaceAll("\\s+", "").contains(wanted);
+                }
+            }
+            if (xml != null) {
+                return new String(xml, java.nio.charset.StandardCharsets.UTF_8).replaceAll("\\s+", "").contains(wanted);
+            }
+        } catch (Exception e) {
+            return false;
+        }
+        return false;
     }
 
     private static final List<String> PREFERRED = Arrays.asList("factur-x.xml", "zugferd-invoice.xml", "xrechnung.xml");
@@ -236,7 +286,15 @@ public final class EInvoice {
                     "//*[local-name()='BuyerTradeParty']/*[local-name()='Name']",
                     "//*[local-name()='AccountingCustomerParty']//*[local-name()='PartyName']/*[local-name()='Name']",
                     "//*[local-name()='AccountingCustomerParty']//*[local-name()='PartyLegalEntity']/*[local-name()='RegistrationName']");
-            p.partnerName = !seller.isEmpty() ? seller : buyer;
+            //income: the own invoice, the partner is the buyer
+            p.partnerName = !buyer.isEmpty() ? buyer : seller;
+            //BT-3: 381 credit note
+            String typeCode = eval(xp, dom,
+                    "//*[local-name()='ExchangedDocument']/*[local-name()='TypeCode']",
+                    "/*[local-name()='Invoice']/*[local-name()='InvoiceTypeCode']",
+                    "/*[local-name()='CreditNote']/*[local-name()='CreditNoteTypeCode']");
+            p.creditNote = typeCode.equals("381") || "CreditNote".equals(dom.getDocumentElement().getLocalName())
+                    || "CreditNote".equals(dom.getDocumentElement().getNodeName().replaceAll("^.*:", ""));
             //BT-109: net
             p.netAmount = parseDecimal(eval(xp, dom,
                     "//*[local-name()='SpecifiedTradeSettlementHeaderMonetarySummation']/*[local-name()='TaxBasisTotalAmount']",
@@ -248,18 +306,36 @@ public final class EInvoice {
                     "//*[local-name()='LegalMonetaryTotal']/*[local-name()='TaxInclusiveAmount']",
                     "//*[local-name()='SpecifiedTradeSettlementHeaderMonetarySummation']/*[local-name()='DuePayableAmount']",
                     "//*[local-name()='LegalMonetaryTotal']/*[local-name()='PayableAmount']"));
-            //BT-119: tax rate
-            p.taxPercent = parseDecimal(eval(xp, dom,
-                    "//*[local-name()='ApplicableTradeTax']/*[local-name()='RateApplicablePercent']",
-                    "//*[local-name()='TaxSubtotal']/*[local-name()='TaxCategory']/*[local-name()='Percent']",
-                    "//*[local-name()='ClassifiedTaxCategory']/*[local-name()='Percent']"));
+            //BT-119: the tax rates of the document level (not of the first line)
+            java.util.TreeSet<BigDecimal> rates = new java.util.TreeSet<BigDecimal>();
+            for (String expr : new String[]{
+                "//*[local-name()='ApplicableHeaderTradeSettlement']/*[local-name()='ApplicableTradeTax']/*[local-name()='RateApplicablePercent']",
+                "/*/*[local-name()='TaxTotal']/*[local-name()='TaxSubtotal']/*[local-name()='TaxCategory']/*[local-name()='Percent']"}) {
+                rates.addAll(decimals(xp, dom, expr));
+            }
+            if (rates.isEmpty()) {
+                rates.addAll(decimals(xp, dom, "//*[local-name()='ApplicableTradeTax']/*[local-name()='RateApplicablePercent']"));
+                rates.addAll(decimals(xp, dom, "//*[local-name()='ClassifiedTaxCategory']/*[local-name()='Percent']"));
+            }
+            List<String> rateTexts = new ArrayList<String>();
+            for (BigDecimal r : rates) {
+                rateTexts.add(r.toPlainString() + " %");
+            }
+            p.taxRates = String.join(", ", rateTexts);
+            p.mixedTaxRates = rates.size() > 1;
+            p.taxPercent = rates.size() == 1 ? rates.first() : null;
             if (p.taxPercent == null) {
-                if (p.netAmount != null && p.grossAmount != null && p.netAmount.compareTo(BigDecimal.ZERO) > 0) {
+                //none or several: the effective rate
+                if (p.netAmount != null && p.grossAmount != null && p.netAmount.signum() != 0) {
                     p.taxPercent = p.grossAmount.subtract(p.netAmount).multiply(new BigDecimal("100"))
                             .divide(p.netAmount, 2, RoundingMode.HALF_UP);
                 } else {
                     p.taxPercent = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP);
                 }
+            }
+            if (p.creditNote) {
+                p.netAmount = p.netAmount == null ? null : p.netAmount.abs().negate();
+                p.grossAmount = p.grossAmount == null ? null : p.grossAmount.abs().negate();
             }
             if (p.documentNumber.isEmpty()) {
                 p.errors.add("Pflichtfeld BT-1 (Rechnungsnummer / ExchangedDocument/ID) fehlt");
@@ -278,6 +354,22 @@ public final class EInvoice {
             p.errors.add("XML-Struktur konnte nicht nach EN 16931 gelesen werden: " + ex.getMessage());
         }
         return p;
+    }
+
+    private static List<BigDecimal> decimals(XPath xp, Document dom, String expr) {
+        List<BigDecimal> l = new ArrayList<BigDecimal>();
+        try {
+            org.w3c.dom.NodeList nodes = (org.w3c.dom.NodeList) xp.evaluate(expr, dom, XPathConstants.NODESET);
+            for (int i = 0; i < nodes.getLength(); i++) {
+                BigDecimal d = parseDecimal(nodes.item(i).getTextContent());
+                if (d != null) {
+                    l.add(d);
+                }
+            }
+        } catch (Exception ignored) {
+            //none
+        }
+        return l;
     }
 
     private static String eval(XPath xp, Document dom, String... exprs) {

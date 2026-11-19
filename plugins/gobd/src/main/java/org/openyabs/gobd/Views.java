@@ -183,6 +183,7 @@ final class Views {
             g.logAudit("EXPENSE", exp.__getIDS(), "EXPENSE_RECEIPT_ATTACHED", null, Gobd.expenseSnapshot(exp), rec.sha256, plainPdf
                     ? "Eingangsbeleg " + rec.originalName + " (einfaches PDF - rechnerische Richtigkeit der Belegwerte nicht automatisiert geprueft) verknuepft und Ausgabe festgeschrieben."
                     : "Eingangsbeleg " + rec.originalName + " verknuepft und Ausgabe festgeschrieben.");
+            g.chainReceipts();
             panel.setDataOwner(exp, true);
             g.yabs.notify("GoBD-Eingangsbeleg archiviert & Ausgabe festgeschrieben:\nDatei: " + rec.originalName + "\nSHA-256: " + rec.sha256.substring(0, 16) + "..."
                     + (plainPdf ? "\n(Hinweis: Einfacher PDF-Beleg - Werte koennen nicht automatisch auf rechnerische Richtigkeit geprueft werden.)" : ""), exp);

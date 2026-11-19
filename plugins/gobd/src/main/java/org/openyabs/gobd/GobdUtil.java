@@ -18,6 +18,8 @@ package org.openyabs.gobd;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -28,6 +30,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.EnumSet;
+import java.util.HexFormat;
 import java.util.Locale;
 
 /**
@@ -84,12 +87,82 @@ public final class GobdUtil {
         }
     }
 
-    private static String hex(byte[] digest) {
-        StringBuilder hex = new StringBuilder(64);
-        for (byte b : digest) {
-            hex.append(String.format("%02x", b));
+    /**
+     * @param file
+     * @return SHA-256 of the file (read as a stream), lower case hex
+     */
+    public static String sha256(Path file) throws IOException {
+        try {
+            MessageDigest d = MessageDigest.getInstance("SHA-256");
+            try (InputStream in = Files.newInputStream(file)) {
+                byte[] buf = new byte[64 * 1024];
+                int n;
+                while ((n = in.read(buf)) > 0) {
+                    d.update(buf, 0, n);
+                }
+            }
+            return hex(d.digest());
+        } catch (java.security.NoSuchAlgorithmException e) {
+            throw new IllegalStateException(e);
         }
-        return hex.toString();
+    }
+
+    /**
+     * The hash chain of records (version 2): SHA256(record || "\n" || previous
+     * hash). The record holds the booking data and the SHA-256 of the file, so
+     * a change of the database is found as well as a change of the file.
+     *
+     * @param record see {@link #record}
+     * @param prevHash
+     * @return lower case hex
+     */
+    public static String recordHash(String record, String prevHash) {
+        return sha256((record + "\n" + prevHash).getBytes(StandardCharsets.UTF_8));
+    }
+
+    /**
+     * @param keyValues key, value, key, value ...
+     * @return the canonical record: one "key=value" per line, line breaks and
+     * backslashes in the values escaped
+     */
+    public static String record(Object... keyValues) {
+        StringBuilder b = new StringBuilder();
+        for (int i = 0; i + 1 < keyValues.length; i += 2) {
+            if (b.length() > 0) {
+                b.append('\n');
+            }
+            b.append(keyValues[i]).append('=').append(recordValue(keyValues[i + 1]));
+        }
+        return b.toString();
+    }
+
+    /**
+     * @param value
+     * @return the value as it is in a record (see {@link #record})
+     */
+    public static String recordValue(Object value) {
+        return str(value).replace("\\", "\\\\").replace("\r", "\\r").replace("\n", "\\n");
+    }
+
+    /**
+     * @param record see {@link #record}
+     * @param key
+     * @return the (escaped) value of the key, null if not there
+     */
+    public static String recordField(String record, String key) {
+        if (record == null) {
+            return null;
+        }
+        for (String line : record.split("\n", -1)) {
+            if (line.startsWith(key + "=")) {
+                return line.substring(key.length() + 1);
+            }
+        }
+        return null;
+    }
+
+    private static String hex(byte[] digest) {
+        return HexFormat.of().formatHex(digest);
     }
 
     /**
@@ -140,14 +213,44 @@ public final class GobdUtil {
      * @return with two decimals and a dot, "0.00" for null or not a number
      */
     public static String fmtDec(Object num) {
+        BigDecimal b = decimal(num);
+        return b == null ? "0.00" : b.setScale(2, RoundingMode.HALF_UP).toPlainString();
+    }
+
+    /**
+     * For comparing amounts (the guard, the hash records): 6 decimals, so a
+     * change below a cent is found as well; the database columns are DOUBLE,
+     * so more decimals would differ between memory and database.
+     *
+     * @param num
+     * @return with 6 decimals and a dot, "0.000000" for null or not a number
+     */
+    public static String fmtExact(Object num) {
+        BigDecimal b = decimal(num);
+        return (b == null ? BigDecimal.ZERO : b).setScale(6, RoundingMode.HALF_UP).toPlainString();
+    }
+
+    private static BigDecimal decimal(Object num) {
         if (num == null) {
-            return "0.00";
+            return null;
+        }
+        if (num instanceof BigDecimal) {
+            return (BigDecimal) num;
         }
         try {
-            return String.format(Locale.US, "%.2f", Double.parseDouble(num.toString()));
+            //Double.toString is the shortest exact text of a double
+            return new BigDecimal(num.toString().trim());
         } catch (Exception e) {
-            return "0.00";
+            return null;
         }
+    }
+
+    /**
+     * @param text
+     * @return text for LIKE ... ESCAPE '!': ! % _ escaped with !
+     */
+    public static String likeEscape(String text) {
+        return text == null ? "" : text.replace("!", "!!").replace("%", "!%").replace("_", "!_");
     }
 
     /**
@@ -163,6 +266,24 @@ public final class GobdUtil {
         }
         String s = d.toString().trim();
         return s.length() >= 10 ? s.substring(0, 10) : s;
+    }
+
+    /**
+     * @param d a time stamp or a database value
+     * @return yyyy-MM-dd HH:mm:ss, "" for null
+     */
+    public static String fmtTimestamp(Object d) {
+        if (d == null) {
+            return "";
+        }
+        if (d instanceof Date) {
+            return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format((Date) d);
+        }
+        if (d instanceof java.time.LocalDateTime) {
+            return ((java.time.LocalDateTime) d).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        }
+        String s = d.toString().trim().replace('T', ' ');
+        return s.length() >= 19 ? s.substring(0, 19) : s;
     }
 
     /**
@@ -299,6 +420,18 @@ public final class GobdUtil {
      * @return true if the date is in the year
      */
     public static boolean inYear(Object dateText, String year) {
-        return dateText != null && dateText.toString().startsWith(year);
+        return dateText != null && fmtDate(dateText).startsWith(year);
+    }
+
+    /**
+     * @param d a date
+     * @return its year, the current year for null
+     */
+    public static int yearOf(Date d) {
+        java.util.Calendar c = java.util.Calendar.getInstance();
+        if (d != null) {
+            c.setTime(d);
+        }
+        return c.get(java.util.Calendar.YEAR);
     }
 }
