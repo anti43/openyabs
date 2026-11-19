@@ -296,7 +296,8 @@ public class DialogForFile extends JFileChooser implements Waiter {
    }
 
    private Component parentWindow() {
-      return mparent == null ? mpv5.YabsViewProxy.instance().getIdentifierFrame() : mparent;
+      //in front of the window the user works in (a wizard, a dialog), not behind it
+      return Popup.owner(mparent);
    }
 
    /**
