@@ -197,6 +197,7 @@ abstract class AppOnDatabase {
             assertEquals(0, new BigDecimal("60").compareTo(inv2.__getNetvalue()));
             assertEquals(c.__getIDS(), inv2.__getContactsids());
             orderConfirmationHasPositions(c, inv2);
+            journal(inv2);
             //template manager: the preview is a PDF of the template with the document
             Template invoiceTemplate = null;
             for (DatabaseObject o : DatabaseObject.getObjects(Context.getTemplate())) {
@@ -525,6 +526,62 @@ abstract class AppOnDatabase {
      * Logged exceptions are in the history (category "Errors"): once per
      * message, with how often they happened
      */
+    /**
+     * The journal loads invoices, income and expenses of the period (the
+     * queries join groups, accounts and contacts: no ambiguous columns) with
+     * their amounts by tax rate
+     */
+    private static void journal(Item inv) throws Exception {
+        mpv5.db.objects.Expense ex = (mpv5.db.objects.Expense) DatabaseObject.getObject(Context.getExpense());
+        ex.setCname("Bueromaterial");
+        ex.setCnumber("A-1");
+        ex.setNetvalue(new BigDecimal("10.00"));
+        ex.setTaxpercentvalue(new BigDecimal("7"));
+        ex.setBrutvalue(new BigDecimal("10.70"));
+        ex.setAccountsids(1);
+        ex.setDateadded(new Date());
+        ex.setDateend(new Date());
+        ex.setIspaid(true);
+        assertTrue(ex.save(true));
+        mpv5.db.objects.Revenue rev = (mpv5.db.objects.Revenue) DatabaseObject.getObject(Context.getRevenue());
+        rev.setCname("Zinsen");
+        rev.setCnumber("E-1");
+        rev.setNetvalue(new BigDecimal("5.00"));
+        rev.setTaxpercentvalue(new BigDecimal("0"));
+        rev.setBrutvalue(new BigDecimal("5.00"));
+        rev.setAccountsids(1);
+        rev.setDateadded(new Date());
+        rev.setDateend(new Date());
+        rev.setStatus(Item.STATUS_PAID);
+        assertTrue(rev.save(true));
+        java.time.LocalDate today = java.time.LocalDate.now();
+        mpv5.utils.date.vTimeframe year = new mpv5.utils.date.vTimeframe(
+                java.sql.Date.valueOf(today.withDayOfYear(1)), mpv5.utils.date.DateConverter.getEndOfDay(java.sql.Date.valueOf(today.withMonth(12).withDayOfMonth(31))));
+        for (boolean byPay : new boolean[]{false, true}) {
+            java.util.List<mpv5.handler.JournalCalc.Entry> l = mpv5.ui.panels.JournalPanel.loadAll(year, byPay);
+            mpv5.handler.JournalCalc.Entry i = null, e = null, r = null;
+            for (mpv5.handler.JournalCalc.Entry x : l) {
+                if (x.obj instanceof Item && ((Item) x.obj).__getIDS() == inv.__getIDS()) {
+                    i = x;
+                } else if (x.obj instanceof mpv5.db.objects.Expense && ((mpv5.db.objects.Expense) x.obj).__getIDS() == ex.__getIDS()) {
+                    e = x;
+                } else if (x.obj instanceof mpv5.db.objects.Revenue && ((mpv5.db.objects.Revenue) x.obj).__getIDS() == rev.__getIDS()) {
+                    r = x;
+                }
+            }
+            assertTrue(i != null, "journal: invoice missing (by pay date: " + byPay + ")");
+            assertTrue(e != null, "journal: expense missing (by pay date: " + byPay + ")");
+            assertTrue(r != null, "journal: income missing (by pay date: " + byPay + ")");
+            //the invoice: its positions are 19 %
+            assertEquals(1, i.rates.size(), "journal: rates of the invoice " + i.rates.keySet());
+            assertEquals(0, new BigDecimal("19").compareTo(i.rates.keySet().iterator().next()));
+            assertEquals(0, new BigDecimal("7").compareTo(e.rates.keySet().iterator().next()));
+            assertEquals(0, BigDecimal.ZERO.compareTo(r.rates.keySet().iterator().next()));
+            mpv5.handler.JournalCalc.Totals t = mpv5.handler.JournalCalc.compute(l, java.util.Collections.<Integer>emptySet());
+            assertEquals(0, new BigDecimal("10.00").compareTo(t.expenseNet));
+        }
+    }
+
     private static void errorsInTheHistory() throws Exception {
         String unique = "test error " + System.nanoTime();
         for (int i = 0; i < 3; i++) {

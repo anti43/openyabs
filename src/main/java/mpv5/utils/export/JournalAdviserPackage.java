@@ -116,12 +116,24 @@ public final class JournalAdviserPackage {
      * @param filters the filters as text lines (for the summary)
      */
     public JournalAdviserPackage(List<Entry> entries, Totals totals, Date from, Date to, List<String> filters) {
+        this(entries, totals, from, to, filters, rateLabels());
+    }
+
+    /**
+     * @param entries the journal rows (as loaded)
+     * @param totals their sums
+     * @param from start of the period
+     * @param to end of the period
+     * @param filters the filters as text lines (for the summary)
+     * @param rateLabels the names of the tax rates ({@link #rateLabels()})
+     */
+    public JournalAdviserPackage(List<Entry> entries, Totals totals, Date from, Date to, List<String> filters, Map<BigDecimal, String> rateLabels) {
         this.entries = entries;
         this.totals = totals;
         this.from = from;
         this.to = to;
         this.filters = filters;
-        this.rateLabels = rateLabels();
+        this.rateLabels = rateLabels == null ? rateLabels() : rateLabels;
     }
 
     /**

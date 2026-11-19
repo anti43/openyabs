@@ -98,7 +98,6 @@ import mpv5.handler.JournalCalc.Entry;
 import mpv5.handler.JournalCalc.Totals;
 import mpv5.handler.TemplateHandler;
 import mpv5.logging.Log;
-import mpv5.ui.beans.LabeledTextField;
 import mpv5.ui.beans.TimeframeChooser;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.Notificator;
@@ -200,21 +199,21 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
     private final JToggleButton filterToggle = new JToggleButton(Messages.JOURNAL_FILTERS.toString(), true);
     private JComponent filterArea;
     //sums
-    private final LabeledTextField revenueNetto = sum(Messages.JOURNAL_SUM_INCOME_NET);
-    private final LabeledTextField revenueTax = sum(Messages.JOURNAL_SUM_INCOME_TAX);
-    private final LabeledTextField revenueBrut = sum(Messages.JOURNAL_SUM_INCOME_GROSS);
-    private final LabeledTextField expNetto = sum(Messages.JOURNAL_SUM_EXPENSE_NET);
-    private final LabeledTextField expTax = sum(Messages.JOURNAL_SUM_EXPENSE_TAX);
-    private final LabeledTextField expBrut = sum(Messages.JOURNAL_SUM_EXPENSE_GROSS);
-    private final LabeledTextField profitNetto = sum(Messages.JOURNAL_SUM_PROFIT_NET);
-    private final LabeledTextField profitTax = sum(Messages.JOURNAL_SUM_PROFIT_TAX);
-    private final LabeledTextField profitBrut = sum(Messages.JOURNAL_SUM_PROFIT_GROSS);
-    private final LabeledTextField openReceivables = sum(Messages.JOURNAL_SUM_OPEN_RECEIVABLES);
-    private final LabeledTextField openPayables = sum(Messages.JOURNAL_SUM_OPEN_PAYABLES);
-    private final LabeledTextField volumeDiscount = sum(Messages.JOURNAL_SUM_DISCOUNT);
-    private final LabeledTextField volumeNetto = sum(Messages.JOURNAL_SUM_VOLUME_NET);
-    private final LabeledTextField taxVolume = sum(Messages.JOURNAL_SUM_VOLUME_TAX);
-    private final LabeledTextField volumeBrutto = sum(Messages.JOURNAL_SUM_VOLUME_GROSS);
+    private final JLabel revenueNetto = sum(Messages.JOURNAL_SUM_INCOME_NET);
+    private final JLabel revenueTax = sum(Messages.JOURNAL_SUM_INCOME_TAX);
+    private final JLabel revenueBrut = sum(Messages.JOURNAL_SUM_INCOME_GROSS);
+    private final JLabel expNetto = sum(Messages.JOURNAL_SUM_EXPENSE_NET);
+    private final JLabel expTax = sum(Messages.JOURNAL_SUM_EXPENSE_TAX);
+    private final JLabel expBrut = sum(Messages.JOURNAL_SUM_EXPENSE_GROSS);
+    private final JLabel profitNetto = sum(Messages.JOURNAL_SUM_PROFIT_NET);
+    private final JLabel profitTax = sum(Messages.JOURNAL_SUM_PROFIT_TAX);
+    private final JLabel profitBrut = sum(Messages.JOURNAL_SUM_PROFIT_GROSS);
+    private final JLabel openReceivables = sum(Messages.JOURNAL_SUM_OPEN_RECEIVABLES);
+    private final JLabel openPayables = sum(Messages.JOURNAL_SUM_OPEN_PAYABLES);
+    private final JLabel volumeDiscount = sum(Messages.JOURNAL_SUM_DISCOUNT);
+    private final JLabel volumeNetto = sum(Messages.JOURNAL_SUM_VOLUME_NET);
+    private final JLabel taxVolume = sum(Messages.JOURNAL_SUM_VOLUME_TAX);
+    private final JLabel volumeBrutto = sum(Messages.JOURNAL_SUM_VOLUME_GROSS);
     private final JLabel taxRates = new JLabel(" ");
     private final JLabel einvoiceCheck = new JLabel(" ");
     private final JLabel exportResult = new JLabel(" ");
@@ -228,6 +227,7 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
 
     //state
     private List<Entry> entries = new ArrayList<Entry>();
+    private Map<BigDecimal, String> rateLabels = new HashMap<BigDecimal, String>();
     private Totals totals = new Totals();
     private boolean adjusting;
     private int generation;
@@ -303,13 +303,66 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         setData();
     }
 
-    private static LabeledTextField sum(Messages label) {
-        LabeledTextField f = new LabeledTextField();
-        f.set_Label(label.toString());
+    /**
+     * A sum: the value (the label text is its name, shown next to it)
+     */
+    private static JLabel sum(Messages label) {
+        JLabel f = new JLabel("0");
         f.setName(label.name());
-        f.getTextField().setEditable(false);
-        f.getTextField().setHorizontalAlignment(JTextField.RIGHT);
+        f.putClientProperty("label", label.toString()); //NOI18N
+        f.setHorizontalAlignment(JLabel.RIGHT);
+        f.setFont(ModernTheme.font(0, Font.BOLD));
         return f;
+    }
+
+    /**
+     * The sums in a compact grid: one column each for income, expenses,
+     * result, open items and volume, three rows (label left, value right)
+     */
+    private JPanel sumsGrid() {
+        JLabel[][] cols = {
+            {revenueNetto, revenueTax, revenueBrut},
+            {expNetto, expTax, expBrut},
+            {profitNetto, profitTax, profitBrut},
+            {openReceivables, openPayables, volumeDiscount},
+            {volumeNetto, taxVolume, volumeBrutto}};
+        JPanel g = new JPanel(new GridBagLayout());
+        g.setOpaque(false);
+        int gap = ModernTheme.px(18);
+        for (int c = 0; c < cols.length; c++) {
+            for (int r = 0; r < cols[c].length; r++) {
+                JLabel value = cols[c][r];
+                JLabel name = new JLabel(String.valueOf(value.getClientProperty("label")));
+                name.setForeground(ModernTheme.muted());
+                name.setFont(ModernTheme.font(-1, Font.PLAIN));
+                GridBagConstraints gc = new GridBagConstraints();
+                gc.gridy = r;
+                gc.gridx = c * 2;
+                gc.anchor = GridBagConstraints.WEST;
+                gc.insets = new Insets(r == 0 ? 0 : ModernTheme.px(2), c == 0 ? 0 : gap, 0, ModernTheme.px(8));
+                g.add(name, gc);
+                gc.gridx = c * 2 + 1;
+                gc.anchor = GridBagConstraints.EAST;
+                gc.weightx = 1;
+                gc.fill = GridBagConstraints.HORIZONTAL;
+                gc.insets = new Insets(r == 0 ? 0 : ModernTheme.px(2), 0, 0, 0);
+                g.add(value, gc);
+            }
+            //a thin line between the columns
+            if (c > 0) {
+                javax.swing.JSeparator s = new javax.swing.JSeparator(javax.swing.SwingConstants.VERTICAL);
+                s.setForeground(ModernTheme.border());
+                GridBagConstraints gc = new GridBagConstraints();
+                gc.gridx = c * 2;
+                gc.gridy = 0;
+                gc.gridheight = 3;
+                gc.fill = GridBagConstraints.VERTICAL;
+                gc.anchor = GridBagConstraints.WEST;
+                gc.insets = new Insets(0, gap / 2, 0, 0);
+                g.add(s, gc);
+            }
+        }
+        return g;
     }
 
     // <editor-fold defaultstate="collapsed" desc="Filters">
@@ -350,7 +403,7 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
                 um.addElement(u);
             }
         } catch (NodataFoundException e) {
-            Log.Debug(this, e.getMessage());
+            Log.Debug(JournalPanel.class, e.getMessage());
         }
         users.setModel(um);
 
@@ -367,14 +420,14 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         try {
             gl.addAll(DatabaseObject.getObjects(Context.getGroup()));
         } catch (NodataFoundException e) {
-            Log.Debug(this, e.getMessage());
+            Log.Debug(JournalPanel.class, e.getMessage());
         }
         groups.setItems(gl);
         List<Object> al = new ArrayList<Object>();
         try {
             al.addAll(DatabaseObject.getObjects(Context.getAccounts()));
         } catch (NodataFoundException e) {
-            Log.Debug(this, e.getMessage());
+            Log.Debug(JournalPanel.class, e.getMessage());
         }
         accounts.setItems(al);
 
@@ -387,7 +440,7 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         view.setSelectedIndex(v < 0 || v > VIEW_CUSTOM ? VIEW_EUR : v);
         if (v == VIEW_CUSTOM) {
             AbstractButton[] bs = {incInvoices, incCredits, incDeposits, incPartPayments, incRevenues, incOrders, incOffers, incExpenses, incomeByPay, expenseByPay};
-            boolean[] defaults = {true, true, true, true, true, false, false, true, false, false};
+            boolean[] defaults = {true, true, true, true, true, true, true, true, false, false};
             for (int i = 0; i < bs.length; i++) {
                 bs[i].setSelected(p.getProperty(this, "custom" + i, Boolean.valueOf(defaults[i])));
             }
@@ -521,8 +574,9 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         for (JCheckBox b : new JCheckBox[]{incInvoices, incCredits, incDeposits, incPartPayments, incRevenues, incExpenses}) {
             b.setSelected(true);
         }
-        incOrders.setSelected(false);
-        incOffers.setSelected(false);
+        //not part of the result (gray), shown for the overview
+        incOrders.setSelected(true);
+        incOffers.setSelected(true);
         switch (v) {
             case VIEW_EUR:
                 incomeStatus.setSelectedIndex(STATUS_PAID);
@@ -588,7 +642,7 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
             p.changeProperty(this, "incomestatus", incomeStatus.getSelectedIndex());
             p.changeProperty(this, "expensestatus", expenseStatus.getSelectedIndex());
         } catch (Exception e) {
-            Log.Debug(this, e.getMessage());
+            Log.Debug(JournalPanel.class, e.getMessage());
         }
     }
 
@@ -655,10 +709,20 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         for (ChipToggle c : periodChips) {
             chips.add(c);
         }
-        Card period = new Card(Messages.JOURNAL_PERIOD.toString())
-                .row(Card.field(null, timeframeChooser1, 1.4), Card.field(null, chips, 3))
-                .row(Card.field(Messages.JOURNAL_VIEW.toString(), view, 1.4), Card.field(Messages.JOURNAL_USER.toString(), users, 1),
-                        Card.field(null, new JLabel(), 2));
+        //period, shortcuts, view and user in one line (wraps in narrow windows)
+        timeframeChooser1.setPreferredSize(new Dimension(ModernTheme.px(250), timeframeChooser1.getPreferredSize().height));
+        JPanel line = new JPanel(new mpv5.ui.modern.WrapLayout(FlowLayout.LEFT, ModernTheme.px(6), ModernTheme.px(2)));
+        line.setOpaque(false);
+        line.add(ModernTheme.fieldLabel(Messages.JOURNAL_PERIOD.toString()));
+        line.add(timeframeChooser1);
+        line.add(chips);
+        line.add(javax.swing.Box.createHorizontalStrut(ModernTheme.px(10)));
+        line.add(ModernTheme.fieldLabel(Messages.JOURNAL_VIEW.toString()));
+        line.add(view);
+        line.add(javax.swing.Box.createHorizontalStrut(ModernTheme.px(10)));
+        line.add(ModernTheme.fieldLabel(Messages.JOURNAL_USER.toString()));
+        line.add(users);
+        Card period = new Card(null).addFull(line);
 
         Card income = new Card(Messages.JOURNAL_INCOME.toString())
                 .addFull(flow(incInvoices, incCredits))
@@ -749,13 +813,17 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
                 }
             }
         });
-        Card sums = new Card(Messages.JOURNAL_TOTALS.toString())
-                .row(Applets.field(revenueNetto), Applets.field(expNetto), Applets.field(profitNetto), Applets.field(openReceivables), Applets.field(volumeNetto))
-                .row(Applets.field(revenueTax), Applets.field(expTax), Applets.field(profitTax), Applets.field(openPayables), Applets.field(taxVolume))
-                .row(Applets.field(revenueBrut), Applets.field(expBrut), Applets.field(profitBrut), Applets.field(volumeDiscount), Applets.field(volumeBrutto))
-                .addFull(taxRates)
-                .addFull(einvoiceCheck)
-                .addFull(exportResult);
+        JPanel info = new JPanel(new mpv5.ui.modern.WrapLayout(FlowLayout.LEFT, 0, 0));
+        info.setOpaque(false);
+        info.add(taxRates);
+        JPanel info2 = new JPanel(new BorderLayout(gap, 0));
+        info2.setOpaque(false);
+        info2.add(einvoiceCheck, BorderLayout.WEST);
+        info2.add(exportResult, BorderLayout.CENTER);
+        Card sums = new Card(null)
+                .addFull(sumsGrid())
+                .addFull(info)
+                .addFull(info2);
 
         JPanel journal = new JPanel(new BorderLayout(0, gap));
         journal.setOpaque(false);
@@ -938,7 +1006,7 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
                 try {
                     show(get());
                 } catch (Exception e) {
-                    Log.Debug(JournalPanel.this, e);
+                    Log.Debug(JournalPanel.class, e);
                     count.setText(" ");
                     Popup.error(e);
                 }
@@ -953,7 +1021,7 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
      * @return the entries and their sums
      * @throws Exception
      */
-    private Loaded load(Filter f) throws Exception {
+    private static Loaded load(Filter f) throws Exception {
         Set<Integer> groupIds = new HashSet<Integer>();
         for (Group g : f.groups) {
             groupIds.add(g.__getIDS());
@@ -963,7 +1031,7 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
                         groupIds.add(c.__getIDS());
                     }
                 } catch (NodataFoundException e) {
-                    Log.Debug(this, e.getMessage());
+                    Log.Debug(JournalPanel.class, e.getMessage());
                 }
             }
         }
@@ -1029,7 +1097,7 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
                 try {
                     e.open = mpv5.handler.Payments.open((Item) e.obj);
                 } catch (Exception ex) {
-                    Log.Debug(this, ex.getMessage());
+                    Log.Debug(JournalPanel.class, ex.getMessage());
                 }
             }
         }
@@ -1039,9 +1107,9 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         l.entries = list;
         l.totals = JournalCalc.compute(list, paidInParts);
         try {
-            l.check = new JournalAdviserPackage(list, l.totals, f.time.getStart(), f.time.getEnd(), new ArrayList<String>()).checkEInvoices();
+            l.check = new JournalAdviserPackage(list, l.totals, f.time.getStart(), f.time.getEnd(), new ArrayList<String>(), l.labels).checkEInvoices();
         } catch (Exception e) {
-            Log.Debug(this, e);
+            Log.Debug(JournalPanel.class, e);
         }
         return l;
     }
@@ -1052,7 +1120,7 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
      *
      * @param list
      */
-    private void rates(List<Entry> list) {
+    private static void rates(List<Entry> list) {
         Set<Integer> ids = new HashSet<Integer>();
         for (Entry e : list) {
             if (e.obj instanceof Expense) {
@@ -1076,7 +1144,7 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
      * @return the net and tax of the items of the documents by rate:
      * document - rate - {net, tax}
      */
-    private Map<Integer, Map<BigDecimal, BigDecimal[]>> itemRates(Set<Integer> ids) {
+    private static Map<Integer, Map<BigDecimal, BigDecimal[]>> itemRates(Set<Integer> ids) {
         Map<Integer, Map<BigDecimal, BigDecimal[]>> m = new HashMap<Integer, Map<BigDecimal, BigDecimal[]>>();
         List<Integer> all = new ArrayList<Integer>(ids);
         for (int from = 0; from < all.size(); from += 500) {
@@ -1106,10 +1174,35 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
                     rates.put(rate, v == null ? new BigDecimal[]{net, tax} : new BigDecimal[]{v[0].add(net), v[1].add(tax)});
                 }
             } catch (Exception e) {
-                Log.Debug(this, e);
+                Log.Debug(JournalPanel.class, e);
             }
         }
         return m;
+    }
+
+    /**
+     * The whole journal of a period, without filters: all outgoing
+     * documents (also offers and orders), income, expenses and payments, any
+     * status, with their amounts by tax rate and whether they count
+     *
+     * @param time the period
+     * @param byPayDate true: by payment date (EÜR), false: by document date
+     * @return the entries, sorted by date
+     * @throws Exception
+     */
+    public static List<Entry> loadAll(vTimeframe time, boolean byPayDate) throws Exception {
+        Filter f = new Filter();
+        f.time = time;
+        f.items.addAll(Arrays.asList(Context.getInvoice(), Context.getCredit(), Context.getDeposit(), Context.getPartPayment(),
+                Context.getOrder(), Context.getOffer()));
+        f.includeInvoices = true;
+        f.revenues = true;
+        f.expenses = true;
+        f.incomeStatus = STATUS_ALL;
+        f.expenseStatus = STATUS_ALL;
+        f.incomeByPay = byPayDate;
+        f.expenseByPay = byPayDate;
+        return load(f).entries;
     }
 
     private static boolean matchesIncome(Entry e, int status) {
@@ -1143,7 +1236,8 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         if (f.user != null) {
             p.and(new QueryParameter(c, "intaddedby", f.user.__getIDS(), QueryParameter.EQUALS)); //NOI18N
         }
-        p.setOrder("dateadded", true); //NOI18N
+        //qualified: groups, accounts and contacts (joined) have a dateadded too
+        p.setOrder(c.getDbIdentity() + ".dateadded", true); //NOI18N
         return p;
     }
 
@@ -1208,7 +1302,7 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
     /**
      * @return the ids of the invoices with recorded payments
      */
-    private Set<Integer> paidInParts() {
+    private static Set<Integer> paidInParts() {
         Set<Integer> s = new HashSet<Integer>();
         if (!mpv5.db.common.DatabaseUpdater.hasTable("payments")) { //NOI18N
             return s;
@@ -1222,7 +1316,7 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
                 }
             }
         } catch (Exception e) {
-            Log.Debug(this, e);
+            Log.Debug(JournalPanel.class, e);
         }
         return s;
     }
@@ -1231,7 +1325,7 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
      * The payments received in the period (on invoices of the filters):
      * income on the pay date, net and tax in the proportion of the invoice
      */
-    private List<Entry> payments(Filter f, Set<Integer> groupIds, Set<Integer> paidInParts) {
+    private static List<Entry> payments(Filter f, Set<Integer> groupIds, Set<Integer> paidInParts) {
         List<Entry> rows = new ArrayList<Entry>();
         if (paidInParts.isEmpty()) {
             return rows;
@@ -1259,12 +1353,12 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
                 e.city = k.__getCity();
                 e.country = k.__getCountry();
             } catch (Exception ex) {
-                Log.Debug(this, ex.getMessage());
+                Log.Debug(JournalPanel.class, ex.getMessage());
             }
             try {
                 e.account = inv.getAccount().__getCname();
             } catch (Exception ex) {
-                Log.Debug(this, ex.getMessage());
+                Log.Debug(JournalPanel.class, ex.getMessage());
             }
             e.group = inv.getGroup() == null ? "" : inv.getGroup().__getCname();
             e.date = p.date;
@@ -1286,6 +1380,7 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
     private void show(Loaded l) {
         entries = l.entries;
         totals = l.totals;
+        rateLabels = l.labels;
         Object[][] d = new Object[entries.size()][];
         for (int i = 0; i < d.length; i++) {
             d[i] = row(entries.get(i));
@@ -1540,7 +1635,7 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         }
         File f = d.getFile();
         final File target = f.getName().toLowerCase().endsWith(".zip") ? f : new File(f.getParentFile(), f.getName() + ".zip"); //NOI18N
-        final JournalAdviserPackage p = new JournalAdviserPackage(new ArrayList<Entry>(entries), totals, t.getStart(), t.getEnd(), filterLines());
+        final JournalAdviserPackage p = new JournalAdviserPackage(new ArrayList<Entry>(entries), totals, t.getStart(), t.getEnd(), filterLines(), rateLabels);
         exportedFile = null;
         exportResult.setText(Messages.JOURNAL_EXPORT_RUNNING.toString());
         exportResult.setCursor(Cursor.getDefaultCursor());
@@ -1665,7 +1760,7 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
                     try {
                         children.addAll(((Group) g).getChildGroups());
                     } catch (NodataFoundException e) {
-                        Log.Debug(this, e.getMessage());
+                        Log.Debug(JournalPanel.class, e.getMessage());
                     }
                 }
                 map.put("journal.childgroups", String.valueOf(children)); //NOI18N
