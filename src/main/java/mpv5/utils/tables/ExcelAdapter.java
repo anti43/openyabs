@@ -78,7 +78,7 @@ public class ExcelAdapter implements ActionListener {
                     && (numrows == rowsselected.length)) && ((numcols - 1
                         == colsselected[colsselected.length - 1] - colsselected[0]) && (numcols
                             == colsselected.length)))) {
-                JOptionPane.showMessageDialog(null, "Invalid Copy Selection", "Invalid Copy Selection",
+                JOptionPane.showMessageDialog(jTable1, "Invalid Copy Selection", "Invalid Copy Selection",
                                               JOptionPane.ERROR_MESSAGE);
 
                 return;

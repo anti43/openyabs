@@ -20,12 +20,15 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GraphicsEnvironment;
+import java.awt.KeyboardFocusManager;
+import java.awt.Window;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.Icon;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -79,7 +82,11 @@ public class Popup {
         return true;
     }
 
-    //no frame without a display (headless start, tests): dialogs then have no parent
+    /**
+     * The main window of the application: the fallback parent of popups when
+     * no other window of the application is active. No frame without a
+     * display (headless start, tests): dialogs then have no parent
+     */
     public static Component identifier = GraphicsEnvironment.isHeadless() ? null
             : new Frame(GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration());
 
@@ -98,7 +105,8 @@ public class Popup {
                 text += message[i].toString();
             }
         }
-        return JOptionPane.showInputDialog(identifier, String.valueOf(text));
+        final String q = text;
+        return onEdt(() -> JOptionPane.showInputDialog(owner(), q), null);
     }
 
     /**
@@ -117,14 +125,7 @@ public class Popup {
      * @return
      */
     public static boolean Y_N_dialog(Object text, Object label) {
-        if (silent(text)) {
-            return false;
-        }
-        if (JOptionPane.showConfirmDialog(identifier, prepareText(String.valueOf(text)), label.toString(), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, new javax.swing.ImageIcon(new Popup().getClass().getResource("/images/32/warning.png"))) == JOptionPane.YES_OPTION) {
-            return true;
-        } else {
-            return false;
-        }
+        return Y_N_dialog(null, text, label);
     }
 
     /**
@@ -138,11 +139,7 @@ public class Popup {
         if (silent(text)) {
             return false;
         }
-        if (JOptionPane.showConfirmDialog(parent, prepareText(String.valueOf(text)), label.toString(), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, new javax.swing.ImageIcon(new Popup().getClass().getResource("/images/32/warning.png"))) == JOptionPane.YES_OPTION) {
-            return true;
-        } else {
-            return false;
-        }
+        return onEdt(() -> JOptionPane.showConfirmDialog(owner(parent), prepareText(String.valueOf(text)), label.toString(), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, new javax.swing.ImageIcon(new Popup().getClass().getResource("/images/32/warning.png"))) == JOptionPane.YES_OPTION, false);
     }
 
     /**
@@ -155,11 +152,7 @@ public class Popup {
         if (silent(text)) {
             return false;
         }
-        if (JOptionPane.showConfirmDialog(identifier, prepareText(String.valueOf(text)), label, JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, new javax.swing.ImageIcon(new Popup().getClass().getResource("/images/32/warning.png"))) == JOptionPane.OK_OPTION) {
-            return true;
-        } else {
-            return false;
-        }
+        return onEdt(() -> JOptionPane.showConfirmDialog(owner(), prepareText(String.valueOf(text)), label, JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, new javax.swing.ImageIcon(new Popup().getClass().getResource("/images/32/warning.png"))) == JOptionPane.OK_OPTION, false);
     }
 
     /**
@@ -171,7 +164,7 @@ public class Popup {
         if (silent(text)) {
             return;
         }
-        JOptionPane.showMessageDialog(parent, prepareText(String.valueOf(text)), Popup.NOTICE, JOptionPane.INFORMATION_MESSAGE);
+        message(parent, prepareText(String.valueOf(text)), Popup.NOTICE, JOptionPane.INFORMATION_MESSAGE);
     }
 
     /**
@@ -183,7 +176,7 @@ public class Popup {
         if (silent(text)) {
             return;
         }
-        JOptionPane.showMessageDialog(parent, prepareText(String.valueOf(text)), Popup.WARN, JOptionPane.WARNING_MESSAGE);
+        message(parent, prepareText(String.valueOf(text)), Popup.WARN, JOptionPane.WARNING_MESSAGE);
     }
 
     /**
@@ -195,7 +188,7 @@ public class Popup {
         if (silent(text)) {
             return;
         }
-        JOptionPane.showMessageDialog(parent, prepareText(String.valueOf(text)), Popup.ERROR, JOptionPane.ERROR_MESSAGE);
+        message(parent, prepareText(String.valueOf(text)), Popup.ERROR, JOptionPane.ERROR_MESSAGE);
     }
 
     /**
@@ -207,7 +200,7 @@ public class Popup {
         if (silent(text)) {
             return;
         }
-        JOptionPane.showMessageDialog(identifier, prepareText(String.valueOf(text)), Popup.WARN, JOptionPane.INFORMATION_MESSAGE);
+        message(null, prepareText(String.valueOf(text)), Popup.WARN, JOptionPane.INFORMATION_MESSAGE);
     }
 
     /**
@@ -219,7 +212,7 @@ public class Popup {
         if (silent(text)) {
             return;
         }
-        JOptionPane.showMessageDialog(identifier, prepareText(String.valueOf(text)), Popup.NOTICE, JOptionPane.INFORMATION_MESSAGE);
+        message(null, prepareText(String.valueOf(text)), Popup.NOTICE, JOptionPane.INFORMATION_MESSAGE);
     }
 
     /**
@@ -233,7 +226,7 @@ public class Popup {
         if (silent(text)) {
             return;
         }
-        JOptionPane.showMessageDialog(identifier, prepareText(String.valueOf(text), boxWidth, boxLength), Popup.NOTICE, JOptionPane.INFORMATION_MESSAGE);
+        message(null, prepareText(String.valueOf(text), boxWidth, boxLength), Popup.NOTICE, JOptionPane.INFORMATION_MESSAGE);
     }
 
     /**
@@ -243,7 +236,94 @@ public class Popup {
      */
     public static void error(Exception x) {
 //        x.printStackTrace();
-        error(identifier, x.getLocalizedMessage());
+        error(null, x.getLocalizedMessage());
+    }
+
+    /**
+     * The window a popup, file chooser or dialog belongs to, so it opens in
+     * front of the window the user works in (a wizard, a dialog, the main
+     * window) instead of behind it: the active window of the application if it
+     * is the given parent or one of its child windows, else the window of the
+     * parent, else the main window
+     *
+     * @param parent may be null
+     * @return the owner, null without a display
+     */
+    public static Window owner(Component parent) {
+        if (GraphicsEnvironment.isHeadless()) {
+            return null;
+        }
+        Window wanted = parent == null ? null
+                : parent instanceof Window ? (Window) parent : SwingUtilities.getWindowAncestor(parent);
+        if (wanted != null && !wanted.isShowing()) {
+            wanted = null;
+        }
+        Window active = KeyboardFocusManager.getCurrentKeyboardFocusManager().getActiveWindow();
+        if (active != null && active.isShowing()) {
+            if (wanted == null || isOwnedBy(active, wanted)) {
+                return active;
+            }
+        }
+        if (wanted != null) {
+            return wanted;
+        }
+        Component main = identifier;
+        if (main != null) {
+            Window w = main instanceof Window ? (Window) main : SwingUtilities.getWindowAncestor(main);
+            if (w != null && w.isShowing()) {
+                return w;
+            }
+        }
+        //nothing of the application on the screen (start, login): the topmost visible window
+        for (Window w : Window.getWindows()) {
+            if (w.isShowing() && (w instanceof Frame || w instanceof java.awt.Dialog)) {
+                return w;
+            }
+        }
+        return main instanceof Window ? (Window) main : null;
+    }
+
+    /**
+     * @return the owner of popups without a given parent, see {@link #owner(Component)}
+     */
+    public static Window owner() {
+        return owner(null);
+    }
+
+    private static boolean isOwnedBy(Window w, Window owner) {
+        for (Window x = w; x != null; x = x.getOwner()) {
+            if (x == owner) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static void message(Component parent, Object text, String title, int type) {
+        onEdt(() -> {
+            JOptionPane.showMessageDialog(owner(parent), text, title, type);
+            return null;
+        }, null);
+    }
+
+    /**
+     * Runs a dialog on the event thread: popups of background work then wait
+     * for each other and appear one after the other in the order they were
+     * asked for
+     */
+    private static <T> T onEdt(java.util.function.Supplier<T> dialog, T fallback) {
+        if (SwingUtilities.isEventDispatchThread() || GraphicsEnvironment.isHeadless()) {
+            return dialog.get();
+        }
+        java.util.concurrent.atomic.AtomicReference<T> result = new java.util.concurrent.atomic.AtomicReference<T>(fallback);
+        try {
+            SwingUtilities.invokeAndWait(() -> result.set(dialog.get()));
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } catch (java.lang.reflect.InvocationTargetException e) {
+            mpv5.logging.Log.Debug(Popup.class, e.getCause());
+        }
+        return result.get();
     }
 
     private static Object prepareText(String s) {
@@ -271,8 +351,8 @@ public class Popup {
      * @return the selected object or null
      */
     public static DatabaseObject SelectValue(ArrayList<DatabaseObject> objects, Object message) {
-        return (DatabaseObject) JOptionPane.showInputDialog(identifier, message, "",
-                JOptionPane.PLAIN_MESSAGE, (Icon) null, objects.toArray(), objects.get(0));
+        return onEdt(() -> (DatabaseObject) JOptionPane.showInputDialog(owner(), message, "",
+                JOptionPane.PLAIN_MESSAGE, (Icon) null, objects.toArray(), objects.get(0)), null);
     }
 
     /**

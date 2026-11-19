@@ -202,13 +202,13 @@ class ModernRevenuePanelTest {
             assertFalse(t.contains("unveraenderbar"), "Broken umlaut in UI text: " + t);
         }
 
-        assertTrue(texts.stream().anyMatch(t -> t.contains("Eingangsbelege & Abrechnungen")),
-                "Receipts card title should be 'Eingangsbelege & Abrechnungen'");
-        assertTrue(texts.stream().anyMatch(t -> t.contains("Beleg verkn\u00fcpfen")),
+        assertTrue(texts.stream().anyMatch(t -> t.contains(mpv5.globals.Messages.REVENUE_RECEIPTS_TITLE.toString())),
+                "Receipts card title should come from the language file");
+        assertTrue(texts.stream().anyMatch(t -> t.contains(mpv5.globals.Messages.RECEIPT_LINK.toString())),
                 "Link receipt button should use proper umlaut 'ü'");
-        assertTrue(texts.stream().anyMatch(t -> t.contains("\u00d6ffnen")),
+        assertTrue(texts.stream().anyMatch(t -> t.contains(mpv5.globals.Messages.RECEIPT_OPEN.toString())),
                 "Open receipt button should use proper umlaut 'Ö'");
-        assertTrue(texts.stream().anyMatch(t -> t.contains("Pr\u00fcfen")),
+        assertTrue(texts.stream().anyMatch(t -> t.contains(mpv5.globals.Messages.RECEIPT_VERIFY.toString())),
                 "Verify receipt button should use proper umlaut 'ü'");
 
         // Also check source file directly for any GoBD or ASCII umlaut remnants

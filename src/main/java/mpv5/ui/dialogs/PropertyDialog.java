@@ -44,6 +44,8 @@ public class PropertyDialog extends javax.swing.JDialog {
      * @param value
      */
     public PropertyDialog(int scope, String property, Object value) {
+        //owned by the window it is opened from, so it stays in front of it
+        super(Popup.owner());
         initComponents();
         setModalityType(JDialog.ModalityType.APPLICATION_MODAL);
         labeledTextField1.getTextField().setEditable(false);

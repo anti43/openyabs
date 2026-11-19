@@ -55,6 +55,8 @@ public class Wizard extends javax.swing.JDialog implements WizardMaster {
      * @param standalone
      */
     public Wizard(boolean standalone) {
+        //owned by the window it is opened from, so it stays in front of it
+        super(Popup.owner());
         initComponents();
         setModalityType(ModalityType.MODELESS);
         back.setEnabled(false);
