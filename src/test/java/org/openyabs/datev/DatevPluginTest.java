@@ -508,22 +508,26 @@ public class DatevPluginTest {
             }
         };
 
-        File zipFile = dir.resolve("steuerberater.zip").toFile();
+        File zipFile = dir.resolve("journal-package.zip").toFile();
         new JournalAdviserPackage(entries, totals, from, to, Collections.emptyList(), Collections.emptyMap())
                 .setPluginExports(Collections.singletonList(datevExport))
                 .write(zipFile);
 
         try (ZipFile zf = new ZipFile(zipFile)) {
+            assertNotNull(zf.getEntry("journal.csv"));
+            assertNotNull(zf.getEntry("journal_tax_rates.csv"));
             ZipEntry datevEntry = zf.getEntry("datev/EXTF_Buchungsstapel_20260101_20260131.csv");
             assertNotNull(datevEntry, "Tax-adviser ZIP must include datev/EXTF_Buchungsstapel_...csv");
             String content = new String(zf.getInputStream(datevEntry).readAllBytes(), DatevFormat.CHARSET);
             assertTrue(content.startsWith("\"EXTF\";700;21;\"Buchungsstapel\";13;"));
             assertTrue(content.contains("119,00;\"S\";\"EUR\";;;;1200;8400;"));
 
-            ZipEntry summary = zf.getEntry("zusammenfassung.txt");
-            assertNotNull(summary);
+            ZipEntry summary = zf.getEntry("summary.txt");
+            assertNotNull(summary, "Summary file must use international name summary.txt");
             String sumText = new String(zf.getInputStream(summary).readAllBytes(), StandardCharsets.UTF_8);
             assertTrue(sumText.contains("datev/EXTF_Buchungsstapel_20260101_20260131.csv"));
+            assertFalse(sumText.contains("Steuerberater"), "Default English summary must not contain hardcoded German");
+            assertFalse(sumText.contains("Einnahmen-\u00dcberschuss-Rechnung"), "Default English summary must not contain hardcoded German");
         }
     }
 

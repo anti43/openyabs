@@ -1359,7 +1359,7 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
      */
     private void exportAdviser() {
         vTimeframe t = timeframeChooser1.getTime();
-        String name = "steuerberater-" + new java.text.SimpleDateFormat("yyyyMMdd").format(t.getStart()) + "-" //NOI18N
+        String name = "journal-package-" + new java.text.SimpleDateFormat("yyyyMMdd").format(t.getStart()) + "-" //NOI18N
                 + new java.text.SimpleDateFormat("yyyyMMdd").format(t.getEnd()) + ".zip"; //NOI18N
         DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY, name);
         if (!d.saveFile()) {
