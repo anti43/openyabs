@@ -16,10 +16,8 @@
  */
 package org.openyabs.heilpraktiker;
 
-import groovy.json.JsonSlurper;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.charset.StandardCharsets;
@@ -129,8 +127,8 @@ public final class GebuehCatalog {
             if (in == null) {
                 throw new IOException("GebüH catalog resource not found: " + RESOURCE_PATH);
             }
-            Map<String, Object> root = (Map<String, Object>) new JsonSlurper()
-                    .parse(new InputStreamReader(in, StandardCharsets.UTF_8));
+            String json = new String(in.readAllBytes(), StandardCharsets.UTF_8);
+            Map<String, Object> root = (Map<String, Object>) new MiniJson(json).parseValue();
             String version = str(root.get("catalogVersion"));
             String source = str(root.get("source"));
             List<Map<String, Object>> rawItems = (List<Map<String, Object>>) root.get("items");
@@ -262,5 +260,160 @@ public final class GebuehCatalog {
             }
         }
         return l;
+    }
+
+    /**
+     * Minimal dependency-free JSON parser for reading {@code gebueh_catalog.json}.
+     */
+    private static final class MiniJson {
+
+        private final String s;
+        private int pos;
+
+        MiniJson(String s) {
+            this.s = s;
+        }
+
+        Object parseValue() throws IOException {
+            skipWs();
+            if (pos >= s.length()) {
+                throw new IOException("Unexpected end of JSON");
+            }
+            char c = s.charAt(pos);
+            if (c == '{') {
+                return parseObject();
+            }
+            if (c == '[') {
+                return parseArray();
+            }
+            if (c == '"') {
+                return parseString();
+            }
+            if (c == 't' && s.startsWith("true", pos)) {
+                pos += 4;
+                return Boolean.TRUE;
+            }
+            if (c == 'f' && s.startsWith("false", pos)) {
+                pos += 5;
+                return Boolean.FALSE;
+            }
+            if (c == 'n' && s.startsWith("null", pos)) {
+                pos += 4;
+                return null;
+            }
+            return parseNumber();
+        }
+
+        private Map<String, Object> parseObject() throws IOException {
+            Map<String, Object> m = new LinkedHashMap<String, Object>();
+            pos++; // '{'
+            skipWs();
+            if (pos < s.length() && s.charAt(pos) == '}') {
+                pos++;
+                return m;
+            }
+            while (pos < s.length()) {
+                skipWs();
+                String key = parseString();
+                skipWs();
+                if (pos >= s.length() || s.charAt(pos) != ':') {
+                    throw new IOException("Expected ':' at " + pos);
+                }
+                pos++;
+                m.put(key, parseValue());
+                skipWs();
+                if (pos < s.length() && s.charAt(pos) == ',') {
+                    pos++;
+                } else if (pos < s.length() && s.charAt(pos) == '}') {
+                    pos++;
+                    return m;
+                } else {
+                    throw new IOException("Expected ',' or '}' at " + pos);
+                }
+            }
+            throw new IOException("Unterminated JSON object");
+        }
+
+        private List<Object> parseArray() throws IOException {
+            List<Object> list = new ArrayList<Object>();
+            pos++; // '['
+            skipWs();
+            if (pos < s.length() && s.charAt(pos) == ']') {
+                pos++;
+                return list;
+            }
+            while (pos < s.length()) {
+                list.add(parseValue());
+                skipWs();
+                if (pos < s.length() && s.charAt(pos) == ',') {
+                    pos++;
+                } else if (pos < s.length() && s.charAt(pos) == ']') {
+                    pos++;
+                    return list;
+                } else {
+                    throw new IOException("Expected ',' or ']' at " + pos);
+                }
+            }
+            throw new IOException("Unterminated JSON array");
+        }
+
+        private String parseString() throws IOException {
+            if (s.charAt(pos) != '"') {
+                throw new IOException("Expected '\"' at " + pos);
+            }
+            pos++;
+            StringBuilder sb = new StringBuilder();
+            while (pos < s.length()) {
+                char c = s.charAt(pos++);
+                if (c == '"') {
+                    return sb.toString();
+                }
+                if (c == '\\' && pos < s.length()) {
+                    char esc = s.charAt(pos++);
+                    switch (esc) {
+                        case '"': sb.append('"'); break;
+                        case '\\': sb.append('\\'); break;
+                        case '/': sb.append('/'); break;
+                        case 'b': sb.append('\b'); break;
+                        case 'f': sb.append('\f'); break;
+                        case 'n': sb.append('\n'); break;
+                        case 'r': sb.append('\r'); break;
+                        case 't': sb.append('\t'); break;
+                        case 'u':
+                            sb.append((char) Integer.parseInt(s.substring(pos, pos + 4), 16));
+                            pos += 4;
+                            break;
+                        default:
+                            sb.append(esc);
+                    }
+                } else {
+                    sb.append(c);
+                }
+            }
+            throw new IOException("Unterminated JSON string");
+        }
+
+        private Number parseNumber() throws IOException {
+            int start = pos;
+            while (pos < s.length()) {
+                char c = s.charAt(pos);
+                if ((c >= '0' && c <= '9') || c == '-' || c == '+' || c == '.' || c == 'e' || c == 'E') {
+                    pos++;
+                } else {
+                    break;
+                }
+            }
+            String num = s.substring(start, pos);
+            if (num.isEmpty()) {
+                throw new IOException("Invalid JSON number at " + start);
+            }
+            return new BigDecimal(num);
+        }
+
+        private void skipWs() {
+            while (pos < s.length() && Character.isWhitespace(s.charAt(pos))) {
+                pos++;
+            }
+        }
     }
 }
