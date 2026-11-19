@@ -377,42 +377,14 @@ final class Pages {
             }
         }, panel);
 
-        JCheckBox autoIncome = new JCheckBox("ZUGFeRD / XRechnung Einnahmen-Belege aus Ueberwachungsordner automatisch importieren",
-                g.yabs.settings().getBoolean(Gobd.S_AUTOINCOME, false));
-        autoIncome.setAlignmentX(Component.LEFT_ALIGNMENT);
-        autoIncome.setBorder(BorderFactory.createEmptyBorder(14, 0, 4, 0));
-        autoIncome.addActionListener(e -> {
-            g.yabs.settings().setBoolean(Gobd.S_AUTOINCOME, autoIncome.isSelected());
-            g.configureIncomeWatch();
-            g.status("GoBD Einnahmen-Auto-Import Einstellung gespeichert.");
-        });
-
-        JTextField watch = new JTextField(g.yabs.settings().get(Gobd.S_WATCH, ""), 30);
-        JPanel watchRow = folderRow(watch, "Ueberwachungsordner fuer Einnahmen auswaehlen", s -> {
-            try {
-                String t = s == null ? "" : s.trim();
-                if (t.isEmpty()) {
-                    g.yabs.settings().set(Gobd.S_WATCH, "");
-                    watch.setText("");
-                } else {
-                    Path p = Paths.get(t).toAbsolutePath();
-                    Files.createDirectories(p);
-                    g.yabs.settings().set(Gobd.S_WATCH, p.toString());
-                    watch.setText(p.toString());
-                }
-                g.configureIncomeWatch();
-                g.status("GoBD Einnahmen-Ueberwachungsordner gespeichert.");
-            } catch (Exception ex) {
-                g.error("Ungueltiger Ordnerpfad fuer Einnahmen-Import:\n" + ex.getMessage());
-            }
-        }, panel);
 
         panel.add(autoLock);
         panel.add(label("Revisionssicherer GoBD-Archivordner:", 10));
         panel.add(archiveRow);
-        panel.add(autoIncome);
-        panel.add(label("Ueberwachungsordner fuer ZUGFeRD / XRechnung Einnahmen (gobd.incomeWatchPath):", 6));
-        panel.add(watchRow);
+        //e-invoices (expenses and income) are imported by YaBS: import buttons, drag and drop and
+        //the e-invoice folder (settings > folders); the plugin locks the records with their receipts
+        panel.add(label("E-Rechnungen (Ausgaben und Einnahmen) importiert YaBS: Import-Schaltflaechen, Drag & Drop und der"
+                + " E-Rechnungs-Ordner (Einstellungen > Ordner). Das Plugin schreibt die Buchungen mit ihrem Beleg fest.", 14));
         return panel;
     }
 }

@@ -54,6 +54,10 @@ class EInvoiceRoundTripTest {
     }
 
     private void newInstallation() throws Exception {
+        newInstallation(tmp);
+    }
+
+    static void newInstallation(Path tmp) throws Exception {
         File dir = tmp.toFile();
         mpv5.Main.MPPATH = dir.getPath();
         mpv5.Main.SETTINGS_FILE = new File(dir, "settings.yabs").getPath();
@@ -75,19 +79,19 @@ class EInvoiceRoundTripTest {
         mpv5.handler.FirstStartSetup.prepare(admin, true, null);
     }
 
-    private static File write(Path dir, String name, String xml) throws Exception {
+    static File write(Path dir, String name, String xml) throws Exception {
         File f = dir.resolve(name).toFile();
         f.getParentFile().mkdirs();
         Files.write(f.toPath(), xml.getBytes(StandardCharsets.UTF_8));
         return f;
     }
 
-    private static int count(String table) throws Exception {
+    static int count(String table) throws Exception {
         return Integer.parseInt(String.valueOf(QueryHandler.getConnection().freeQuery("SELECT COUNT(*) FROM " + table,
                 mpv5.usermanagement.MPSecurityManager.VIEW, null).getData()[0][0]));
     }
 
-    private static <T> T onEdt(java.util.concurrent.Callable<T> c) throws Exception {
+    static <T> T onEdt(java.util.concurrent.Callable<T> c) throws Exception {
         java.util.concurrent.atomic.AtomicReference<T> r = new java.util.concurrent.atomic.AtomicReference<>();
         java.util.concurrent.atomic.AtomicReference<Exception> ex = new java.util.concurrent.atomic.AtomicReference<>();
         javax.swing.SwingUtilities.invokeAndWait(() -> {
@@ -105,11 +109,26 @@ class EInvoiceRoundTripTest {
 
     @Test
     void eInvoicesOnANewInstallation() throws Exception {
+        scenario(tmp, null);
+    }
+
+    /**
+     * The whole run: a new installation, e-invoices imported as expenses and
+     * income, an own invoice exported as XRechnung and ZUGFeRD and imported
+     * again, the e-invoice folder, changed files. The same with and without
+     * plugins.
+     *
+     * @param tmp
+     * @param afterInstall runs after the installation (e.g. starts a plugin),
+     * may be null
+     * @return the exported invoice
+     */
+    static mpv5.db.objects.Item scenario(Path tmp, java.util.concurrent.Callable<?> afterInstall) throws Exception {
         //files written outside the temp folder are recorded with their checksum
         Path sysTmp = tmp.resolve("systemp");
         Files.createDirectories(sysTmp);
         System.setProperty("java.io.tmpdir", sysTmp.toString());
-        newInstallation();
+        newInstallation(tmp);
         User admin = User.getCurrentUser();
         String[][] company = {{"business", "Wir GmbH"}, {"street", "Hauptstr. 1"}, {"zip", "50667"}, {"city", "Köln"},
             {"country", "DE"}, {"vatid", "DE 999 999 999"}, {"taxnumber", "214/5678/9012"}, {"email", "info@wir.example"},
@@ -118,6 +137,9 @@ class EInvoiceRoundTripTest {
             admin.changeProperty("companyinfo." + kv[0], kv[1]);
         }
         admin.saveProperties();
+        if (afterInstall != null) {
+            afterInstall.call();
+        }
         Path in = tmp.resolve("in");
 
         //1. an incoming invoice of last year (buyer: the company) through the button of the expense panel:
@@ -243,5 +265,6 @@ class EInvoiceRoundTripTest {
                 assertTrue(mpv5.handler.ExpenseReceipts.verify(r));
             }
         }
+        return inv;
     }
 }

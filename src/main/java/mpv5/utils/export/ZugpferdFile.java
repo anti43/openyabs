@@ -195,8 +195,8 @@ public class ZugpferdFile implements Waitable {
                 }
             }
             Log.Debug(this, "E-Rechnung written: " + target);
-            //the checksum of the e-invoice of this invoice (verify it later)
-            mpv5.handler.DocumentFiles.record(item, target);
+            //the file of this invoice (history, plugins; the checksum to verify it later)
+            mpv5.handler.Activity.file(target, item);
             try {
                 ExportProgress.step(Messages.EXPORT_STEP_VALIDATE);
                 validation = EInvoiceValidator.validate(target);
