@@ -1120,7 +1120,6 @@ public enum Messages {
     ITEM_SECTION_TEXT("Free text"),
     ITEM_SECTION_POSITIONS("Positions"),
     ITEM_SECTION_FILES("Files"),
-    ITEM_SECTION_PROPERTIES("Properties"),
     ITEM_CREATE("Create"),
     ITEM_MORE_DOCUMENTS("Documents"),
     ITEM_NEW("New document"),
