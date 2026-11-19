@@ -350,6 +350,12 @@ public abstract class FileDirectoryHandler {
      *
      * @param file
      */
+    /**
+     * Desktop#open failed once (not on Windows): the opener of the system is
+     * used directly for the rest of the session
+     */
+    private static volatile boolean desktopOpenFails;
+
     public static void open(File file) {
         if (file == null) {
             return;
@@ -367,12 +373,14 @@ public abstract class FileDirectoryHandler {
                 }
             }
         }
-        if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.OPEN)) {
+        if (!desktopOpenFails && Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.OPEN)) {
             try {
                 Desktop.getDesktop().open(file);
                 return;
             } catch (Exception ex) {
                 Log.Debug(FileDirectoryHandler.class, ex.getMessage());
+                //e.g. "Failed to show URI" (GTK): the system opener below works, use it directly from now on
+                desktopOpenFails = !System.getProperty("os.name", "").toLowerCase(java.util.Locale.ROOT).contains("win");
             }
         }
         //the desktop of Java does not work on every Linux desktop: the opener of the system

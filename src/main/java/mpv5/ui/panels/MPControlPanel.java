@@ -272,6 +272,9 @@ public class MPControlPanel extends JPanel {
         //the update check is in the local settings: its own entry, so "update" finds it
         l.add(new Entry(system, Messages.UPDATE_CARD.toString(), Messages.SETTINGS_D_UPDATES.toString(), "internet",
                 ControlPanel_Local.class, ControlPanel_Local::new, null, null));
+        //switching caching off is in the local settings too: its own entry, so "cache" finds it
+        l.add(new Entry(system, Messages.CACHE_CARD.toString(), Messages.CACHE_SWITCH.toString(), "internet",
+                ControlPanel_Local.class, ControlPanel_Local::new, null, null));
         l.add(panel(system, "jButton7", Messages.SETTINGS_D_EXTERNAL, "openofficeorg-20", ControlPanel_External.class, ControlPanel_External::new));
         l.add(panel(system, "jButton11", Messages.SETTINGS_D_PLUGINS, "usb", ControlPanel_Plugins.class, ControlPanel_Plugins::new));
         //Shopify instead of the old XML-RPC shop interface

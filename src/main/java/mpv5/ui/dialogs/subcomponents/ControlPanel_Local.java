@@ -354,6 +354,7 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
 
         updateCheck.setSelected(!TypeConversion.stringToBoolean(values.getProperty(LocalSettings.SUPPRESS_UPDATE_CHECK)));
         simpleNavCheck.setSelected(LocalSettings.isSimpleNavigation());
+        cacheCheck.setSelected(!TypeConversion.stringToBoolean(values.getProperty(LocalSettings.NO_CACHE)));
     }
 
     private static String esc(String s) {
@@ -411,6 +412,14 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
         LocalSettings.setProperty(LocalSettings.PRINT_DEVAPP, TypeConversion.booleanToString(printdev.isSelected()));
         LocalSettings.setProperty(LocalSettings.DBAUTOLOCK, TypeConversion.booleanToString(autolock.isSelected()));
         LocalSettings.setProperty(LocalSettings.SUPPRESS_UPDATE_CHECK, TypeConversion.booleanToString(!updateCheck.isSelected()));
+        boolean cachingWas = LocalSettings.isCachingEnabled();
+        LocalSettings.setProperty(LocalSettings.NO_CACHE, TypeConversion.booleanToString(!cacheCheck.isSelected()));
+        if (cachingWas != cacheCheck.isSelected()) {
+            //forget what is cached: off, nothing stale stays; on, it fills again as records are loaded
+            mpv5.db.common.DatabaseObject.clearCache();
+            mpv5.handler.FormatHandler.clearCache();
+            mpv5.handler.TemplateHandler.clearCache();
+        }
 
         boolean oldSimple = LocalSettings.isSimpleNavigation();
         boolean newSimple = simpleNavCheck.isSelected();
@@ -487,10 +496,24 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
         add(mpv5.ui.modern.Applets.page(null, 420,
                 navigationCard(),
                 mpv5.ui.modern.Applets.wrap(null, jPanel2), mpv5.ui.modern.Applets.wrap(null, jPanel3),
-                mpv5.ui.modern.Applets.wrap(null, jPanel4), foldersLinkCard(), updatesCard()), java.awt.BorderLayout.CENTER);
+                mpv5.ui.modern.Applets.wrap(null, jPanel4), foldersLinkCard(), cacheCard(), updatesCard()), java.awt.BorderLayout.CENTER);
         mpv5.ui.modern.PrimaryButton save = new mpv5.ui.modern.PrimaryButton(jButton1.getText(), "/images/16/filesave.png");
         save.addActionListener(e -> jButton1.doClick());
         actions = mpv5.ui.modern.Applets.actionBar(new javax.swing.JComponent[]{jButton4}, new javax.swing.JComponent[]{jButton3, jButton2, save});
+    }
+
+    private final javax.swing.JCheckBox cacheCheck = new javax.swing.JCheckBox(mpv5.globals.Messages.CACHE_SWITCH.toString(), true);
+
+    /**
+     * Caching of records, number formats and templates: on/off (saved with
+     * the other local settings, default on)
+     */
+    private mpv5.ui.modern.Card cacheCard() {
+        cacheCheck.setOpaque(false);
+        cacheCheck.setSelected(LocalSettings.isCachingEnabled());
+        return new mpv5.ui.modern.Card(mpv5.globals.Messages.CACHE_CARD.toString())
+                .addFull(cacheCheck)
+                .addFull(mpv5.ui.modern.Applets.hint(mpv5.globals.Messages.CACHE_HINT.toString()));
     }
 
     private final javax.swing.JCheckBox updateCheck = new javax.swing.JCheckBox(mpv5.globals.Messages.UPDATE_SWITCH.toString(), true);

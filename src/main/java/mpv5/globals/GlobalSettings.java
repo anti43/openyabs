@@ -221,12 +221,14 @@ public class GlobalSettings {
         try {
             try {
                 Log.Debug(GlobalSettings.class, "Reading in global settings where ID =" + connectionID);
+                saved = null;
 
                 QueryCriteria2 c = new QueryCriteria2();
                 c.and(new QueryParameter(Context.getGlobalSettings(), "groupsids", connectionID, QueryParameter.EQUALS));
 
                 Object[][] data = QueryHandler.instanceOf().clone(Context.getGlobalSettings()).select("cname, value", c).getData();
                 cookie.addAll(data);
+                saved = snapshot();
 
                 Log.Debug(GlobalSettings.class, "Finished global settings.");
             } catch (NodataFoundException nodataFoundException) {
@@ -241,6 +243,12 @@ public class GlobalSettings {
      * Save the global settings to DB
      */
     public synchronized static void save() {
+        java.util.Map<String, String> now = snapshot();
+        if (now.equals(saved)) {
+            //nothing changed: at exit all settings were deleted and inserted again each time
+            Log.Debug(GlobalSettings.class, "Global settings unchanged, not saved.");
+            return;
+        }
         //Remove old data
         QueryHandler.instanceOf().clone(Context.getGlobalSettings()).delete(new QueryCriteria("groupsids", connectionID));
         //Write new values
@@ -254,6 +262,21 @@ public class GlobalSettings {
             data.add("value", val[1]);
             QueryHandler.instanceOf().clone(Context.getGlobalSettings()).insert(data, null);
         }
+        saved = now;
+    }
+
+    /**
+     * the settings as read from or last written to the database (null: not
+     * known, the next save writes)
+     */
+    private static java.util.Map<String, String> saved;
+
+    private static java.util.Map<String, String> snapshot() {
+        java.util.Map<String, String> m = new java.util.HashMap<String, String>();
+        for (String[] e : cookie.getList()) {
+            m.put(e[0], e[1]);
+        }
+        return m;
     }
 
     public static void removeAll() {

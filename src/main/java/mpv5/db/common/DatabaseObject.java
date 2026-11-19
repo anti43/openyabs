@@ -265,6 +265,10 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @param contextArray
      */
     public static void cacheObjects(final Context[] contextArray) {
+        if (!isCachingEnabled()) {
+            Log.Debug(DatabaseObject.class, "Caching is switched off (control panel, local settings): no objects are preloaded.");
+            return;
+        }
 
         Runnable runnable = new Runnable() {
 
@@ -309,11 +313,24 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * Forget all cached objects (e.g. after the data of the database was
      * replaced by an import)
      */
-    public static synchronized void clearCache() {
+    public static void clearCache() {
         cache.clear();
     }
 
-    public static synchronized void cacheObject(final DatabaseObject databaseObject) {
+    /**
+     * @return false if caching is switched off in the local settings (control
+     * panel): every object is read from the database again
+     */
+    public static boolean isCachingEnabled() {
+        return LocalSettings.isCachingEnabled();
+    }
+
+    //the cache is a ConcurrentHashMap: no lock on the class, so a lookup does not wait
+    //for a large explode (which is synchronized on the class) of another thread
+    public static void cacheObject(final DatabaseObject databaseObject) {
+        if (!isCachingEnabled()) {
+            return;
+        }
         if (databaseObject != null && databaseObject.__getIDS() > 0) {
             if (databaseObject.IDENTITY == null) {
                 throw new IllegalStateException("IDENTITY must bes set!");
@@ -322,7 +339,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         }
     }
 
-    private static synchronized void uncacheObject(final DatabaseObject databaseObject) {
+    private static void uncacheObject(final DatabaseObject databaseObject) {
         if (databaseObject != null) {
             if (cache.remove(databaseObject.getDbIdentity() + "@" + databaseObject.__getIDS()) != null) {
                 Log.Debug(DatabaseObject.class, "Removed from cache: " + databaseObject.getDbIdentity() + "@" + databaseObject.__getIDS());
@@ -330,22 +347,31 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         }
     }
 
-    private synchronized static DatabaseObject getCachedObject(final Context context, final int id) {
-//        if(context.equals(Context.getGroup()))Thread.dumpStack();
-        final String uid = context.getDbIdentity() + "@" + id;
-        if (cache.containsKey(uid)) {
-            DatabaseObject o = cache.get(uid).get();
-            if (o == null) {
-                //was already garbage collected
-                cache.remove(uid);
-            } else {
-//                Log.Debug(DatabaseObject.class, "Using cached object " + context.getDbIdentity() + "@" + id + " [" + o + "]");
-            }
-            return o;
-        } else {
-            Log.Debug(DatabaseObject.class, "" + context.getDbIdentity() + "@" + id + " not found in cache.");
+    private static DatabaseObject getCachedObject(final Context context, final int id) {
+        return getCachedObject(context, id, true);
+    }
+
+    /**
+     * @param log false: no log line for a miss (a list of ids logs one line
+     * for all)
+     */
+    private static DatabaseObject getCachedObject(final Context context, final int id, boolean log) {
+        if (!isCachingEnabled()) {
             return null;
         }
+        final String uid = context.getDbIdentity() + "@" + id;
+        SoftReference<DatabaseObject> ref = cache.get(uid);
+        DatabaseObject o = ref == null ? null : ref.get();
+        if (o == null) {
+            if (ref != null) {
+                //was already garbage collected
+                cache.remove(uid, ref);
+            }
+            if (log && Log.isDebugging()) {
+                Log.Debug(DatabaseObject.class, "" + context.getDbIdentity() + "@" + id + " not found in cache.");
+            }
+        }
+        return o;
     }
 
     /**
@@ -1759,7 +1785,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         ArrayList<Integer> idlist = new ArrayList<Integer>(listi);
         for (int i = 0; i < idlist.size(); i++) {
             Integer id = idlist.get(i);
-            DatabaseObject x = DatabaseObject.getCachedObject(context, id);
+            DatabaseObject x = DatabaseObject.getCachedObject(context, id, false);
             if (x != null) {
                 list.add((T) x);
             } else {
@@ -1768,6 +1794,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         }
         if (uncachedIds.isEmpty()) {
             return list;//all from cache
+        }
+        if (Log.isDebugging()) {
+            Log.Debug(DatabaseObject.class, context.getDbIdentity() + ": " + uncachedIds.size() + " of " + idlist.size() + " not found in cache, loading them with one query.");
         }
         criterias.list(uncachedIds);
         if (Context.getGroupableContexts().contains(context)) {
@@ -2165,9 +2194,13 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             if (dbo.__getGroupsids() == 0) {
                 dbo.setGroupsids(1);//default do all group
             }
-            if (Log.LOGLEVEL_DEBUG == Log.getLoglevel()) {
+            //one line per row only for a few rows: thousands of lines slow down the start
+            if (dos.length <= 20 && Log.LOGLEVEL_DEBUG == Log.getLoglevel()) {
                 Log.Debug(dbo.getClass(), "Exploded " + dbo.IDENTITY);
             }
+        }
+        if (dos.length > 20 && Log.isDebugging()) {
+            Log.Debug(DatabaseObject.class, "Exploded " + dos.length + " rows of " + target.getContext());
         }
 
         return dos;

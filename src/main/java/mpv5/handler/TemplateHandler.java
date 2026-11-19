@@ -121,8 +121,11 @@ public class TemplateHandler {
             groupsids = 1;
         }
         String key = mpv5.db.objects.User.getCurrentUser() + "@" + type + "@" + groupsids;
+        //caching switched off (local settings): the template is loaded again; it is still
+        //kept in TEMPLATE_CACHE, the export asks there whether it is loaded (isLoaded)
+        final boolean caching = LocalSettings.isCachingEnabled();
         synchronized (TemplateHandler.class) {
-            if (TEMPLATE_CACHE.containsKey(key)) {
+            if (caching && TEMPLATE_CACHE.containsKey(key)) {
                 return TEMPLATE_CACHE.get(key);
             }
         }
@@ -147,7 +150,7 @@ public class TemplateHandler {
         int id = ids.size() == 1 ? ids.iterator().next() : choose(key, new java.util.ArrayList<>(ids), type);
 
         synchronized (TemplateHandler.class) {
-            if (TEMPLATE_CACHE.containsKey(key)) {
+            if (caching && TEMPLATE_CACHE.containsKey(key)) {
                 return TEMPLATE_CACHE.get(key);
             }
             Template preloadedTemplate;

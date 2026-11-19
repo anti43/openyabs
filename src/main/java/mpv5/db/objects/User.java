@@ -582,17 +582,34 @@ public class User extends DatabaseObject {
     public void saveProperties() {
         synchronized (properties) {
             List<String[]> l = properties.getList();
-
+            int written = 0;
             for (String[] d : l) {
+                //only what differs from the database: at exit all ~200 properties were written
+                //each time (an UPDATE each); a value never set ("" or null) is not written either
+                String value = d[1] == null || "null".equals(d[1]) ? "" : d[1];
+                String stored = savedProperties.get(d[0]);
+                if (stored == null ? value.isEmpty() : stored.equals(value)) {
+                    continue;
+                }
                 UserProperty p = new UserProperty();
-                p.setValue(d[1]);
+                p.setValue(value);
                 p.setCname(d[0]);
                 p.setUsersids(getID());
                 p.setGroupsids(__getGroupsids());
-                p.save();
+                if (p.save()) {
+                    savedProperties.put(d[0], value);
+                    written++;
+                }
             }
+            Log.Debug(this, "User properties saved: " + written + " changed of " + l.size());
         }
     }
+
+    /**
+     * the user properties as they are in the database (read at login, then
+     * as saved): {@link #saveProperties()} writes only the changed ones
+     */
+    private final java.util.Map<String, String> savedProperties = new java.util.HashMap<String, String>();
 
     /**
      * Delete the users properties
@@ -600,6 +617,9 @@ public class User extends DatabaseObject {
     public void deleteProperties() {
         QueryCriteria c = new QueryCriteria("usersids", __getIDS());
         QueryHandler.instanceOf().clone(Context.getUserProperties()).delete(c);
+        synchronized (properties) {
+            savedProperties.clear();
+        }
     }
 
     /**
@@ -611,8 +631,13 @@ public class User extends DatabaseObject {
         criteria.and(new QueryParameter(Context.getUserProperties(), "usersids", ids, QueryParameter.EQUALS),
                      new QueryParameter(Context.getUserProperties(), "groupsids", __getGroupsids(), QueryParameter.EQUALS));
         properties = new PropertyStore();
+        savedProperties.clear();
         try {
-            properties.addAll(QueryHandler.instanceOf().clone(Context.getUserProperties()).select("cname, value", criteria).getData());
+            Object[][] stored = QueryHandler.instanceOf().clone(Context.getUserProperties()).select("cname, value", criteria).getData();
+            for (Object[] row : stored) {
+                savedProperties.put(String.valueOf(row[0]), row[1] == null ? "" : String.valueOf(row[1]));
+            }
+            properties.addAll(stored);
             properties.addAll(PROPERTIES_OVERRIDE);
             properties.setChanged(false);
         } catch (NodataFoundException ex) {

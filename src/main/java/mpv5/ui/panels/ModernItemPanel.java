@@ -682,6 +682,12 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         }
     }
 
+    /**
+     * the orders an invoice can refer to, of the customer refChoicesContact
+     */
+    private MPComboBoxModelItem[] refChoices;
+    private int refChoicesContact = -1;
+
     private void setContactData(Contact dbo) {
         prename.setText(dbo.getDefaultaddress().__getPrename());
         cname.setText(dbo.getDefaultaddress().__getCname());
@@ -696,7 +702,13 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
                     Log.Debug(ex);
                 }
             } else {
-                refOrder.setModel(new MPComboboxModel(ItemService.referenceOrderChoices(dbo)));
+                //opening a document set the customer twice (directly and by the selection listener):
+                //the orders of the customer (hundreds) were read twice
+                if (refChoices == null || refChoicesContact != dbo.__getIDS()) {
+                    refChoices = ItemService.referenceOrderChoices(dbo);
+                    refChoicesContact = dbo.__getIDS();
+                }
+                refOrder.setModel(new MPComboboxModel(refChoices.clone()));
                 refOrder.setEditable(true);
                 refOrder.setSelectedIndex(-1);
             }
@@ -1431,6 +1443,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
 
     @Override
     public void exposeData() {
+        refChoicesContact = -1;//a document (again): read the orders of its customer again
         number.setText(cnumber_);
         name.setText(cname_);
         //a document which is not saved yet has no date (it would show 1970)
