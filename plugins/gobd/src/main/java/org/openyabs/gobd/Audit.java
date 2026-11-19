@@ -217,58 +217,12 @@ final class Audit {
      */
     String checkReceipts() throws IOException {
         g.chainReceipts();
-        Object[][] receipts = g.rows("SELECT ids, expensesids, originalname, archivepath, filesize, sha256 FROM expense_receipts ORDER BY ids ASC");
-        Object[][] chain = g.q("SELECT id, expense_id, chain_seq, receipt_ref, original_name, archive_path, file_size, sha256, chain_hash, prev_chain_hash,"
-                + " imported_at, imported_by, record_data FROM gobd_receipt ORDER BY chain_seq ASC");
         Object[][] income = g.q("SELECT revenue_id, document_number, original_name, archive_path, file_size, file_sha256 FROM gobd_income_lock ORDER BY chain_seq ASC");
-        if (receipts.length == 0 && income.length == 0 && chain.length == 0) {
-            return "Keine archivierten Eingangsbelege oder Einnahmenbelege in der Datenbank erfasst.";
-        }
-        int verified = 0;
         List<String> errors = new ArrayList<String>();
-        Set<String> refs = new HashSet<String>();
-        for (Object[] r : receipts) {
-            refs.add(str(r[0]));
-            String label = "Beleg #" + r[0] + " (" + r[2];
-            Path f = Paths.get(str(r[3]));
-            String expected = str(r[5]);
-            if (!Files.exists(f)) {
-                errors.add(label + ", Ausgabe #" + r[1] + "): Datei fehlt im Archiv (" + f + ")!");
-                continue;
-            }
-            if (!GobdUtil.sha256(f).equalsIgnoreCase(expected)) {
-                errors.add(label + ", Ausgabe #" + r[1] + "): SHA-256 stimmt NICHT ueberein!");
-                continue;
-            }
-            Path sums = f.getParent().resolve("SHA256SUMS");
-            if (Files.exists(sums) && !new String(Files.readAllBytes(sums), StandardCharsets.UTF_8).contains(expected)) {
-                errors.add(label + "): SHA-256 fehlt in " + sums.getFileName() + "!");
-                continue;
-            }
-            verified++;
-        }
-        //the chain of the receipts: also finds receipts removed from the database
-        String expectedPrev = GobdUtil.GENESIS_HASH;
-        for (Object[] c : chain) {
-            String label = "Kette: Beleg #" + c[3] + " (" + c[4] + ")";
-            String prev = str(c[9]);
-            if (!prev.equals(expectedPrev)) {
-                errors.add(label + ": Kettenbruch (Eintrag geloescht oder eingefuegt?)!");
-            }
-            expectedPrev = str(c[8]);
-            String record = str(c[12]);
-            if (!GobdUtil.recordHash(record, prev).equalsIgnoreCase(str(c[8]))) {
-                errors.add(label + ": Ketten-Hash-Abweichung, der Datensatz wurde veraendert!");
-            }
-            if (!refs.contains(str(c[3]))) {
-                errors.add(label + ": Beleg wurde aus der Datenbank (expense_receipts) entfernt!");
-            }
-            Object[] exp = g.row("SELECT cnumber, dateadded, accountsids, netvalue, taxpercentvalue, brutvalue, description FROM expenses WHERE ids = "
-                    + GobdUtil.toLong(c[1], -1));
-            String now = Gobd.receiptRecord(c[2], c[3], c[1], c[4], c[6], c[7], c[10], c[11], exp == null ? "<fehlt>" : Gobd.moneyCoreOfRow(exp));
-            if (!now.equals(record)) {
-                errors.add(label + ": Datenbank-Manipulation erkannt! Abweichende Felder: " + diff(record, now));
-            }
+        int[] expenses = checkReceipts(Gobd.Receipts.EXPENSE, errors);
+        int[] revenues = checkReceipts(Gobd.Receipts.REVENUE, errors);
+        if (expenses[0] == 0 && expenses[1] == 0 && revenues[0] == 0 && revenues[1] == 0 && income.length == 0 && errors.isEmpty()) {
+            return "Keine archivierten Eingangsbelege oder Einnahmenbelege in der Datenbank erfasst.";
         }
         int verifiedIncome = 0;
         for (Object[] r : income) {
@@ -295,10 +249,73 @@ final class Audit {
             verifiedIncome++;
         }
         if (errors.isEmpty()) {
-            return "OK: Alle " + verified + " Ausgaben-Belege (" + chain.length + " davon in der Hash-Kette) und " + verifiedIncome
-                    + " Einnahmen-Belege sind vollstaendig vorhanden und gegen SHA256SUMS geprueft.";
+            return "OK: Alle " + expenses[0] + " Ausgaben-Belege (" + expenses[1] + " in der Hash-Kette), " + revenues[0] + " Belege zu Einnahmen ("
+                    + revenues[1] + " in der Hash-Kette) und " + verifiedIncome
+                    + " importierte E-Rechnungen sind vollstaendig vorhanden und gegen SHA256SUMS geprueft.";
         }
         return "FEHLER: Integritaetsprobleme bei Belegen:\n- " + String.join("\n- ", errors);
+    }
+
+    /**
+     * Checks the receipts of a kind (files, SHA256SUMS) and their hash chain
+     * (links, records against the database, receipts removed from the
+     * database)
+     *
+     * @param kind
+     * @param errors gets the problems
+     * @return {receipts verified, links in the chain}
+     */
+    int[] checkReceipts(Gobd.Receipts kind, List<String> errors) throws IOException {
+        Object[][] receipts = g.rows("SELECT ids, " + kind.ownerColumn + ", originalname, archivepath, filesize, sha256 FROM " + kind.table + " ORDER BY ids ASC");
+        Object[][] chain = g.q("SELECT id, " + kind.chainOwnerColumn + ", chain_seq, receipt_ref, original_name, archive_path, file_size, sha256, chain_hash,"
+                + " prev_chain_hash, imported_at, imported_by, record_data FROM " + kind.chainTable + " ORDER BY chain_seq ASC");
+        int verified = 0;
+        Set<String> refs = new HashSet<String>();
+        for (Object[] r : receipts) {
+            refs.add(str(r[0]));
+            String label = kind.receiptName + " #" + r[0] + " (" + r[2] + ", " + kind.bookingName + " #" + r[1] + ")";
+            Path f = Paths.get(str(r[3]));
+            String expected = str(r[5]).trim();
+            if (!Files.exists(f)) {
+                errors.add(label + ": Datei fehlt im Archiv (" + f + ")!");
+                continue;
+            }
+            if (!GobdUtil.sha256(f).equalsIgnoreCase(expected)) {
+                errors.add(label + ": SHA-256 stimmt NICHT ueberein!");
+                continue;
+            }
+            Path sums = f.getParent() == null ? null : f.getParent().resolve("SHA256SUMS");
+            if (sums != null && Files.exists(sums)
+                    && !new String(Files.readAllBytes(sums), StandardCharsets.UTF_8).toLowerCase().contains(expected.toLowerCase())) {
+                errors.add(label + ": SHA-256 fehlt in " + sums.getFileName() + "!");
+                continue;
+            }
+            verified++;
+        }
+        //the chain: also finds receipts removed from the database
+        String expectedPrev = GobdUtil.GENESIS_HASH;
+        for (Object[] c : chain) {
+            String label = "Kette " + kind.receiptName + " #" + c[3] + " (" + c[4] + ")";
+            String prev = str(c[9]);
+            if (!prev.equals(expectedPrev)) {
+                errors.add(label + ": Kettenbruch (Eintrag geloescht oder eingefuegt?)!");
+            }
+            expectedPrev = str(c[8]);
+            String record = str(c[12]);
+            if (!GobdUtil.recordHash(record, prev).equalsIgnoreCase(str(c[8]))) {
+                errors.add(label + ": Ketten-Hash-Abweichung, der Datensatz wurde veraendert!");
+            }
+            if (!refs.contains(str(c[3]))) {
+                errors.add(label + ": Beleg wurde aus der Datenbank (" + kind.table + ") entfernt!");
+            }
+            Object[] booking = g.row("SELECT " + Gobd.MONEY_CORE_COLUMNS + " FROM " + kind.bookingTable + " WHERE ids = " + GobdUtil.toLong(c[1], -1));
+            String now = Gobd.receiptRecord(kind, c[2], c[3], c[1], c[4], c[6], c[7], c[10], c[11],
+                    booking == null ? "<fehlt>" : Gobd.moneyCoreOfRow(booking));
+            if (!now.equals(record)) {
+                errors.add(label + ": Datenbank-Manipulation erkannt! Abweichende Felder: " + diff(record, now));
+            }
+        }
+        return new int[]{verified, chain.length};
     }
 
     /**
@@ -446,6 +463,12 @@ final class Audit {
             for (Object[] r : revenues) {
                 file(zos, "belege/einnahmen/", r[14]);
             }
+            //receipts linked to income in YaBS (not imported e-invoices)
+            for (Object[] r : g.rows("SELECT archivepath, imported_at FROM revenue_receipts ORDER BY ids ASC")) {
+                if (GobdUtil.inYear(r[1], y)) {
+                    file(zos, "belege/einnahmen/", r[0]);
+                }
+            }
             entry(zos, "VERFAHRENSDOKUMENTATION_TECHNIK.txt", String.join("\n",
                     "=======================================================================",
                     "OpenYaBS - Technische System- und Verfahrensdokumentation nach GoBD",
@@ -466,7 +489,7 @@ final class Audit {
                     "   archivierten Originalbeleg gespeichert.",
                     "",
                     "3. Kryptographische Integritaetssicherung (SHA-256 Hash-Ketten):",
-                    "   Festschreibungen (Rechnungen, Einnahmen, Eingangsbelege) und das",
+                    "   Festschreibungen (Rechnungen, Einnahmen, Belege zu Ausgaben und Einnahmen) und das",
                     "   Audit-Log sind je eine Hash-Kette: hash = SHA256(Datensatz || \"\\n\" || prev_hash).",
                     "   Der Datensatz (hash_version 2, Spalte record_data) enthaelt den SHA-256",
                     "   der Archivdatei sowie Nummer, Datum, Kontakt, Betraege, Steuer und",

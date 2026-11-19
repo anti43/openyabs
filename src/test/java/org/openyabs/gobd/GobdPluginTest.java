@@ -50,6 +50,14 @@ public class GobdPluginTest {
         String c = Gobd.documentRecord(3, 7, "RE-1", "2026-01-02 03:04:05", "u", "XML", "f", null, "core2", "pos");
         assertEquals("core", Audit.diff(a, c));
         assertNotEquals(GobdUtil.recordHash(a, GobdUtil.GENESIS_HASH), GobdUtil.recordHash(c, GobdUtil.GENESIS_HASH));
+        //receipts of expenses and income: the same record, with their own owner key
+        String exp = Gobd.receiptRecord(1, "5", 9, "a.pdf", 10, "f", "2026-01-02 03:04:05", "u", "core");
+        assertEquals(exp, Gobd.receiptRecord(Gobd.Receipts.EXPENSE, 1, "5", 9, "a.pdf", 10, "f", "2026-01-02 03:04:05", "u", "core"));
+        String rev = Gobd.receiptRecord(Gobd.Receipts.REVENUE, 1, "5", 9, "a.pdf", 10, "f", "2026-01-02 03:04:05", "u", "core");
+        assertEquals("9", GobdUtil.recordField(rev, "revenue_id"));
+        assertNull(GobdUtil.recordField(rev, "expense_id"));
+        assertEquals("revenue_receipts", Gobd.Receipts.REVENUE.table);
+        assertEquals("gobd_revenue_receipt", Gobd.Receipts.REVENUE.chainTable);
     }
 
     @Test

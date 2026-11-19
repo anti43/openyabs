@@ -200,6 +200,10 @@ final class Views {
         }
         Object[] lock = g.incomeLockRecord(rev.__getIDS());
         Object[][] receipts = g.rows("SELECT ids, originalname, archivepath, sha256, filesize FROM revenue_receipts WHERE revenuesids = " + rev.__getIDS());
+        if (receipts.length > 0) {
+            //receipts linked by YaBS: into the hash chain of the plugin (only those not chained yet)
+            g.chainReceipts(Gobd.Receipts.REVENUE);
+        }
         if (lock != null || receipts.length > 0) {
             String docNum = lock != null ? (blank(str(lock[2])) ? str(rev.__getCnumber()) : str(lock[2]))
                     : (blank(rev.__getCnumber()) ? "#" + rev.__getIDS() : rev.__getCnumber());
