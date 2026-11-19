@@ -75,4 +75,31 @@ class ContactServiceTest {
         assertTrue(line.length() <= ContactService.MAX_DETAIL_LENGTH, line);
         assertTrue(line.endsWith("\u2026"), line);
     }
+
+    @Test
+    void propertyKeyWithoutTemplatePrefix() {
+        assertEquals("anrede", ContactService.propertyKey("anrede"));
+        assertEquals("anrede", ContactService.propertyKey("contact.property.anrede"));
+        assertEquals("anrede", ContactService.propertyKey(" Contact.Property.anrede "));
+        assertEquals("anrede", ContactService.propertyKey("<item.contact.property.anrede>"));
+        assertEquals("anrede", ContactService.propertyKey("property.anrede"));
+        assertEquals("lieferzeit2", ContactService.propertyKey("liefer zeit-2"));
+        assertEquals("", ContactService.propertyKey("contact.property."));
+        assertEquals("", ContactService.propertyKey(null));
+    }
+
+    @Test
+    void propertyRowsSkipEmptyRowsAndCleanNames() {
+        Object[][] rows = {
+            {"contact.property.anrede", "#contact.cname#"},
+            {"", "value without name"},
+            {"nameonly", null},
+            {"blank", "  "},
+            {null, null},
+            {"lieferzeit", "2 Wochen"}};
+        java.util.Map<String, String> m = ContactService.propertyRows(rows);
+        assertEquals(Arrays.asList("anrede", "lieferzeit"), new java.util.ArrayList<>(m.keySet()));
+        assertEquals("#contact.cname#", m.get("anrede"));
+        assertEquals("2 Wochen", m.get("lieferzeit"));
+    }
 }
