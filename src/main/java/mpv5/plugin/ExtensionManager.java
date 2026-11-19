@@ -199,6 +199,8 @@ public final class ExtensionManager {
     private final List<Owned<DatabaseObjectModifier>> modifiers = new CopyOnWriteArrayList<Owned<DatabaseObjectModifier>>();
     private final List<Owned<Consumer<DataPanel>>> viewListeners = new CopyOnWriteArrayList<Owned<Consumer<DataPanel>>>();
     private final List<Owned<JournalExport>> journalExports = new CopyOnWriteArrayList<Owned<JournalExport>>();
+    private final List<Owned<Function<mpv5.db.common.DatabaseObject, java.util.Map<String, Object>>>> templateFieldProviders
+            = new CopyOnWriteArrayList<Owned<Function<mpv5.db.common.DatabaseObject, java.util.Map<String, Object>>>>();
     private final List<Runnable> changeListeners = new CopyOnWriteArrayList<Runnable>();
     private final File folder;
     private Host host;
@@ -871,6 +873,31 @@ public final class ExtensionManager {
     }
 
     /**
+     * Collects additional template placeholders from all running plugins; a
+     * failing provider is skipped.
+     *
+     * @param obj the record being formatted
+     * @return map of placeholder key to value (never null)
+     */
+    public java.util.Map<String, Object> templateFields(mpv5.db.common.DatabaseObject obj) {
+        java.util.Map<String, Object> result = new java.util.LinkedHashMap<String, Object>();
+        if (obj == null || templateFieldProviders.isEmpty()) {
+            return result;
+        }
+        for (Owned<Function<mpv5.db.common.DatabaseObject, java.util.Map<String, Object>>> p : templateFieldProviders) {
+            try {
+                java.util.Map<String, Object> m = p.value.apply(obj);
+                if (m != null) {
+                    result.putAll(m);
+                }
+            } catch (Throwable t) {
+                Log.Debug(ExtensionManager.class, t);
+            }
+        }
+        return result;
+    }
+
+    /**
      * Asks the search providers of the plugins; a failing provider is skipped
      *
      * @param needle
@@ -966,6 +993,7 @@ public final class ExtensionManager {
         providers.removeIf(p -> p.owner.equals(owner));
         listeners.removeIf(p -> p.owner.equals(owner));
         journalExports.removeIf(p -> p.owner.equals(owner));
+        templateFieldProviders.removeIf(p -> p.owner.equals(owner));
         boolean hadViews = viewListeners.removeIf(p -> p.owner.equals(owner));
         for (Owned<DatabaseObjectModifier> m : modifiers) {
             if (m.owner.equals(owner)) {
@@ -1011,6 +1039,9 @@ public final class ExtensionManager {
             n += p.owner.equals(owner) ? 1 : 0;
         }
         for (Owned<?> p : journalExports) {
+            n += p.owner.equals(owner) ? 1 : 0;
+        }
+        for (Owned<?> p : templateFieldProviders) {
             n += p.owner.equals(owner) ? 1 : 0;
         }
         return n;
@@ -1154,6 +1185,13 @@ public final class ExtensionManager {
             if (export != null) {
                 journalExports.add(new Owned<JournalExport>(owner, export));
                 fireChanged();
+            }
+        }
+
+        @Override
+        public void addTemplateFields(Function<mpv5.db.common.DatabaseObject, java.util.Map<String, Object>> provider) {
+            if (provider != null) {
+                templateFieldProviders.add(new Owned<Function<mpv5.db.common.DatabaseObject, java.util.Map<String, Object>>>(owner, provider));
             }
         }
 

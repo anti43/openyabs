@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<office:document xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0"
+                 xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0"
+                 xmlns:table="urn:oasis:names:tc:opendocument:xmlns:table:1.0"
+                 xmlns:style="urn:oasis:names:tc:opendocument:xmlns:style:1.0"
+                 xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0"
+                 office:version="1.2"
+                 office:mimetype="application/vnd.oasis.opendocument.text">
+  <office:styles>
+    <style:style style:name="Standard" style:family="paragraph">
+      <style:text-properties fo:font-family="Liberation Sans" fo:font-size="10pt"/>
+    </style:style>
+    <style:style style:name="Heading" style:family="paragraph">
+      <style:text-properties fo:font-family="Liberation Sans" fo:font-size="14pt" fo:font-weight="bold"/>
+    </style:style>
+    <style:style style:name="Bold" style:family="paragraph">
+      <style:text-properties fo:font-family="Liberation Sans" fo:font-size="10pt" fo:font-weight="bold"/>
+    </style:style>
+    <style:style style:name="Small" style:family="paragraph">
+      <style:text-properties fo:font-family="Liberation Sans" fo:font-size="8.5pt"/>
+    </style:style>
+  </office:styles>
+  <office:body>
+    <office:text>
+      <text:p text:style-name="Bold">[companyinfo.name] – [hp.practitionerTitle]</text:p>
+      <text:p text:style-name="Small">[companyinfo.street], [companyinfo.zip] [companyinfo.city] · [hp.licenseAuthority]</text:p>
+      <text:p/>
+      <text:p>[item.contact.title] [item.contact.prename] [item.contact.cname]</text:p>
+      <text:p>[item.contact.street]</text:p>
+      <text:p>[item.contact.zip] [item.contact.city]</text:p>
+      <text:p text:style-name="Small">Geburtsdatum: [hp.patientDob] · Versicherungsart: [hp.insuranceType]</text:p>
+      <text:p/>
+      <text:p text:style-name="Heading">Honorarrechnung Nr. [item.cnumber]</text:p>
+      <text:p>Rechnungsdatum: [item.dateadded] · Fällig bis: [item.dateend]</text:p>
+      <text:p>Behandlungsdatum / -zeitraum: [hp.treatmentDates]</text:p>
+      <text:p text:style-name="Bold">Diagnose (ICD-10-GM [hp.icd10]): [hp.diagnosis]</text:p>
+      <text:p/>
+      <table:table table:name="xtable0">
+        <table:table-column table:number-columns-repeated="6"/>
+        <table:table-row>
+          <table:table-cell><text:p text:style-name="Bold">Pos.</text:p></table:table-cell>
+          <table:table-cell><text:p text:style-name="Bold">GebüH / Leistung</text:p></table:table-cell>
+          <table:table-cell><text:p text:style-name="Bold">Menge</text:p></table:table-cell>
+          <table:table-cell><text:p text:style-name="Bold">Einzelpreis</text:p></table:table-cell>
+          <table:table-cell><text:p text:style-name="Bold">USt %</text:p></table:table-cell>
+          <table:table-cell><text:p text:style-name="Bold">Gesamt</text:p></table:table-cell>
+        </table:table-row>
+        <table:table-row>
+          <table:table-cell><text:p>[xtable0.count]</text:p></table:table-cell>
+          <table:table-cell><text:p>[xtable0.description]</text:p></table:table-cell>
+          <table:table-cell><text:p>[xtable0.quantity]</text:p></table:table-cell>
+          <table:table-cell><text:p>[xtable0.singleprice]</text:p></table:table-cell>
+          <table:table-cell><text:p>[xtable0.taxpercent]</text:p></table:table-cell>
+          <table:table-cell><text:p>[xtable0.totalprice]</text:p></table:table-cell>
+        </table:table-row>
+      </table:table>
+      <text:p/>
+      <text:p text:style-name="Bold">Rechnungsbetrag: [item.grosvalue] EUR</text:p>
+      <text:p/>
+      <text:p text:style-name="Small">[hp.ustgNotice]</text:p>
+      <text:p text:style-name="Small">Hinweis: Die Abrechnung erfolgt nach dem Gebührenverzeichnis für Heilpraktiker (GebüH 85/2002) bzw. auf Grundlage der geschlossenen Honorarvereinbarung (§ 630a BGB).</text:p>
+      <text:p/>
+      <text:p>Bitte überweisen Sie den Rechnungsbetrag unter Angabe der Rechnungsnummer [item.cnumber] auf folgendes Konto:</text:p>
+      <text:p>[companyinfo.bankname] · IBAN: [companyinfo.bankaccount] · BIC: [companyinfo.bankid]</text:p>
+      <text:p/>
+      <text:p/>
+      <text:p>________________________________________</text:p>
+      <text:p text:style-name="Small">[companyinfo.name] · [hp.practitionerTitle]</text:p>
+      <text:p text:style-name="Small">[hp.licenseAuthority]</text:p>
+    </office:text>
+  </office:body>
+</office:document>

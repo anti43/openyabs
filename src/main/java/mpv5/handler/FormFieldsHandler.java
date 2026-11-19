@@ -121,6 +121,13 @@ public class FormFieldsHandler {
                 maps.put("template." + strings[0], resolve(strings[0], strings[1], obj));
             }
         }
+        if (identifier == null && obj != null) {
+            try {
+                maps.putAll(mpv5.plugin.ExtensionManager.instance().templateFields(obj));
+            } catch (Throwable t) {
+                Log.Debug(this, t.getMessage());
+            }
+        }
         return maps;
     }
 

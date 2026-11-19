@@ -94,6 +94,16 @@ public interface ExtensionContext {
     }
 
     /**
+     * Supplies additional template placeholders (key -> value) when a
+     * {@link mpv5.db.common.DatabaseObject} is formatted for ODT/PDF export.
+     *
+     * @param provider called with the record being exported; may return null or
+     * an empty map
+     */
+    default void addTemplateFields(Function<mpv5.db.common.DatabaseObject, java.util.Map<String, Object>> provider) {
+    }
+
+    /**
      * Opens a tab in the main window
      *
      * @param title
