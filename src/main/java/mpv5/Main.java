@@ -148,6 +148,11 @@ public class Main implements Runnable {
                 Log.Debug(Main.class, ex);
             }
         }
+        if (!LocalSettings.getLocalFile().exists()) {
+            //first start: no settings file yet, the first-start wizard creates it
+            Log.Debug(Main.class, "No local settings file yet (first start): " + LocalSettings.getLocalFile());
+            return;
+        }
         try {
             LocalSettings.read();
             LocalSettings.apply();
@@ -1119,6 +1124,12 @@ public class Main implements Runnable {
     }
 
     private boolean probeDatabaseConnection() {
+        String driver = LocalSettings.getProperty(LocalSettings.DBDRIVER);
+        if (driver == null || driver.equalsIgnoreCase("null") || driver.isBlank()) {
+            //first start: no database configured yet
+            Log.Debug(this, "No database configured yet.");
+            return false;
+        }
         try {
             DatabaseConnection.instanceOf();
             Log.Debug(this, "Connected to database: " + DatabaseConnection.instanceOf().getCtype().getURL());
