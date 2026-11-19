@@ -9,7 +9,9 @@ import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import mpv5.db.common.ConnectionTypeHandler;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseConnection;
@@ -138,9 +140,14 @@ abstract class AppOnDatabase {
             User._setUser(admin);
             mpv5.handler.FirstStartSetup.prepare(admin, true, null);
 
-            //invoice template and the demo templates, saved with their dates (H2 TIMESTAMP columns)
+            //the 18 demo templates, saved with their dates (H2 TIMESTAMP columns); the demo
+            //invoice is the assigned invoice template (no separate template-de any more)
             List<DatabaseObject> templates = DatabaseObject.getObjects(Context.getTemplate());
-            assertEquals(19, templates.size());
+            assertEquals(mpv5.handler.FirstStartSetup.DEMO_TEMPLATES.length, templates.size());
+            assertEquals("1", String.valueOf(QueryHandler.getConnection().freeQuery(
+                    "SELECT COUNT(*) FROM templatestousers a JOIN templates t ON t.ids = a.templatesids WHERE a.usersids = "
+                    + admin.__getIDS() + " AND t.mimetype = '" + Item.TYPE_INVOICE + "' AND t.cname = 'Demo - Rechnung'",
+                    mpv5.usermanagement.MPSecurityManager.VIEW, null).getData()[0][0]));
             assertNotNull(((Template) templates.get(0)).__getDateadded());
             templateEditedInLibreOffice((Template) templates.get(0));
 
@@ -157,6 +164,26 @@ abstract class AppOnDatabase {
             assertEquals("Köln", c2.__getCity());
             assertTrue(c2.__getIscustomer());
             assertEquals(DateConverter.getDefDateString(c.__getDateadded()), DateConverter.getDefDateString(c2.__getDateadded()));
+
+            //own fields of the contact: stored from the table (prefix removed), a script with the
+            //fields of the contact, in an invoice as item.contact.property.*
+            mpv5.handler.ContactService.saveProperties(c2, new Object[][]{
+                {"contact.property.anrede", "#contact.ismale ? 'Dear Mr ' + contact.cname : 'Dear Mrs ' + contact.cname#"},
+                {"lieferzeit", "2 weeks"}, {"", ""}});
+            assertEquals(2, mpv5.db.objects.ValueProperty.getProperties(c2).size());
+            Map<String, String> fields = new HashMap<>();
+            for (String[] row : mpv5.handler.ContactService.invoiceFields(c2)) {
+                fields.put(row[0], row[1]);
+            }
+            assertEquals((c2.__getisMale() ? "Dear Mr " : "Dear Mrs ") + "Muster GmbH", fields.get("<item.contact.property.anrede>"));
+            assertEquals("2 weeks", fields.get("<item.contact.property.lieferzeit>"));
+            assertEquals("Muster GmbH", fields.get("<item.contact.cname>"));
+            //a row removed from the table is deleted
+            mpv5.handler.ContactService.saveProperties(c2, new Object[][]{{"anrede", "Hello"}});
+            assertEquals(1, mpv5.db.objects.ValueProperty.getProperties(c2).size());
+            assertEquals("Hello", String.valueOf(mpv5.db.objects.ValueProperty.getProperty(c2, "anrede").getValueObj()));
+            mpv5.handler.ContactService.saveProperties(c2, new Object[0][]);
+            assertEquals(0, mpv5.db.objects.ValueProperty.getProperties(c2).size());
 
             Product p = (Product) DatabaseObject.getObject(Context.getProduct());
             p.setCname("Kaffee");

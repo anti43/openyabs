@@ -67,7 +67,6 @@ import mpv5.db.objects.ProductlistSubItem;
 import mpv5.db.objects.SubItem;
 import mpv5.db.objects.Template;
 import mpv5.db.objects.User;
-import mpv5.db.objects.ValueProperty;
 import mpv5.globals.Constants;
 import mpv5.globals.Headers;
 import mpv5.globals.Messages;
@@ -167,7 +166,6 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
     //positions, files, properties
     private final ItemPositionsTable positions = new ItemPositionsTable();
     private final JTable filetable = tooltipTable(this);
-    private final JTable proptable = tooltipTable(this);
     //payments received (part payments) of invoices
     private final javax.swing.table.DefaultTableModel paymentsModel = new javax.swing.table.DefaultTableModel(
             new Object[]{Messages.PAYMENT_DATE.toString(), Messages.PAYMENT_AMOUNT.toString(), Messages.PAYMENT_NOTE.toString()}, 0) {
@@ -335,7 +333,6 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
                 Log.Debug(ex);
             }
         });
-        ((MPTable) proptable).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) proptable, this));
         filetable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent evt) {
@@ -456,10 +453,6 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         JScrollPane files = new JScrollPane(filetable);
         files.setPreferredSize(new java.awt.Dimension(ModernTheme.px(200), ModernTheme.px(100)));
         grid.add(new Card(Messages.ITEM_SECTION_FILES.toString()).headerAction(fileButtons).addFull(files, 1));
-
-        JScrollPane props = new JScrollPane(proptable);
-        props.setPreferredSize(new java.awt.Dimension(ModernTheme.px(200), ModernTheme.px(100)));
-        grid.add(new Card(Messages.ITEM_SECTION_PROPERTIES.toString()).addFull(propertiesHint("item", "")).addFull(props, 1));
 
         paymentsTable.setModel(paymentsModel);
         ModernTheme.style(paymentsTable);
@@ -1145,32 +1138,6 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         TableFormat.stripFirstColumn(filetable);
     }
 
-    private void properties() {
-        final MPTableModel m = new MPTableModel(ValueProperty.getProperties(dataOwner));
-        final MPTableModel mold = m.clone();
-        if (m.getDataVector().isEmpty()) {
-            proptable.setModel(new MPTableModel(Arrays.asList(new ValueProperty[]{new ValueProperty("", "", dataOwner)})));
-        } else {
-            proptable.setModel(m);
-        }
-        m.addTableModelListener(new javax.swing.event.TableModelListener() {
-            @Override
-            public void tableChanged(javax.swing.event.TableModelEvent e) {
-                if (!dataOwner.isExisting()) {
-                    return;
-                }
-                if (e.getColumn() == 0 && e.getType() == javax.swing.event.TableModelEvent.DELETE) {
-                    ValueProperty.deleteProperty(dataOwner, String.valueOf(mold.getData()[e.getLastRow()][0]));
-                    m.removeTableModelListener(this);
-                    properties();
-                } else if (e.getColumn() == 1 && m.getValueAt(e.getLastRow(), 0) != null && String.valueOf(m.getValueAt(e.getLastRow(), 0)).length() > 0) {
-                    ValueProperty.addOrUpdateProperty(String.valueOf(m.getData()[e.getLastRow()][0]).replaceAll("[^\\w]", ""), String.valueOf(m.getData()[e.getLastRow()][1]), dataOwner);
-                    m.removeTableModelListener(this);
-                    properties();
-                }
-            }
-        });
-    }
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="DataPanel">
@@ -1244,7 +1211,6 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
                     Log.Debug(ex);
                 }
             }
-            properties();
         } finally {
             loading = false;
         }
