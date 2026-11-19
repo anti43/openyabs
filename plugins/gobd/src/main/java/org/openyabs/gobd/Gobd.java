@@ -17,7 +17,6 @@
 package org.openyabs.gobd;
 
 import static org.openyabs.gobd.GobdUtil.blank;
-import static org.openyabs.gobd.GobdUtil.esc;
 import static org.openyabs.gobd.GobdUtil.fmtDate;
 import static org.openyabs.gobd.GobdUtil.fmtDec;
 import static org.openyabs.gobd.GobdUtil.str;
@@ -29,10 +28,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
-import java.time.LocalDate;
-import java.time.ZoneId;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -93,6 +92,11 @@ public final class Gobd {
     final Map<String, String> masterDataBeforeSave = new ConcurrentHashMap<String, String>();
     final Set<Integer> finalizingIds = Collections.synchronizedSet(new HashSet<Integer>());
     final Set<String> seenWatchFiles = Collections.synchronizedSet(new HashSet<String>());
+    /**
+     * Files of the watch folder seen once: path -> size and time; imported
+     * when they are the same in the next round (not being written any more)
+     */
+    final Map<String, String> pendingWatchFiles = new ConcurrentHashMap<String, String>();
     volatile boolean creatingStorno = false;
     private Timer incomeWatchTimer;
 
@@ -100,18 +104,71 @@ public final class Gobd {
         this.yabs = yabs;
     }
 
+    /**
+     * A database error of the GoBD tables (never swallowed: a failed write is
+     * no lock, a failed read is not "not locked")
+     */
+    static final class GobdException extends RuntimeException {
+
+        private static final long serialVersionUID = 1L;
+
+        GobdException(String message, Throwable cause) {
+            super(message, cause);
+        }
+
+        GobdException(String message) {
+            super(message);
+        }
+    }
+
     // ---------------------------------------------------------------- basics
+    /**
+     * Lenient (for views and tables of YaBS): an error gives no rows
+     */
     Object[][] rows(String sql) {
         return yabs.select(sql);
+    }
+
+    /**
+     * Strict, with parameters
+     *
+     * @throws GobdException on a database error
+     */
+    Object[][] q(String sql, Object... params) {
+        try {
+            return Db.query(Db.connection(), sql, params);
+        } catch (SQLException e) {
+            throw new GobdException("GoBD-Datenbankfehler: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Strict, with parameters
+     *
+     * @return the first row, null if none
+     * @throws GobdException on a database error
+     */
+    Object[] q1(String sql, Object... params) {
+        Object[][] r = q(sql, params);
+        return r.length > 0 ? r[0] : null;
+    }
+
+    /**
+     * Strict, with parameters
+     *
+     * @throws GobdException on a database error
+     */
+    void u(String sql, Object... params) {
+        try {
+            Db.update(Db.connection(), sql, params);
+        } catch (SQLException e) {
+            throw new GobdException("GoBD-Datenbankfehler: " + e.getMessage(), e);
+        }
     }
 
     Object[] row(String sql) {
         Object[][] r = rows(sql);
         return r.length > 0 ? r[0] : null;
-    }
-
-    void exec(String sql) {
-        yabs.execute(sql);
     }
 
     void error(String msg) {
@@ -124,6 +181,22 @@ public final class Gobd {
 
     void popup(String msg) {
         yabs.popup(msg);
+    }
+
+    /**
+     * A success message without a dialog: the notification bar of YaBS, and
+     * the notification log of the record if there is one
+     *
+     * @param msg
+     * @param about the record, or null
+     */
+    void notifyQuiet(String msg, DatabaseObject about) {
+        String m = msg.replace("\n", " | ");
+        if (about != null && about.__getIDS() > 0) {
+            mpv5.ui.dialogs.Notificator.raiseNotification(m, false, true, about);
+        } else {
+            mpv5.ui.dialogs.Notificator.raiseNotification(m, false);
+        }
     }
 
     /**
@@ -146,7 +219,7 @@ public final class Gobd {
             User u = User.getCurrentUser();
             String n = u == null ? null : u.__getCname();
             return blank(n) ? System.getProperty("user.name", "system") : n;
-        } catch (Exception e) {
+        } catch (Exception | LinkageError e) {
             return System.getProperty("user.name", "system");
         }
     }
@@ -191,13 +264,13 @@ public final class Gobd {
      * Creates the tables of the plugin (H2, MySQL / MariaDB, PostgreSQL)
      */
     void initSchema() {
-        exec("CREATE TABLE IF NOT EXISTS gobd_document_lock ("
+        u("CREATE TABLE IF NOT EXISTS gobd_document_lock ("
                 + " document_id BIGINT PRIMARY KEY, chain_seq BIGINT NULL, document_number VARCHAR(100) NOT NULL UNIQUE,"
                 + " status VARCHAR(20) NOT NULL, finalized_at TIMESTAMP NOT NULL, finalized_by VARCHAR(100) NOT NULL,"
                 + " customer_snapshot TEXT NOT NULL, positions_snapshot TEXT NOT NULL, archive_path VARCHAR(512) NOT NULL,"
                 + " artifact_format VARCHAR(30) NOT NULL, sha256_hash CHAR(64) NOT NULL, prev_sha256_hash CHAR(64) NOT NULL,"
                 + " cancels_document_id BIGINT NULL)");
-        exec("CREATE TABLE IF NOT EXISTS gobd_audit_log ("
+        u("CREATE TABLE IF NOT EXISTS gobd_audit_log ("
                 + " id BIGINT GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY, created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,"
                 + " user_id VARCHAR(100) NOT NULL, entity_type VARCHAR(50) NOT NULL, entity_id BIGINT NOT NULL,"
                 + " action VARCHAR(50) NOT NULL, old_value VARCHAR(2000) NULL, new_value VARCHAR(2000) NULL,"
@@ -207,35 +280,181 @@ public final class Gobd {
             "ALTER TABLE gobd_document_lock ADD COLUMN IF NOT EXISTS customer_snapshot TEXT NULL",
             "ALTER TABLE gobd_document_lock ADD COLUMN IF NOT EXISTS positions_snapshot TEXT NULL",
             "ALTER TABLE gobd_audit_log ADD COLUMN IF NOT EXISTS old_value VARCHAR(2000) NULL",
-            "ALTER TABLE gobd_audit_log ADD COLUMN IF NOT EXISTS new_value VARCHAR(2000) NULL"}) {
-            exec(alter);
+            "ALTER TABLE gobd_audit_log ADD COLUMN IF NOT EXISTS new_value VARCHAR(2000) NULL",
+            //hash chain of the audit log
+            "ALTER TABLE gobd_audit_log ADD COLUMN IF NOT EXISTS prev_hash CHAR(64) NULL",
+            "ALTER TABLE gobd_audit_log ADD COLUMN IF NOT EXISTS row_hash CHAR(64) NULL",
+            //version 2 of the hash chain: the record (booking data + file hash) is hashed, not only the file
+            "ALTER TABLE gobd_document_lock ADD COLUMN IF NOT EXISTS hash_version INT NULL",
+            "ALTER TABLE gobd_document_lock ADD COLUMN IF NOT EXISTS file_sha256 CHAR(64) NULL",
+            "ALTER TABLE gobd_document_lock ADD COLUMN IF NOT EXISTS record_data TEXT NULL"}) {
+            u(alter);
         }
         //receipts of expenses: the files are not in the database but byte-identical in
         //<archive>/eingangsbelege/<year>/ with a SHA256SUMS file; the table holds metadata and a hash chain
-        exec("CREATE TABLE IF NOT EXISTS gobd_receipt ("
+        u("CREATE TABLE IF NOT EXISTS gobd_receipt ("
                 + " id BIGINT GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY, expense_id BIGINT NOT NULL, chain_seq BIGINT NOT NULL,"
                 + " receipt_ref VARCHAR(250) NULL, original_name VARCHAR(512) NOT NULL, archive_path VARCHAR(1024) NOT NULL,"
                 + " file_size BIGINT NOT NULL, artifact_format VARCHAR(30) NOT NULL, sha256 CHAR(64) NOT NULL,"
                 + " chain_hash CHAR(64) NOT NULL, prev_chain_hash CHAR(64) NOT NULL, expense_snapshot VARCHAR(2000) NULL,"
                 + " imported_at TIMESTAMP NOT NULL, imported_by VARCHAR(100) NOT NULL)");
+        //receipts of income (table revenue_receipts of YaBS): the same, a hash chain of its own
+        u("CREATE TABLE IF NOT EXISTS gobd_revenue_receipt ("
+                + " id BIGINT GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY, revenue_id BIGINT NOT NULL, chain_seq BIGINT NOT NULL,"
+                + " receipt_ref VARCHAR(250) NULL, original_name VARCHAR(512) NOT NULL, archive_path VARCHAR(1024) NOT NULL,"
+                + " file_size BIGINT NOT NULL, artifact_format VARCHAR(30) NOT NULL, sha256 CHAR(64) NOT NULL,"
+                + " chain_hash CHAR(64) NOT NULL, prev_chain_hash CHAR(64) NOT NULL, revenue_snapshot VARCHAR(2000) NULL,"
+                + " imported_at TIMESTAMP NOT NULL, imported_by VARCHAR(100) NOT NULL, record_data TEXT NULL)");
         //income from e-invoices: the original under <archive>/einnahmen/<year>/ with SHA256SUMS and hash chain
-        exec("CREATE TABLE IF NOT EXISTS gobd_income_lock ("
+        u("CREATE TABLE IF NOT EXISTS gobd_income_lock ("
                 + " revenue_id BIGINT PRIMARY KEY, chain_seq BIGINT NOT NULL, document_number VARCHAR(100) NOT NULL,"
                 + " status VARCHAR(20) NOT NULL, imported_at TIMESTAMP NOT NULL, imported_by VARCHAR(100) NOT NULL,"
                 + " original_name VARCHAR(512) NOT NULL, archive_path VARCHAR(1024) NOT NULL, file_size BIGINT NOT NULL,"
                 + " artifact_format VARCHAR(30) NOT NULL, file_sha256 CHAR(64) NOT NULL UNIQUE, chain_hash CHAR(64) NOT NULL,"
                 + " prev_chain_hash CHAR(64) NOT NULL, financial_snapshot VARCHAR(2000) NOT NULL)");
+        for (String alter : new String[]{
+            "ALTER TABLE gobd_income_lock ADD COLUMN IF NOT EXISTS hash_version INT NULL",
+            "ALTER TABLE gobd_income_lock ADD COLUMN IF NOT EXISTS record_data TEXT NULL",
+            "ALTER TABLE gobd_receipt ADD COLUMN IF NOT EXISTS record_data TEXT NULL"}) {
+            u(alter);
+        }
+        migrateChainSeq();
+        //one successor per link: two clients can not fork a chain
+        for (String index : new String[]{
+            "CREATE UNIQUE INDEX IF NOT EXISTS gobd_document_lock_seq ON gobd_document_lock (chain_seq)",
+            "CREATE UNIQUE INDEX IF NOT EXISTS gobd_income_lock_seq ON gobd_income_lock (chain_seq)",
+            "CREATE UNIQUE INDEX IF NOT EXISTS gobd_receipt_seq ON gobd_receipt (chain_seq)",
+            "CREATE UNIQUE INDEX IF NOT EXISTS gobd_receipt_ref ON gobd_receipt (receipt_ref)",
+            "CREATE UNIQUE INDEX IF NOT EXISTS gobd_revenue_receipt_seq ON gobd_revenue_receipt (chain_seq)",
+            "CREATE UNIQUE INDEX IF NOT EXISTS gobd_revenue_receipt_ref ON gobd_revenue_receipt (receipt_ref)",
+            "CREATE UNIQUE INDEX IF NOT EXISTS gobd_audit_log_prev ON gobd_audit_log (prev_hash)"}) {
+            try {
+                u(index);
+            } catch (GobdException e) {
+                //old duplicates: the check of the archive reports them
+                Log.Debug(Gobd.class, e);
+            }
+        }
+    }
+
+    /**
+     * Old locks have no chain_seq (or the same one twice). Sorted by COALESCE(chain_seq, document_id)
+     * old and new ones were mixed up, and new locks were chained to the wrong
+     * predecessor. Gives all locks a chain_seq in the order of their links
+     * (prev_sha256_hash), the rest (breaks) in the old order. The hashes stay
+     * as they are: a break is shown by the check of the archive.
+     */
+    void migrateChainSeq() {
+        Object[][] all = q("SELECT document_id, sha256_hash, prev_sha256_hash, chain_seq FROM gobd_document_lock"
+                + " ORDER BY COALESCE(chain_seq, document_id) ASC, finalized_at ASC, document_id ASC");
+        boolean missing = false;
+        Set<String> seqs = new HashSet<String>();
+        for (Object[] r : all) {
+            //none, or twice (two clients at the same time)
+            missing |= r[3] == null || !seqs.add(str(r[3]));
+        }
+        if (!missing) {
+            return;
+        }
+        List<Object[]> rest = new ArrayList<Object[]>(Arrays.asList(all));
+        List<Object[]> ordered = new ArrayList<Object[]>();
+        String current = GobdUtil.GENESIS_HASH;
+        while (!rest.isEmpty()) {
+            Object[] next = rest.get(0);
+            for (Object[] r : rest) {
+                if (str(r[2]).equalsIgnoreCase(current)) {
+                    next = r;
+                    break;
+                }
+            }
+            rest.remove(next);
+            ordered.add(next);
+            current = str(next[1]);
+        }
+        try {
+            Db.tx(c -> {
+                //first out of the way (no clash with the unique index of an earlier run)
+                Db.update(c, "UPDATE gobd_document_lock SET chain_seq = NULL");
+                for (int i = 0; i < ordered.size(); i++) {
+                    Db.update(c, "UPDATE gobd_document_lock SET chain_seq = ? WHERE document_id = ?", (long) (i + 1), ordered.get(i)[0]);
+                }
+                logAudit(c, "PLUGIN", 0L, "CHAIN_SEQ_MIGRATED", null, "LOCKS=" + ordered.size(), null,
+                        "Festschreibungen ohne chain_seq in der Reihenfolge der Hash-Verkettung nummeriert.");
+                return null;
+            });
+        } catch (Exception e) {
+            throw new GobdException("GoBD: Nummerierung der Hash-Kette fehlgeschlagen: " + e.getMessage(), e);
+        }
     }
 
     // ---------------------------------------------------------------- audit
+    /**
+     * Writes an entry of the audit log (hash-chained, in its own transaction
+     * or in the running one)
+     *
+     * @throws GobdException if it could not be written
+     */
     void logAudit(String entityType, long entityId, String action, String oldVal, String newVal, String fileHash, String details) {
+        try {
+            Db.tx(c -> {
+                logAudit(c, entityType, entityId, action, oldVal, newVal, fileHash, details);
+                return null;
+            });
+        } catch (GobdException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new GobdException("GoBD-Audit-Log konnte nicht geschrieben werden: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Writes an entry of the audit log on the connection: row_hash =
+     * SHA256(record || prev_hash), prev_hash = row_hash of the entry before
+     */
+    static void logAudit(Connection c, String entityType, long entityId, String action, String oldVal, String newVal, String fileHash,
+            String details) throws SQLException {
+        String user = trunc(currentUser(), 100);
+        String type = trunc(entityType, 50);
+        String act = trunc(action, 50);
         String o = trunc(oldVal, 2000);
         String n = trunc(newVal, 2000);
         String d = trunc(details == null ? "" : details, 1000);
-        exec("INSERT INTO gobd_audit_log (created_at, user_id, entity_type, entity_id, action, old_value, new_value, file_hash, details)"
-                + " VALUES (CURRENT_TIMESTAMP, '" + esc(currentUser()) + "', '" + esc(entityType) + "', " + entityId + ", '" + esc(action) + "', "
-                + (o != null ? "'" + esc(o) + "'" : "NULL") + ", " + (n != null ? "'" + esc(n) + "'" : "NULL") + ", "
-                + (fileHash != null ? "'" + esc(fileHash) + "'" : "NULL") + ", '" + esc(d) + "')");
+        //CHAR(64): no blanks, no other lengths (they would come back padded)
+        String fh = blank(fileHash) || fileHash.trim().length() != 64 ? null : fileHash.trim();
+        for (int attempt = 0;; attempt++) {
+            Object[] last = Db.first(c, "SELECT row_hash FROM gobd_audit_log WHERE row_hash IS NOT NULL ORDER BY id DESC LIMIT 1");
+            String prev = last == null ? GobdUtil.GENESIS_HASH : str(last[0]);
+            Timestamp now = nowSeconds();
+            String hash = GobdUtil.recordHash(auditRecord(now, user, type, entityId, act, o, n, fh, d), prev);
+            try {
+                Db.update(c, "INSERT INTO gobd_audit_log (created_at, user_id, entity_type, entity_id, action, old_value, new_value, file_hash, details,"
+                        + " prev_hash, row_hash) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", now, user, type, entityId, act, o, n, fh, d, prev, hash);
+                return;
+            } catch (SQLException e) {
+                //another client wrote an entry in between: chain to that one
+                if (attempt >= 4 || !Db.isUniqueViolation(e)) {
+                    throw e;
+                }
+            }
+        }
+    }
+
+    /**
+     * @return the record of an audit log entry that is hashed
+     */
+    static String auditRecord(Object createdAt, String user, String type, Object entityId, String action, String oldVal, String newVal,
+            String fileHash, String details) {
+        return GobdUtil.record("created_at", GobdUtil.fmtTimestamp(createdAt), "user", user, "entity_type", type, "entity_id", entityId,
+                "action", action, "old", oldVal == null ? "<null>" : oldVal, "new", newVal == null ? "<null>" : newVal,
+                "file_hash", fileHash == null ? "<null>" : fileHash.trim(), "details", details);
+    }
+
+    /**
+     * @return now, without the parts of a second (the same after reading it
+     * back from the database)
+     */
+    static Timestamp nowSeconds() {
+        return new Timestamp(System.currentTimeMillis() / 1000L * 1000L);
     }
 
     // ---------------------------------------------------------------- locks
@@ -245,8 +464,8 @@ public final class Gobd {
      * sha256_hash, prev_sha256_hash, cancels_document_id; null if not finalized
      */
     Object[] lockRecord(long docId) {
-        return row("SELECT document_id, document_number, status, finalized_at, finalized_by, customer_snapshot, positions_snapshot,"
-                + " archive_path, artifact_format, sha256_hash, prev_sha256_hash, cancels_document_id FROM gobd_document_lock WHERE document_id = " + docId);
+        return q1("SELECT document_id, document_number, status, finalized_at, finalized_by, customer_snapshot, positions_snapshot,"
+                + " archive_path, artifact_format, sha256_hash, prev_sha256_hash, cancels_document_id, record_data FROM gobd_document_lock WHERE document_id = ?", docId);
     }
 
     /**
@@ -255,37 +474,49 @@ public final class Gobd {
      * file_sha256, chain_hash, prev_chain_hash, financial_snapshot; null if none
      */
     Object[] incomeLockRecord(long revId) {
-        return row("SELECT revenue_id, chain_seq, document_number, status, imported_at, imported_by, original_name, archive_path, file_size,"
-                + " artifact_format, file_sha256, chain_hash, prev_chain_hash, financial_snapshot FROM gobd_income_lock WHERE revenue_id = " + revId);
+        return q1("SELECT revenue_id, chain_seq, document_number, status, imported_at, imported_by, original_name, archive_path, file_size,"
+                + " artifact_format, file_sha256, chain_hash, prev_chain_hash, financial_snapshot FROM gobd_income_lock WHERE revenue_id = ?", revId);
     }
 
-    String latestChainHash() {
-        Object[] r = row("SELECT sha256_hash FROM gobd_document_lock ORDER BY COALESCE(chain_seq, document_id) DESC, finalized_at DESC, document_id DESC");
-        return r != null && r[0] != null && !r[0].toString().isEmpty() ? r[0].toString() : GobdUtil.GENESIS_HASH;
+    /**
+     * The end of a chain, read in the transaction that adds the next link
+     *
+     * @param c
+     * @param table
+     * @param hashColumn
+     * @return {next chain_seq, hash of the last link (GENESIS if none)}
+     */
+    static Object[] chainEnd(Connection c, String table, String hashColumn) throws SQLException {
+        Object[] last = Db.first(c, "SELECT chain_seq, " + hashColumn + " FROM " + table + " WHERE chain_seq IS NOT NULL ORDER BY chain_seq DESC LIMIT 1");
+        if (last == null || blank(str(last[1]))) {
+            return new Object[]{1L, GobdUtil.GENESIS_HASH};
+        }
+        return new Object[]{GobdUtil.toLong(last[0], 0L) + 1L, str(last[1])};
     }
 
-    long nextChainSeq() {
-        Object[] r = row("SELECT COALESCE(MAX(chain_seq), 0) FROM gobd_document_lock");
-        return (r == null ? 0L : GobdUtil.toLong(r[0], 0L)) + 1L;
-    }
-
-    String latestIncomeChainHash() {
-        Object[] r = row("SELECT chain_hash FROM gobd_income_lock ORDER BY chain_seq DESC, imported_at DESC, revenue_id DESC");
-        return r != null && r[0] != null && !r[0].toString().isEmpty() ? r[0].toString() : GobdUtil.GENESIS_HASH;
-    }
-
-    long nextIncomeChainSeq() {
-        Object[] r = row("SELECT COALESCE(MAX(chain_seq), 0) FROM gobd_income_lock");
-        return (r == null ? 0L : GobdUtil.toLong(r[0], 0L)) + 1L;
+    /**
+     * Adds a link to a chain: runs the insert in a transaction, again if
+     * another client added a link in between (unique chain_seq)
+     */
+    static <T> T addLink(Db.Work<T> work) throws Exception {
+        for (int attempt = 0;; attempt++) {
+            try {
+                return Db.tx(work);
+            } catch (Exception e) {
+                if (attempt >= 4 || !Db.isUniqueViolation(e)) {
+                    throw e;
+                }
+            }
+        }
     }
 
     String nextSequenceNumber(String prefix, int year) {
         String pattern = prefix + "-" + year + "-";
         int max = 0;
         for (String sql : new String[]{
-            "SELECT document_number FROM gobd_document_lock WHERE document_number LIKE '" + esc(pattern) + "%'",
-            "SELECT cnumber FROM items WHERE cnumber LIKE '" + esc(pattern) + "%'"}) {
-            for (Object[] r : rows(sql)) {
+            "SELECT document_number FROM gobd_document_lock WHERE document_number LIKE ? ESCAPE '!'",
+            "SELECT cnumber FROM items WHERE cnumber LIKE ? ESCAPE '!'"}) {
+            for (Object[] r : q(sql, GobdUtil.likeEscape(pattern) + "%")) {
                 String val = str(r[0]).trim();
                 if (val.startsWith(pattern) && GobdUtil.isInteger(val.substring(pattern.length()))) {
                     max = Math.max(max, Integer.parseInt(val.substring(pattern.length()).trim()));
@@ -305,42 +536,96 @@ public final class Gobd {
         }
     }
 
+    /**
+     * The tax relevant fields of an invoice (6 decimals: also a change below a
+     * cent is a change)
+     */
     static String financialCore(Item doc) {
+        return itemCore(doc.__getCnumber(), doc.__getInttype(), doc.__getContactsids(), doc.__getAccountsids(), doc.__getDateadded(),
+                doc.__getDatetodo(), doc.__getDateend(), doc.__getNetvalue(), doc.__getDiscountvalue(), doc.__getTaxvalue(),
+                doc.__getDiscountGrosvalue(), doc.__getDescription());
+    }
+
+    /**
+     * The columns of the items table read by {@link #itemCoreOfRow}
+     */
+    static final String ITEM_CORE_COLUMNS = "cnumber, inttype, contactsids, accountsids, dateadded, datetodo, dateend, netvalue, discountvalue,"
+            + " taxvalue, discountgrosvalue, description";
+
+    /**
+     * {@link #financialCore} of a row with {@link #ITEM_CORE_COLUMNS}
+     */
+    static String itemCoreOfRow(Object[] db) {
+        return itemCore(db[0], db[1], db[2], db[3], db[4], db[5], db[6], db[7], db[8], db[9], db[10], db[11]);
+    }
+
+    private static String itemCore(Object num, Object type, Object contact, Object acc, Object issue, Object delivery, Object end,
+            Object net, Object disc, Object tax, Object discGross, Object desc) {
         return String.join("|",
-                "Num=" + str(doc.__getCnumber()),
-                "Type=" + doc.__getInttype(),
-                "Contact=" + doc.__getContactsids(),
-                "Acc=" + doc.__getAccountsids(),
-                "IssueDate=" + fmtDate(doc.__getDateadded()),
-                "DeliveryDate=" + fmtDate(doc.__getDatetodo()),
-                "EndDate=" + fmtDate(doc.__getDateend()),
-                "Net=" + fmtDec(doc.__getNetvalue()),
-                "Disc=" + fmtDec(doc.__getDiscountvalue()),
-                "Tax=" + fmtDec(doc.__getTaxvalue()),
-                "DiscGross=" + fmtDec(doc.__getDiscountGrosvalue()),
-                "Desc=" + str(doc.__getDescription()).trim());
+                "Num=" + str(num),
+                "Type=" + str(type),
+                "Contact=" + str(contact),
+                "Acc=" + str(acc),
+                "IssueDate=" + fmtDate(issue),
+                "DeliveryDate=" + fmtDate(delivery),
+                "EndDate=" + fmtDate(end),
+                "Net=" + GobdUtil.fmtExact(net),
+                "Disc=" + GobdUtil.fmtExact(disc),
+                "Tax=" + GobdUtil.fmtExact(tax),
+                "DiscGross=" + GobdUtil.fmtExact(discGross),
+                "Desc=" + str(desc).trim());
+    }
+
+    /**
+     * @return the tax relevant fields of the invoice in the database, null if
+     * it could not be read
+     */
+    String itemCoreInDb(long docId) {
+        Object[] db = row("SELECT " + ITEM_CORE_COLUMNS + " FROM items WHERE ids = " + docId);
+        return db == null ? null : itemCoreOfRow(db);
+    }
+
+    /**
+     * @return the positions of the invoice in the database (description,
+     * quantity, price, discount, tax rate; 6 decimals)
+     */
+    String positionsCoreInDb(long docId) {
+        StringBuilder b = new StringBuilder();
+        for (Object[] p : rows("SELECT description, quantityvalue, externalvalue, discount, taxpercentvalue FROM subitems WHERE itemsids = "
+                + docId + " ORDER BY ids ASC")) {
+            if (b.length() > 0) {
+                b.append(" ;; ");
+            }
+            b.append(GobdUtil.fmtExact(p[1])).append("x ").append(str(p[0]).trim()).append(" @ ").append(GobdUtil.fmtExact(p[2]))
+                    .append(" -").append(GobdUtil.fmtExact(p[3])).append("% USt ").append(GobdUtil.fmtExact(p[4])).append("%");
+        }
+        return b.toString();
     }
 
     static String revenueSnapshot(Revenue rev) {
-        return String.join("|",
-                "Num=" + str(rev.__getCnumber()),
-                "Date=" + fmtDate(rev.__getDateadded()),
-                "Acc=" + rev.__getAccountsids(),
-                "Net=" + fmtDec(rev.__getNetvalue()),
-                "TaxPct=" + fmtDec(rev.__getTaxpercentvalue()),
-                "Gross=" + fmtDec(rev.__getBrutvalue()),
-                "Desc=" + str(rev.__getDescription()).trim());
+        return moneySnapshot(rev.__getCnumber(), rev.__getDateadded(), rev.__getAccountsids(), rev.__getNetvalue(), rev.__getTaxpercentvalue(),
+                rev.__getBrutvalue(), rev.__getDescription(), false);
     }
 
     static String expenseSnapshot(Expense exp) {
-        return String.join("|",
-                "Num=" + str(exp.__getCnumber()),
-                "Date=" + fmtDate(exp.__getDateadded()),
-                "Acc=" + exp.__getAccountsids(),
-                "Net=" + fmtDec(exp.__getNetvalue()),
-                "TaxPct=" + fmtDec(exp.__getTaxpercentvalue()),
-                "Gross=" + fmtDec(exp.__getBrutvalue()),
-                "Desc=" + str(exp.__getDescription()).trim());
+        return moneySnapshot(exp.__getCnumber(), exp.__getDateadded(), exp.__getAccountsids(), exp.__getNetvalue(), exp.__getTaxpercentvalue(),
+                exp.__getBrutvalue(), exp.__getDescription(), false);
+    }
+
+    /**
+     * For comparing: {@link #revenueSnapshot} with 6 decimals
+     */
+    static String revenueCore(Revenue rev) {
+        return moneySnapshot(rev.__getCnumber(), rev.__getDateadded(), rev.__getAccountsids(), rev.__getNetvalue(), rev.__getTaxpercentvalue(),
+                rev.__getBrutvalue(), rev.__getDescription(), true);
+    }
+
+    /**
+     * For comparing: {@link #expenseSnapshot} with 6 decimals
+     */
+    static String expenseCore(Expense exp) {
+        return moneySnapshot(exp.__getCnumber(), exp.__getDateadded(), exp.__getAccountsids(), exp.__getNetvalue(), exp.__getTaxpercentvalue(),
+                exp.__getBrutvalue(), exp.__getDescription(), true);
     }
 
     /**
@@ -349,15 +634,109 @@ public final class Gobd {
      * brutvalue, description
      */
     static String moneySnapshotOfRow(Object[] db) {
-        return String.join("|",
-                "Num=" + str(db[0]),
-                "Date=" + fmtDate(db[1]),
-                "Acc=" + db[2],
-                "Net=" + fmtDec(db[3]),
-                "TaxPct=" + fmtDec(db[4]),
-                "Gross=" + fmtDec(db[5]),
-                "Desc=" + str(db[6]).trim());
+        return moneySnapshot(db[0], db[1], db[2], db[3], db[4], db[5], db[6], false);
     }
+
+    /**
+     * {@link #moneySnapshotOfRow} with 6 decimals
+     */
+    static String moneyCoreOfRow(Object[] db) {
+        return moneySnapshot(db[0], db[1], db[2], db[3], db[4], db[5], db[6], true);
+    }
+
+    private static String moneySnapshot(Object num, Object date, Object acc, Object net, Object taxPct, Object gross, Object desc, boolean exact) {
+        return String.join("|",
+                "Num=" + str(num),
+                "Date=" + fmtDate(date),
+                "Acc=" + str(acc),
+                "Net=" + (exact ? GobdUtil.fmtExact(net) : fmtDec(net)),
+                "TaxPct=" + (exact ? GobdUtil.fmtExact(taxPct) : fmtDec(taxPct)),
+                "Gross=" + (exact ? GobdUtil.fmtExact(gross) : fmtDec(gross)),
+                "Desc=" + str(desc).trim());
+    }
+
+    /**
+     * The record of a finalized invoice that is hashed (version 2)
+     */
+    static String documentRecord(Object seq, Object docId, Object number, Object finalizedAt, Object by, Object format, Object fileSha,
+            Object cancels, String core, String positions) {
+        return GobdUtil.record("v", 2, "seq", seq, "document_id", docId, "number", number, "finalized_at", GobdUtil.fmtTimestamp(finalizedAt),
+                "finalized_by", by, "format", format, "file_sha256", fileSha, "cancels", cancels, "core", core, "positions", positions);
+    }
+
+    /**
+     * The record of an imported income that is hashed (version 2)
+     */
+    static String incomeRecord(Object seq, Object revId, Object number, Object importedAt, Object by, Object originalName, Object format,
+            Object fileSha, Object fileSize, String core) {
+        return GobdUtil.record("v", 2, "seq", seq, "revenue_id", revId, "number", number, "imported_at", GobdUtil.fmtTimestamp(importedAt),
+                "imported_by", by, "original_name", originalName, "format", format, "file_sha256", fileSha, "file_size", fileSize, "core", core);
+    }
+
+    /**
+     * The receipts of YaBS (files linked to expenses or income) and their
+     * hash chains of the plugin
+     */
+    enum Receipts {
+        EXPENSE("expense_receipts", "expensesids", "expenses", "gobd_receipt", "expense_id", "expense_snapshot", "Ausgabe", "Eingangsbeleg"),
+        REVENUE("revenue_receipts", "revenuesids", "revenues", "gobd_revenue_receipt", "revenue_id", "revenue_snapshot", "Einnahme", "Einnahmenbeleg");
+
+        /**
+         * The table of YaBS, its column of the expense / income, the table of
+         * the expenses / income
+         */
+        final String table, ownerColumn, bookingTable;
+        /**
+         * The chain of the plugin, its column of the expense / income, of the
+         * snapshot
+         */
+        final String chainTable, chainOwnerColumn, snapshotColumn;
+        /**
+         * For messages
+         */
+        final String bookingName, receiptName;
+
+        Receipts(String table, String ownerColumn, String bookingTable, String chainTable, String chainOwnerColumn, String snapshotColumn,
+                String bookingName, String receiptName) {
+            this.table = table;
+            this.ownerColumn = ownerColumn;
+            this.bookingTable = bookingTable;
+            this.chainTable = chainTable;
+            this.chainOwnerColumn = chainOwnerColumn;
+            this.snapshotColumn = snapshotColumn;
+            this.bookingName = bookingName;
+            this.receiptName = receiptName;
+        }
+
+        /**
+         * The entity type in the audit log
+         */
+        String entityType() {
+            return name();
+        }
+    }
+
+    /**
+     * The record of a receipt of an expense that is hashed
+     */
+    static String receiptRecord(Object seq, Object ref, Object expenseId, Object originalName, Object fileSize, Object fileSha,
+            Object importedAt, Object by, String core) {
+        return receiptRecord(Receipts.EXPENSE, seq, ref, expenseId, originalName, fileSize, fileSha, importedAt, by, core);
+    }
+
+    /**
+     * The record of a receipt of an expense or income that is hashed
+     */
+    static String receiptRecord(Receipts kind, Object seq, Object ref, Object ownerId, Object originalName, Object fileSize, Object fileSha,
+            Object importedAt, Object by, String core) {
+        return GobdUtil.record("v", 2, "seq", seq, "receipt_ref", ref, kind.chainOwnerColumn, ownerId, "original_name", originalName,
+                "file_size", fileSize, "file_sha256", fileSha, "imported_at", GobdUtil.fmtTimestamp(importedAt), "imported_by", by, "core", core);
+    }
+
+    /**
+     * The columns of expenses and income read by {@link #moneyCoreOfRow}
+     */
+    static final String MONEY_CORE_COLUMNS = "cnumber, dateadded, accountsids, netvalue, taxpercentvalue, brutvalue, description";
 
     static String contactSnapshot(Contact c) {
         return String.join(" | ",
@@ -399,9 +778,18 @@ public final class Gobd {
     }
 
     static List<String> validateMandatoryFields(Item doc) {
+        return validateMandatoryFields(doc, true);
+    }
+
+    /**
+     * @param doc
+     * @param withNumber false: before the final number is given
+     * @return the missing mandatory fields of § 14 Abs. 4 UStG
+     */
+    static List<String> validateMandatoryFields(Item doc, boolean withNumber) {
         List<String> errors = new ArrayList<String>();
         String num = str(doc.__getCnumber()).trim();
-        if (GobdUtil.isDraftNumber(num)) {
+        if (withNumber && GobdUtil.isDraftNumber(num)) {
             errors.add("Endgueltige fortlaufende Rechnungsnummer fehlt (aktuell: '" + num + "') (§ 14 Abs. 4 Nr. 4 UStG)");
         }
         if (doc.__getDateadded() == null) {
@@ -454,13 +842,18 @@ public final class Gobd {
         Files.createDirectories(yearDir);
         Path recent = lastGeneratedFiles.get((long) doc.__getIDS());
         if (recent != null && Files.exists(recent)) {
-            String fileName = recent.getFileName().toString();
-            String ext = fileName.contains(".") ? fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase() : "pdf";
-            String format = ext.equals("xml") ? "XRECHNUNG_XML" : "ZUGFERD_PDFA3";
-            Path target = GobdUtil.uniquePath(yearDir, safeDocNum, ext);
-            Files.copy(recent, target);
-            GobdUtil.makeReadOnly(target);
-            return new Archived(target, Files.readAllBytes(target), format);
+            //only the file of the final state: it has the final number (not a draft number)
+            //and the invoice was not saved after it was created (see executeAfterSave)
+            if (EInvoice.mentionsNumber(recent, str(doc.__getCnumber()))) {
+                String fileName = recent.getFileName().toString();
+                String ext = fileName.contains(".") ? fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase() : "pdf";
+                String format = ext.equals("xml") ? "XRECHNUNG_XML" : "ZUGFERD_PDFA3";
+                Path target = GobdUtil.uniquePath(yearDir, safeDocNum, ext);
+                Files.copy(recent, target);
+                return new Archived(target, Files.readAllBytes(target), format);
+            }
+            status("GoBD: Die zuletzt erzeugte Datei " + recent.getFileName() + " zeigt nicht die Belegnummer " + doc.__getCnumber()
+                    + " - archiviert wird stattdessen der Datensatz als XML.");
         }
         Path target = GobdUtil.uniquePath(yearDir, safeDocNum, "xml");
         BigDecimal net = nz(doc.__getNetvalue()).subtract(nz(doc.__getDiscountvalue()));
@@ -491,7 +884,6 @@ public final class Gobd {
         xml.append("</GoBDArchivedInvoice>\n");
         byte[] bytes = xml.toString().getBytes(StandardCharsets.UTF_8);
         Files.write(target, bytes, StandardOpenOption.CREATE_NEW);
-        GobdUtil.makeReadOnly(target);
         return new Archived(target, bytes, "XRECHNUNG_XML");
     }
 
@@ -514,41 +906,76 @@ public final class Gobd {
         if (!finalizingIds.add(doc.__getIDS())) {
             return false;
         }
+        final long docId = doc.__getIDS();
+        String oldNumber = doc.__getCnumber();
+        int oldStatus = doc.__getIntstatus();
+        Date oldEnd = doc.__getDateend();
+        boolean numberedNow = false;
+        Path archived = null;
+        boolean committed = false;
         try {
-            if (lockRecord(doc.__getIDS()) != null) {
+            if (lockRecord(docId) != null) {
                 status("GoBD: Beleg " + doc.__getCnumber() + " ist bereits festgeschrieben.");
                 return false;
             }
-            int year = LocalDate.now().getYear();
-            if (GobdUtil.isDraftNumber(doc.__getCnumber())) {
-                doc.setCnumber(nextSequenceNumber(doc.__getInttype() == Item.TYPE_CREDIT ? "ST" : "RE", year));
-            }
-            //status finished and end date (without an own save)
-            mpv5.handler.ItemService.ensureFinishedAndEndDate(doc, false);
-            doc.save(true);
-
-            List<String> problems = validateMandatoryFields(doc);
+            //check first: a failed check uses up no number
+            List<String> problems = validateMandatoryFields(doc, false);
             if (!problems.isEmpty()) {
                 error("GoBD-Festschreibung abgebrochen (§ 14 Abs. 4 UStG):\n- " + String.join("\n- ", problems));
                 return false;
             }
-            String safeDocNum = GobdUtil.safeFileName(blank(doc.__getCnumber()) ? "BELEG_" + doc.__getIDS() : doc.__getCnumber());
-            String customerSnap = contactSnapshot((long) doc.__getContactsids());
-            String positionsSnap = positionsSnapshot(doc);
-            Archived a = archiveArtifact(doc, year, safeDocNum, customerSnap);
-
-            long chainSeq = nextChainSeq();
-            String prevHash = latestChainHash();
-            String hash = GobdUtil.chained(a.bytes, prevHash);
-            exec("INSERT INTO gobd_document_lock (document_id, chain_seq, document_number, status, finalized_at, finalized_by,"
-                    + " customer_snapshot, positions_snapshot, archive_path, artifact_format, sha256_hash, prev_sha256_hash, cancels_document_id)"
-                    + " VALUES (" + doc.__getIDS() + ", " + chainSeq + ", '" + esc(doc.__getCnumber()) + "', 'FINALIZED', CURRENT_TIMESTAMP, '"
-                    + esc(currentUser()) + "', '" + esc(customerSnap) + "', '" + esc(positionsSnap) + "', '" + esc(a.path.toString()) + "', '"
-                    + esc(a.format) + "', '" + esc(hash) + "', '" + esc(prevHash) + "', " + (cancelsDocId != null ? String.valueOf(cancelsDocId) : "NULL") + ")");
+            //the year of the invoice (issue date), not of the day of finalizing
+            int year = GobdUtil.yearOf(doc.__getDateadded());
+            if (GobdUtil.isDraftNumber(doc.__getCnumber())) {
+                doc.setCnumber(nextSequenceNumber(doc.__getInttype() == Item.TYPE_CREDIT ? "ST" : "RE", year));
+                numberedNow = true;
+            }
+            //status finished and end date (without an own save)
+            mpv5.handler.ItemService.ensureFinishedAndEndDate(doc, false);
+            if (!doc.save(true)) {
+                throw new GobdException("Der Beleg konnte nicht gespeichert werden.");
+            }
+            problems = validateMandatoryFields(doc, true);
+            if (!problems.isEmpty()) {
+                throw new GobdException("Pflichtangaben fehlen (§ 14 Abs. 4 UStG):\n- " + String.join("\n- ", problems));
+            }
+            //what is frozen: the invoice as it is in the database now
+            final String core = itemCoreInDb(docId);
+            if (core == null) {
+                throw new GobdException("Der Beleg konnte nicht aus der Datenbank gelesen werden.");
+            }
+            final String positions = positionsCoreInDb(docId);
+            final String number = doc.__getCnumber();
+            String safeDocNum = GobdUtil.safeFileName(blank(number) ? "BELEG_" + docId : number);
+            final String customerSnap = contactSnapshot((long) doc.__getContactsids());
+            final String positionsSnap = positionsSnapshot(doc);
+            final Archived a = archiveArtifact(doc, year, safeDocNum, customerSnap);
+            archived = a.path;
+            final String fileSha = GobdUtil.sha256(a.bytes);
+            final Timestamp at = nowSeconds();
+            final String user = trunc(currentUser(), 100);
+            String hash = addLink(c -> {
+                if (Db.first(c, "SELECT document_id FROM gobd_document_lock WHERE document_id = ?", docId) != null) {
+                    throw new GobdException("Beleg " + number + " wurde gleichzeitig an anderer Stelle festgeschrieben.");
+                }
+                Object[] end = chainEnd(c, "gobd_document_lock", "sha256_hash");
+                String prev = (String) end[1];
+                String record = documentRecord(end[0], docId, number, at, user, a.format, fileSha, cancelsDocId, core, positions);
+                String h = GobdUtil.recordHash(record, prev);
+                Db.update(c, "INSERT INTO gobd_document_lock (document_id, chain_seq, document_number, status, finalized_at, finalized_by,"
+                        + " customer_snapshot, positions_snapshot, archive_path, artifact_format, sha256_hash, prev_sha256_hash, cancels_document_id,"
+                        + " hash_version, file_sha256, record_data) VALUES (?, ?, ?, 'FINALIZED', ?, ?, ?, ?, ?, ?, ?, ?, ?, 2, ?, ?)",
+                        docId, end[0], number, at, user, customerSnap, positionsSnap, a.path.toString(), a.format, h, prev, cancelsDocId,
+                        fileSha, record);
+                logAudit(c, "INVOICE", docId, "FINALIZED", "STATUS=DRAFT", "STATUS=FINALIZED | SNAPSHOT=" + customerSnap, h,
+                        "Festgeschrieben: " + number + " (" + a.format + ")");
+                return h;
+            });
+            committed = true;
+            GobdUtil.makeReadOnly(a.path);
+            lastGeneratedFiles.remove(docId);
             yabs.refreshView(doc);
-            logAudit("INVOICE", doc.__getIDS(), "FINALIZED", "STATUS=DRAFT", "STATUS=FINALIZED | SNAPSHOT=" + customerSnap, hash,
-                    "Festgeschrieben: " + doc.__getCnumber() + " (" + a.format + ")");
-            yabs.notify("GoBD-Festschreibung erfolgreich:\nBeleg: " + doc.__getCnumber() + " (" + a.format + ")\nSHA-256: "
+            notifyQuiet("GoBD-Festschreibung erfolgreich:\nBeleg: " + number + " (" + a.format + ")\nSHA-256: "
                     + hash.substring(0, 16) + "...\nArchiv: " + a.path.getFileName(), doc);
             return true;
         } catch (Exception e) {
@@ -556,7 +983,37 @@ public final class Gobd {
             error("GoBD-Festschreibung fehlgeschlagen:\n" + e.getMessage());
             return false;
         } finally {
+            if (!committed) {
+                undoFailedFinalize(doc, archived, numberedNow, oldNumber, oldStatus, oldEnd);
+            }
             finalizingIds.remove(doc.__getIDS());
+        }
+    }
+
+    /**
+     * After a failed finalizing: no archived file without lock, no final
+     * number without lock (no gap in the numbers)
+     */
+    private void undoFailedFinalize(Item doc, Path archived, boolean numberedNow, String oldNumber, int oldStatus, Date oldEnd) {
+        if (archived != null) {
+            try {
+                archived.toFile().setWritable(true);
+                Files.deleteIfExists(archived);
+            } catch (Exception e) {
+                Log.Debug(Gobd.class, e);
+            }
+        }
+        if (numberedNow) {
+            try {
+                if (lockRecord(doc.__getIDS()) == null) {
+                    doc.setCnumber(oldNumber);
+                    doc.setIntstatus(oldStatus);
+                    doc.setDateend(oldEnd);
+                    doc.save(true);
+                }
+            } catch (Exception e) {
+                Log.Debug(Gobd.class, e);
+            }
         }
     }
 
@@ -575,7 +1032,7 @@ public final class Gobd {
             error("Dieser Beleg wurde bereits storniert oder ist nicht festgeschrieben.");
             return false;
         }
-        String stornoNum = nextSequenceNumber("ST", LocalDate.now().getYear());
+        String stornoNum = nextSequenceNumber("ST", GobdUtil.yearOf(new Date()));
         creatingStorno = true;
         try {
             //a new record of the credit notes (the context comes with it)
@@ -615,7 +1072,7 @@ public final class Gobd {
                 rev.save();
             }
             if (finalizeDocument(storno, (long) original.__getIDS())) {
-                exec("UPDATE gobd_document_lock SET status = 'CANCELLED' WHERE document_id = " + original.__getIDS());
+                u("UPDATE gobd_document_lock SET status = 'CANCELLED' WHERE document_id = ?", original.__getIDS());
                 try {
                     original.setIntstatus(Item.STATUS_CANCELLED);
                     original.save(true);
@@ -625,7 +1082,7 @@ public final class Gobd {
                 yabs.refreshView(original);
                 logAudit("INVOICE", original.__getIDS(), "CANCELLED", "STATUS=FINALIZED", "STATUS=CANCELLED BY " + storno.__getCnumber(),
                         str(origLock[9]), "Storniert durch Stornobeleg " + storno.__getCnumber());
-                yabs.notify("Beleg " + original.__getCnumber() + " storniert durch " + storno.__getCnumber() + ".", original);
+                notifyQuiet("Beleg " + original.__getCnumber() + " storniert durch " + storno.__getCnumber() + ".", original);
                 return true;
             }
             return false;
@@ -645,7 +1102,7 @@ public final class Gobd {
         String types = ITEM_TYPES.stream().map(String::valueOf).collect(Collectors.joining(", "));
         String sql = onlyLocked
                 ? "SELECT i.ids, i.cnumber, (COALESCE(i.netvalue, 0) - COALESCE(i.discountvalue, 0) + COALESCE(i.taxvalue, 0)) FROM items i"
-                + " INNER JOIN gobd_document_lock g ON i.ids = g.document_id WHERE g.status = 'FINALIZED' AND i.inttype IN (" + types + ")"
+                + " INNER JOIN gobd_document_lock g ON i.ids = g.document_id WHERE g.status = 'FINALIZED' AND i.inttype IN (" + types + ") ORDER BY i.ids DESC"
                 : "SELECT i.ids, i.cnumber, (COALESCE(i.netvalue, 0) - COALESCE(i.discountvalue, 0) + COALESCE(i.taxvalue, 0)) FROM items i"
                 + " LEFT JOIN gobd_document_lock g ON i.ids = g.document_id WHERE g.document_id IS NULL AND i.inttype IN (" + types + ") ORDER BY i.ids DESC";
         Object[][] r = rows(sql);
@@ -705,7 +1162,7 @@ public final class Gobd {
         }
         byte[] fileBytes = Files.readAllBytes(sourceFile);
         String fileSha = GobdUtil.sha256(fileBytes);
-        Object[] dupe = row("SELECT revenue_id, document_number FROM gobd_income_lock WHERE file_sha256 = '" + esc(fileSha) + "'");
+        Object[] dupe = q1("SELECT revenue_id, document_number FROM gobd_income_lock WHERE file_sha256 = ?", fileSha);
         if (dupe != null) {
             if (!silent) {
                 error("GoBD-Dublettenschutz:\nDie Datei '" + sourceFile.getFileName() + "' (SHA-256: " + fileSha.substring(0, 12)
@@ -743,8 +1200,8 @@ public final class Gobd {
             return null;
         }
 
-        String docNum = parsed != null ? parsed.documentNumber : (blank(targetRevenue.__getCnumber()) ? origName : targetRevenue.__getCnumber());
-        Object[] sameNum = row("SELECT revenue_id, file_sha256 FROM gobd_income_lock WHERE document_number = '" + esc(docNum) + "'");
+        final String docNum = parsed != null ? parsed.documentNumber : (blank(targetRevenue.__getCnumber()) ? origName : targetRevenue.__getCnumber());
+        Object[] sameNum = q1("SELECT revenue_id, file_sha256 FROM gobd_income_lock WHERE document_number = ?", docNum);
         if (sameNum != null && (targetRevenue == null || GobdUtil.toLong(sameNum[0], -1) != (long) targetRevenue.__getIDS())) {
             if (!silent) {
                 error("GoBD-Dublettenschutz:\nEine Einnahme mit der Belegnummer '" + docNum + "' ist bereits festgeschrieben (Einnahme #" + sameNum[0] + ")!");
@@ -752,15 +1209,18 @@ public final class Gobd {
             return null;
         }
 
+        boolean created = targetRevenue == null;
         Revenue rev = targetRevenue != null ? targetRevenue : new Revenue();
         Date issueDate = parsed != null ? parsed.issueDate : (rev.__getDateadded() != null ? rev.__getDateadded() : new Date());
         Date dueDate = parsed != null ? (parsed.dueDate != null ? parsed.dueDate : parsed.issueDate)
                 : (rev.__getDateend() != null ? rev.__getDateend() : issueDate);
         if (parsed != null) {
             String partner = str(parsed.partnerName).trim();
+            String kind = parsed.creditNote ? "E-Gutschrift " : "E-Rechnung ";
             rev.setCnumber(docNum);
             rev.setCname(docNum);
-            rev.setDescription(partner.isEmpty() ? "E-Rechnung " + docNum + " (" + origName + ")" : partner + " - E-Rechnung " + docNum + " (" + origName + ")");
+            rev.setDescription((partner.isEmpty() ? "" : partner + " - ") + kind + docNum + " (" + origName + ")"
+                    + (parsed.mixedTaxRates ? " [mehrere Steuersaetze: " + parsed.taxRates + "]" : ""));
             rev.setNetvalue(parsed.netAmount);
             rev.setTaxpercentvalue(parsed.taxPercent);
             rev.setBrutvalue(parsed.grossAmount);
@@ -792,28 +1252,69 @@ public final class Gobd {
             rev.save(true);
         }
 
-        int year = issueDate.toInstant().atZone(ZoneId.systemDefault()).getYear();
-        Path yearDir = archiveRoot().resolve("einnahmen").resolve(String.valueOf(year));
-        Files.createDirectories(yearDir);
-        String ext = origName.contains(".") ? origName.substring(origName.lastIndexOf('.') + 1).toLowerCase() : "pdf";
-        Path archived = GobdUtil.uniquePath(yearDir, GobdUtil.safeFileName(docNum), ext);
-        Files.copy(sourceFile, archived, StandardCopyOption.REPLACE_EXISTING);
-        GobdUtil.makeReadOnly(archived);
-        Path sums = yearDir.resolve("SHA256SUMS");
-        Files.write(sums, (fileSha + "  " + archived.getFileName() + "\n").getBytes(StandardCharsets.UTF_8),
-                StandardOpenOption.CREATE, StandardOpenOption.APPEND);
-
-        long chainSeq = nextIncomeChainSeq();
-        String prevChain = latestIncomeChainHash();
-        String chainHash = GobdUtil.chained(fileBytes, prevChain);
-        String finSnap = revenueSnapshot(rev);
-        exec("INSERT INTO gobd_income_lock (revenue_id, chain_seq, document_number, status, imported_at, imported_by, original_name,"
-                + " archive_path, file_size, artifact_format, file_sha256, chain_hash, prev_chain_hash, financial_snapshot) VALUES ("
-                + rev.__getIDS() + ", " + chainSeq + ", '" + esc(docNum) + "', 'LOCKED', CURRENT_TIMESTAMP, '" + esc(currentUser()) + "', '"
-                + esc(origName) + "', '" + esc(archived.toString()) + "', " + fileBytes.length + ", '" + esc(format) + "', '" + esc(fileSha) + "', '"
-                + esc(chainHash) + "', '" + esc(prevChain) + "', '" + esc(finSnap) + "')");
-        logAudit("REVENUE", rev.__getIDS(), "INCOME_IMPORTED", null, finSnap, fileSha,
-                "Einnahme " + docNum + " (" + format + ") revisionssicher importiert und festgeschrieben.");
+        final long revId = rev.__getIDS();
+        Path archived = null;
+        boolean committed = false;
+        try {
+            int year = GobdUtil.yearOf(issueDate);
+            Path yearDir = archiveRoot().resolve("einnahmen").resolve(String.valueOf(year));
+            Files.createDirectories(yearDir);
+            String ext = origName.contains(".") ? origName.substring(origName.lastIndexOf('.') + 1).toLowerCase() : "pdf";
+            Path target = GobdUtil.uniquePath(yearDir, GobdUtil.safeFileName(docNum), ext);
+            Files.write(target, fileBytes, StandardOpenOption.CREATE_NEW);
+            archived = target;
+            Object[] db = row("SELECT cnumber, dateadded, accountsids, netvalue, taxpercentvalue, brutvalue, description FROM revenues WHERE ids = " + revId);
+            if (db == null) {
+                throw new GobdException("Die Einnahme konnte nicht aus der Datenbank gelesen werden.");
+            }
+            final String core = moneyCoreOfRow(db);
+            final String finSnap = revenueSnapshot(rev);
+            final String fmt = format;
+            final Timestamp at = nowSeconds();
+            final String user = trunc(currentUser(), 100);
+            final long size = fileBytes.length;
+            addLink(c -> {
+                Object[] end = chainEnd(c, "gobd_income_lock", "chain_hash");
+                String prev = (String) end[1];
+                String record = incomeRecord(end[0], revId, docNum, at, user, origName, fmt, fileSha, size, core);
+                String h = GobdUtil.recordHash(record, prev);
+                Db.update(c, "INSERT INTO gobd_income_lock (revenue_id, chain_seq, document_number, status, imported_at, imported_by, original_name,"
+                        + " archive_path, file_size, artifact_format, file_sha256, chain_hash, prev_chain_hash, financial_snapshot, hash_version, record_data)"
+                        + " VALUES (?, ?, ?, 'LOCKED', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 2, ?)",
+                        revId, end[0], docNum, at, user, origName, target.toString(), size, fmt, fileSha, h, prev, trunc(finSnap, 2000), record);
+                logAudit(c, "REVENUE", revId, "INCOME_IMPORTED", null, finSnap, fileSha,
+                        "Einnahme " + docNum + " (" + fmt + ") revisionssicher importiert und festgeschrieben.");
+                return h;
+            });
+            committed = true;
+            GobdUtil.makeReadOnly(target);
+            try {
+                Files.write(yearDir.resolve("SHA256SUMS"), (fileSha + "  " + target.getFileName() + "\n").getBytes(StandardCharsets.UTF_8),
+                        StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+            } catch (Exception e) {
+                Log.Debug(Gobd.class, e);
+                error("GoBD: Einnahme " + docNum + " ist festgeschrieben, aber SHA256SUMS in " + yearDir + " konnte nicht geschrieben werden:\n" + e.getMessage());
+            }
+            archived = target;
+        } finally {
+            if (!committed) {
+                if (archived != null) {
+                    try {
+                        Files.deleteIfExists(archived);
+                    } catch (Exception e) {
+                        Log.Debug(Gobd.class, e);
+                    }
+                }
+                //no income without lock: a new import must not find a half one
+                if (created) {
+                    try {
+                        rev.delete();
+                    } catch (Exception e) {
+                        Log.Debug(Gobd.class, e);
+                    }
+                }
+            }
+        }
         yabs.refreshView(rev);
         final Revenue shown = rev;
         yabs.ui(() -> {
@@ -827,14 +1328,82 @@ public final class Gobd {
         String amounts = "Netto: " + fmtDec(rev.__getNetvalue()) + " EUR | Brutto: " + fmtDec(rev.__getBrutvalue()) + " EUR\nSHA-256: "
                 + fileSha.substring(0, 16) + "...\nArchiv: " + archived.getFileName();
         if (!silent) {
-            yabs.notify(parsed == null
+            notifyQuiet(parsed == null
                     ? "GoBD-Einnahmen-Beleg archiviert:\nBeleg: " + docNum + " (" + format + ")\n" + amounts
                     + "\n(Hinweis: Einfacher PDF-Beleg - Werte koennen nicht automatisch auf rechnerische Richtigkeit geprueft werden.)"
-                    : "GoBD-Einnahmen-Import erfolgreich:\nBeleg: " + docNum + " (" + format + ")\n" + amounts, rev);
+                    : "GoBD-Einnahmen-Import erfolgreich:\nBeleg: " + docNum + " (" + format + ")\n" + amounts
+                    + (parsed.mixedTaxRates ? "\n(Hinweis: Mehrere Steuersaetze " + parsed.taxRates + " - als effektiver Satz "
+                            + fmtDec(parsed.taxPercent) + " % gebucht.)" : ""), rev);
         } else {
             status("GoBD Auto-Import: Einnahme " + docNum + " (" + origName + ") importiert und festgeschrieben.");
         }
         return rev;
+    }
+
+    // ---------------------------------------------------------------- receipts of expenses and income
+    /**
+     * Chains the receipts of expenses and income (expense_receipts,
+     * revenue_receipts of YaBS) that are not chained yet
+     *
+     * @return the number of receipts chained now
+     */
+    synchronized int chainReceipts() {
+        return chainReceipts(Receipts.EXPENSE) + chainReceipts(Receipts.REVENUE);
+    }
+
+    /**
+     * Chains the receipts of the kind that are not chained yet into the chain
+     * of the plugin: SHA256(record || prev), the record with the file hash and
+     * the booking data of the expense / income. Only receipts whose file is
+     * there and has the hash of the database (else the check reports them).
+     *
+     * @return the number of receipts chained now
+     */
+    synchronized int chainReceipts(Receipts kind) {
+        Object[][] open = rows("SELECT r.ids, r." + kind.ownerColumn + ", r.originalname, r.archivepath, r.filesize, r.sha256, r.mimetype FROM "
+                + kind.table + " r WHERE NOT EXISTS (SELECT 1 FROM " + kind.chainTable + " g WHERE g.receipt_ref = CAST(r.ids AS VARCHAR(250)))"
+                + " ORDER BY r.ids ASC");
+        int chained = 0;
+        for (Object[] r : open) {
+            try {
+                Path f = Paths.get(str(r[3]));
+                String sha = str(r[5]).trim().toLowerCase();
+                if (!Files.isRegularFile(f) || !GobdUtil.sha256(f).equals(sha)) {
+                    continue;
+                }
+                final long ownerId = GobdUtil.toLong(r[1], -1);
+                Object[] booking = row("SELECT " + MONEY_CORE_COLUMNS + " FROM " + kind.bookingTable + " WHERE ids = " + ownerId);
+                if (booking == null) {
+                    continue;
+                }
+                final String ref = str(r[0]);
+                final String name = str(r[2]);
+                final long size = GobdUtil.toLong(r[4], -1);
+                final String core = moneyCoreOfRow(booking);
+                final String snapshot = trunc(moneySnapshotOfRow(booking), 2000);
+                final String lower = name.toLowerCase();
+                final String format = lower.endsWith(".xml") ? "XML" : lower.endsWith(".pdf") ? "PDF" : blank(str(r[6])) ? "FILE" : trunc(str(r[6]), 30);
+                final Timestamp at = nowSeconds();
+                final String user = trunc(currentUser(), 100);
+                addLink(c -> {
+                    Object[] end = chainEnd(c, kind.chainTable, "chain_hash");
+                    String prev = (String) end[1];
+                    String record = receiptRecord(kind, end[0], ref, ownerId, name, size, sha, at, user, core);
+                    String h = GobdUtil.recordHash(record, prev);
+                    Db.update(c, "INSERT INTO " + kind.chainTable + " (" + kind.chainOwnerColumn + ", chain_seq, receipt_ref, original_name, archive_path,"
+                            + " file_size, artifact_format, sha256, chain_hash, prev_chain_hash, " + kind.snapshotColumn + ", imported_at, imported_by, record_data)"
+                            + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                            ownerId, end[0], ref, name, f.toString(), size, format, sha, h, prev, snapshot, at, user, record);
+                    logAudit(c, kind.entityType(), ownerId, "RECEIPT_CHAINED", null, snapshot, sha,
+                            kind.receiptName + " " + name + " in die Hash-Kette aufgenommen.");
+                    return h;
+                });
+                chained++;
+            } catch (Exception e) {
+                Log.Debug(Gobd.class, e);
+            }
+        }
+        return chained;
     }
 
     /**
@@ -861,19 +1430,41 @@ public final class Gobd {
                 if (!Files.isDirectory(watchDir)) {
                     return;
                 }
+                List<Path> ready = new ArrayList<Path>();
                 try (Stream<Path> s = Files.list(watchDir)) {
                     for (Path p : (Iterable<Path>) s::iterator) {
                         String fn = p.getFileName().toString().toLowerCase();
-                        if (Files.isRegularFile(p) && (fn.endsWith(".pdf") || fn.endsWith(".xml"))
-                                && seenWatchFiles.add(p.toAbsolutePath() + ":" + Files.size(p))) {
-                            importIncomeFile(p, null, true);
+                        if (!Files.isRegularFile(p) || !(fn.endsWith(".pdf") || fn.endsWith(".xml"))) {
+                            continue;
+                        }
+                        String key = p.toAbsolutePath().toString();
+                        String sig = Files.size(p) + ":" + Files.getLastModifiedTime(p).toMillis();
+                        if (seenWatchFiles.contains(key + "|" + sig)) {
+                            continue;
+                        }
+                        //a new or changed file may still be written: import it when it is the same in the next round
+                        if (sig.equals(pendingWatchFiles.put(key, sig))) {
+                            pendingWatchFiles.remove(key);
+                            seenWatchFiles.add(key + "|" + sig);
+                            ready.add(p);
                         }
                     }
                 } catch (Exception e) {
                     Log.Debug(Gobd.class, e);
                 }
+                for (Path p : ready) {
+                    //records and views of YaBS belong to the Swing thread
+                    try {
+                        javax.swing.SwingUtilities.invokeAndWait(() -> importIncomeFile(p, null, true));
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        return;
+                    } catch (Exception e) {
+                        Log.Debug(Gobd.class, e);
+                    }
+                }
             }
-        }, 5000L, 15000L);
+        }, 5000L, 10000L);
     }
 
     // ---------------------------------------------------------------- the guard
@@ -884,6 +1475,17 @@ public final class Gobd {
      * user is told why)
      */
     boolean checkWriteAllowed(DatabaseObject obj, boolean isDelete) {
+        try {
+            return checkWrite(obj, isDelete);
+        } catch (RuntimeException e) {
+            //fail closed: what can not be checked is not changed
+            Log.Debug(Gobd.class, e);
+            error("GoBD-Schutz: Die Aenderung wurde nicht gespeichert, weil die GoBD-Pruefung fehlschlug:\n" + e.getMessage());
+            return false;
+        }
+    }
+
+    private boolean checkWrite(DatabaseObject obj, boolean isDelete) {
         if (obj instanceof Item && isTaxRelevant(obj) && obj.__getIDS() > 0) {
             Item doc = (Item) obj;
             Object[] lock = lockRecord(doc.__getIDS());
@@ -924,14 +1526,14 @@ public final class Gobd {
                     + "Bitte erstellen Sie stattdessen eine Stornorechnung.");
             return false;
         }
-        Object[] db = row("SELECT cnumber, inttype, contactsids, accountsids, dateadded, datetodo, dateend, netvalue, discountvalue, taxvalue,"
-                + " discountgrosvalue, description, intstatus, intreminders FROM items WHERE ids = " + doc.__getIDS());
+        Object[] db = row("SELECT " + ITEM_CORE_COLUMNS + ", intstatus, intreminders FROM items WHERE ids = " + doc.__getIDS());
         if (db != null) {
-            String dbCore = String.join("|", "Num=" + str(db[0]), "Type=" + db[1], "Contact=" + db[2], "Acc=" + db[3],
-                    "IssueDate=" + fmtDate(db[4]), "DeliveryDate=" + fmtDate(db[5]), "EndDate=" + fmtDate(db[6]),
-                    "Net=" + fmtDec(db[7]), "Disc=" + fmtDec(db[8]), "Tax=" + fmtDec(db[9]), "DiscGross=" + fmtDec(db[10]),
-                    "Desc=" + str(db[11]).trim());
-            if (dbCore.equals(financialCore(doc))) {
+            //compared with the frozen state of the lock (version 2), else with the database
+            String frozen = GobdUtil.recordField(str(lock[12]), "core");
+            boolean unchanged = frozen != null
+                    ? frozen.equals(GobdUtil.recordValue(financialCore(doc)))
+                    : itemCoreOfRow(db).equals(financialCore(doc));
+            if (unchanged) {
                 int oldStatus = GobdUtil.toInt(db[12], 0);
                 int newStatus = doc.__getIntstatus();
                 int oldReminders = GobdUtil.toInt(db[13], 0);
@@ -967,11 +1569,11 @@ public final class Gobd {
 
     private boolean checkRevenue(Revenue rev, boolean isDelete) {
         Object[] incLock = incomeLockRecord(rev.__getIDS());
-        Object[][] receipts = rows("SELECT ids, originalname, archivepath, sha256 FROM revenue_receipts WHERE revenuesids = " + rev.__getIDS());
+        Object[][] receipts = q("SELECT ids, sha256 FROM revenue_receipts WHERE revenuesids = ?", rev.__getIDS());
         if (incLock == null && receipts.length == 0) {
             return true;
         }
-        String lockHash = incLock != null ? str(incLock[10]) : str(receipts[0][3]);
+        String lockHash = incLock != null ? str(incLock[10]) : str(receipts[0][1]);
         String docNum = incLock != null ? str(incLock[2]) : (blank(rev.__getCnumber()) ? "#" + rev.__getIDS() : rev.__getCnumber());
         String lockInfo = incLock != null ? str(incLock[13]) : "Receipts=" + receipts.length;
         if (isDelete || isMovedToTrash(rev)) {
@@ -983,7 +1585,7 @@ public final class Gobd {
         }
         Object[] db = row("SELECT cnumber, dateadded, accountsids, netvalue, taxpercentvalue, brutvalue, description, status, dateend, ispaid"
                 + " FROM revenues WHERE ids = " + rev.__getIDS());
-        if (db != null && moneySnapshotOfRow(db).equals(revenueSnapshot(rev))) {
+        if (db != null && moneyCoreOfRow(db).equals(revenueCore(rev))) {
             int oldStatus = GobdUtil.toInt(db[7], 0);
             int newStatus = rev.__getStatus();
             String oldEnd = fmtDate(db[8]);
@@ -1006,11 +1608,11 @@ public final class Gobd {
     }
 
     private boolean checkExpense(Expense exp, boolean isDelete) {
-        Object[][] receipts = rows("SELECT ids, originalname, archivepath, sha256 FROM expense_receipts WHERE expensesids = " + exp.__getIDS());
+        Object[][] receipts = q("SELECT ids, sha256 FROM expense_receipts WHERE expensesids = ?", exp.__getIDS());
         if (receipts.length == 0) {
             return true;
         }
-        String hash = str(receipts[0][3]);
+        String hash = str(receipts[0][1]);
         String name = blank(exp.__getCnumber()) ? "#" + exp.__getIDS() : exp.__getCnumber();
         if (isDelete || isMovedToTrash(exp)) {
             logAudit("EXPENSE", exp.__getIDS(), "BLOCKED_DELETE", "Receipts=" + receipts.length, "Delete/Trash=true", hash,
@@ -1022,8 +1624,8 @@ public final class Gobd {
         if (db == null) {
             return true;
         }
-        String dbCore = moneySnapshotOfRow(db);
-        String newCore = expenseSnapshot(exp);
+        String dbCore = moneyCoreOfRow(db);
+        String newCore = expenseCore(exp);
         if (dbCore.equals(newCore)) {
             boolean oldPaid = GobdUtil.isTrue(db[7]);
             boolean newPaid = exp.__getIspaid();
@@ -1064,7 +1666,13 @@ public final class Gobd {
                     String oldSnap = masterDataBeforeSave.remove("CONTACT_" + c.__getIDS());
                     String newSnap = contactSnapshot(c);
                     if (oldSnap != null && !oldSnap.equals(newSnap)) {
-                        logAudit("CONTACT", c.__getIDS(), "MASTERDATA_CHANGED", oldSnap, newSnap, null, "Kundenstammdaten geaendert (" + c.__getCname() + ")");
+                        try {
+                            logAudit("CONTACT", c.__getIDS(), "MASTERDATA_CHANGED", oldSnap, newSnap, null, "Kundenstammdaten geaendert (" + c.__getCname() + ")");
+                        } catch (RuntimeException e) {
+                            Log.Debug(Gobd.class, e);
+                            error("GoBD-Schutz: Die Stammdaten-Aenderung konnte nicht protokolliert werden:\n" + e.getMessage());
+                            throw veto(obj);
+                        }
                         status("GoBD: Stammdaten-Aenderung protokolliert (" + c.__getCname() + ").");
                     }
                 }
@@ -1075,13 +1683,22 @@ public final class Gobd {
             public DatabaseObject executeAfterCreate(DatabaseObject obj) {
                 if (obj instanceof Item && isTaxRelevant(obj) && obj.__getIDS() > 0) {
                     Item doc = (Item) obj;
-                    logAudit("INVOICE", doc.__getIDS(), "DRAFT_CREATED", null, "Cnumber=" + doc.__getCnumber(), null, "Entwurf angelegt: " + doc.__getCnumber());
+                    try {
+                        logAudit("INVOICE", doc.__getIDS(), "DRAFT_CREATED", null, "Cnumber=" + doc.__getCnumber(), null, "Entwurf angelegt: " + doc.__getCnumber());
+                    } catch (RuntimeException e) {
+                        Log.Debug(Gobd.class, e);
+                        error("GoBD-Audit-Log konnte nicht geschrieben werden:\n" + e.getMessage());
+                    }
                 }
                 return obj;
             }
 
             @Override
             public DatabaseObject executeAfterSave(DatabaseObject object) {
+                //a file created before this save shows an old state: not for the archive
+                if (object instanceof Item && !finalizingIds.contains(object.__getIDS())) {
+                    lastGeneratedFiles.remove((long) object.__getIDS());
+                }
                 return object;
             }
 
@@ -1136,13 +1753,19 @@ public final class Gobd {
                 //gone
             }
         } else if (entry.id <= 0) {
+            //the record is not known: the open tab may be another one. Only remember the
+            //file if it shows the number of the open invoice, and never finalize automatically.
             mpv5.ui.panels.DataPanel tab = yabs.currentView();
             if (tab != null && tab.getDataOwner() instanceof Item) {
                 Item it = (Item) tab.getDataOwner();
-                if (it.__getIDS() > 0 && isGobdItemType(it.__getInttype())) {
-                    doc = it;
+                if (it.__getIDS() > 0 && isGobdItemType(it.__getInttype()) && !GobdUtil.isDraftNumber(it.__getCnumber())
+                        && EInvoice.mentionsNumber(entry.file.toPath(), str(it.__getCnumber())) && lockRecord(it.__getIDS()) == null) {
+                    lastGeneratedFiles.put((long) it.__getIDS(), entry.file.toPath());
+                    status("Belegdatei erstellt (" + entry.file.getName() + "). Beleg " + it.__getCnumber()
+                            + " jetzt ueber 'Plugins > GoBD: 1. Beleg festschreiben' sichern.");
                 }
             }
+            return;
         }
         if (doc == null || doc.__getIDS() <= 0) {
             return;
@@ -1195,6 +1818,7 @@ public final class Gobd {
             }
         }
         seenWatchFiles.clear();
+        pendingWatchFiles.clear();
         creatingStorno = false;
         finalizingIds.clear();
         lastGeneratedFiles.clear();
