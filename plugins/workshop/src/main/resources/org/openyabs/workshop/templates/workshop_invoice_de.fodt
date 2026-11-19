@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<office:document xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0"
+                 xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0"
+                 xmlns:table="urn:oasis:names:tc:opendocument:xmlns:table:1.0"
+                 office:version="1.2"
+                 office:mimetype="application/vnd.oasis.opendocument.text">
+  <office:body>
+    <office:text>
+      <text:p>[companyinfo.name] – [companyinfo.street], [companyinfo.zip] [companyinfo.city]</text:p>
+      <text:p>[contact.cname]</text:p>
+      <text:p>[contact.street], [contact.zip] [contact.city]</text:p>
+      <text:h text:outline-level="1">Werkstattrechnung [item.cnumber]</text:h>
+      <text:p>Rechnungsdatum: [item.dateadded] | Kostenvoranschlag: [ws.quoteNumber] ([ws.quoteTotal])</text:p>
+      <text:p>Fahrzeug: [ws.makeModel] | Kennzeichen: [ws.plate] | FIN: [ws.vin]</text:p>
+      <text:p>Erstzulassung: [ws.firstRegistration] | HSN/TSN: [ws.hsnTsn] | Nächste HU/AU: [ws.inspectionDue]</text:p>
+      <text:p>Kilometerstand: [ws.mileage] [ws.mileageUnit] | Annahme: [ws.dropoffDate] | Abholung: [ws.pickupDate]</text:p>
+      <text:p>Kundenbeanstandung: [ws.complaint]</text:p>
+      <text:p>Ausgeführte Arbeiten: [ws.workSummary]</text:p>
+      <text:p>Altteile: [ws.oldParts] | Abrechnung: [ws.awDefinition]</text:p>
+      <text:p>[xtable1]</text:p>
+      <text:p>Netto: [item.netvalue] | USt: [item.taxvalue] | Gesamtbetrag: [item.totalvalue]</text:p>
+    </office:text>
+  </office:body>
+</office:document>

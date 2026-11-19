@@ -94,6 +94,116 @@ public interface ExtensionContext {
     }
 
     /**
+     * Supplies additional template placeholders (key -> value) when a
+     * {@link mpv5.db.common.DatabaseObject} is formatted for ODT/PDF export.
+     *
+     * @param provider called with the record being exported; may return null or
+     * an empty map
+     */
+    default void addTemplateFields(Function<mpv5.db.common.DatabaseObject, java.util.Map<String, Object>> provider) {
+    }
+
+    /**
+     * Registers localized message keys for this plugin (automatically scoped by
+     * plugin ID and removed when the plugin stops).
+     *
+     * @param languageCode ISO language/locale tag, e.g. {@code "en"},
+     * {@code "de"}, {@code "de_DE"}
+     * @param messages map of short key to localized pattern
+     */
+    default void addTranslations(String languageCode, java.util.Map<String, String> messages) {
+    }
+
+    /**
+     * Registers localized message keys from a {@link java.util.Properties}
+     * instance for this plugin.
+     *
+     * @param languageCode ISO language/locale tag, e.g. {@code "en"},
+     * {@code "de"}
+     * @param messages properties of short key to localized pattern
+     */
+    default void addTranslations(String languageCode, java.util.Properties messages) {
+        if (messages == null || messages.isEmpty()) {
+            return;
+        }
+        java.util.Map<String, String> map = new java.util.LinkedHashMap<String, String>();
+        for (String k : messages.stringPropertyNames()) {
+            map.put(k, messages.getProperty(k));
+        }
+        addTranslations(languageCode, map);
+    }
+
+    /**
+     * Loads a UTF-8 {@code .properties} translation resource from the plugin
+     * classpath and registers it for the given language code.
+     *
+     * @param languageCode ISO language/locale tag, e.g. {@code "en"},
+     * {@code "de"}
+     * @param resourcePath classpath path, e.g.
+     * {@code "/org/openyabs/workshop/i18n/messages_de.properties"}
+     * @param loader classloader used to locate the resource
+     */
+    default void addTranslationBundle(String languageCode, String resourcePath, ClassLoader loader) {
+        if (resourcePath == null || resourcePath.trim().isEmpty()) {
+            return;
+        }
+        String normalized = resourcePath.startsWith("/") ? resourcePath.substring(1) : resourcePath;
+        ClassLoader cl = loader != null ? loader : getClass().getClassLoader();
+        try (java.io.InputStream in = cl.getResourceAsStream(normalized)) {
+            if (in == null) {
+                return;
+            }
+            java.util.Properties props = new java.util.Properties();
+            props.load(new java.io.InputStreamReader(in, java.nio.charset.StandardCharsets.UTF_8));
+            addTranslations(languageCode, props);
+        } catch (java.io.IOException e) {
+            mpv5.logging.Log.Debug(ExtensionContext.class, e);
+        }
+    }
+
+    /**
+     * @return the active OpenYaBS UI language tag (e.g. {@code "de_DE"},
+     * {@code "de"}, {@code "en"})
+     */
+    default String language() {
+        return mpv5.plugin.ExtensionManager.resolveActiveLanguage();
+    }
+
+    /**
+     * Resolves a plugin-scoped translation key for the active OpenYaBS user
+     * language (fallback chain: exact locale -> base language -> {@code en} ->
+     * key) and formats optional {@link java.text.MessageFormat} arguments.
+     *
+     * @param key short translation key registered by this plugin
+     * @param args optional {@link java.text.MessageFormat} arguments ({0}, {1}...)
+     * @return localized string, or {@code key} if not found
+     */
+    default String tr(String key, Object... args) {
+        return trOrDefault(key, key, args);
+    }
+
+    /**
+     * Resolves a plugin-scoped translation key for the active OpenYaBS user
+     * language, falling back to {@code fallback} if not found.
+     *
+     * @param key short translation key registered by this plugin
+     * @param fallback default pattern if the key is missing
+     * @param args optional {@link java.text.MessageFormat} arguments ({0}, {1}...)
+     * @return localized string
+     */
+    default String trOrDefault(String key, String fallback, Object... args) {
+        String pattern = fallback != null ? fallback : (key == null ? "" : key);
+        if (args != null && args.length > 0) {
+            try {
+                return java.text.MessageFormat.format(pattern, args);
+            } catch (IllegalArgumentException ignored) {
+                return pattern;
+            }
+        }
+        return pattern;
+    }
+
+    /**
      * Opens a tab in the main window
      *
      * @param title
