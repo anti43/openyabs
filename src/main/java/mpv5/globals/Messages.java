@@ -1507,6 +1507,8 @@ public enum Messages {
     GEDIT_HINT("Ctrl+S: save and start  ·  F5: check  ·  Ctrl+Z / Ctrl+Y: undo / redo  ·  Esc: close"),
     GEDIT_OK_SYNTAX("No errors found."),
     HELP_TITLE("Help"),
+    VAT_GROUP_NAME("VAT %s"),
+    VAT_GROUP_FREE("Tax free"),
     EXTERNAL_PROGRAMS("Programs"),
     EXTERNAL_PDF_VIEWER("PDF viewer"),
     EXTERNAL_PDF_VIEWER_HINT("Program which opens PDF files, e.g. evince, okular or the path to a viewer. The path of the PDF is added as argument, or replaces {file}. Empty: the default program of the system."),

@@ -118,4 +118,130 @@ public interface ExtensionContext {
      * @param then may be null
      */
     <T> void background(Supplier<T> work, Consumer<T> then);
+
+    /**
+     * Runs code when the plugin stops (also when it is disabled, reloaded or
+     * fails to start); for Java and Groovy plugins alike
+     *
+     * @param action
+     */
+    default void onStop(Runnable action) {
+    }
+
+    // ------------------------------------------------------------- helpers
+    /**
+     * Runs a SELECT on the database of YaBS
+     *
+     * @param sql
+     * @return the rows (never null; empty if nothing was found or the query
+     * failed)
+     */
+    default Object[][] select(String sql) {
+        mpv5.db.common.ReturnValue r = mpv5.db.common.QueryHandler.getConnection()
+                .freeSelectQuery(sql, mpv5.usermanagement.MPSecurityManager.VIEW, null);
+        Object[][] data = r == null ? null : r.getData();
+        return data == null ? new Object[0][] : data;
+    }
+
+    /**
+     * Runs a statement (CREATE, INSERT, UPDATE ...) on the database of YaBS
+     *
+     * @param sql
+     */
+    default void execute(String sql) {
+        mpv5.db.common.QueryHandler.getConnection().freeQuery(sql, mpv5.usermanagement.MPSecurityManager.VIEW, null);
+    }
+
+    /**
+     * Runs code on the Swing thread: now if this is the Swing thread, else
+     * later
+     *
+     * @param r
+     */
+    default void ui(Runnable r) {
+        if (javax.swing.SwingUtilities.isEventDispatchThread()) {
+            r.run();
+        } else {
+            javax.swing.SwingUtilities.invokeLater(r);
+        }
+    }
+
+    /**
+     * @return the record view in the selected tab of the main window, or null
+     */
+    default DataPanel currentView() {
+        try {
+            return mpv5.YabsViewProxy.instance().getCurrentTab();
+        } catch (Throwable t) {
+            return null;
+        }
+    }
+
+    /**
+     * Shows a message as notification pop-up (and in the activity list)
+     *
+     * @param message
+     */
+    default void popup(String message) {
+        mpv5.ui.dialogs.Notificator.raiseNotification(message, true);
+    }
+
+    /**
+     * Shows an error or a warning as notification pop-up
+     *
+     * @param message
+     */
+    default void error(String message) {
+        mpv5.ui.dialogs.Notificator.raiseNotification(message, true);
+    }
+
+    /**
+     * Shows a message about a record as notification pop-up, logged with the
+     * record (a click opens it)
+     *
+     * @param message
+     * @param about may be null
+     */
+    default void notify(String message, mpv5.db.common.DatabaseObject about) {
+        if (about != null && about.__getIDS() > 0) {
+            mpv5.ui.dialogs.Notificator.raiseNotification(message, true, true, about);
+        } else {
+            mpv5.ui.dialogs.Notificator.raiseNotification(message, true);
+        }
+    }
+
+    /**
+     * Opens a file with its program (PDF: the viewer of the settings)
+     *
+     * @param file
+     */
+    default void openFile(File file) {
+        mpv5.utils.files.FileDirectoryHandler.open(file);
+    }
+
+    /**
+     * Shows the record in the view of the selected tab again if that view shows
+     * it (e.g. after the plugin changed or locked it)
+     *
+     * @param record
+     */
+    default void refreshView(mpv5.db.common.DatabaseObject record) {
+        if (record == null || record.__getIDS() <= 0) {
+            return;
+        }
+        ui(() -> {
+            DataPanel v = currentView();
+            if (v != null && v.getDataOwner() != null && v.getDataOwner().getClass() == record.getClass()
+                    && v.getDataOwner().__getIDS() == record.__getIDS()) {
+                v.setDataOwner(record, true);
+            }
+        });
+    }
+
+    /**
+     * @return the version of YaBS, e.g. "2.1.0"
+     */
+    default String yabsVersion() {
+        return mpv5.globals.VersionInfo.number();
+    }
 }

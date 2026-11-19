@@ -228,7 +228,7 @@ public class wizard_FirstSettings1 extends javax.swing.JPanel implements Wizarda
                     t.setGroupsids(1);
                     t.setCname(data.getData()[0][1].toString());
                     t.setMimetype(String.valueOf(Constants.TYPE_INVOICE));
-                    t.setFormat("1,2,4,5,6");
+                    t.setFormat(mpv5.handler.FirstStartSetup.ITEM_FORMAT);
                     t.setDescription("Wizard insert");
                     t.save(true);
 

@@ -50,6 +50,39 @@ dependencies {
     implementation 'com.mysql:mysql-connector-j:8.4.0'
 }
 
+// The GoBD plugin (plugins/gobd, Java): its own jar, shipped in the plugins folder of the
+// distribution, so users can import it (Control Panel > Plugins). It compiles against YaBS.
+sourceSets {
+    gobd {
+        java.srcDir 'plugins/gobd/src/main/java'
+        resources.srcDir 'plugins/gobd/src/main/resources'
+        compileClasspath += sourceSets.main.output + configurations.compileClasspath
+        runtimeClasspath += sourceSets.main.output + configurations.runtimeClasspath
+    }
+    test {
+        compileClasspath += sourceSets.gobd.output
+        runtimeClasspath += sourceSets.gobd.output
+    }
+}
+
+tasks.register('gobdPluginJar', Jar) {
+    group = 'build'
+    description = 'Builds build/plugins/gobd-compliance.jar, the GoBD plugin'
+    archiveFileName = 'gobd-compliance.jar'
+    destinationDirectory = layout.buildDirectory.dir('plugins')
+    from sourceSets.gobd.output
+    manifest {
+        attributes 'Implementation-Title' : 'YaBS GoBD plugin'
+        attributes 'Implementation-Version' : project.version
+    }
+}
+tasks.named('assemble') { dependsOn 'gobdPluginJar' }
+// also on its own next to the zip: a release asset for those who use an installer
+tasks.register('gobdPluginRelease', Copy) {
+    from(tasks.named('gobdPluginJar'))
+    into layout.buildDirectory.dir('distributions')
+}
+
 // Java 21 is the minimum (Apache Derby 10.17 needs it); --release also
 // checks that only Java 21 APIs are used when building with a newer JDK
 tasks.withType(JavaCompile).configureEach {
@@ -82,6 +115,7 @@ tasks.named('jar') { finalizedBy 'copyRuntimeLibs' }
 // Zip for distribution: openyabs/openyabs.jar, openyabs/lib/ and start scripts (src/dist).
 // Start with yabs.sh / yabs.bat or "java -jar openyabs.jar" (Java 21+).
 tasks.register('distributionZip', Zip) {
+    finalizedBy 'gobdPluginRelease'
     group = 'distribution'
     description = 'Builds build/distributions/openyabs-<version>.zip with the app jar, lib/ and start scripts'
     archiveFileName = "openyabs-${project.version}.zip"
@@ -94,6 +128,10 @@ tasks.register('distributionZip', Zip) {
             }
         }
         from('README.md')
+    }
+    // plugins users can import (Control Panel > Plugins): the GoBD plugin
+    into('openyabs/plugins') {
+        from(tasks.named('gobdPluginJar'))
     }
     into('openyabs/lib') {
         from('lib') {
