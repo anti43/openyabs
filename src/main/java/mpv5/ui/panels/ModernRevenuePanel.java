@@ -197,9 +197,9 @@ public class ModernRevenuePanel extends ModernDataPanel {
     private final LabeledCombobox contactSelect = ModernTheme.plain(new LabeledCombobox());
     private final LabeledCombobox refOrderSelect = ModernTheme.plain(new LabeledCombobox());
     private final MPCombobox statusSelect = new MPCombobox();
-    private final LabeledDateChooser issueDateChooser = new LabeledDateChooser();
-    private final LabeledDateChooser payDateChooser = new LabeledDateChooser();
-    private final JCheckBox paidCheckBox = new JCheckBox("Bezahlt / Ausgeglichen");
+    private final LabeledDateChooser issueDateChooser = ModernTheme.plain(new LabeledDateChooser());
+    private final LabeledDateChooser payDateChooser = ModernTheme.plain(new LabeledDateChooser());
+    private final JCheckBox paidCheckBox = new JCheckBox(Messages.FINANCE_PAID.toString());
     private final JTextArea notesArea = new JTextArea(4, 25);
     private final JLabel addedByLabel = new JLabel();
 
@@ -208,10 +208,10 @@ public class ModernRevenuePanel extends ModernDataPanel {
     private final JTextField searchField = new JTextField(14);
     private final DateChooser fromDateChooser = new DateChooser();
     private final DateChooser toDateChooser = new DateChooser();
-    private final ChipToggle filterAllChip = new ChipToggle("Alle");
-    private final ChipToggle filterYearChip = new ChipToggle("Akt. Jahr");
-    private final ChipToggle filterMonthChip = new ChipToggle("Akt. Monat");
-    private final ChipToggle filterDateChip = new ChipToggle("Zeitraum");
+    private final ChipToggle filterAllChip = new ChipToggle(Messages.FINANCE_FILTER_ALL.toString());
+    private final ChipToggle filterYearChip = new ChipToggle(Messages.FINANCE_FILTER_YEAR.toString());
+    private final ChipToggle filterMonthChip = new ChipToggle(Messages.FINANCE_FILTER_MONTH.toString());
+    private final ChipToggle filterDateChip = new ChipToggle(Messages.FINANCE_FILTER_PERIOD.toString());
     private final ButtonGroup filterGroup = new ButtonGroup();
     private DateFilterMode dateFilterMode = DateFilterMode.CURRENT_YEAR;
     private boolean updatingFilterDates = false;
@@ -219,7 +219,7 @@ public class ModernRevenuePanel extends ModernDataPanel {
 
     // Receipts table
     private final DefaultTableModel receiptsModel = new DefaultTableModel(
-            new Object[]{"ID", "Dateiname", "Gr\u00f6\u00dfe", "SHA-256", "Importiert am", "Benutzer"}, 0) {
+            new Object[]{"ID", Messages.RECEIPT_COL_FILE.toString(), Messages.RECEIPT_COL_SIZE.toString(), "SHA-256", Messages.RECEIPT_COL_IMPORTED.toString(), Messages.RECEIPT_COL_USER.toString()}, 0) {
         @Override
         public boolean isCellEditable(int row, int col) {
             return false;
@@ -227,10 +227,10 @@ public class ModernRevenuePanel extends ModernDataPanel {
     };
     private final JTable receiptsTable = new JTable(receiptsModel);
     private final List<Receipt> currentReceipts = new ArrayList<Receipt>();
-    private final JButton addReceiptBtn = new JButton("Beleg verkn\u00fcpfen...");
-    private final JButton removeReceiptBtn = new JButton("Entfernen");
-    private final JButton openReceiptBtn = new JButton("\u00d6ffnen");
-    private final JButton verifyReceiptsBtn = new JButton("Pr\u00fcfen");
+    private final JButton addReceiptBtn = new JButton(Messages.RECEIPT_LINK.toString());
+    private final JButton removeReceiptBtn = new JButton(Messages.RECEIPT_REMOVE.toString());
+    private final JButton openReceiptBtn = new JButton(Messages.RECEIPT_OPEN.toString());
+    private final JButton verifyReceiptsBtn = new JButton(Messages.RECEIPT_VERIFY.toString());
 
     // PDF preview card components
     private final JLabel previewImage = new JLabel();
@@ -328,39 +328,21 @@ public class ModernRevenuePanel extends ModernDataPanel {
     private void initFields() {
         idField.setEnabled(false);
         idField.setFocusable(false);
-        idField.set_Label("ID:");
-
-        cnumberField.set_Label("Belegnummer:");
-        cnumberField.getTextField().setToolTipText("Interne oder externe Rechnungs-/Belegnummer");
-
-        cnameField.set_Label("Ext. Referenz:");
-        cnameField.getTextField().setToolTipText("Externe Referenznummer oder Belegbezeichnung");
-
-        brutValueField.set_Label("Bruttobetrag:");
-        netValueField.set_Label("Nettobetrag:");
+        cnumberField.getTextField().setToolTipText(Messages.REVENUE_NUMBER_TIP.toString());
+        cnameField.getTextField().setToolTipText(Messages.FINANCE_EXT_REF_TIP.toString());
         netValueField.getTextField().setEditable(false);
-
-        taxRateSelect.set_Label("Steuersatz:");
         taxRateSelect.setSearchEnabled(true);
         taxRateSelect.setContext(Context.getTaxes());
         taxRateSelect.getComboBox().addActionListener(e -> {
             updateTaxRate();
             calculate();
         });
-
-        accountSelect.set_Label("Konto:");
         accountSelect.setSearchEnabled(true);
         accountSelect.setContext(Context.getAccounts());
-
-        groupSelect.set_Label("Gruppe:");
         groupSelect.setSearchEnabled(true);
         groupSelect.setContext(Context.getGroup());
-
-        contactSelect.set_Label("Kunde / Kontakt:");
         contactSelect.setSearchEnabled(true);
         contactSelect.setContext(Context.getCustomer());
-
-        refOrderSelect.set_Label("Referenz-Auftrag:");
         refOrderSelect.setSearchEnabled(true);
         refOrderSelect.setContext(Context.getOrder());
 
@@ -369,9 +351,6 @@ public class ModernRevenuePanel extends ModernDataPanel {
         skip.add(Item.STATUS_IN_PROGRESS);
         skip.add(Item.STATUS_PAUSED);
         statusSelect.setModel(MPComboBoxModelItem.toModel(Item.getStatusStrings(), MPComboBoxModelItem.COMPARE_BY_ID, skip));
-
-        issueDateChooser.set_Label("Belegdatum:");
-        payDateChooser.set_Label("Zahlungsdatum / F\u00e4lligkeit:");
 
         paidCheckBox.setOpaque(false);
         paidCheckBox.setFont(ModernTheme.font(1, Font.BOLD));
@@ -449,7 +428,7 @@ public class ModernRevenuePanel extends ModernDataPanel {
 
         JComponent filterBar = createFilterBar();
 
-        Card card = new Card("Einnahmen");
+        Card card = new Card(Messages.REVENUE_LIST_TITLE.toString());
         card.addFull(filterBar);
         card.addFull(new JScrollPane(revenueTable), 1);
         p.add(card, BorderLayout.CENTER);
@@ -481,7 +460,7 @@ public class ModernRevenuePanel extends ModernDataPanel {
         filterBar.add(importRow);
 
         ModernTheme.roomy(searchField);
-        searchField.setToolTipText("Filter nach Inhalt (Nummer, Beschreibung, Konto, Betrag, Datum, Kunde)");
+        searchField.setToolTipText(Messages.REVENUE_FILTER_TIP.toString());
         searchField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
@@ -504,7 +483,7 @@ public class ModernRevenuePanel extends ModernDataPanel {
         searchRow.setOpaque(false);
         searchRow.add(ModernTheme.fieldLabel("Filter:"), BorderLayout.WEST);
         searchRow.add(searchField, BorderLayout.CENTER);
-        JButton clearBtn = link("Zur\u00fccksetzen", null);
+        JButton clearBtn = link(Messages.FINANCE_RESET.toString(), null);
         clearBtn.addActionListener(e -> clearFilter());
         searchRow.add(clearBtn, BorderLayout.EAST);
 
@@ -557,9 +536,9 @@ public class ModernRevenuePanel extends ModernDataPanel {
 
         JPanel dateRow = new JPanel(new WrapLayout(FlowLayout.LEFT, ModernTheme.px(4), ModernTheme.px(2)));
         dateRow.setOpaque(false);
-        dateRow.add(ModernTheme.fieldLabel("Von:"));
+        dateRow.add(ModernTheme.fieldLabel(Messages.FINANCE_FROM.toString()));
         dateRow.add(fromDateChooser);
-        dateRow.add(ModernTheme.fieldLabel("Bis:"));
+        dateRow.add(ModernTheme.fieldLabel(Messages.FINANCE_TO.toString()));
         dateRow.add(toDateChooser);
 
         filterBar.add(searchRow);
@@ -752,21 +731,21 @@ public class ModernRevenuePanel extends ModernDataPanel {
         p.setOpaque(false);
 
         // Card 1: Basisdaten & Beträge
-        Card c1 = new Card("Einnahmendaten")
+        Card c1 = new Card(Messages.REVENUE_DATA_TITLE.toString())
                 .headerAction(createPluginBadgeSlot())
-                .row(Card.field("ID", idField, 1), Card.field("Belegnummer", cnumberField, 2))
-                .row(Card.field("Brutto", brutValueField), Card.field("Netto", netValueField))
-                .row(Card.field("Steuersatz", taxRateSelect), Card.field("Konto", accountSelect))
-                .row(Card.field("Belegdatum", issueDateChooser), Card.field("Zahlungsdatum / F\u00e4lligkeit", payDateChooser))
-                .row(Card.field("Kunde / Kontakt", contactSelect), Card.field("Status", statusSelect))
+                .row(Card.field("ID", idField, 1), Card.field(Messages.FINANCE_RECEIPT_NUMBER.toString(), cnumberField, 2))
+                .row(Card.field(Messages.FINANCE_GROSS.toString(), brutValueField), Card.field(Messages.FINANCE_NET.toString(), netValueField))
+                .row(Card.field(Messages.FINANCE_TAXRATE.toString(), taxRateSelect), Card.field(Messages.FINANCE_ACCOUNT.toString(), accountSelect))
+                .row(Card.field(Messages.FINANCE_RECEIPT_DATE.toString(), issueDateChooser), Card.field(Messages.FINANCE_PAY_DUE_DATE.toString(), payDateChooser))
+                .row(Card.field(Messages.FINANCE_CUSTOMER.toString(), contactSelect), Card.field("Status", statusSelect))
                 .row(Card.field(null, paidCheckBox));
         detailGrid.add(c1);
 
         // Card 2: Organisation & Notizen
-        Card c2 = new Card("Organisation & Notizen")
-                .row(Card.field("Gruppe", groupSelect), Card.field("Erfasst von", addedByLabel))
-                .row(Card.field("Referenz-Auftrag", refOrderSelect), Card.field("Externe Referenz", cnameField))
-                .row(Card.field("Beschreibung / Verwendungszweck", new JScrollPane(notesArea)));
+        Card c2 = new Card(Messages.FINANCE_CARD_ORGANISATION.toString())
+                .row(Card.field(Messages.FINANCE_GROUP.toString(), groupSelect), Card.field(Messages.FINANCE_ADDED_BY.toString(), addedByLabel))
+                .row(Card.field(Messages.FINANCE_REF_ORDER.toString(), refOrderSelect), Card.field(Messages.FINANCE_EXT_REF.toString(), cnameField))
+                .row(Card.field(Messages.FINANCE_DESCRIPTION.toString(), new JScrollPane(notesArea)));
         detailGrid.add(c2);
 
         // Card 3: Belege & Scans
@@ -782,7 +761,7 @@ public class ModernRevenuePanel extends ModernDataPanel {
     }
 
     private Card createReceiptsCard() {
-        Card card = new Card("Eingangsbelege & Abrechnungen");
+        Card card = new Card(Messages.REVENUE_RECEIPTS_TITLE.toString());
 
         ModernTheme.style(receiptsTable);
         receiptsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -805,7 +784,7 @@ public class ModernRevenuePanel extends ModernDataPanel {
             }
         });
 
-        JPanel actions = new JPanel(new FlowLayout(FlowLayout.RIGHT, ModernTheme.px(6), 0));
+        JPanel actions = new JPanel(new WrapLayout(FlowLayout.LEFT, ModernTheme.px(6), ModernTheme.px(4)));
         actions.setOpaque(false);
 
         addReceiptBtn.addActionListener(e -> importReceiptDialog());
@@ -818,10 +797,9 @@ public class ModernRevenuePanel extends ModernDataPanel {
         actions.add(removeReceiptBtn);
         actions.add(verifyReceiptsBtn);
 
-        card.headerAction(actions);
+        card.addFull(actions);
 
-        JLabel hint = new JLabel("<html><small>Dateien k\u00f6nnen per Drag &amp; Drop direkt in diese Tabelle gezogen werden. "
-                + "E-Rechnungen und Belege werden im Jahresarchiv abgelegt und per SHA-256 gesichert.</small></html>");
+        JLabel hint = new JLabel("<html><small>" + Messages.REVENUE_RECEIPTS_HINT.toString().replace("&", "&amp;") + "</small></html>");
         hint.setForeground(ModernTheme.muted());
         hint.setBorder(BorderFactory.createEmptyBorder(0, 0, ModernTheme.px(4), 0));
 
@@ -1004,7 +982,7 @@ public class ModernRevenuePanel extends ModernDataPanel {
         JFileChooser chooser = new JFileChooser();
         chooser.setDialogTitle(Messages.ZUGFERD_IMPORT_CHOOSER.toString());
         chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        chooser.setFileFilter(new FileNameExtensionFilter("E-Rechnungen (ZUGFeRD PDF, XRechnung XML)", "pdf", "xml"));
+        chooser.setFileFilter(new FileNameExtensionFilter(Messages.RECEIPT_EINVOICE_FILTER.toString(), "pdf", "xml"));
         chooser.setMultiSelectionEnabled(true);
         File configured = ZugpferdExpenseImport.folder();
         if (configured != null && configured.exists()) {
@@ -1076,12 +1054,12 @@ public class ModernRevenuePanel extends ModernDataPanel {
     private void importReceiptDialog() {
         if (dataOwner == null || dataOwner.__getIDS() <= 0) {
             JOptionPane.showMessageDialog(this,
-                    "Bitte speichern Sie die Einnahme zuerst, bevor Sie Belege verkn\u00fcpfen.",
-                    "Einnahme nicht gespeichert", JOptionPane.WARNING_MESSAGE);
+                    Messages.REVENUE_NOT_SAVED.toString(),
+                    Messages.REVENUE_NOT_SAVED_TITLE.toString(), JOptionPane.WARNING_MESSAGE);
             return;
         }
         JFileChooser chooser = new JFileChooser();
-        chooser.setDialogTitle("Beleg verkn\u00fcpfen (PDF, XML, Bild)");
+        chooser.setDialogTitle(Messages.RECEIPT_LINK_TITLE.toString());
         chooser.setMultiSelectionEnabled(true);
         if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             File[] files = chooser.getSelectedFiles();
@@ -1145,8 +1123,8 @@ public class ModernRevenuePanel extends ModernDataPanel {
         } catch (Exception ex) {
             Log.Debug(ModernRevenuePanel.class, ex);
             JOptionPane.showMessageDialog(this,
-                    "Fehler beim Verkn\u00fcpfen des Belegs:\n" + ex.getMessage(),
-                    "Importfehler", JOptionPane.ERROR_MESSAGE);
+                    String.format(Messages.RECEIPT_LINK_ERROR.toString(), ex.getMessage()),
+                    Messages.RECEIPT_IMPORT_ERROR_TITLE.toString(), JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -1249,16 +1227,16 @@ public class ModernRevenuePanel extends ModernDataPanel {
             mpv5.utils.files.FileDirectoryHandler.open(r.file());
         } else {
             JOptionPane.showMessageDialog(this,
-                    "Belegdatei im Archiv nicht gefunden:\n" + r.archivePath,
-                    "Datei fehlt", JOptionPane.ERROR_MESSAGE);
+                    String.format(Messages.RECEIPT_NOT_IN_ARCHIVE.toString(), r.archivePath),
+                    Messages.RECEIPT_FILE_MISSING_TITLE.toString(), JOptionPane.ERROR_MESSAGE);
         }
     }
 
     private void removeSelectedReceipt() {
         if (isContentLocked()) {
             JOptionPane.showMessageDialog(this,
-                    "Einnahme ist gesperrt; Belege k\u00f6nnen nicht entfernt werden.",
-                    "Gesperrt", JOptionPane.WARNING_MESSAGE);
+                    Messages.REVENUE_LOCKED_RECEIPTS.toString(),
+                    Messages.RECEIPT_LOCKED_TITLE.toString(), JOptionPane.WARNING_MESSAGE);
             return;
         }
         int row = receiptsTable.getSelectedRow();
@@ -1267,8 +1245,8 @@ public class ModernRevenuePanel extends ModernDataPanel {
         }
         Receipt r = currentReceipts.get(row);
         int confirm = JOptionPane.showConfirmDialog(this,
-                "Soll die Verkn\u00fcpfung zum Beleg '" + r.originalName + "' gel\u00f6scht werden?\n(Die physische Datei verbleibt zur Revisionssicherheit im Archiv.)",
-                "Belegverkn\u00fcpfung l\u00f6schen", JOptionPane.YES_NO_OPTION);
+                String.format(Messages.RECEIPT_UNLINK_CONFIRM.toString(), r.originalName),
+                Messages.RECEIPT_UNLINK_TITLE.toString(), JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
             RevenueReceipts.detach(dataOwner, r.id);
             loadReceipts();
@@ -1278,28 +1256,28 @@ public class ModernRevenuePanel extends ModernDataPanel {
 
     private void verifyAllReceipts() {
         if (currentReceipts.isEmpty()) {
-            Popup.notice("Keine Belege vorhanden.");
+            Popup.notice(Messages.RECEIPT_NONE.toString());
             return;
         }
         int ok = 0;
         List<String> errors = new ArrayList<String>();
         for (Receipt r : currentReceipts) {
             if (!r.exists()) {
-                errors.add(r.originalName + ": Datei fehlt im Archiv (" + r.archivePath + ")");
+                errors.add(String.format(Messages.RECEIPT_MISSING_IN_ARCHIVE.toString(), r.originalName, r.archivePath));
             } else if (!RevenueReceipts.verify(r)) {
-                errors.add(r.originalName + ": SHA-256 Checksumme stimmt NICHT \u00fcberein!");
+                errors.add(String.format(Messages.RECEIPT_CHECKSUM_MISMATCH.toString(), r.originalName));
             } else {
                 ok++;
             }
         }
         if (errors.isEmpty()) {
             JOptionPane.showMessageDialog(this,
-                    "Integrit\u00e4t OK: Alle " + ok + " Belege vorhanden und kryptographisch unversehrt.",
-                    "Belegpr\u00fcfung", JOptionPane.INFORMATION_MESSAGE);
+                    String.format(Messages.RECEIPT_VERIFY_OK.toString(), ok),
+                    Messages.RECEIPT_VERIFY_TITLE.toString(), JOptionPane.INFORMATION_MESSAGE);
         } else {
             JOptionPane.showMessageDialog(this,
-                    "Integrit\u00e4tsfehler bei Belegen:\n- " + String.join("\n- ", errors),
-                    "Belegpr\u00fcfung fehlgeschlagen", JOptionPane.ERROR_MESSAGE);
+                    String.format(Messages.RECEIPT_VERIFY_FAILED.toString(), String.join("\n- ", errors)),
+                    Messages.RECEIPT_VERIFY_FAILED_TITLE.toString(), JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -1431,7 +1409,7 @@ public class ModernRevenuePanel extends ModernDataPanel {
             updateTaxRate();
         }
 
-        String title = cnumber_ != null && !cnumber_.isEmpty() ? "Einnahme " + cnumber_ : (ids_ > 0 ? "Einnahme #" + ids_ : "Einnahmen");
+        String title = cnumber_ != null && !cnumber_.isEmpty() ? String.format(Messages.REVENUE_TAB_TITLE.toString(), cnumber_) : (ids_ > 0 ? String.format(Messages.REVENUE_TAB_TITLE.toString(), "#" + ids_) : Messages.REVENUE_LIST_TITLE.toString());
         setTabTitle(title);
     }
 
