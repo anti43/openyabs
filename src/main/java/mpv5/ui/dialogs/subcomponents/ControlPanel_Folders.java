@@ -71,25 +71,25 @@ public class ControlPanel_Folders extends JPanel implements ControlApplet {
     public static final String UNAME = "folders";
 
     private final JTextField baseField = new JTextField();
-    private final JLabel baseHint = new JLabel();
+    private final Result baseHint = new Result();
 
     private final JTextField receiptsField = new JTextField();
-    private final JLabel receiptsHint = new JLabel();
+    private final Result receiptsHint = new Result();
 
     private final JTextField einvoiceField = new JTextField();
-    private final JLabel einvoiceHint = new JLabel();
+    private final Result einvoiceHint = new Result();
     private final JCheckBox autoImportEinvoice = new JCheckBox(Messages.ZUGFERD_IMPORT_AUTO.toString());
     private final JButton importEinvoiceNow = new JButton(Messages.ZUGFERD_IMPORT_NOW.toString());
 
     private final JTextField zipBackupField = new JTextField();
-    private final JLabel zipBackupHint = new JLabel();
+    private final Result zipBackupHint = new Result();
 
     private final JTextField cacheField = new JTextField();
-    private final JLabel cacheHint = new JLabel();
+    private final Result cacheHint = new Result();
     private final JButton wipeCacheBtn = Applets.danger(new JButton());
 
     private final JTextField legacyBackupField = new JTextField();
-    private final JLabel legacyBackupHint = new JLabel();
+    private final Result legacyBackupHint = new Result();
 
     private final JPanel actions;
     private final Timer hintDebounceTimer;
@@ -127,7 +127,8 @@ public class ControlPanel_Folders extends JPanel implements ControlApplet {
 
         // Card 1: Supported Path Variables (top)
         Card varsCard = new Card(Messages.FOLDERS_VARS_TITLE.toString())
-                .addFull(Applets.hint(Messages.FOLDERS_VARS_HINT.toString()));
+                .addFull(Applets.hint(Messages.FOLDERS_VARS_HINT.toString()))
+                .addFull(variablesTable());
 
         // Card 2: Documents & Exports
         Card baseCard = new Card(Messages.FOLDERS_CARD_BASE.toString())
@@ -186,8 +187,17 @@ public class ControlPanel_Folders extends JPanel implements ControlApplet {
                         createPathRow(legacyBackupField, () -> browseFolder(legacyBackupField), () -> openFolder(resolvedLegacyBackupDir()))))
                 .addFull(legacyBackupHint);
 
-        add(Applets.page(Messages.FOLDERS_DESC.toString(), 420,
-                varsCard, baseCard, receiptsCard, einvoiceCard, zipCard, cacheCard, legacyCard), BorderLayout.CENTER);
+        //the variables over the full width, above the grid of the folders
+        JPanel page = Applets.page(Messages.FOLDERS_DESC.toString(), 420,
+                baseCard, receiptsCard, einvoiceCard, zipCard, cacheCard, legacyCard);
+        BorderLayout pageLayout = (BorderLayout) page.getLayout();
+        Component grid = pageLayout.getLayoutComponent(BorderLayout.CENTER);
+        JPanel content = new JPanel(new BorderLayout(0, ModernTheme.px(10)));
+        content.setOpaque(false);
+        content.add(varsCard, BorderLayout.NORTH);
+        content.add(grid, BorderLayout.CENTER);
+        page.add(content, BorderLayout.CENTER);
+        add(page, BorderLayout.CENTER);
 
         // Action bar
         JButton appDirBtn = new JButton(Main.MPPATH == null ? ".yabs" : new File(Main.MPPATH).getName());
@@ -204,6 +214,115 @@ public class ControlPanel_Folders extends JPanel implements ControlApplet {
         actions = Applets.actionBar(new javax.swing.JComponent[]{appDirBtn}, new javax.swing.JComponent[]{resetBtn, saveBtn});
 
         reset();
+    }
+
+    /**
+     * The path variables with their meaning and current value, and example
+     * folders resolved for today
+     */
+    private static JLabel variablesTable() {
+        String dbname = LocalSettings.getProperty(LocalSettings.DBNAME);
+        Date now = new Date();
+        String[][] vars = {
+            {"[APPDIR]", Messages.FOLDERS_VARS_APPDIR.toString()},
+            {"[HOME]", Messages.FOLDERS_VARS_HOME.toString()},
+            {"[DBNAME]", Messages.FOLDERS_VARS_DBNAME.toString()},
+            {"[YEAR]", Messages.FOLDERS_VARS_YEAR.toString()},
+            {"[MONTH]", Messages.FOLDERS_VARS_MONTH.toString()},
+            {"[DAY]", Messages.FOLDERS_VARS_DAY.toString()}
+        };
+        String[][] examples = {
+            {ExpenseReceipts.DEFAULT_DIR, Messages.FOLDERS_VARS_EX_RECEIPTS.toString()},
+            {DatabaseBackup.DEFAULT_DIR, Messages.FOLDERS_VARS_EX_BACKUPS.toString()},
+            {"[HOME]/Documents/YaBS/[DBNAME]/[YEAR]", Messages.FOLDERS_VARS_EX_DOCUMENTS.toString()},
+            {"[HOME]/Backups/[DBNAME]/[YEAR]-[MONTH]", Messages.FOLDERS_VARS_EX_MONTHLY.toString()},
+            {"[HOME]/Nextcloud/YaBS/[YEAR]/[MONTH]", Messages.FOLDERS_VARS_EX_CLOUD.toString()},
+            {"/mnt/nas/yabs/[DBNAME]/[YEAR]/[MONTH]/[DAY]", Messages.FOLDERS_VARS_EX_NAS.toString()}
+        };
+        StringBuilder h = new StringBuilder("<html><table cellpadding='2' cellspacing='0'>");
+        h.append("<tr><th align='left'>").append(esc(Messages.FOLDERS_VARS_COL_VAR.toString()))
+                .append("</th><th align='left'>").append(esc(Messages.FOLDERS_VARS_COL_MEANING.toString()))
+                .append("</th><th align='left'>").append(esc(Messages.FOLDERS_VARS_COL_NOW.toString())).append("</th></tr>");
+        for (String[] v : vars) {
+            h.append("<tr><td><tt>").append(v[0]).append("</tt></td><td>").append(esc(v[1]))
+                    .append("</td><td><b>").append(esc(ExpenseReceipts.resolve(v[0], dbname, now).getPath()))
+                    .append("</b></td></tr>");
+        }
+        h.append("</table><br><b>").append(esc(Messages.FOLDERS_VARS_EXAMPLES.toString())).append("</b>");
+        h.append("<table cellpadding='2' cellspacing='0'>");
+        for (String[] e : examples) {
+            h.append("<tr><td><tt>").append(esc(e[0])).append("</tt> &nbsp; <font color='")
+                    .append(hex(ModernTheme.muted())).append("'>").append(esc(e[1])).append("</font><br>&rarr; <b>")
+                    .append(esc(ExpenseReceipts.resolve(e[0], dbname, now).getPath())).append("</b></td></tr>");
+        }
+        h.append("</table></html>");
+        return resultLabel(new JLabel(h.toString()));
+    }
+
+    private static JLabel resultLabel(JLabel l) {
+        l.setFont(ModernTheme.font(1, java.awt.Font.PLAIN));
+        return l;
+    }
+
+    /**
+     * The folder as it is resolved now, under a card: an optional note in
+     * small text and the path in larger, bold text; both wrap
+     */
+    static final class Result extends JPanel {
+
+        private static final long serialVersionUID = 1L;
+        private final javax.swing.JTextArea note = area(ModernTheme.font(-1, java.awt.Font.PLAIN), ModernTheme.muted());
+        private final javax.swing.JTextArea path = area(ModernTheme.font(2, java.awt.Font.BOLD), ModernTheme.foreground());
+        private final javax.swing.JTextArea after = area(ModernTheme.font(-1, java.awt.Font.PLAIN), ModernTheme.muted());
+
+        Result() {
+            super(new java.awt.GridBagLayout());
+            setOpaque(false);
+            java.awt.GridBagConstraints c = new java.awt.GridBagConstraints();
+            c.gridx = 0;
+            c.weightx = 1;
+            c.fill = java.awt.GridBagConstraints.HORIZONTAL;
+            c.anchor = java.awt.GridBagConstraints.NORTHWEST;
+            add(note, c);
+            c.insets = new java.awt.Insets(ModernTheme.px(2), 0, ModernTheme.px(2), 0);
+            add(path, c);
+            c.insets = new java.awt.Insets(0, 0, 0, 0);
+            add(after, c);
+        }
+
+        private static javax.swing.JTextArea area(java.awt.Font font, Color color) {
+            javax.swing.JTextArea t = new javax.swing.JTextArea();
+            t.setLineWrap(true);
+            t.setWrapStyleWord(true);
+            t.setEditable(false);
+            t.setOpaque(false);
+            t.setBorder(null);
+            t.setFont(font);
+            t.setForeground(color);
+            t.setColumns(10);
+            return t;
+        }
+
+        /**
+         * @param noteText may be null
+         * @param pathText may be null
+         * @param afterText may be null
+         */
+        void set(String noteText, String pathText, String afterText) {
+            show(note, noteText);
+            show(path, pathText);
+            show(after, afterText);
+            revalidate();
+        }
+
+        private static void show(javax.swing.JTextArea t, String text) {
+            t.setText(text == null ? "" : text.trim());
+            t.setVisible(text != null && !text.trim().isEmpty());
+        }
+    }
+
+    private static String hex(Color c) {
+        return String.format("#%02x%02x%02x", c.getRed(), c.getGreen(), c.getBlue());
     }
 
     private void scheduleHintsUpdate() {
@@ -310,55 +429,46 @@ public class ControlPanel_Folders extends JPanel implements ControlApplet {
         return new File(leg);
     }
 
+    /**
+     * @param message a message ending with "%s" (the path)
+     * @return the message without the path
+     */
+    private static String note(Messages message) {
+        return String.format(message.toString(), "").trim();
+    }
+
     private void updateHints() {
-        // Base dir hint
+        // Base dir
         String base = baseField.getText().trim();
-        if (base.isEmpty()) {
-            baseHint.setText("<html><small>" + String.format(Messages.FOLDER_BASE_EMPTY.toString(),
-                    esc(resolvedBaseDir().getPath())) + "</small></html>");
-        } else {
-            baseHint.setText("<html><small>" + Messages.FOLDER_BASE_SET.toString()
-                    + "<br><b>" + esc(resolvedBaseDir().getPath()) + "</b></small></html>");
-        }
+        baseHint.set(base.isEmpty() ? note(Messages.FOLDER_BASE_EMPTY) : Messages.FOLDER_BASE_SET.toString(),
+                resolvedBaseDir().getPath(), null);
 
-        // Receipts hint
-        File rDir = resolvedReceiptsDir();
-        receiptsHint.setText("<html><small>" + String.format(Messages.ZIPBACKUP_FOLDER_HINT.toString(),
-                esc(rDir.getPath())) + "</small></html>");
+        // Receipts
+        receiptsHint.set(note(Messages.ZIPBACKUP_FOLDER_HINT), resolvedReceiptsDir().getPath(), null);
 
-        // Einvoice hint
+        // E-invoices
         File eDir = resolvedEinvoiceDir();
         if (eDir != null) {
-            einvoiceHint.setText("<html><small>" + String.format(Messages.ZIPBACKUP_FOLDER_HINT.toString(),
-                    esc(eDir.getPath())) + "</small></html>");
+            einvoiceHint.set(note(Messages.ZIPBACKUP_FOLDER_HINT), eDir.getPath(), null);
         } else {
-            einvoiceHint.setText("<html><small>" + Messages.ZUGFERD_IMPORT_FOLDER_NOT_SET.toString() + "</small></html>");
+            einvoiceHint.set(Messages.ZUGFERD_IMPORT_FOLDER_NOT_SET.toString(), null, null);
         }
 
-        // Zip Backup hint
-        File zDir = resolvedZipBackupDir();
-        zipBackupHint.setText("<html><small>" + String.format(Messages.ZIPBACKUP_FOLDER_HINT.toString(),
-                esc(zDir.getPath())) + "</small></html>");
+        // Zip backups
+        zipBackupHint.set(note(Messages.ZIPBACKUP_FOLDER_HINT), resolvedZipBackupDir().getPath(), null);
 
-        // Legacy backup hint
+        // Legacy backups
         String leg = legacyBackupField.getText().trim();
-        if (leg.isEmpty()) {
-            legacyBackupHint.setText("<html><small>" + String.format(Messages.FOLDER_BACKUP_EMPTY.toString(),
-                    esc(resolvedLegacyBackupDir().getPath())) + "</small></html>");
-        } else {
-            legacyBackupHint.setText("<html><small>" + Messages.FOLDER_BACKUP_SET.toString()
-                    + "<br><b>" + esc(resolvedLegacyBackupDir().getPath()) + "</b></small></html>");
-        }
+        legacyBackupHint.set(leg.isEmpty() ? note(Messages.FOLDER_BACKUP_EMPTY) : Messages.FOLDER_BACKUP_SET.toString(),
+                resolvedLegacyBackupDir().getPath(), null);
 
-        // Cache summary computed asynchronously so typing does not stutter
+        // Cache: the summary computed asynchronously so typing does not stutter
         final File cDir = resolvedCacheDir();
-        cacheHint.setText("<html><small><b>" + esc(cDir.getPath()) + "</b></small></html>");
+        cacheHint.set(null, cDir.getPath(), null);
         new Thread(() -> {
             LocalFiles.Summary s = LocalFiles.summarize(cDir);
-            SwingUtilities.invokeLater(() -> {
-                cacheHint.setText("<html><small><b>" + esc(cDir.getPath()) + "</b><br>"
-                        + String.format(Messages.LOCALFILES_COUNT.toString(), s.files, LocalFiles.size(s.bytes)) + "</small></html>");
-            });
+            SwingUtilities.invokeLater(() -> cacheHint.set(null, cDir.getPath(),
+                    String.format(Messages.LOCALFILES_COUNT.toString(), s.files, LocalFiles.size(s.bytes))));
         }, "Folders-Cache-Scan").start();
     }
 
