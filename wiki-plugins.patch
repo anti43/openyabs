@@ -1,0 +1,80 @@
+From 3afdaca2745c637e481b2ee6ceded51a9243a1e1 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Thu, 19 Nov 2026 05:52:57 +0000
+Subject: [PATCH] Plugin manager: the three ways to add a plugin, Import Java
+ plugin for gobd-compliance.jar, classic plugins folded (openyabs#169)
+
+---
+ GoBD-Plugin.md          | 2 +-
+ GoBD-plugin-(EN).md     | 2 +-
+ Plugins-schreiben.md    | 4 ++--
+ Writing-plugins-(EN).md | 4 ++--
+ 4 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/GoBD-Plugin.md b/GoBD-Plugin.md
+index 3e73df2..38d80dd 100644
+--- a/GoBD-Plugin.md
++++ b/GoBD-Plugin.md
+@@ -21,7 +21,7 @@ Das GoBD-Plugin (ID `groovy.gobd-compliance`, Version 2.0) ergänzt YaBS um tech
+ ## Installation
+ 
+ 1. **`gobd-compliance.jar`** besorgen: Es liegt im Zip von YaBS im Ordner `openyabs/plugins/` und ist ein eigener Download jedes [Releases](https://github.com/anti43/openyabs/releases) (für die Installationspakete .deb, .rpm, .msi, .dmg).
+-2. *Einstellungen › Plugin-Manager › Plugin installieren...* und die Datei wählen – oder sie auf den Plugin-Manager ziehen.
++2. *Einstellungen › Plugin-Manager › Java-Plugin importieren...* und die Datei wählen – oder sie auf den Plugin-Manager ziehen. (Nicht über *Klassische Plugins (Datenbank)*: dort erkennt YaBS das Jar und installiert es ebenfalls in der Plugin-Liste.)
+ 3. Nach dem Start meldet die Statuszeile: `GoBD-Konformitaets-Plugin (v2.0.0) vollstaendig geladen.`
+ 
+ Die Datenbanktabellen (`gobd_document_lock`, `gobd_audit_log`, `gobd_receipt`, `gobd_income_lock`) legt das Plugin beim Start an bzw. erweitert sie.
+diff --git a/GoBD-plugin-(EN).md b/GoBD-plugin-(EN).md
+index 443b858..dcdeca1 100644
+--- a/GoBD-plugin-(EN).md
++++ b/GoBD-plugin-(EN).md
+@@ -21,7 +21,7 @@ The GoBD plugin (id `groovy.gobd-compliance`, version 2.0) adds technical safegu
+ ## Installation
+ 
+ 1. Get **`gobd-compliance.jar`**: it is in the YaBS zip in the folder `openyabs/plugins/`, and a download of its own in every [release](https://github.com/anti43/openyabs/releases) (for the installers .deb, .rpm, .msi, .dmg).
+-2. *Settings › Plugin Manager › Install plugin...* and choose the file – or drop it onto the Plugin Manager.
++2. *Settings › Plugin Manager › Import Java plugin...* and choose the file – or drop it onto the Plugin Manager. (Not via *Classic plugins (database)*: YaBS recognizes the jar there too and installs it in the plugin list.)
+ 3. After the start the status bar says: `GoBD-Konformitaets-Plugin (v2.0.0) vollstaendig geladen.`
+ 
+ The plugin creates or extends its database tables (`gobd_document_lock`, `gobd_audit_log`, `gobd_receipt`, `gobd_income_lock`) when it starts.
+diff --git a/Plugins-schreiben.md b/Plugins-schreiben.md
+index 78f8c00..3eb13b3 100644
+--- a/Plugins-schreiben.md
++++ b/Plugins-schreiben.md
+@@ -5,7 +5,7 @@
+ Plugins ergänzen YaBS um **Befehle**, **Suchergebnisse**, **Einstellungsseiten**, **Tabs**, **Markierungen in Datensatz-Ansichten** und **Reaktionen** – in **Groovy** (eine einzelne Datei, ohne Build) oder in **Java** (ein Jar). Beide bekommen **dieselbe Schnittstelle**: den [`ExtensionContext`](https://github.com/anti43/openyabs/blob/master/src/main/java/mpv5/plugin/api/ExtensionContext.java).
+ 
+ - Plugins liegen im Ordner **`plugins`** im YaBS-Ordner (*Einstellungen › Plugin-Manager › Ordner öffnen*).
+-- *Einstellungen › Plugin-Manager* zeigt alle Plugins mit ihrem Zustand. Dort lassen sich Plugins aktivieren, deaktivieren, neu laden, bearbeiten und entfernen; ein Plugin wird installiert, indem man eine Datei auswählt oder eine `.jar`- / `.groovy`-Datei auf die Seite zieht.
++- *Einstellungen › Plugin-Manager* zeigt alle Plugins mit ihrem Zustand. Dort lassen sich Plugins aktivieren, deaktivieren, neu laden, bearbeiten und entfernen; oben unter *Plugin hinzufügen* stehen gleichrangig *Neues Groovy-Plugin…*, *Groovy-Plugin importieren…* und *Java-Plugin importieren…*; eine `.jar`- / `.groovy`-Datei kann man auch auf die Seite ziehen.
+ - Befehle von Plugins erscheinen im Menü **Plugins** und in **Alles durchsuchen** (`Umschalt Umschalt`).
+ - YaBS lädt die Plugins nach dem Start **im Hintergrund**; die Statuszeile zeigt den Fortschritt (*Plugins werden geladen (2/5): …*). Das Fenster ist währenddessen bedienbar.
+ - Ein fehlerhaftes Plugin wird mit seiner Fehlermeldung als *fehlgeschlagen* markiert; YaBS und die anderen Plugins laufen weiter.
+@@ -175,4 +175,4 @@ Datensätze, Kontexte und Abfragen sind die normalen YaBS-Klassen (`mpv5.db.comm
+ 
+ ## Klassische Plugins
+ 
+-Plugins älterer YaBS-Versionen (eine Klasse `plugin.Main`, die `mpv5.pluginhandling.YabsPlugin` implementiert, in der Datenbank gespeichert) funktionieren weiterhin; sie stehen unten im Plugin-Manager.
++Plugins älterer YaBS-Versionen (eine Klasse `plugin.Main`, die `mpv5.pluginhandling.YabsPlugin` implementiert, in der Datenbank gespeichert) funktionieren weiterhin; sie stehen unten im Plugin-Manager unter *Klassische Plugins (Datenbank)* (mit *Anzeigen* aufklappen).
+diff --git a/Writing-plugins-(EN).md b/Writing-plugins-(EN).md
+index 8982bc9..b64d42b 100644
+--- a/Writing-plugins-(EN).md
++++ b/Writing-plugins-(EN).md
+@@ -5,7 +5,7 @@
+ Plugins add **commands**, **search results**, **settings pages**, **tabs**, **marks on record views** and **reactions** to YaBS – in **Groovy** (a single file, no build) or in **Java** (a jar). Both get **the same API**: the [`ExtensionContext`](https://github.com/anti43/openyabs/blob/master/src/main/java/mpv5/plugin/api/ExtensionContext.java).
+ 
+ - They live in the folder **`plugins`** in your YaBS folder (*Settings › Plugin Manager › Open folder*).
+-- *Settings › Plugin Manager* shows every plugin with its state. There you can enable, disable, reload, edit and remove plugins, and install one by choosing a file or dropping a `.jar` / `.groovy` file onto the page.
++- *Settings › Plugin Manager* shows every plugin with its state. There you can enable, disable, reload, edit and remove plugins, and at the top, under *Add a plugin*, are *New Groovy plugin…*, *Import Groovy plugin…* and *Import Java plugin…* side by side; you can also drop a `.jar` / `.groovy` file onto the page.
+ - Commands of plugins appear in the menu **Plugins** and in **Search anything** (`Shift Shift`).
+ - YaBS loads the plugins **in the background** after the start; the status bar shows the progress (*Loading plugins (2/5): …*). The window can be used meanwhile.
+ - A plugin that fails is marked *failed* with its error message; YaBS and the other plugins go on.
+@@ -175,4 +175,4 @@ Records, contexts and queries are the normal YaBS classes (`mpv5.db.common.Datab
+ 
+ ## Classic plugins
+ 
+-Plugins of older YaBS versions (a class `plugin.Main` implementing `mpv5.pluginhandling.YabsPlugin`, stored in the database) still work; they are listed at the bottom of the Plugin Manager.
++Plugins of older YaBS versions (a class `plugin.Main` implementing `mpv5.pluginhandling.YabsPlugin`, stored in the database) still work; they are listed at the bottom of the Plugin Manager under *Classic plugins (database)* (click *Show*).
+-- 
+2.43.0
+
