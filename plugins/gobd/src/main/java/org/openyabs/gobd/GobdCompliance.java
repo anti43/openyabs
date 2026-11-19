@@ -154,6 +154,21 @@ public final class GobdCompliance implements YabsExtension {
         yabs.addCommand("GoBD: 8. Audit-Log als Textdatei oeffnen",
                 "Schreibt das vollstaendige Audit-Log (alle Jahre, mit Hash-Kette und Pruefergebnis) als UTF-8-Textdatei und oeffnet sie",
                 () -> pages.exportAuditLog());
+        yabs.addCommand("GoBD: 9. Bestand jetzt versiegeln",
+                "Versiegelt alle steuerrelevanten Datensaetze (Hash je Datensatz, Hash-Kette der Versiegelungen) und meldet, was ohne das Plugin geaendert wurde",
+                () -> yabs.background(() -> {
+                    try {
+                        return g.inventory.seal("MANUAL");
+                    } catch (Exception e) {
+                        throw new IllegalStateException("GoBD-Bestandsversiegelung fehlgeschlagen: " + e.getMessage(), e);
+                    }
+                }, r -> {
+                    if (r.suspicious()) {
+                        g.error(r.message());
+                    } else {
+                        g.popup(r.message());
+                    }
+                }));
         yabs.addCommand("GoBD: 7. ZUGFeRD / XRechnung als Einnahme importieren",
                 "Importiert ZUGFeRD-PDF/A-3 oder XRechnung-XML als GoBD-festgeschriebene Einnahme (Revenue)", () -> {
                     JFileChooser chooser = new JFileChooser();
@@ -203,11 +218,18 @@ public final class GobdCompliance implements YabsExtension {
         yabs.onView(views::decorate);
         g.configureIncomeWatch();
         //receipts of expenses attached without the plugin (or before): into the hash chain
-        yabs.background(g::chainReceipts, n -> {
+        //then the inventory seal: what existed before the plugin or was changed without it
+        yabs.background(() -> {
+            int n = g.chainReceipts();
             if (n > 0) {
                 g.status("GoBD: " + n + " Eingangsbeleg(e) in die Hash-Kette aufgenommen.");
             }
-        });
+            try {
+                return g.inventory.sealAtStart();
+            } catch (Exception e) {
+                throw new IllegalStateException("GoBD-Bestandsversiegelung fehlgeschlagen: " + e.getMessage(), e);
+            }
+        }, this::reportSeal);
         yabs.onStop(g::stop);
         g.status("GoBD-Konformitaets-Plugin (v" + version() + ") vollstaendig geladen.");
     }
@@ -229,6 +251,20 @@ public final class GobdCompliance implements YabsExtension {
             gobd.error(text);
         } else {
             gobd.popup(text);
+        }
+    }
+
+    /**
+     * Changes without the plugin are shown (dialog), else only a note
+     */
+    private void reportSeal(Inventory.Result r) {
+        if (gobd == null) {
+            return;
+        }
+        if (r.suspicious()) {
+            gobd.error(r.message());
+        } else {
+            gobd.notifyQuiet(r.message(), null);
         }
     }
 
