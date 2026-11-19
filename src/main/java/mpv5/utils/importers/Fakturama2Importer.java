@@ -911,9 +911,8 @@ public class Fakturama2Importer {
                 p.setInttype(Constants.TYPE_PRODUCT);
                 p.setExternalnetvalue(nz(r.d("PRICE1")));
                 p.setInternalnetvalue(nz(r.d("COSTPRICE")));
-                if (r.d("QUANTITY") != null) {
-                    p.setStockvalue(r.d("QUANTITY"));
-                }
+                //the stock: see applyInventory
+                p.setStockvalue(BigDecimal.ZERO);
                 p.setMeasure(unit(r.s("QUANTITYUNIT")));
                 p.setEan(cut(r.s("GTIN"), 250));
                 p.setReference(cut(r.s("SUPPLIERITEMNUMBER"), 250));
@@ -948,8 +947,9 @@ public class Fakturama2Importer {
                     result.productsImported++;
                     result.productsLinked += supplier != null || manufacturer != null ? 1 : 0;
                     blockPrices(r, p);
-                    if (r.d("QUANTITY") != null) {
-                        stock.put(p.__getIDS(), r.d("QUANTITY"));
+                    BigDecimal stockValue = stockOf(r.d("QUANTITY"));
+                    if (stockValue != null) {
+                        stock.put(p.__getIDS(), stockValue);
                     }
                     Object pic = r.v.get("PICTURE");
                     if (pic instanceof byte[] && ((byte[]) pic).length > 0) {
@@ -1070,6 +1070,21 @@ public class Fakturama2Importer {
             Log.Debug(this, e);
             result.warnings.add(name + ": " + Messages.FKT_PICTURE_NOT_IMPORTED + " " + e.getMessage());
         }
+    }
+
+    /**
+     * Fakturama keeps the stock with the opposite sign (a stock of 10 is
+     * stored as -10)
+     *
+     * @param quantity QUANTITY of the Fakturama product, may be null
+     * @return the stock, null if there is none (no quantity or 0: the product
+     * is not managed in the inventory)
+     */
+    static BigDecimal stockOf(BigDecimal quantity) {
+        if (quantity == null || quantity.signum() == 0) {
+            return null;
+        }
+        return quantity.negate();
     }
 
     /**
