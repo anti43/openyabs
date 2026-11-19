@@ -26,7 +26,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import mpv5.db.common.QueryHandler;
+import mpv5.db.common.DatabaseConnection;
 import mpv5.globals.GlobalSettings;
 import mpv5.logging.Log;
 
@@ -183,15 +183,20 @@ public final class WorkshopStore {
 
     public static boolean hasDatabase() {
         try {
-            return QueryHandler.getConnection() != null
-                    && QueryHandler.getConnection().getConnection() != null;
+            DatabaseConnection dc = DatabaseConnection.getConnector();
+            return dc != null && dc.getConnection() != null;
         } catch (Throwable t) {
             return false;
         }
     }
 
     public static Connection connection() throws SQLException {
-        return QueryHandler.getConnection().getConnection();
+        DatabaseConnection dc = DatabaseConnection.getConnector();
+        Connection c = dc == null ? null : dc.getConnection();
+        if (c == null) {
+            throw new SQLException("No active database connection");
+        }
+        return c;
     }
 
     /**
