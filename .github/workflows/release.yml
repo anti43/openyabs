@@ -77,9 +77,9 @@ jobs:
         working-directory: dist
         run: |
           test -s "openyabs-$VERSION.zip"
-          # the GoBD plugin on its own, for installer users (Control Panel > Plugins)
-          test -s gobd-compliance.jar || {
-            echo "::error::Missing release asset: gobd-compliance.jar"
+          # all plugins (plugins/*) in one zip, for installer users (Control Panel > Plugins)
+          test -s "openyabs-plugins-$VERSION.zip" || {
+            echo "::error::Missing release asset: openyabs-plugins-$VERSION.zip"
             exit 1
           }
           for pattern in '*.deb' '*.rpm' '*.msi'; do

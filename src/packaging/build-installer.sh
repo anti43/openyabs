@@ -17,7 +17,7 @@ version="${2:?version, e.g. 1.3.2}"
 root="$(cd "$(dirname "$0")/../.." && pwd)"
 work="$root/build/installer"
 
-zip=$(ls "$root"/build/distributions/openyabs-*.zip | head -n 1)
+zip=$(ls "$root"/build/distributions/openyabs-*.zip | grep -v /openyabs-plugins- | head -n 1)
 rm -rf "$work"
 mkdir -p "$work/unzipped" "$work/input" "$work/out"
 (cd "$work/unzipped" && jar xf "$zip")
