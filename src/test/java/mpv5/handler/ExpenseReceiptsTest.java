@@ -58,7 +58,7 @@ public class ExpenseReceiptsTest {
     @Test
     void computesSha256MatchesStandard() throws Exception {
         Path file = tmp.resolve("sample_invoice.pdf");
-        byte[] content = "%PDF-1.4 Mock Receipt for Testing GoBD Compliance\nTotal: 42.00 EUR".getBytes(StandardCharsets.UTF_8);
+        byte[] content = "%PDF-1.4 Mock Receipt for Testing\nTotal: 42.00 EUR".getBytes(StandardCharsets.UTF_8);
         Files.write(file, content);
 
         String hash = ExpenseReceipts.sha256(file.toFile());

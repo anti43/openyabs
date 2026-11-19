@@ -464,8 +464,7 @@ class ExtensionManagerTest {
     }
 
     /**
-     * The classic import (plugin.Main) hands these files to the plugin list,
-     * e.g. gobd-compliance.jar
+     * The classic import (plugin.Main) hands plugin jars to the plugin list
      */
     @Test
     public void pluginFilesAreToldFromClassicPlugins() throws Exception {
