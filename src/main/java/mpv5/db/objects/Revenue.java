@@ -199,25 +199,32 @@ public class Revenue extends DatabaseObject implements Formattable {
         o[0] = this;
         o[1] = cname;
         o[2] = description;
-        try {
-            o[3] = getObject(Context.getAccounts(), accountsids);
-        } catch (NodataFoundException ex) {
-            Log.Debug(this, ex.getMessage());
+        //no lookups for unset references (id 0 or -1): they cannot be found
+        if (accountsids > 0) {
+            try {
+                o[3] = getObject(Context.getAccounts(), accountsids);
+            } catch (NodataFoundException ex) {
+                Log.Debug(this, ex.getMessage());
+            }
         }
         o[4] = FormatNumber.formatDezimal(brutvalue);
         o[5] = FormatNumber.formatPercent(taxpercentvalue);
         o[6] = status;
         o[7] = dateadded;
         o[8] = dateend;
-        try {
-            o[9] = getObject(Context.getContact(), contactsids);
-        } catch (NodataFoundException ex) {
-            Log.Debug(this, ex.getMessage());
+        if (contactsids > 0) {
+            try {
+                o[9] = getObject(Context.getContact(), contactsids);
+            } catch (NodataFoundException ex) {
+                Log.Debug(this, ex.getMessage());
+            }
         }
-        try {
-            o[10] = getObject(Context.getOrder(), refOrderids);
-        } catch (NodataFoundException ex) {
-            Log.Debug(this, ex.getMessage());
+        if (refOrderids > 0) {
+            try {
+                o[10] = getObject(Context.getOrder(), refOrderids);
+            } catch (NodataFoundException ex) {
+                Log.Debug(this, ex.getMessage());
+            }
         }
 
         return o;
