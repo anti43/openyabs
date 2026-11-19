@@ -390,8 +390,8 @@ final class Inventory {
 
     /**
      * @return since when the plugin did not run: its last stop after the
-     * last seal, else the last entry of the audit log (a crash), null if
-     * none
+     * last seal, else the last entry of the audit log before this start (a
+     * crash), null if none
      */
     Timestamp withoutPluginSince() {
         Object[] seal = g.q1("SELECT sealed_at FROM gobd_seal ORDER BY chain_seq DESC FETCH FIRST 1 ROWS ONLY");
@@ -399,7 +399,11 @@ final class Inventory {
         if (stop != null && (seal == null || ((Timestamp) stop[0]).after((Timestamp) seal[0]))) {
             return (Timestamp) stop[0];
         }
-        Object[] last = g.q1("SELECT created_at FROM gobd_audit_log ORDER BY id DESC FETCH FIRST 1 ROWS ONLY");
+        //the last entry before this start (PLUGIN_STARTED is written before the seal)
+        Object[] started = g.q1("SELECT id FROM gobd_audit_log WHERE action = 'PLUGIN_STARTED' ORDER BY id DESC FETCH FIRST 1 ROWS ONLY");
+        Object[] last = started == null
+                ? g.q1("SELECT created_at FROM gobd_audit_log ORDER BY id DESC FETCH FIRST 1 ROWS ONLY")
+                : g.q1("SELECT created_at FROM gobd_audit_log WHERE id < ? ORDER BY id DESC FETCH FIRST 1 ROWS ONLY", started[0]);
         return last == null ? null : (Timestamp) last[0];
     }
 

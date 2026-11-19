@@ -94,6 +94,7 @@ public final class GobdCompliance implements YabsExtension {
         gobd = g;
         g.archiveRoot();
         g.initSchema();
+        g.logStarted(version());
         final Audit audit = new Audit(g);
         final Pages pages = new Pages(g);
         final Views views = new Views(g);

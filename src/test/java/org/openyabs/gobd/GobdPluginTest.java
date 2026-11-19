@@ -342,7 +342,11 @@ public class GobdPluginTest {
             Db.update(c, "INSERT INTO revenues VALUES (2, 'E-2', DATE '2020-02-01', 1, 70, 7, 74.9, 'neu')");
             g.inventory.check(errors);
             assertEquals(2, errors.size(), String.valueOf(errors));
+            //the start after a crash (no PLUGIN_STOPPED): the time without the plugin starts with the last entry before the start
+            Object before = Db.first(c, "SELECT created_at FROM gobd_audit_log ORDER BY id DESC FETCH FIRST 1 ROWS ONLY")[0];
+            g.logAudit("PLUGIN", 0L, "PLUGIN_STARTED", "STATE=STOPPED", "STATE=RUNNING", null, "Start");
             r = g.inventory.sealAtStart();
+            assertEquals(before, r.withoutPluginSince);
             assertEquals("START", r.reason);
             assertEquals(1, r.added);
             assertEquals(1, r.changed.size());
