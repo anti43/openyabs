@@ -102,6 +102,22 @@ class JournalCalcTest {
     }
 
     @Test
+    void openOffersAndOrdersAreSummedButNotPartOfTheResult() {
+        Entry offer = e(Constants.TYPE_OFFER, Item.STATUS_IN_PROGRESS, "100.00", "19.00");
+        Entry accepted = e(Constants.TYPE_OFFER, Item.STATUS_FINISHED, "50.00", "9.50");
+        Entry order = e(Constants.TYPE_ORDER, Item.STATUS_QUEUED, "30.00", "5.70");
+        Entry invoice = e(Constants.TYPE_INVOICE, Item.STATUS_IN_PROGRESS, "10.00", "1.90");
+        Totals t = JournalCalc.compute(Arrays.asList(offer, accepted, order, invoice), Collections.<Integer>emptySet());
+        assertEquals(new BigDecimal("100.00"), t.openOffersNet);
+        assertEquals(new BigDecimal("119.00"), t.openOffersGross);
+        assertEquals(new BigDecimal("30.00"), t.openOrdersNet);
+        assertFalse(offer.counted);
+        //offers and orders are not part of the document volume
+        assertEquals(new BigDecimal("10.00"), t.volumeNet);
+        assertEquals(BigDecimal.ZERO, t.incomeNet);
+    }
+
+    @Test
     void invoicePaidInPartsCountsThroughItsPayments() {
         Entry inv = e(Constants.TYPE_INVOICE, Item.STATUS_PAID, "100.00", "19.00");
         inv.itemId = 5;

@@ -175,8 +175,10 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
     private final JCheckBox incDeposits = new JCheckBox(Item.getTypeString(Constants.TYPE_DEPOSIT));
     private final JCheckBox incPartPayments = new JCheckBox(Item.getTypeString(Constants.TYPE_PART_PAYMENT));
     private final JCheckBox incRevenues = new JCheckBox(Messages.TYPE_REVENUE.toString());
-    private final JCheckBox incOrders = new JCheckBox(Item.getTypeString(Constants.TYPE_ORDER));
-    private final JCheckBox incOffers = new JCheckBox(Item.getTypeString(Constants.TYPE_OFFER));
+    //offers and orders: only when ticked, never saved (start unticked)
+    private final JCheckBox incOrders = new JCheckBox(Messages.JOURNAL_SHOW_ORDERS.toString());
+    private final JCheckBox incOffers = new JCheckBox(Messages.JOURNAL_SHOW_OFFERS.toString());
+    private final JCheckBox othersOpenOnly = new JCheckBox(Messages.JOURNAL_OPEN_ONLY.toString(), true);
     private final JComboBox<Object> incomeStatus = new JComboBox<Object>(new Object[]{Messages.ALL, Messages.STATUS_PAID, Messages.STATUS_UNPAID, Messages.STATUS_CANCELLED});
     private final JRadioButton incomeByDoc = new JRadioButton(Messages.JOURNAL_BY_DOCDATE.toString());
     private final JRadioButton incomeByPay = new JRadioButton(Messages.JOURNAL_BY_PAYDATE.toString());
@@ -212,6 +214,14 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
     private final JLabel volumeNetto = sum(Messages.JOURNAL_SUM_VOLUME_NET);
     private final JLabel taxVolume = sum(Messages.JOURNAL_SUM_VOLUME_TAX);
     private final JLabel volumeBrutto = sum(Messages.JOURNAL_SUM_VOLUME_GROSS);
+    private final JLabel openOffers = sum(Messages.JOURNAL_SUM_OPEN_OFFERS);
+    private final JLabel openOrders = sum(Messages.JOURNAL_SUM_OPEN_ORDERS);
+    private final JLabel openOthersGross = sum(Messages.JOURNAL_SUM_OPEN_OTHERS_GROSS);
+    /**
+     * the components of the column of offers and orders: shown when they are
+     * ticked
+     */
+    private final List<Component> othersColumn = new ArrayList<Component>();
     private final JLabel taxRates = new JLabel(" ");
     private final JLabel einvoiceCheck = new JLabel(" ");
     private final JLabel exportResult = new JLabel(" ");
@@ -323,7 +333,8 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
             {expNetto, expTax, expBrut},
             {profitNetto, profitTax, profitBrut},
             {openReceivables, openPayables, volumeDiscount},
-            {volumeNetto, taxVolume, volumeBrutto}};
+            {volumeNetto, taxVolume, volumeBrutto},
+            {openOffers, openOrders, openOthersGross}};
         JPanel g = new JPanel(new GridBagLayout());
         g.setOpaque(false);
         int gap = ModernTheme.px(18);
@@ -345,6 +356,10 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
                 gc.fill = GridBagConstraints.HORIZONTAL;
                 gc.insets = new Insets(r == 0 ? 0 : ModernTheme.px(2), 0, 0, 0);
                 g.add(value, gc);
+                if (c == cols.length - 1) {
+                    othersColumn.add(name);
+                    othersColumn.add(value);
+                }
             }
             //a thin line between the columns
             if (c > 0) {
@@ -358,7 +373,13 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
                 gc.anchor = GridBagConstraints.WEST;
                 gc.insets = new Insets(0, gap / 2, 0, 0);
                 g.add(s, gc);
+                if (c == cols.length - 1) {
+                    othersColumn.add(s);
+                }
             }
+        }
+        for (Component x : othersColumn) {
+            x.setVisible(false);
         }
         return g;
     }
@@ -440,7 +461,9 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
             AbstractButton[] bs = {incInvoices, incCredits, incDeposits, incPartPayments, incRevenues, incOrders, incOffers, incExpenses, incomeByPay, expenseByPay};
             boolean[] defaults = {true, true, true, true, true, false, false, true, false, false};
             for (int i = 0; i < bs.length; i++) {
-                bs[i].setSelected(p.getProperty(this, "custom" + i, Boolean.valueOf(defaults[i])));
+                if (bs[i] != incOrders && bs[i] != incOffers) {
+                    bs[i].setSelected(p.getProperty(this, "custom" + i, Boolean.valueOf(defaults[i])));
+                }
             }
             if (!incomeByPay.isSelected()) {
                 incomeByDoc.setSelected(true);
@@ -466,9 +489,14 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
             }
         });
         for (AbstractButton b : new AbstractButton[]{incInvoices, incCredits, incDeposits, incPartPayments, incRevenues,
-            incOrders, incOffers, incExpenses, incomeByDoc, incomeByPay, expenseByDoc, expenseByPay}) {
+            incExpenses, incomeByDoc, incomeByPay, expenseByDoc, expenseByPay}) {
             b.setOpaque(false);
             b.addActionListener(e -> filterChanged(true));
+        }
+        //offers and orders are no filter of the views
+        for (AbstractButton b : new AbstractButton[]{incOrders, incOffers, othersOpenOnly}) {
+            b.setOpaque(false);
+            b.addActionListener(e -> filterChanged(false));
         }
         incomeStatus.addActionListener(e -> filterChanged(true));
         expenseStatus.addActionListener(e -> filterChanged(true));
@@ -566,9 +594,6 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         for (JCheckBox b : new JCheckBox[]{incInvoices, incCredits, incDeposits, incPartPayments, incRevenues, incExpenses}) {
             b.setSelected(true);
         }
-        //offers and orders: not part of the result, only on request (unticked: not loaded at all)
-        incOrders.setSelected(false);
-        incOffers.setSelected(false);
         switch (v) {
             case VIEW_EUR:
                 incomeStatus.setSelectedIndex(STATUS_PAID);
@@ -611,13 +636,14 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
 
     private void updateEnabled() {
         boolean income = incInvoices.isSelected() || incCredits.isSelected() || incDeposits.isSelected() || incPartPayments.isSelected()
-                || incRevenues.isSelected() || incOrders.isSelected() || incOffers.isSelected();
+                || incRevenues.isSelected();
         incomeStatus.setEnabled(income);
         incomeByDoc.setEnabled(income);
         incomeByPay.setEnabled(income);
         expenseStatus.setEnabled(incExpenses.isSelected());
         expenseByDoc.setEnabled(incExpenses.isSelected());
         expenseByPay.setEnabled(incExpenses.isSelected());
+        othersOpenOnly.setEnabled(incOrders.isSelected() || incOffers.isSelected());
     }
 
     private void remember() {
@@ -629,7 +655,9 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
             p.changeProperty(this, "view", view.getSelectedIndex());
             AbstractButton[] bs = {incInvoices, incCredits, incDeposits, incPartPayments, incRevenues, incOrders, incOffers, incExpenses, incomeByPay, expenseByPay};
             for (int i = 0; i < bs.length; i++) {
-                p.changeProperty(this, "custom" + i, bs[i].isSelected());
+                if (bs[i] != incOrders && bs[i] != incOffers) {
+                    p.changeProperty(this, "custom" + i, bs[i].isSelected());
+                }
             }
             p.changeProperty(this, "incomestatus", incomeStatus.getSelectedIndex());
             p.changeProperty(this, "expensestatus", expenseStatus.getSelectedIndex());
@@ -725,7 +753,7 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
                 .row(Card.field(Messages.JOURNAL_STATUS.toString(), incomeStatus))
                 .row(Card.field(Messages.JOURNAL_DATE_BASIS.toString(), flow(incomeByDoc, incomeByPay)))
                 .section(Messages.JOURNAL_NOT_ACCOUNTING.toString())
-                .addFull(flow(incOrders, incOffers));
+                .addFull(flow(incOffers, incOrders, othersOpenOnly));
         Card expenses = new Card(Messages.JOURNAL_EXPENSES.toString())
                 .addFull(flow(incExpenses))
                 .row(Card.field(Messages.JOURNAL_STATUS.toString(), expenseStatus))
@@ -826,7 +854,17 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
 
         add(header, BorderLayout.NORTH);
         if (dataOwner == null) {
-            add(journal, BorderLayout.CENTER);
+            //the journal and its analysis (chart, loaded when first shown)
+            final JournalChartPanel analysis = new JournalChartPanel();
+            JTabbedPane tabs = new JTabbedPane();
+            tabs.addTab(Messages.JOURNAL_TAB_JOURNAL.toString(), journal);
+            tabs.addTab(Messages.JOURNAL_TAB_CHART.toString(), analysis);
+            tabs.addChangeListener(e -> {
+                if (tabs.getSelectedComponent() == analysis) {
+                    analysis.showing();
+                }
+            });
+            add(tabs, BorderLayout.CENTER);
         } else {
             JTabbedPane tabs = new JTabbedPane();
             tabs.addTab(bundle.getString("JournalPanel.jPanel4.TabConstraints.tabTitle"), journal);
@@ -912,6 +950,12 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
 
         vTimeframe time;
         final List<Context> items = new ArrayList<Context>();
+        /**
+         * offers and orders: by document date, without the status filter of
+         * the income
+         */
+        final List<Context> others = new ArrayList<Context>();
+        boolean othersOpenOnly;
         boolean revenues;
         boolean expenses;
         int incomeStatus;
@@ -941,12 +985,13 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         if (incPartPayments.isSelected()) {
             f.items.add(Context.getPartPayment());
         }
-        if (incOrders.isSelected()) {
-            f.items.add(Context.getOrder());
-        }
         if (incOffers.isSelected()) {
-            f.items.add(Context.getOffer());
+            f.others.add(Context.getOffer());
         }
+        if (incOrders.isSelected()) {
+            f.others.add(Context.getOrder());
+        }
+        f.othersOpenOnly = othersOpenOnly.isSelected();
         f.includeInvoices = incInvoices.isSelected();
         f.revenues = incRevenues.isSelected() && dataOwner == null;
         f.expenses = incExpenses.isSelected() && dataOwner == null;
@@ -1029,7 +1074,7 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         vTimeframe t = timeframeChooser1.getTime();
         b.append(t.getStart().getTime()).append('-').append(t.getEnd().getTime());
         for (AbstractButton x : new AbstractButton[]{incInvoices, incCredits, incDeposits, incPartPayments, incRevenues, incOrders, incOffers,
-            incExpenses, incomeByPay, expenseByPay, includechildgroups}) {
+            incExpenses, incomeByPay, expenseByPay, includechildgroups, othersOpenOnly}) {
             b.append(x.isSelected() ? '1' : '0');
         }
         b.append(incomeStatus.getSelectedIndex()).append(expenseStatus.getSelectedIndex()).append(users.getSelectedIndex());
@@ -1091,6 +1136,21 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
             for (Object[] r : select(c, Context.DETAILS_JOURNAL.replace("{date}", incomeDate), p, f.time, incomeDate)) { //NOI18N
                 Entry e = entry(r, DatabaseObject.getObject(c, Integer.valueOf(r[0].toString())));
                 if (matchesIncome(e, f.incomeStatus)) {
+                    list.add(e);
+                }
+            }
+        }
+        for (Context c : f.others) {
+            c.addReference(Context.getGroup());
+            c.addReference(Context.getAccounts());
+            c.addReference(Context.getContact());
+            QueryCriteria2 p = criteria(c, f, groupIds);
+            if (f.contact != null) {
+                p.and(new QueryParameter(f.contact.getContext(), "ids", f.contact.__getIDS(), QueryParameter.EQUALS)); //NOI18N
+            }
+            for (Object[] r : select(c, Context.DETAILS_JOURNAL.replace("{date}", "dateadded"), p, f.time, "dateadded")) { //NOI18N
+                Entry e = entry(r, DatabaseObject.getObject(c, Integer.valueOf(r[0].toString())));
+                if (!f.othersOpenOnly || JournalCalc.isOpenOfferOrOrder(e)) {
                     list.add(e);
                 }
             }
@@ -1236,8 +1296,8 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
     public static List<Entry> loadAll(vTimeframe time, boolean byPayDate) throws Exception {
         Filter f = new Filter();
         f.time = time;
-        f.items.addAll(Arrays.asList(Context.getInvoice(), Context.getCredit(), Context.getDeposit(), Context.getPartPayment(),
-                Context.getOrder(), Context.getOffer()));
+        f.items.addAll(Arrays.asList(Context.getInvoice(), Context.getCredit(), Context.getDeposit(), Context.getPartPayment()));
+        f.others.addAll(Arrays.asList(Context.getOrder(), Context.getOffer()));
         f.includeInvoices = true;
         f.revenues = true;
         f.expenses = true;
@@ -1449,6 +1509,13 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         volumeNetto.setText(FormatNumber.formatDezimal(t.volumeNet));
         taxVolume.setText(FormatNumber.formatDezimal(t.volumeTax));
         volumeBrutto.setText(FormatNumber.formatDezimal(t.volumeGross));
+        openOffers.setText(FormatNumber.formatDezimal(t.openOffersNet));
+        openOrders.setText(FormatNumber.formatDezimal(t.openOrdersNet));
+        openOthersGross.setText(FormatNumber.formatDezimal(t.openOffersGross.add(t.openOrdersGross)));
+        boolean others = incOffers.isSelected() || incOrders.isSelected();
+        for (Component c : othersColumn) {
+            c.setVisible(others);
+        }
         taxRates.setText(rates(Messages.JOURNAL_TAX_RATES_INCOME.toString(), t.incomeByRate, l.labels)
                 + "     " + rates(Messages.JOURNAL_TAX_RATES_EXPENSES.toString(), t.expensesByRate, l.labels));
 
@@ -1792,6 +1859,8 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         map.put("journal.discountvalue", volumeDiscount.getText()); //NOI18N
         map.put("journal.openreceivables", openReceivables.getText()); //NOI18N
         map.put("journal.openpayables", openPayables.getText()); //NOI18N
+        map.put("journal.openoffers", openOffers.getText()); //NOI18N
+        map.put("journal.openorders", openOrders.getText()); //NOI18N
         map.put("journal.datenow", DateConverter.getDefDateString(new Date())); //NOI18N
         map.put("journal.datefrom", DateConverter.getDefDateString(timeframeChooser1.getTime().getStart())); //NOI18N
         map.put("journal.dateto", DateConverter.getDefDateString(timeframeChooser1.getTime().getEnd())); //NOI18N
