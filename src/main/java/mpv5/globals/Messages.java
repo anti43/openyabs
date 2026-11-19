@@ -754,7 +754,6 @@ public enum Messages {
     JOURNAL_FIND("Search"),
     JOURNAL_RELOAD("Reload"),
     JOURNAL_LOADING("Loading ..."),
-    JOURNAL_FILTERS_TOGGLE("Show or hide the filters"),
     JOURNAL_COUNT_FILTERED("%d of %d entries"),
     JOURNAL_LEGEND("Gray: does not count towards the result (open, cancelled, offers, orders)"),
     JOURNAL_EXPORT_BUTTON("Export"),

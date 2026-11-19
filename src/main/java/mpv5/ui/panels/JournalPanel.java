@@ -196,8 +196,6 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
     private final JLabel count = new JLabel(" ");
     private final JButton loadButton = new mpv5.ui.modern.PrimaryButton(Messages.JOURNAL_RELOAD.toString(), null);
     private final JButton exportButton = new JButton(Messages.JOURNAL_EXPORT_BUTTON.toString());
-    private final JToggleButton filterToggle = new JToggleButton(Messages.JOURNAL_FILTERS.toString(), true);
-    private JComponent filterArea;
     //sums
     private final JLabel revenueNetto = sum(Messages.JOURNAL_SUM_INCOME_NET);
     private final JLabel revenueTax = sum(Messages.JOURNAL_SUM_INCOME_TAX);
@@ -482,12 +480,6 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         timeframeChooser1.addPropertyChangeListener(e -> {
         });
         loadButton.addActionListener(e -> setData());
-        filterToggle.addActionListener(e -> {
-            if (filterArea != null) {
-                filterArea.setVisible(filterToggle.isSelected());
-                revalidate();
-            }
-        });
         find.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
@@ -679,7 +671,7 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         setBorder(ModernTheme.padding(12, 14));
         setBackground(ModernTheme.background());
 
-        //header: title, count, filters on/off, export, reload
+        //header: title and count
         JLabel title = new JLabel(dataOwner == null ? Messages.JOURNAL_TITLE.toString()
                 : String.format(Messages.JOURNAL_TITLE_CONTACT.toString(), dataOwner.__getCname()));
         title.setFont(ModernTheme.font(9, Font.BOLD));
@@ -688,17 +680,10 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         left.setOpaque(false);
         left.add(title);
         left.add(count);
-        JPanel right = new JPanel(new FlowLayout(FlowLayout.RIGHT, ModernTheme.px(8), 0));
-        right.setOpaque(false);
-        filterToggle.setToolTipText(Messages.JOURNAL_FILTERS_TOGGLE.toString());
-        right.add(filterToggle);
-        right.add(exportButton);
-        right.add(loadButton);
         exportButton.addActionListener(e -> exportMenu().show(exportButton, 0, exportButton.getHeight()));
         JPanel header = new JPanel(new BorderLayout());
         header.setOpaque(false);
         header.add(left, BorderLayout.WEST);
-        header.add(right, BorderLayout.EAST);
 
         //filters
         for (JComponent c : new JComponent[]{view, users, incomeStatus, expenseStatus}) {
@@ -722,7 +707,16 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         line.add(javax.swing.Box.createHorizontalStrut(ModernTheme.px(10)));
         line.add(ModernTheme.fieldLabel(Messages.JOURNAL_USER.toString()));
         line.add(users);
-        Card period = new Card(null).addFull(line);
+        //export and reload: at the right of the filter line
+        JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT, ModernTheme.px(8), 0));
+        buttons.setOpaque(false);
+        buttons.add(exportButton);
+        buttons.add(loadButton);
+        JPanel bar = new JPanel(new BorderLayout(gap, 0));
+        bar.setOpaque(false);
+        bar.add(line, BorderLayout.CENTER);
+        bar.add(buttons, BorderLayout.EAST);
+        Card period = new Card(null).addFull(bar);
 
         Card income = new Card(Messages.JOURNAL_INCOME.toString())
                 .addFull(flow(incInvoices, incCredits))
@@ -774,7 +768,6 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         filters.setOpaque(false);
         filters.add(period, BorderLayout.NORTH);
         filters.add(cards, BorderLayout.CENTER);
-        filterArea = filters;
 
         //the table: one scroll bar (the panel follows the height of the tab)
         ModernTheme.style(jTable1);
@@ -988,7 +981,9 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         reloadTimer.stop();
         markPeriod();
         final Filter f = readFilter();
+        final String key = filterKey();
         final int gen = ++generation;
+        loading = true;
         loadButton.setEnabled(false);
         count.setText(Messages.JOURNAL_LOADING.toString());
         new SwingWorker<Loaded, Void>() {
@@ -1002,16 +997,64 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
                 if (gen != generation) {
                     return;
                 }
+                loading = false;
                 loadButton.setEnabled(true);
+                Runnable after = afterLoad;
+                afterLoad = null;
                 try {
                     show(get());
+                    loadedKey = key;
                 } catch (Exception e) {
                     Log.Debug(JournalPanel.class, e);
                     count.setText(" ");
                     Popup.error(e);
+                    return;
+                }
+                if (after != null) {
+                    after.run();
                 }
             }
         }.execute();
+    }
+
+    private boolean loading;
+    private String loadedKey;
+    private Runnable afterLoad;
+
+    /**
+     * @return the filters as shown (also dates typed in without reloading)
+     */
+    private String filterKey() {
+        StringBuilder b = new StringBuilder();
+        vTimeframe t = timeframeChooser1.getTime();
+        b.append(t.getStart().getTime()).append('-').append(t.getEnd().getTime());
+        for (AbstractButton x : new AbstractButton[]{incInvoices, incCredits, incDeposits, incPartPayments, incRevenues, incOrders, incOffers,
+            incExpenses, incomeByPay, expenseByPay, includechildgroups}) {
+            b.append(x.isSelected() ? '1' : '0');
+        }
+        b.append(incomeStatus.getSelectedIndex()).append(expenseStatus.getSelectedIndex()).append(users.getSelectedIndex());
+        for (Object o : groups.getSelected()) {
+            b.append('g').append(((Group) o).__getIDS());
+        }
+        for (Object o : accounts.getSelected()) {
+            b.append('a').append(((Account) o).__getIDS());
+        }
+        return b.toString();
+    }
+
+    /**
+     * Runs an export on the journal of the filters as shown: reloads first if
+     * a filter changed since the last loading (or a loading is running)
+     *
+     * @param export
+     */
+    private void withCurrentData(Runnable export) {
+        if (!loading && !reloadTimer.isRunning() && filterKey().equals(loadedKey)) {
+            export.run();
+        } else {
+            afterLoad = export;
+            setData();
+        }
     }
 
     /**
@@ -1101,9 +1144,9 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
                 }
             }
         }
-        rates(list);
         Loaded l = new Loaded();
         l.labels = JournalAdviserPackage.rateLabels();
+        rates(list, l.labels.keySet());
         l.entries = list;
         l.totals = JournalCalc.compute(list, paidInParts);
         try {
@@ -1120,18 +1163,18 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
      *
      * @param list
      */
-    private static void rates(List<Entry> list) {
+    private static void rates(List<Entry> list, Set<BigDecimal> configured) {
         Set<Integer> ids = new HashSet<Integer>();
         for (Entry e : list) {
             if (e.obj instanceof Expense) {
-                e.rates.put(JournalCalc.rateKey(((Expense) e.obj).__getTaxpercentvalue()), new BigDecimal[]{e.net, e.tax});
+                e.rates.put(JournalCalc.normalizeRate(((Expense) e.obj).__getTaxpercentvalue(), configured), new BigDecimal[]{e.net, e.tax});
             } else if (e.obj instanceof mpv5.db.objects.Revenue) {
-                e.rates.put(JournalCalc.rateKey(((mpv5.db.objects.Revenue) e.obj).__getTaxpercentvalue()), new BigDecimal[]{e.net, e.tax});
+                e.rates.put(JournalCalc.normalizeRate(((mpv5.db.objects.Revenue) e.obj).__getTaxpercentvalue(), configured), new BigDecimal[]{e.net, e.tax});
             } else if (e.itemId > 0) {
                 ids.add(e.itemId);
             }
         }
-        Map<Integer, Map<BigDecimal, BigDecimal[]>> lines = itemRates(ids);
+        Map<Integer, Map<BigDecimal, BigDecimal[]>> lines = itemRates(ids, configured);
         for (Entry e : list) {
             if (e.itemId > 0 && lines.containsKey(e.itemId)) {
                 e.rates = JournalCalc.split(e.net, e.tax, lines.get(e.itemId));
@@ -1144,7 +1187,7 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
      * @return the net and tax of the items of the documents by rate:
      * document - rate - {net, tax}
      */
-    private static Map<Integer, Map<BigDecimal, BigDecimal[]>> itemRates(Set<Integer> ids) {
+    private static Map<Integer, Map<BigDecimal, BigDecimal[]>> itemRates(Set<Integer> ids, Set<BigDecimal> configured) {
         Map<Integer, Map<BigDecimal, BigDecimal[]>> m = new HashMap<Integer, Map<BigDecimal, BigDecimal[]>>();
         List<Integer> all = new ArrayList<Integer>(ids);
         for (int from = 0; from < all.size(); from += 500) {
@@ -1162,7 +1205,7 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
                 }
                 for (Object[] r : rv.getData()) {
                     Integer id = Integer.valueOf(String.valueOf(r[0]));
-                    BigDecimal rate = JournalCalc.rateKey(new BigDecimal(String.valueOf(r[1])).setScale(2, java.math.RoundingMode.HALF_UP));
+                    BigDecimal rate = JournalCalc.normalizeRate(new BigDecimal(String.valueOf(r[1])), configured);
                     BigDecimal net = JournalCalc.money(r[2]);
                     BigDecimal tax = JournalCalc.money(r[3]).subtract(net);
                     Map<BigDecimal, BigDecimal[]> rates = m.get(id);
@@ -1497,20 +1540,20 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
     // <editor-fold defaultstate="collapsed" desc="Export">
     private JPopupMenu exportMenu() {
         JPopupMenu m = new JPopupMenu();
-        m.add(item(Messages.JOURNAL_EXPORT_ADVISER, Messages.JOURNAL_EXPORT_ADVISER_TIP, () -> exportAdviser()));
+        m.add(item(Messages.JOURNAL_EXPORT_ADVISER, Messages.JOURNAL_EXPORT_ADVISER_TIP, () -> withCurrentData(() -> exportAdviser())));
         m.addSeparator();
-        m.add(item(Messages.JOURNAL_EXPORT_CSV, null, () -> exportTable(true)));
-        m.add(item(Messages.JOURNAL_EXPORT_HTML, null, () -> exportTable(false)));
-        m.add(item(Messages.JOURNAL_EXPORT_TEMPLATE_PDF, null, () -> exportTemplate(true)));
-        m.add(item(Messages.JOURNAL_EXPORT_TEMPLATE_ODT, null, () -> exportTemplate(false)));
+        m.add(item(Messages.JOURNAL_EXPORT_CSV, null, () -> withCurrentData(() -> exportTable(true))));
+        m.add(item(Messages.JOURNAL_EXPORT_HTML, null, () -> withCurrentData(() -> exportTable(false))));
+        m.add(item(Messages.JOURNAL_EXPORT_TEMPLATE_PDF, null, () -> withCurrentData(() -> exportTemplate(true))));
+        m.add(item(Messages.JOURNAL_EXPORT_TEMPLATE_ODT, null, () -> withCurrentData(() -> exportTemplate(false))));
         m.addSeparator();
-        m.add(item(Messages.JOURNAL_EXPORT_PRINT, null, () -> {
+        m.add(item(Messages.JOURNAL_EXPORT_PRINT, null, () -> withCurrentData(() -> {
             try {
                 jTable1.print();
             } catch (Exception e) {
                 failed(e);
             }
-        }));
+        })));
         return m;
     }
 

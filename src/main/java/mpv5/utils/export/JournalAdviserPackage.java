@@ -137,8 +137,8 @@ public final class JournalAdviserPackage {
     }
 
     /**
-     * @return the names of the tax rates of the control panel (Taxes): rate -
-     * name
+     * @return the tax rates of the control panel (Taxes): rate - name (may be
+     * empty)
      */
     public static Map<BigDecimal, String> rateLabels() {
         Map<BigDecimal, String> m = new java.util.TreeMap<BigDecimal, String>();
@@ -146,8 +146,9 @@ public final class JournalAdviserPackage {
             for (mpv5.db.common.DatabaseObject o : mpv5.db.common.DatabaseObject.getObjects(mpv5.db.common.Context.getTaxes())) {
                 mpv5.db.objects.Tax tax = (mpv5.db.objects.Tax) o;
                 BigDecimal k = JournalCalc.rateKey(tax.__getTaxvalue());
-                if (k != null && !m.containsKey(k) && tax.__getCname() != null && tax.__getCname().trim().length() > 0) {
-                    m.put(k, tax.__getCname().trim());
+                String name = tax.__getCname() == null ? "" : tax.__getCname().trim();
+                if (k != null && (!m.containsKey(k) || m.get(k).isEmpty())) {
+                    m.put(k, name);
                 }
             }
         } catch (Exception e) {
@@ -169,7 +170,12 @@ public final class JournalAdviserPackage {
         BigDecimal k = JournalCalc.rateKey(rate);
         String s = k.toPlainString().replace('.', ',') + " %";
         String name = labels == null ? null : labels.get(k);
-        return name == null || name.equals(s) ? s : s + " (" + name + ")";
+        if (name == null || name.isEmpty() || name.equals(s)) {
+            return s;
+        }
+        //a name with the rate in it ("MwSt 19%") is enough
+        return name.replace(" ", "").contains(k.toPlainString().replace('.', ',') + "%")
+                || name.replace(" ", "").contains(k.toPlainString() + "%") ? name : s + " (" + name + ")";
     }
 
     /**
