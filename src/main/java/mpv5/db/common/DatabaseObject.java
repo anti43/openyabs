@@ -2872,11 +2872,16 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             return;//just resolve once
         }
         map.put("vpresolved@" + this, Boolean.TRUE);
-        List<ValueProperty> props = new ArrayList<ValueProperty>(ValueProperty.getProperties(this));
+        //the script manager's fields for this record (general first, see ScriptScope), then
+        //the record's own fields: a field of the same name defined more specifically wins
+        List<ValueProperty> props = new ArrayList<ValueProperty>();
         try {
-            props.addAll(ValueProperty.getProperties(getContext(), getGroup()));
+            props.addAll(ScriptScope.scripts(this));
         } catch (Exception ex) {
             Log.Debug(this, ex.getMessage());
+        }
+        if (__getIDS() > 0) {
+            props.addAll(ValueProperty.getProperties(this));
         }
 
         String sm = GlobalSettings.getProperty("org.openyabs.config.scriptsymbol", "#");
@@ -3108,10 +3113,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
         private DatabaseObject modify(DatabaseObject object, final String key) {
             try {
-                //the script of the kind of record (script manager), cached; scripts per single
-                //object (objectids, not even per context) are no longer looked up
-                String script = ValueProperty.script(object.getContext(), key);
-                if (script != null) {
+                //the scripts of the script manager for this record (all documents, the type,
+                //the groups - see ScriptScope), general first; cached
+                for (String script : ScriptScope.scripts(object, key)) {
                     object.evaluateAll(script);
                 }
             } catch (Throwable ex) {

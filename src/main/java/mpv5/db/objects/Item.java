@@ -1100,16 +1100,10 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
         if (cnumber == null) {
             setCname("<not set>");
         } else {
-            if (ValueProperty.hasProperty(this.getContext(), "IntItemLabel")) {
-                try {
-                    ValueProperty script = ValueProperty.getProperty(this.getContext(), "IntItemLabel");
-                    Object s = script.getValue();
-                    if (s != null) {
-                        setCname(this.evaluateAll(String.valueOf(s)));
-                    }
-                } catch (NodataFoundException ex) {
-                    setCname(cnumber);
-                }
+            //the label script of the script manager (all documents or the type, see ScriptScope)
+            String script = mpv5.db.common.ScriptScope.script(this, "IntItemLabel");
+            if (script != null) {
+                setCname(this.evaluateAll(script));
             } else {
                 setCname(cnumber);
             }

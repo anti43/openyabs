@@ -401,16 +401,10 @@ public class Revenue extends DatabaseObject implements Formattable {
         } 
         else 
         {
-            if (ValueProperty.hasProperty(this.getContext(), "IntRevenueLabel")) {
-                try {
-                    ValueProperty script = ValueProperty.getProperty(this.getContext(), "IntRevenueLabel");
-                    Object s = script.getValue();
-                    if (s != null) {
-                        setCname(this.evaluateAll(String.valueOf(s)));
-                    }
-                } catch (NodataFoundException ex) {
-                    setCname(cnumber);
-                }
+            //the label script of the script manager (all documents or the type, see ScriptScope)
+            String script = mpv5.db.common.ScriptScope.script(this, "IntRevenueLabel");
+            if (script != null) {
+                setCname(this.evaluateAll(script));
             } else {
                 setCname(cnumber);
             }

@@ -104,6 +104,50 @@ public class ScriptFields extends AbstractMap<String, Object> {
     }
 
     /**
+     * The variables of the record as a script writes them, e.g.
+     * <code>item.cnumber</code>, <code>item.contact.cname</code>,
+     * <code>item.contact.property.anrede</code>: the fields, the own fields and
+     * one level of referenced records
+     *
+     * @param prefix e.g. "item"
+     * @return rows variable, value, sorted
+     */
+    public java.util.List<String[]> describe(String prefix) {
+        return describe(prefix, 1);
+    }
+
+    private java.util.List<String[]> describe(String prefix, int depth) {
+        java.util.TreeMap<String, String> rows = new java.util.TreeMap<>();
+        Map<String, Object> v = fieldValues();
+        for (Map.Entry<String, Object> e : v.entrySet()) {
+            String k = e.getKey();
+            if (k.endsWith("sids") && e.getValue() instanceof Number && ((Number) e.getValue()).intValue() > 0 && depth > 0) {
+                Object ref = get(k.substring(0, k.length() - "sids".length()));
+                if (ref instanceof ScriptFields) {
+                    for (String[] r : ((ScriptFields) ref).describe(prefix + "." + k.substring(0, k.length() - 4), depth - 1)) {
+                        rows.put(r[0], r[1]);
+                    }
+                }
+            }
+            rows.put(prefix + "." + k, shorten(e.getValue()));
+        }
+        Properties p = new Properties(owner);
+        for (Map.Entry<String, Object> e : p.entrySet()) {
+            rows.put(prefix + ".property." + e.getKey(), shorten(p.get(e.getKey())));
+        }
+        java.util.List<String[]> l = new java.util.ArrayList<>();
+        for (Map.Entry<String, String> e : rows.entrySet()) {
+            l.add(new String[]{e.getKey(), e.getValue()});
+        }
+        return l;
+    }
+
+    private static String shorten(Object o) {
+        String s = o == null ? "" : String.valueOf(o);
+        return s.length() > 200 ? s.substring(0, 200) + "\u2026" : s;
+    }
+
+    /**
      * The own fields (properties) of a record: of the record itself and those
      * of the script manager for its kind and group
      */
@@ -116,12 +160,17 @@ public class ScriptFields extends AbstractMap<String, Object> {
         }
 
         private List<ValueProperty> all() {
-            List<ValueProperty> props = new java.util.ArrayList<>(ValueProperty.getProperties(owner));
+            //as in the templates: the script manager's fields, then the record's own (they win)
+            List<ValueProperty> props = new java.util.ArrayList<>();
             try {
-                props.addAll(ValueProperty.getProperties(owner.getContext(), owner.getGroup()));
+                props.addAll(ScriptScope.scripts(owner));
             } catch (Exception e) {
                 Log.Debug(ScriptFields.class, e.getMessage());
             }
+            if (owner.__getIDS() > 0) {
+                props.addAll(ValueProperty.getProperties(owner));
+            }
+            java.util.Collections.reverse(props);
             return props;
         }
 

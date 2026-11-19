@@ -655,6 +655,7 @@ public final class ValueProperty extends DatabaseObject {
      */
     public static void clearScripts() {
         SCRIPTS.clear();
+        mpv5.db.common.ScriptScope.clear();
     }
 
     @Override

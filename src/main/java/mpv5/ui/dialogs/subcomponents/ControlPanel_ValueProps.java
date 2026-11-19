@@ -1,10 +1,35 @@
 package mpv5.ui.dialogs.subcomponents;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import mpv5.data.PropertyStore;
-import mpv5.db.common.*;
+import mpv5.db.common.Context;
+import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.NodataFoundException;
+import mpv5.db.common.ScriptFields;
+import mpv5.db.common.ScriptScope;
 import mpv5.db.objects.Group;
 import mpv5.db.objects.ValueProperty;
 import mpv5.globals.GlobalSettings;
@@ -13,342 +38,276 @@ import mpv5.logging.Log;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.dialogs.Search2;
+import mpv5.ui.modern.Applets;
+import mpv5.ui.modern.Card;
+import mpv5.ui.modern.ModernTheme;
 
 /**
- *
- *
+ * The script manager: Groovy scripts for a kind of record ("For", e.g. all
+ * documents) and a group - template fields, hooks on save/delete, list
+ * names. Left the list of all scripts, right the editor with examples and a
+ * test that shows the result and the variables of a record.
  */
-public class ControlPanel_ValueProps extends javax.swing.JPanel implements ControlApplet, DatabaseObejctReceiver {
+public class ControlPanel_ValueProps extends JPanel implements ControlApplet {
 
     private static final long serialVersionUID = 1L;
     /**
      * This unique name identifies this control applet
      */
     public final String UNAME = "valueproperties";
+    private static final String DOCS = "https://github.com/anti43/openyabs/wiki/Scripts-(EN)";
     private PropertyStore oldvalues;
     private ValueProperty dataOwner;
 
-    public ControlPanel_ValueProps() {
-        initComponents();
-        explain();
-        modernLayout();
-        setVisible(true);
-        labeledCombobox1.setEditable(false);
-        labeledCombobox1.setContext(Context.getValueProperties());
-        labeledCombobox1.setNullSelection();
-        labeledCombobox1.setReceiver(this);
-        refresh();
-    }
+    /**
+     * A kind of record a script is for: the stored context id, the template
+     * prefix of its fields and the context to pick a test record from
+     */
+    static final class Kind {
 
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+        final int id;
+        final String label;
+        final String prefix;
+        final Context test;
 
-        jScrollPane6 = new javax.swing.JScrollPane();
-        jPanel3 = new javax.swing.JPanel();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jScrollPane5 = new javax.swing.JScrollPane();
-        jList2 = new javax.swing.JList();
-        labeledCombobox1 = new mpv5.ui.beans.LabeledCombobox();
-        jPanel6 = new javax.swing.JPanel();
-        jButton6 = new javax.swing.JButton();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTextPane2 = new javax.swing.JTextPane();
-        labeledTextField1 = new mpv5.ui.beans.LabeledTextField();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
-        jPanel1 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
-
-        setName("Form"); // NOI18N
-        setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.PAGE_AXIS));
-
-        jScrollPane6.setName("jScrollPane6"); // NOI18N
-
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();  // NOI18N
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_ValueProps.jPanel3.border.title"))); // NOI18N
-        jPanel3.setName("jPanel3"); // NOI18N
-
-        jScrollPane4.setName("jScrollPane4"); // NOI18N
-
-        jList1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        jList1.setName("jList1"); // NOI18N
-        jScrollPane4.setViewportView(jList1);
-
-        jLabel1.setText(bundle.getString("ControlPanel_ValueProps.jLabel1.text")); // NOI18N
-        jLabel1.setName("jLabel1"); // NOI18N
-
-        jLabel2.setText(bundle.getString("ControlPanel_ValueProps.jLabel2.text")); // NOI18N
-        jLabel2.setName("jLabel2"); // NOI18N
-
-        jScrollPane5.setName("jScrollPane5"); // NOI18N
-
-        jList2.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        jList2.setName("jList2"); // NOI18N
-        jScrollPane5.setViewportView(jList2);
-
-        labeledCombobox1.set_Label(bundle.getString("ControlPanel_ValueProps.labeledCombobox1._Label")); // NOI18N
-        labeledCombobox1.setName("labeledCombobox1"); // NOI18N
-
-        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_ValueProps.jPanel6.border.title"))); // NOI18N
-        jPanel6.setName("jPanel6"); // NOI18N
-        jPanel6.setPreferredSize(new java.awt.Dimension(200, 100));
-
-        jButton6.setText(bundle.getString("ControlPanel_ValueProps.jButton6.text")); // NOI18N
-        jButton6.setName("jButton6"); // NOI18N
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
-            }
-        });
-
-        jScrollPane2.setName("jScrollPane2"); // NOI18N
-
-        jTextPane2.setText(bundle.getString("ControlPanel_ValueProps.jTextPane2.text")); // NOI18N
-        jTextPane2.setName("jTextPane2"); // NOI18N
-        jScrollPane2.setViewportView(jTextPane2);
-
-        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addComponent(jButton6)
-                        .addGap(417, 417, 417))
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 940, Short.MAX_VALUE)
-                        .addContainerGap())))
-        );
-        jPanel6Layout.setVerticalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE)
-                .addGap(13, 13, 13)
-                .addComponent(jButton6))
-        );
-
-        labeledTextField1.set_Label(bundle.getString("ControlPanel_ValueProps.labeledTextField1._Label")); // NOI18N
-        labeledTextField1.setName("labeledTextField1"); // NOI18N
-
-        jScrollPane1.setBorder(null);
-        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        jScrollPane1.setName("jScrollPane1"); // NOI18N
-
-        jTextArea1.setBackground(new java.awt.Color(-986896,true));
-        jTextArea1.setColumns(20);
-        jTextArea1.setLineWrap(true);
-        jTextArea1.setRows(5);
-        jTextArea1.setText(bundle.getString("ControlPanel_ValueProps.jTextArea1.text")); // NOI18N
-        jTextArea1.setWrapStyleWord(true);
-        jTextArea1.setName("jTextArea1"); // NOI18N
-        jScrollPane1.setViewportView(jTextArea1);
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(labeledCombobox1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(labeledTextField1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 277, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addGap(89, 89, 89)
-                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jScrollPane5)))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 415, Short.MAX_VALUE)
-                .addContainerGap())
-            .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 972, Short.MAX_VALUE)
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(labeledCombobox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel2))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE)
-                            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(labeledTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE))
-        );
-
-        jScrollPane6.setViewportView(jPanel3);
-
-        add(jScrollPane6);
-
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel1.setName("jPanel1"); // NOI18N
-        jPanel1.setLayout(new java.awt.FlowLayout(0));
-
-        jButton1.setText(bundle.getString("ControlPanel_ValueProps.jButton1.text")); // NOI18N
-        jButton1.setName("jButton1"); // NOI18N
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-        jPanel1.add(jButton1);
-
-        jButton4.setText(bundle.getString("ControlPanel_ValueProps.jButton4.text")); // NOI18N
-        jButton4.setName("jButton4"); // NOI18N
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
-            }
-        });
-        jPanel1.add(jButton4);
-
-        jButton5.setText(bundle.getString("ControlPanel_ValueProps.jButton5.text")); // NOI18N
-        jButton5.setName("jButton5"); // NOI18N
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
-            }
-        });
-        jPanel1.add(jButton5);
-
-        add(jPanel1);
-    }// </editor-fold>//GEN-END:initComponents
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-
-        if (dataOwner != null) {
-            dataOwner.delete();
-            refresh();
-            dataOwner = null;
-        }
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        prepare();
-        String cname = labeledTextField1.getText(true, "key");
-        String val = "#" + jTextPane2.getText() + "#";
-
-        if (dataOwner == null) {
-            dataOwner = new ValueProperty(cname, val, ((ContextWrap) jList1.getSelectedValue()).c, (Group) jList2.getSelectedValue());
-        } else {
-            dataOwner.setValueObj(val);
-            dataOwner.setCname(cname);
-            dataOwner.setContextids((((ContextWrap) jList1.getSelectedValue()).c.getId()));
-            dataOwner.setGroup((Group) jList2.getSelectedValue());
+        Kind(int id, String label, String prefix, Context test) {
+            this.id = id;
+            this.label = label;
+            this.prefix = prefix;
+            this.test = test;
         }
 
-        dataOwner.save();
-        refresh();
-    }//GEN-LAST:event_jButton4ActionPerformed
-
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        prepare();
-        String cname = labeledTextField1.getText(true, "key");
-        String val = "#" + jTextPane2.getText() + "#";
-        ValueProperty xx = new ValueProperty(cname, val, ((ContextWrap) jList1.getSelectedValue()).c, (Group) jList2.getSelectedValue());
-        if (xx.save()) {
-            dataOwner = xx;
+        boolean isDocument() {
+            return "item".equals(prefix);
         }
-        refresh();
-    }//GEN-LAST:event_jButton5ActionPerformed
 
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        DatabaseObject s = Search2.showSearchFor(((ContextWrap) jList1.getSelectedValue()).c);
-        String sm = GlobalSettings.getProperty("org.openyabs.config.scriptsymbol", "#");
-        if (s != null) {
-            try {
-                String t = jTextPane2.getText();
-                if (!t.contains(sm)) {
-                    t = sm + t + sm;
-                }
-                Popup.notice(s.evaluateAll(t, true));
-            } catch (Exception e) {
-                Popup.error(e);
-            }
+        boolean isContact() {
+            return "contact".equals(prefix);
         }
-    }//GEN-LAST:event_jButton6ActionPerformed
 
-    @Override
-    public void setValues(PropertyStore values) {
-        oldvalues = values;
-
+        @Override
+        public String toString() {
+            return label;
+        }
     }
-
-    @Override
-    public String getUname() {
-        return UNAME;
-    }
-
-    @Override
-    public void reset() {
-        setValues(oldvalues);
-    }
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JList jList1;
-    private javax.swing.JList jList2;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel6;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JScrollPane jScrollPane5;
-    private javax.swing.JScrollPane jScrollPane6;
-    private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextPane jTextPane2;
-    private mpv5.ui.beans.LabeledCombobox labeledCombobox1;
-    private mpv5.ui.beans.LabeledTextField labeledTextField1;
-    // End of variables declaration//GEN-END:variables
-
-    private void setSettings() {
-    }
-
-    @Override
-    public Component getAndRemoveActionPanel() {
-        return actions;
-    }
-
-    private javax.swing.JPanel actions = new javax.swing.JPanel();
 
     /**
-     * The parts of the form as cards, the buttons in the action bar
+     * What a name does: template field (any name), hooks, list names
      */
-    private void modernLayout() {
-        java.util.ResourceBundle b = mpv5.i18n.LanguageManager.getBundle();
-        removeAll();
-        setBorder(null);
-        setLayout(new java.awt.BorderLayout());
+    private static final String[] USE_KEYS = {"", "modifyOnSave", "executeAfterSave", "executeAfterCreate",
+        "modifyOnDelete", "IntItemLabel", "IntRevenueLabel"};
+
+    private final DefaultListModel<ValueProperty> listModel = new DefaultListModel<>();
+    private final JList<ValueProperty> list = new JList<>(listModel);
+    private final JTextField name = ModernTheme.roomy(new JTextField(18));
+    private final JComboBox<String> use = ModernTheme.roomyCombo(new JComboBox<String>());
+    private final JComboBox<Kind> kind = ModernTheme.roomyCombo(new JComboBox<Kind>());
+    private final JComboBox<Object> group = ModernTheme.roomyCombo(new JComboBox<Object>());
+    private final JTextArea code = new JTextArea(14, 60);
+    private final JTextArea info = (JTextArea) Applets.plainHint(" ");
+    private final JTextArea vars = (JTextArea) Applets.plainHint(" ");
+    private JPanel actions = new JPanel();
+    private boolean loading;
+    private final java.util.Map<Integer, String> groupNames = new java.util.HashMap<>();
+
+    public ControlPanel_ValueProps() {
+        build();
+        refresh(null);
+        setVisible(true);
+    }
+
+    /**
+     * @return the kinds of record, "All documents" first
+     */
+    static synchronized List<Kind> kinds() {
+        if (KINDS != null) {
+            return KINDS;
+        }
+        List<Kind> k = new ArrayList<>();
+        k.add(new Kind(ScriptScope.ALL_DOCUMENTS, Messages.SCRIPTS_ALL_DOCUMENTS.toString(), "item", Context.getInvoice()));
+        k.add(new Kind(Context.getInvoice().getId(), Messages.TYPE_INVOICE.getValue(), "item", Context.getInvoice()));
+        k.add(new Kind(Context.getOffer().getId(), Messages.TYPE_OFFER.getValue(), "item", Context.getOffer()));
+        k.add(new Kind(Context.getOrder().getId(), Messages.TYPE_ORDER.getValue(), "item", Context.getOrder()));
+        k.add(new Kind(Context.getCredit().getId(), Messages.TYPE_CREDIT.getValue(), "item", Context.getCredit()));
+        k.add(new Kind(Context.getPartPayment().getId(), Messages.TYPE_PART_PAYMENT.getValue(), "item", Context.getPartPayment()));
+        k.add(new Kind(Context.getDeposit().getId(), Messages.TYPE_DEPOSIT.getValue(), "item", Context.getDeposit()));
+        k.add(new Kind(Context.getContact().getId(), Messages.SCRIPTS_ALL_CONTACTS.toString(), "contact", Context.getContact()));
+        k.add(new Kind(Context.getCustomer().getId(), Messages.TYPE_CUSTOMER.getValue(), "contact", Context.getCustomer()));
+        k.add(new Kind(Context.getSupplier().getId(), Messages.TYPE_SUPPLIER.getValue(), "contact", Context.getSupplier()));
+        k.add(new Kind(Context.getManufacturer().getId(), Messages.TYPE_MANUFACTURER.getValue(), "contact", Context.getManufacturer()));
+        k.add(new Kind(Context.getProduct().getId(), Messages.TYPE_PRODUCT.getValue(), "product", Context.getProduct()));
+        k.add(new Kind(Context.getProductOrder().getId(), Messages.TYPE_PRODUCT_ORDER.getValue(), "productorder", Context.getProductOrder()));
+        k.add(new Kind(Context.getReminder().getId(), Messages.TYPE_REMINDER.getValue(), "reminder", Context.getReminder()));
+        k.add(new Kind(Context.getConversation().getId(), Messages.TYPE_CONVERSATION.getValue(), "conversation", Context.getConversation()));
+        k.add(new Kind(Context.getMassprint().getId(), Messages.TYPE_MASSPRINT.getValue(), "massprintrule", Context.getMassprint()));
+        KINDS = java.util.Collections.unmodifiableList(k);
+        return KINDS;
+    }
+
+    private static List<Kind> KINDS;
+
+    /**
+     * @param id a stored context id
+     * @return its kind, null if unknown
+     */
+    static Kind kindOf(int id) {
+        for (Kind k : kinds()) {
+            if (k.id == id) {
+                return k;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param key the name of a script
+     * @return true if it is a hook or list name, not a template field
+     */
+    static boolean isSpecial(String key) {
+        for (int i = 1; i < USE_KEYS.length; i++) {
+            if (USE_KEYS[i].equals(key)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @param key
+     * @return the name as stored: special names as they are, template fields
+     * with letters, digits and _ only
+     */
+    static String cleanName(String key) {
+        String k = key == null ? "" : key.trim();
+        return isSpecial(k) ? k : k.replaceAll("[^\\w]", "");
+    }
+
+    /**
+     * @param k the kind
+     * @param key a template field name
+     * @return where the result appears, e.g. "&lt;item.property.anrede&gt;"
+     */
+    static String fieldText(Kind k, String key) {
+        if (k != null && k.isContact()) {
+            return String.format(Messages.SCRIPTS_FIELD_CONTACT.toString(),
+                    "<item.contact.property." + key + ">", "<contact.property." + key + ">");
+        }
+        String prefix = k == null ? "item" : k.prefix;
+        return String.format(Messages.SCRIPTS_KEY_FIELD.toString(), "<" + prefix + ".property." + key + ">");
+    }
+
+    /**
+     * @param stored a stored script value (#...#)
+     * @return the script without the outer script symbols
+     */
+    static String unwrap(String stored) {
+        String sm = GlobalSettings.getProperty("org.openyabs.config.scriptsymbol", "#");
+        String s = stored == null ? "" : stored;
+        if (s.length() >= 2 * sm.length() && s.startsWith(sm) && s.endsWith(sm)) {
+            s = s.substring(sm.length(), s.length() - sm.length());
+        }
+        return s;
+    }
+
+    // <editor-fold defaultstate="collapsed" desc="Layout">
+    private void build() {
+        setLayout(new BorderLayout());
         setOpaque(false);
-        add(mpv5.ui.modern.Applets.page(null, 420, mpv5.ui.modern.Applets.cardsOf(jPanel3.getParent() == null ? jPanel3 : jScrollPane6)), java.awt.BorderLayout.CENTER);
-        javax.swing.JButton toolbar = new javax.swing.JButton(mpv5.globals.Messages.SCRIPTS_TOOLBAR.toString());
-        toolbar.setToolTipText(mpv5.globals.Messages.SCRIPTS_TOOLBAR_INFO.toString());
+
+        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        list.setCellRenderer(new DefaultListCellRenderer() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public Component getListCellRendererComponent(JList<?> l, Object value, int index, boolean selected, boolean focus) {
+                super.getListCellRendererComponent(l, value, index, selected, focus);
+                if (value instanceof ValueProperty) {
+                    ValueProperty p = (ValueProperty) value;
+                    Kind k = kindOf(p.__getContextids());
+                    String g = p.__getGroupsids() > 1 && groupNames.containsKey(p.__getGroupsids())
+                            ? " \u00b7 " + groupNames.get(p.__getGroupsids()) : "";
+                    setText("<html><b>" + esc(p.getKey()) + "</b><br><small>"
+                            + esc((k == null ? "? (" + p.__getContextids() + ")" : k.label) + g) + "</small></html>");
+                }
+                return this;
+            }
+        });
+        list.addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting() && !loading && list.getSelectedValue() != null) {
+                show(list.getSelectedValue());
+            }
+        });
+        JScrollPane listScroll = new JScrollPane(list);
+
+        Messages[] labels = {Messages.SCRIPTS_USE_FIELD, Messages.SCRIPTS_USE_BEFORESAVE,
+            Messages.SCRIPTS_USE_AFTERSAVE, Messages.SCRIPTS_USE_AFTERCREATE,
+            Messages.SCRIPTS_USE_BEFOREDELETE, Messages.SCRIPTS_USE_ITEMLABEL,
+            Messages.SCRIPTS_USE_REVENUELABEL};
+        for (Messages m : labels) {
+            use.addItem(m.toString());
+        }
+        use.addActionListener(e -> {
+            if (loading) {
+                return;
+            }
+            int i = use.getSelectedIndex();
+            if (i > 0) {
+                name.setText(USE_KEYS[i]);
+            } else if (isSpecial(name.getText().trim())) {
+                name.setText("");
+            }
+            explain();
+        });
+        name.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            @Override
+            public void insertUpdate(javax.swing.event.DocumentEvent e) {
+                explainLater();
+            }
+
+            @Override
+            public void removeUpdate(javax.swing.event.DocumentEvent e) {
+                explainLater();
+            }
+
+            @Override
+            public void changedUpdate(javax.swing.event.DocumentEvent e) {
+                explainLater();
+            }
+        });
+        kind.setModel(new DefaultComboBoxModel<>(kinds().toArray(new Kind[0])));
+        kind.addActionListener(e -> explain());
+
+        code.setFont(new Font(Font.MONOSPACED, Font.PLAIN, ModernTheme.baseFont().getSize()));
+        code.setTabSize(4);
+        code.setLineWrap(false);
+        JScrollPane codeScroll = new JScrollPane(code);
+        codeScroll.setPreferredSize(new java.awt.Dimension(ModernTheme.px(520), ModernTheme.px(260)));
+
+        JButton examples = new JButton(Messages.SCRIPTS_EXAMPLES.toString());
+        examples.addActionListener(e -> examples(examples));
+        JButton test = new JButton(Messages.SCRIPTS_TEST.toString());
+        test.addActionListener(e -> test());
+        JPanel codeButtons = new JPanel(new FlowLayout(FlowLayout.LEFT, ModernTheme.px(6), 0));
+        codeButtons.setOpaque(false);
+        codeButtons.add(examples);
+        codeButtons.add(test);
+
+        Card editor = new Card(Messages.SCRIPTS_EDITOR.toString())
+                .row(Card.field(Messages.SCRIPTS_NAME.toString(), name, 1), Card.field(Messages.SCRIPTS_USE_AS.toString(), use, 1))
+                .addFull(info)
+                .row(Card.field(Messages.SCRIPTS_FOR.toString(), kind, 1), Card.field(Messages.SCRIPTS_GROUP.toString(), group, 1))
+                .addFull(codeScroll, 1)
+                .addFull(vars)
+                .addFull(codeButtons)
+                .addFull(Applets.plainHint(Messages.SCRIPTS_HELP.toString()));
+
+        add(Applets.treePage(Messages.SCRIPTS_LIST.toString(), listScroll, Messages.SCRIPTS_LIST_HINT.toString(), editor),
+                BorderLayout.CENTER);
+
+        JButton toolbar = new JButton(Messages.SCRIPTS_TOOLBAR.toString());
+        toolbar.setToolTipText(Messages.SCRIPTS_TOOLBAR_INFO.toString());
         toolbar.addActionListener(e -> toolbarActions());
-        javax.swing.JButton docs = new javax.swing.JButton(mpv5.globals.Messages.SCRIPTS_DOCS.toString());
+        JButton docs = new JButton(Messages.SCRIPTS_DOCS.toString());
         docs.addActionListener(e -> {
             try {
                 java.awt.Desktop.getDesktop().browse(new java.net.URI(DOCS));
@@ -356,127 +315,269 @@ public class ControlPanel_ValueProps extends javax.swing.JPanel implements Contr
                 Popup.notice(DOCS);
             }
         });
-        actions = mpv5.ui.modern.Applets.actionBar(new javax.swing.JComponent[]{toolbar, docs}, mpv5.ui.modern.Applets.buttonsOf(jPanel1, b.getString("ControlPanel_ValueProps.jButton4.text")));
+        JButton newScript = new JButton(Messages.SCRIPTS_NEW.toString());
+        newScript.addActionListener(e -> newScript());
+        JButton delete = Applets.danger(new JButton(Messages.ACTION_DELETE.toString()));
+        delete.addActionListener(e -> delete());
+        JButton saveNew = new JButton(Messages.SCRIPTS_SAVE_NEW.toString());
+        saveNew.addActionListener(e -> save(true));
+        JButton save = new mpv5.ui.modern.PrimaryButton(Messages.SCRIPTS_SAVE.toString(), "/images/16/filesave.png");
+        save.addActionListener(e -> save(false));
+        actions = Applets.actionBar(new JComponent[]{toolbar, docs}, new JComponent[]{newScript, delete, saveNew, save});
+        newScript();
     }
 
-    private static final String DOCS = "https://github.com/anti43/openyabs/wiki/Scripts-(EN)";
+    private static String esc(String s) {
+        return s == null ? "" : s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
+    }
+    // </editor-fold>
+
+    private void explainLater() {
+        SwingUtilities.invokeLater(this::explain);
+    }
 
     /**
-     * What a name (key) does: hook, display name or template field
-     */
-    private static final String[][] USES = {
-        {"", null}, {"modifyOnSave", null}, {"executeAfterSave", null}, {"executeAfterCreate", null},
-        {"modifyOnDelete", null}, {"IntItemLabel", null}, {"IntRevenueLabel", null}};
-    private final javax.swing.JComboBox<String> use = new javax.swing.JComboBox<String>();
-    private final javax.swing.JLabel keyInfo = new javax.swing.JLabel(" ");
-
-    /**
-     * The explanations, the "use as" choice next to the name, and a line
-     * saying what the name does
+     * The line under the name (what it does) and the variables of the kind
      */
     private void explain() {
-        mpv5.globals.Messages[] labels = {mpv5.globals.Messages.SCRIPTS_USE_FIELD, mpv5.globals.Messages.SCRIPTS_USE_BEFORESAVE,
-            mpv5.globals.Messages.SCRIPTS_USE_AFTERSAVE, mpv5.globals.Messages.SCRIPTS_USE_AFTERCREATE,
-            mpv5.globals.Messages.SCRIPTS_USE_BEFOREDELETE, mpv5.globals.Messages.SCRIPTS_USE_ITEMLABEL,
-            mpv5.globals.Messages.SCRIPTS_USE_REVENUELABEL};
-        for (int i = 0; i < USES.length; i++) {
-            USES[i][1] = labels[i].toString();
-            use.addItem(USES[i][1]);
-        }
-        use.addActionListener(e -> {
-            int i = use.getSelectedIndex();
-            if (i > 0) {
-                labeledTextField1.setText(USES[i][0]);
-            } else if (isUse(labeledTextField1.getText())) {
-                labeledTextField1.setText("");
-            }
-            showKeyInfo();
-        });
-        labeledTextField1.getTextField().getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
-            public void insertUpdate(javax.swing.event.DocumentEvent e) {
-                showKeyInfo();
-            }
-
-            public void removeUpdate(javax.swing.event.DocumentEvent e) {
-                showKeyInfo();
-            }
-
-            public void changedUpdate(javax.swing.event.DocumentEvent e) {
-                showKeyInfo();
-            }
-        });
-        keyInfo.setForeground(mpv5.ui.modern.ModernTheme.muted());
-        //the name field had a fixed width of 100 px
-        labeledTextField1.getTextField().setPreferredSize(null);
-        labeledTextField1.getTextField().setColumns(18);
-
-        //name + "use as" + what it does, in place of the name field
-        javax.swing.JPanel row = new javax.swing.JPanel(new java.awt.BorderLayout(mpv5.ui.modern.ModernTheme.px(8), 0));
-        row.setOpaque(false);
-        javax.swing.JPanel usePanel = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 4, 0));
-        usePanel.setOpaque(false);
-        usePanel.add(new javax.swing.JLabel(mpv5.globals.Messages.SCRIPTS_USE_AS + ":"));
-        usePanel.add(use);
-        javax.swing.JPanel wrap = new javax.swing.JPanel();
-        wrap.setOpaque(false);
-        wrap.setLayout(new javax.swing.BoxLayout(wrap, javax.swing.BoxLayout.PAGE_AXIS));
-        java.awt.Container parent = labeledTextField1.getParent();
-        if (parent != null && parent.getLayout() instanceof javax.swing.GroupLayout) {
-            ((javax.swing.GroupLayout) parent.getLayout()).replace(labeledTextField1, wrap);
-        }
-        row.add(labeledTextField1, java.awt.BorderLayout.CENTER);
-        row.add(usePanel, java.awt.BorderLayout.EAST);
-        row.setAlignmentX(LEFT_ALIGNMENT);
-        keyInfo.setAlignmentX(LEFT_ALIGNMENT);
-        wrap.add(row);
-        wrap.add(keyInfo);
-
-        jTextArea1.setText(mpv5.globals.Messages.SCRIPTS_HELP.toString());
-        jTextArea1.setEditable(false);
-        jTextArea1.setWrapStyleWord(true);
-        jTextArea1.setCaretPosition(0);
-        jButton6.setText(mpv5.globals.Messages.SCRIPTS_TEST.toString());
-        jLabel1.setText(mpv5.globals.Messages.SCRIPTS_FOR + ":");
-        showKeyInfo();
-    }
-
-    private static boolean isUse(String key) {
-        for (int i = 1; i < USES.length; i++) {
-            if (USES[i][0].equals(key)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void showKeyInfo() {
-        String key = labeledTextField1.getText() == null ? "" : labeledTextField1.getText().trim();
+        String key = name.getText() == null ? "" : name.getText().trim();
         int found = 0;
-        for (int i = 1; i < USES.length; i++) {
-            if (USES[i][0].equals(key)) {
+        for (int i = 1; i < USE_KEYS.length; i++) {
+            if (USE_KEYS[i].equals(key)) {
                 found = i;
             }
         }
-        if (use.getSelectedIndex() != found && (found > 0 || !isUse(key))) {
-            java.awt.event.ActionListener[] ls = use.getActionListeners();
-            for (java.awt.event.ActionListener l : ls) {
-                use.removeActionListener(l);
-            }
+        if (use.getSelectedIndex() != found && (found > 0 || !isSpecial(key))) {
+            boolean l = loading;
+            loading = true;
             use.setSelectedIndex(found);
-            for (java.awt.event.ActionListener l : ls) {
-                use.addActionListener(l);
-            }
+            loading = l;
         }
+        Kind k = (Kind) kind.getSelectedItem();
         String text;
         if (found == 0) {
-            text = key.isEmpty() ? mpv5.globals.Messages.SCRIPTS_KEY_EMPTY.toString()
-                    : String.format(mpv5.globals.Messages.SCRIPTS_KEY_FIELD.toString(), "<property." + key + ">");
+            text = key.isEmpty() ? Messages.SCRIPTS_KEY_EMPTY.toString() : fieldText(k, cleanName(key));
         } else if (found >= 5) {
-            text = mpv5.globals.Messages.SCRIPTS_KEY_LABEL.toString();
+            text = Messages.SCRIPTS_KEY_LABEL.toString();
         } else {
-            text = mpv5.globals.Messages.SCRIPTS_KEY_HOOK.toString();
+            text = Messages.SCRIPTS_KEY_HOOK.toString();
         }
-        keyInfo.setText(text);
+        info.setText(text);
+        if (k == null || k.isDocument()) {
+            vars.setText(Messages.SCRIPTS_VARS_ITEM.toString());
+        } else if (k.isContact()) {
+            vars.setText(Messages.SCRIPTS_VARS_CONTACT.toString());
+        } else {
+            vars.setText(String.format(Messages.SCRIPTS_VARS_OTHER.toString(), k.prefix));
+        }
+    }
+
+    private void refresh(final ValueProperty select) {
+        loading = true;
+        try {
+            listModel.clear();
+            List<ValueProperty> l = new ArrayList<>(ValueProperty.getGroupProperties());
+            final List<Kind> order = kinds();
+            l.sort(Comparator.comparingInt((ValueProperty p) -> {
+                Kind k = kindOf(p.__getContextids());
+                return k == null ? 999 : order.indexOf(k);
+            }).thenComparing(p -> String.valueOf(p.getKey()).toLowerCase()));
+            for (ValueProperty p : l) {
+                listModel.addElement(p);
+            }
+            DefaultComboBoxModel<Object> groups = new DefaultComboBoxModel<>();
+            try {
+                groupNames.clear();
+                for (DatabaseObject g : Group.getObjects(Context.getGroup())) {
+                    groups.addElement(g);
+                    groupNames.put(g.__getIDS(), String.valueOf(g));
+                }
+            } catch (NodataFoundException ex) {
+                Log.Debug(this, ex.getMessage());
+            }
+            Object sel = group.getSelectedItem();
+            group.setModel(groups);
+            if (sel != null) {
+                group.setSelectedItem(sel);
+            }
+            if (select != null) {
+                for (int i = 0; i < listModel.size(); i++) {
+                    if (listModel.get(i).__getIDS().equals(select.__getIDS())) {
+                        list.setSelectedIndex(i);
+                        list.ensureIndexIsVisible(i);
+                    }
+                }
+            }
+        } finally {
+            loading = false;
+        }
+    }
+
+    private void selectGroup(int id) {
+        for (int i = 0; i < group.getItemCount(); i++) {
+            Object g = group.getItemAt(i);
+            if (g instanceof Group && ((Group) g).__getIDS() == id) {
+                group.setSelectedIndex(i);
+                return;
+            }
+        }
+        if (group.getItemCount() > 0) {
+            group.setSelectedIndex(0);
+        }
+    }
+
+    private void show(ValueProperty p) {
+        dataOwner = p;
+        loading = true;
+        try {
+            name.setText(p.getKey());
+            Kind k = kindOf(p.__getContextids());
+            if (k != null) {
+                for (int i = 0; i < kind.getItemCount(); i++) {
+                    if (kind.getItemAt(i).id == k.id) {
+                        kind.setSelectedIndex(i);
+                    }
+                }
+            }
+            selectGroup(p.__getGroupsids());
+            code.setText(unwrap(String.valueOf(p.getValue())));
+            code.setCaretPosition(0);
+        } finally {
+            loading = false;
+        }
+        explain();
+    }
+
+    private void newScript() {
+        dataOwner = null;
+        loading = true;
+        try {
+            list.clearSelection();
+            name.setText("");
+            kind.setSelectedIndex(0);
+            selectGroup(1);
+            code.setText("");
+        } finally {
+            loading = false;
+        }
+        explain();
+        name.requestFocusInWindow();
+    }
+
+    private void save(boolean asNew) {
+        String key = cleanName(name.getText());
+        if (key.isEmpty()) {
+            Popup.notice(Messages.SCRIPTS_NAME_MISSING);
+            return;
+        }
+        name.setText(key);
+        Kind k = (Kind) kind.getSelectedItem();
+        Object g = group.getSelectedItem();
+        String sm = GlobalSettings.getProperty("org.openyabs.config.scriptsymbol", "#");
+        String script = code.getText().trim().isEmpty() ? "return \"\"" : code.getText();
+        String val = sm + script + sm;
+        ValueProperty p = asNew || dataOwner == null ? null : dataOwner;
+        Group grp = g instanceof Group ? (Group) g : Group.getDefault();
+        if (p == null) {
+            p = new ValueProperty(key, val, Context.getValueProperties(), grp);
+        } else {
+            p.setValueObj(val);
+            p.setCname(key);
+            p.setGroup(grp);
+        }
+        p.setContextids(k.id);
+        if (p.save()) {
+            dataOwner = p;
+            refresh(p);
+            mpv5.ui.dialogs.Notificator.raiseNotification(String.format(Messages.SCRIPTS_SAVED.toString(), key), false);
+        }
+    }
+
+    private void delete() {
+        if (dataOwner != null && Popup.Y_N_dialog(String.format(Messages.SCRIPTS_DELETE_Q.toString(), dataOwner.getKey()))) {
+            dataOwner.delete();
+            refresh(null);
+            newScript();
+        }
+    }
+
+    /**
+     * The examples for the chosen kind: a click puts name and script into the
+     * editor (not saved yet)
+     */
+    private void examples(JComponent at) {
+        Kind k = (Kind) kind.getSelectedItem();
+        JPopupMenu m = new JPopupMenu();
+        for (final String[] ex : Examples.of(k == null ? "item" : k.prefix)) {
+            JMenuItem i = new JMenuItem(ex[0]);
+            i.addActionListener(e -> {
+                if (dataOwner == null || code.getText().trim().isEmpty() || Popup.Y_N_dialog(Messages.SCRIPTS_EXAMPLE_REPLACE)) {
+                    if (code.getText().trim().isEmpty() || dataOwner != null) {
+                        dataOwner = null;
+                        list.clearSelection();
+                    }
+                    name.setText(ex[1]);
+                    code.setText(ex[2]);
+                    code.setCaretPosition(0);
+                    explain();
+                }
+            });
+            m.add(i);
+        }
+        m.show(at, 0, at.getHeight());
+    }
+
+    /**
+     * Runs the script with a chosen record: the result, and the variables of
+     * the record as the script writes them
+     */
+    private void test() {
+        Kind k = (Kind) kind.getSelectedItem();
+        if (k == null) {
+            return;
+        }
+        DatabaseObject s = Search2.showSearchFor(k.test);
+        if (s == null) {
+            return;
+        }
+        String sm = GlobalSettings.getProperty("org.openyabs.config.scriptsymbol", "#");
+        String result;
+        try {
+            result = s.evaluateAll(sm + code.getText() + sm, true);
+        } catch (Exception e) {
+            result = Messages.SCRIPT_ERROR + " " + (e.getMessage() == null ? e.toString() : e.getMessage());
+        }
+        String key = cleanName(name.getText());
+        JTextArea res = new JTextArea(result, Math.min(8, Math.max(2, result.split("\n").length)), 50);
+        res.setEditable(false);
+        res.setLineWrap(true);
+        res.setWrapStyleWord(true);
+        String prefix = s.getType();
+        List<String[]> rows = new ScriptFields(s).describe(prefix);
+        JTable t = new JTable(rows.toArray(new Object[0][]),
+                new Object[]{Messages.SCRIPTS_VARIABLE.toString(), Messages.VALUE.toString()}) {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        ModernTheme.style(t);
+        t.setAutoCreateRowSorter(true);
+        JScrollPane ts = new JScrollPane(t);
+        ts.setPreferredSize(new java.awt.Dimension(ModernTheme.px(620), ModernTheme.px(320)));
+        JPanel p = new JPanel(new BorderLayout(0, ModernTheme.px(8)));
+        JPanel top = new JPanel(new BorderLayout(0, ModernTheme.px(4)));
+        top.add(new JLabel(key.isEmpty() || isSpecial(key) ? Messages.SCRIPTS_RESULT.toString()
+                : Messages.SCRIPTS_RESULT + " " + (k.isContact() ? "<item.contact.property." + key + ">" : "<" + k.prefix + ".property." + key + ">")), BorderLayout.NORTH);
+        top.add(new JScrollPane(res), BorderLayout.CENTER);
+        p.add(top, BorderLayout.NORTH);
+        JPanel bottom = new JPanel(new BorderLayout(0, ModernTheme.px(4)));
+        bottom.add(new JLabel(Messages.SCRIPTS_VARIABLES.toString()), BorderLayout.NORTH);
+        bottom.add(ts, BorderLayout.CENTER);
+        p.add(bottom, BorderLayout.CENTER);
+        javax.swing.JOptionPane.showMessageDialog(this, p, String.valueOf(s), javax.swing.JOptionPane.PLAIN_MESSAGE);
     }
 
     /**
@@ -492,80 +593,50 @@ public class ControlPanel_ValueProps extends javax.swing.JPanel implements Contr
         w.showWizAsChild();
     }
 
-    private void refresh() {
-
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                DefaultListModel def = new DefaultListModel();
-                def.addElement(new ContextWrap(Messages.TYPE_INVOICE.getValue(), Context.getInvoice()));
-                def.addElement(new ContextWrap(Messages.TYPE_ORDER.getValue(), Context.getOrder()));
-                def.addElement(new ContextWrap(Messages.TYPE_OFFER.getValue(), Context.getOffer()));
-                def.addElement(new ContextWrap(Messages.TYPE_DEPOSIT.getValue(), Context.getDeposit()));
-                def.addElement(new ContextWrap(Messages.TYPE_PART_PAYMENT.getValue(), Context.getPartPayment()));
-                def.addElement(new ContextWrap(Messages.TYPE_CREDIT.getValue(), Context.getCredit()));
-//            def.addElement(new ContextWrap(Messages.TYPE_SUBITEM.getValue(), Context.getSubItem()));
-                def.addElement(new ContextWrap(Messages.TYPE_PRODUCT.getValue(), Context.getProduct()));
-                def.addElement(new ContextWrap(Messages.TYPE_PRODUCT_ORDER.getValue(), Context.getProductOrder()));
-                def.addElement(new ContextWrap(Messages.TYPE_SUPPLIER.getValue(), Context.getSupplier()));
-                def.addElement(new ContextWrap(Messages.TYPE_MANUFACTURER.getValue(), Context.getManufacturer()));
-                def.addElement(new ContextWrap(Messages.TYPE_CUSTOMER.getValue(), Context.getCustomer()));
-                def.addElement(new ContextWrap(Messages.TYPE_REMINDER.getValue(), Context.getReminder()));
-                def.addElement(new ContextWrap(Messages.TYPE_CONVERSATION.getValue(), Context.getConversation()));
-                def.addElement(new ContextWrap(Messages.TYPE_MASSPRINT.getValue(), Context.getMassprint()));
-
-                jList1.setModel(def);
-
-                DefaultListModel def1 = new DefaultListModel();
-                try {
-                    for (DatabaseObject c : Group.getObjects(Context.getGroup())) {
-                        def1.addElement((Group) c);
-                    }
-                } catch (NodataFoundException ex) {
-                    Log.Debug(ex);
-                }
-                jList2.setModel(def1);
-
-                labeledCombobox1.setModel(DatabaseObject.toObjectList(ValueProperty.getGroupProperties()));
-
-            }
-        };
-        SwingUtilities.invokeLater(runnable);
+    @Override
+    public void setValues(PropertyStore values) {
+        oldvalues = values;
     }
 
     @Override
-    public void receive(final DatabaseObject obj) {
+    public String getUname() {
+        return UNAME;
+    }
 
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                dataOwner = (ValueProperty) obj;
-                jTextPane2.setText(dataOwner.getValue().toString().replace("#", ""));
-                labeledTextField1.setText(dataOwner.getKey());
-                jList1.setSelectedValue(new ContextWrap(null, Context.getByID(((ValueProperty) obj).__getContextids())), true);
-                //jList1.setSelectedValue(new ContextWrap(null, Context.getByID(((ValueProperty) obj).__getContextids())), true);
-                try {
-                    jList2.setSelectedValue(((ValueProperty) obj).getGroup(), true);
-                } catch (Exception ex) {
-                    Log.Debug(ex);
-                }
+    @Override
+    public void reset() {
+        setValues(oldvalues);
+    }
+
+    @Override
+    public Component getAndRemoveActionPanel() {
+        return actions;
+    }
+
+    /**
+     * Ready-made scripts per kind: label, name, script
+     */
+    static final class Examples {
+
+        private Examples() {
+        }
+
+        static List<String[]> of(String prefix) {
+            List<String[]> l = new ArrayList<>();
+            if ("item".equals(prefix)) {
+                l.add(new String[]{Messages.SCRIPTS_EX_SALUTATION.toString(), "anrede", Messages.SCRIPTS_EX_SALUTATION_ITEM_CODE.toString()});
+                l.add(new String[]{Messages.SCRIPTS_EX_AMOUNT.toString(), "betragshinweis", Messages.SCRIPTS_EX_AMOUNT_CODE.toString()});
+                l.add(new String[]{Messages.SCRIPTS_EX_CUSTOMERNO.toString(), "kundennr", Messages.SCRIPTS_EX_CUSTOMERNO_CODE.toString()});
+                l.add(new String[]{Messages.SCRIPTS_EX_DATE.toString(), "datum", Messages.SCRIPTS_EX_DATE_CODE.toString()});
+                l.add(new String[]{Messages.SCRIPTS_EX_TRIM.toString(), "modifyOnSave", "dbo.setDescription(String.valueOf(dbo.__getDescription() ?: '').trim())"});
+                l.add(new String[]{Messages.SCRIPTS_EX_LABEL.toString(), "IntItemLabel", "dbo.__getCnumber() + ' ' + (item.contact?.cname ?: '')"});
+            } else if ("contact".equals(prefix)) {
+                l.add(new String[]{Messages.SCRIPTS_EX_SALUTATION.toString(), "anrede", Messages.SCRIPTS_EX_SALUTATION_CONTACT_CODE.toString()});
+                l.add(new String[]{Messages.SCRIPTS_EX_FULLNAME.toString(), "vollername", "[contact.title, contact.prename, contact.cname].findAll { it }.join(' ')"});
+            } else {
+                l.add(new String[]{Messages.SCRIPTS_EX_NUMBER.toString(), "nummer", prefix + ".cnumber + ' - ' + " + prefix + ".cname"});
             }
-        };
-        SwingUtilities.invokeLater(runnable);
+            return l;
+        }
     }
-
-    private void prepare() {
-
-        if (jList1.getSelectedValue() == null) {
-            jList1.setSelectedIndex(0);
-        }
-        if (jList2.getSelectedValue() == null) {
-            jList2.setSelectedIndex(0);
-        }
-        if (jTextPane2.getText().length() == 0) {
-            jTextPane2.setText("return \"\"");
-        }
-
-    }
-
 }

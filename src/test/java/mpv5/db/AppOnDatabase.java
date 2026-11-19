@@ -24,6 +24,7 @@ import mpv5.db.objects.Product;
 import mpv5.db.objects.SubItem;
 import mpv5.db.objects.Template;
 import mpv5.db.objects.User;
+import mpv5.db.objects.ValueProperty;
 import mpv5.globals.LocalSettings;
 import mpv5.utils.date.DateConverter;
 import org.junit.jupiter.api.Test;
@@ -204,6 +205,32 @@ abstract class AppOnDatabase {
             inv.setDateend(new Date());
             inv.setDateadded(new Date());
             inv.setAccountsids(1);
+            assertTrue(inv.save(true));
+
+            //script manager: one field for all documents, the contact read by its template names;
+            //a field of the same name for invoices only wins for invoices, not for offers
+            ValueProperty all = new ValueProperty("gruss", "#'Hallo ' + item.contact.cname#", Context.getValueProperties(), mpv5.db.objects.Group.getDefault());
+            all.setContextids(mpv5.db.common.ScriptScope.ALL_DOCUMENTS);
+            assertTrue(all.save());
+            assertEquals("Hallo Muster GmbH", new mpv5.handler.FormFieldsHandler(inv).getFormattedFormFields(null).get("item.property.gruss"));
+            ValueProperty onlyInvoices = new ValueProperty("gruss", "#'Moin ' + item.contact.cname#", Context.getValueProperties(), mpv5.db.objects.Group.getDefault());
+            onlyInvoices.setContextids(Context.getInvoice().getId());
+            assertTrue(onlyInvoices.save());
+            assertEquals("Moin Muster GmbH", new mpv5.handler.FormFieldsHandler(inv).getFormattedFormFields(null).get("item.property.gruss"));
+            inv.setInttype(Item.TYPE_OFFER);
+            assertEquals("Hallo Muster GmbH", new mpv5.handler.FormFieldsHandler(inv).getFormattedFormFields(null).get("item.property.gruss"));
+            inv.setInttype(Item.TYPE_INVOICE);
+            //a hook for all documents runs on save
+            String description = inv.__getDescription();
+            ValueProperty hook = new ValueProperty("modifyOnSave", "#dbo.setDescription('by script')#", Context.getValueProperties(), mpv5.db.objects.Group.getDefault());
+            hook.setContextids(mpv5.db.common.ScriptScope.ALL_DOCUMENTS);
+            assertTrue(hook.save());
+            assertTrue(inv.save(true));
+            assertEquals("by script", ((Item) DatabaseObject.getObject(Context.getInvoice(), inv.__getIDS())).__getDescription());
+            assertTrue(all.delete());
+            assertTrue(onlyInvoices.delete());
+            assertTrue(hook.delete());
+            inv.setDescription(description);
             assertTrue(inv.save(true));
             for (int i = 1; i <= 3; i++) {
                 SubItem s = new SubItem();
