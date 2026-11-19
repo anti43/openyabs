@@ -592,15 +592,6 @@ public final class JournalAdviserPackage {
         if (!check.b2bWithoutEInvoice.isEmpty()) {
             b.append("  ohne E-Rechnung: ").append(String.join(", ", check.b2bWithoutEInvoice)).append(nl);
         }
-        b.append(nl);
-        b.append("  Hinweis: Seit 01.01.2025 müssen Unternehmen im Inland E-Rechnungen empfangen können. Rechnungen").append(nl);
-        b.append("  an andere Unternehmen im Inland müssen ab 01.01.2027 (Vorjahresumsatz über 800.000 EUR) bzw.").append(nl);
-        b.append("  ab 01.01.2028 (alle) als E-Rechnung (XRechnung oder ZUGFeRD ab Profil EN 16931) ausgestellt werden.").append(nl);
-        b.append("  Ausgenommen sind Kleinbetragsrechnungen bis 250 EUR brutto, Fahrausweise und Rechnungen an").append(nl);
-        b.append("  Privatkunden. Für Kassenbuch und Kassenbelege (Barverkäufe) gilt keine E-Rechnungspflicht; dort").append(nl);
-        b.append("  gelten GoBD, Kassensicherungsverordnung (TSE) und der DSFinV-K-Export der Kasse.").append(nl);
-        b.append("  E-Rechnungen sind im Originalformat (XML) aufzubewahren; die hier erzeugten XML-Dateien entsprechen").append(nl);
-        b.append("  den aktuellen Belegdaten, die versendeten Originale liegen im Archiv (z.B. GoBD-Plugin).").append(nl);
         if (!problems.isEmpty()) {
             b.append(nl).append("Nicht enthalten / zu prüfen").append(nl);
             for (String p : problems) {
