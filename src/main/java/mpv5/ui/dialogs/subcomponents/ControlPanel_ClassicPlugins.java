@@ -62,12 +62,37 @@ public class ControlPanel_ClassicPlugins extends javax.swing.JPanel implements C
      * @throws FileNotFoundException
      */
     public void importf(File file) throws FileNotFoundException {
+        if (installAsExtension(file)) {
+            return;
+        }
         String s = file.getName();
         if(s.endsWith(".zip")){
             file = FileDirectoryHandler.unzipFile(file);
         }
         YabsPluginLoader.importPlugin(s, file);
         refresh();
+    }
+
+    /**
+     * A jar of the plugin API (or a Groovy plugin) is no classic plugin: it
+     * would fail with ClassNotFoundException plugin.Main. It is installed in
+     * the plugin list above instead.
+     *
+     * @param file
+     * @return true if the file was such a plugin (installed or not)
+     */
+    static boolean installAsExtension(File file) {
+        if (!mpv5.plugin.ExtensionManager.isExtensionFile(file)) {
+            return false;
+        }
+        try {
+            List<mpv5.plugin.ExtensionManager.Installed> l = mpv5.plugin.ExtensionManager.instance().install(file);
+            Popup.notice(String.format(Messages.PLUGINS_NOT_CLASSIC.toString(), file.getName(), l.size()));
+        } catch (Exception e) {
+            Log.Debug(ControlPanel_ClassicPlugins.class, e);
+            Popup.notice(Messages.NOT_POSSIBLE + ": " + e.getMessage());
+        }
+        return true;
     }
 
     private void addPopupMenu() {
@@ -313,6 +338,9 @@ public class ControlPanel_ClassicPlugins extends javax.swing.JPanel implements C
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         YabsPlugin p = null;
+        if (labeledTextChooser2.hasText() && installAsExtension(new File(labeledTextChooser2.get_Text(true)))) {
+            return;
+        }
         try {
             if (YabsPluginLoader.checkPlugin(new File(labeledTextChooser2.get_Text(true))) != null) {
                 p = YabsPluginLoader.checkPlugin(new File(labeledTextChooser2.get_Text(true)));

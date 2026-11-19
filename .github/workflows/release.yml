@@ -77,6 +77,11 @@ jobs:
         working-directory: dist
         run: |
           test -s "openyabs-$VERSION.zip"
+          # the GoBD plugin on its own, for installer users (Control Panel > Plugins)
+          test -s gobd-compliance.jar || {
+            echo "::error::Missing release asset: gobd-compliance.jar"
+            exit 1
+          }
           for pattern in '*.deb' '*.rpm' '*.msi'; do
             compgen -G "$pattern" > /dev/null || {
               echo "::error::Missing release asset: $pattern"
