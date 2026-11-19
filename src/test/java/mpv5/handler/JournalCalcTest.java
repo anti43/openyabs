@@ -56,6 +56,20 @@ class JournalCalcTest {
     }
 
     @Test
+    void storedRatesAreBookedUnderTheRatesOfTheControlPanel() {
+        java.util.List<BigDecimal> configured = Arrays.asList(bd("19.00"), bd("7.00"), bd("0"));
+        assertEquals("19", JournalCalc.normalizeRate(bd("18.96"), configured).toPlainString());
+        assertEquals("19", JournalCalc.normalizeRate(bd("19.04"), configured).toPlainString());
+        assertEquals("7", JournalCalc.normalizeRate(bd("7.0000001"), configured).toPlainString());
+        //not configured (any more): rounded to one decimal place, own line
+        assertEquals("16", JournalCalc.normalizeRate(bd("15.99"), configured).toPlainString());
+        assertEquals("16", JournalCalc.normalizeRate(bd("16.01"), configured).toPlainString());
+        assertEquals("5.5", JournalCalc.normalizeRate(bd("5.5"), configured).toPlainString());
+        assertEquals("18.8", JournalCalc.normalizeRate(bd("18.8"), configured).toPlainString());
+        assertEquals(null, JournalCalc.normalizeRate(null, configured));
+    }
+
+    @Test
     void cashBasis() {
         Entry paid = e(Constants.TYPE_INVOICE, Item.STATUS_PAID, "100.00", "19.00");
         Entry open = e(Constants.TYPE_INVOICE, Item.STATUS_IN_PROGRESS, "50.00", "9.50");

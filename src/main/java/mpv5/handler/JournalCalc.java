@@ -212,6 +212,37 @@ public final class JournalCalc {
     }
 
     /**
+     * The rate a stored rate is booked under: the nearest rate of the control
+     * panel if it is at most 0.1 percent points away, else the rate rounded
+     * to one decimal place. Stored rates are not always exact (e.g. 18.96 or
+     * 19.04 from imported or recalculated documents).
+     *
+     * @param rate the stored rate, null stays null
+     * @param configured the rates of the control panel (Taxes)
+     * @return the rate as key ({@link #rateKey})
+     */
+    public static BigDecimal normalizeRate(BigDecimal rate, java.util.Collection<BigDecimal> configured) {
+        if (rate == null) {
+            return null;
+        }
+        BigDecimal best = null;
+        BigDecimal bestDistance = null;
+        if (configured != null) {
+            for (BigDecimal c : configured) {
+                if (c == null) {
+                    continue;
+                }
+                BigDecimal d = c.subtract(rate).abs();
+                if (d.compareTo(new BigDecimal("0.1")) <= 0 && (bestDistance == null || d.compareTo(bestDistance) < 0)) {
+                    best = c;
+                    bestDistance = d;
+                }
+            }
+        }
+        return rateKey(best != null ? best : rate.setScale(1, RoundingMode.HALF_UP));
+    }
+
+    /**
      * Splits an amount in the proportion of weights, in cents, so that the
      * parts add up to the amount exactly (the remaining cents go to the parts
      * with the largest remainders)
