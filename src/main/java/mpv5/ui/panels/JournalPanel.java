@@ -1951,36 +1951,24 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
                     Messages.SEPA_DD_CREATE.getValue(),
                     Messages.PDF_CREATE.getValue(),
                     Messages.ODT_CREATE.getValue(),
-                    null, Messages.SET_STATUS_PAID.getValue()},
+                    null, Messages.MARK_PAID.toString()},
                 new java.awt.event.ActionListener[]{e -> setData(), null, e -> email(), e -> sepa(),
                     e -> export(true), e -> export(false), null, e -> setPaid()});
     }
 
+    /**
+     * Marks the selected documents as paid, with a preview (a payment row
+     * stands for its invoice)
+     */
     private void setPaid() {
-        if (Popup.Y_N_dialog(Messages.REALLY_CHANGE2 + " (" + jTable1.getSelectedRowCount() + ")")) { //NOI18N
-            for (int row : jTable1.getSelectedRows()) {
-                try {
-                    DatabaseObject obj = objectAt(row);
-                    if (obj instanceof Item) {
-                        Item dbi = (Item) obj;
-                        if (dbi.__getIntstatus() != Item.STATUS_PAID) {
-                            dbi.setIntstatus(Item.STATUS_PAID);
-                            dbi.save();
-                        }
-                    } else if (obj instanceof Expense) {
-                        Expense dbi = (Expense) obj;
-                        if (!dbi.__getIspaid()) {
-                            dbi.setIspaid(true);
-                            dbi.save();
-                        }
-                    }
-                } catch (Exception exc) {
-                    Log.Debug(exc);
-                    Popup.error(exc);
-                }
+        List<DatabaseObject> l = new ArrayList<DatabaseObject>();
+        for (int row : jTable1.getSelectedRows()) {
+            Entry e = entries.get(jTable1.convertRowIndexToModel(row));
+            if (e.obj instanceof DatabaseObject && !l.contains(e.obj)) {
+                l.add((DatabaseObject) e.obj);
             }
-            setData();
         }
+        mpv5.ui.dialogs.MarkPaidDialog.show(this, l, this::setData);
     }
 
     /**

@@ -394,6 +394,11 @@ public class ModernExpensePanel extends ModernDataPanel {
         expenseTable.setAutoCreateRowSorter(true);
         //single click, arrow keys and Enter show the record
         installRecordList(expenseTable);
+        //several rows (Ctrl/Shift+click) for the context menu: mark as paid with a preview
+        expenseTable.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        new mpv5.ui.popups.TablePopUp(expenseTable, new String[]{Messages.MARK_PAID.toString()},
+                new java.awt.event.ActionListener[]{e -> mpv5.ui.dialogs.MarkPaidDialog.show(this,
+                    mpv5.ui.dialogs.MarkPaidDialog.selected(expenseTable), this::afterMarkPaid)});
 
         JComponent filterBar = createFilterBar();
 
@@ -1440,6 +1445,22 @@ public class ModernExpensePanel extends ModernDataPanel {
         }
 
         return true;
+    }
+
+    /**
+     * After marking as paid: the list again and the shown record from the
+     * database (else saving it would undo the change)
+     */
+    private void afterMarkPaid() {
+        DatabaseObject shown = getDataOwner();
+        if (shown != null && shown.isExisting()) {
+            try {
+                setDataOwner(DatabaseObject.getObject(Context.getExpense(), shown.__getIDS()), true);
+            } catch (Exception e) {
+                Log.Debug(ModernExpensePanel.class, e.getMessage());
+            }
+        }
+        refresh();
     }
 
     @Override
