@@ -490,29 +490,9 @@ public class LanguageManager {
                 }
 
                 List<String> failures = new ArrayList<String>();
-                Enumeration<String> keys = ResourceBundle.getBundle(defLanguageBundleName).getKeys();
-                File impFile = file;
-                FileReaderWriter frw = new FileReaderWriter(impFile);
-                String[] lines = frw.readLines();
-
-                while (keys.hasMoreElements()) {
-                    String string = keys.nextElement();
-                    boolean found = false;
-                    for (int i = 0; i < lines.length; i++) {
-                        String line = lines[i];
-                        if (line.startsWith(string)) {
-                            found = true;
-                        }
-                    }
-                    if (!found) {
-                        failed = true;
-                        Log.Debug(LanguageManager.class, "Key '" + string + "' not found in file " + file);
-                        try {
-                            failures.add(string + "=" + ResourceBundle.getBundle(defLanguageBundleName).getString(string));
-                        } catch (Exception e) {
-                            failures.add(string + "=???");
-                        }
-                    }
+                for (java.util.Map.Entry<String, String> e : missingKeys(file).entrySet()) {
+                    Log.Debug(LanguageManager.class, "Key '" + e.getKey() + "' not found in file " + file);
+                    failures.add(e.getKey() + "=" + e.getValue());
                 }
 
                 if (!failures.isEmpty()) {
@@ -558,52 +538,43 @@ public class LanguageManager {
         }
     }
 
-    private static boolean lineMatchesKey(String line, String key) {
-        String trimmed = line.trim();
-        if (trimmed.isEmpty() || trimmed.startsWith("#") || trimmed.startsWith("!")) {
-            return false;
+    /**
+     * @param file a language file
+     * @return the keys the built-in language has and the file has not, with
+     * the English text; read as a properties file, so escaped keys (e.g.
+     * "a\\ b") and \\uXXXX escapes are found
+     * @throws java.io.IOException
+     */
+    static java.util.SortedMap<String, String> missingKeys(File file) throws java.io.IOException {
+        java.util.Set<String> has = readLanguageFile(file).keySet();
+        java.util.SortedMap<String, String> missing = new java.util.TreeMap<String, String>();
+        for (java.util.Map.Entry<String, String> e : requiredKeys().entrySet()) {
+            if (!has.contains(e.getKey())) {
+                missing.put(e.getKey(), e.getValue());
+            }
         }
-        return trimmed.equals(key) || trimmed.startsWith(key + "=") || trimmed.startsWith(key + ":") || trimmed.startsWith(key + " ");
+        return missing;
     }
 
     private static boolean hasNeededKeys(File file, boolean popupOnError) {
-        synchronized (new LanguageManager()) {
+        synchronized (LanguageManager.class) {
             try {
-                List<String> failures = new ArrayList<String>();
-                Enumeration<String> keys = ResourceBundle.getBundle(defLanguageBundleName).getKeys();
-                File impFile = file;
-                FileReaderWriter frw = new FileReaderWriter(impFile);
-                String[] lines = frw.readLines();
-
-                while (keys.hasMoreElements()) {
-                    String string = keys.nextElement();
-                    boolean found = false;
-                    for (int i = 0; i < lines.length; i++) {
-                        if (lineMatchesKey(lines[i], string)) {
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (!found) {
-                        //only a check: a file without the keys of a newer version (e.g. the
-                        //cached copy after an update) is completed from the database copy;
-                        //it must not disable all languages ("failed") for the session
-                        Log.Debug(LanguageManager.class, "Key '" + string + "' not found in file " + file);
-                        if (!popupOnError) {
-                            return false;
-                        } else {
-                            try {
-                                failures.add(string + "=" + ResourceBundle.getBundle(defLanguageBundleName).getString(string));
-                            } catch (Exception e) {
-                                failures.add(string + "=???");
-                            }
-                        }
-                    }
+                java.util.SortedMap<String, String> missing = missingKeys(file);
+                if (missing.isEmpty()) {
+                    return true;
                 }
-                if (popupOnError && !failures.isEmpty()) {
+                //only a check: a file without the keys of a newer version (e.g. the
+                //cached copy after an update) is completed from the database copy;
+                //it must not disable all languages ("failed") for the session
+                Log.Debug(LanguageManager.class, "Keys " + missing.keySet() + " not found in file " + file);
+                if (popupOnError) {
+                    List<String> failures = new ArrayList<String>();
+                    for (java.util.Map.Entry<String, String> e : missing.entrySet()) {
+                        failures.add(e.getKey() + "=" + e.getValue());
+                    }
                     Popup.notice(failures, "Import not possible.\nMissing keys in " + file + ":\n");
                 }
-                return failures.isEmpty();
+                return false;
             } catch (Exception e) {
                 Log.Debug(e);
                 return false;
@@ -622,41 +593,26 @@ public class LanguageManager {
 
     private static boolean addNeededKeys(File file) {
         Notificator.raiseNotification(Messages.LANGUAGE_FILE, false);
-        synchronized (new LanguageManager()) {
+        synchronized (LanguageManager.class) {
             try {
-                Enumeration<String> keys = ResourceBundle.getBundle(defLanguageBundleName).getKeys();
-                File impFile = file;
-                FileReaderWriter frw = new FileReaderWriter(impFile, "UTF8");
-                String[] lines = frw.readLinesWCharset();
+                java.util.SortedMap<String, String> missing = missingKeys(file);
                 boolean isDe = file.getName().toLowerCase().contains("de") || isGerman();
-
-                while (keys.hasMoreElements()) {
-                    String string = keys.nextElement();
-                    boolean found = false;
-                    for (int i = 0; i < lines.length; i++) {
-                        if (lineMatchesKey(lines[i], string)) {
-                            found = true;
-                            break;
-                        }
+                StringBuilder add = new StringBuilder("\n");
+                for (java.util.Map.Entry<String, String> e : missing.entrySet()) {
+                    Log.Debug(LanguageManager.class, "Key '" + e.getKey() + "' added to file " + file);
+                    String val = isDe ? bundledGerman().getProperty(e.getKey()) : null;
+                    if (val == null) {
+                        val = e.getValue();
                     }
-                    if (!found) {
-                        Log.Debug(LanguageManager.class, "Key '" + string + "' added to file " + file);
-                        String val = null;
-                        if (isDe) {
-                            val = bundledGerman().getProperty(string);
-                        }
-                        if (val == null) {
-                            try {
-                                val = ResourceBundle.getBundle(defLanguageBundleName).getString(string);
-                            } catch (Exception e) {
-                                val = "";
-                            }
-                        }
-                        frw.write(string + "=" + val);
-                    }
+                    add.append(escape(e.getKey(), true)).append('=').append(escape(val, false)).append('\n');
+                }
+                if (!missing.isEmpty()) {
+                    //ASCII with \\u escapes: right in UTF-8 and ISO-8859-1 files
+                    java.nio.file.Files.write(file.toPath(), add.toString().getBytes(java.nio.charset.StandardCharsets.US_ASCII),
+                            java.nio.file.StandardOpenOption.APPEND);
                 }
                 failed = false;
-                return !failed;
+                return true;
             } catch (Exception e) {
                 Log.Debug(e);
                 fail(e.getMessage());
@@ -817,6 +773,10 @@ public class LanguageManager {
 
         //no message box: this runs at the start (language update) and on request
         String ref = LanguageManager.importLanguageQuietly(f.getName() + " (" + new Date() + ")", f);
+        if (ref == null) {
+            //not imported: the user keeps the language (was set to null = English)
+            throw new IllegalStateException("Language " + langid + " could not be imported from " + f);
+        }
         User.getCurrentUser().setLanguage(ref);
         User.getCurrentUser().save(true);
         Log.Debug(LanguageManager.class, "\n\n\n#####################################\nLanguage updated: " + langid + "\n#####################################\n\n");
@@ -827,29 +787,40 @@ public class LanguageManager {
     private static boolean lastIsGerman;
 
     /**
-     * @return true if the active language or current user is German
+     * @return true if the active language is German. Before the main window
+     * exists (login, first start) the system language decides. After that only
+     * the user's language does: a German system with the built-in English (or
+     * a German import that failed) stays English everywhere instead of German
+     * messages next to English forms.
      */
     public static synchronized boolean isGerman() {
-        if (isGermanUser(null)) {
-            return true;
+        if (!Main.INSTANTIATED) {
+            return isGermanUser(null);
         }
         try {
-            if (User.getCurrentUser() != null && isGermanUser(User.getCurrentUser())) {
-                return true;
-            }
             ResourceBundle b = getBundle();
             if (b != lastChecked) {
                 lastChecked = b;
-                java.util.Properties de = bundledGerman();
-                //German: a known text is the German one, or header 0 is German
-                lastIsGerman = (de.getProperty("INSERTED") != null && b.containsKey("INSERTED")
-                        && de.getProperty("INSERTED").equals(b.getString("INSERTED")))
-                        || (b.containsKey("CONTACT_DETAILS.0") && "Interne ID".equals(b.getString("CONTACT_DETAILS.0")));
+                lastIsGerman = isGermanBundle(b);
             }
             return lastIsGerman;
         } catch (Exception e) {
-            return isGermanUser(null);
+            return false;
         }
+    }
+
+    /**
+     * @param b a language
+     * @return true if a known text is the German one, or header 0 is German
+     */
+    static boolean isGermanBundle(ResourceBundle b) {
+        if (b == null || b == defLanguageBundle) {
+            return false;
+        }
+        java.util.Properties de = bundledGerman();
+        return (de.getProperty("INSERTED") != null && b.containsKey("INSERTED")
+                && de.getProperty("INSERTED").equals(b.getString("INSERTED")))
+                || (b.containsKey("CONTACT_DETAILS.0") && "Interne ID".equals(b.getString("CONTACT_DETAILS.0")));
     }
 
     /**

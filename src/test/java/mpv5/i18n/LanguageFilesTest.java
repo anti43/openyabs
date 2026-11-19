@@ -154,4 +154,30 @@ class LanguageFilesTest {
         }
         org.junit.jupiter.api.Assertions.assertEquals(java.util.Collections.emptyList(), missing, "Messages without a text in Panels.properties");
     }
+
+    /**
+     * The import of the bundled German failed on a new install ("Import not
+     * possible. Missing keys": a key with an escaped space was searched as
+     * text), so the user stayed on English with German messages
+     */
+    @Test
+    void theBundledGermanHasAllKeysForTheImport(@org.junit.jupiter.api.io.TempDir java.nio.file.Path dir) throws Exception {
+        java.nio.file.Path f = dir.resolve("de.properties");
+        try (InputStream in = LanguageFilesTest.class.getResourceAsStream("/extra/DE-" + Constants.EXTRA_FILES_VERSION + ".properties")) {
+            java.nio.file.Files.copy(in, f);
+        }
+        org.junit.jupiter.api.Assertions.assertEquals(java.util.Collections.emptyMap(), LanguageManager.missingKeys(f.toFile()));
+    }
+
+    @Test
+    void escapedKeysAreFound(@org.junit.jupiter.api.io.TempDir java.nio.file.Path dir) throws Exception {
+        java.util.Map<String, String> all = new java.util.HashMap<String, String>(LanguageManager.requiredKeys());
+        all.put("A key\\with: odd=chars", "x");
+        java.nio.file.Path f = dir.resolve("x.properties");
+        LanguageManager.writeLanguageFile(all, f.toFile());
+        assertTrue(LanguageManager.missingKeys(f.toFile()).isEmpty());
+        all.remove("INSERTED");
+        LanguageManager.writeLanguageFile(all, f.toFile());
+        org.junit.jupiter.api.Assertions.assertEquals(java.util.Set.of("INSERTED"), LanguageManager.missingKeys(f.toFile()).keySet());
+    }
 }
