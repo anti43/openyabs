@@ -279,6 +279,113 @@ public class GobdPluginTest {
         assertEquals("2.0.10", g.minYabsVersion());
     }
 
+    /**
+     * The inventory seal on an H2 as YaBS opens it: first activation, changes
+     * and deletions without the plugin, several starts, a change while it
+     * runs, a changed seal
+     */
+    @Test
+    public void theInventorySealFindsWhatHappenedWithoutThePlugin() throws Exception {
+        Class<?> dc = Class.forName("mpv5.db.common.DatabaseConnection");
+        java.lang.reflect.Field connF = dc.getDeclaredField("conn");
+        java.lang.reflect.Field connectorF = dc.getDeclaredField("connector");
+        connF.setAccessible(true);
+        connectorF.setAccessible(true);
+        Object oldConn = connF.get(null);
+        Object oldConnector = connectorF.get(null);
+        try (java.sql.Connection c = java.sql.DriverManager.getConnection("jdbc:h2:mem:gobdinventory;MODE=Derby;DEFAULT_NULL_ORDERING=HIGH;NON_KEYWORDS="
+                + "VALUE,KEY,YEAR,MONTH,DAY,HOUR,MINUTE,SECOND,USER,ROW,TOP,LIMIT,MINUS", "sa", "")) {
+            java.lang.reflect.Constructor<?> k = dc.getDeclaredConstructor();
+            k.setAccessible(true);
+            connF.set(null, c);
+            connectorF.set(null, k.newInstance());
+            for (String sql : new String[]{
+                "CREATE TABLE items (ids BIGINT PRIMARY KEY, cnumber VARCHAR(100), inttype INT, contactsids INT, accountsids INT, dateadded DATE,"
+                + " datetodo DATE, dateend DATE, netvalue DOUBLE, discountvalue DOUBLE, taxvalue DOUBLE, discountgrosvalue DOUBLE, description VARCHAR(500))",
+                "CREATE TABLE subitems (ids BIGINT PRIMARY KEY, itemsids BIGINT, description VARCHAR(500), quantityvalue DOUBLE, externalvalue DOUBLE,"
+                + " discount DOUBLE, taxpercentvalue DOUBLE)",
+                "CREATE TABLE revenues (ids BIGINT PRIMARY KEY, cnumber VARCHAR(100), dateadded DATE, accountsids INT, netvalue DOUBLE, taxpercentvalue DOUBLE,"
+                + " brutvalue DOUBLE, description VARCHAR(500))",
+                "CREATE TABLE expenses (ids BIGINT PRIMARY KEY, cnumber VARCHAR(100), dateadded DATE, accountsids INT, netvalue DOUBLE, taxpercentvalue DOUBLE,"
+                + " brutvalue DOUBLE, description VARCHAR(500))",
+                "CREATE TABLE expense_receipts (ids BIGINT PRIMARY KEY, expensesids BIGINT, originalname VARCHAR(500), archivepath VARCHAR(1000), filesize BIGINT,"
+                + " sha256 CHAR(64), mimetype VARCHAR(100), imported_at TIMESTAMP, imported_by VARCHAR(100))",
+                "CREATE TABLE revenue_receipts (ids BIGINT PRIMARY KEY, revenuesids BIGINT, originalname VARCHAR(500), archivepath VARCHAR(1000), filesize BIGINT,"
+                + " sha256 CHAR(64), mimetype VARCHAR(100), imported_at TIMESTAMP, imported_by VARCHAR(100))",
+                //years of YaBS without the plugin
+                "INSERT INTO items VALUES (1, 'RE-1', 0, 1, 1, DATE '2019-01-01', DATE '2019-01-01', NULL, 100, 0, 19, 0, 'Rechnung 1')",
+                "INSERT INTO items VALUES (2, 'RE-2', 0, 1, 1, DATE '2019-01-02', DATE '2019-01-02', NULL, 100, 0, 19, 0, 'Rechnung 2')",
+                "INSERT INTO items VALUES (9, 'AN-1', 2, 1, 1, DATE '2019-01-01', NULL, NULL, 5, 0, 1, 0, 'Angebot')",
+                "INSERT INTO subitems VALUES (1, 1, 'Pos', 1, 100, 0, 19)",
+                "INSERT INTO revenues VALUES (1, 'E-1', DATE '2019-02-01', 1, 50, 19, 59.5, 'Einnahme')",
+                "INSERT INTO expenses VALUES (1, 'A-1', DATE '2019-02-01', 1, 10, 19, 11.9, 'Ausgabe')"}) {
+                Db.update(c, sql);
+            }
+            Gobd g = new Gobd(null);
+            g.initSchema();
+            //older audit entries without hash
+            Db.update(c, "INSERT INTO gobd_audit_log (user_id, entity_type, entity_id, action) VALUES ('u', 't', 1, 'a')");
+
+            Inventory.Result r = g.inventory.sealAtStart();
+            assertEquals("FIRST_ACTIVATION", r.reason);
+            //2 invoices (not the offer), income, expense, the older audit entry
+            assertEquals(5, r.added);
+            assertFalse(r.suspicious());
+            java.util.List<String> errors = new java.util.ArrayList<String>();
+            g.inventory.check(errors);
+            assertTrue(errors.isEmpty(), String.valueOf(errors));
+
+            //plugin off: changed, deleted, added by SQL
+            g.inventory.stop();
+            Db.update(c, "UPDATE items SET netvalue = 90 WHERE ids = 2");
+            Db.update(c, "DELETE FROM expenses WHERE ids = 1");
+            Db.update(c, "INSERT INTO revenues VALUES (2, 'E-2', DATE '2020-02-01', 1, 70, 7, 74.9, 'neu')");
+            g.inventory.check(errors);
+            assertEquals(2, errors.size(), String.valueOf(errors));
+            r = g.inventory.sealAtStart();
+            assertEquals("START", r.reason);
+            assertEquals(1, r.added);
+            assertEquals(1, r.changed.size());
+            assertEquals(1, r.deleted.size());
+            assertTrue(r.suspicious());
+            //the old content stays visible
+            Object[] h = Db.first(c, "SELECT old_core, new_core FROM gobd_seal_item WHERE entity_type = 'INVOICE' AND entity_id = 2");
+            assertTrue(String.valueOf(h[0]).contains("Net=100.000000"), String.valueOf(h[0]));
+            assertTrue(String.valueOf(h[1]).contains("Net=90.000000"), String.valueOf(h[1]));
+            errors.clear();
+            g.inventory.check(errors);
+            assertTrue(errors.isEmpty(), String.valueOf(errors));
+
+            //again, nothing changed
+            g.inventory.stop();
+            r = g.inventory.sealAtStart();
+            assertEquals(0, r.added);
+            assertFalse(r.suspicious());
+
+            //while it runs: a sealed record changed with the plugin is logged, a new one is not sealed
+            Db.update(c, "UPDATE items SET description = 'neu' WHERE ids = 1");
+            g.inventory.track(Inventory.INVOICE, 1);
+            Db.update(c, "INSERT INTO items VALUES (4, 'RE-4', 0, 1, 1, DATE '2026-11-19', DATE '2026-11-19', NULL, 10, 0, 1.9, 0, 'neu')");
+            g.inventory.track(Inventory.INVOICE, 4);
+            assertEquals("SEALED_RECORD_CHANGED", Db.first(c, "SELECT change_kind FROM gobd_seal_item WHERE entity_type = 'INVOICE' AND entity_id = 1")[0]);
+            assertNull(Db.first(c, "SELECT sealed_in FROM gobd_seal_state WHERE entity_type = 'INVOICE' AND entity_id = 4")[0]);
+            errors.clear();
+            int[] counts = g.inventory.check(errors);
+            assertTrue(errors.isEmpty(), String.valueOf(errors));
+            assertEquals(3, counts[0]);
+            new Audit(g).checkAuditLog(errors);
+            assertTrue(errors.isEmpty(), String.valueOf(errors));
+
+            //a changed seal is found
+            Db.update(c, "UPDATE gobd_seal SET new_records = 0 WHERE chain_seq = 1");
+            g.inventory.check(errors);
+            assertEquals(1, errors.size(), String.valueOf(errors));
+        } finally {
+            connF.set(null, oldConn);
+            connectorF.set(null, oldConnector);
+        }
+    }
+
     @Test
     public void onlyInvoicesAreUnderGobd() {
         assertTrue(Gobd.isGobdItemType(mpv5.db.objects.Item.TYPE_INVOICE));

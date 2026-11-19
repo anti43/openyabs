@@ -99,9 +99,15 @@ public final class Gobd {
     final Map<String, String> pendingWatchFiles = new ConcurrentHashMap<String, String>();
     volatile boolean creatingStorno = false;
     private Timer incomeWatchTimer;
+    /**
+     * The inventory seal (records that existed before the plugin or were
+     * changed without it)
+     */
+    final Inventory inventory;
 
     Gobd(ExtensionContext yabs) {
         this.yabs = yabs;
+        this.inventory = new Inventory(this);
     }
 
     /**
@@ -319,6 +325,7 @@ public final class Gobd {
             u(alter);
         }
         migrateChainSeq();
+        inventory.initSchema();
         //one successor per link: two clients can not fork a chain
         for (String index : new String[]{
             "CREATE UNIQUE INDEX IF NOT EXISTS gobd_document_lock_seq ON gobd_document_lock (chain_seq)",
@@ -598,10 +605,17 @@ public final class Gobd {
             if (b.length() > 0) {
                 b.append(" ;; ");
             }
-            b.append(GobdUtil.fmtExact(p[1])).append("x ").append(str(p[0]).trim()).append(" @ ").append(GobdUtil.fmtExact(p[2]))
-                    .append(" -").append(GobdUtil.fmtExact(p[3])).append("% USt ").append(GobdUtil.fmtExact(p[4])).append("%");
+            b.append(positionLine(p[0], p[1], p[2], p[3], p[4]));
         }
         return b.toString();
+    }
+
+    /**
+     * @return one position as in {@link #positionsCoreInDb} (6 decimals)
+     */
+    static String positionLine(Object description, Object quantity, Object price, Object discount, Object taxRate) {
+        return GobdUtil.fmtExact(quantity) + "x " + str(description).trim() + " @ " + GobdUtil.fmtExact(price)
+                + " -" + GobdUtil.fmtExact(discount) + "% USt " + GobdUtil.fmtExact(taxRate) + "%";
     }
 
     static String revenueSnapshot(Revenue rev) {
@@ -1702,6 +1716,7 @@ public final class Gobd {
                 if (object instanceof Item && !finalizingIds.contains(object.__getIDS())) {
                     lastGeneratedFiles.remove((long) object.__getIDS());
                 }
+                inventory.track(object);
                 return object;
             }
 
@@ -1715,6 +1730,8 @@ public final class Gobd {
                 if (!checkWriteAllowed(obj, true)) {
                     throw veto(obj);
                 }
+                //after the delete (it follows this call on the Swing thread)
+                javax.swing.SwingUtilities.invokeLater(() -> inventory.track(obj));
                 return obj;
             }
         };
@@ -1822,6 +1839,7 @@ public final class Gobd {
         }
         seenWatchFiles.clear();
         pendingWatchFiles.clear();
+        inventory.stop();
         creatingStorno = false;
         finalizingIds.clear();
         lastGeneratedFiles.clear();

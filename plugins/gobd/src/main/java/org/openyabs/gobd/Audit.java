@@ -142,6 +142,7 @@ final class Audit {
             }
         }
         int[] audit = checkAuditLog(errors);
+        int[] seals = g.inventory.check(errors);
         if (!errors.isEmpty()) {
             return "FEHLER: Integritaetsprobleme im GoBD-Archiv:\n- " + String.join("\n- ", errors);
         }
@@ -150,7 +151,8 @@ final class Audit {
         }
         return "OK: Alle " + verified + " Ausgangsbelege und " + verifiedIncome
                 + " Einnahmenbelege sowie deren SHA-256-Hash-Ketten sind lueckenlos und unversehrt; Audit-Log-Kette: " + audit[0] + " Eintraege"
-                + (audit[1] > 0 ? " (dazu " + audit[1] + " aeltere Eintraege ohne Hash)" : "") + ".";
+                + (audit[1] > 0 ? " (dazu " + audit[1] + " aeltere Eintraege ohne Hash, versiegelt)" : "") + "; "
+                + seals[0] + " Bestandsversiegelungen, " + seals[1] + " Datensaetze im versiegelten Bestand unveraendert.";
     }
 
     /**
