@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<office:document xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0"
+                 xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0"
+                 office:version="1.2"
+                 office:mimetype="application/vnd.oasis.opendocument.text">
+  <office:body>
+    <office:text>
+      <text:p>[companyinfo.name] – [companyinfo.street], [companyinfo.zip] [companyinfo.city]</text:p>
+      <text:h text:outline-level="1">Repair Order [item.cnumber]</text:h>
+      <text:p>Customer: [contact.cname], [contact.street], [contact.zip] [contact.city]</text:p>
+      <text:p>Vehicle: [ws.makeModel] | License Plate: [ws.plate] | VIN: [ws.vin]</text:p>
+      <text:p>Mileage: [ws.mileage] [ws.mileageUnit] | Drop-off: [ws.dropoffDate] | Planned Pickup: [ws.pickupDate]</text:p>
+      <text:p>Next Inspection: [ws.inspectionDue] | Linked Quote: [ws.quoteNumber] ([ws.quoteTotal])</text:p>
+      <text:p>Customer Complaint / Requested Work: [ws.complaint]</text:p>
+      <text:p>Work Summary: [ws.workSummary]</text:p>
+      <text:p>Old Parts Handling: [ws.oldParts] | Labor Rate Basis: [ws.awDefinition]</text:p>
+      <text:p>[xtable1]</text:p>
+      <text:p>Customer Signature (Order &amp; Terms): ___________________________</text:p>
+    </office:text>
+  </office:body>
+</office:document>

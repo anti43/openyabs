@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<office:document xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0"
+                 xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0"
+                 office:version="1.2"
+                 office:mimetype="application/vnd.oasis.opendocument.text">
+  <office:body>
+    <office:text>
+      <text:p>[companyinfo.name] – [companyinfo.street], [companyinfo.zip] [companyinfo.city]</text:p>
+      <text:h text:outline-level="1">Tire Storage Receipt</text:h>
+      <text:p>Customer: [contact.cname], [contact.street], [contact.zip] [contact.city]</text:p>
+      <text:p>Vehicle: [ws.makeModel] | License Plate: [ws.plate] | VIN: [ws.vin]</text:p>
+      <text:p>Stored Wheel / Tire Set: [ws.tireInfo]</text:p>
+      <text:p>Storage Location: [ws.tireStorageLocation]</text:p>
+      <text:p>Tread Depth (FL / FR / RL / RR): [ws.tireTreadDepth]</text:p>
+      <text:p>Condition / Pre-existing Damage Notes: [ws.tireCondition]</text:p>
+      <text:p>Customer Signature: ___________________________ | Workshop Signature: ___________________________</text:p>
+    </office:text>
+  </office:body>
+</office:document>

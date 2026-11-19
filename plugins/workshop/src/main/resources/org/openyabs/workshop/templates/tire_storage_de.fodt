@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<office:document xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0"
+                 xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0"
+                 office:version="1.2"
+                 office:mimetype="application/vnd.oasis.opendocument.text">
+  <office:body>
+    <office:text>
+      <text:p>[companyinfo.name] – [companyinfo.street], [companyinfo.zip] [companyinfo.city]</text:p>
+      <text:h text:outline-level="1">Reifen-Einlagerungsschein (§ 688 BGB)</text:h>
+      <text:p>Kunde: [contact.cname], [contact.street], [contact.zip] [contact.city]</text:p>
+      <text:p>Fahrzeug: [ws.makeModel] | Kennzeichen: [ws.plate] | FIN: [ws.vin]</text:p>
+      <text:p>Eingelagerter Radsatz: [ws.tireInfo]</text:p>
+      <text:p>Lagerort: [ws.tireStorageLocation]</text:p>
+      <text:p>Profiltiefe (VL / VR / HL / HR): [ws.tireTreadDepth]</text:p>
+      <text:p>Zustand / Vorschäden: [ws.tireCondition]</text:p>
+      <text:p>Unterschrift Kunde: ___________________________ | Unterschrift Werkstatt: ___________________________</text:p>
+    </office:text>
+  </office:body>
+</office:document>

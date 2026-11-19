@@ -201,6 +201,8 @@ public final class ExtensionManager {
     private final List<Owned<JournalExport>> journalExports = new CopyOnWriteArrayList<Owned<JournalExport>>();
     private final List<Owned<Function<mpv5.db.common.DatabaseObject, java.util.Map<String, Object>>>> templateFieldProviders
             = new CopyOnWriteArrayList<Owned<Function<mpv5.db.common.DatabaseObject, java.util.Map<String, Object>>>>();
+    private final java.util.Map<String, java.util.Map<String, java.util.Map<String, String>>> translations
+            = new java.util.concurrent.ConcurrentHashMap<String, java.util.Map<String, java.util.Map<String, String>>>();
     private final List<Runnable> changeListeners = new CopyOnWriteArrayList<Runnable>();
     private final File folder;
     private Host host;
@@ -898,6 +900,141 @@ public final class ExtensionManager {
     }
 
     /**
+     * Resolves a plugin-scoped translation key using the active OpenYaBS user
+     * language.
+     *
+     * @param owner plugin id
+     * @param key short translation key
+     * @param fallback default pattern if not found
+     * @param args optional {@link java.text.MessageFormat} arguments
+     * @return localized and formatted string
+     */
+    public String translate(String owner, String key, String fallback, Object... args) {
+        return translateForLocale(owner, resolveActiveLanguage(), key, fallback, args);
+    }
+
+    /**
+     * Resolves a plugin-scoped translation key for an explicit language tag
+     * (fallback chain: exact locale -> base language -> {@code en} -> fallback
+     * -> key).
+     *
+     * @param owner plugin id
+     * @param languageTag e.g. {@code "de_DE"}, {@code "de"}, {@code "en"}
+     * @param key short translation key
+     * @param fallback default pattern if not found (may be null)
+     * @param args optional {@link java.text.MessageFormat} arguments
+     * @return localized and formatted string
+     */
+    public String translateForLocale(String owner, String languageTag, String key, String fallback, Object... args) {
+        String pattern = null;
+        if (owner != null && key != null) {
+            java.util.Map<String, java.util.Map<String, String>> byLang = translations.get(owner);
+            if (byLang != null && !byLang.isEmpty()) {
+                String norm = normalizeLanguageTag(languageTag);
+                if (!norm.isEmpty()) {
+                    pattern = lookupTranslation(byLang, norm, key);
+                    int sep = norm.indexOf('_');
+                    if (pattern == null && sep > 0) {
+                        pattern = lookupTranslation(byLang, norm.substring(0, sep), key);
+                    }
+                }
+                if (pattern == null) {
+                    pattern = lookupTranslation(byLang, "en", key);
+                }
+            }
+        }
+        if (pattern == null) {
+            pattern = fallback != null ? fallback : (key == null ? "" : key);
+        }
+        if (args != null && args.length > 0) {
+            try {
+                return java.text.MessageFormat.format(pattern, args);
+            } catch (IllegalArgumentException ignored) {
+                return pattern;
+            }
+        }
+        return pattern;
+    }
+
+    private static String lookupTranslation(java.util.Map<String, java.util.Map<String, String>> byLang, String lang, String key) {
+        java.util.Map<String, String> entries = byLang.get(lang);
+        return entries == null ? null : entries.get(key);
+    }
+
+    /**
+     * Normalizes a language or locale tag to {@code ll} or {@code ll_CC}
+     * (lowercase language, uppercase country).
+     */
+    public static String normalizeLanguageTag(String tag) {
+        if (tag == null) {
+            return "";
+        }
+        String t = tag.trim();
+        if (t.isEmpty()) {
+            return "";
+        }
+        String lower = t.toLowerCase(Locale.ROOT);
+        if (lower.equals("buildin_en") || lower.startsWith("buildin")) {
+            return "en";
+        }
+        if (lower.startsWith("de-") || lower.startsWith("de_") || lower.equals("de") || lower.startsWith("deutsch")) {
+            // Recognize OpenYaBS bundle names like "DE-Yabs-2.0" as base "de", while preserving "de_DE" / "de-AT"
+            String cleaned = t.replace('-', '_');
+            String[] parts = cleaned.split("_");
+            if (parts.length >= 2 && parts[0].length() == 2 && parts[1].length() == 2 && parts[1].chars().allMatch(Character::isLetter)) {
+                return parts[0].toLowerCase(Locale.ROOT) + "_" + parts[1].toUpperCase(Locale.ROOT);
+            }
+            return "de";
+        }
+        String cleaned = t.replace('-', '_');
+        String[] parts = cleaned.split("_");
+        if (parts.length >= 2 && parts[0].length() >= 2 && parts[1].length() == 2 && parts[1].chars().allMatch(Character::isLetter)) {
+            return parts[0].toLowerCase(Locale.ROOT) + "_" + parts[1].toUpperCase(Locale.ROOT);
+        }
+        return parts[0].toLowerCase(Locale.ROOT);
+    }
+
+    /**
+     * Resolves the currently active OpenYaBS UI language tag from the logged-in
+     * user's language and locale settings, falling back to the JVM default
+     * locale and finally {@code "en"}.
+     */
+    public static String resolveActiveLanguage() {
+        try {
+            mpv5.db.objects.User u = mpv5.db.objects.User.getCurrentUser();
+            if (u != null) {
+                String lang = u.__getLanguage();
+                String locale = u.__getLocale();
+                if (lang != null && !lang.trim().isEmpty()) {
+                    String normLang = normalizeLanguageTag(lang);
+                    if (locale != null && !locale.trim().isEmpty()) {
+                        String normLocale = normalizeLanguageTag(locale);
+                        if (normLocale.startsWith(normLang + "_")) {
+                            return normLocale;
+                        }
+                    }
+                    if (!normLang.isEmpty()) {
+                        return normLang;
+                    }
+                }
+                if (locale != null && !locale.trim().isEmpty()) {
+                    String normLocale = normalizeLanguageTag(locale);
+                    if (!normLocale.isEmpty()) {
+                        return normLocale;
+                    }
+                }
+            }
+        } catch (Throwable ignored) {
+        }
+        Locale def = Locale.getDefault();
+        if (def != null && !def.getLanguage().isEmpty()) {
+            String tag = def.getCountry().isEmpty() ? def.getLanguage() : def.getLanguage() + "_" + def.getCountry();
+            return normalizeLanguageTag(tag);
+        }
+        return "en";
+    }
+
+    /**
      * Asks the search providers of the plugins; a failing provider is skipped
      *
      * @param needle
@@ -994,6 +1131,7 @@ public final class ExtensionManager {
         listeners.removeIf(p -> p.owner.equals(owner));
         journalExports.removeIf(p -> p.owner.equals(owner));
         templateFieldProviders.removeIf(p -> p.owner.equals(owner));
+        translations.remove(owner);
         boolean hadViews = viewListeners.removeIf(p -> p.owner.equals(owner));
         for (Owned<DatabaseObjectModifier> m : modifiers) {
             if (m.owner.equals(owner)) {
@@ -1016,7 +1154,7 @@ public final class ExtensionManager {
     /**
      * @param owner
      * @return how many things the plugin added (commands, pages, providers,
-     * listeners, modifiers, view listeners)
+     * listeners, modifiers, view listeners, exports, templates, translations)
      */
     public int contributions(String owner) {
         int n = 0;
@@ -1043,6 +1181,10 @@ public final class ExtensionManager {
         }
         for (Owned<?> p : templateFieldProviders) {
             n += p.owner.equals(owner) ? 1 : 0;
+        }
+        java.util.Map<String, java.util.Map<String, String>> trMap = translations.get(owner);
+        if (trMap != null) {
+            n += trMap.size();
         }
         return n;
     }
@@ -1193,6 +1335,33 @@ public final class ExtensionManager {
             if (provider != null) {
                 templateFieldProviders.add(new Owned<Function<mpv5.db.common.DatabaseObject, java.util.Map<String, Object>>>(owner, provider));
             }
+        }
+
+        @Override
+        public void addTranslations(String languageCode, java.util.Map<String, String> messages) {
+            String norm = normalizeLanguageTag(languageCode);
+            if (norm.isEmpty() || messages == null || messages.isEmpty()) {
+                return;
+            }
+            java.util.Map<String, java.util.Map<String, String>> byLang = translations.computeIfAbsent(
+                    owner, k -> new java.util.concurrent.ConcurrentHashMap<String, java.util.Map<String, String>>());
+            java.util.Map<String, String> bucket = byLang.computeIfAbsent(
+                    norm, k -> new java.util.concurrent.ConcurrentHashMap<String, String>());
+            for (java.util.Map.Entry<String, String> e : messages.entrySet()) {
+                if (e.getKey() != null && e.getValue() != null) {
+                    bucket.put(e.getKey(), e.getValue());
+                }
+            }
+        }
+
+        @Override
+        public String tr(String key, Object... args) {
+            return translate(owner, key, key, args);
+        }
+
+        @Override
+        public String trOrDefault(String key, String fallback, Object... args) {
+            return translate(owner, key, fallback, args);
         }
 
         @Override
