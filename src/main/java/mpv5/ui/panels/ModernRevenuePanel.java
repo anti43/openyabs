@@ -1002,52 +1002,44 @@ public class ModernRevenuePanel extends ModernDataPanel {
         if (files == null || files.isEmpty()) {
             return;
         }
-        List<Revenue> importedRevenues = new ArrayList<Revenue>();
-        List<String> alreadyImported = new ArrayList<String>();
-        List<String> deniedFiles = new ArrayList<String>();
+        //expense or income from the parties of the invoice; this panel when they do not tell
+        List<mpv5.handler.EInvoiceImport.Result> results = mpv5.handler.EInvoiceImport.importFiles(files, mpv5.handler.EInvoiceImport.Kind.INCOME);
+        showImportResults(results);
+    }
 
-        for (File f : files) {
-            if (f == null || !f.isFile()) {
-                continue;
-            }
-            ZugpferdExpenseImport.ParsedInvoice parsed = ZugpferdExpenseImport.parse(f);
-            if (parsed == null) {
-                deniedFiles.add(f.getName());
-                continue;
-            }
-            try {
-                String sha = RevenueReceipts.sha256(f);
-                if (RevenueReceipts.existsBySha256(sha)) {
-                    alreadyImported.add(f.getName() + " (" + (parsed.invoiceNumber != null && !parsed.invoiceNumber.isEmpty() ? parsed.invoiceNumber : sha.substring(0, 10)) + ")");
-                    continue;
-                }
-                Revenue newRev = parsed.toRevenue(defaultIncomeAccountId(), 1);
-                if (!newRev.save(true) || newRev.__getIDS() <= 0) {
-                    throw new IllegalStateException(Messages.RECEIPT_SAVE_FAILED.toString() + " (" + f.getName() + ")");
-                }
-                mpv5.handler.Activity.record(newRev, mpv5.handler.Activity.Kind.CREATED, String.format(Messages.RECEIPT_IMPORTED_SINGLE_REVENUE.toString(), f.getAbsolutePath()));
-                RevenueReceipts.attach(newRev, f);
-                importedRevenues.add(newRev);
-            } catch (Exception ex) {
-                Log.Debug(ModernRevenuePanel.class, ex);
-                deniedFiles.add(f.getName() + " (" + ex.getMessage() + ")");
+    /**
+     * Shows what happened to the imported files, the last record of this
+     * panel's kind (the list shows all dates if the filter would hide it)
+     *
+     * @param results
+     */
+    private void showImportResults(List<mpv5.handler.EInvoiceImport.Result> results) {
+        Revenue shown = null;
+        boolean other = false;
+        List<String> lines = new ArrayList<String>();
+        for (mpv5.handler.EInvoiceImport.Result r : results) {
+            lines.add(r.message());
+            if (r.record instanceof Revenue && r.outcome != mpv5.handler.EInvoiceImport.Outcome.FAILED) {
+                shown = (Revenue) r.record;
+            } else if (r.outcome == mpv5.handler.EInvoiceImport.Outcome.IMPORTED) {
+                other = true;
             }
         }
-
-        if (!importedRevenues.isEmpty()) {
+        if (other) {
+            ModernExpensePanel.refreshIfOpen();
+            ModernRevenuePanel.refreshIfOpen();
+        }
+        if (shown != null) {
+            Date d = shown.__getDateadded();
+            Date now = new Date();
+            if (d != null && (d.before(DateConverter.getStartOfYear(now)) || d.after(DateConverter.getEndOfYear(now)))) {
+                clearFilter();
+            }
             refresh();
-            setDataOwner(importedRevenues.get(importedRevenues.size() - 1), true);
-            Popup.notice(String.format(Messages.RECEIPT_IMPORTED_REVENUES_SUCCESS.toString(), importedRevenues.size()));
+            setDataOwner(shown, true);
         }
-
-        if (!deniedFiles.isEmpty()) {
-            JOptionPane.showMessageDialog(this,
-                    String.format(Messages.RECEIPT_INVALID_INVOICE_BODY.toString(), String.join("\n- ", deniedFiles)),
-                    Messages.RECEIPT_INVALID_INVOICE_TITLE.toString(), JOptionPane.WARNING_MESSAGE);
-        } else if (!alreadyImported.isEmpty() && importedRevenues.isEmpty()) {
-            JOptionPane.showMessageDialog(this,
-                    String.format(Messages.RECEIPT_ALREADY_IMPORTED_NOTICE.toString(), String.join("\n- ", alreadyImported)),
-                    Messages.RECEIPT_ALREADY_IMPORTED_TITLE.toString(), JOptionPane.INFORMATION_MESSAGE);
+        if (!lines.isEmpty()) {
+            Popup.notice(String.join("\n", lines));
         }
     }
 
@@ -1082,6 +1074,12 @@ public class ModernRevenuePanel extends ModernDataPanel {
         }
         if (dataOwner == null || dataOwner.__getIDS() <= 0) {
             ZugpferdExpenseImport.ParsedInvoice parsed = ZugpferdExpenseImport.parse(source);
+            if (parsed != null && hasDatabaseConnection()) {
+                showImportResults(java.util.Collections.singletonList(
+                        mpv5.handler.EInvoiceImport.importFile(source, mpv5.handler.EInvoiceImport.Kind.INCOME)));
+                refreshPreview();
+                return;
+            }
             if (parsed != null) {
                 importParsedZugferdFile(source, parsed);
                 refreshPreview();

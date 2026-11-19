@@ -174,6 +174,8 @@ public final class Activity {
         } catch (Exception e) {
             Log.Debug(Activity.class, e);
         }
+        //invoices: the checksum of the written file (verify it later)
+        DocumentFiles.record(owner, f);
         synchronized (entries) {
             //the same file again (a new preview, saved again): only the newest
             entries.removeIf(e -> e.file != null && e.file.equals(f));

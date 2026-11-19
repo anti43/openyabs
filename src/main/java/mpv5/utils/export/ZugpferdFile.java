@@ -195,6 +195,8 @@ public class ZugpferdFile implements Waitable {
                 }
             }
             Log.Debug(this, "E-Rechnung written: " + target);
+            //the checksum of the e-invoice of this invoice (verify it later)
+            mpv5.handler.DocumentFiles.record(item, target);
             try {
                 ExportProgress.step(Messages.EXPORT_STEP_VALIDATE);
                 validation = EInvoiceValidator.validate(target);
@@ -490,7 +492,9 @@ public class ZugpferdFile implements Waitable {
         if (!email.isEmpty()) {
             sender.setEmail(email);
         }
-        sender.setContact(new org.mustangproject.Contact(firstNonEmpty(person, name), phone, email));
+        //no empty phone / mail element: invalid in XRechnung (PEPPOL-EN16931-R008)
+        sender.setContact(new org.mustangproject.Contact(firstNonEmpty(person, name),
+                phone.trim().isEmpty() ? null : phone, email.isEmpty() ? null : email));
         return sender;
     }
 

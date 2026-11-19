@@ -104,6 +104,13 @@ public final class ZugpferdExpenseImport {
         public final String currency;
         public final List<String> lineDescriptions;
         public final List<String> notes;
+        /**
+         * VAT IDs and tax numbers of the seller and the buyer, the name of the
+         * buyer: tell an incoming invoice (expense) from an own one (income)
+         */
+        public List<String> sellerIds = Collections.emptyList();
+        public String buyerName = "";
+        public List<String> buyerIds = Collections.emptyList();
 
         public ParsedInvoice(File sourceFile, String invoiceNumber, String sellerName,
                 String sellerTaxId, String sellerIban, Date issueDate, Date dueDate,
@@ -230,12 +237,18 @@ public final class ZugpferdExpenseImport {
         public int alreadyImported;
         public int skippedNotEInvoice;
         public final List<Expense> expenses = new ArrayList<Expense>();
+        public final List<Revenue> revenues = new ArrayList<Revenue>();
         public final List<ParsedInvoice> parsed = new ArrayList<ParsedInvoice>();
         public final List<String> errors = new ArrayList<String>();
+        /**
+         * one line per file of the import with detection
+         */
+        public final List<String> lines = new ArrayList<String>();
 
         public String summary() {
-            return String.format(Messages.ZUGFERD_IMPORT_RESULT.toString(),
+            String s = String.format(Messages.ZUGFERD_IMPORT_RESULT.toString(),
                     imported, alreadyImported, skippedNotEInvoice);
+            return lines.isEmpty() ? s : s + "\n\n" + String.join("\n", lines);
         }
     }
 
@@ -247,44 +260,6 @@ public final class ZugpferdExpenseImport {
 
         Expense save(ParsedInvoice invoice, File sourceFile, String sha256) throws Exception;
     }
-
-    private static final ImportSink DATABASE_SINK = new ImportSink() {
-        @Override
-        public boolean isAlreadyImported(String sha256) {
-            return ExpenseReceipts.existsBySha256(sha256);
-        }
-
-        @Override
-        public Expense save(ParsedInvoice inv, File sourceFile, String sha256) throws Exception {
-            Expense e = inv.toExpense(defaultExpenseAccountId(), 1);
-            String num = e.__getCnumber();
-            Date issue = inv.issueDate;
-            Date due = inv.dueDate;
-            if (!e.save(true)) {
-                throw new IllegalStateException("Could not save expense for " + sourceFile.getName());
-            }
-            // DatabaseObject.save() resets dateadded to new Date() on initial insert
-            boolean updateNeeded = false;
-            if (num != null && !num.isEmpty() && !num.equals(e.__getCnumber())) {
-                e.setCnumber(num);
-                e.setCname(num);
-                updateNeeded = true;
-            }
-            if (issue != null) {
-                e.setDateadded(issue);
-                updateNeeded = true;
-            }
-            if (due != null) {
-                e.setDateend(due);
-                updateNeeded = true;
-            }
-            if (updateNeeded) {
-                e.save(true);
-            }
-            ExpenseReceipts.attach(e, sourceFile);
-            return e;
-        }
-    };
 
     /**
      * @return the configured incoming e-invoice folder path, or {@code ""} if unset
@@ -393,18 +368,19 @@ public final class ZugpferdExpenseImport {
         if (changed.isEmpty()) {
             return;
         }
-        Result r = importFiles(changed, DATABASE_SINK);
+        Result r = importFiles(changed);
         for (File f : candidates) {
             SEEN_FILE_STAMPS.put(f.getAbsolutePath(), f.lastModified() + ":" + f.length());
         }
         if (r.imported > 0) {
-            final String msg = r.summary();
+            final String msg = String.format(Messages.EINVOICE_WATCH_IMPORTED.toString(), r.imported, r.expenses.size(), r.revenues.size());
             SwingUtilities.invokeLater(() -> {
                 try {
                     YabsViewProxy.instance().addMessage(msg);
                 } catch (Exception ignored) {
                 }
                 ModernExpensePanel.refreshIfOpen();
+                mpv5.ui.panels.ModernRevenuePanel.refreshIfOpen();
             });
         }
     }
@@ -424,7 +400,10 @@ public final class ZugpferdExpenseImport {
      * Imports all new ZUGFeRD / XRechnung files from {@code dir} into the database.
      */
     public static Result importFromFolder(File dir) {
-        return importFromFolder(dir, DATABASE_SINK);
+        if (dir == null || !dir.isDirectory()) {
+            return new Result();
+        }
+        return importFiles(Arrays.asList(listCandidateFiles(dir)));
     }
 
     /**
@@ -441,7 +420,42 @@ public final class ZugpferdExpenseImport {
      * Imports the given files (or directories) into the database.
      */
     public static Result importFiles(Collection<File> files) {
-        return importFiles(files, DATABASE_SINK);
+        Result result = new Result();
+        if (files == null) {
+            return result;
+        }
+        List<File> flat = new ArrayList<File>();
+        for (File f : files) {
+            if (f != null && f.isDirectory()) {
+                flat.addAll(Arrays.asList(listCandidateFiles(f)));
+            } else if (isCandidateFile(f)) {
+                flat.add(f);
+            }
+        }
+        //expense or income from the parties of the invoice (EInvoiceImport)
+        for (EInvoiceImport.Result r : EInvoiceImport.importFiles(flat, null)) {
+            switch (r.outcome) {
+                case IMPORTED:
+                    result.imported++;
+                    result.parsed.add(r.invoice);
+                    if (r.record instanceof Expense) {
+                        result.expenses.add((Expense) r.record);
+                    } else if (r.record instanceof Revenue) {
+                        result.revenues.add((Revenue) r.record);
+                    }
+                    break;
+                case NOT_EINVOICE:
+                    result.skippedNotEInvoice++;
+                    continue;
+                case FAILED:
+                    result.errors.add(r.message());
+                    break;
+                default:
+                    result.alreadyImported++;
+            }
+            result.lines.add(r.message());
+        }
+        return result;
     }
 
     /**
@@ -680,8 +694,27 @@ public final class ZugpferdExpenseImport {
             List<String> lines = extractLineDescriptions(xp, doc, calc);
             List<String> notes = extractNotes(xp, doc, importer);
 
-            return new ParsedInvoice(file, invoiceNumber, sellerName, sellerTaxId, sellerIban,
+            ParsedInvoice parsed = new ParsedInvoice(file, invoiceNumber, sellerName, sellerTaxId, sellerIban,
                     issueDate, dueDate, netAmount, grossAmount, taxAmount, taxRate, currency, lines, notes);
+            parsed.sellerIds = all(xp, doc,
+                    "//*[local-name()='SellerTradeParty']/*[local-name()='SpecifiedTaxRegistration']/*[local-name()='ID']",
+                    "//*[local-name()='AccountingSupplierParty']//*[local-name()='PartyTaxScheme']/*[local-name()='CompanyID']",
+                    "//*[local-name()='AccountingSupplierParty']//*[local-name()='PartyLegalEntity']/*[local-name()='CompanyID']");
+            if (!parsed.sellerTaxId.isEmpty() && !parsed.sellerIds.contains(parsed.sellerTaxId)) {
+                List<String> ids = new ArrayList<String>(parsed.sellerIds);
+                ids.add(parsed.sellerTaxId);
+                parsed.sellerIds = ids;
+            }
+            parsed.buyerName = firstNonEmpty(
+                    eval(xp, doc, "//*[local-name()='BuyerTradeParty']/*[local-name()='Name']"),
+                    eval(xp, doc, "//*[local-name()='AccountingCustomerParty']//*[local-name()='PartyLegalEntity']/*[local-name()='RegistrationName']"),
+                    eval(xp, doc, "//*[local-name()='AccountingCustomerParty']//*[local-name()='PartyName']/*[local-name()='Name']"),
+                    "").trim();
+            parsed.buyerIds = all(xp, doc,
+                    "//*[local-name()='BuyerTradeParty']/*[local-name()='SpecifiedTaxRegistration']/*[local-name()='ID']",
+                    "//*[local-name()='AccountingCustomerParty']//*[local-name()='PartyTaxScheme']/*[local-name()='CompanyID']",
+                    "//*[local-name()='AccountingCustomerParty']//*[local-name()='PartyLegalEntity']/*[local-name()='CompanyID']");
+            return parsed;
         } catch (Exception e) {
             Log.Debug(ZugpferdExpenseImport.class, "Could not parse ZUGFeRD file " + file + ": " + e.getMessage());
             return null;
@@ -845,20 +878,6 @@ public final class ZugpferdExpenseImport {
         return new ArrayList<String>(notes);
     }
 
-    private static int defaultExpenseAccountId() {
-        try {
-            ArrayList<DatabaseObject> accounts = DatabaseObject.getObjects(
-                    Context.getAccounts(), new QueryCriteria("intaccounttype", Account.EXPENSE));
-            if (accounts != null && !accounts.isEmpty()) {
-                return accounts.get(0).__getIDS();
-            }
-        } catch (NodataFoundException ignored) {
-        } catch (Exception e) {
-            Log.Debug(ZugpferdExpenseImport.class, e.getMessage());
-        }
-        return 1;
-    }
-
     @FunctionalInterface
     private interface StringSupplier {
         String get() throws Exception;
@@ -870,6 +889,27 @@ public final class ZugpferdExpenseImport {
         } catch (Throwable t) {
             return null;
         }
+    }
+
+    /**
+     * @return the non empty texts of all nodes the expressions find
+     */
+    private static List<String> all(XPath xp, Object context, String... expressions) {
+        List<String> l = new ArrayList<String>();
+        for (String e : expressions) {
+            try {
+                NodeList nodes = (NodeList) xp.evaluate(e, context, javax.xml.xpath.XPathConstants.NODESET);
+                for (int i = 0; i < nodes.getLength(); i++) {
+                    String t = nodes.item(i).getTextContent();
+                    if (t != null && !t.trim().isEmpty() && !l.contains(t.trim())) {
+                        l.add(t.trim());
+                    }
+                }
+            } catch (Exception ex) {
+                //not this syntax
+            }
+        }
+        return l;
     }
 
     private static String eval(XPath xp, Object context, String expression) {
