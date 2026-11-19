@@ -55,6 +55,10 @@ class MixedRatesTest {
      * 20 + 0 = 192.50
      */
     static String mixedSupplierInvoice(String number, String date) {
+        return mixedInvoice(number, date, "Lieferant GmbH", "DE111111111", "Wir GmbH", "DE999999999");
+    }
+
+    static String mixedInvoice(String number, String date, String seller, String sellerVat, String buyer, String buyerVat) {
         String tax = "<ram:ApplicableTradeTax><ram:CalculatedAmount>%s</ram:CalculatedAmount><ram:TypeCode>VAT</ram:TypeCode>"
                 + "%s<ram:BasisAmount>%s</ram:BasisAmount><ram:CategoryCode>%s</ram:CategoryCode>"
                 + "<ram:RateApplicablePercent>%s</ram:RateApplicablePercent></ram:ApplicableTradeTax>";
@@ -69,8 +73,8 @@ class MixedRatesTest {
                 + "<ram:IncludedSupplyChainTradeLineItem><ram:SpecifiedTradeProduct><ram:Name>Fachbuch</ram:Name></ram:SpecifiedTradeProduct></ram:IncludedSupplyChainTradeLineItem>"
                 + "<ram:IncludedSupplyChainTradeLineItem><ram:SpecifiedTradeProduct><ram:Name>Porto</ram:Name></ram:SpecifiedTradeProduct></ram:IncludedSupplyChainTradeLineItem>"
                 + "<ram:ApplicableHeaderTradeAgreement>"
-                + "<ram:SellerTradeParty><ram:Name>Lieferant GmbH</ram:Name><ram:SpecifiedTaxRegistration><ram:ID schemeID=\"VA\">DE111111111</ram:ID></ram:SpecifiedTaxRegistration></ram:SellerTradeParty>"
-                + "<ram:BuyerTradeParty><ram:Name>Wir GmbH</ram:Name><ram:SpecifiedTaxRegistration><ram:ID schemeID=\"VA\">DE999999999</ram:ID></ram:SpecifiedTaxRegistration></ram:BuyerTradeParty>"
+                + "<ram:SellerTradeParty><ram:Name>" + seller + "</ram:Name><ram:SpecifiedTaxRegistration><ram:ID schemeID=\"VA\">" + sellerVat + "</ram:ID></ram:SpecifiedTaxRegistration></ram:SellerTradeParty>"
+                + "<ram:BuyerTradeParty><ram:Name>" + buyer + "</ram:Name><ram:SpecifiedTaxRegistration><ram:ID schemeID=\"VA\">" + buyerVat + "</ram:ID></ram:SpecifiedTaxRegistration></ram:BuyerTradeParty>"
                 + "</ram:ApplicableHeaderTradeAgreement>"
                 + "<ram:ApplicableHeaderTradeSettlement><ram:InvoiceCurrencyCode>EUR</ram:InvoiceCurrencyCode>"
                 + String.format(tax, "19.00", "", "100.00", "S", "19.00")
@@ -136,6 +140,20 @@ class MixedRatesTest {
             e.setDateend(new Date());
             assertTrue(EInvoiceRoundTripTest.onEdt(() -> e.save(true)));
         }
+
+        //--- 1b. an own invoice of another program with three rates: three income bookings (not paid yet)
+        File own = EInvoiceRoundTripTest.write(tmp.resolve("in"), "alt-mix.xml", mixedInvoice("ALT-MIX", today, "Wir GmbH", "DE999999999", "Kunde AG", "DE222222222"));
+        EInvoiceImport.Result ri = EInvoiceRoundTripTest.onEdt(() -> EInvoiceImport.importFile(own, null));
+        assertEquals(EInvoiceImport.Outcome.IMPORTED, ri.outcome, ri.message());
+        assertEquals(EInvoiceImport.Kind.INCOME, ri.kind);
+        assertEquals(3, Integer.parseInt(String.valueOf(rows("SELECT COUNT(*) FROM revenues")[0][0])), "one income per VAT rate");
+        assertEquals(3, Integer.parseInt(String.valueOf(rows("SELECT COUNT(*) FROM revenue_receipts")[0][0])));
+        money("192.50", new BigDecimal(String.valueOf(rows("SELECT SUM(brutvalue) FROM revenues")[0][0])), "income parts add up");
+        //the same invoice in another file: found by the sum of its parts
+        File own2 = EInvoiceRoundTripTest.write(tmp.resolve("in"), "alt-mix-kopie.xml", mixedInvoice("ALT-MIX", today, "Wir GmbH", "DE999999999", "Kunde AG", "DE222222222") + " ");
+        assertNotEquals(EInvoiceImport.Outcome.IMPORTED, EInvoiceImport.importFile(own2, null).outcome);
+        File sup2 = EInvoiceRoundTripTest.write(tmp.resolve("in"), "mixed-kopie.xml", mixedSupplierInvoice("MIX-1", today) + " ");
+        assertEquals(EInvoiceImport.Outcome.DUPLICATE_NUMBER, EInvoiceImport.importFile(sup2, null).outcome, "expense parts by their sum");
 
         //--- 2. an own invoice with three rates
         Contact c = new Contact();
