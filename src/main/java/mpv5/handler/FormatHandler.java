@@ -194,6 +194,13 @@ public class FormatHandler {
      * @return
      */
     public synchronized YMessageFormat getFormat() {
+        if (!mpv5.globals.LocalSettings.isCachingEnabled()) {
+            clearCache();//caching switched off: read the formats again
+        }
+        return getFormat0();
+    }
+
+    private synchronized YMessageFormat getFormat0() {
 
         int typ = determineType(source);
         String key = mpv5.db.objects.User.getCurrentUser().__getIDS() + "@" + typ;
@@ -248,7 +255,7 @@ public class FormatHandler {
                     }
                 }
 
-                return getFormat();
+                return getFormat0();
             } else {
                 Log.Debug(this, "Format not found, using default format instead!");
                 return DEFAULT_FORMAT;

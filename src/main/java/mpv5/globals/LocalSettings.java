@@ -55,6 +55,11 @@ public class LocalSettings {
     public static final String DBTYPE = "dbtype";
     public static final String SERVER_PORT = "serverport"; 
     public static final String CACHE_SIZE = "cachesize";
+    /**
+     * true: no caching of records, number formats and templates (every access
+     * reads the database); default false (caching on)
+     */
+    public static final String NO_CACHE = "nocache";
     public static final String LAST_USER = "lastuser";
     public static final String LAST_USER_PW = "lastuserpw";
     public static final String DBESCAPE = "dbescape";
@@ -84,6 +89,7 @@ public class LocalSettings {
                 {DBAUTOLOCK, "false"},
                 {SERVER_PORT, "4343"},
                 {CACHE_SIZE, "500"},
+                {NO_CACHE, "false"},
                 {LAST_USER, "1"},
                 {LAST_USER_PW, "5F4DCC3B5AA765D61D8327DEB882CF99"},
                 {OFFICE_PORT, "8100"},
@@ -271,6 +277,32 @@ public class LocalSettings {
         }
         Log.Debug(LocalSettings.class, "Changing property '" + name + "' to: " + value);
         cookie.changeProperty(name, value);
+        if (NO_CACHE.equals(name)) {
+            caching = null;
+        }
+    }
+
+    /**
+     * the value of {@link #NO_CACHE}, negated; read once (asked for every
+     * record that is loaded)
+     */
+    private static volatile Boolean caching;
+
+    /**
+     * @return true unless caching is switched off in the local settings
+     * (control panel)
+     */
+    public static boolean isCachingEnabled() {
+        Boolean c = caching;
+        if (c == null) {
+            try {
+                c = !getBooleanProperty(NO_CACHE);
+            } catch (Exception e) {
+                c = Boolean.TRUE;//settings not read yet
+            }
+            caching = c;
+        }
+        return c;
     }
 
     /**
@@ -303,6 +335,7 @@ public class LocalSettings {
                 if (propertyStore.getProperty("nodeid").equals(String.valueOf(connectionID))) {
                     Log.Debug(LocalSettings.class, "Requested connection id found: " + connectionID);
                     cookie = propertyStore;
+                    caching = null;
                 }
             }
 //            cookie.print();

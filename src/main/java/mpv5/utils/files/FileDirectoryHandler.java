@@ -350,6 +350,12 @@ public abstract class FileDirectoryHandler {
      *
      * @param file
      */
+    /**
+     * Desktop#open failed once (not on Windows): the opener of the system is
+     * used directly for the rest of the session
+     */
+    private static volatile boolean desktopOpenFails;
+
     public static void open(File file) {
         if (file == null) {
             return;
@@ -367,12 +373,17 @@ public abstract class FileDirectoryHandler {
                 }
             }
         }
-        if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.OPEN)) {
+        if (!desktopOpenFails && Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.OPEN)) {
             try {
                 Desktop.getDesktop().open(file);
                 return;
             } catch (Exception ex) {
                 Log.Debug(FileDirectoryHandler.class, ex.getMessage());
+                //e.g. "Failed to show URI" (GTK): the system opener below works, use it directly from now on
+                desktopOpenFails = !System.getProperty("os.name", "").toLowerCase(java.util.Locale.ROOT).contains("win");
+                if (file.getName().toLowerCase(java.util.Locale.ROOT).endsWith(".pdf")) {
+                    suggestPdfViewer();
+                }
             }
         }
         //the desktop of Java does not work on every Linux desktop: the opener of the system
@@ -390,6 +401,38 @@ public abstract class FileDirectoryHandler {
         } else {
             new DialogForFile().saveFile(file);
         }
+    }
+
+    /**
+     * the local setting: the user was told once to set up a PDF viewer
+     */
+    static final String PDF_VIEWER_SUGGESTED = "pdfviewersuggested";
+
+    /**
+     * Opening a PDF with the default of the system failed (no PDF viewer set
+     * up): tells the user once (not again, also not after a restart) to set
+     * one up under External programs, and offers to go there. The file is
+     * opened with the opener of the system meanwhile.
+     */
+    static void suggestPdfViewer() {
+        if (mpv5.globals.LocalSettings.hasProperty(PDF_VIEWER_SUGGESTED)
+                && "true".equals(mpv5.globals.LocalSettings.getProperty(PDF_VIEWER_SUGGESTED))) {
+            return;
+        }
+        mpv5.globals.LocalSettings.setProperty(PDF_VIEWER_SUGGESTED, "true");
+        try {
+            mpv5.globals.LocalSettings.save();
+        } catch (Exception e) {
+            Log.Debug(FileDirectoryHandler.class, e.getMessage());
+        }
+        if (java.awt.GraphicsEnvironment.isHeadless()) {
+            return;
+        }
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            if (Popup.Y_N_dialog(Messages.PDF_VIEWER_SUGGEST, Messages.EXTERNAL_PDF_VIEWER)) {
+                mpv5.ui.panels.MPControlPanel.show(mpv5.ui.dialogs.subcomponents.ControlPanel_External.class);
+            }
+        });
     }
 
     /**

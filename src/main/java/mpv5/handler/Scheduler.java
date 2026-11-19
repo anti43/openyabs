@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.LinkedHashSet;
 import mpv5.YabsApplication;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -15,7 +17,6 @@ import mpv5.db.common.QueryHandler;
 import mpv5.db.common.QueryParameter;
 import mpv5.db.common.ReturnValue;
 import mpv5.db.objects.Item;
-import mpv5.db.objects.Revenue;
 import mpv5.db.objects.Schedule;
 import mpv5.db.objects.User;
 import mpv5.globals.Messages;
@@ -183,6 +184,38 @@ public class Scheduler extends Thread {
         return map;
     }
 
+    /**
+     * Adds the records of the ids in the first column of data to target, in
+     * that order (only those within the time frame, if any). All records not
+     * cached yet are loaded with one query (was one query per record:
+     * thousands at start).
+     */
+    static void collect(Context c, ReturnValue data, vTimeframe frame, List<DatabaseObject> target) {
+        if (!data.hasData()) {
+            return;
+        }
+        Object[][] d = data.getData();
+        List<Integer> ids = new ArrayList<>(d.length);
+        for (Object[] row : d) {
+            ids.add(Integer.valueOf(row[0].toString()));
+        }
+        Map<Integer, DatabaseObject> byId = new HashMap<>();
+        try {
+            for (DatabaseObject o : DatabaseObject.<DatabaseObject>getObjects(c, ids)) {
+                byId.put(o.__getIDS(), o);
+            }
+        } catch (NodataFoundException ex) {
+            Log.Debug(Scheduler.class, ex.getMessage());
+            return;
+        }
+        for (Integer id : ids) {
+            DatabaseObject o = byId.get(id);
+            if (o != null && (frame == null || frame.contains(o.__getDateadded()))) {
+                target.add(o);
+            }
+        }
+    }
+
     public static HashMap<Color, List<? extends DatabaseObject>> getOverdueEvents(vTimeframe DateFrame) {
         List<DatabaseObject> warnings = new ArrayList<>();
         List<DatabaseObject> alerts = new ArrayList<>();
@@ -266,27 +299,7 @@ public class Scheduler extends Thread {
                     try {
                         ReturnValue data = QueryHandler.instanceOf().clone(c).select("IDS", opens);
 
-                        if (data.hasData()) {
-                            Object[][] d = data.getData();
-                            for (int i = 0; i < d.length; i++) {
-                                int id = Integer.valueOf(d[i][0].toString());
-                                try {
-                                    Item it = (Item) Item.getObject(
-                                            c,
-                                            id);
-                                    if (DateFrame != null) {
-                                        if (DateFrame.contains(it.__getDateadded())) {
-                                            waitings.add(it);
-                                        }
-                                    } else {
-                                        waitings.add(it);
-                                    }
-                                } catch (NodataFoundException ex) {
-                                    Log.Debug(Scheduler.class,
-                                            ex.getMessage());
-                                }
-                            }
-                        }
+                        collect(c, data, DateFrame, waitings);
                     } catch (NodataFoundException ex) {
                         Log.Debug(Scheduler.class, ex.getLocalizedMessage());
                     }
@@ -376,27 +389,7 @@ public class Scheduler extends Thread {
                         ReturnValue data = QueryHandler.instanceOf().clone(c).select("IDS", opens,
                                 new vTimeframe(new Date(0), DateConverter.addDays(new Date(), warn * -1)), "dateadded");
 
-                        if (data.hasData()) {
-                            Object[][] d = data.getData();
-                            for (int i = 0; i < d.length; i++) {
-                                int id = Integer.valueOf(d[i][0].toString());
-                                try {
-                                    Item it = (Item) Item.getObject(
-                                            c,
-                                            id);
-                                    if (DateFrame != null) {
-                                        if (DateFrame.contains(it.__getDateadded())) {
-                                            warnings.add(it);
-                                        }
-                                    } else {
-                                        warnings.add(it);
-                                    }
-                                } catch (NodataFoundException ex) {
-                                    Log.Debug(Scheduler.class,
-                                            ex.getMessage());
-                                }
-                            }
-                        }
+                        collect(c, data, DateFrame, warnings);
                     } catch (NodataFoundException ex) {
                         Log.Debug(Scheduler.class, ex.getLocalizedMessage());
                     }
@@ -477,25 +470,7 @@ public class Scheduler extends Thread {
                         ReturnValue data = QueryHandler.instanceOf().clone(c).select("IDS", opens,
                                 new vTimeframe(new Date(0), DateConverter.addDays(new Date(), alert * -1)), "dateadded");
 
-                        if (data.hasData()) {
-                            Object[][] d = data.getData();
-                            for (int i = 0; i < d.length; i++) {
-                                int id = Integer.valueOf(d[i][0].toString());
-                                try {
-                                    Item it = (Item) Item.getObject(c,
-                                            id);
-                                    if (DateFrame != null) {
-                                        if (DateFrame.contains(it.__getDateadded())) {
-                                            alerts.add(it);
-                                        }
-                                    } else {
-                                        alerts.add(it);
-                                    }
-                                } catch (NodataFoundException ex) {
-                                    Log.Debug(ex);
-                                }
-                            }
-                        }
+                        collect(c, data, DateFrame, alerts);
                     } catch (NodataFoundException ex) {
                         Log.Debug(Scheduler.class, ex.getLocalizedMessage());
                     }
@@ -522,27 +497,7 @@ public class Scheduler extends Thread {
             try {
                 ReturnValue data = QueryHandler.instanceOf().clone(c).select("IDS", opens);
 
-                if (data.hasData()) {
-                    Object[][] d = data.getData();
-                    for (int i = 0; i < d.length; i++) {
-                        int id = Integer.valueOf(d[i][0].toString());
-                        try {
-                            Revenue it = (Revenue) Revenue.getObject(
-                                    c,
-                                    id);
-                            if (DateFrame != null) {
-                                if (DateFrame.contains(it.__getDateadded())) {
-                                    waitings.add(it);
-                                }
-                            } else {
-                                waitings.add(it);
-                            }
-                        } catch (NodataFoundException ex) {
-                            Log.Debug(Scheduler.class,
-                                    ex.getMessage());
-                        }
-                    }
-                }
+                collect(c, data, DateFrame, waitings);
             } catch (NodataFoundException ex) {
                 Log.Debug(Scheduler.class, ex.getLocalizedMessage());
             }
@@ -558,27 +513,7 @@ public class Scheduler extends Thread {
                 ReturnValue data = QueryHandler.instanceOf().clone(c).select("IDS", opens,
                         new vTimeframe(new Date(0), DateConverter.addDays(new Date(), warn * -1)), "dateadded");
 
-                if (data.hasData()) {
-                    Object[][] d = data.getData();
-                    for (int i = 0; i < d.length; i++) {
-                        int id = Integer.valueOf(d[i][0].toString());
-                        try {
-                            Revenue it = (Revenue) Revenue.getObject(
-                                    c,
-                                    id);
-                            if (DateFrame != null) {
-                                if (DateFrame.contains(it.__getDateadded())) {
-                                    warnings.add(it);
-                                }
-                            } else {
-                                warnings.add(it);
-                            }
-                        } catch (NodataFoundException ex) {
-                            Log.Debug(Scheduler.class,
-                                    ex.getMessage());
-                        }
-                    }
-                }
+                collect(c, data, DateFrame, warnings);
             } catch (NodataFoundException ex) {
                 Log.Debug(Scheduler.class, ex.getLocalizedMessage());
             }
@@ -593,25 +528,7 @@ public class Scheduler extends Thread {
                 ReturnValue data = QueryHandler.instanceOf().clone(c).select("IDS", opens,
                         new vTimeframe(new Date(0), DateConverter.addDays(new Date(), alert * -1)), "dateadded");
 
-                if (data.hasData()) {
-                    Object[][] d = data.getData();
-                    for (int i = 0; i < d.length; i++) {
-                        int id = Integer.valueOf(d[i][0].toString());
-                        try {
-                            Revenue it = (Revenue) Revenue.getObject(c,
-                                    id);
-                            if (DateFrame != null) {
-                                if (DateFrame.contains(it.__getDateadded())) {
-                                    alerts.add(it);
-                                }
-                            } else {
-                                alerts.add(it);
-                            }
-                        } catch (NodataFoundException ex) {
-                            Log.Debug(ex);
-                        }
-                    }
-                }
+                collect(c, data, DateFrame, alerts);
             } catch (NodataFoundException ex) {
                 Log.Debug(Scheduler.class, ex.getLocalizedMessage());
             }
@@ -620,20 +537,12 @@ public class Scheduler extends Thread {
                     "No alert treshold for " + ItemType + " defined.");
         }
         
-        for (DatabaseObject i : alerts) {//Remove dupes
-            if (warnings.contains(i)) {
-                warnings.remove(i);
-            }
-            if (waitings.contains(i)) {
-                waitings.remove(i);
-            }
-        }
-
-        for (DatabaseObject i : warnings) {//Remove dupes
-            if (waitings.contains(i)) {
-                waitings.remove(i);
-            }
-        }
+        //Remove dupes: a record in alerts is not in warnings and waitings, one in warnings not in waitings
+        //(sets: List.contains/remove for each of thousands of records was quadratic)
+        LinkedHashSet<DatabaseObject> shown = new LinkedHashSet<>(alerts);
+        warnings.removeIf(shown::contains);
+        shown.addAll(warnings);
+        waitings.removeIf(shown::contains);
 
         HashMap<Color, List<? extends DatabaseObject>> map = new HashMap<Color, List<? extends DatabaseObject>>();
         map.put(Color.red, alerts);
