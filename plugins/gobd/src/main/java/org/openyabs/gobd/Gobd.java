@@ -1585,14 +1585,15 @@ public final class Gobd {
                     + " und darf weder geloescht noch in den Papierkorb verschoben werden!");
             return false;
         }
-        Object[] db = row("SELECT cnumber, dateadded, accountsids, netvalue, taxpercentvalue, brutvalue, description, status, dateend, ispaid"
+        //revenues have no ispaid column: paid is status 4 (Item.STATUS_PAID)
+        Object[] db = row("SELECT cnumber, dateadded, accountsids, netvalue, taxpercentvalue, brutvalue, description, status, dateend"
                 + " FROM revenues WHERE ids = " + rev.__getIDS());
         if (db != null && moneyCoreOfRow(db).equals(revenueCore(rev))) {
             int oldStatus = GobdUtil.toInt(db[7], 0);
             int newStatus = rev.__getStatus();
             String oldEnd = fmtDate(db[8]);
             String newEnd = fmtDate(rev.__getDateend());
-            boolean oldPaid = GobdUtil.isTrue(db[9]);
+            boolean oldPaid = oldStatus == Item.STATUS_PAID;
             boolean newPaid = rev.__getIspaid();
             if (oldStatus != newStatus || !oldEnd.equals(newEnd) || oldPaid != newPaid) {
                 logAudit("REVENUE", rev.__getIDS(), "INCOME_PAYMENT_STATUS_CHANGED", "status=" + oldStatus + "|ispaid=" + oldPaid + "|dateend=" + oldEnd,

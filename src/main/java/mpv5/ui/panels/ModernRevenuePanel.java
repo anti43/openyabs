@@ -204,7 +204,7 @@ public class ModernRevenuePanel extends ModernDataPanel {
     private final JLabel addedByLabel = new JLabel();
 
     // Master list & filters
-    private final JTable revenueTable = new MPTable(this);
+    private final JTable revenueTable = new mpv5.ui.misc.PaidRows(this);
     private final JTextField searchField = new JTextField(14);
     private final DateChooser fromDateChooser = new DateChooser();
     private final DateChooser toDateChooser = new DateChooser();
@@ -441,6 +441,11 @@ public class ModernRevenuePanel extends ModernDataPanel {
         revenueTable.setAutoCreateRowSorter(true);
         //single click, arrow keys and Enter show the record
         installRecordList(revenueTable);
+        //several rows (Ctrl/Shift+click) for the context menu: mark as paid with a preview
+        revenueTable.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        new mpv5.ui.popups.TablePopUp(revenueTable, new String[]{Messages.MARK_PAID.toString()},
+                new java.awt.event.ActionListener[]{e -> mpv5.ui.dialogs.MarkPaidDialog.show(this,
+                    mpv5.ui.dialogs.MarkPaidDialog.selected(revenueTable), this::afterMarkPaid)});
 
         JComponent filterBar = createFilterBar();
 
@@ -1512,6 +1517,22 @@ public class ModernRevenuePanel extends ModernDataPanel {
         }
 
         return true;
+    }
+
+    /**
+     * After marking as paid: the list again and the shown record from the
+     * database (else saving it would undo the change)
+     */
+    private void afterMarkPaid() {
+        DatabaseObject shown = getDataOwner();
+        if (shown != null && shown.isExisting()) {
+            try {
+                setDataOwner(DatabaseObject.getObject(Context.getRevenue(), shown.__getIDS()), true);
+            } catch (Exception e) {
+                Log.Debug(ModernRevenuePanel.class, e.getMessage());
+            }
+        }
+        refresh();
     }
 
     @Override

@@ -366,9 +366,9 @@ public class ProductsOverview extends JPanel implements ListPanel {
 
     /**
      * @param data rows with the id of the product in the first column
-     * @return the rows of products whose stock reached the threshold: as the
-     * reorder warning ({@link Product#save(boolean)}), products with
-     * inventory and a threshold above 0, stock at or below it
+     * @return the rows of products whose stock reached the threshold:
+     * products with inventory and the stock at or below the threshold
+     * (without a threshold: used up, 0 or less)
      */
     private static Object[][] belowThreshold(Object[][] data) {
         java.util.Set<String> ids = new java.util.HashSet<String>();
@@ -376,7 +376,7 @@ public class ProductsOverview extends JPanel implements ListPanel {
             Object[][] rows = QueryHandler.getConnection().freeSelectQuery(
                     "SELECT ids FROM " + Context.getProduct().getDbIdentity()
                     + " WHERE inttype = " + Product.TYPE_PRODUCT
-                    + " AND intinventorytype = 1 AND thresholdvalue > 0 AND stockvalue <= thresholdvalue",
+                    + " AND intinventorytype = 1 AND stockvalue <= thresholdvalue",
                     mpv5.usermanagement.MPSecurityManager.VIEW, null).getData();
             if (rows != null) {
                 for (Object[] r : rows) {
