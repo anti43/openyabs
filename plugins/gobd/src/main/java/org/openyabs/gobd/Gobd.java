@@ -1277,6 +1277,11 @@ public final class Gobd {
             if (Db.first(c, "SELECT revenue_id FROM gobd_income_lock WHERE revenue_id = ?", revId) != null) {
                 return null;
             }
+            //an invoice with several VAT rates is booked as one income per rate, all with the same file:
+            //locked once (file_sha256 is unique); the other parts are protected by their receipts
+            if (Db.first(c, "SELECT revenue_id FROM gobd_income_lock WHERE file_sha256 = ?", sha) != null) {
+                return null;
+            }
             Object[] end = chainEnd(c, "gobd_income_lock", "chain_hash");
             String prev = (String) end[1];
             String record = incomeRecord(end[0], revId, docNum, at, user, origName, fmt, sha, size, core);

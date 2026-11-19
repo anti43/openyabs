@@ -1079,6 +1079,9 @@ public final class SubItem extends DatabaseObject implements Triggerable {
         if (getCname().length() == 0) {
             setCname("   ");
         }
+        //the line totals as save() computes them: without them the journal can not split payments
+        //by VAT rate (all on one rate), e.g. positions of the cash register or the activity billing
+        calculate(this);
         return super.save(b);
     }
 

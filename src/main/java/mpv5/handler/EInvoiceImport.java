@@ -374,8 +374,24 @@ public final class EInvoiceImport {
             return null;
         }
         Context c = kind == Kind.INCOME ? Context.getRevenue() : Context.getExpense();
-        for (Object[] r : rows("SELECT ids, brutvalue FROM " + (kind == Kind.INCOME ? "revenues" : "expenses")
-                + " WHERE cnumber = " + q(inv.invoiceNumber) + " AND invisible = 0")) {
+        Object[][] found = rows("SELECT ids, brutvalue FROM " + (kind == Kind.INCOME ? "revenues" : "expenses")
+                + " WHERE cnumber = " + q(inv.invoiceNumber) + " AND invisible = 0");
+        //an invoice with several rates is booked in parts: their sum
+        java.math.BigDecimal sum = java.math.BigDecimal.ZERO;
+        for (Object[] r : found) {
+            try {
+                sum = sum.add(new java.math.BigDecimal(String.valueOf(r[1])));
+            } catch (Exception e) {
+                //not a number
+            }
+        }
+        if (kind == Kind.EXPENSE && found.length > 1 && sum.compareTo(inv.grossAmount) == 0) {
+            DatabaseObject o = load(c, found[0][0]);
+            if (o != null) {
+                return o;
+            }
+        }
+        for (Object[] r : found) {
             if (kind == Kind.EXPENSE) {
                 try {
                     if (new java.math.BigDecimal(String.valueOf(r[1])).compareTo(inv.grossAmount) != 0) {
@@ -409,49 +425,115 @@ public final class EInvoiceImport {
      * Saves the expense / income with the number and dates of the invoice and
      * archives the file as its receipt; without the receipt nothing is left
      */
+    /**
+     * The parts to book: one per VAT rate if the invoice has several rates
+     * and its VAT breakdown adds up to its totals ({rate, net, tax}); else
+     * one part with the totals
+     */
+    static List<java.math.BigDecimal[]> parts(ParsedInvoice inv) {
+        List<java.math.BigDecimal[]> l = new ArrayList<java.math.BigDecimal[]>();
+        java.math.BigDecimal net = java.math.BigDecimal.ZERO;
+        java.math.BigDecimal gross = java.math.BigDecimal.ZERO;
+        for (java.math.BigDecimal[] b : inv.taxBreakdown) {
+            net = net.add(b[1]);
+            gross = gross.add(b[1]).add(b[2]);
+        }
+        java.math.BigDecimal tolerance = new java.math.BigDecimal("0.05");
+        if (inv.taxBreakdown.size() > 1 && net.subtract(inv.netAmount).abs().compareTo(tolerance) <= 0
+                && gross.subtract(inv.grossAmount).abs().compareTo(tolerance) <= 0) {
+            for (java.math.BigDecimal[] b : inv.taxBreakdown) {
+                if (b[1].signum() != 0 || b[2].signum() != 0) {
+                    l.add(b);
+                }
+            }
+        }
+        if (l.size() < 2) {
+            l.clear();
+            l.add(new java.math.BigDecimal[]{inv.taxRate, inv.netAmount, inv.grossAmount.subtract(inv.netAmount)});
+        }
+        return l;
+    }
+
+    /**
+     * Saves the expense / income with the number and dates of the invoice and
+     * archives the file as its receipt; an invoice with several VAT rates as
+     * one booking per rate (an expense / income has one rate), each with the
+     * file. Without the receipts nothing is left.
+     *
+     * @return the first booking
+     */
     private static DatabaseObject save(Kind kind, ParsedInvoice inv, File file) throws Exception {
-        DatabaseObject record = kind == Kind.INCOME ? inv.toRevenue(defaultAccount(Account.INCOME), 1)
-                : inv.toExpense(defaultAccount(Account.EXPENSE), 1);
-        if (!record.save(true) || record.__getIDS() <= 0) {
-            throw new IllegalStateException(Messages.RECEIPT_SAVE_FAILED.toString());
-        }
-        //a new record gets the next own number and the current date on its first save
+        List<java.math.BigDecimal[]> parts = parts(inv);
+        List<DatabaseObject> saved = new ArrayList<DatabaseObject>();
         String num = inv.invoiceNumber.length() > 250 ? inv.invoiceNumber.substring(0, 250) : inv.invoiceNumber;
-        if (record instanceof Expense) {
-            Expense e = (Expense) record;
-            if (!num.isEmpty()) {
-                e.setCnumber(num);
-                e.setCname(num);
-            }
-            e.setDateend(inv.dueDate);
-        } else {
-            Revenue r = (Revenue) record;
-            if (!num.isEmpty()) {
-                r.setCnumber(num);
-                r.setCname(num);
-            }
-            r.setDateend(inv.dueDate);
-        }
-        record.setDateadded(inv.issueDate);
-        record.save(true);
         try {
-            if (record instanceof Expense) {
-                ExpenseReceipts.attach((Expense) record, file);
-            } else {
-                RevenueReceipts.attach((Revenue) record, file);
+            for (int i = 0; i < parts.size(); i++) {
+                java.math.BigDecimal rate = parts.get(i)[0];
+                java.math.BigDecimal net = parts.get(i)[1];
+                java.math.BigDecimal gross = net.add(parts.get(i)[2]);
+                DatabaseObject record = kind == Kind.INCOME ? inv.toRevenue(defaultAccount(Account.INCOME), 1)
+                        : inv.toExpense(defaultAccount(Account.EXPENSE), 1);
+                String part = parts.size() < 2 ? "" : "\n" + String.format(Messages.EINVOICE_RATE_PART.toString(), i + 1, parts.size(), num,
+                        rate.stripTrailingZeros().toPlainString());
+                if (record instanceof Expense) {
+                    Expense e = (Expense) record;
+                    e.setNetvalue(net);
+                    e.setBrutvalue(gross);
+                    e.setTaxpercentvalue(rate);
+                    e.setDescription(e.__getDescription() + part);
+                } else {
+                    Revenue r = (Revenue) record;
+                    r.setNetvalue(net);
+                    r.setBrutvalue(gross);
+                    r.setTaxpercentvalue(rate);
+                    r.setDescription(r.__getDescription() + part);
+                }
+                if (!record.save(true) || record.__getIDS() <= 0) {
+                    throw new IllegalStateException(Messages.RECEIPT_SAVE_FAILED.toString());
+                }
+                saved.add(record);
+                //a new record gets the next own number and the current date on its first save
+                if (record instanceof Expense) {
+                    Expense e = (Expense) record;
+                    if (!num.isEmpty()) {
+                        e.setCnumber(num);
+                        e.setCname(num);
+                    }
+                    e.setDateend(inv.dueDate);
+                } else {
+                    Revenue r = (Revenue) record;
+                    if (!num.isEmpty()) {
+                        r.setCnumber(num);
+                        r.setCname(num);
+                    }
+                    r.setDateend(inv.dueDate);
+                }
+                record.setDateadded(inv.issueDate);
+                record.save(true);
+            }
+            for (DatabaseObject record : saved) {
+                if (record instanceof Expense) {
+                    ExpenseReceipts.attach((Expense) record, file);
+                } else {
+                    RevenueReceipts.attach((Revenue) record, file);
+                }
             }
         } catch (Exception e) {
             //no booking without its receipt: a new import must find nothing
-            try {
-                record.delete();
-            } catch (Exception ex) {
-                Log.Debug(EInvoiceImport.class, ex);
+            for (DatabaseObject record : saved) {
+                try {
+                    record.delete();
+                } catch (Exception ex) {
+                    Log.Debug(EInvoiceImport.class, ex);
+                }
             }
             throw e;
         }
-        Activity.record(record, Activity.Kind.CREATED, String.format(kind == Kind.INCOME
-                ? Messages.RECEIPT_IMPORTED_SINGLE_REVENUE.toString() : Messages.RECEIPT_IMPORTED_SINGLE_EXPENSE.toString(), file.getAbsolutePath()));
-        return record;
+        for (DatabaseObject record : saved) {
+            Activity.record(record, Activity.Kind.CREATED, String.format(kind == Kind.INCOME
+                    ? Messages.RECEIPT_IMPORTED_SINGLE_REVENUE.toString() : Messages.RECEIPT_IMPORTED_SINGLE_EXPENSE.toString(), file.getAbsolutePath()));
+        }
+        return saved.get(0);
     }
 
     /**

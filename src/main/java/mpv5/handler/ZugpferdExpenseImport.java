@@ -111,6 +111,11 @@ public final class ZugpferdExpenseImport {
         public List<String> sellerIds = Collections.emptyList();
         public String buyerName = "";
         public List<String> buyerIds = Collections.emptyList();
+        /**
+         * the VAT breakdown of the invoice (BG-23): {rate, basis, tax} per rate,
+         * empty if the invoice has none
+         */
+        public List<BigDecimal[]> taxBreakdown = Collections.emptyList();
 
         public ParsedInvoice(File sourceFile, String invoiceNumber, String sellerName,
                 String sellerTaxId, String sellerIban, Date issueDate, Date dueDate,
@@ -715,6 +720,7 @@ public final class ZugpferdExpenseImport {
                     "//*[local-name()='BuyerTradeParty']/*[local-name()='SpecifiedTaxRegistration']/*[local-name()='ID']",
                     "//*[local-name()='AccountingCustomerParty']//*[local-name()='PartyTaxScheme']/*[local-name()='CompanyID']",
                     "//*[local-name()='AccountingCustomerParty']//*[local-name()='PartyLegalEntity']/*[local-name()='CompanyID']");
+            parsed.taxBreakdown = taxBreakdown(xp, doc);
             return parsed;
         } catch (Exception e) {
             Log.Debug(ZugpferdExpenseImport.class, "Could not parse ZUGFeRD file " + file + ": " + e.getMessage());
@@ -741,6 +747,51 @@ public final class ZugpferdExpenseImport {
                     || utf8.contains("AccountingSupplierParty");
         }
         return false;
+    }
+
+    /**
+     * @return {rate, basis, tax} per VAT rate of the document level (CII
+     * ApplicableTradeTax, UBL TaxSubtotal), rates with the same percent added
+     */
+    private static List<BigDecimal[]> taxBreakdown(XPath xp, Document doc) {
+        java.util.Map<BigDecimal, BigDecimal[]> m = new java.util.TreeMap<BigDecimal, BigDecimal[]>(Collections.reverseOrder());
+        try {
+            String[][] syntaxes = {
+                {"//*[local-name()='ApplicableHeaderTradeSettlement']/*[local-name()='ApplicableTradeTax']",
+                    "*[local-name()='RateApplicablePercent'] | *[local-name()='ApplicablePercent']", "*[local-name()='BasisAmount']",
+                    "*[local-name()='CalculatedAmount']"},
+                {"/*[local-name()='Invoice' or local-name()='CreditNote']/*[local-name()='TaxTotal']/*[local-name()='TaxSubtotal']",
+                    "*[local-name()='TaxCategory']/*[local-name()='Percent']", "*[local-name()='TaxableAmount']", "*[local-name()='TaxAmount']"}};
+            for (String[] x : syntaxes) {
+                NodeList nodes = (NodeList) xp.evaluate(x[0], doc, XPathConstants.NODESET);
+                for (int i = 0; nodes != null && i < nodes.getLength(); i++) {
+                    Node n = nodes.item(i);
+                    BigDecimal rate = parseDecimal(eval(xp, n, x[1]));
+                    BigDecimal basis = parseDecimal(eval(xp, n, x[2]));
+                    BigDecimal tax = parseDecimal(eval(xp, n, x[3]));
+                    if (rate == null || basis == null) {
+                        continue;
+                    }
+                    rate = rate.stripTrailingZeros().scale() < 0 ? rate.setScale(0, RoundingMode.HALF_UP) : rate.stripTrailingZeros();
+                    if (tax == null) {
+                        tax = basis.multiply(rate).movePointLeft(2).setScale(2, RoundingMode.HALF_UP);
+                    }
+                    BigDecimal[] v = m.computeIfAbsent(rate, k -> new BigDecimal[]{BigDecimal.ZERO, BigDecimal.ZERO});
+                    v[0] = v[0].add(basis);
+                    v[1] = v[1].add(tax);
+                }
+                if (!m.isEmpty()) {
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            Log.Debug(ZugpferdExpenseImport.class, e.getMessage());
+        }
+        List<BigDecimal[]> l = new ArrayList<BigDecimal[]>();
+        for (java.util.Map.Entry<BigDecimal, BigDecimal[]> e : m.entrySet()) {
+            l.add(new BigDecimal[]{e.getKey(), e.getValue()[0].setScale(2, RoundingMode.HALF_UP), e.getValue()[1].setScale(2, RoundingMode.HALF_UP)});
+        }
+        return l;
     }
 
     private static BigDecimal extractDominantTaxRate(XPath xp, Document doc,

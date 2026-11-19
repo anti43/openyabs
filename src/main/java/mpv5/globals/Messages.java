@@ -2045,6 +2045,7 @@ public enum Messages {
     EINVOICE_INVALID_AMOUNTS("no amounts"),
     EINVOICE_INVALID_SUM("net %s + VAT %s is not the gross amount %s"),
     TEMPLATE_BROKEN("The template '%s' can not be read (damaged file?): %s"),
+    EINVOICE_RATE_PART("Part %d/%d of invoice %s: %s %% VAT (one booking per VAT rate)"),
     ZUGFERD_IMPORT_BUTTON("Import ZUGFeRD / E-invoice \u2026"),
     ZUGFERD_IMPORT_CHOOSER("Choose ZUGFeRD / XRechnung files or folder (PDF, XML)"),
     ZUGFERD_IMPORT_FOLDER_NOT_SET("Please choose an existing folder for incoming e-invoices first."),
