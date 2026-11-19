@@ -55,6 +55,33 @@ class DatevWorkflowTest {
         }
     }
 
+    /**
+     * @return the fields of a DATEV CSV line, quotes removed
+     */
+    static List<String> splitCsv(String line) {
+        List<String> l = new ArrayList<String>();
+        StringBuilder sb = new StringBuilder();
+        boolean quoted = false;
+        for (int i = 0; i < line.length(); i++) {
+            char c = line.charAt(i);
+            if (c == '"') {
+                if (quoted && i + 1 < line.length() && line.charAt(i + 1) == '"') {
+                    sb.append('"');
+                    i++;
+                } else {
+                    quoted = !quoted;
+                }
+            } else if (c == ';' && !quoted) {
+                l.add(sb.toString());
+                sb.setLength(0);
+            } else {
+                sb.append(c);
+            }
+        }
+        l.add(sb.toString());
+        return l;
+    }
+
     private static void adviser(Item invoice) throws Exception {
         System.out.println("ACCOUNTS: " + java.util.Arrays.deepToString(rows(
                 "SELECT ids, cname, intaccountclass, taxvalue, intaccounttype, frame FROM accounts ORDER BY ids")).replace("], [", "]\n["));
@@ -101,6 +128,21 @@ class DatevWorkflowTest {
         String[] lines = csv.split("\r\n");
         assertTrue(lines[0].startsWith("\"EXTF\";700;21;\"Buchungsstapel\";13;"), lines[0]);
         assertTrue(lines[0].contains(";1001;10;"), "adviser and client number: " + lines[0]);
+
+        //an independent check of every row (field types, lengths, formats as DATEV's format checker)
+        List<String> heads = splitCsv(lines[1]);
+        assertEquals(io.github.mrtyldr.datev.core.DatevSchema.CURRENT_V13.columnCount(), heads.size(), "columns of format version 13");
+        for (int r = 2; r < lines.length; r++) {
+            List<io.github.mrtyldr.datev.core.DatevValidationError> errs = io.github.mrtyldr.datev.core.DatevRowValidator.validate(
+                    heads, splitCsv(lines[r]), io.github.mrtyldr.datev.core.DatevValidationMode.STRICT);
+            assertEquals(List.of(), errs, "row " + r + ": " + lines[r]);
+        }
+        //the check is not empty: a wrong amount and date are found
+        List<String> bad = splitCsv(lines[2]);
+        bad.set(0, "12.34.5");
+        bad.set(9, "3299");
+        assertFalse(io.github.mrtyldr.datev.core.DatevRowValidator.validate(heads, bad, io.github.mrtyldr.datev.core.DatevValidationMode.STRICT).isEmpty(),
+                "a broken row is found");
 
         //sums: money in (S) = income paid, money out (H) = expenses paid
         BigDecimal soll = BigDecimal.ZERO;
