@@ -512,6 +512,48 @@ public final class Gobd {
         }
     }
 
+    /**
+     * The final number of a draft: the number format of its type (number
+     * formats in the settings of YaBS), else the own range RE-/ST-YYYY-NNNNN
+     *
+     * @param doc
+     * @param year
+     * @return the number
+     */
+    String nextNumber(Item doc, int year) {
+        if (mpv5.handler.FormatHandler.hasFormat(doc, doc.__getInttype())) {
+            return doc.getFormatHandler().next();
+        }
+        return nextSequenceNumber(doc.__getInttype() == Item.TYPE_CREDIT ? "ST" : "RE", year);
+    }
+
+    /**
+     * The number of a cancellation invoice: the number format "Cancellation
+     * invoice" ({@link mpv5.globals.Constants#TYPE_CANCELLATION}) if one is
+     * set, going on from the last cancellation invoice; else ST-YYYY-NNNNN.
+     * Any format is allowed (§ 14 Abs. 4 Nr. 4 UStG: unique, one or more
+     * ranges).
+     *
+     * @param storno the credit note (with its date)
+     * @return the number
+     */
+    String nextCancellationNumber(Item storno) {
+        int type = mpv5.globals.Constants.TYPE_CANCELLATION;
+        if (mpv5.handler.FormatHandler.hasFormat(storno, type)) {
+            return new mpv5.handler.FormatHandler(storno, type, this::lastCancellationNumber).next();
+        }
+        return nextSequenceNumber("ST", GobdUtil.yearOf(storno.__getDateadded()));
+    }
+
+    /**
+     * @return the number of the last cancellation invoice, null if none
+     */
+    String lastCancellationNumber() {
+        Object[] r = q1("SELECT document_number FROM gobd_document_lock WHERE cancels_document_id IS NOT NULL"
+                + " ORDER BY chain_seq DESC, finalized_at DESC FETCH FIRST 1 ROWS ONLY");
+        return r == null ? null : str(r[0]);
+    }
+
     String nextSequenceNumber(String prefix, int year) {
         String pattern = prefix + "-" + year + "-";
         int max = 0;
@@ -929,7 +971,7 @@ public final class Gobd {
             //the year of the invoice (issue date), not of the day of finalizing
             int year = GobdUtil.yearOf(doc.__getDateadded());
             if (GobdUtil.isDraftNumber(doc.__getCnumber())) {
-                doc.setCnumber(nextSequenceNumber(doc.__getInttype() == Item.TYPE_CREDIT ? "ST" : "RE", year));
+                doc.setCnumber(nextNumber(doc, year));
                 numberedNow = true;
             }
             //status finished and end date (without an own save)
@@ -1034,7 +1076,6 @@ public final class Gobd {
             error("Dieser Beleg wurde bereits storniert oder ist nicht festgeschrieben.");
             return false;
         }
-        String stornoNum = nextSequenceNumber("ST", GobdUtil.yearOf(new Date()));
         creatingStorno = true;
         try {
             //a new record of the credit notes (the context comes with it)
@@ -1043,9 +1084,19 @@ public final class Gobd {
             storno.setAccountsids(original.__getAccountsids());
             storno.setGroupsids(original.__getGroupsids());
             storno.setInttype(Item.TYPE_CREDIT);
-            storno.setCnumber(stornoNum);
             storno.setDateadded(new Date());
             storno.setDatetodo(original.__getDatetodo() != null ? original.__getDatetodo() : new Date());
+            //the number after the date: the format may use [YEAR] ... of the record.
+            //Saving a new record takes the number of its format handler (ensureUniqueness),
+            //for a credit note the next credit note number: here the cancellation number.
+            final String stornoNumber = nextCancellationNumber(storno);
+            storno.setCnumber(stornoNumber);
+            storno.defineFormatHandler(new mpv5.handler.FormatHandler(storno) {
+                @Override
+                public synchronized String next() {
+                    return stornoNumber;
+                }
+            });
             storno.setNetvalue(nz(original.__getNetvalue()).negate());
             storno.setTaxvalue(nz(original.__getTaxvalue()).negate());
             storno.setDiscountvalue(nz(original.__getDiscountvalue()).negate());

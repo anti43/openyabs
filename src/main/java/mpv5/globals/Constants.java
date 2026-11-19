@@ -158,4 +158,9 @@ public interface Constants {
      * a payment received on an invoice (journal rows, not a template type)
      */
     public static final int TYPE_PAYMENT = 23;
+    /**
+     * a cancellation invoice (Stornorechnung): only a kind of number format;
+     * the record is a credit note ({@link #TYPE_CREDIT})
+     */
+    public static final int TYPE_CANCELLATION = 24;
 }
