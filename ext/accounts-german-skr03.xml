@@ -1960,7 +1960,7 @@
       <intaccountclass>8500</intaccountclass>
       <intparentaccount>1</intparentaccount>
       <intprofitfid>2</intprofitfid>
-      <inttaxfid>51</inttaxfid>
+      <inttaxfid>81</inttaxfid>
       <inttaxuid>3</inttaxuid>
       <frame>de_skr03</frame>
       <cname>Provisionserloese</cname>
@@ -1990,7 +1990,7 @@
       <intaccountclass>8540</intaccountclass>
       <intparentaccount>1</intparentaccount>
       <intprofitfid>2</intprofitfid>
-      <inttaxfid>51</inttaxfid>
+      <inttaxfid>81</inttaxfid>
       <inttaxuid>3</inttaxuid>
       <frame>de_skr03</frame>
       <cname>Erloes Leergut</cname>
@@ -2095,7 +2095,7 @@
       <intaccountclass>8800</intaccountclass>
       <intparentaccount>1</intparentaccount>
       <intprofitfid>1</intprofitfid>
-      <inttaxfid>51</inttaxfid>
+      <inttaxfid>81</inttaxfid>
       <inttaxuid>3</inttaxuid>
       <frame>de_skr03</frame>
       <cname>Erloese aus Anlagenverkäufen</cname>
@@ -2338,7 +2338,7 @@
       <inttaxfid>0</inttaxfid>
       <inttaxuid>0</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Ford.a.LuL n.Durchschnittss.gem.Â§24UStG(EUER)</cname>
+      <cname>Ford.a.LuL n.Durchschnittss.gem.§24UStG(EUER)</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -2938,7 +2938,7 @@
       <inttaxfid>0</inttaxfid>
       <inttaxuid>0</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Sonderabschreibung nach Â§7g(1)u.(2)EStG (ohne Kfz)</cname>
+      <cname>Sonderabschreibung nach §7g(1)u.(2)EStG (ohne Kfz)</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -2953,7 +2953,7 @@
       <inttaxfid>0</inttaxfid>
       <inttaxuid>0</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Sonderabschreibung n.Â§7g(1)u.(2)EStG (für Kfz)</cname>
+      <cname>Sonderabschreibung n.§7g(1)u.(2)EStG (für Kfz)</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -2983,7 +2983,7 @@
       <inttaxfid>0</inttaxfid>
       <inttaxuid>0</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Gewerbest.zu berücksicht.Mietleasing Â§8 GewStG</cname>
+      <cname>Gewerbest.zu berücksicht.Mietleasing §8 GewStG</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -3268,7 +3268,7 @@
       <inttaxfid>0</inttaxfid>
       <inttaxuid>0</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Ford.a.LuL n.Durchschnittss.gem.Â§24UStG(EUER)</cname>
+      <cname>Ford.a.LuL n.Durchschnittss.gem.§24UStG(EUER)</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -3283,7 +3283,7 @@
       <inttaxfid>0</inttaxfid>
       <inttaxuid>0</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Gegenkonto Vorsteuer Â§4/3 EStG</cname>
+      <cname>Gegenkonto Vorsteuer §4/3 EStG</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -3298,7 +3298,7 @@
       <inttaxfid>0</inttaxfid>
       <inttaxuid>0</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Aufloesung Vorst.a.Vorjahr Â§4/3 EStG</cname>
+      <cname>Aufloesung Vorst.a.Vorjahr §4/3 EStG</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -3313,7 +3313,7 @@
       <inttaxfid>0</inttaxfid>
       <inttaxuid>0</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Vorst.aus Investitionen Â§4/3 EStG</cname>
+      <cname>Vorst.aus Investitionen §4/3 EStG</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -3673,7 +3673,7 @@
       <inttaxfid>0</inttaxfid>
       <inttaxuid>0</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Zinsaufwendung-betriebliche Steuern Â§223aAO</cname>
+      <cname>Zinsaufwendung-betriebliche Steuern §223aAO</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -4165,7 +4165,7 @@
       <intaccountclass>2750</intaccountclass>
       <intparentaccount>1</intparentaccount>
       <intprofitfid>0</intprofitfid>
-      <inttaxfid>51</inttaxfid>
+      <inttaxfid>81</inttaxfid>
       <inttaxuid>3</inttaxuid>
       <frame>de_skr03</frame>
       <cname>Grundstückserträge</cname>
@@ -4363,7 +4363,7 @@
       <inttaxfid>41</inttaxfid>
       <inttaxuid>0</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Steuerfrei innergem. Lieferungen Â§41bUStG</cname>
+      <cname>Steuerfrei innergem. Lieferungen §41bUStG</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -4378,7 +4378,7 @@
       <inttaxfid>41</inttaxfid>
       <inttaxuid>0</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Liefe.d.1.Abnehm.bei innergem.Dreiecksg Â§25b2UStG</cname>
+      <cname>Liefe.d.1.Abnehm.bei innergem.Dreiecksg §25b2UStG</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -4393,7 +4393,7 @@
       <inttaxfid>41</inttaxfid>
       <inttaxuid>0</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Erloese a.Verk.Sachanlagen steuerfr.Â§4Nr.1bUStG(b.Buchgewinn)</cname>
+      <cname>Erloese a.Verk.Sachanlagen steuerfr.§4Nr.1bUStG(b.Buchgewinn)</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -4408,7 +4408,7 @@
       <inttaxfid>41</inttaxfid>
       <inttaxuid>0</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Erloese a.Verk.Sachanlagen steuerfreiÂ§4Nr.1bUStG(b.Buchverlust)</cname>
+      <cname>Erloese a.Verk.Sachanlagen steuerfrei§4Nr.1bUStG(b.Buchverlust)</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -4438,7 +4438,7 @@
       <inttaxfid>43</inttaxfid>
       <inttaxuid>0</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Steuerfreie Umsätze Â§4Nr.1a UstG</cname>
+      <cname>Steuerfreie Umsätze §4Nr.1a UstG</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -4453,7 +4453,7 @@
       <inttaxfid>43</inttaxfid>
       <inttaxuid>0</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Sonstige steuerfreie Umsätze Â§42-7UStG</cname>
+      <cname>Sonstige steuerfreie Umsätze §42-7UStG</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -4468,7 +4468,7 @@
       <inttaxfid>43</inttaxfid>
       <inttaxuid>0</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Erloese a.Verk.Sachanlagen steuerfr.Â§4Nr.1aUStG(bei Buchgewinn)</cname>
+      <cname>Erloese a.Verk.Sachanlagen steuerfr.§4Nr.1aUStG(bei Buchgewinn)</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -4483,7 +4483,7 @@
       <inttaxfid>43</inttaxfid>
       <inttaxuid>0</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Erloese a.Verk.Sachanlagen steuerfreiÂ§4Nr.1aUStG(b.Buchverlust)</cname>
+      <cname>Erloese a.Verk.Sachanlagen steuerfrei§4Nr.1aUStG(b.Buchverlust)</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -4498,7 +4498,7 @@
       <inttaxfid>48</inttaxfid>
       <inttaxuid>0</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Steuerfreie Umsätze Â§4Nr.8ff UstG</cname>
+      <cname>Steuerfreie Umsätze §4Nr.8ff UstG</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -4525,7 +4525,7 @@
       <intaccountclass>8600</intaccountclass>
       <intparentaccount>1</intparentaccount>
       <intprofitfid>2</intprofitfid>
-      <inttaxfid>51</inttaxfid>
+      <inttaxfid>81</inttaxfid>
       <inttaxuid>3</inttaxuid>
       <frame>de_skr03</frame>
       <cname>Sonstige Erloese betriebl.u.regelmäss</cname>
@@ -4540,10 +4540,10 @@
       <intaccountclass>8720</intaccountclass>
       <intparentaccount>1</intparentaccount>
       <intprofitfid>1</intprofitfid>
-      <inttaxfid>51</inttaxfid>
+      <inttaxfid>81</inttaxfid>
       <inttaxuid>3</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Erloesschmälerung 16%/19% USt.</cname>
+      <cname>Erloesschmälerung 19% USt.</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -4555,25 +4555,10 @@
       <intaccountclass>2700</intaccountclass>
       <intparentaccount>1</intparentaccount>
       <intprofitfid>2</intprofitfid>
-      <inttaxfid>51</inttaxfid>
+      <inttaxfid>81</inttaxfid>
       <inttaxuid>3</inttaxuid>
       <frame>de_skr03</frame>
       <cname>Sonstige Erträge</cname>
-      <groupsids>1</groupsids>
-      <dateadded>02.07.09</dateadded>
-      <intaddedby>1</intaddedby>
-    </account>
-    <account id="306">
-      <taxvalue>0.0</taxvalue>
-      <description>NA</description>
-      <intaccounttype>3</intaccounttype>
-      <intaccountclass>1775</intaccountclass>
-      <intparentaccount>1</intparentaccount>
-      <intprofitfid>6</intprofitfid>
-      <inttaxfid>511</inttaxfid>
-      <inttaxuid>0</inttaxuid>
-      <frame>de_skr03</frame>
-      <cname>Umsatzsteuer 16%</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -4813,7 +4798,7 @@
       <inttaxfid>85</inttaxfid>
       <inttaxuid>0</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Umsatzsteuer n.Â§13b UStG</cname>
+      <cname>Umsatzsteuer n.§13b UStG</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -4858,7 +4843,7 @@
       <inttaxfid>67</inttaxfid>
       <inttaxuid>0</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Abzieb.Vorst.n.Â§13b</cname>
+      <cname>Abzieb.Vorst.n.§13b</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -4930,7 +4915,7 @@
       <intaccountclass>1776</intaccountclass>
       <intparentaccount>1</intparentaccount>
       <intprofitfid>6</intprofitfid>
-      <inttaxfid>511</inttaxfid>
+      <inttaxfid>811</inttaxfid>
       <inttaxuid>0</inttaxuid>
       <frame>de_skr03</frame>
       <cname>Umsatzsteuer 19 %</cname>
@@ -4998,21 +4983,6 @@
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
     </account>
-    <account id="335">
-      <taxvalue>0.0</taxvalue>
-      <description>NA</description>
-      <intaccounttype>2</intaccounttype>
-      <intaccountclass>1575</intaccountclass>
-      <intparentaccount>1</intparentaccount>
-      <intprofitfid>27</intprofitfid>
-      <inttaxfid>66</inttaxfid>
-      <inttaxuid>0</inttaxuid>
-      <frame>de_skr03</frame>
-      <cname>Abziehbare Vorsteuer 16%</cname>
-      <groupsids>1</groupsids>
-      <dateadded>02.07.09</dateadded>
-      <intaddedby>1</intaddedby>
-    </account>
     <account id="336">
       <taxvalue>0.0</taxvalue>
       <description>NA</description>
@@ -5038,7 +5008,7 @@
       <inttaxfid>0</inttaxfid>
       <inttaxuid>9</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Wareneingang 16%/19% Vorsteuer</cname>
+      <cname>Wareneingang 19% Vorsteuer</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -5053,7 +5023,7 @@
       <inttaxfid>94</inttaxfid>
       <inttaxuid>19</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Innergem.Erwerb v.Neufahrz.v.Lief.o.USt.Identnr.16%/19%VSt.u.16%/19%USt.</cname>
+      <cname>Innergem.Erwerb v.Neufahrz.v.Lief.o.USt.Identnr.19%VSt.u.19%USt.</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -5068,7 +5038,7 @@
       <inttaxfid>0</inttaxfid>
       <inttaxuid>9</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Erhaltene Skonti 16%/19% Vorsteuer</cname>
+      <cname>Erhaltene Skonti 19% Vorsteuer</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -5083,7 +5053,7 @@
       <inttaxfid>0</inttaxfid>
       <inttaxuid>9</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Erhaltene Boni 16%/19% Vorsteuer</cname>
+      <cname>Erhaltene Boni 19% Vorsteuer</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -5098,7 +5068,7 @@
       <inttaxfid>0</inttaxfid>
       <inttaxuid>9</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Erhaltene Rabatte 16%/19% Vorsteuer</cname>
+      <cname>Erhaltene Rabatte 19% Vorsteuer</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -5113,7 +5083,7 @@
       <inttaxfid>0</inttaxfid>
       <inttaxuid>0</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Nicht abziehbare Vorsteuer 16%/19%</cname>
+      <cname>Nicht abziehbare Vorsteuer 19%</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -5125,10 +5095,10 @@
       <intaccountclass>8508</intaccountclass>
       <intparentaccount>1</intparentaccount>
       <intprofitfid>2</intprofitfid>
-      <inttaxfid>51</inttaxfid>
+      <inttaxfid>81</inttaxfid>
       <inttaxuid>3</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Provisionserloese 16%/19% USt.</cname>
+      <cname>Provisionserloese 19% USt.</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -5143,7 +5113,7 @@
       <inttaxfid>0</inttaxfid>
       <inttaxuid>0</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Nicht abziehb.Vorsteuer 16%/19%</cname>
+      <cname>Nicht abziehb.Vorsteuer 19%</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -5158,22 +5128,22 @@
       <inttaxfid>0</inttaxfid>
       <inttaxuid>0</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Nicht abziehbare Vorsteuer 16%/19%</cname>
+      <cname>Nicht abziehbare Vorsteuer 19%</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
     </account>
     <account id="346">
-      <taxvalue>13.0</taxvalue>
+      <taxvalue>19.0</taxvalue>
       <description>NA</description>
       <intaccounttype>3</intaccounttype>
       <intaccountclass>8315</intaccountclass>
       <intparentaccount>1</intparentaccount>
       <intprofitfid>1</intprofitfid>
-      <inttaxfid>51</inttaxfid>
+      <inttaxfid>81</inttaxfid>
       <inttaxuid>13</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Erloes Inland stpfl.EG-Lieferung 16%/19%</cname>
+      <cname>Erloes Inland stpfl.EG-Lieferung 19%</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -5185,10 +5155,10 @@
       <intaccountclass>8595</intaccountclass>
       <intparentaccount>1</intparentaccount>
       <intprofitfid>2</intprofitfid>
-      <inttaxfid>51</inttaxfid>
+      <inttaxfid>81</inttaxfid>
       <inttaxuid>3</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Sachbezüge 16%/19% Ust (Waren)</cname>
+      <cname>Sachbezüge 19% Ust (Waren)</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -5200,10 +5170,10 @@
       <intaccountclass>8735</intaccountclass>
       <intparentaccount>1</intparentaccount>
       <intprofitfid>1</intprofitfid>
-      <inttaxfid>51</inttaxfid>
+      <inttaxfid>81</inttaxfid>
       <inttaxuid>3</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Gewährte Skonti 16%/19% USt.</cname>
+      <cname>Gewährte Skonti 19% USt.</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -5215,10 +5185,10 @@
       <intaccountclass>8760</intaccountclass>
       <intparentaccount>1</intparentaccount>
       <intprofitfid>1</intprofitfid>
-      <inttaxfid>51</inttaxfid>
+      <inttaxfid>81</inttaxfid>
       <inttaxuid>3</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Gewährte Boni 16%/19% USt.</cname>
+      <cname>Gewährte Boni 19% USt.</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -5230,10 +5200,10 @@
       <intaccountclass>8790</intaccountclass>
       <intparentaccount>1</intparentaccount>
       <intprofitfid>1</intprofitfid>
-      <inttaxfid>51</inttaxfid>
+      <inttaxfid>81</inttaxfid>
       <inttaxuid>3</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Gewährte Rabatte 16%/19% Ust.</cname>
+      <cname>Gewährte Rabatte 19% Ust.</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -5245,10 +5215,10 @@
       <intaccountclass>8820</intaccountclass>
       <intparentaccount>1</intparentaccount>
       <intprofitfid>1</intprofitfid>
-      <inttaxfid>51</inttaxfid>
+      <inttaxfid>81</inttaxfid>
       <inttaxuid>3</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Erloese aus Anlageverkäufen Sachanl.verm.b.Buchgewinn16%/19%Ust</cname>
+      <cname>Erloese aus Anlageverkäufen Sachanl.verm.b.Buchgewinn19%Ust</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -5260,10 +5230,10 @@
       <intaccountclass>8910</intaccountclass>
       <intparentaccount>1</intparentaccount>
       <intprofitfid>3</intprofitfid>
-      <inttaxfid>51</inttaxfid>
+      <inttaxfid>81</inttaxfid>
       <inttaxuid>3</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Entnahme des Untern.f.Zwecke ausserh.d.Untern 16%/19%(Waren)</cname>
+      <cname>Entnahme des Untern.f.Zwecke ausserh.d.Untern 19%(Waren)</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -5275,10 +5245,10 @@
       <intaccountclass>8935</intaccountclass>
       <intparentaccount>1</intparentaccount>
       <intprofitfid>3</intprofitfid>
-      <inttaxfid>51</inttaxfid>
+      <inttaxfid>81</inttaxfid>
       <inttaxuid>3</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Unentgeltl.Zuwend.v.Gegens. 16%/19% Ust</cname>
+      <cname>Unentgeltl.Zuwend.v.Gegens. 19% Ust</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -5290,10 +5260,10 @@
       <intaccountclass>8400</intaccountclass>
       <intparentaccount>1</intparentaccount>
       <intprofitfid>1</intprofitfid>
-      <inttaxfid>51</inttaxfid>
+      <inttaxfid>81</inttaxfid>
       <inttaxuid>3</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Erloese 16%/19% USt.</cname>
+      <cname>Erloese 19% USt.</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -5305,10 +5275,10 @@
       <intaccountclass>8921</intaccountclass>
       <intparentaccount>1</intparentaccount>
       <intprofitfid>3</intprofitfid>
-      <inttaxfid>51</inttaxfid>
+      <inttaxfid>81</inttaxfid>
       <inttaxuid>0</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Verwend.v.Gegenst.f.Zwecke ausserh.d.Untern.16%/19%USt(Kfz-Nutzung)</cname>
+      <cname>Verwend.v.Gegenst.f.Zwecke ausserh.d.Untern.19%USt(Kfz-Nutzung)</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -5320,10 +5290,10 @@
       <intaccountclass>8922</intaccountclass>
       <intparentaccount>1</intparentaccount>
       <intprofitfid>3</intprofitfid>
-      <inttaxfid>51</inttaxfid>
+      <inttaxfid>81</inttaxfid>
       <inttaxuid>0</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Verwend.f.Gegenst.f.Zwecke ausserh.d.Untern.16%/19%USt(Telefonnutzung)</cname>
+      <cname>Verwend.f.Gegenst.f.Zwecke ausserh.d.Untern.19%USt(Telefonnutzung)</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -5335,10 +5305,10 @@
       <intaccountclass>8809</intaccountclass>
       <intparentaccount>1</intparentaccount>
       <intprofitfid>2</intprofitfid>
-      <inttaxfid>51</inttaxfid>
+      <inttaxfid>81</inttaxfid>
       <inttaxuid>0</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Erloese aus Verk.Sachanlagevermoegen16%/19% USt (bei Buchverlust)</cname>
+      <cname>Erloese aus Verk.Sachanlagevermoegen19% USt (bei Buchverlust)</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -5350,10 +5320,10 @@
       <intaccountclass>8801</intaccountclass>
       <intparentaccount>1</intparentaccount>
       <intprofitfid>1</intprofitfid>
-      <inttaxfid>51</inttaxfid>
+      <inttaxfid>81</inttaxfid>
       <inttaxuid>3</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Erloese aus Anlagenverkäufen Sachanl.verm.b.Buchverl.16%/19%USt.</cname>
+      <cname>Erloese aus Anlagenverkäufen Sachanl.verm.b.Buchverl.19%USt.</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -5365,10 +5335,10 @@
       <intaccountclass>8920</intaccountclass>
       <intparentaccount>1</intparentaccount>
       <intprofitfid>3</intprofitfid>
-      <inttaxfid>51</inttaxfid>
+      <inttaxfid>81</inttaxfid>
       <inttaxuid>3</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Verw.v.Gegens.f.Zwecke ausserh.d.Untern.16%/19%USt.</cname>
+      <cname>Verw.v.Gegens.f.Zwecke ausserh.d.Untern.19%USt.</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -5380,10 +5350,10 @@
       <intaccountclass>8940</intaccountclass>
       <intparentaccount>1</intparentaccount>
       <intprofitfid>3</intprofitfid>
-      <inttaxfid>51</inttaxfid>
+      <inttaxfid>81</inttaxfid>
       <inttaxuid>3</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Unentgeltl.Zuw.v Waren 16%/19% Ust</cname>
+      <cname>Unentgeltl.Zuw.v Waren 19% Ust</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -5395,25 +5365,25 @@
       <intaccountclass>2405</intaccountclass>
       <intparentaccount>1</intparentaccount>
       <intprofitfid>0</intprofitfid>
-      <inttaxfid>51</inttaxfid>
+      <inttaxfid>81</inttaxfid>
       <inttaxuid>3</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Forderungsverluste 16%/19% USt.(übliche Hoehe</cname>
+      <cname>Forderungsverluste 19% USt.(übliche Hoehe</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
     </account>
     <account id="362">
-      <taxvalue>13.0</taxvalue>
+      <taxvalue>19.0</taxvalue>
       <description>NA</description>
       <intaccounttype>3</intaccounttype>
       <intaccountclass>8726</intaccountclass>
       <intparentaccount>1</intparentaccount>
       <intprofitfid>1</intprofitfid>
-      <inttaxfid>51</inttaxfid>
+      <inttaxfid>81</inttaxfid>
       <inttaxuid>13</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Erloesschmä.Inl.stpfl.EG-Lief.16%/19%USt</cname>
+      <cname>Erloesschmä.Inl.stpfl.EG-Lief.19%USt</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -5428,7 +5398,7 @@
       <inttaxfid>84</inttaxfid>
       <inttaxuid>9</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Leist.v.ausländ.Untern. 16%/19% VSt.u.16%/19%USt.</cname>
+      <cname>Leist.v.ausländ.Untern. 19% VSt.u.19%USt.</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -5455,7 +5425,7 @@
       <intaccountclass>1773</intaccountclass>
       <intparentaccount>1</intparentaccount>
       <intprofitfid>28</intprofitfid>
-      <inttaxfid>971</inttaxfid>
+      <inttaxfid>891</inttaxfid>
       <inttaxuid>0</inttaxuid>
       <frame>de_skr03</frame>
       <cname>Umsatzsteuer 19% innergem.Erwerb</cname>
@@ -5500,10 +5470,10 @@
       <intaccountclass>3425</intaccountclass>
       <intparentaccount>1</intparentaccount>
       <intprofitfid>8</intprofitfid>
-      <inttaxfid>97</inttaxfid>
+      <inttaxfid>89</inttaxfid>
       <inttaxuid>0</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Innergem. Erwerb 16%/19% VSt u. USt.</cname>
+      <cname>Innergem. Erwerb 19% VSt u. USt.</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -5533,7 +5503,7 @@
       <inttaxfid>0</inttaxfid>
       <inttaxuid>0</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Erloese als Kleinunternehmer i.S.d.Â§19(1)UStG</cname>
+      <cname>Erloese als Kleinunternehmer i.S.d.§19(1)UStG</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -5563,7 +5533,7 @@
       <inttaxfid>76</inttaxfid>
       <inttaxuid>0</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Erloese,die mit den Durchschnittssätzen d.Â§24UStG vers.werd.</cname>
+      <cname>Erloese,die mit den Durchschnittssätzen d.§24UStG vers.werd.</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -5665,10 +5635,10 @@
       <intaccountclass>8925</intaccountclass>
       <intparentaccount>1</intparentaccount>
       <intprofitfid>3</intprofitfid>
-      <inttaxfid>51</inttaxfid>
+      <inttaxfid>81</inttaxfid>
       <inttaxuid>3</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Unentgeltl.Erbring.sons.Leis.16%/19%USt</cname>
+      <cname>Unentgeltl.Erbring.sons.Leis.19%USt</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -5690,4 +5660,3 @@
     </account>
   </accounts>
 </mpv5>
-

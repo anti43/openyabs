@@ -286,10 +286,19 @@ public class XMLReader {
     private Document createDocument(File xmlfile, boolean validate) throws JDOMException, IOException {
 
         SAXBuilder parser = new SAXBuilder(validate);
-        FileReader fis = new FileReader(xmlfile);
-        Log.Debug(this, "Reading Document: " + xmlfile + " using encoding: " + fis.getEncoding());
-
-        myDocument = parser.build(fis);
+        if (!validate) {
+            try {
+                parser.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+                parser.setFeature("http://xml.org/sax/features/external-general-entities", false);
+                parser.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            } catch (Exception e) {
+                Log.Debug(this, e.getMessage());
+            }
+        }
+        try (java.io.Reader fis = new java.io.InputStreamReader(new FileInputStream(xmlfile), java.nio.charset.StandardCharsets.UTF_8)) {
+            Log.Debug(this, "Reading Document: " + xmlfile + " using encoding: UTF-8");
+            myDocument = parser.build(fis);
+        }
         rootElement = myDocument.getRootElement();
 
         if (validate) {

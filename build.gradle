@@ -154,6 +154,12 @@ tasks.register('distributionZip', Zip) {
     into('openyabs/plugins') {
         from(pluginJarTasks)
     }
+    // German charts of accounts (SKR03, SKR04) for Settings > Accounts > Import
+    into('openyabs/ext') {
+        from('ext') {
+            include 'accounts-german-*.xml'
+        }
+    }
     into('openyabs/lib') {
         from('lib') {
             exclude 'docs/**' // API docs, not needed at runtime

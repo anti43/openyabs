@@ -96,8 +96,12 @@ import mpv5.globals.Messages;
 import mpv5.handler.JournalCalc;
 import mpv5.handler.JournalCalc.Entry;
 import mpv5.handler.JournalCalc.Totals;
+import mpv5.handler.JournalLoader;
 import mpv5.handler.TemplateHandler;
 import mpv5.logging.Log;
+import mpv5.plugin.ExtensionManager;
+import mpv5.plugin.api.JournalExport;
+import mpv5.plugin.api.JournalExportContext;
 import mpv5.ui.beans.TimeframeChooser;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.Notificator;
@@ -926,33 +930,6 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
 
     // <editor-fold defaultstate="collapsed" desc="Loading">
     /**
-     * The filters, read on the event thread for the loading in the background
-     */
-    private static final class Filter {
-
-        vTimeframe time;
-        final List<Context> items = new ArrayList<Context>();
-        /**
-         * offers and orders: by document date, without the status filter of
-         * the income
-         */
-        final List<Context> others = new ArrayList<Context>();
-        boolean othersOpenOnly;
-        boolean revenues;
-        boolean expenses;
-        int incomeStatus;
-        int expenseStatus;
-        boolean incomeByPay;
-        boolean expenseByPay;
-        final List<Group> groups = new ArrayList<Group>();
-        boolean childGroups;
-        final Set<Integer> accounts = new LinkedHashSet<Integer>();
-        User user;
-        Contact contact;
-        boolean includeInvoices;
-    }
-
-    /**
      * @param a
      * @return the account and all accounts below it (the accounts have a
      * parent: "All accounts" is the parent of the others)
@@ -974,8 +951,8 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         return r;
     }
 
-    private Filter readFilter() {
-        Filter f = new Filter();
+    private JournalLoader.Filter readFilter() {
+        JournalLoader.Filter f = new JournalLoader.Filter();
         f.time = timeframeChooser1.getTime();
         if (incInvoices.isSelected()) {
             f.items.add(Context.getInvoice());
@@ -1020,29 +997,19 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         return f;
     }
 
-    /**
-     * The result of a loading
-     */
-    private static final class Loaded {
-
-        List<Entry> entries;
-        Totals totals;
-        Map<BigDecimal, String> labels;
-    }
-
     private void setData() {
         reloadTimer.stop();
         markPeriod();
-        final Filter f = readFilter();
+        final JournalLoader.Filter f = readFilter();
         final String key = filterKey();
         final int gen = ++generation;
         loading = true;
         loadButton.setEnabled(false);
         count.setText(Messages.JOURNAL_LOADING.toString());
-        new SwingWorker<Loaded, Void>() {
+        new SwingWorker<JournalLoader.Loaded, Void>() {
             @Override
-            protected Loaded doInBackground() throws Exception {
-                return load(f);
+            protected JournalLoader.Loaded doInBackground() throws Exception {
+                return JournalLoader.load(f);
             }
 
             @Override
@@ -1111,182 +1078,6 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
     }
 
     /**
-     * Loads the journal (in the background)
-     *
-     * @param f
-     * @return the entries and their sums
-     * @throws Exception
-     */
-    private static Loaded load(Filter f) throws Exception {
-        Set<Integer> groupIds = new HashSet<Integer>();
-        for (Group g : f.groups) {
-            groupIds.add(g.__getIDS());
-            if (f.childGroups) {
-                try {
-                    for (Group c : g.getChildGroups()) {
-                        groupIds.add(c.__getIDS());
-                    }
-                } catch (NodataFoundException e) {
-                    Log.Debug(JournalPanel.class, e.getMessage());
-                }
-            }
-        }
-        List<Entry> list = new ArrayList<Entry>();
-        String incomeDate = f.incomeByPay ? "dateend" : "dateadded"; //NOI18N
-        for (Context c : f.items) {
-            c.addReference(Context.getGroup());
-            c.addReference(Context.getAccounts());
-            c.addReference(Context.getContact());
-            QueryCriteria2 p = criteria(c, f, groupIds);
-            if (f.contact != null) {
-                p.and(new QueryParameter(f.contact.getContext(), "ids", f.contact.__getIDS(), QueryParameter.EQUALS)); //NOI18N
-            }
-            for (Object[] r : select(c, Context.DETAILS_JOURNAL.replace("{date}", incomeDate), p, f.time, incomeDate)) { //NOI18N
-                Entry e = entry(r, DatabaseObject.getObject(c, Integer.valueOf(r[0].toString())));
-                if (matchesIncome(e, f.incomeStatus)) {
-                    list.add(e);
-                }
-            }
-        }
-        for (Context c : f.others) {
-            c.addReference(Context.getGroup());
-            c.addReference(Context.getAccounts());
-            c.addReference(Context.getContact());
-            QueryCriteria2 p = criteria(c, f, groupIds);
-            if (f.contact != null) {
-                p.and(new QueryParameter(f.contact.getContext(), "ids", f.contact.__getIDS(), QueryParameter.EQUALS)); //NOI18N
-            }
-            for (Object[] r : select(c, Context.DETAILS_JOURNAL.replace("{date}", "dateadded"), p, f.time, "dateadded")) { //NOI18N
-                Entry e = entry(r, DatabaseObject.getObject(c, Integer.valueOf(r[0].toString())));
-                if (!f.othersOpenOnly || JournalCalc.isOpenOfferOrOrder(e)) {
-                    list.add(e);
-                }
-            }
-        }
-        if (f.revenues) {
-            Context c = Context.getRevenue();
-            c.addReference(Context.getGroup());
-            c.addReference(Context.getAccounts());
-            c.addReference(Context.getContact());
-            for (Object[] r : select(c, Context.DETAILS_JOURNAL2.replace("{date}", incomeDate), criteria(c, f, groupIds), f.time, incomeDate)) { //NOI18N
-                r[10] = Constants.TYPE_REVENUE;
-                Entry e = entry(r, DatabaseObject.getObject(c, Integer.valueOf(r[0].toString())));
-                if (matchesIncome(e, f.incomeStatus)) {
-                    list.add(e);
-                }
-            }
-        }
-        Set<Integer> paidInParts = paidInParts();
-        if (f.includeInvoices && (f.incomeStatus == STATUS_ALL || f.incomeStatus == STATUS_PAID)) {
-            list.addAll(payments(f, groupIds, paidInParts));
-        }
-        if (f.expenses) {
-            Context c = Context.getExpense();
-            c.addReference(Context.getGroup());
-            c.addReference(Context.getAccounts());
-            String date = f.expenseByPay ? "dateend" : "dateadded"; //NOI18N
-            for (Object[] r : select(c, Context.DETAILS_JOURNAL3.replace("{date}", date), criteria(c, f, groupIds), f.time, date)) { //NOI18N
-                r[10] = Constants.TYPE_EXPENSE;
-                boolean paid = TypeConversion.stringToBoolean(String.valueOf(r[11]));
-                r[11] = paid ? JournalCalc.EXPENSE_PAID : JournalCalc.EXPENSE_UNPAID;
-                if (f.expenseStatus == STATUS_PAID && !paid || f.expenseStatus == STATUS_OPEN && paid) {
-                    continue;
-                }
-                Entry e = entry(r, DatabaseObject.getObject(c, Integer.valueOf(r[0].toString())));
-                e.contact = "";
-                e.prename = "";
-                e.street = "";
-                e.city = "";
-                e.country = "";
-                list.add(e);
-            }
-        }
-        list.sort((a, b) -> a.date == null || b.date == null ? 0 : a.date.compareTo(b.date));
-        //open amounts of invoices paid in parts
-        for (Entry e : list) {
-            if (e.obj instanceof Item && paidInParts.contains(e.itemId) && JournalCalc.isOpen(e)) {
-                try {
-                    e.open = mpv5.handler.Payments.open((Item) e.obj);
-                } catch (Exception ex) {
-                    Log.Debug(JournalPanel.class, ex.getMessage());
-                }
-            }
-        }
-        Loaded l = new Loaded();
-        l.labels = JournalAdviserPackage.rateLabels();
-        rates(list, l.labels.keySet());
-        l.entries = list;
-        l.totals = JournalCalc.compute(list, paidInParts);
-        return l;
-    }
-
-    /**
-     * The amounts by tax rate as stored: expenses and income have one rate,
-     * documents (and their payments) are split by the rates of their items
-     *
-     * @param list
-     */
-    private static void rates(List<Entry> list, Set<BigDecimal> configured) {
-        Set<Integer> ids = new HashSet<Integer>();
-        for (Entry e : list) {
-            if (e.obj instanceof Expense) {
-                e.rates.put(JournalCalc.normalizeRate(((Expense) e.obj).__getTaxpercentvalue(), configured), new BigDecimal[]{e.net, e.tax});
-            } else if (e.obj instanceof mpv5.db.objects.Revenue) {
-                e.rates.put(JournalCalc.normalizeRate(((mpv5.db.objects.Revenue) e.obj).__getTaxpercentvalue(), configured), new BigDecimal[]{e.net, e.tax});
-            } else if (e.itemId > 0) {
-                ids.add(e.itemId);
-            }
-        }
-        Map<Integer, Map<BigDecimal, BigDecimal[]>> lines = itemRates(ids, configured);
-        for (Entry e : list) {
-            if (e.itemId > 0 && lines.containsKey(e.itemId)) {
-                e.rates = JournalCalc.split(e.net, e.tax, lines.get(e.itemId));
-            }
-        }
-    }
-
-    /**
-     * @param ids
-     * @return the net and tax of the items of the documents by rate:
-     * document - rate - {net, tax}
-     */
-    private static Map<Integer, Map<BigDecimal, BigDecimal[]>> itemRates(Set<Integer> ids, Set<BigDecimal> configured) {
-        Map<Integer, Map<BigDecimal, BigDecimal[]>> m = new HashMap<Integer, Map<BigDecimal, BigDecimal[]>>();
-        List<Integer> all = new ArrayList<Integer>(ids);
-        for (int from = 0; from < all.size(); from += 500) {
-            List<Integer> chunk = all.subList(from, Math.min(all.size(), from + 500));
-            StringBuilder in = new StringBuilder();
-            for (Integer id : chunk) {
-                in.append(in.length() > 0 ? "," : "").append(id.intValue());
-            }
-            try {
-                mpv5.db.common.ReturnValue rv = QueryHandler.instanceOf().clone(Context.getSubItem()).freeSelectQuery(
-                        "SELECT itemsids, taxpercentvalue, SUM(totalnetvalue), SUM(totalbrutvalue) FROM subitems WHERE invisible = 0 AND itemsids IN (" //NOI18N
-                        + in + ") GROUP BY itemsids, taxpercentvalue", mpv5.usermanagement.MPSecurityManager.VIEW, null); //NOI18N
-                if (rv == null || !rv.hasData()) {
-                    continue;
-                }
-                for (Object[] r : rv.getData()) {
-                    Integer id = Integer.valueOf(String.valueOf(r[0]));
-                    BigDecimal rate = JournalCalc.normalizeRate(new BigDecimal(String.valueOf(r[1])), configured);
-                    BigDecimal net = JournalCalc.money(r[2]);
-                    BigDecimal tax = JournalCalc.money(r[3]).subtract(net);
-                    Map<BigDecimal, BigDecimal[]> rates = m.get(id);
-                    if (rates == null) {
-                        rates = new TreeMap<BigDecimal, BigDecimal[]>(JournalCalc.RATE_ORDER);
-                        m.put(id, rates);
-                    }
-                    BigDecimal[] v = rates.get(rate);
-                    rates.put(rate, v == null ? new BigDecimal[]{net, tax} : new BigDecimal[]{v[0].add(net), v[1].add(tax)});
-                }
-            } catch (Exception e) {
-                Log.Debug(JournalPanel.class, e);
-            }
-        }
-        return m;
-    }
-
-    /**
      * The whole journal of a period, without filters: all outgoing
      * documents (also offers and orders), income, expenses and payments, any
      * status, with their amounts by tax rate and whether they count
@@ -1297,193 +1088,13 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
      * @throws Exception
      */
     public static List<Entry> loadAll(vTimeframe time, boolean byPayDate) throws Exception {
-        Filter f = new Filter();
-        f.time = time;
-        f.items.addAll(Arrays.asList(Context.getInvoice(), Context.getCredit(), Context.getDeposit(), Context.getPartPayment()));
-        f.others.addAll(Arrays.asList(Context.getOrder(), Context.getOffer()));
-        f.includeInvoices = true;
-        f.revenues = true;
-        f.expenses = true;
-        f.incomeStatus = STATUS_ALL;
-        f.expenseStatus = STATUS_ALL;
-        f.incomeByPay = byPayDate;
-        f.expenseByPay = byPayDate;
-        return load(f).entries;
-    }
-
-    private static boolean matchesIncome(Entry e, int status) {
-        switch (status) {
-            case STATUS_PAID:
-                return e.status == Item.STATUS_PAID;
-            case STATUS_OPEN:
-                return e.status != Item.STATUS_PAID && e.status != Item.STATUS_CANCELLED;
-            case STATUS_CANCELLED:
-                return e.status == Item.STATUS_CANCELLED;
-            default:
-                return true;
-        }
-    }
-
-    /**
-     * Groups, accounts and the user: the filters of all records
-     */
-    private static QueryCriteria2 criteria(Context c, Filter f, Set<Integer> groupIds) {
-        QueryCriteria2 p = new QueryCriteria2();
-        List<QueryParameter> g = new ArrayList<QueryParameter>();
-        for (Integer id : groupIds) {
-            g.add(new QueryParameter(c, "groupsids", id, QueryParameter.EQUALS)); //NOI18N
-        }
-        or(p, g);
-        List<QueryParameter> a = new ArrayList<QueryParameter>();
-        for (Integer id : f.accounts) {
-            a.add(new QueryParameter(c, "accountsids", id, QueryParameter.EQUALS)); //NOI18N
-        }
-        or(p, a);
-        if (f.user != null) {
-            p.and(new QueryParameter(c, "intaddedby", f.user.__getIDS(), QueryParameter.EQUALS)); //NOI18N
-        }
-        //qualified: groups, accounts and contacts (joined) have a dateadded too
-        p.setOrder(c.getDbIdentity() + ".dateadded", true); //NOI18N
-        return p;
-    }
-
-    private static void or(QueryCriteria2 p, List<QueryParameter> l) {
-        if (l.size() == 1) {
-            p.and(l.get(0));
-        } else if (l.size() > 1) {
-            p.or(l.get(0), l.subList(1, l.size()));
-        }
-    }
-
-    private static Object[][] select(Context c, String columns, QueryCriteria2 p, vTimeframe t, String date) {
-        try {
-            return QueryHandler.instanceOf().clone(c).select(columns, p, t, date).getData();
-        } catch (NodataFoundException e) {
-            return new Object[0][17];
-        }
-    }
-
-    /**
-     * @param r a row of the journal queries
-     * @param obj the record
-     * @return the entry
-     */
-    private static Entry entry(Object[] r, Object obj) {
-        Entry e = new Entry();
-        e.obj = obj;
-        e.itemId = obj instanceof Item ? ((Item) obj).__getIDS() : 0;
-        e.contact = str(r[1]);
-        e.prename = str(r[2]);
-        e.street = str(r[3]);
-        e.city = str(r[4]);
-        e.country = str(r[5]);
-        e.date = r[6] instanceof Date ? (Date) r[6] : DateConverter.getDate(String.valueOf(r[6]));
-        e.group = str(r[7]);
-        e.account = str(r[8]);
-        e.number = str(r[9]);
-        e.type = Integer.parseInt(String.valueOf(r[10]));
-        e.status = Integer.parseInt(String.valueOf(r[11]));
-        e.net = JournalCalc.money(r[12]);
-        e.tax = JournalCalc.money(r[13]);
-        e.gross = JournalCalc.money(r[14]);
-        e.discount = JournalCalc.money(r[15]);
-        switch (e.type) {
-            case Constants.TYPE_REVENUE:
-            case Constants.TYPE_EXPENSE:
-            case Constants.TYPE_PAYMENT:
-                e.description = str(r[16]);
-                break;
-            default:
-                if (GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.showitemasdesc")) { //NOI18N
-                    e.description = String.valueOf(obj);
-                }
-        }
-        return e;
-    }
-
-    private static String str(Object o) {
-        return o == null || "null".equals(String.valueOf(o)) ? "" : String.valueOf(o); //NOI18N
-    }
-
-    /**
-     * @return the ids of the invoices with recorded payments
-     */
-    private static Set<Integer> paidInParts() {
-        Set<Integer> s = new HashSet<Integer>();
-        if (!mpv5.db.common.DatabaseUpdater.hasTable("payments")) { //NOI18N
-            return s;
-        }
-        try {
-            mpv5.db.common.ReturnValue rv = QueryHandler.instanceOf().clone(Context.getInvoice()).freeSelectQuery(
-                    "SELECT DISTINCT itemsids FROM payments", mpv5.usermanagement.MPSecurityManager.VIEW, null); //NOI18N
-            if (rv != null && rv.hasData()) {
-                for (Object[] r : rv.getData()) {
-                    s.add(Integer.valueOf(String.valueOf(r[0])));
-                }
-            }
-        } catch (Exception e) {
-            Log.Debug(JournalPanel.class, e);
-        }
-        return s;
-    }
-
-    /**
-     * The payments received in the period (on invoices of the filters):
-     * income on the pay date, net and tax in the proportion of the invoice
-     */
-    private static List<Entry> payments(Filter f, Set<Integer> groupIds, Set<Integer> paidInParts) {
-        List<Entry> rows = new ArrayList<Entry>();
-        if (paidInParts.isEmpty()) {
-            return rows;
-        }
-        for (mpv5.handler.Payments.Payment p : mpv5.handler.Payments.between(f.time.getStart(), f.time.getEnd())) {
-            Item inv = mpv5.handler.Payments.invoice(p.invoice);
-            if (inv == null
-                    || (f.contact != null && inv.__getContactsids() != f.contact.__getIDS())
-                    || (!groupIds.isEmpty() && !groupIds.contains(inv.__getGroupsids()))
-                    || (!f.accounts.isEmpty() && !f.accounts.contains(inv.__getAccountsids()))
-                    || (f.user != null && inv.__getIntaddedby() != f.user.__getIDS())) {
-                continue;
-            }
-            BigDecimal gross = inv.getGrossAmount();
-            BigDecimal net = gross.signum() == 0 ? p.amount
-                    : p.amount.multiply(inv.__getNetvalue().subtract(inv.__getDiscountvalue())).divide(gross, 2, java.math.RoundingMode.HALF_UP);
-            Entry e = new Entry();
-            e.obj = inv;
-            e.itemId = inv.__getIDS();
-            try {
-                Contact k = inv.getContact();
-                e.contact = k.__getCname();
-                e.prename = k.__getPrename();
-                e.street = k.__getStreet();
-                e.city = k.__getCity();
-                e.country = k.__getCountry();
-            } catch (Exception ex) {
-                Log.Debug(JournalPanel.class, ex.getMessage());
-            }
-            try {
-                e.account = inv.getAccount().__getCname();
-            } catch (Exception ex) {
-                Log.Debug(JournalPanel.class, ex.getMessage());
-            }
-            e.group = inv.getGroup() == null ? "" : inv.getGroup().__getCname();
-            e.date = p.date;
-            e.number = inv.__getCnumber();
-            e.type = Constants.TYPE_PAYMENT;
-            e.status = Item.STATUS_PAID;
-            e.net = net.setScale(2, java.math.RoundingMode.HALF_UP);
-            e.gross = p.amount.setScale(2, java.math.RoundingMode.HALF_UP);
-            e.tax = e.gross.subtract(e.net);
-            e.description = p.description;
-            rows.add(e);
-        }
-        return rows;
+        return JournalLoader.loadAll(time, byPayDate);
     }
 
     /**
      * Shows a loaded journal
      */
-    private void show(Loaded l) {
+    private void show(JournalLoader.Loaded l) {
         entries = l.entries;
         totals = l.totals;
         rateLabels = l.labels;
@@ -1603,6 +1214,22 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
     private JPopupMenu exportMenu() {
         JPopupMenu m = new JPopupMenu();
         m.add(item(Messages.JOURNAL_EXPORT_ADVISER, Messages.JOURNAL_EXPORT_ADVISER_TIP, () -> withCurrentData(() -> exportAdviser())));
+        List<JournalExport> pluginExports = ExtensionManager.instance().journalExports();
+        if (!pluginExports.isEmpty()) {
+            m.addSeparator();
+            for (final JournalExport pe : pluginExports) {
+                JMenuItem mi = new JMenuItem(pe.title());
+                if (pe.tooltip() != null && !pe.tooltip().isEmpty()) {
+                    mi.setToolTipText("<html><div style='width:360px'>" + pe.tooltip() + "</div>"); //NOI18N
+                }
+                mi.addActionListener(ev -> withCurrentData(() -> {
+                    vTimeframe t = timeframeChooser1.getTime();
+                    pe.export(new JournalExportContext(new ArrayList<Entry>(entries), totals,
+                            t.getStart(), t.getEnd(), filterLines(), rateLabels, this, this::showExported));
+                }));
+                m.add(mi);
+            }
+        }
         m.addSeparator();
         m.add(item(Messages.JOURNAL_EXPORT_CSV, null, () -> withCurrentData(() -> exportTable(true))));
         m.add(item(Messages.JOURNAL_EXPORT_HTML, null, () -> withCurrentData(() -> exportTable(false))));
@@ -1732,7 +1359,7 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
      */
     private void exportAdviser() {
         vTimeframe t = timeframeChooser1.getTime();
-        String name = "steuerberater-" + new java.text.SimpleDateFormat("yyyyMMdd").format(t.getStart()) + "-" //NOI18N
+        String name = "journal-package-" + new java.text.SimpleDateFormat("yyyyMMdd").format(t.getStart()) + "-" //NOI18N
                 + new java.text.SimpleDateFormat("yyyyMMdd").format(t.getEnd()) + ".zip"; //NOI18N
         DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY, name);
         if (!d.saveFile()) {

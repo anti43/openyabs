@@ -85,6 +85,15 @@ public interface ExtensionContext {
     }
 
     /**
+     * Adds an export entry to the Journal's Export menu (and optionally extra
+     * files to the tax-adviser ZIP package).
+     *
+     * @param export
+     */
+    default void addJournalExport(JournalExport export) {
+    }
+
+    /**
      * Opens a tab in the main window
      *
      * @param title
