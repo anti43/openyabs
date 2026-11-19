@@ -168,7 +168,6 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
     private final ButtonGroup periodGroup = new ButtonGroup();
     private final List<ChipToggle> periodChips = new ArrayList<ChipToggle>();
     private final JComboBox<String> view = new JComboBox<String>();
-    private final JComboBox<Object> users = new JComboBox<Object>();
     //income side
     private final JCheckBox incInvoices = new JCheckBox(Item.getTypeString(Constants.TYPE_INVOICE));
     private final JCheckBox incCredits = new JCheckBox(Item.getTypeString(Constants.TYPE_CREDIT));
@@ -415,18 +414,6 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
             Messages.JOURNAL_VIEW_ALL.toString(), Messages.JOURNAL_VIEW_OPEN.toString(), Messages.JOURNAL_VIEW_CUSTOM.toString()}));
         view.setName("view"); //NOI18N
 
-        //users
-        DefaultComboBoxModel<Object> um = new DefaultComboBoxModel<Object>();
-        um.addElement(Messages.ALL);
-        try {
-            for (DatabaseObject u : DatabaseObject.getObjects(Context.getUser())) {
-                um.addElement(u);
-            }
-        } catch (NodataFoundException e) {
-            Log.Debug(JournalPanel.class, e.getMessage());
-        }
-        users.setModel(um);
-
         //date bases
         ButtonGroup ig = new ButtonGroup();
         ig.add(incomeByDoc);
@@ -505,7 +492,6 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         includechildgroups.addActionListener(e -> filterChanged(false));
         includechildaccounts.setOpaque(false);
         includechildaccounts.addActionListener(e -> filterChanged(false));
-        users.addActionListener(e -> filterChanged(false));
         groups.setOnChange(() -> filterChanged(false));
         accounts.setOnChange(() -> filterChanged(false));
         timeframeChooser1.addPropertyChangeListener(e -> {
@@ -717,7 +703,7 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         header.add(left, BorderLayout.WEST);
 
         //filters
-        for (JComponent c : new JComponent[]{view, users, incomeStatus, expenseStatus}) {
+        for (JComponent c : new JComponent[]{view, incomeStatus, expenseStatus}) {
             ModernTheme.roomyCombo(c);
         }
         JPanel chips = new JPanel(new mpv5.ui.modern.WrapLayout(FlowLayout.LEFT, ModernTheme.px(6), 0));
@@ -735,9 +721,6 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         line.add(javax.swing.Box.createHorizontalStrut(ModernTheme.px(10)));
         line.add(ModernTheme.fieldLabel(Messages.JOURNAL_VIEW.toString()));
         line.add(view);
-        line.add(javax.swing.Box.createHorizontalStrut(ModernTheme.px(10)));
-        line.add(ModernTheme.fieldLabel(Messages.JOURNAL_USER.toString()));
-        line.add(users);
         //export and reload: at the right of the filter line
         JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT, ModernTheme.px(8), 0));
         buttons.setOpaque(false);
@@ -1038,7 +1021,6 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
             }
             f.accounts.add(((Account) o).__getIDS());
         }
-        f.user = users.getSelectedItem() instanceof User ? (User) users.getSelectedItem() : null;
         f.contact = dataOwner;
         return f;
     }
@@ -1109,7 +1091,7 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
             incExpenses, incomeByPay, expenseByPay, includechildgroups, includechildaccounts, othersOpenOnly}) {
             b.append(x.isSelected() ? '1' : '0');
         }
-        b.append(incomeStatus.getSelectedIndex()).append(expenseStatus.getSelectedIndex()).append(users.getSelectedIndex());
+        b.append(incomeStatus.getSelectedIndex()).append(expenseStatus.getSelectedIndex());
         for (Object o : groups.getSelected()) {
             b.append('g').append(((Group) o).__getIDS());
         }
@@ -1757,7 +1739,6 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
                 + (includechildgroups.isSelected() ? " (+)" : "")));
         l.add(Messages.JOURNAL_ACCOUNTS + ": " + (accounts.getFilter().isEmpty() ? Messages.ALL.toString() : accounts.getFilter().toString()
                 + (includechildaccounts.isSelected() ? " (+)" : "")));
-        l.add(Messages.JOURNAL_USER + ": " + users.getSelectedItem());
         if (dataOwner != null) {
             l.add(String.valueOf(dataOwner.__getCname()));
         }
@@ -1911,7 +1892,7 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
                 map.put("journal.childgroups", String.valueOf(children)); //NOI18N
             }
         }
-        map.put("journal.user", users.getSelectedItem() instanceof User ? String.valueOf(users.getSelectedItem()) : Messages.ALL.toString()); //NOI18N
+        map.put("journal.user", Messages.ALL.toString()); //NOI18N
         map.put("journal.accounts", accounts.getFilter().isEmpty() ? Messages.ALL.toString() : join(accounts.getFilter())); //NOI18N
 
         journalOrContactTemplate.injectData(map);

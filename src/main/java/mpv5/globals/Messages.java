@@ -762,7 +762,6 @@ public enum Messages {
     JOURNAL_LAST_QUARTER("Last quarter"),
     JOURNAL_YEAR("This year"),
     JOURNAL_LAST_YEAR("Last year"),
-    JOURNAL_USER("Created by"),
     JOURNAL_INCOME("Income (outgoing documents)"),
     JOURNAL_EXPENSES("Expenses (incoming documents)"),
     JOURNAL_SHOW_EXPENSES("Expenses"),
