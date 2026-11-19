@@ -164,6 +164,14 @@ public final class JournalCalc {
         public BigDecimal openReceivables = BigDecimal.ZERO;
         public BigDecimal openPayables = BigDecimal.ZERO;
         /**
+         * open offers and orders (not finished, paid or cancelled): net and
+         * gross
+         */
+        public BigDecimal openOffersNet = BigDecimal.ZERO;
+        public BigDecimal openOffersGross = BigDecimal.ZERO;
+        public BigDecimal openOrdersNet = BigDecimal.ZERO;
+        public BigDecimal openOrdersGross = BigDecimal.ZERO;
+        /**
          * counted income by rate: rate (null: unknown) - {net, tax}
          */
         public final Map<BigDecimal, BigDecimal[]> incomeByRate = new TreeMap<BigDecimal, BigDecimal[]>(RATE_ORDER);
@@ -364,9 +372,18 @@ public final class JournalCalc {
                     }
                 }
             }
-            //the volume: all shown documents except payments (part of their invoice) and cancelled ones;
-            //credit notes and expenses reduce it
-            if (e.type != Constants.TYPE_PAYMENT && !isCancelled(e)) {
+            if (isOpenOfferOrOrder(e)) {
+                if (e.type == Constants.TYPE_OFFER) {
+                    t.openOffersNet = t.openOffersNet.add(e.net);
+                    t.openOffersGross = t.openOffersGross.add(e.gross);
+                } else {
+                    t.openOrdersNet = t.openOrdersNet.add(e.net);
+                    t.openOrdersGross = t.openOrdersGross.add(e.gross);
+                }
+            }
+            //the volume: the documents of the bookkeeping except payments (part of their invoice)
+            //and cancelled ones; credit notes and expenses reduce it
+            if (accounting && e.type != Constants.TYPE_PAYMENT && !isCancelled(e)) {
                 boolean minus = e.type == Constants.TYPE_CREDIT || e.type == Constants.TYPE_EXPENSE;
                 t.volumeNet = add(t.volumeNet, e.net, minus);
                 t.volumeTax = add(t.volumeTax, e.tax, minus);
@@ -406,6 +423,16 @@ public final class JournalCalc {
             return e.status == EXPENSE_UNPAID;
         }
         return e.status != Item.STATUS_PAID && e.status != Item.STATUS_CANCELLED;
+    }
+
+    /**
+     * @param e
+     * @return true for an offer or order which is not finished, paid or
+     * cancelled
+     */
+    public static boolean isOpenOfferOrOrder(Entry e) {
+        return (e.type == Constants.TYPE_OFFER || e.type == Constants.TYPE_ORDER)
+                && e.status != Item.STATUS_FINISHED && e.status != Item.STATUS_PAID && e.status != Item.STATUS_CANCELLED;
     }
 
     /**
