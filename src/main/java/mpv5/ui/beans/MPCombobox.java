@@ -190,6 +190,13 @@ public class MPCombobox extends javax.swing.JPanel {
         }
         if (SEARCH_ON_ENTER || SEARCH_WHILE_TYPE) {
             instantiated = true;
+            //a record is selected and its text is shown unchanged: nothing to search. Searching by
+            //the shown text (e.g. a company name, or "number date amount" of an order) can find
+            //nothing and then replaced the selection by the bare text without id - saving the
+            //record afterwards lost the reference
+            if (jComboBox1.isEditable() && keepsSelection()) {
+                return;
+            }
             Runnable runnable = new Runnable() {
 
                 @Override
@@ -224,6 +231,21 @@ public class MPCombobox extends javax.swing.JPanel {
             if (getContext() != null) {
                 executor.execute(runnable);
             }
+        }
+    }
+
+    /**
+     * @return true if a record (valid id) is selected and the editor shows its
+     * text unchanged
+     */
+    private boolean keepsSelection() {
+        try {
+            Object sel = jComboBox1.getSelectedItem();
+            Object shown = jComboBox1.getEditor().getItem();
+            return sel instanceof MPComboBoxModelItem && ((MPComboBoxModelItem) sel).isValid()
+                    && shown != null && String.valueOf(shown).equals(String.valueOf(sel));
+        } catch (Exception e) {
+            return false;
         }
     }
 
