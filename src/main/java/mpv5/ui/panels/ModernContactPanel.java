@@ -520,10 +520,73 @@ public class ModernContactPanel extends ModernDataPanel {
         ModernTheme.style(proptable);
         ((MPTable) proptable).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) proptable, this));
         proptable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        JButton test = link(Messages.PROPERTIES_TEST.toString(), null);
+        test.setToolTipText(Messages.PROPERTIES_TEST_HINT.toString());
+        test.addActionListener(e -> testProperties());
+        JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT, ModernTheme.px(4), 0));
+        buttons.setOpaque(false);
+        buttons.add(test);
         Card card = new Card(text("ContactPanel.propPanel.TabConstraints.tabTitle"));
+        card.headerAction(buttons);
         card.addFull(propertiesHint("contact", Messages.PROPERTIES_HINT_CONTACT.toString()));
+        card.addFull(mpv5.ui.modern.Applets.plainHint(Messages.PROPERTIES_EXAMPLE_CONTACT.toString()));
         card.addFull(new JScrollPane(proptable), 1);
         return padded(card);
+    }
+
+    /**
+     * Stores the properties table (with the contact), then shows the fields of
+     * the contact as an invoice template has them, with their values
+     */
+    private void testProperties() {
+        if (dataOwner == null || !dataOwner.isExisting()) {
+            Popup.notice(Messages.PROPERTIES_TEST_SAVE_FIRST);
+            return;
+        }
+        saveProperties();
+        List<String[]> rows = ContactService.invoiceFields(dataOwner);
+        JTable t = new JTable(rows.toArray(new Object[0][]),
+                new Object[]{Messages.PROPERTIES_TEST_FIELD.toString(), Messages.VALUE.toString()}) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        ModernTheme.style(t);
+        t.setAutoCreateRowSorter(true);
+        JScrollPane sp = new JScrollPane(t);
+        sp.setPreferredSize(new java.awt.Dimension(ModernTheme.px(640), ModernTheme.px(420)));
+        JPanel p = new JPanel(new BorderLayout(0, ModernTheme.px(8)));
+        p.add(mpv5.ui.modern.Applets.plainHint(Messages.PROPERTIES_TEST_HINT.toString()), BorderLayout.NORTH);
+        p.add(sp, BorderLayout.CENTER);
+        javax.swing.JOptionPane.showMessageDialog(this, p,
+                String.format(Messages.PROPERTIES_TEST_TITLE.toString(), dataOwner.__getCname()),
+                javax.swing.JOptionPane.PLAIN_MESSAGE);
+    }
+
+    /**
+     * Stores the properties table: new and changed rows, removed rows deleted
+     */
+    private void saveProperties() {
+        if (dataOwner == null || !dataOwner.isExisting()) {
+            return;
+        }
+        if (proptable.isEditing() && proptable.getCellEditor() != null) {
+            proptable.getCellEditor().stopCellEditing();
+        }
+        TableModel m = proptable.getModel();
+        Object[][] rows = new Object[m.getRowCount()][2];
+        for (int i = 0; i < rows.length; i++) {
+            rows[i][0] = m.getValueAt(i, 0);
+            rows[i][1] = m.getValueAt(i, 1);
+        }
+        try {
+            ContactService.saveProperties(dataOwner, rows);
+        } catch (Exception e) {
+            Log.Debug(this, e);
+            Popup.error(e);
+        }
+        properties();
     }
 
     private JComponent createFilesTab() {
@@ -892,28 +955,9 @@ public class ModernContactPanel extends ModernDataPanel {
     }
 
     private void properties() {
-        final MPTableModel m = ContactService.loadProperties(dataOwner);
-        proptable.setModel(m);
-        m.addTableModelListener(e -> {
-            int row = e.getLastRow();
-            if (!dataOwner.isExisting() || row < 0 || row >= m.getRowCount()) {
-                return;
-            }
-            Object k = m.getData()[row][0];
-            Object v = m.getValueAt(row, 1);
-            String key = k == null ? "" : String.valueOf(k);
-            String value = v == null ? "" : String.valueOf(v);
-            boolean changed;
-            if (value.length() == 0) {
-                changed = ContactService.updateProperty(dataOwner, key, "");
-            } else {
-                changed = e.getColumn() == 1 && key.length() > 0
-                        && ContactService.updateProperty(dataOwner, key, String.valueOf(m.getData()[row][1]));
-            }
-            if (changed) {
-                SwingUtilities.invokeLater(this::properties);
-            }
-        });
+        //stored with the contact (actionAfterSave / -Create, the test button): editing a row
+        //does not store it, so a name typed before its value is not lost
+        proptable.setModel(ContactService.loadProperties(dataOwner));
     }
 
     private void sendMail() {
@@ -1187,11 +1231,13 @@ public class ModernContactPanel extends ModernDataPanel {
     @Override
     public void actionAfterSave() {
         saveEInvoiceSettings();
+        saveProperties();
     }
 
     @Override
     public void actionAfterCreate() {
         saveEInvoiceSettings();
+        saveProperties();
     }
 
     @Override

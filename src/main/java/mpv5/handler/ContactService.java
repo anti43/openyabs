@@ -502,18 +502,43 @@ public final class ContactService {
     }
 
     /**
-     * The value properties of the contact, with one empty row if there are
-     * none (to enter the first one)
+     * The value properties of the contact, followed by empty rows to enter
+     * new ones
      *
      * @param contact
      * @return a table model with the columns key and value
      */
     public static MPTableModel loadProperties(Contact contact) {
-        MPTableModel m = new MPTableModel(ValueProperty.getProperties(contact));
-        if (m.getDataVector().isEmpty()) {
-            return new MPTableModel(Arrays.asList(new ValueProperty[]{new ValueProperty("", "", contact)}));
+        //a new contact has none (objectids 0 would find the script manager's fields);
+        //the model has empty rows to enter new ones
+        List<ValueProperty> props = contact == null || !contact.isExisting()
+                ? Collections.<ValueProperty>emptyList() : ValueProperty.getProperties(contact);
+        return new MPTableModel(props);
+    }
+
+    /**
+     * The name of a contact property as stored: a template prefix typed with
+     * it is removed (<code>contact.property.anrede</code>,
+     * <code>&lt;item.contact.property.anrede&gt;</code> -&gt;
+     * <code>anrede</code>, else the template would need
+     * <code>item.contact.property.contact.property.anrede</code>), then only
+     * letters, digits and _ remain
+     *
+     * @param key
+     * @return the name, "" if nothing remains
+     */
+    public static String propertyKey(String key) {
+        if (key == null) {
+            return "";
         }
-        return m;
+        String k = key.trim().replace("<", "").replace(">", "").trim();
+        for (String prefix : new String[]{"item.contact.property.", "contact.property.", "property."}) {
+            if (k.toLowerCase().startsWith(prefix)) {
+                k = k.substring(prefix.length());
+                break;
+            }
+        }
+        return k.replaceAll("[^\\w]", "");
     }
 
     /**
@@ -528,16 +553,98 @@ public final class ContactService {
         if (contact == null || !contact.isExisting() || key == null) {
             return false;
         }
-        if (value == null || value.length() == 0) {
-            ValueProperty.deleteProperty(contact, key);
-            return true;
-        }
-        String k = key.replaceAll("[^\\w]", "");
+        String k = propertyKey(key);
         if (k.length() == 0) {
             return false;
         }
+        if (value == null || value.length() == 0) {
+            ValueProperty.deleteProperty(contact, k);
+            return true;
+        }
         ValueProperty.addOrUpdateProperty(k, value, contact);
         return true;
+    }
+
+    /**
+     * The rows of the properties table as name -&gt; value: names cleaned
+     * ({@link #propertyKey(String)}), rows without name or value left out, the
+     * last row of a name wins
+     *
+     * @param rows key, value
+     * @return the properties to store, in table order
+     */
+    public static java.util.Map<String, String> propertyRows(Object[][] rows) {
+        java.util.Map<String, String> m = new java.util.LinkedHashMap<>();
+        if (rows == null) {
+            return m;
+        }
+        for (Object[] row : rows) {
+            if (row == null || row.length < 2 || row[0] == null || row[1] == null) {
+                continue;
+            }
+            String k = propertyKey(String.valueOf(row[0]));
+            String v = String.valueOf(row[1]);
+            if (k.length() > 0 && v.trim().length() > 0) {
+                m.put(k, v);
+            }
+        }
+        return m;
+    }
+
+    /**
+     * Stores the properties table with the contact: new and changed rows are
+     * saved, properties no longer in the table (or with an empty value) are
+     * deleted
+     *
+     * @param contact must be saved
+     * @param rows key, value
+     */
+    public static void saveProperties(Contact contact, Object[][] rows) {
+        if (contact == null || !contact.isExisting()) {
+            return;
+        }
+        java.util.Map<String, String> wanted = propertyRows(rows);
+        for (ValueProperty p : ValueProperty.getProperties(contact)) {
+            String v = wanted.get(p.__getCname());
+            if (v == null) {
+                ValueProperty.deleteProperty(contact, p.__getCname());
+            } else if (v.equals(String.valueOf(p.getValueObj()))) {
+                wanted.remove(p.__getCname());
+            }
+        }
+        for (java.util.Map.Entry<String, String> e : wanted.entrySet()) {
+            ValueProperty.addOrUpdateProperty(e.getKey(), e.getValue(), contact);
+        }
+    }
+
+    /**
+     * The fields of the contact as they appear in an invoice
+     * (<code>item.contact.*</code>), with the values of the stored contact:
+     * its own fields (properties, scripts run) first, then the other fields
+     *
+     * @param contact
+     * @return rows field, value
+     */
+    public static List<String[]> invoiceFields(Contact contact) {
+        List<String[]> own = new java.util.ArrayList<>();
+        List<String[]> other = new java.util.ArrayList<>();
+        if (contact == null) {
+            return own;
+        }
+        java.util.Map<String, Object> f = new mpv5.handler.FormFieldsHandler(contact).getFormattedFormFields("item.contact");
+        for (java.util.Map.Entry<String, Object> e : new java.util.TreeMap<>(f).entrySet()) {
+            if (!e.getKey().startsWith("item.contact.")) {
+                continue;
+            }
+            String[] row = {"<" + e.getKey() + ">", e.getValue() == null ? "" : String.valueOf(e.getValue())};
+            if (e.getKey().startsWith("item.contact.property.")) {
+                own.add(row);
+            } else {
+                other.add(row);
+            }
+        }
+        own.addAll(other);
+        return own;
     }
 
     /**
