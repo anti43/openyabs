@@ -1874,6 +1874,33 @@ public final class Gobd {
     }
 
     /**
+     * Logs the start of the plugin: version, user, settings, and whether the
+     * session before ended without a stop (crash, killed, power off)
+     *
+     * @param version of the plugin
+     */
+    void logStarted(String version) {
+        Object[] last = q1("SELECT action, created_at FROM gobd_audit_log WHERE action IN ('PLUGIN_STARTED', 'PLUGIN_STOPPED')"
+                + " ORDER BY id DESC FETCH FIRST 1 ROWS ONLY");
+        String before;
+        if (last == null) {
+            before = "Erster Start des Plugins.";
+        } else if ("PLUGIN_STARTED".equals(str(last[0]))) {
+            before = "Die vorige Sitzung (Start " + GobdUtil.fmtTimestamp(last[1]) + ") endete ohne Stopp des Plugins (Absturz oder Abbruch).";
+        } else {
+            before = "Zuletzt gestoppt am " + GobdUtil.fmtTimestamp(last[1]) + ".";
+        }
+        String settings = String.join(" | ",
+                "VERSION=" + version,
+                "ARCHIVE=" + archiveRoot(),
+                "AUTOLOCK_ON_EXPORT=" + yabs.settings().getBoolean(S_AUTOLOCK, true),
+                "AUTO_IMPORT_INCOME=" + yabs.settings().getBoolean(S_AUTOINCOME, false),
+                "WATCH=" + yabs.settings().get(S_WATCH, "").trim());
+        logAudit("PLUGIN", 0L, "PLUGIN_STARTED", "STATE=STOPPED", "STATE=RUNNING | " + settings, null,
+                "GoBD-Konformitaets-Plugin gestartet oder aktiviert. " + before);
+    }
+
+    /**
      * Stops the watch folder and forgets the state
      */
     void stop() {
