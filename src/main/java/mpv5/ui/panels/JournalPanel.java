@@ -1919,7 +1919,9 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
             final Template jt = journalOrContactTemplate;
             Export.createFileWithProgress(() -> jt, dataOwner, pr);
         } else {
-            new Job(Export.sourceFile(journalOrContactTemplate, dataOwner), pr).execute();
+            final Template jt = journalOrContactTemplate;
+            mpv5.utils.export.ExportProgress.execute(Messages.TYPE_JOURNAL + " ODT", Messages.EXPORT_STEP_FIELDS,
+                    () -> new Job(Export.sourceFile(jt, dataOwner), pr), Messages.EXPORT_STEP_OPEN);
         }
     }
 
@@ -2007,7 +2009,7 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
             return;
         }
         DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY, "sepa-lastschrift-" + LocalDate.now() + ".xml"); //NOI18N
-        new Job(sepa, d).execute();
+        mpv5.utils.export.ExportProgress.execute("SEPA", Messages.EXPORT_STEP_SEPA, () -> new Job(sepa, d), Messages.EXPORT_STEP_SAVE); //NOI18N
     }
 
     private void email() {
@@ -2021,7 +2023,7 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
             return;
         }
         YabsViewProxy.instance().setWaiting(true);
-        new Job(new EmailBatch(map), new Waiter() {
+        mpv5.utils.export.ExportProgress.execute(Messages.EXPORT_MAIL + " (" + map.size() + ")", null, () -> new Job(new EmailBatch(map), new Waiter() {
             @Override
             public void set(Object object, Exception exceptions) throws Exception {
                 if (exceptions != null) {
@@ -2030,7 +2032,7 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
                 }
                 YabsViewProxy.instance().setWaiting(false);
             }
-        }, "Emails: " + Messages.DONE).execute(); //NOI18N
+        }, "Emails: " + Messages.DONE), null); //NOI18N
     }
 
     /**

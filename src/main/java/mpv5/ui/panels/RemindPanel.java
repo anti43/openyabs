@@ -427,28 +427,31 @@ public class RemindPanel extends javax.swing.JPanel {
             Template t = TemplateHandler.loadTemplate(group, Constants.TYPE_REMINDER);
             if (t != null) {
                 Exportable te = TemplateHandler.loadTemplate(group, Constants.TYPE_REMINDER).getExFile();
-                Map<String, Object> hm1 = dataOwner.getFormFields();//new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
-                File f2 = FileDirectoryHandler.getTempFile("pdf");
-                Export ex = new Export(t);
-                ex.putAll(hm1);
-                ex.setTemplate(te);
-                ex.setTargetFile(f2);
-                try {
-                    Stage g = (Stage) DatabaseObject.getObject(Context.getStage(), dataOwner.__getStagesids());
-                    ex.put("reminder.stage", g.__getCname());
-                } catch (NodataFoundException ex1) {
-                    Log.Debug(ex1);
-                }
-                try {
-                    Item i = (Item) DatabaseObject.getObject(Context.getInvoice(), dataOwner.__getItemsids());
-                    ex.put("reminder.count", Reminder.getRemindersOf(i).size());
-                } catch (NodataFoundException nodataFoundException) {
-                    Log.Debug(nodataFoundException);
-                }
-
                 pr = new PreviewWaiter();
                 pr.setDataOwner(dataOwner);
-                new Job(ex, pr).execute();
+                final PreviewWaiter fpr = pr;
+                //form fields and scripts: in the background
+                mpv5.utils.export.ExportProgress.execute(dataOwner.__getCname(), Messages.EXPORT_STEP_FIELDS, () -> {
+                    Map<String, Object> hm1 = dataOwner.getFormFields();//new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
+                    File f2 = FileDirectoryHandler.getTempFile("pdf");
+                    Export ex = new Export(t);
+                    ex.putAll(hm1);
+                    ex.setTemplate(te);
+                    ex.setTargetFile(f2);
+                    try {
+                        Stage g = (Stage) DatabaseObject.getObject(Context.getStage(), dataOwner.__getStagesids());
+                        ex.put("reminder.stage", g.__getCname());
+                    } catch (NodataFoundException ex1) {
+                        Log.Debug(ex1);
+                    }
+                    try {
+                        Item i = (Item) DatabaseObject.getObject(Context.getInvoice(), dataOwner.__getItemsids());
+                        ex.put("reminder.count", Reminder.getRemindersOf(i).size());
+                    } catch (NodataFoundException nodataFoundException) {
+                        Log.Debug(nodataFoundException);
+                    }
+                    return new Job(ex, fpr);
+                }, Messages.EXPORT_STEP_OPEN);
             } else {
                 Popup.notice(Messages.NO_TEMPLATE_DEFINDED);
             }
@@ -495,7 +498,9 @@ public class RemindPanel extends javax.swing.JPanel {
                     Log.Debug(nodataFoundException);
                 }
 
-                new Job(Export.createFile(dataOwner.__getCname(), t, dataOwner, hm1), new DialogForFile(mpv5.db.objects.User.getSaveDir(dataOwner), dataOwner.__getCname())).execute();
+                final DialogForFile target = new DialogForFile(mpv5.db.objects.User.getSaveDir(dataOwner), dataOwner.__getCname());
+                mpv5.utils.export.ExportProgress.execute(dataOwner.__getCname(), Messages.EXPORT_STEP_FIELDS,
+                        () -> new Job(Export.createFile(dataOwner.__getCname(), t, dataOwner, hm1), target), Messages.EXPORT_STEP_SAVE);
             } else {
                 Popup.notice(Messages.NO_TEMPLATE_DEFINDED);
             }
@@ -532,7 +537,9 @@ public class RemindPanel extends javax.swing.JPanel {
                     Log.Debug(nodataFoundException);
                 }
 
-                new Job(Export.sourceFile(dataOwner.__getCname(), t, dataOwner, hm1), new DialogForFile(mpv5.db.objects.User.getSaveDir(dataOwner), dataOwner.__getCname())).execute();
+                final DialogForFile target = new DialogForFile(mpv5.db.objects.User.getSaveDir(dataOwner), dataOwner.__getCname());
+                mpv5.utils.export.ExportProgress.execute(dataOwner.__getCname(), Messages.EXPORT_STEP_FIELDS,
+                        () -> new Job(Export.sourceFile(dataOwner.__getCname(), t, dataOwner, hm1), target), Messages.EXPORT_STEP_SAVE);
             } else {
                 Popup.notice(Messages.NO_TEMPLATE_DEFINDED);
             }

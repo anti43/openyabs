@@ -105,13 +105,16 @@ public class InvoiceMail implements Waitable, MailAttachments {
             File einvoice;
             if (delivery == EInvoiceDelivery.ZUGFERD) {
                 einvoice = new File(dir, base + ".pdf");
+                ExportProgress.step(Messages.EXPORT_STEP_EINVOICE_EMBED);
                 ZugpferdFile.writePdf(invoice, pdf, einvoice);
             } else {
                 einvoice = new File(dir, base + ".xml");
+                ExportProgress.step(Messages.EXPORT_STEP_EINVOICE_XML);
                 ZugpferdFile.writeXml(invoice, einvoice);
             }
             einvoice.deleteOnExit();
 
+            ExportProgress.step(Messages.EXPORT_STEP_VALIDATE);
             Exception invalid = validate(einvoice);
             if (invalid != null) {
                 return invalid;

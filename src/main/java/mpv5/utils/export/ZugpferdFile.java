@@ -654,6 +654,7 @@ public class ZugpferdFile implements Waitable {
         if (template == null) {
             throw new IllegalStateException(Messages.NO_TEMPLATE_LOADED + " (" + User.getCurrentUser() + ")");
         }
+        ExportProgress.step(Messages.EXPORT_STEP_FIELDS);
         Export export = (Export) Export.createFile(item.__getCnumber().replaceAll("[^A-Za-z0-9._-]", "_"), template, item);
         export.setEmbedAllFonts(true);
         Exception ex = export.waitFor();

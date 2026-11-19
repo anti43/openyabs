@@ -116,6 +116,64 @@ public final class ExportProgress {
      * event dispatch thread, may be null
      */
     public static <T> void run(final String title, final Callable<T> work, final Result<T> result) {
+        start(title, work, result, false);
+    }
+
+    /**
+     * As {@link #run(String, Callable, Result)}, but the work always runs on
+     * a new thread (the caller does not wait), the window only if started
+     * from the event dispatch thread. The result runs on the event dispatch
+     * thread if started from there, else on the new thread.
+     *
+     * @param <T>
+     * @param title
+     * @param work
+     * @param result may be null
+     */
+    public static <T> void background(final String title, final Callable<T> work, final Result<T> result) {
+        start(title, work, result, true);
+    }
+
+    /**
+     * Runs a {@link Job} (its waitables) with a progress: the job is created
+     * in the background too (creating an {@link Export} reads the form fields
+     * and runs the scripts), its waiter gets the result on the event dispatch
+     * thread (if started from there).
+     *
+     * @param title
+     * @param firstStep the step while the job is created, e.g.
+     * {@link Messages#EXPORT_STEP_FIELDS}; null: none
+     * @param job creates the job
+     * @param resultStep the step while the waiter gets the result, e.g.
+     * {@link Messages#EXPORT_STEP_SAVE}; null: none
+     */
+    public static void execute(final String title, final Object firstStep, final Callable<mpv5.utils.jobs.Job> job, final Object resultStep) {
+        run(title, () -> {
+            if (firstStep != null) {
+                step(firstStep);
+            }
+            mpv5.utils.jobs.Job j = job.call();
+            if (j != null) {
+                j.doInBackground();
+            }
+            return j;
+        }, (j, failure) -> {
+            if (j != null) {
+                if (resultStep != null) {
+                    step(resultStep);
+                }
+                j.done();
+            } else if (failure != null) {
+                mpv5.YabsViewProxy.instance().addMessage(Messages.ERROR_OCCURED.toString().trim() + ": " + failure.getLocalizedMessage(), java.awt.Color.RED);
+            }
+        });
+    }
+
+    private static ExportProgress before() {
+        return CURRENT.get();
+    }
+
+    private static <T> void start(final String title, final Callable<T> work, final Result<T> result, boolean alwaysThread) {
         final boolean edt = SwingUtilities.isEventDispatchThread();
         final ExportProgress p = new ExportProgress(title, edt);
         Runnable all = () -> {
@@ -147,7 +205,9 @@ public final class ExportProgress {
                 }
             }
         };
-        if (edt) {
+        //within another export (e.g. the contact sheet prints): part of it, on this thread
+        boolean nested = !edt && before() != null;
+        if (edt || (alwaysThread && !nested)) {
             Thread t = new Thread(all, "export: " + title);
             t.setDaemon(true);
             t.start();

@@ -53,6 +53,28 @@ class ExportProgressTest {
     }
 
     @Test
+    void backgroundWithinAProgressRunsOnThisThread() {
+        final Thread caller = Thread.currentThread();
+        final AtomicReference<Thread> inner = new AtomicReference<Thread>();
+        ExportProgress.run("outer", () -> {
+            ExportProgress.background("inner", () -> {
+                inner.set(Thread.currentThread());
+                return null;
+            }, null);
+            return null;
+        }, null);
+        assertSame(caller, inner.get());
+    }
+
+    @Test
+    void executeRunsTheJobAndItsWaiter() {
+        final AtomicReference<Object> got = new AtomicReference<Object>();
+        mpv5.utils.jobs.Waitable w = () -> null;
+        ExportProgress.execute("job", "create", () -> new mpv5.utils.jobs.Job(w, (object, failure) -> got.set(object), "msg"), "deliver");
+        assertSame(w, got.get());
+    }
+
+    @Test
     void stepWithoutProgressDoesNothing() {
         ExportProgress.step("nothing");
         assertNull(ExportProgress.current());

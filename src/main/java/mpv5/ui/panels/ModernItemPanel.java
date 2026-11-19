@@ -980,21 +980,36 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
             Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + User.getCurrentUser() + ")");
             return;
         }
-        List<String> problems;
-        final org.mustangproject.Invoice invoice;
-        try {
-            invoice = ZugpferdFile.createInvoice(dataOwner, format);
-            problems = ZugpferdFile.validate(invoice);
-            Contact contact = dataOwner.getContact();
+        final mpv5.db.objects.Item item = dataOwner;
+        //reading the data (database) and checking it: not on the event dispatch thread
+        mpv5.utils.export.ExportProgress.run(Messages.EXPORT_EINVOICE + " " + item.__getCnumber(), () -> {
+            mpv5.utils.export.ExportProgress.step(Messages.EXPORT_STEP_EINVOICE_DATA);
+            org.mustangproject.Invoice inv = ZugpferdFile.createInvoice(item, format);
+            mpv5.utils.export.ExportProgress.step(Messages.EXPORT_STEP_EINVOICE_CHECK);
+            List<String> found = ZugpferdFile.validate(inv);
+            Contact contact = item.getContact();
             String buyerVatId = ZugpferdFile.checkBuyerVatId(contact, contact.getInvoiceaddress());
             if (buyerVatId != null) {
-                problems.add(buyerVatId);
+                found.add(buyerVatId);
             }
-        } catch (Exception ex) {
-            Log.Debug(this, ex);
-            Popup.error(ex);
-            return;
-        }
+            return new Object[]{inv, found};
+        }, (r, failure) -> {
+            if (failure != null) {
+                Log.Debug(this, failure);
+                Popup.error(failure);
+            } else {
+                @SuppressWarnings("unchecked")
+                List<String> found = (List<String>) r[1];
+                createEInvoice(format, (org.mustangproject.Invoice) r[0], found);
+            }
+        });
+    }
+
+    /**
+     * Asks if data is missing, then where to save; creates the e-invoice in
+     * the background
+     */
+    private void createEInvoice(final ZugpferdFile.Format format, final org.mustangproject.Invoice invoice, List<String> problems) {
         if (!problems.isEmpty()) {
             StringBuilder text = new StringBuilder(Messages.ZUGFERD_MISSING_DATA.toString()).append("\n");
             for (String problem : problems) {
@@ -1024,7 +1039,8 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
             dataOwner.setPanelData(this);
             exposeData();
             updateHeader();
-            new Job(new ZugpferdFile(dataOwner, invoice, target, format), new Waiter() {
+            final mpv5.db.objects.Item item = dataOwner;
+            mpv5.utils.export.ExportProgress.execute(Messages.EXPORT_EINVOICE + " " + target.getName(), null, () -> new Job(new ZugpferdFile(item, invoice, target, format), new Waiter() {
                 @Override
                 public void set(Object object, Exception exception) throws Exception {
                     if (exception != null) {
@@ -1033,7 +1049,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
                         showEInvoiceValidation(target, ((ZugpferdFile) object).getValidation());
                     }
                 }
-            }).execute();
+            }), null);
         }
     }
 
@@ -1053,7 +1069,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         });
         if (d.chooseFile()) {
             final File file = d.getFile();
-            new Job(new EInvoiceValidator(file), new Waiter() {
+            mpv5.utils.export.ExportProgress.execute(Messages.ZUGFERD_VALIDATE_FILE + " " + file.getName(), Messages.EXPORT_STEP_VALIDATE, () -> new Job(new EInvoiceValidator(file), new Waiter() {
                 @Override
                 public void set(Object object, Exception exception) throws Exception {
                     if (exception != null) {
@@ -1062,7 +1078,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
                         showEInvoiceValidation(file, ((EInvoiceValidator) object).getResult());
                     }
                 }
-            }).execute();
+            }), null);
         }
     }
 

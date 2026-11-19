@@ -48,7 +48,9 @@ public class EmailBatch extends Exportable implements Waitable {
                 if (m == null) {
                     try {
                         QueryCriteria c = new QueryCriteria("usersids", mpv5.db.objects.User.getCurrentUser().__getIDS());
-                        m = (MailMessage) Popup.SelectValue(DatabaseObject.getObjects(Context.getMessage(), c), Messages.SELECT_A_TEMPLATE);
+                        final List<DatabaseObject> choices = DatabaseObject.getObjects(Context.getMessage(), c);
+                        //the progress window hides while asked
+                        m = ExportProgress.onEdtAndWait(() -> (MailMessage) Popup.SelectValue(new ArrayList<DatabaseObject>(choices), Messages.SELECT_A_TEMPLATE));
                     } catch (Exception ex) {
                         Log.Debug(Export.class, ex.getMessage());
                         log.add(dataOwner.getCname() + "->" + Messages.NO_MAIL_TEMPLATE_DEFINED + "\n");
@@ -81,7 +83,11 @@ public class EmailBatch extends Exportable implements Waitable {
                     log.add(dataOwner.getCname() + ": " + Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")\n");
                 }
             }
-            Popup.notice(log, Messages.DONE);
+            final List<String> flog = log;
+            ExportProgress.onEdtAndWait(() -> {
+                Popup.notice(flog, Messages.DONE);
+                return null;
+            });
         } catch (Exception ex) {
             Log.Debug(ex);
         } finally {
