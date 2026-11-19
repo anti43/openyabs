@@ -160,35 +160,154 @@ final class Audit {
      * @return {chained entries, older entries without hash}
      */
     int[] checkAuditLog(List<String> errors) {
-        Object[][] rows = g.q("SELECT id, created_at, user_id, entity_type, entity_id, action, old_value, new_value, file_hash, details, prev_hash, row_hash"
-                + " FROM gobd_audit_log ORDER BY id ASC");
+        Object[][] rows = g.q("SELECT " + AUDIT_COLUMNS + " FROM gobd_audit_log ORDER BY id ASC");
+        AuditChain chain = new AuditChain(errors);
+        for (Object[] a : rows) {
+            chain.accept(a);
+        }
+        return new int[]{chain.chained, chain.legacy};
+    }
+
+    /**
+     * The columns of the audit log in the order {@link AuditChain} reads them
+     */
+    static final String AUDIT_COLUMNS = "id, created_at, user_id, entity_type, entity_id, action, old_value, new_value, file_hash, details,"
+            + " prev_hash, row_hash";
+
+    /**
+     * Checks the audit log entry by entry (in the order of the ids)
+     */
+    static final class AuditChain {
+
+        final List<String> errors;
         String expected = GobdUtil.GENESIS_HASH;
         boolean started = false;
         int chained = 0;
         int legacy = 0;
-        for (Object[] a : rows) {
-            String hash = str(a[11]);
+
+        AuditChain(List<String> errors) {
+            this.errors = errors;
+        }
+
+        /**
+         * @param a a row with {@link #AUDIT_COLUMNS}
+         */
+        void accept(Object[] a) {
+            String hash = str(a[11]).trim();
             if (hash.isEmpty()) {
                 if (started) {
                     errors.add("Audit-Log-Eintrag #" + a[0] + " ohne Hash innerhalb der Kette (nachtraeglich eingefuegt?)!");
                 } else {
                     legacy++;
                 }
-                continue;
+                return;
             }
             started = true;
-            String prev = str(a[10]);
+            String prev = str(a[10]).trim();
             if (!prev.equals(expected)) {
                 errors.add("Kettenbruch im Audit-Log vor Eintrag #" + a[0] + " (Eintrag geloescht oder eingefuegt?)!");
             }
-            String record = Gobd.auditRecord(a[1], str(a[2]), str(a[3]), a[4], str(a[5]), (String) a[6], (String) a[7], (String) a[8], str(a[9]));
-            if (!GobdUtil.recordHash(record, prev).equals(hash)) {
+            if (!GobdUtil.recordHash(record(a), prev).equals(hash)) {
                 errors.add("Audit-Log-Eintrag #" + a[0] + " wurde veraendert!");
             }
             expected = hash;
             chained++;
         }
-        return new int[]{chained, legacy};
+
+        static String record(Object[] a) {
+            return Gobd.auditRecord(a[1], str(a[2]), str(a[3]), a[4], str(a[5]), (String) a[6], (String) a[7], (String) a[8], str(a[9]));
+        }
+    }
+
+    /**
+     * Writes the complete audit log (all years) as a UTF-8 text file that any
+     * text editor opens: one entry per line (CSV with ;), with prev_hash and
+     * row_hash and how they are computed, so the chain can be checked outside
+     * YaBS too; at the end the result of the check and the end of the chain.
+     * Read straight from the database (no limit of rows, little memory).
+     *
+     * @return the file (read only) in &lt;archive&gt;/audit-log/
+     */
+    synchronized Path exportAuditLogText() throws Exception {
+        String ts = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
+        Path dir = g.archiveRoot().resolve("audit-log");
+        Files.createDirectories(dir);
+        Path file = GobdUtil.uniquePath(dir, "GoBD_Audit_Log_" + ts, "txt");
+        List<String> errors = new ArrayList<String>();
+        AuditChain chain = new AuditChain(errors);
+        int count = 0;
+        try (java.io.BufferedWriter w = Files.newBufferedWriter(file, StandardCharsets.UTF_8, java.nio.file.StandardOpenOption.CREATE_NEW)) {
+            w.write(String.join(System.lineSeparator(),
+                    "# OpenYaBS - GoBD-Audit-Log (vollstaendig, alle Jahre)",
+                    "# Erstellt: " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + " von " + Gobd.currentUser(),
+                    "# Quelle: Tabelle gobd_audit_log, sortiert nach id. Zeichensatz UTF-8, Trennzeichen ;",
+                    "# Werte wie im gehashten Datensatz: Zeilenumbruch als \\n, Backslash als \\\\, kein Wert als <null>.",
+                    "# Hash-Kette: row_hash = SHA256(Datensatz + \"\\n\" + prev_hash), erster prev_hash = 64 Nullen.",
+                    "#   Datensatz = die Zeilen created_at=...\\nuser=...\\nentity_type=...\\nentity_id=...\\naction=...",
+                    "#   \\nold=...\\nnew=...\\nfile_hash=...\\ndetails=... (Werte dieser Datei, ohne die Anfuehrungszeichen).",
+                    "# Eintraege ohne row_hash sind aelter als die Hash-Kette.",
+                    "#",
+                    "id;created_at;user_id;entity_type;entity_id;action;old_value;new_value;file_hash;details;prev_hash;row_hash"));
+            w.write(System.lineSeparator());
+            java.sql.Connection c = Db.connection();
+            try (java.sql.PreparedStatement ps = c.prepareStatement("SELECT " + AUDIT_COLUMNS + " FROM gobd_audit_log ORDER BY id ASC");
+                    java.sql.ResultSet rs = ps.executeQuery()) {
+                ps.setFetchSize(500);
+                while (rs.next()) {
+                    Object[] a = new Object[12];
+                    for (int i = 0; i < a.length; i++) {
+                        a[i] = rs.getObject(i + 1);
+                        if (a[i] instanceof java.sql.Clob) {
+                            java.sql.Clob clob = (java.sql.Clob) a[i];
+                            a[i] = clob.getSubString(1, (int) clob.length());
+                        }
+                    }
+                    chain.accept(a);
+                    w.write(auditLine(a));
+                    w.write(System.lineSeparator());
+                    count++;
+                }
+            }
+            w.write(String.join(System.lineSeparator(),
+                    "#",
+                    "# Eintraege: " + count + " (" + chain.chained + " in der Hash-Kette, " + chain.legacy + " aeltere ohne Hash)",
+                    "# Kettenende (letzter row_hash): " + (chain.started ? chain.expected : "-"),
+                    errors.isEmpty() ? "# Pruefung der Kette: OK" : "# Pruefung der Kette: FEHLER"));
+            w.write(System.lineSeparator());
+            for (String e : errors) {
+                w.write("#   - " + e);
+                w.write(System.lineSeparator());
+            }
+        }
+        GobdUtil.makeReadOnly(file);
+        return file;
+    }
+
+    /**
+     * @param a a row with {@link #AUDIT_COLUMNS}
+     * @return the line of the text export
+     */
+    static String auditLine(Object[] a) {
+        StringBuilder b = new StringBuilder();
+        b.append(str(a[0]));
+        for (int i = 1; i < a.length; i++) {
+            Object v = a[i];
+            String text;
+            if (i == 1) {
+                text = GobdUtil.fmtTimestamp(v);
+            } else if (i == 6 || i == 7) {
+                //as in the hashed record (Gobd.auditRecord)
+                text = v == null ? "<null>" : str(v);
+            } else if (i == 8) {
+                text = v == null || str(v).trim().isEmpty() ? "<null>" : str(v).trim();
+            } else if (i >= 10) {
+                text = str(v).trim();
+            } else {
+                text = str(v);
+            }
+            b.append(';').append('"').append(GobdUtil.recordValue(text).replace("\"", "\"\"")).append('"');
+        }
+        return b.toString();
     }
 
     /**

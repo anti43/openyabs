@@ -79,8 +79,29 @@ public class GobdPluginTest {
                 assertEquals(prev, a[10]);
                 String rec = Gobd.auditRecord(a[1], (String) a[2], (String) a[3], a[4], (String) a[5], (String) a[6], (String) a[7], (String) a[8], (String) a[9]);
                 assertEquals(GobdUtil.recordHash(rec, prev), a[11]);
+                //the line of the text export alone is enough to check the hash (outside YaBS)
+                String line = Audit.auditLine(a);
+                String[] cells = line.substring(line.indexOf(';') + 2, line.length() - 1).split("\";\"", -1);
+                assertEquals(11, cells.length, line);
+                String[] keys = {"created_at", "user", "entity_type", "entity_id", "action", "old", "new", "file_hash", "details"};
+                StringBuilder rebuilt = new StringBuilder();
+                for (int i = 0; i < keys.length; i++) {
+                    rebuilt.append(i == 0 ? "" : "\n").append(keys[i]).append('=').append(cells[i].replace("\"\"", "\""));
+                }
+                assertEquals(rec, rebuilt.toString());
+                assertEquals(a[11], GobdUtil.recordHash(rebuilt.toString(), cells[9]));
                 prev = (String) a[11];
             }
+            //the check finds a changed entry
+            java.util.List<String> errors = new java.util.ArrayList<String>();
+            Audit.AuditChain chain = new Audit.AuditChain(errors);
+            rows[1][7] = "changed";
+            for (Object[] a : rows) {
+                chain.accept(a);
+            }
+            assertEquals(3, chain.chained);
+            assertEquals(1, errors.size(), String.valueOf(errors));
+            assertTrue(Audit.auditLine(rows[0]).contains("new\\nline"), Audit.auditLine(rows[0]));
             //a second successor of the same link is refused (no fork)
             java.sql.SQLException e = org.junit.jupiter.api.Assertions.assertThrows(java.sql.SQLException.class, () -> Db.update(c,
                     "INSERT INTO gobd_audit_log (user_id, entity_type, entity_id, action, prev_hash, row_hash) VALUES ('u', 't', 1, 'a', ?, ?)",

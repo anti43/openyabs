@@ -123,6 +123,30 @@ final class Pages {
     }
 
     /**
+     * Writes the complete audit log as a text file in the background, logs
+     * it and opens it (the program of the system for .txt files)
+     */
+    void exportAuditLog() {
+        Audit audit = new Audit(g);
+        g.yabs.background(() -> {
+            try {
+                return audit.exportAuditLogText();
+            } catch (Exception e) {
+                throw new IllegalStateException("Audit-Log-Export fehlgeschlagen: " + e.getMessage(), e);
+            }
+        }, file -> {
+            try {
+                g.logAudit("EXPORT", 0L, "AUDIT_LOG_EXPORTED", null, file.getFileName().toString(), null,
+                        "Audit-Log vollstaendig als Textdatei exportiert: " + file);
+            } catch (RuntimeException e) {
+                g.error("Audit-Log exportiert, aber der Export konnte nicht protokolliert werden:\n" + e.getMessage());
+            }
+            g.status("GoBD: Audit-Log als Textdatei geschrieben: " + file);
+            g.yabs.openFile(file.toFile());
+        });
+    }
+
+    /**
      * @return the Z1 auditor view: invoices, income, expenses with receipts,
      * audit log, per year
      */
@@ -134,12 +158,16 @@ final class Pages {
         JComboBox<String> yearCombo = new JComboBox<String>(new String[]{ALL_YEARS});
         JButton refresh = ModernTheme.actionButton(new JButton("Aktualisieren"), null);
         JButton openSel = ModernTheme.actionButton(new JButton("Markierten Originalbeleg oeffnen"), null);
+        JButton auditText = ModernTheme.actionButton(new JButton("Audit-Log als Textdatei"), null);
+        auditText.setToolTipText("Vollstaendiges Audit-Log (alle Jahre, mit Hash-Kette und Pruefergebnis) als UTF-8-Textdatei oeffnen");
+        auditText.addActionListener(e -> exportAuditLog());
         JPanel top = new JPanel(new BorderLayout(12, 0));
         top.add(summary, BorderLayout.WEST);
         JPanel controls = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
         controls.add(new JLabel("Pruefungszeitraum:"));
         controls.add(yearCombo);
         controls.add(openSel);
+        controls.add(auditText);
         controls.add(refresh);
         top.add(controls, BorderLayout.EAST);
 

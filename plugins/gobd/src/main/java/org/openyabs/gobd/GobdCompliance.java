@@ -151,6 +151,9 @@ public final class GobdCompliance implements YabsExtension {
                         return "FEHLER: " + e.getMessage();
                     }
                 }, this::report));
+        yabs.addCommand("GoBD: 8. Audit-Log als Textdatei oeffnen",
+                "Schreibt das vollstaendige Audit-Log (alle Jahre, mit Hash-Kette und Pruefergebnis) als UTF-8-Textdatei und oeffnet sie",
+                () -> pages.exportAuditLog());
         yabs.addCommand("GoBD: 7. ZUGFeRD / XRechnung als Einnahme importieren",
                 "Importiert ZUGFeRD-PDF/A-3 oder XRechnung-XML als GoBD-festgeschriebene Einnahme (Revenue)", () -> {
                     JFileChooser chooser = new JFileChooser();
