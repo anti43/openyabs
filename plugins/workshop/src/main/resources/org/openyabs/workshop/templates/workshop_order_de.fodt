@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<office:document xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0"
+                 xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0"
+                 office:version="1.2"
+                 office:mimetype="application/vnd.oasis.opendocument.text">
+  <office:body>
+    <office:text>
+      <text:p>[companyinfo.name] – [companyinfo.street], [companyinfo.zip] [companyinfo.city]</text:p>
+      <text:h text:outline-level="1">Werkstattauftrag [item.cnumber]</text:h>
+      <text:p>Kunde: [contact.cname], [contact.street], [contact.zip] [contact.city]</text:p>
+      <text:p>Fahrzeug: [ws.makeModel] | Kennzeichen: [ws.plate] | FIN: [ws.vin]</text:p>
+      <text:p>Kilometerstand: [ws.mileage] [ws.mileageUnit] | Annahme: [ws.dropoffDate] | Geplante Abholung: [ws.pickupDate]</text:p>
+      <text:p>Nächste HU/AU: [ws.inspectionDue] | Kostenvoranschlag: [ws.quoteNumber] ([ws.quoteTotal])</text:p>
+      <text:p>Kundenbeanstandung / Auftrag: [ws.complaint]</text:p>
+      <text:p>Ausgeführte Arbeiten: [ws.workSummary]</text:p>
+      <text:p>Altteile: [ws.oldParts] | Abrechnung: [ws.awDefinition]</text:p>
+      <text:p>[xtable1]</text:p>
+      <text:p>Unterschrift Kunde (Auftragserteilung): ___________________________</text:p>
+    </office:text>
+  </office:body>
+</office:document>
