@@ -717,11 +717,12 @@ public class HomeScreen extends JPanel {
             SubItem[] subs = item.getSubitems();
             item.setIDS(-1);
             item.setDateadded(new Date());
+            //the service date (Leistungsdatum): the date of the new invoice
+            item.setDatetodo(null);
+            item.setDatelastupdated(null);
             try {
-                item.setDatetodo(DateConverter.addDays(new Date(), Integer.valueOf(User.getCurrentUser().getProperties().getProperty("bills.warn.days"))));
                 item.setDateend(DateConverter.addDays(new Date(), Integer.valueOf(User.getCurrentUser().getProperties().getProperty("bills.alert.days"))));
             } catch (Exception e) {
-                item.setDatetodo(DateConverter.addDays(new Date(), 14));
                 item.setDateend(DateConverter.addDays(new Date(), 30));
             }
             item.setIntreminders(0);

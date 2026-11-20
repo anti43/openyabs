@@ -832,6 +832,15 @@ public final class Gobd {
      * @param withNumber false: before the final number is given
      * @return the missing mandatory fields of § 14 Abs. 4 UStG
      */
+    /**
+     * @param doc
+     * @return the service date (Leistungsdatum, datetodo), else the document
+     * date (as the core does since #208)
+     */
+    static java.util.Date serviceDate(Item doc) {
+        return doc.__getDatetodo() != null ? doc.__getDatetodo() : doc.__getDateadded();
+    }
+
     static List<String> validateMandatoryFields(Item doc, boolean withNumber) {
         List<String> errors = new ArrayList<String>();
         String num = str(doc.__getCnumber()).trim();
@@ -841,7 +850,8 @@ public final class Gobd {
         if (doc.__getDateadded() == null) {
             errors.add("Ausstellungsdatum fehlt (§ 14 Abs. 4 Nr. 3 UStG)");
         }
-        if (doc.__getDatetodo() == null) {
+        //the service date (datetodo); empty means the document date (core, #208)
+        if (serviceDate(doc) == null) {
             errors.add("Leistungs-/Lieferdatum fehlt (§ 14 Abs. 4 Nr. 6 UStG)");
         }
         if (doc.__getContactsids() <= 0) {
@@ -910,7 +920,7 @@ public final class Gobd {
         xml.append("  <DocumentNumber>").append(GobdUtil.escapeXml(doc.__getCnumber())).append("</DocumentNumber>\n");
         xml.append("  <DocumentType>").append(doc.__getInttype() == Item.TYPE_CREDIT ? "381_CREDIT_NOTE" : "380_INVOICE").append("</DocumentType>\n");
         xml.append("  <IssueDate>").append(GobdUtil.escapeXml(fmtDate(doc.__getDateadded()))).append("</IssueDate>\n");
-        xml.append("  <DeliveryDate>").append(GobdUtil.escapeXml(fmtDate(doc.__getDatetodo()))).append("</DeliveryDate>\n");
+        xml.append("  <DeliveryDate>").append(GobdUtil.escapeXml(fmtDate(serviceDate(doc)))).append("</DeliveryDate>\n");
         xml.append("  <ContactId>").append(doc.__getContactsids()).append("</ContactId>\n");
         xml.append("  <FrozenCustomerSnapshot>").append(GobdUtil.escapeXml(customerSnap)).append("</FrozenCustomerSnapshot>\n");
         xml.append("  <NetAmount currencyID=\"EUR\">").append(fmtDec(net)).append("</NetAmount>\n");

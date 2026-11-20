@@ -48,7 +48,7 @@ def fields(table, prefix):
     return [prefix + c for c in cols.get(table, []) if c not in SKIP]
 
 # formatted helpers known from the bundled template / docs
-ITEM_EXTRA = ['item.netvaluef', 'item.taxvaluef', 'item.grosvaluef', 'item.discountvaluef', 'item.discountnetdifferencef',
+ITEM_EXTRA = ['item.servicedate', 'item.netvaluef', 'item.taxvaluef', 'item.grosvaluef', 'item.discountvaluef', 'item.discountnetdifferencef',
               'item.contact.fullname', 'item.contact.invoiceaddress.street', 'item.contact.invoiceaddress.zip',
               'item.contact.invoiceaddress.city', 'item.contact.invoiceaddress.country',
               'item.paymentiban', 'item.paymentbic', 'item.paymentbank', 'item.paymentaccountname', 'item.paymentdays',
@@ -178,6 +178,33 @@ def small_business(c):
     t = t[:t.index('<table:table-row>')] + ''.join(keep) + '</table:table>'
     note = '<text:p text:style-name="KuNote">%s</text:p>' % ph('companyinfo.smallbusinessnote')
     return c[:m.start()] + t + note + c[m.end():]
+
+# ---- the service date (Leistungsdatum, § 14 Abs. 4 Nr. 6 UStG) below the date of invoices: item.servicedate
+# (the service date of the invoice, the invoice date if it has none)
+DATE_ROW = re.compile(r'<table:table-row><table:covered-table-cell/><table:table-cell table:style-name="Tabelle2.A1" office:value-type="string"><text:p text:style-name="P9">Datum</text:p></table:table-cell>.*?</table:table-row>')
+
+def service_date(c):
+    m = DATE_ROW.search(c)
+    assert m and '&lt;item.dateadded&gt;' in m.group(0), 'date row'
+    row = m.group(0).replace('>Datum<', '>Leistungsdatum<', 1).replace('&lt;item.dateadded&gt;', '&lt;item.servicedate&gt;', 1)
+    c = c[:m.end()] + row + c[m.end():]
+    # the first column of the table is one cell over all rows: one row more
+    t = c.index('<table:table table:name="Tabelle2"')
+    span = re.compile(r'table:number-rows-spanned="(\d+)"')
+    sm = span.search(c, t)
+    assert sm and sm.start() < c.index('</table:table>', t)
+    c = c[:sm.start()] + 'table:number-rows-spanned="%d"' % (int(sm.group(1)) + 1) + c[sm.end():]
+    # a label column wide enough for "Leistungsdatum", from the empty first column (same width of the table)
+    for old, new in (('<style:style style:name="Tabelle2.B" style:family="table-column"><style:table-column-properties style:column-width="1.323cm"/>',
+                      '<style:style style:name="Tabelle2.B" style:family="table-column"><style:table-column-properties style:column-width="2.7cm"/>'),
+                     ('<style:style style:name="Tabelle2.A" style:family="table-column"><style:table-column-properties style:column-width="10.007cm"/>',
+                      '<style:style style:name="Tabelle2.A" style:family="table-column"><style:table-column-properties style:column-width="8.630cm"/>')):
+        assert c.count(old) == 1, old
+        c = c.replace(old, new)
+    return c
+
+# the kinds of documents which are invoices (show the service date)
+INVOICE_TYPES = (0, 20, 21, 22)
 
 LOGO = ('<text:p text:style-name="P23"><draw:frame draw:style-name="frLogo" draw:name="Logo" text:anchor-type="as-char" svg:width="4.2cm" svg:height="1.4cm" draw:z-index="3">'
         '<draw:image xlink:href="Pictures/logo.png" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/></draw:frame></text:p>')
@@ -319,6 +346,8 @@ def make(fname, title, kind, groups, prefix=None, cprefix=None, blocks=None, tot
             c = vat_layout(c)
         elif kind == 'smallbusiness':
             c = small_business(c)
+        if kind in ('item', 'smallbusiness') and tid in INVOICE_TYPES:
+            c = service_date(c)
     if prefix:
         c = c.replace('&lt;item.contact.', '&lt;' + cprefix).replace('&lt;item.', '&lt;' + prefix)
     c = c.replace('</office:automatic-styles>', STYLES + BSTYLES + '</office:automatic-styles>', 1)
@@ -443,7 +472,7 @@ def write_odt(fname, c):
     zo.close()
     open(os.path.join(OUT, fname), 'wb').write(out.getvalue())
     return len(out.getvalue())
-inv = vat_layout(content.replace(SENDER[0], SENDER[1], 1))
+inv = service_date(vat_layout(content.replace(SENDER[0], SENDER[1], 1)))
 inv, n = DUPLICATE_NAME.subn('', inv, 1)
 assert n == 1
 made.append((0, 'Rechnung (Standard)', 'invoice.odt', write_odt('invoice.odt', inv)))

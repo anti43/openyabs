@@ -243,7 +243,7 @@ public final class ItemService {
 
     /**
      * Ensures an invoice has status "finished" (abgeschlossen) and end date is set.
-     * If end date is empty or older than the worked-on date (datetodo / dateadded),
+     * If end date is empty or older than the service date (datetodo / dateadded),
      * it is updated to the due date (if calculable and not before worked-on) or the worked-on date.
      * The method is idempotent: if nothing needs to change, nothing is saved,
      * so already finalized (locked) documents are not written again.

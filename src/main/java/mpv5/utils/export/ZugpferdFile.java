@@ -323,13 +323,14 @@ public class ZugpferdFile implements Waitable {
             String buyerReference, int paytermDays, String taxExemptionReason, String smallBusinessNote,
             Format format) {
         Date issueDate = item.__getDateadded() != null ? item.__getDateadded() : new Date();
-        //Item#datetodo is the "last edited" date, not a due date - always use the payment term
+        //Item#datetodo is the service date, not a due date - always use the payment term
         Date dueDate = dueDate(issueDate, paytermDays);
 
         Invoice invoice = new Invoice()
                 .setNumber(item.__getCnumber())
                 .setIssueDate(issueDate)
-                .setDeliveryDate(issueDate)
+                //BT-72: the service date (Leistungsdatum), the invoice date if not set
+                .setDeliveryDate(item.getServiceDate() != null ? item.getServiceDate() : issueDate)
                 .setCurrency(DEFAULT_CURRENCY)
                 .setSender(sender)
                 .setRecipient(recipient)

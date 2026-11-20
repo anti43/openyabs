@@ -395,6 +395,28 @@ public final class FirstStartSetup {
             "797a9cc32dc0b66a38c04e4aa86700a66317d21a41adba9e66278765332e1ea2",
             "51a57b06204d9827b135e3d6c11b429f4458a473d08186eeaffda23783b1b508"));
 
+    /**
+     * SHA-256 of the bundled templates of the previous release -> the
+     * resource that replaces them (the invoices got the service date,
+     * item.servicedate, #208); a template whose file was changed is kept
+     */
+    private static final java.util.Map<String, String> PREVIOUS_RELEASE = new java.util.HashMap<>();
+
+    static {
+        PREVIOUS_RELEASE.put("622057ccf9692bd0285a178be7beb0d206c61b08ac967d80c2a78e8c1e9550d8", SMALL_BUSINESS_INVOICE_TEMPLATE);
+        PREVIOUS_RELEASE.put("ddef24e033e53fcc9013ce093be3525e1e82b7f8b0d9010a137f6cd8ff4257f1", "/extra/templates/demo-00.odt");
+        PREVIOUS_RELEASE.put("a4e934ca106c445a60b4e840ad6ea7edca10b727bc6b7e19a638a676b07d9b23", "/extra/templates/demo-01.odt");
+        PREVIOUS_RELEASE.put("a541ce696ce70606d4bc33aea456213df342cfbf38cacd49e9b1ab0cd63b448c", "/extra/templates/demo-02.odt");
+        PREVIOUS_RELEASE.put("a4211fc213295818e2a3f25ed81d85db2e0d8f6a0774b9896c52f41865921839", "/extra/templates/demo-03.odt");
+        PREVIOUS_RELEASE.put("67e5aa91101a5a75ffe001341e09cecbe003d67c63bf19883bfe44abaa84c13d", "/extra/templates/demo-04.odt");
+        PREVIOUS_RELEASE.put("981ea02f19f8ddb11c57a8b22a904ab623cc97dfdfc677bc456adccea63b7c6a", "/extra/templates/demo-07.odt");
+        PREVIOUS_RELEASE.put("eb5639643aaf728b03fecc7c61cecf2604f251f2ce1694854eafa6537dd66046", "/extra/templates/demo-11.odt");
+        PREVIOUS_RELEASE.put("6cb9f8d0a5933e3cf614cab8cf491176ce773ceb665a2c654868827597f2659b", "/extra/templates/demo-20.odt");
+        PREVIOUS_RELEASE.put("04ece9267c08364f5fcfa80636c142eab2c5cbdfa652fe2f21932525065a11b5", "/extra/templates/demo-21.odt");
+        PREVIOUS_RELEASE.put("c91c15c26612f8df1cb17706ec67ca0f658566df5c4deec9a05e5092dbe376ea", "/extra/templates/demo-22.odt");
+        PREVIOUS_RELEASE.put("16d3cc0bf3872fe4efa550032dde9410bbde8b87bc13733646ee22529d629a53", INVOICE_TEMPLATE);
+    }
+
     static {
         OLD_DEMOS.put(0, "653b59c8436659bcae793af1f06ab0c83257a7b4ddbd50144a6e6b558d1ac692");
         OLD_DEMOS.put(1, "3c7fc4e8bd12fef6c3d70d73a3c9ed952698d021ee0b66888e222c26a32eb198");
@@ -419,13 +441,14 @@ public final class FirstStartSetup {
     /**
      * Templates imported by older versions: the demo templates are replaced by
      * the current ones (with content for every kind of document, the journal in
-     * landscape) and the column format is corrected - but only templates whose
-     * file is still exactly the one shipped; changed templates stay as they are.
+     * landscape, the service date on invoices) and the column format of very
+     * old ones is corrected - but only templates whose file is still exactly
+     * the one shipped; changed templates stay as they are.
      */
     public static void upgradeDemoTemplates() {
         try {
             ReturnValue rv = QueryHandler.getConnection().freeQuery(
-                    "SELECT ids FROM templates WHERE format = '" + OLD_FORMAT + "' AND description = 'Wizard insert'",
+                    "SELECT ids FROM templates WHERE description = 'Wizard insert'",
                     MPSecurityManager.VIEW, null);
             if (!rv.hasData()) {
                 return;
@@ -434,9 +457,16 @@ public final class FirstStartSetup {
                 try {
                     Template t = (Template) DatabaseObject.getObject(Context.getTemplate(), Integer.valueOf(row[0].toString()));
                     int type = Integer.parseInt(t.__getMimetype());
+                    boolean oldFormat = OLD_FORMAT.equals(t.__getFormat());
                     String hash = sha256(t.getFile());
                     String resource;
-                    if (hash.equals(OLD_DEMOS.get(type))) {
+                    if (!oldFormat) {
+                        //the previous release: the current file, the format stays
+                        resource = PREVIOUS_RELEASE.get(hash);
+                        if (resource == null) {
+                            continue;
+                        }
+                    } else if (hash.equals(OLD_DEMOS.get(type))) {
                         resource = String.format("/extra/templates/demo-%02d.odt", type);
                     } else if (type == Constants.TYPE_INVOICE && OLD_INVOICE_TEMPLATES.contains(hash)) {
                         resource = INVOICE_TEMPLATE;
@@ -446,7 +476,9 @@ public final class FirstStartSetup {
                     File f = FileDirectoryHandler.getTempFile("template-" + type, "odt");
                     FileDirectoryHandler.copyFile(Main.class.getResourceAsStream(resource), f);
                     QueryHandler.instanceOf().clone(Context.getFiles()).updateFileNow(f, t.__getFilename());
-                    t.setFormat(demoFormat(type));
+                    if (oldFormat) {
+                        t.setFormat(demoFormat(type));
+                    }
                     t.save(true);
                     Log.Debug(FirstStartSetup.class, "Template updated: " + t + " (" + type + ")");
                 } catch (Exception e) {

@@ -160,6 +160,10 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
     private final LabeledDateChooser date1 = ModernTheme.plain(new LabeledDateChooser());
     private final LabeledDateChooser date2 = ModernTheme.plain(new LabeledDateChooser());
     private final LabeledDateChooser date3 = ModernTheme.plain(new LabeledDateChooser());
+    /**
+     * when the document was saved last (not editable)
+     */
+    private final JLabel lastUpdated = new JLabel();
     //free text
     private final LabeledCombobox messages = ModernTheme.plain(new LabeledCombobox());
     private final JTextArea notes = new JTextArea(4, 20);
@@ -218,6 +222,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
     public BigDecimal discountgrosvalue_;
     public Date datetodo_;
     public Date dateend_;
+    public Date datelastupdated_;
     public int intreminders_;
     public int intstatus_;
     public Integer reforderids_;
@@ -297,7 +302,10 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         groupnameselect.setContext(Context.getGroup());
         groupnameselect.setSearchEnabled(true);
         date1.setDate(new Date());
-        date2.setDate(new Date());
+        //the service date: empty means the document date
+        date2.setDate(null);
+        date2.getDateChooser().setToolTipText(Messages.ITEM_DATE_SERVICE_HINT.toString());
+        lastUpdated.setForeground(ModernTheme.muted());
 
         number.setSearchOnEnterEnabled(true);
         number.setParent(this);
@@ -431,9 +439,10 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
                 .row(Card.field(text("ItemPanel2.refOrder._Label"), refRow)));
 
         grid.add(new Card(Messages.ITEM_SECTION_DATES.toString())
-                .row(Card.field(text("ItemPanel2.date1._Label"), date1))
-                .row(Card.field(text("ItemPanel2.date2._Label"), date2))
-                .row(Card.field(text("ItemPanel2.date3._Label"), date3)));
+                .row(Card.field(Messages.ITEM_DATE_DOCUMENT.toString(), date1))
+                .row(Card.field(Messages.ITEM_DATE_SERVICE.toString(), date2))
+                .row(Card.field(text("ItemPanel2.date3._Label"), date3))
+                .row(Card.field(Messages.ITEM_DATE_LASTUPDATED.toString(), lastUpdated)));
 
         grid.add(new Card(Messages.ITEM_SECTION_TEXT.toString())
                 .row(Card.field(text("ItemPanel2.labeledCombobox1._Label"), messages))
@@ -1411,7 +1420,8 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         discountvalue_ = totals[2];
         discountgrosvalue_ = totals[3];
         shippingvalue_ = BigDecimal.ZERO;
-        datetodo_ = date2.getDate();
+        //the service date (Leistungsdatum): the document date if empty
+        datetodo_ = date2.getDate() != null ? date2.getDate() : dateadded_;
         dateend_ = date3.getDate();
         intstatus_ = Integer.parseInt(String.valueOf(status.getSelectedItem().getId()));
         try {
@@ -1432,7 +1442,10 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
             dateadded_ = new Date();
         }
         date1.setDate(dateadded_);
-        date2.setDate(User.getCurrentUser().getProperties().getProperty("org.openyabs.itemproperty", "keepmodifiedtransdate") ? datetodo_ : new Date());
+        //the service date as saved (it used to be set to today when a document was opened)
+        date2.setDate(datetodo_);
+        lastUpdated.setText(datelastupdated_ == null || datelastupdated_.getTime() <= 0 ? "\u2013"
+                : DateConverter.getDefDateString(datelastupdated_) + " " + new java.text.SimpleDateFormat("HH:mm").format(datelastupdated_));
         date3.setDate(User.getCurrentUser().getProperties().getProperty("org.openyabs.itemproperty", "keepmodifiedenddate") ? dateend_ : new Date());
         notes.setText(description_);
         notes.setCaretPosition(0);
@@ -1555,7 +1568,9 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
             o.setCnumber("");
             o.setCname("");
             o.setDateadded(new Date());
-            o.setDatetodo(new Date());
+            //the service date: the document date unless set
+            o.setDatetodo(null);
+            o.setDatelastupdated(null);
             o.setDateend(new Date());
             //the positions as they are (quantity, unit, price, VAT rate, discount, product)
             SubItem[] subs = ItemService.copyPositions(dbo);
@@ -1616,7 +1631,8 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
     public void actionBeforeCreate() {
         status.setSelectedIndex(Item.STATUS_IN_PROGRESS);
         date1.setDate(new Date());
-        date2.setDate(new Date());
+        date2.setDate(null);
+        lastUpdated.setText("\u2013");
         if (!User.getCurrentUser().getProperties().getProperty("org.openyabs.itemproperty", "keepmodifiedenddate")) {
             Contact dbo = null;
             MPComboBoxModelItem item = contactname.getSelectedItem();

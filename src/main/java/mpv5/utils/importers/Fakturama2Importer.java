@@ -1211,7 +1211,8 @@ public class Fakturama2Importer {
                 Calendar due = Calendar.getInstance();
                 due.setTime(date);
                 due.add(Calendar.DATE, (int) d.l("DUEDAYS"));
-                item.setDatetodo(due.getTime());
+                //the service date (Leistungsdatum); the due date is the end date
+                item.setDatetodo(date);
                 boolean paid = d.b("PAID");
                 item.setIntstatus(paid ? Item.STATUS_PAID : Item.STATUS_FINISHED);
                 item.setDateend(paid && d.date("PAYDATE") != null ? d.date("PAYDATE") : due.getTime());

@@ -193,7 +193,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         groupnameselect.setSearchEnabled(true);
 
         date1.setDate(new Date());
-        date2.setDate(new Date());
+        date2.setDate(null);
 
 //        itemtable.getTableHeader().addMouseListener(new MouseListener() {
 //
@@ -2511,7 +2511,8 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
             shippingvalue_ = BigDecimal.ZERO;
 //            }
 
-            datetodo_ = date2.getDate();
+            //the service date: the document date if empty
+            datetodo_ = date2.getDate() != null ? date2.getDate() : dateadded_;
             dateend_ = date3.getDate();
             intstatus_ = Integer.valueOf(status.getSelectedItem().getId());
 
@@ -2535,11 +2536,8 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         number.setText(cnumber_);
         name.setText(cname_);
         date1.setDate(dateadded_);
-        if (User.getCurrentUser().getProperties().getProperty("org.openyabs.itemproperty", "keepmodifiedtransdate")) {
-            date2.setDate(datetodo_);
-        } else {
-            date2.setDate(new Date());
-        }
+        //the service date (Leistungsdatum) as saved
+        date2.setDate(datetodo_);
         if (User.getCurrentUser().getProperties().getProperty("org.openyabs.itemproperty", "keepmodifiedenddate")) {
             date3.setDate(dateend_);
         } else {
@@ -2930,7 +2928,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
     public void actionBeforeCreate() {
         status.setSelectedIndex(Item.STATUS_IN_PROGRESS);
         date1.setDate(new Date());
-        date2.setDate(new Date());
+        date2.setDate(null);
         if (!User.getCurrentUser().getProperties().getProperty("org.openyabs.itemproperty", "keepmodifiedenddate")) {
             Contact dbo = null;
             final MPComboBoxModelItem item = contactname.getSelectedItem();
