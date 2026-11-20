@@ -484,6 +484,21 @@ public final class FirstStartSetup {
         PREVIOUS_RELEASE.put("c759d467f9746cc5b72e752f2391ae818f3fb62d880c6012a746c2e60b25e9da", "/extra/templates/demo-20.odt");
         PREVIOUS_RELEASE.put("86255683f04e5b495f1458878da16c765c5141f6959daaca66af8cbd2aa8eae4", "/extra/templates/demo-21.odt");
         PREVIOUS_RELEASE.put("baac7a3abb29ef79ba0ffb71f52d26adbd70863956c354cf14b02ca8b0362286", "/extra/templates/demo-22.odt");
+        //with the reference of credit notes (#211), before the QR code got room on the first page (no empty paragraphs around it)
+        PREVIOUS_RELEASE.put("63aaa2f51de2cd680f7f1203512a1348ad25330d5d6d53d357c3ed58498274d5", SMALL_BUSINESS_INVOICE_TEMPLATE);
+        PREVIOUS_RELEASE.put("411795a40e1ca7438298a025b5a7db6c21bf2339887ecc200501531d43537fd0", "/extra/templates/demo-00.odt");
+        PREVIOUS_RELEASE.put("c1a38c429ac33e452a781d42ff6d86921ebf57985fae65bb5306096c960a009a", "/extra/templates/demo-01.odt");
+        PREVIOUS_RELEASE.put("82a221927578668804813a0bfbbf00903f6d16961a6f74b27697da8466363472", "/extra/templates/demo-02.odt");
+        PREVIOUS_RELEASE.put("2cf743fc0f6c8b44dfe41e30f1a126555d62649c3b3650d5954d5ebabf60efb1", "/extra/templates/demo-03.odt");
+        PREVIOUS_RELEASE.put("00337a486ee7e91eea78dc6eda9d023ea59e98960f4498858f00498f40229563", "/extra/templates/demo-04.odt");
+        PREVIOUS_RELEASE.put("16111dbc71ea51c1b647b32f14e33a68cd0921221ece766ca3dc3fe324b422db", "/extra/templates/demo-07.odt");
+        PREVIOUS_RELEASE.put("7c25234deaa14ad1c0ad474e7b3929f4e57f566c0ba5396980087d57ae7f9f52", "/extra/templates/demo-10.odt");
+        PREVIOUS_RELEASE.put("595a1b1746df6f2cf69098efe9a66d347ec91fa65c8e18163898f250b0a5c2cf", "/extra/templates/demo-11.odt");
+        PREVIOUS_RELEASE.put("9098864cb6c4d4e788aeac3090aba5320c71e970b134a52060fb3554b5d0571e", "/extra/templates/demo-14.odt");
+        PREVIOUS_RELEASE.put("8c675b7851f0eac594fc366fc243aadbaa6f5af373b3fbbdb9f1f8219e170a91", "/extra/templates/demo-20.odt");
+        PREVIOUS_RELEASE.put("14f1d1c0c196d8971758e7314412f0e870b9912d7bb40b71ce894c754ee63357", "/extra/templates/demo-21.odt");
+        PREVIOUS_RELEASE.put("84b4a680d6d519a3a7a9477874457d87b3b2ac33d9f3c3d9a18f59db535943af", "/extra/templates/demo-22.odt");
+        PREVIOUS_RELEASE.put("c11b393baee5a6f03eb39ec9e1094be90ecfd97cb5e583a2f5734d27c690b7b0", INVOICE_TEMPLATE);
     }
 
     static {
