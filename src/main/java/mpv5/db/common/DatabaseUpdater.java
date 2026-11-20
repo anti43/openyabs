@@ -388,6 +388,13 @@ public class DatabaseUpdater {
             "ALTER TABLE tax ADD COLUMN exemptioncode VARCHAR(50) DEFAULT NULL",
             "ALTER TABLE tax ADD COLUMN exemptionnote VARCHAR(1000) DEFAULT NULL"
         });
+        //1.1994: the invoice a credit note corrects or cancels (BT-25 / BT-26 of the e-invoice, #211)
+        UPDATES_DERBY.put(1.1994, new String[]{
+            "ALTER TABLE items ADD COLUMN refinvoiceids BIGINT DEFAULT NULL"
+        });
+        UPDATES_POSTGRES.put(1.1994, new String[]{
+            "ALTER TABLE items ADD COLUMN refinvoiceids BIGINT DEFAULT NULL"
+        });
         ////////////////////////////////////////////////////////////////////////////////////////////
         // mysql updates
         UPDATES_MYSQL.put(1.11, new String[]{
@@ -737,6 +744,9 @@ public class DatabaseUpdater {
             "ALTER TABLE tax ADD COLUMN categorycode VARCHAR(10) DEFAULT NULL",
             "ALTER TABLE tax ADD COLUMN exemptioncode VARCHAR(50) DEFAULT NULL",
             "ALTER TABLE tax ADD COLUMN exemptionnote VARCHAR(1000) DEFAULT NULL"
+        });
+        UPDATES_MYSQL.put(1.1994, new String[]{
+            "ALTER TABLE items ADD COLUMN refinvoiceids BIGINT DEFAULT NULL"
         });
     }
 

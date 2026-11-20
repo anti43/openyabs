@@ -294,6 +294,10 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     }
     private int contactsids;
     private int reforderids;
+    /**
+     * the invoice a credit note corrects or cancels (#211)
+     */
+    private int refinvoiceids;
     private int accountsids;
     private BigDecimal netvalue = BigDecimal.ZERO;
     private BigDecimal taxvalue = BigDecimal.ZERO;
@@ -619,6 +623,40 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
         this.reforderids = reforderids;
     }
 
+    /**
+     * @return the id of the invoice this credit note corrects or cancels, null
+     * if none
+     */
+    public Integer __getRefinvoiceids() {
+        return refinvoiceids > 0 ? refinvoiceids : null;
+    }
+
+    /**
+     * @param refinvoiceids the id of the invoice this credit note corrects or
+     * cancels, &lt;= 0 for none
+     */
+    public void setRefinvoiceids(int refinvoiceids) {
+        this.refinvoiceids = Math.max(refinvoiceids, 0);
+    }
+
+    /**
+     * @return the invoice (invoice, deposit or part payment invoice) this
+     * credit note corrects or cancels, null if none
+     */
+    @Persistable(false)
+    public Item getCorrectedInvoice() {
+        if (refinvoiceids > 0) {
+            for (int type : new int[]{TYPE_INVOICE, TYPE_DEPOSIT, TYPE_PART_PAYMENT}) {
+                try {
+                    return (Item) getObject(mpv5.handler.ItemService.contextOf(type), refinvoiceids);
+                } catch (NodataFoundException ex) {
+                    //another type
+                }
+            }
+        }
+        return null;
+    }
+
     public BigDecimal __getDiscountgrosvalue() {
         return discountgrosvalue;
     }
@@ -846,6 +884,12 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
         map.put("datelastupdated", __getDatelastupdated() == null ? "" : df.format(__getDatelastupdated()));
         map.put("description", evaluateAll(__getDescription()));
         map.put("reference", getReferenceOrder());
+        //the invoice a credit note corrects or cancels (§ 14 Abs. 4 / § 31 Abs. 5 UStDV: a clear reference)
+        Item corrected = getCorrectedInvoice();
+        map.put("correctedinvoicenumber", corrected == null ? "" : corrected.__getCnumber());
+        map.put("correctedinvoicedate", corrected == null || corrected.__getDateadded() == null ? "" : df.format(corrected.__getDateadded()));
+        map.put("correctedinvoice", corrected == null ? "" : String.format(mpv5.globals.Messages.ITEM_CORRECTED_INVOICE_TEXT.toString(),
+                corrected.__getCnumber(), corrected.__getDateadded() == null ? "" : df.format(corrected.__getDateadded())));
         putPaymentFields(map, df);
 
         return super.resolveReferences(map);

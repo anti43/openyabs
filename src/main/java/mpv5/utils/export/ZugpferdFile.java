@@ -171,7 +171,9 @@ public class ZugpferdFile implements Waitable {
             return false;
         }
         int type = item.__getInttype();
-        return type == Item.TYPE_INVOICE || type == Item.TYPE_PART_PAYMENT || type == Item.TYPE_DEPOSIT;
+        //credit notes / cancellation invoices: a correction of an e-invoice must be an e-invoice as well
+        return type == Item.TYPE_INVOICE || type == Item.TYPE_PART_PAYMENT || type == Item.TYPE_DEPOSIT
+                || type == Item.TYPE_CREDIT;
     }
 
     @Override
@@ -265,7 +267,30 @@ public class ZugpferdFile implements Waitable {
                 company.apply(KEY_TAX_EXEMPTION_REASON), SmallBusiness.note(company), format,
                 taxRates(contact, mpv5.db.objects.Tax.all()));
         applySkonto(invoice, terms);
+        Item corrected = item.__getInttype() == Item.TYPE_CREDIT ? item.getCorrectedInvoice() : null;
+        if (corrected != null) {
+            applyPrecedingInvoice(invoice, corrected.__getCnumber(), corrected.__getDateadded());
+        }
         return invoice;
+    }
+
+    /**
+     * The invoice a credit note corrects or cancels: preceding invoice
+     * reference (BG-3: BT-25 number, BT-26 date)
+     *
+     * @param invoice
+     * @param number the number of the corrected invoice, nothing is added if
+     * empty
+     * @param date its date, may be null
+     */
+    public static void applyPrecedingInvoice(Invoice invoice, String number, Date date) {
+        if (isEmpty(number)) {
+            return;
+        }
+        invoice.setInvoiceReferencedDocumentID(number.trim());
+        if (date != null) {
+            invoice.setInvoiceReferencedIssueDate(date);
+        }
     }
 
     /**
@@ -562,6 +587,9 @@ public class ZugpferdFile implements Waitable {
      * @return the code or null for the default (380, commercial invoice)
      */
     static String documentCode(int itemType, Format format) {
+        if (itemType == Item.TYPE_CREDIT) {
+            return "381";//credit note (also a cancellation invoice: positive amounts, the type reduces)
+        }
         if (itemType == Item.TYPE_PART_PAYMENT) {
             return "326";//partial invoice
         }

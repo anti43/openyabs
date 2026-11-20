@@ -316,6 +316,40 @@ class ZugpferdFileTest {
         assertValid(xml);
     }
 
+    /**
+     * A credit note / cancellation invoice: type 381, positive amounts, the
+     * corrected invoice as preceding invoice reference (BT-25, BT-26), #211
+     */
+    @Test
+    void creditNoteWithPrecedingInvoice() throws Exception {
+        Map<String, String> c = company();
+        Item credit = invoice();
+        credit.setCnumber("GS-2026-0007");
+        credit.setInttype(Item.TYPE_CREDIT);
+        assertTrue(ZugpferdFile.supports(credit));
+        Calendar cal = Calendar.getInstance();
+        cal.set(2026, Calendar.OCTOBER, 30, 0, 0, 0);
+        for (ZugpferdFile.Format format : ZugpferdFile.Format.values()) {
+            Invoice invoice = ZugpferdFile.createInvoice(credit, new SubItem[]{line("Beratung", "", "2", "Std.", "100", "19", "0")},
+                    ZugpferdFile.createSender(c::get), buyer(), "ref", ZugpferdFile.PAYTERM_UNSET, null, format);
+            ZugpferdFile.applyPrecedingInvoice(invoice, "R-2026-0042", cal.getTime());
+            assertEquals("381", invoice.getDocumentCode());
+            File xml = tmp.resolve("credit-" + format + ".xml").toFile();
+            ZugpferdFile.writeXml(invoice, xml);
+            String x = new String(Files.readAllBytes(xml.toPath()), StandardCharsets.UTF_8);
+            assertTrue(x.contains("<ram:TypeCode>381</ram:TypeCode>"), x);
+            assertTrue(x.contains("<ram:IssuerAssignedID>R-2026-0042</ram:IssuerAssignedID>"), x);
+            assertTrue(x.contains("20261030"), "date of the corrected invoice: " + x);
+            assertTrue(x.contains("<ram:GrandTotalAmount>238.00</ram:GrandTotalAmount>"), "positive amounts: " + x);
+            assertValid(xml);
+        }
+        //no number: no reference
+        Invoice none = ZugpferdFile.createInvoice(credit, new SubItem[]{line("Beratung", "", "1", "Std.", "100", "19", "0")},
+                ZugpferdFile.createSender(c::get), buyer(), "ref", ZugpferdFile.PAYTERM_UNSET, null);
+        ZugpferdFile.applyPrecedingInvoice(none, " ", null);
+        assertNull(none.getInvoiceReferencedDocumentID());
+    }
+
     @Test
     void findsIbanAndBicWhateverFieldTheyAreIn() {
         //older German labels: "Konto" = account, "IBAN" = banknumber
