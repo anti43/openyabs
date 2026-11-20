@@ -395,6 +395,13 @@ public class DatabaseUpdater {
         UPDATES_POSTGRES.put(1.1994, new String[]{
             "ALTER TABLE items ADD COLUMN refinvoiceids BIGINT DEFAULT NULL"
         });
+        //1.1995: the final invoice a deposit / part payment invoice was deducted in (#221)
+        UPDATES_DERBY.put(1.1995, new String[]{
+            "ALTER TABLE items ADD COLUMN finalinvoiceids BIGINT DEFAULT NULL"
+        });
+        UPDATES_POSTGRES.put(1.1995, new String[]{
+            "ALTER TABLE items ADD COLUMN finalinvoiceids BIGINT DEFAULT NULL"
+        });
         ////////////////////////////////////////////////////////////////////////////////////////////
         // mysql updates
         UPDATES_MYSQL.put(1.11, new String[]{
@@ -747,6 +754,9 @@ public class DatabaseUpdater {
         });
         UPDATES_MYSQL.put(1.1994, new String[]{
             "ALTER TABLE items ADD COLUMN refinvoiceids BIGINT DEFAULT NULL"
+        });
+        UPDATES_MYSQL.put(1.1995, new String[]{
+            "ALTER TABLE items ADD COLUMN finalinvoiceids BIGINT DEFAULT NULL"
         });
     }
 

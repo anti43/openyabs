@@ -445,7 +445,8 @@ public final class ItemService {
             if (order != null) {
                 next = SubItem.saveModel(i2, SubItem.toModel(copyPositions(order), true), true, true).size();
             }
-            next += SubItem.saveModelMinus(i2, positions, true, true, source, next).size();
+            //the deposit / part payment itself (as invoiced: its saved positions)
+            next += deduct(i2, source, next, ask);
         } else {
             next = SubItem.saveModel(i2, positions, true, true).size();
         }
@@ -494,7 +495,7 @@ public final class ItemService {
                     if (Objects.equals(i.__getIDS(), source.__getIDS())) {
                         continue;
                     }
-                    next += SubItem.saveModelMinus(i2, SubItem.toModel(i.getSubitems()), true, true, i, next).size();
+                    next += deduct(i2, i, next, ask);
                 }
             }
         }
@@ -502,6 +503,101 @@ public final class ItemService {
         //the totals of the saved positions (the clone has those of the source)
         updateTotals(i2);
         return i2;
+    }
+
+    /**
+     * Deducts a deposit / part payment invoice in a final invoice (§ 14 Abs. 5
+     * Satz 2 UStG, #221): one position per VAT rate with the net after
+     * discount, named with the kind, number and date of the deposit ("Less
+     * deposit invoice AZ-2026-00001 of 01.10.2026"), marked if it is not paid.
+     * Asks before deducting a deposit which is not paid or was deducted in
+     * another final invoice already. The deposit remembers the final invoice
+     * (items.finalinvoiceids, also for the e-invoice: BG-3).
+     *
+     * @param finalInvoice the saved final invoice
+     * @param deposit the deposit / part payment invoice
+     * @param next the number of the first position
+     * @param ask yes/no question
+     * @return the number of positions added, 0 if not deducted
+     */
+    static int deduct(Item finalInvoice, Item deposit, int next, Predicate<String> ask) {
+        String type = Item.getTypeString(deposit.__getInttype());
+        String number = deposit.__getCnumber();
+        DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM);
+        String date = deposit.__getDateadded() == null ? "" : df.format(deposit.__getDateadded());
+        Integer before = deposit.__getFinalinvoiceids();
+        if (before != null && before.intValue() != finalInvoice.__getIDS()) {
+            String other = null;
+            try {
+                other = ((Item) DatabaseObject.getObject(Context.getInvoice(), before)).__getCnumber();
+            } catch (Exception e) {
+                //the final invoice was deleted for good: deduct as if never deducted
+            }
+            if (other != null && !other.startsWith(FormatHandler.DELETED_IDENTIFIER)
+                    && !ask.test(String.format(Messages.FINAL_DEPOSIT_DEDUCTED_ASK.toString(), type, number, other))) {
+                return 0;
+            }
+        }
+        BigDecimal open = BigDecimal.ZERO;
+        try {
+            open = nz(Payments.open(deposit));
+        } catch (Exception e) {
+            Log.Debug(ItemService.class, e.getMessage());
+        }
+        boolean unpaid = deposit.__getIntstatus() != Item.STATUS_PAID && open.signum() > 0;
+        if (unpaid && !ask.test(String.format(Messages.FINAL_DEPOSIT_UNPAID_ASK.toString(), type, number,
+                mpv5.utils.numberformat.FormatNumber.formatLokalCurrency(open)))) {
+            return 0;
+        }
+        String text = String.format(Messages.FINAL_DEDUCTION.toString(), type, number, date)
+                + (unpaid ? Messages.FINAL_DEDUCTION_UNPAID.toString() : "");
+        int n = 0;
+        for (SubItem s : asPositions(deposit, text)) {
+            BigDecimal net = nz(s.__getExternalvalue());
+            s.setExternalvalue(net.negate());
+            s.setInternalvalue(net.negate());
+            s.setItemsids(finalInvoice.__getIDS());
+            s.setOrdernr(next + n);
+            //the position number goes on (it restarted at 1 for each deposit)
+            s.setCountvalue(BigDecimal.valueOf(next + n + 1));
+            s.setDatedelivery(finalInvoice.__getDatetodo());
+            s.setDateadded(new Date());
+            s.setGroupsids(finalInvoice.__getGroupsids());
+            SubItem.calculate(s);
+            s.save(true);
+            n++;
+        }
+        //remember the final invoice (a column of its own, set without saving the deposit:
+        //no save hooks on a finalized deposit, not part of the GoBD seal)
+        mpv5.db.common.QueryData d = new mpv5.db.common.QueryData();
+        d.add("finalinvoiceids", finalInvoice.__getIDS());
+        mpv5.db.common.QueryHandler.instanceOf().clone(contextOf(deposit.__getInttype()))
+                .update(d, new String[]{"ids", String.valueOf(deposit.__getIDS()), ""}, null);
+        deposit.setFinalinvoiceids(finalInvoice.__getIDS());
+        return n;
+    }
+
+    /**
+     * @param finalInvoice
+     * @return the deposits / part payment invoices deducted in the final
+     * invoice, the oldest first (#221)
+     */
+    public static List<Item> deductedIn(Item finalInvoice) {
+        List<Item> l = new ArrayList<Item>();
+        if (finalInvoice == null || finalInvoice.__getIDS() <= 0) {
+            return l;
+        }
+        for (int t : new int[]{Item.TYPE_DEPOSIT, Item.TYPE_PART_PAYMENT}) {
+            try {
+                for (DatabaseObject o : DatabaseObject.getObjects(contextOf(t), new QueryCriteria("finalinvoiceids", finalInvoice.__getIDS()))) {
+                    l.add((Item) o);
+                }
+            } catch (NodataFoundException e) {
+                //none of this kind
+            }
+        }
+        l.sort((a, b) -> Integer.compare(a.__getIDS(), b.__getIDS()));
+        return l;
     }
 
     /**

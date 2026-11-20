@@ -1014,20 +1014,10 @@ public class ArrayUtilities {
     }
 
     @SuppressWarnings("unchecked")
-    public static ArrayList merge(ArrayList list1, ArrayList list2) {
-        Iterator it1 = list1.iterator();
-        Iterator it2 = list2.iterator();
-
-        ArrayList<Double> list3 = new ArrayList();
-
-        while (it1.hasNext()) {
-            list3.add((Double) it1.next());
-        }
-
-        while (it2.hasNext()) {
-            list3.add((Double) it2.next());
-        }
-
+    public static <T> ArrayList<T> merge(List<? extends T> list1, List<? extends T> list2) {
+        //no cast: it was (Double), merging e.g. deposits and part payments failed (#221)
+        ArrayList<T> list3 = new ArrayList<T>(list1);
+        list3.addAll(list2);
         return list3;
     }
 

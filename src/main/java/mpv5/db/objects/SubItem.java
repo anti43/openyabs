@@ -1196,6 +1196,18 @@ public final class SubItem extends DatabaseObject implements Triggerable {
                 || (price.signum() == 0 && text.isEmpty() && name.isEmpty())) {
             return null;
         }
+        BigDecimal lineDiscount = discount;
+        if (price.signum() < 0) {
+            //BR-27: the net price must not be negative - a deduction (e.g. a deposit in the final
+            //invoice) is a negative quantity at a positive price, the line total stays the same (#221).
+            //A discount of such a line is part of the price (an allowance would add to the deduction).
+            quantity = quantity.negate();
+            price = price.negate();
+            if (lineDiscount != null && lineDiscount.signum() != 0) {
+                price = price.multiply(BD100.subtract(lineDiscount)).divide(BD100, 2, BigDecimal.ROUND_HALF_UP);
+                lineDiscount = null;
+            }
+        }
         if (name.isEmpty()) {
             name = text.split("\n", 2)[0];
         }
@@ -1221,14 +1233,14 @@ public final class SubItem extends DatabaseObject implements Triggerable {
         }
 
         org.mustangproject.Item line = new org.mustangproject.Item(product, price, quantity);
-        if (discount != null && discount.signum() != 0) {
+        if (lineDiscount != null && lineDiscount.signum() != 0) {
             //Mustang 2.26 treats line allowances as absolute amount for the whole line
             //(2.15 applied them per unit) - covered by ZugpferdFileTest
-            BigDecimal amount = quantity.multiply(price).multiply(discount)
+            BigDecimal amount = quantity.multiply(price).multiply(lineDiscount)
                     .divide(BD100, 2, BigDecimal.ROUND_HALF_UP);
             line.addAllowance(new org.mustangproject.Allowance(amount)
                     .setTaxPercent(tax)
-                    .setReason(Messages.ZUGFERD_DISCOUNT + " " + discount.stripTrailingZeros().toPlainString() + "%"));
+                    .setReason(Messages.ZUGFERD_DISCOUNT + " " + lineDiscount.stripTrailingZeros().toPlainString() + "%"));
         }
         return line;
     }

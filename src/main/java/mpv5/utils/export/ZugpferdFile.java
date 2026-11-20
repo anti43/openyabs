@@ -271,7 +271,30 @@ public class ZugpferdFile implements Waitable {
         if (corrected != null) {
             applyPrecedingInvoice(invoice, corrected.__getCnumber(), corrected.__getDateadded());
         }
+        if (item.__getInttype() == Item.TYPE_INVOICE) {
+            //a final invoice: the deposits / part payment invoices deducted in it (BG-3, #221)
+            for (Item d : mpv5.handler.ItemService.deductedIn(item)) {
+                addPrecedingInvoice(invoice, d.__getCnumber(), d.__getDateadded());
+            }
+        }
         return invoice;
+    }
+
+    /**
+     * Adds a preceding invoice (BG-3: BT-25 number, BT-26 date), e.g. a
+     * deposit invoice deducted in a final invoice; there may be several
+     *
+     * @param invoice
+     * @param number nothing is added if empty
+     * @param date may be null
+     */
+    public static void addPrecedingInvoice(Invoice invoice, String number, Date date) {
+        if (isEmpty(number)) {
+            return;
+        }
+        invoice.addInvoiceReferencedDocument(date != null
+                ? new org.mustangproject.ReferencedDocument(number.trim(), date)
+                : new org.mustangproject.ReferencedDocument(number.trim()));
     }
 
     /**
