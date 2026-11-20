@@ -344,6 +344,8 @@ public class User extends DatabaseObject {
                     setDatelastlog(new Date());
                     setIsloggedin(true);
                     save();
+                    //tax rates of older databases: VAT category S / E and the country (#209)
+                    mpv5.handler.FirstStartSetup.completeTaxRates();
                     DatabaseObject.cacheObjects();//re-cache for user
                     YabsViewProxy.instance().addMessage(Messages.CACHED_OBJECTS);
                     //no invoice template (e.g. an existing database or a new user): the demo template
