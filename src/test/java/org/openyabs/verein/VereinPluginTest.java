@@ -191,6 +191,21 @@ class VereinPluginTest {
         assertEquals("zweihundertf\u00fcnfzig Euro", fields.get("ev.amountInWords"));
         assertTrue(String.valueOf(fields.get("ev.sepaPreNotification")).contains("DE98ZZZ09999999999"));
         assertTrue(String.valueOf(fields.get("ev.waiverNotice")).contains("Ja"));
+        assertEquals("Ja \u2611   Nein \u2610", fields.get("ev.waiverCheckboxes"));
+        String exClause = String.valueOf(fields.get("ev.exemptionClause"));
+        assertTrue(exClause.contains("\u00a7 5 Abs. 1 Nr. 9 des K\u00f6rperschaftsteuergesetzes"));
+        assertTrue(exClause.contains("\u00a7 3 Nr. 6 des Gewerbesteuergesetzes"));
+        assertTrue(String.valueOf(fields.get("ev.membershipDuesClause")).contains("\u00a7 10b Abs. 1 Satz 8"));
+
+        s.bescheidType = VereinStore.BESCHEID_60A;
+        assertTrue(VereinValidator.buildBmfExemptionClause(s).contains("\u00a7 60a AO gesondert festgestellt"));
+
+        try (InputStream in = VereinPlugin.class.getResourceAsStream(VereinPlugin.TEMPLATE_RESOURCES[0])) {
+            String xml = new String(in.readAllBytes(), StandardCharsets.UTF_8);
+            assertTrue(xml.contains("\u00a7 9 Abs. 3 KStG, \u00a7 9 Nr. 5 GewStG"));
+            assertTrue(xml.contains("\u00a7 63 Abs. 5 AO"));
+            assertTrue(xml.contains("[ev.exemptionClause]"));
+        }
 
         Map<String, BigDecimal> totals = new LinkedHashMap<String, BigDecimal>();
         totals.put(VereinStore.SPHERE_IDEELL, new BigDecimal("12000.00"));

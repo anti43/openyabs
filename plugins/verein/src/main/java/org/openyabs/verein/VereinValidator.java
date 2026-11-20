@@ -222,7 +222,38 @@ public final class VereinValidator {
                 ? VereinStore.DONATION_MITGLIEDSBEITRAG : VereinStore.DONATION_SPENDE;
         m.put("ev.donationKind", tr(yabs, "donationKind." + dk));
         m.put("ev.waiverNotice", d.waiverReimbursement ? tr(yabs, "waiver.yes") : tr(yabs, "waiver.no"));
+        m.put("ev.waiverCheckboxes", d.waiverReimbursement
+                ? "Ja \u2611   Nein \u2610"
+                : "Ja \u2610   Nein \u2611");
+        m.put("ev.exemptionClause", buildBmfExemptionClause(s));
+        m.put("ev.membershipDuesClause", s.duesTaxDeductible
+                ? ""
+                : "Nur f\u00fcr steuerbeg\u00fcnstigte Einrichtungen, bei denen die Mitgliedsbeitr\u00e4ge steuerlich nicht abziehbar sind: "
+                + "Es wird best\u00e4tigt, dass es sich nicht um einen Mitgliedsbeitrag handelt, dessen Abzug nach \u00a7 10b Abs. 1 Satz 8 "
+                + "des Einkommensteuergesetzes ausgeschlossen ist.");
         return m;
+    }
+
+    /**
+     * Builds the verbatim BMF Anlage 3 (BMF-Schreiben vom 07.11.2013, BStBl I
+     * S. 1333) tax-exemption clause for either a Freistellungsbescheid (§ 5
+     * Abs. 1 Nr. 9 KStG / § 3 Nr. 6 GewStG) or a § 60a AO Feststellungsbescheid.
+     */
+    public static String buildBmfExemptionClause(Settings s) {
+        Settings cfg = s == null ? new Settings() : s;
+        if (VereinStore.BESCHEID_60A.equalsIgnoreCase(cfg.bescheidType)) {
+            return "\u2611 Die Einhaltung der satzungsm\u00e4\u00dfigen Voraussetzungen nach den \u00a7\u00a7 51, 59, 60 und 61 AO wurde vom Finanzamt "
+                    + safe(cfg.finanzamt) + ", StNr. " + safe(cfg.taxNumber)
+                    + ", mit Bescheid vom " + safe(cfg.freistellungDate)
+                    + " nach \u00a7 60a AO gesondert festgestellt. Wir f\u00f6rdern nach unserer Satzung ("
+                    + safe(cfg.purposeClause) + ").";
+        }
+        return "\u2611 Wir sind wegen F\u00f6rderung (" + safe(cfg.purposeClause)
+                + ") nach dem Freistellungsbescheid bzw. nach der Anlage zum K\u00f6rperschaftsteuerbescheid des Finanzamtes "
+                + safe(cfg.finanzamt) + ", StNr. " + safe(cfg.taxNumber)
+                + ", vom " + safe(cfg.freistellungDate)
+                + " f\u00fcr den letzten Veranlagungszeitraum " + safe(cfg.freistellungPeriod)
+                + " nach \u00a7 5 Abs. 1 Nr. 9 des K\u00f6rperschaftsteuergesetzes von der K\u00f6rperschaftsteuer und nach \u00a7 3 Nr. 6 des Gewerbesteuergesetzes von der Gewerbesteuer befreit.";
     }
 
     /**
