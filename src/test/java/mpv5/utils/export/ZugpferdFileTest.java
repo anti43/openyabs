@@ -374,8 +374,8 @@ class ZugpferdFileTest {
             String x = new String(Files.readAllBytes(xml.toPath()), StandardCharsets.UTF_8);
             assertFalse(x.contains("<ram:ChargeAmount>-"), "no negative net price (BR-27): " + x);
             assertTrue(java.util.regex.Pattern.compile(">-1(\\.0+)?</ram:BilledQuantity>").matcher(x).find(), "negative quantity: " + x);
-            //8.000 x 1,19 + 1.000 x 1,07 = 9.520 + 1.070
-            assertTrue(x.contains("<ram:GrandTotalAmount>10590.00</ram:GrandTotalAmount>"), x);
+            //(10.000 - 3.000) x 1,19 + 1.000 x 1,07 = 8.330 + 1.070
+            assertTrue(x.contains("<ram:GrandTotalAmount>9400.00</ram:GrandTotalAmount>"), x);
             assertTrue(x.contains("<ram:IssuerAssignedID>AZ-2026-00001</ram:IssuerAssignedID>"), x);
             assertValid(xml);
         }
