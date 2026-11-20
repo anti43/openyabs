@@ -772,9 +772,19 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
         //groups add up to the tax total); rates with decimals (7.7 %) are kept apart
         Map<String, BigDecimal> taxGroups = new java.util.LinkedHashMap<String, BigDecimal>();
         java.util.List<mpv5.utils.numberformat.InvoiceMath.Line> lines = new java.util.ArrayList<mpv5.utils.numberformat.InvoiceMath.Line>();
-        for (SubItem s : getSubitems()) {
+        SubItem[] subitems = getSubitems();
+        for (SubItem s : subitems) {
             lines.add(new mpv5.utils.numberformat.InvoiceMath.Line(s.effectiveQuantity(), s.__getExternalvalue(), s.__getDiscount(), s.__getTaxpercentvalue()));
         }
+        //the tax rate of each position (customer, product, value): VAT category and note (#209)
+        java.util.List<Tax> taxes = Tax.all();
+        Contact taxContact = null;
+        try {
+            taxContact = __getContactsids() > 0 ? getContact() : null;
+        } catch (Exception e) {
+            Log.Debug(this, e.getMessage());
+        }
+        java.util.function.Function<SubItem, Tax> taxRates = mpv5.utils.export.ZugpferdFile.taxRates(taxContact, taxes);
         for (Map.Entry<BigDecimal, BigDecimal[]> rate : mpv5.utils.numberformat.InvoiceMath.totals(lines).byRate.entrySet()) {
             taxGroups.put(rate.getKey().stripTrailingZeros().toPlainString(), rate.getValue()[1]);
         }
@@ -797,7 +807,17 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
         map.put("taxgroups", taxGroupsText);
         //the VAT breakdown per rate (§ 14 Abs. 4 Nr. 8 UStG), the highest rate first; the keys
         //above (tax, taxgroupN, taxgroupvalueN, taxgroups) stay for older templates
-        putVatGroups(map, lines);
+        java.util.Map<BigDecimal, Tax> rateOfGroup = new java.util.HashMap<BigDecimal, Tax>();
+        for (SubItem s : subitems) {
+            BigDecimal r = s.__getTaxpercentvalue() == null ? BigDecimal.ZERO : s.__getTaxpercentvalue();
+            if (!rateOfGroup.containsKey(r.stripTrailingZeros())) {
+                rateOfGroup.put(r.stripTrailingZeros(), taxRates.apply(s));
+            }
+        }
+        putVatGroups(map, lines, r -> rateOfGroup.containsKey(r.stripTrailingZeros())
+                ? rateOfGroup.get(r.stripTrailingZeros()) : Tax.forRate(r, taxes));
+        map.put("taxnotes", taxNotes(subitems, taxRates, mpv5.utils.export.SmallBusiness.isEnabled(),
+                mpv5.utils.export.ZugpferdFile.companySettings().apply(mpv5.utils.export.ZugpferdFile.KEY_TAX_EXEMPTION_REASON)));
 
         Locale l = Locale.getDefault();
         if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("item.date.locale")) {
@@ -836,7 +856,42 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
      * (a table row of the template repeated per rate: {@code <vatgroups.rate>}
      * ...) and as {@code item.vatgroup1.rate}, {@code item.vatgroup2.rate} ...
      */
-    public static final String[] VATGROUP_FIELDS = {"rate", "ratevalue", "name", "net", "netf", "vat", "vatf", "gross", "grossf"};
+    public static final String[] VATGROUP_FIELDS = {"rate", "ratevalue", "name", "net", "netf", "vat", "vatf", "gross", "grossf", "category", "note"};
+
+    /**
+     * The notes the positions need on the invoice (reverse charge,
+     * intra-community supply, export, exemption ...), one per line: the notes
+     * of their tax rates (#209); "" with the small business exemption (it has
+     * its own note, companyinfo.smallbusinessnote)
+     *
+     * @param subitems
+     * @param taxRates the tax rate of a position
+     * @param smallBusiness
+     * @param exemptReason the reason of exempt positions (E) whose rate has no
+     * note, null or empty for the default
+     * @return the notes, "" if none
+     */
+    static String taxNotes(SubItem[] subitems, java.util.function.Function<SubItem, Tax> taxRates, boolean smallBusiness, String exemptReason) {
+        if (smallBusiness) {
+            return "";
+        }
+        java.util.Set<String> notes = new java.util.LinkedHashSet<String>();
+        for (SubItem s : subitems) {
+            if (s.getInttype() == SubItem.TYPE_TEXT || s.__getDescription() == null || s.__getDescription().trim().isEmpty()) {
+                continue;
+            }
+            BigDecimal rate = mpv5.utils.numberformat.InvoiceMath.rate(s.__getTaxpercentvalue());
+            Tax t = taxRates == null ? null : taxRates.apply(s);
+            mpv5.utils.export.VatCategory c = SubItem.vatCategory(t, rate);
+            if (c != mpv5.utils.export.VatCategory.S && c.needsReason()) {
+                String note = SubItem.exemptionReason(t, c, exemptReason);
+                if (note != null && !note.trim().isEmpty()) {
+                    notes.add(note.trim());
+                }
+            }
+        }
+        return String.join("\n", notes);
+    }
 
     /**
      * Template fields of the VAT breakdown (one group per rate, net, VAT and
@@ -849,10 +904,26 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
      * @param lines the positions
      */
     static void putVatGroups(Map<String, Object> map, List<mpv5.utils.numberformat.InvoiceMath.Line> lines) {
+        final List<Tax> taxes = Tax.all();
+        putVatGroups(map, lines, r -> Tax.forRate(r, taxes));
+    }
+
+    /**
+     * @param map
+     * @param lines the positions
+     * @param taxOfRate the tax rate of a group (its category and note, item.vatgroupN.category / .note)
+     * @see #putVatGroups(Map, List)
+     */
+    static void putVatGroups(Map<String, Object> map, List<mpv5.utils.numberformat.InvoiceMath.Line> lines,
+            java.util.function.Function<BigDecimal, Tax> taxOfRate) {
         List<mpv5.utils.numberformat.InvoiceMath.RateTotal> groups = mpv5.utils.numberformat.InvoiceMath.byRateDescending(lines);
         List<Map<String, String>> rows = new ArrayList<Map<String, String>>();
         for (int i = 0; i < groups.size(); i++) {
             Map<String, String> row = vatGroup(groups.get(i));
+            Tax t = taxOfRate == null ? null : taxOfRate.apply(groups.get(i).rate);
+            mpv5.utils.export.VatCategory c = SubItem.vatCategory(t, groups.get(i).rate);
+            row.put("category", c.code());
+            row.put("note", c.needsReason() ? SubItem.exemptionReason(t, c, null) : "");
             rows.add(row);
             for (Map.Entry<String, String> e : row.entrySet()) {
                 map.put("vatgroup" + (i + 1) + "." + e.getKey(), e.getValue());

@@ -256,6 +256,66 @@ class ZugpferdFileTest {
         assertTrue(ZugpferdFile.validate(withVat, false).isEmpty());
     }
 
+    /**
+     * A business customer in France: the VAT category, reason code and note
+     * come from the tax rate of the position (#209)
+     */
+    static TradeParty frenchBuyer() {
+        Contact c = new Contact();
+        c.setCNumber("K-2001");
+        c.setMailaddress("achats@client.example");
+        c.setMainphone("+33 1 23456789");
+        Address a = new Address();
+        a.setCompany("Client SARL");
+        a.setPrename("Jean");
+        a.setCname("Client");
+        a.setStreet("1 Rue de Rivoli");
+        a.setZip("75001");
+        a.setCity("Paris");
+        a.setCountry("250");
+        a.setTaxnumber("FR40303265045");
+        return c.asZugpferdTradeparty(a);
+    }
+
+    @Test
+    void vatCategoryOfTheTaxRate() throws Exception {
+        Map<String, String> c = company();
+        mpv5.db.objects.Tax regular = new mpv5.db.objects.Tax();
+        regular.setTaxvalue(new BigDecimal("19"));
+        for (String category : new String[]{"AE", "K", "G"}) {
+            mpv5.db.objects.Tax zero = new mpv5.db.objects.Tax();
+            zero.setTaxvalue(BigDecimal.ZERO);
+            zero.setCategorycode(category);
+            VatCategory vc = zero.category();
+            SubItem[] lines = {line("Beratung", "", "2", "Std.", "100", "0", "0")};
+            Invoice invoice = ZugpferdFile.createInvoice(invoice(), lines, ZugpferdFile.createSender(c::get), frenchBuyer(), "ref",
+                    ZugpferdFile.PAYTERM_UNSET, null, null, ZugpferdFile.Format.XRECHNUNG,
+                    s -> mpv5.db.objects.Tax.forRate(s.__getTaxpercentvalue(), java.util.Arrays.asList(regular, zero)));
+            File xml = tmp.resolve("cat-" + category + ".xml").toFile();
+            ZugpferdFile.writeXml(invoice, xml);
+            String x = new String(Files.readAllBytes(xml.toPath()), StandardCharsets.UTF_8);
+            assertTrue(x.contains("<ram:CategoryCode>" + category + "</ram:CategoryCode>"), x);
+            assertTrue(x.contains("<ram:ExemptionReasonCode>" + vc.defaultReasonCode() + "</ram:ExemptionReasonCode>"), x);
+            assertTrue(x.contains("<ram:ExemptionReason>" + vc.defaultNote() + "</ram:ExemptionReason>"), x);
+            //the wording required on the invoice (§ 14a UStG) as invoice note (BT-22)
+            assertTrue(x.contains("<ram:Content>" + vc.defaultNote() + "</ram:Content>"), x);
+            assertFalse(x.contains("<ram:CategoryCode>E</ram:CategoryCode>"), x);
+            if (!"K".equals(category)) {
+                //intra-community supplies also need the deliver-to address (BR-IC-12)
+                assertValid(xml);
+            }
+        }
+        //without tax rates as before: 0 % is exempt (E), with the default reason of the language
+        Invoice plain = ZugpferdFile.createInvoice(invoice(), new SubItem[]{line("Beratung", "", "1", "Std.", "100", "0", "0")},
+                ZugpferdFile.createSender(c::get), buyer(), "ref", ZugpferdFile.PAYTERM_UNSET, null);
+        File xml = tmp.resolve("cat-E.xml").toFile();
+        ZugpferdFile.writeXml(plain, xml);
+        String x = new String(Files.readAllBytes(xml.toPath()), StandardCharsets.UTF_8);
+        assertTrue(x.contains("<ram:CategoryCode>E</ram:CategoryCode>"), x);
+        assertTrue(x.contains("<ram:ExemptionReason>" + VatCategory.E.defaultNote() + "</ram:ExemptionReason>"), x);
+        assertValid(xml);
+    }
+
     @Test
     void findsIbanAndBicWhateverFieldTheyAreIn() {
         //older German labels: "Konto" = account, "IBAN" = banknumber

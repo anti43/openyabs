@@ -1163,12 +1163,27 @@ public final class SubItem extends DatabaseObject implements Triggerable {
     }
 
     /**
-     * Create an electronic invoice line from this item
+     * Create an electronic invoice line from this item, VAT category E for
+     * lines without VAT
      *
      * @param taxExemptionReason the reason given for lines without VAT
      * @return the line or null if this is a text only / empty row
      */
     public IZUGFeRDExportableItem asZugpferdSubitem(String taxExemptionReason) {
+        return asZugpferdSubitem(null, taxExemptionReason);
+    }
+
+    /**
+     * Create an electronic invoice line from this item
+     *
+     * @param taxRate the tax rate of the line ({@link Tax#forRate}): its VAT
+     * category, exemption reason code and note; null: S, or E for 0 %
+     * @param taxExemptionReason the reason of category E if the rate has no
+     * note of its own (e.g. the note of the small business exemption), null or
+     * empty for the default of the category
+     * @return the line or null if this is a text only / empty row
+     */
+    public IZUGFeRDExportableItem asZugpferdSubitem(Tax taxRate, String taxExemptionReason) {
         //with the factor of the optional column if the user calculates it
         BigDecimal quantity = effectiveQuantity();
         BigDecimal price = externalvalue == null ? BigDecimal.ZERO : externalvalue;
@@ -1193,9 +1208,16 @@ public final class SubItem extends DatabaseObject implements Triggerable {
 
         org.mustangproject.Product product = new org.mustangproject.Product(
                 name, text.equals(name) ? "" : text, ZugpferdFile.toUnitCode(measure), tax);
-        if (tax.signum() == 0) {
-            product.setTaxCategoryCode("E");
-            product.setTaxExemptionReason(taxExemptionReason);
+        mpv5.utils.export.VatCategory category = vatCategory(taxRate, tax);
+        if (category != mpv5.utils.export.VatCategory.S) {
+            product.setTaxCategoryCode(category.code());
+            if (category.needsReason()) {
+                product.setTaxExemptionReason(exemptionReason(taxRate, category, taxExemptionReason));
+                String code = taxRate != null && taxRate.category() == category ? taxRate.reasonCode() : category.defaultReasonCode();
+                if (code != null && !code.isEmpty()) {
+                    product.setTaxExemptionReasonCode(code);
+                }
+            }
         }
 
         org.mustangproject.Item line = new org.mustangproject.Item(product, price, quantity);
@@ -1209,5 +1231,36 @@ public final class SubItem extends DatabaseObject implements Triggerable {
                     .setReason(Messages.ZUGFERD_DISCOUNT + " " + discount.stripTrailingZeros().toPlainString() + "%"));
         }
         return line;
+    }
+
+    /**
+     * @param taxRate the tax rate of the line, may be null
+     * @param rate the rate of the line in percent
+     * @return the VAT category of the line (of the tax rate if it has the
+     * rate of the line)
+     */
+    static mpv5.utils.export.VatCategory vatCategory(Tax taxRate, BigDecimal rate) {
+        if (taxRate != null && taxRate.__getTaxvalue() != null && taxRate.__getTaxvalue().compareTo(rate) == 0) {
+            return taxRate.category();
+        }
+        return mpv5.utils.export.VatCategory.of(null, rate);
+    }
+
+    /**
+     * @param taxRate the tax rate of the line, may be null
+     * @param category the category of the line
+     * @param fallback the reason of category E without a note of the rate
+     * (null or empty: the default of the category)
+     * @return the exemption reason text (BT-120)
+     */
+    static String exemptionReason(Tax taxRate, mpv5.utils.export.VatCategory category, String fallback) {
+        if (taxRate != null && taxRate.category() == category
+                && taxRate.__getExemptionnote() != null && !taxRate.__getExemptionnote().isEmpty()) {
+            return taxRate.__getExemptionnote();
+        }
+        if (category == mpv5.utils.export.VatCategory.E && fallback != null && !fallback.trim().isEmpty()) {
+            return fallback.trim();
+        }
+        return category.defaultNote();
     }
 }

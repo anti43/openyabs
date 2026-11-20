@@ -396,9 +396,11 @@ public final class FirstStartSetup {
             "51a57b06204d9827b135e3d6c11b429f4458a473d08186eeaffda23783b1b508"));
 
     /**
-     * SHA-256 of the bundled templates of the previous release -> the
-     * resource that replaces them (the invoices got the service date,
-     * item.servicedate, #208); a template whose file was changed is kept
+     * SHA-256 of the bundled templates of previous releases -> the resource
+     * that replaces them (the invoices got the service date, item.servicedate,
+     * #208, then the VAT ID and the notes of the VAT categories,
+     * companyinfo.vatid and item.taxnotes, #209); a template whose file was
+     * changed is kept
      */
     private static final java.util.Map<String, String> PREVIOUS_RELEASE = new java.util.HashMap<>();
 
@@ -415,6 +417,19 @@ public final class FirstStartSetup {
         PREVIOUS_RELEASE.put("04ece9267c08364f5fcfa80636c142eab2c5cbdfa652fe2f21932525065a11b5", "/extra/templates/demo-21.odt");
         PREVIOUS_RELEASE.put("c91c15c26612f8df1cb17706ec67ca0f658566df5c4deec9a05e5092dbe376ea", "/extra/templates/demo-22.odt");
         PREVIOUS_RELEASE.put("16d3cc0bf3872fe4efa550032dde9410bbde8b87bc13733646ee22529d629a53", INVOICE_TEMPLATE);
+        //the templates with the service date (#208), before the VAT ID and the notes of the VAT categories (#209)
+        PREVIOUS_RELEASE.put("6cc5913d02cbf9d16fb92133742f3ff542c9a58e417f9b92c41b46e2c0a25baf", SMALL_BUSINESS_INVOICE_TEMPLATE);
+        PREVIOUS_RELEASE.put("1886d10d7fbd93f11e9821af902ad3bb266724fb945b8254a05feca189105ccc", "/extra/templates/demo-00.odt");
+        PREVIOUS_RELEASE.put("526ce5d4b065567c5887a4197de4528b306e2d1d737d872146224e1c0e50b8a7", "/extra/templates/demo-01.odt");
+        PREVIOUS_RELEASE.put("b3b495e072fea03e9f4120b73fad4519a919da1836c489c4f10f885180132e94", "/extra/templates/demo-02.odt");
+        PREVIOUS_RELEASE.put("fc8637a4a059b3d683848150492848bc52254a1ec4d905bcf5876810a679bfd8", "/extra/templates/demo-03.odt");
+        PREVIOUS_RELEASE.put("72b77d848568332240feff525e11cbbf75f59cf016321ab6efcfa8d84f7f89eb", "/extra/templates/demo-04.odt");
+        PREVIOUS_RELEASE.put("20b9bbf5705fc3b7953effa78a1ba49bc374d56525918cbe56f65b30e0700024", "/extra/templates/demo-07.odt");
+        PREVIOUS_RELEASE.put("96a2055b5a3da7365a9ffa7a1365330a64661d9fbd94d5914bcaeb55f723df1e", "/extra/templates/demo-11.odt");
+        PREVIOUS_RELEASE.put("a76f80b5a627dbcc597cbb5cc2f69c0b31a398d889faaa265c77a67dabf834a5", "/extra/templates/demo-20.odt");
+        PREVIOUS_RELEASE.put("c0b61bc6f77db59cc2b61e1c98c36a08be9653399f30d664cef4d6f9c190453b", "/extra/templates/demo-21.odt");
+        PREVIOUS_RELEASE.put("6e09c0997ff6b75c22dd1555fee507c513d644c9fd8feaf72e9dc1779c85921c", "/extra/templates/demo-22.odt");
+        PREVIOUS_RELEASE.put("b34ebf1bc103c0871f049feddbaf150868b8da062a156bf57d26969dd48e4716", INVOICE_TEMPLATE);
     }
 
     static {

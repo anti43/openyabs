@@ -103,9 +103,10 @@ public class ZugpferdFile implements Waitable {
     public static final String KEY_BUYER_REFERENCE = "leitweg-id";
     /**
      * Company setting holding the VAT exemption reason used for 0% VAT lines
+     * of category E whose tax rate has no note (else the default note of the
+     * category, {@link VatCategory#defaultNote()})
      */
     public static final String KEY_TAX_EXEMPTION_REASON = "taxexemptionreason";
-    public static final String DEFAULT_TAX_EXEMPTION_REASON = "Umsatzsteuerbefreit";
     public static final String DEFAULT_CURRENCY = "EUR";
     /**
      * Payment term used if the contact has none
@@ -261,7 +262,8 @@ public class ZugpferdFile implements Waitable {
         PaymentTerms terms = PaymentTerms.forContact(contact, contact.__getPayterm(), paytermOf(template), company);
         Invoice invoice = createInvoice(item, item.getSubitems(), createSender(company, terms.getAccount()),
                 contact.asZugpferdTradeparty(), findBuyerReference(item, contact), terms.getDays(),
-                company.apply(KEY_TAX_EXEMPTION_REASON), SmallBusiness.note(company), format);
+                company.apply(KEY_TAX_EXEMPTION_REASON), SmallBusiness.note(company), format,
+                taxRates(contact, mpv5.db.objects.Tax.all()));
         applySkonto(invoice, terms);
         return invoice;
     }
@@ -322,6 +324,72 @@ public class ZugpferdFile implements Waitable {
     public static Invoice createInvoice(Item item, SubItem[] subitems, TradeParty sender, TradeParty recipient,
             String buyerReference, int paytermDays, String taxExemptionReason, String smallBusinessNote,
             Format format) {
+        return createInvoice(item, subitems, sender, recipient, buyerReference, paytermDays, taxExemptionReason,
+                smallBusinessNote, format, null);
+    }
+
+    /**
+     * The tax rate of each position: the rate of the customer (contact), then
+     * the rate of the product of the position, then any rate with the value of
+     * the position ({@link mpv5.db.objects.Tax#forRate})
+     *
+     * @param contact the customer, may be null
+     * @param taxes all tax rates
+     * @return the tax rate of a position (null if none has its value)
+     */
+    public static Function<SubItem, mpv5.db.objects.Tax> taxRates(Contact contact, List<mpv5.db.objects.Tax> taxes) {
+        Integer contactTax = null;
+        if (contact != null) {
+            try {
+                String id = mpv5.handler.ContactService.contactTax(contact);
+                contactTax = id.isEmpty() ? null : Integer.valueOf(id);
+            } catch (Exception e) {
+                contactTax = null;
+            }
+        }
+        final Integer customer = contactTax;
+        return s -> mpv5.db.objects.Tax.forRate(s.__getTaxpercentvalue(), taxes, customer, productTax(s));
+    }
+
+    /**
+     * @param s
+     * @return the tax rate id of the product of the position, null if none
+     */
+    private static Integer productTax(SubItem s) {
+        if (s.__getOriginalproductsids() <= 0) {
+            return null;
+        }
+        try {
+            return ((mpv5.db.objects.Product) mpv5.db.common.DatabaseObject.getObject(
+                    mpv5.db.common.Context.getProduct(), s.__getOriginalproductsids())).__getTaxids();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * Build the Mustang invoice from the given parts
+     *
+     * @param item
+     * @param subitems
+     * @param sender
+     * @param recipient
+     * @param buyerReference
+     * @param paytermDays payment term in days, 0 for payable immediately
+     * (due on the invoice date), &lt; 0 for the default of
+     * {@value #DEFAULT_PAYTERM_DAYS} days
+     * @param taxExemptionReason the reason of 0 % lines of category E whose
+     * tax rate has no note; null or empty for the default of the category
+     * @param smallBusinessNote the note of the small business exemption, see
+     * {@link #createInvoice(Item, SubItem[], TradeParty, TradeParty, String, int, String, String, Format)}
+     * @param format
+     * @param taxRates the tax rate of a position (VAT category, exemption
+     * reason and note, see {@link #taxRates}); null: category S, or E for 0 %
+     * @return
+     */
+    public static Invoice createInvoice(Item item, SubItem[] subitems, TradeParty sender, TradeParty recipient,
+            String buyerReference, int paytermDays, String taxExemptionReason, String smallBusinessNote,
+            Format format, Function<SubItem, mpv5.db.objects.Tax> taxRates) {
         Date issueDate = item.__getDateadded() != null ? item.__getDateadded() : new Date();
         //Item#datetodo is the service date, not a due date - always use the payment term
         Date dueDate = dueDate(issueDate, paytermDays);
@@ -346,15 +414,27 @@ public class ZugpferdFile implements Waitable {
         if (smallBusiness) {
             invoice.addTaxNote(smallBusinessNote.trim());
         }
-        String reason = smallBusiness ? smallBusinessNote.trim()
-                : isEmpty(taxExemptionReason) ? DEFAULT_TAX_EXEMPTION_REASON : taxExemptionReason;
+        String reason = smallBusiness ? smallBusinessNote.trim() : taxExemptionReason;
         int count = 0;
+        java.util.Set<String> notes = new java.util.LinkedHashSet<String>();
         for (SubItem subItem : subitems) {
-            IZUGFeRDExportableItem line = subItem.asZugpferdSubitem(reason);
+            //small business: every line without VAT is exempt (E) with the note of the exemption
+            mpv5.db.objects.Tax rate = smallBusiness || taxRates == null ? null : taxRates.apply(subItem);
+            IZUGFeRDExportableItem line = subItem.asZugpferdSubitem(rate, reason);
             if (line != null) {
                 invoice.addItem(line);
                 count++;
+                String category = line.getProduct().getTaxCategoryCode();
+                //the wording the law requires on the invoice (reverse charge, intra-community supply,
+                //export ...), also as note of the invoice (BT-22); exempt lines (E) carry it as reason only
+                if (!smallBusiness && category != null && !"S".equals(category) && !"E".equals(category)
+                        && !isEmpty(line.getProduct().getTaxExemptionReason())) {
+                    notes.add(line.getProduct().getTaxExemptionReason().trim());
+                }
             }
+        }
+        for (String note : notes) {
+            invoice.addTaxNote(note);
         }
         if (count == 0) {
             throw new IllegalStateException(Messages.ZUGFERD_NO_ITEMS.toString());
