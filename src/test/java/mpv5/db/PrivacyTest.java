@@ -30,7 +30,12 @@ import org.junit.jupiter.api.io.TempDir;
 class PrivacyTest {
 
     @TempDir
-    Path tmp;
+    static Path tmp;
+
+    @org.junit.jupiter.api.BeforeAll
+    static void setUpDatabase() throws Exception {
+        EInvoiceRoundTripTest.newInstallation(tmp);
+    }
 
     private static Item item(Contact c, int type, String number, Date date, int status) {
         Item i = (Item) DatabaseObject.getObject(Privacy.contextOf(type));
@@ -52,7 +57,6 @@ class PrivacyTest {
 
     @Test
     void contactWithInvoicesIsBlockedNotDeleted() throws Exception {
-        EInvoiceRoundTripTest.newInstallation(tmp);
         Contact c = (Contact) DatabaseObject.getObject(Context.getContact());
         c.setCname("Muster");
         c.setPrename("Max");
@@ -83,7 +87,7 @@ class PrivacyTest {
 
         Privacy.Report r = Privacy.check(c);
         assertTrue(r.mustKeep());
-        assertEquals("31.12.2034", mpv5.utils.date.DateConverter.getDefDateString(r.keepUntil));
+        assertEquals("2034-12-31", new java.text.SimpleDateFormat("yyyy-MM-dd").format(r.keepUntil));
         assertEquals(2, r.retained.size(), r.retained.toString());
         assertEquals(1, r.deletable.size(), "the offer was not accepted");
         assertEquals(1, r.open.size());
@@ -142,7 +146,6 @@ class PrivacyTest {
 
     @Test
     void contactWithoutDocumentsIsDeletedAsBefore() throws Exception {
-        EInvoiceRoundTripTest.newInstallation(tmp);
         Contact c = (Contact) DatabaseObject.getObject(Context.getContact());
         c.setCname("Interessent");
         c.setDateadded(new Date());

@@ -21,10 +21,11 @@ class PrivacyRulesTest {
 
     @Test
     void periodsStartAtTheEndOfTheCalendarYear() {
+        java.text.SimpleDateFormat iso = new java.text.SimpleDateFormat("yyyy-MM-dd");
         //an invoice of 15.03.2026: 8 years from 31.12.2026
-        assertEquals("31.12.2034", DateConverter.getDefDateString(Privacy.keepUntil(date(2026, 3, 15), 8)));
-        assertEquals("31.12.2034", DateConverter.getDefDateString(Privacy.keepUntil(date(2026, 12, 31), 8)));
-        assertEquals("31.12.2032", DateConverter.getDefDateString(Privacy.keepUntil(date(2026, 1, 1), 6)));
+        assertEquals("2034-12-31", iso.format(Privacy.keepUntil(date(2026, 3, 15), 8)));
+        assertEquals("2034-12-31", iso.format(Privacy.keepUntil(date(2026, 12, 31), 8)));
+        assertEquals("2032-12-31", iso.format(Privacy.keepUntil(date(2026, 1, 1), 6)));
     }
 
     @Test
