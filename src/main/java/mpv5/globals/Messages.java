@@ -915,6 +915,8 @@ public enum Messages {
     JOURNAL_SELECT_ALL("Select all"),
     JOURNAL_SELECTED("%d selected"),
     JOURNAL_FIND("Search"),
+    JOURNAL_FILTERS_SHOW("Show filters"),
+    JOURNAL_FILTERS_HIDE("Hide filters"),
     JOURNAL_RELOAD("Reload"),
     JOURNAL_LOADING("Loading ..."),
     JOURNAL_COUNT_FILTERED("%d of %d entries"),
