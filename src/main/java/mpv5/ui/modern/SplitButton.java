@@ -80,4 +80,18 @@ public class SplitButton extends JPanel {
         main.setEnabled(enabled);
         arrow.setEnabled(enabled);
     }
+
+    /**
+     * @return the main action button
+     */
+    public JButton getMainButton() {
+        return main;
+    }
+
+    /**
+     * @return the popup menu opened by the arrow button
+     */
+    public JPopupMenu getPopupMenu() {
+        return menu;
+    }
 }

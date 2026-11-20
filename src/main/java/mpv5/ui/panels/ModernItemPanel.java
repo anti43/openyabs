@@ -369,31 +369,29 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
     }
 
     private JComponent createHeader() {
-        JPanel header = new JPanel(new BorderLayout(ModernTheme.px(14), 0));
+        JPanel header = new JPanel(new BorderLayout(ModernTheme.px(12), 0));
         header.setOpaque(false);
-        header.setBorder(ModernTheme.padding(8, 16));
+        header.setBorder(ModernTheme.padding(4, 12));
         avatar.setSquare(true);
         header.add(avatar, BorderLayout.WEST);
-        JPanel center = new JPanel();
-        center.setOpaque(false);
-        center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
         //the main information of the view: large
-        displayname.setFont(ModernTheme.font(13, Font.BOLD));
+        displayname.setFont(ModernTheme.font(12, Font.BOLD));
         displayname.setForeground(ModernTheme.foreground());
-        displayname.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, ModernTheme.px(14)));
-        //contact / date / user in the title line, readable (there is room for it)
-        meta.setFont(ModernTheme.font(5, Font.PLAIN));
-        meta.setBorder(BorderFactory.createEmptyBorder(0, ModernTheme.px(20), 0, 0));
+        displayname.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, ModernTheme.px(10)));
+        //contact / date / user on the same line, compact
+        meta.setFont(ModernTheme.font(2, Font.PLAIN));
+        meta.setBorder(BorderFactory.createEmptyBorder(0, ModernTheme.px(12), 0, 0));
         meta.setForeground(ModernTheme.muted());
-        JPanel titleRow = new JPanel(new WrapLayout(FlowLayout.LEFT, 0, ModernTheme.px(2)));
-        titleRow.setOpaque(false);
-        titleRow.add(displayname);
-        titleRow.add(statusPill);
-        titleRow.add(createPluginBadgeSlot());
-        titleRow.add(meta);
-        titleRow.setAlignmentX(LEFT_ALIGNMENT);
-        center.add(titleRow);
-        header.add(center, BorderLayout.CENTER);
+        JPanel leftRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        leftRow.setOpaque(false);
+        leftRow.add(displayname);
+        leftRow.add(statusPill);
+        leftRow.add(createPluginBadgeSlot());
+        JPanel row = new JPanel(new BorderLayout(ModernTheme.px(10), 0));
+        row.setOpaque(false);
+        row.add(leftRow, BorderLayout.WEST);
+        row.add(meta, BorderLayout.CENTER);
+        header.add(row, BorderLayout.CENTER);
         return header;
     }
 
@@ -487,15 +485,17 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
 
     private JComponent createPositions() {
         Card card = new Card(Messages.ITEM_SECTION_POSITIONS.toString());
+        card.getHeader().add(positions.detachToolbar(), BorderLayout.CENTER);
         card.addFull(positions, 1);
         JPanel p = new JPanel(new BorderLayout());
         p.setBackground(ModernTheme.background());
-        p.setBorder(BorderFactory.createEmptyBorder(ModernTheme.px(8), 0, 0, 0));
+        p.setBorder(BorderFactory.createEmptyBorder(ModernTheme.px(6), 0, 0, 0));
         p.add(card, BorderLayout.CENTER);
         return p;
     }
 
     private static JButton menuButton(final JButton b, final JPopupMenu menu) {
+        b.putClientProperty(mpv5.ui.modern.OverflowBar.PROPERTY_POPUP_MENU, menu);
         b.addActionListener(e -> menu.show(b, 0, b.getHeight()));
         return b;
     }

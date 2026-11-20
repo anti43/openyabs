@@ -1964,7 +1964,7 @@ public enum Messages {
     CSV_RESULT_EMPTY("%d empty rows ignored."),
     CSV_RESULT_NONE_SKIPPED("No row was skipped."),
     CSV_PROBLEM_EXISTS("number \"%s\" exists already"),
-    ACTION_SAVE_AS_NEW("Save as new"),
+    ACTION_SAVE_AS_NEW("Save as copy"),
     EXPORT_FAILED("The document could not be created from the template \"%s\": %s"),
     CONTACT_SHEET("Contact sheet"),
     HISTORY_KIND_ERRORS("Errors"),

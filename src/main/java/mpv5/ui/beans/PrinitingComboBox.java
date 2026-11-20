@@ -129,9 +129,8 @@ public class PrinitingComboBox extends javax.swing.JPanel {
 
         java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         jLabel1.setText(bundle.getString("PrinitingComboBox.jLabel1.text")); // NOI18N
-        jLabel1.setMaximumSize(new java.awt.Dimension(333, 333));
+        jLabel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 4));
         jLabel1.setName("jLabel1"); // NOI18N
-        jLabel1.setPreferredSize(new java.awt.Dimension(100, 18));
         add(jLabel1);
 
         jComboBox1.setFont(jComboBox1.getFont());
@@ -144,6 +143,20 @@ public class PrinitingComboBox extends javax.swing.JPanel {
         });
         add(jComboBox1);
     }// </editor-fold>//GEN-END:initComponents
+
+    /**
+     * @return the label text shown next to the combo box
+     */
+    public String getLabelText() {
+        return jLabel1.getText();
+    }
+
+    /**
+     * @return the underlying combo box
+     */
+    public JComboBox getComboBox() {
+        return jComboBox1;
+    }
 
     private void jComboBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jComboBox1ItemStateChanged
         final JComboBox cb = (JComboBox) evt.getSource();

@@ -243,11 +243,9 @@ class ModernRevenuePanelTest {
                 "Template preview hint must be removed from preview card");
 
         assertNotNull(panel.getCommandBar());
-        assertNotNull(panel.getCommandBar().getSaveAsNewButton());
-        assertTrue(panel.getCommandBar().getSaveAsNewButton().isVisible(),
-                "'Save as new' button must be visible in the command bar");
+        assertNotNull(panel.getCommandBar().getSaveAsNewMenuItem());
         assertEquals(mpv5.globals.Messages.ACTION_SAVE_AS_NEW.toString(),
-                panel.getCommandBar().getSaveAsNewButton().getText());
+                panel.getCommandBar().getSaveAsNewMenuItem().getText());
 
         // Import e-invoice button is a large prominent green PrimaryButton
         assertNotNull(panel.getImportZugferdButton());

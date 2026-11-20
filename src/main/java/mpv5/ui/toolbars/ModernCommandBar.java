@@ -112,13 +112,15 @@ public class ModernCommandBar extends JPanel {
     }
     private final DataPanel view;
     private final JComponent viewComponent;
-    private final JPanel left = new JPanel(new WrapLayout(FlowLayout.LEFT, ModernTheme.px(4), ModernTheme.px(4)));
-    private final JPanel extras = new JPanel(new FlowLayout(FlowLayout.LEFT, ModernTheme.px(4), 0));
+    private final mpv5.ui.modern.OverflowBar left = new mpv5.ui.modern.OverflowBar(false, false);
+    private boolean hasExtras;
     private final JButton search;
     private final PrimaryButton save;
-    private final JButton saveAsNewButton;
+    private final JMenuItem saveAsNewItem;
     private final JButton favourite;
     private final JButton delete;
+    private final JPopupMenu more = new JPopupMenu();
+    private final java.util.List<javax.swing.JComponent> permanentMoreItems = new java.util.ArrayList<javax.swing.JComponent>();
     private final JMenuItem lock;
     private final JMenuItem odt;
     private final JButton mail;
@@ -198,7 +200,7 @@ public class ModernCommandBar extends JPanel {
                 BorderFactory.createMatteBorder(0, 0, 1, 0, ModernTheme.border()),
                 BorderFactory.createEmptyBorder(ModernTheme.px(4), ModernTheme.px(8), ModernTheme.px(4), ModernTheme.px(8))));
         left.setOpaque(false);
-        extras.setOpaque(false);
+        left.setBorder(BorderFactory.createEmptyBorder(ModernTheme.px(4), 0, ModernTheme.px(4), 0));
 
         search = ModernTheme.actionButton(new JButton(), "/images/22/viewmag.png");
         search.setMargin(new java.awt.Insets(ModernTheme.px(4), ModernTheme.px(6), ModernTheme.px(4), ModernTheme.px(6)));
@@ -212,9 +214,6 @@ public class ModernCommandBar extends JPanel {
             RecordActions.save(view);
             updateCopyBanner();
         });
-        saveAsNewButton = button(Messages.ACTION_SAVE_AS_NEW.toString(), "/images/16/filesaveas.png",
-                tip(Messages.ACTION_SAVE_AS_NEW.toString(), SAVE_AS_NEW));
-        saveAsNewButton.addActionListener(e -> triggerSaveAsNew());
         JButton revert = button(null, "/images/22/revert.png", tip(text("MPV5View.jButton22.toolTipText"), REVERT));
         revert.addActionListener(e -> {
             RecordActions.revert(view);
@@ -232,48 +231,57 @@ public class ModernCommandBar extends JPanel {
         preview.addActionListener(e -> RecordActions.preview(view));
         preview.setVisible(view instanceof ExportablePanel);
 
-        left.add(search);
-        left.add(separator());
-        left.add(save);
-        left.add(saveAsNewButton);
-        left.add(revert);
-        left.add(separator());
-        left.add(mail);
-        left.add(print);
-        left.add(preview);
-        left.add(pdf);
-        left.add(extras);
+        left.addPinned(search);
+        left.addSeparator();
+        left.addPinned(save);
+        left.addPinned(revert);
+        left.addSeparator();
+        left.addOverflowable(mail, MAIL);
+        left.addOverflowable(print, PRINT);
+        left.addOverflowable(preview, null);
+        left.addOverflowable(pdf, PDF);
         add(left, BorderLayout.CENTER);
 
-        //rarely used actions in a menu
-        JPopupMenu more = new JPopupMenu();
-        JMenuItem saveAsNew = item(more, Messages.ACTION_SAVE_AS_NEW.toString(), "/images/16/filesaveas.png", SAVE_AS_NEW);
-        saveAsNew.setToolTipText(Messages.ACTION_CREATE_COPY_TIP.toString());
-        saveAsNew.addActionListener(e -> triggerSaveAsNew());
-        JMenuItem copy = item(more, text("DataPanelTB.but10.toolTipText"), "/images/16/editcopy.png", COPY);
+        //rarely used actions (plus any actions that overflow the bar) in a menu
+        saveAsNewItem = menuItem(Messages.ACTION_SAVE_AS_NEW.toString(), "/images/16/filesaveas.png", SAVE_AS_NEW);
+        saveAsNewItem.setToolTipText(Messages.ACTION_CREATE_COPY_TIP.toString());
+        saveAsNewItem.addActionListener(e -> triggerSaveAsNew());
+        JMenuItem copy = menuItem(text("DataPanelTB.but10.toolTipText"), "/images/16/editcopy.png", COPY);
         copy.addActionListener(e -> copy());
-        JMenuItem paste = item(more, Messages.ACTION_PASTE.toString(), "/images/16/editpaste.png", PASTE);
+        JMenuItem paste = menuItem(Messages.ACTION_PASTE.toString(), "/images/16/editpaste.png", PASTE);
         paste.addActionListener(e -> {
             if (!view.isContentLocked()) {
                 RecordActions.paste(view);
             }
         });
-        more.addSeparator();
-        lock = item(more, text("MPV5View.jButton21.toolTipText"), null, null);
+        lock = menuItem(text("MPV5View.jButton21.toolTipText"), null, null);
         lock.setEnabled(!DatabaseObject.isAutoLockEnabled());
         lock.addActionListener(e -> {
             if (RecordActions.lock(view)) {
                 lock.setEnabled(false);
             }
         });
-        odt = item(more, text("DataPanelTB.odtButton.toolTipText"), null, null);
+        odt = menuItem(text("DataPanelTB.odtButton.toolTipText"), null, null);
         odt.setVisible(view instanceof ExportablePanel);
         odt.addActionListener(e -> RecordActions.odt(view));
-        more.addSeparator();
-        JMenuItem keys = item(more, Messages.KEYBOARD_SHORTCUTS.toString(), "/images/16/configure_shortcuts.png", HELP);
+        JMenuItem keys = menuItem(Messages.KEYBOARD_SHORTCUTS.toString(), "/images/16/configure_shortcuts.png", HELP);
         keys.addActionListener(e -> mpv5.ui.dialogs.ShortcutsDialog.show(this));
+
+        permanentMoreItems.add(saveAsNewItem);
+        permanentMoreItems.add(copy);
+        permanentMoreItems.add(paste);
+        permanentMoreItems.add(new JPopupMenu.Separator());
+        permanentMoreItems.add(lock);
+        permanentMoreItems.add(odt);
+        permanentMoreItems.add(new JPopupMenu.Separator());
+        permanentMoreItems.add(keys);
+        rebuildMoreMenu();
+
         JButton moreButton = button(Messages.MORE_ACTIONS.toString() + " \u25BE", null, null);
-        moreButton.addActionListener(e -> more.show(moreButton, 0, moreButton.getHeight()));
+        moreButton.addActionListener(e -> {
+            rebuildMoreMenu();
+            more.show(moreButton, 0, moreButton.getHeight());
+        });
 
         favourite = button(null, "/images/22/bookmark_add.png", null);
         favourite.addActionListener(e -> {
@@ -423,7 +431,7 @@ public class ModernCommandBar extends JPanel {
         return b;
     }
 
-    private static JMenuItem item(JPopupMenu menu, String label, String icon, KeyStroke key) {
+    private static JMenuItem menuItem(String label, String icon, KeyStroke key) {
         JMenuItem i = new JMenuItem(label);
         i.setFont(ModernTheme.font(1, java.awt.Font.PLAIN));
         java.net.URL url = icon == null ? null : ModernCommandBar.class.getResource(icon);
@@ -434,8 +442,21 @@ public class ModernCommandBar extends JPanel {
             //shown in the menu; the key itself is handled by the bar
             i.setAccelerator(key);
         }
-        menu.add(i);
         return i;
+    }
+
+    /**
+     * Rebuilds the {@code More ▾} popup with any actions currently overflowing
+     * the single-row command bar on top, followed by the permanent menu items.
+     */
+    public void rebuildMoreMenu() {
+        more.removeAll();
+        if (left.populateMenu(more) > 0) {
+            more.addSeparator();
+        }
+        for (JComponent c : permanentMoreItems) {
+            more.add(c);
+        }
     }
 
     private static JComponent separator() {
@@ -524,8 +545,9 @@ public class ModernCommandBar extends JPanel {
      * @param key shortcut, may be null
      */
     public void addAction(JComponent c, KeyStroke key) {
-        if (extras.getComponentCount() == 0) {
-            extras.add(separator());
+        if (!hasExtras) {
+            left.addSeparator();
+            hasExtras = true;
         }
         if (c instanceof AbstractButton) {
             ModernTheme.actionButton((AbstractButton) c, null);
@@ -539,10 +561,8 @@ public class ModernCommandBar extends JPanel {
                 });
             }
         }
-        extras.add(c);
-        if (c instanceof JComponent) {
-            uniformHeight(extras);
-        }
+        left.addOverflowable(c, key);
+        uniformHeight(left);
     }
 
     /**
@@ -554,17 +574,32 @@ public class ModernCommandBar extends JPanel {
     }
 
     /**
-     * @param action what "Save as new" does on this view
+     * @param action what "Save as copy" does on this view
      */
     public void setSaveAsNewAction(Runnable action) {
         this.saveAsNewAction = action;
     }
 
     /**
-     * @return the visible "Save as new" button in the command bar
+     * @return the "Save as copy" menu item inside the {@code More ▾} dropdown
      */
-    public JButton getSaveAsNewButton() {
-        return saveAsNewButton;
+    public JMenuItem getSaveAsNewMenuItem() {
+        return saveAsNewItem;
+    }
+
+    /**
+     * @return the {@code More ▾} popup menu (including any overflowed actions
+     * after {@link #rebuildMoreMenu()})
+     */
+    public JPopupMenu getMoreMenu() {
+        return more;
+    }
+
+    /**
+     * @return the single-row left overflow bar
+     */
+    public mpv5.ui.modern.OverflowBar getLeftBar() {
+        return left;
     }
 
     /**

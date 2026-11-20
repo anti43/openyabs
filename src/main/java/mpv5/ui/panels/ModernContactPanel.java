@@ -418,51 +418,46 @@ public class ModernContactPanel extends ModernDataPanel {
     }
 
     private JComponent createHeader() {
-        JPanel header = new JPanel(new BorderLayout(ModernTheme.px(14), 0));
+        JPanel header = new JPanel(new BorderLayout(ModernTheme.px(12), ModernTheme.px(2)));
         header.setOpaque(false);
-        header.setBorder(ModernTheme.padding(8, 16));
+        header.setBorder(ModernTheme.padding(4, 12));
 
         header.add(avatar, BorderLayout.WEST);
 
-        JPanel center = new JPanel();
-        center.setOpaque(false);
-        center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
-        //the main information of the view: large
-        displayname.setFont(ModernTheme.font(13, Font.BOLD));
+        //the main information of the view: large, shortened with "..." if narrow
+        displayname.setFont(ModernTheme.font(12, Font.BOLD));
         displayname.setForeground(ModernTheme.foreground());
-        //contact / date / user in the title line, readable (there is room for it)
-        meta.setFont(ModernTheme.font(5, Font.PLAIN));
-        meta.setBorder(BorderFactory.createEmptyBorder(0, ModernTheme.px(20), 0, 0));
-        meta.setForeground(ModernTheme.muted());
-        //the roles; the actions are in the command bar
-        JPanel chips = new JPanel(new FlowLayout(FlowLayout.LEFT, ModernTheme.px(6), 0));
+        displayname.setMinimumSize(new java.awt.Dimension(0, displayname.getPreferredSize().height));
+
+        //role chips, plugin badge, and contact / date / user on the same line
+        JPanel chips = new JPanel(new FlowLayout(FlowLayout.LEFT, ModernTheme.px(4), 0));
         chips.setOpaque(false);
         chips.add(company);
         chips.add(customer);
         chips.add(supplier);
         chips.add(manufacturer);
-        //two fixed lines: the name (shortened with "..." if there is no room), below the roles
-        //and the meta data. Before, name, roles and meta wrapped in one row whose height was
-        //not recomputed: with a long name in a narrow window the second line was cut off
-        displayname.setAlignmentX(LEFT_ALIGNMENT);
-        displayname.setMinimumSize(new java.awt.Dimension(0, displayname.getPreferredSize().height));
-        displayname.setPreferredSize(new java.awt.Dimension(ModernTheme.px(80), displayname.getFontMetrics(displayname.getFont()).getHeight()));
-        displayname.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, displayname.getFontMetrics(displayname.getFont()).getHeight()));
-        JPanel second = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        second.setOpaque(false);
-        second.add(chips);
-        second.add(createPluginBadgeSlot());
-        second.add(meta);
-        second.setAlignmentX(LEFT_ALIGNMENT);
-        center.add(displayname);
-        center.add(javax.swing.Box.createVerticalStrut(ModernTheme.px(4)));
-        center.add(second);
+
+        meta.setFont(ModernTheme.font(2, Font.PLAIN));
+        meta.setBorder(BorderFactory.createEmptyBorder(0, ModernTheme.px(10), 0, 0));
+        meta.setForeground(ModernTheme.muted());
+
+        JPanel right = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+        right.setOpaque(false);
+        right.add(chips);
+        right.add(createPluginBadgeSlot());
+        right.add(meta);
+
+        JPanel row = new JPanel(new BorderLayout(ModernTheme.px(10), 0));
+        row.setOpaque(false);
+        row.add(displayname, BorderLayout.CENTER);
+        row.add(right, BorderLayout.EAST);
+
+        header.add(row, BorderLayout.CENTER);
+
         blockedNote.setForeground(new java.awt.Color(200, 40, 40));
         blockedNote.setFont(ModernTheme.font(0, Font.BOLD));
-        blockedNote.setAlignmentX(LEFT_ALIGNMENT);
         blockedNote.setVisible(false);
-        center.add(blockedNote);
-        header.add(center, BorderLayout.CENTER);
+        header.add(blockedNote, BorderLayout.SOUTH);
         return header;
     }
 
@@ -680,25 +675,24 @@ public class ModernContactPanel extends ModernDataPanel {
         newInvoice.add(Messages.NEW_PART_PAYMENT.toString(), e -> openNew(ContactService.newItem(dataOwner, Item.TYPE_PART_PAYMENT)));
         newCredit.addActionListener(e -> openNew(ContactService.newItem(dataOwner, Item.TYPE_CREDIT)));
         newProduct.addActionListener(e -> openNew(ContactService.newProduct(dataOwner)));
-        JPanel create = new JPanel(new WrapLayout(FlowLayout.RIGHT, ModernTheme.px(8), ModernTheme.px(4)));
-        create.setOpaque(false);
-        create.add(newOffer);
-        create.add(newOrder);
-        create.add(newInvoice);
-        create.add(newCredit);
-        create.add(newProduct);
+        mpv5.ui.modern.OverflowBar create = new mpv5.ui.modern.OverflowBar(true, true);
+        create.addOverflowable(newOffer, null);
+        create.addOverflowable(newOrder, null);
+        create.addOverflowable(newInvoice, null);
+        create.addOverflowable(newCredit, null);
+        create.addOverflowable(newProduct, null);
 
-        JPanel bar = new JPanel(new BorderLayout(ModernTheme.px(12), ModernTheme.px(8)));
+        JPanel bar = new JPanel(new BorderLayout(ModernTheme.px(12), 0));
         bar.setOpaque(false);
         bar.add(segments, BorderLayout.CENTER);
         bar.add(filterPanel, BorderLayout.EAST);
-        bar.add(create, BorderLayout.SOUTH);
 
         Card card = new Card(Messages.CONTACT_SECTION_DOCUMENTS.toString());
+        card.headerAction(create);
         card.addFull(bar);
         card.addFull(new JScrollPane(dataTable), 1);
         relatedPanel.setBackground(ModernTheme.background());
-        relatedPanel.setBorder(BorderFactory.createEmptyBorder(ModernTheme.px(8), 0, 0, 0));
+        relatedPanel.setBorder(BorderFactory.createEmptyBorder(ModernTheme.px(6), 0, 0, 0));
         relatedPanel.add(card, BorderLayout.CENTER);
     }
     // </editor-fold>
