@@ -337,6 +337,66 @@ public final class VereinValidator {
     }
 
     /**
+     * Builds a {@link mpv5.utils.export.SepaDirectDebit.Debit} for an
+     * association member using the member's explicit SEPA mandate reference and
+     * signature date, or returns {@code null} if IBAN, amount, or mandate data
+     * is missing/invalid.
+     */
+    public static mpv5.utils.export.SepaDirectDebit.Debit buildMemberDebit(
+            String invoiceNumber,
+            String invoiceTitle,
+            BigDecimal grossAmount,
+            String contactName,
+            String bankAccount,
+            String bankId,
+            MemberData member,
+            String fiscalYear) {
+        if (member == null || safe(member.sepaMandateRef).isEmpty()) {
+            return null;
+        }
+        LocalDate mandateDate = parseFlexibleDate(member.sepaMandateDate);
+        if (mandateDate == null) {
+            return null;
+        }
+        String iban = mpv5.utils.text.Iban.isValid(bankAccount) ? bankAccount
+                : mpv5.utils.text.Iban.isValid(bankId) ? bankId : null;
+        if (iban == null || grossAmount == null || grossAmount.compareTo(new BigDecimal("0.01")) < 0) {
+            return null;
+        }
+        String bic = mpv5.utils.text.Iban.isValidBic(bankId) ? bankId
+                : mpv5.utils.text.Iban.isValidBic(bankAccount) ? bankAccount : "";
+        String endToEnd = safe(invoiceNumber).isEmpty() ? "BEITRAG-" + safe(fiscalYear) : safe(invoiceNumber);
+        StringBuilder ref = new StringBuilder();
+        if (!safe(invoiceTitle).isEmpty()) {
+            ref.append(safe(invoiceTitle));
+        } else {
+            ref.append("Beitrag ").append(safe(fiscalYear));
+        }
+        if (!safe(member.memberId).isEmpty()) {
+            ref.append(" (Mitglied ").append(safe(member.memberId)).append(")");
+        }
+        if (!safe(invoiceNumber).isEmpty()) {
+            ref.append(" ").append(safe(invoiceNumber));
+        }
+        return new mpv5.utils.export.SepaDirectDebit.Debit(
+                endToEnd, contactName, iban, bic, member.sepaMandateRef, mandateDate, grossAmount, ref.toString());
+    }
+
+    /**
+     * Generates and ISO 20022 XSD-validates a SEPA-Sammellastschrift
+     * ({@code pain.008.001.08}, {@code BtchBookg=true}) XML file.
+     */
+    public static String buildSepaBatchXml(
+            mpv5.utils.export.SepaDirectDebit.Creditor creditor,
+            List<mpv5.utils.export.SepaDirectDebit.Debit> debits,
+            LocalDate collectionDate,
+            java.time.LocalDateTime now) {
+        String xml = mpv5.utils.export.SepaDirectDebit.toXml(creditor, debits, collectionDate, now);
+        mpv5.utils.export.SepaDirectDebit.validateXml(xml);
+        return xml;
+    }
+
+    /**
      * Generates a UTF-8 semicolon-separated CSV summary for the 4 non-profit
      * tax spheres.
      */

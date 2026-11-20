@@ -137,6 +137,11 @@ public final class VereinPlugin implements YabsExtension {
                 () -> runAnnualDuesBatch(yabs));
 
         yabs.addCommand(
+                yabs.tr("cmd.sepaBatch.title"),
+                yabs.tr("cmd.sepaBatch.desc"),
+                () -> exportSepaBatch(yabs));
+
+        yabs.addCommand(
                 yabs.tr("cmd.sphereReport.title"),
                 yabs.tr("cmd.sphereReport.desc"),
                 () -> VereinUi.openSphereOverviewTab(yabs));
@@ -410,6 +415,127 @@ public final class VereinPlugin implements YabsExtension {
             summary += yabs.tr("cmd.batchRun.errors", errors.size(), String.join("\n", errors.subList(0, limit)));
         }
         return summary;
+    }
+
+    private void exportSepaBatch(ExtensionContext yabs) {
+        try {
+            int currentYear = LocalDate.now().getYear();
+            LocalDate defaultCollection = mpv5.utils.export.SepaDirectDebit.nextCollectionDate(LocalDate.now().plusDays(13));
+            javax.swing.JTextField yearField = new javax.swing.JTextField(String.valueOf(currentYear), 8);
+            javax.swing.JTextField dateField = new javax.swing.JTextField(defaultCollection.toString(), 12);
+            javax.swing.JPanel panel = new javax.swing.JPanel(new java.awt.GridLayout(0, 2, 8, 6));
+            panel.add(new javax.swing.JLabel(yabs.tr("cmd.sepaBatch.year")));
+            panel.add(yearField);
+            panel.add(new javax.swing.JLabel(yabs.tr("cmd.sepaBatch.collectionDate")));
+            panel.add(dateField);
+
+            int ok = JOptionPane.showConfirmDialog(null, panel, yabs.tr("cmd.sepaBatch.dialogTitle"),
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+            if (ok != JOptionPane.OK_OPTION) {
+                return;
+            }
+            String yearStr = yearField.getText().trim();
+            LocalDate collectionDate;
+            try {
+                collectionDate = LocalDate.parse(dateField.getText().trim());
+            } catch (Exception ex) {
+                yabs.popup(yabs.tr("cmd.sepaBatch.invalidDate", dateField.getText().trim()));
+                return;
+            }
+
+            final java.util.function.Function<String, String> baseCompany = mpv5.utils.export.ZugpferdFile.companySettings();
+            final Settings vs = Settings.load();
+            java.util.function.Function<String, String> company = key -> {
+                String val = baseCompany.apply(key);
+                if (mpv5.utils.export.SepaDirectDebit.KEY_CREDITOR_ID.equals(key) && (val == null || val.trim().isEmpty())) {
+                    return vs.creditorId;
+                }
+                return val;
+            };
+            mpv5.utils.export.SepaDirectDebit.Creditor creditor = mpv5.utils.export.SepaDirectDebit.companyCreditor(company);
+            if (creditor == null) {
+                yabs.popup(yabs.tr("cmd.sepaBatch.noCreditor"));
+                return;
+            }
+
+            Map<Integer, InvoiceData> invMeta = new HashMap<Integer, InvoiceData>();
+            for (InvoiceData d : VereinStore.loadAllInvoices(VereinStore.connection())) {
+                if (yearStr.equals(d.fiscalYear) && d.sepaDirectDebit) {
+                    invMeta.put(d.itemId, d);
+                }
+            }
+            Map<Integer, MemberData> members = new HashMap<Integer, MemberData>();
+            for (MemberData m : VereinStore.loadAllMembers(VereinStore.connection())) {
+                members.put(m.contactId, m);
+            }
+
+            List<mpv5.utils.export.SepaDirectDebit.Debit> debits = new ArrayList<mpv5.utils.export.SepaDirectDebit.Debit>();
+            List<String> skipped = new ArrayList<String>();
+            BigDecimal sum = BigDecimal.ZERO;
+
+            for (DatabaseObject o : DatabaseObject.getObjects(Context.getInvoice())) {
+                Item item = (Item) o;
+                if (!invMeta.containsKey(item.__getIDS())) {
+                    continue;
+                }
+                if (item.__getIntstatus() == Item.STATUS_PAID || item.__getIntstatus() == Item.STATUS_CANCELLED) {
+                    continue;
+                }
+                Contact c = null;
+                try {
+                    c = (Contact) DatabaseObject.getObject(Context.getContact(), item.__getContactsids());
+                } catch (Exception ignored) {
+                }
+                MemberData m = members.get(item.__getContactsids());
+                String contactName = c == null ? "#" + item.__getContactsids()
+                        : ((c.__getPrename() == null ? "" : c.__getPrename() + " ")
+                        + (c.__getCname() == null ? "" : c.__getCname())).trim();
+                BigDecimal gross = grossTotal(item);
+                mpv5.utils.export.SepaDirectDebit.Debit debit = c == null ? null : VereinValidator.buildMemberDebit(
+                        item.__getCnumber(),
+                        item.__getCname(),
+                        gross,
+                        contactName,
+                        c.__getBankaccount(),
+                        c.__getBankid(),
+                        m,
+                        yearStr);
+                if (debit != null) {
+                    debits.add(debit);
+                    sum = sum.add(gross);
+                } else {
+                    skipped.add(item.__getCnumber() + " – " + contactName);
+                }
+            }
+
+            if (debits.isEmpty()) {
+                yabs.popup(yabs.tr("cmd.sepaBatch.empty", yearStr));
+                return;
+            }
+
+            String xml = VereinValidator.buildSepaBatchXml(creditor, debits, collectionDate, java.time.LocalDateTime.now());
+            DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY,
+                    "sepa-verein-" + yearStr + "-" + collectionDate + ".xml");
+            if (!d.saveFile()) {
+                return;
+            }
+            File target = d.getFile();
+            if (!target.getName().toLowerCase().endsWith(".xml")) {
+                target = new File(target.getParentFile(), target.getName() + ".xml");
+            }
+            Files.writeString(target.toPath(), xml, java.nio.charset.StandardCharsets.UTF_8);
+
+            String msg = yabs.tr("cmd.sepaBatch.done", debits.size(),
+                    sum.setScale(2, java.math.RoundingMode.HALF_UP).toPlainString(), target.getAbsolutePath());
+            if (!skipped.isEmpty()) {
+                int limit = Math.min(skipped.size(), 10);
+                msg += yabs.tr("cmd.sepaBatch.skipped", skipped.size(), String.join("\n", skipped.subList(0, limit)));
+            }
+            yabs.popup(msg);
+        } catch (Exception ex) {
+            Log.Debug(VereinPlugin.class, ex);
+            yabs.error(yabs.tr("cmd.sepaBatch.failed", ex.getMessage()));
+        }
     }
 
     private int findOrCreateZeroTaxId() {
