@@ -39,7 +39,9 @@ public class TrashHandler {
      * @param message
      */
     public static void delete(final String type, final int id, final String message) {
-        QueryHandler.instanceOf().clone(type).delete(new String[][]{{"ids", String.valueOf(id), ""}}, message);
+        if (!deleteFinally(type, id, message)) {
+            return;
+        }
         Runnable runnable = new Runnable() {
 
             public void run() {
@@ -47,6 +49,52 @@ public class TrashHandler {
             }
         };
         SwingUtilities.invokeLater(runnable);
+    }
+
+    /**
+     * Deletes a record of the trash for good, unless it must be kept
+     * (retention of invoices and of the documents of a contact, see
+     * {@link Privacy#whyKeep}); deletes its properties too
+     *
+     * @param type
+     * @param id
+     * @param message
+     * @return true if deleted
+     */
+    public static boolean deleteFinally(final String type, final int id, final String message) {
+        Context context = Context.getMatchingContext(type);
+        if (context != null) {
+            String keep = Privacy.whyKeep(context, id);
+            if (keep != null) {
+                Log.Debug(TrashHandler.class, "Not deleted: " + keep);
+                REFUSED.add(keep);
+                return false;
+            }
+        }
+        boolean deleted = QueryHandler.instanceOf().clone(type).delete(new String[][]{{"ids", String.valueOf(id), ""}}, message);
+        if (deleted && context != null) {
+            //the properties: stored with any context of the table (e.g. customer, supplier for contacts)
+            QueryHandler.instanceOf().clone(Context.getValueProperties()).freeUpdateQuery(
+                    "DELETE FROM %%tablename%% WHERE contextids IN (" + Privacy.contextIds(context.getDbIdentity())
+                    + ") AND objectids = " + id,
+                    mpv5.usermanagement.MPSecurityManager.CREATE_OR_DELETE, null);
+        }
+        return deleted;
+    }
+
+    /**
+     * Why records were not deleted (for the message after emptying the trash)
+     */
+    private static final java.util.List<String> REFUSED = new java.util.ArrayList<String>();
+
+    /**
+     * @return why records were not deleted since the last call, empty if all
+     * were deleted
+     */
+    public static synchronized java.util.List<String> takeRefused() {
+        java.util.List<String> l = new java.util.ArrayList<String>(REFUSED);
+        REFUSED.clear();
+        return l;
     }
 
     /**

@@ -126,6 +126,11 @@ public class ModernContactPanel extends ModernDataPanel {
     private final Avatar avatar = new Avatar();
     private final JLabel displayname = new JLabel();
     private final JLabel meta = new JLabel();
+    /**
+     * shown for a blocked contact (GDPR: kept only for the retention of its
+     * documents)
+     */
+    private final JLabel blockedNote = new JLabel();
     private final ChipToggle company = new ChipToggle(text("ContactPanel.company.text"));
     private final ChipToggle customer = new ChipToggle(text("ContactPanel.customer.text"));
     private final ChipToggle supplier = new ChipToggle(text("ContactPanel.supplier.text"));
@@ -295,6 +300,15 @@ public class ModernContactPanel extends ModernDataPanel {
         tb.addAction(history, ModernCommandBar.HISTORY);
         tb.addAction(schedule, null);
         tb.addAction(printing, null);
+        //everything stored about the person (GDPR Art. 15, 20)
+        JButton privacy = new JButton(Messages.PRIVACY_EXPORT.toString());
+        privacy.setToolTipText(Messages.PRIVACY_EXPORT_HINT.toString());
+        privacy.addActionListener(e -> {
+            if (dataOwner != null && dataOwner.isExisting()) {
+                mpv5.ui.dialogs.ContactPrivacyDialog.export(this, dataOwner);
+            }
+        });
+        tb.addAction(privacy, null);
         //Ctrl+F: find in the documents of the contact
         tb.setFindAction(() -> {
             filter.requestFocusInWindow();
@@ -443,6 +457,11 @@ public class ModernContactPanel extends ModernDataPanel {
         center.add(displayname);
         center.add(javax.swing.Box.createVerticalStrut(ModernTheme.px(4)));
         center.add(second);
+        blockedNote.setForeground(new java.awt.Color(200, 40, 40));
+        blockedNote.setFont(ModernTheme.font(0, Font.BOLD));
+        blockedNote.setAlignmentX(LEFT_ALIGNMENT);
+        blockedNote.setVisible(false);
+        center.add(blockedNote);
         header.add(center, BorderLayout.CENTER);
         return header;
     }
@@ -721,6 +740,20 @@ public class ModernContactPanel extends ModernDataPanel {
      * offers, invoices ... for customers, products for suppliers and
      * manufacturers
      */
+    /**
+     * The note on a blocked contact (GDPR, restriction of processing)
+     */
+    private void showBlocked() {
+        boolean blocked = mpv5.handler.Privacy.isBlocked(dataOwner);
+        blockedNote.setVisible(blocked);
+        if (blocked) {
+            java.util.Date until = mpv5.handler.Privacy.blockedUntil(dataOwner);
+            blockedNote.setText(String.format(Messages.PRIVACY_BLOCKED_NOTE.toString(),
+                    until == null ? "?" : DateConverter.getDefDateString(until)));
+            blockedNote.setToolTipText(Messages.PRIVACY_LAW.toString());
+        }
+    }
+
     private void updateRoleControls() {
         boolean isCustomer = customer.isSelected();
         boolean hasProducts = supplier.isSelected() || manufacturer.isSelected();
@@ -728,10 +761,12 @@ public class ModernContactPanel extends ModernDataPanel {
             e.getValue().setVisible((e.getKey().isForCustomers() ? isCustomer : hasProducts)
                     && (e.getKey() != Related.ACTIVITIES || mpv5.globals.Features.activityLists()));
         }
-        newOffer.setVisible(isCustomer);
-        newOrder.setVisible(isCustomer);
-        newInvoice.setVisible(isCustomer);
-        newCredit.setVisible(isCustomer);
+        //a blocked contact (GDPR) is kept for the retention of its documents only: no new documents
+        boolean blocked = mpv5.handler.Privacy.isBlocked(dataOwner);
+        newOffer.setVisible(isCustomer && !blocked);
+        newOrder.setVisible(isCustomer && !blocked);
+        newInvoice.setVisible(isCustomer && !blocked);
+        newCredit.setVisible(isCustomer && !blocked);
         newProduct.setVisible(hasProducts);
         //the roles changed which lists exist: keep a list on screen, prefer the one chosen last
         Related wanted = pickRelated(isCustomer, hasProducts);
@@ -1066,6 +1101,7 @@ public class ModernContactPanel extends ModernDataPanel {
         tb.setEditable(!object.isReadOnly());
 
         addAddresses();
+        showBlocked();
         if (object.isReadOnly()) {
             Popup.notice(Messages.LOCKED_BY);
         }

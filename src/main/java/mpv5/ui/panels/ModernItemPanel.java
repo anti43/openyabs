@@ -1649,6 +1649,23 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
 
     @Override
     public void actionBeforeSave() throws ChangeNotApprovedException {
+        //no new documents for a blocked contact (GDPR: kept only for the retention of its documents)
+        if (!dataOwner.isExisting()) {
+            try {
+                MPComboBoxModelItem sel = contactname.getSelectedItem();
+                if (sel != null && sel.isValid()) {
+                    Contact c = (Contact) DatabaseObject.getObject(Context.getContact(), Integer.valueOf(sel.getId()));
+                    if (mpv5.handler.Privacy.isBlocked(c)) {
+                        Popup.notice(String.format(Messages.PRIVACY_NO_NEW_DOCUMENTS.toString(), c.__getCname()));
+                        throw new ChangeNotApprovedException(dataOwner);
+                    }
+                }
+            } catch (ChangeNotApprovedException e) {
+                throw e;
+            } catch (Exception e) {
+                Log.Debug(this, e.getMessage());
+            }
+        }
         //small business exemption: no VAT on invoices, revenue limits (§ 19 UStG)
         if (dataOwner.__getInttype() == Item.TYPE_INVOICE && mpv5.utils.export.SmallBusiness.isEnabled()) {
             //called before collectData: the values of the form

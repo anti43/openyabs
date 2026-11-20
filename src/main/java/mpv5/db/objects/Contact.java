@@ -585,39 +585,26 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
 
     @Override
     public boolean delete() {
-        try {
-            List<DatabaseObject> it = getReferencedObjects(this, Context.getOffer(), getObject(Context.getOffer()));
-            for (int i = 0; i < it.size(); i++) {
-                it.get(i).delete();
-            }
-            it.clear();
-            it = getReferencedObjects(this, Context.getOrder(), getObject(Context.getOrder()));
-            for (int i = 0; i < it.size(); i++) {
-                it.get(i).delete();
-            }
-            it.clear();
-            it = getReferencedObjects(this, Context.getInvoice(), getObject(Context.getInvoice()));
-            for (int i = 0; i < it.size(); i++) {
-                it.get(i).delete();
-            }
-            it.clear();
-            it = getReferencedObjects(this, Context.getDeposit(), getObject(Context.getDeposit()));
-            for (int i = 0; i < it.size(); i++) {
-                it.get(i).delete();
-            }
-            it.clear();
-            it = getReferencedObjects(this, Context.getPartPayment(), getObject(Context.getPartPayment()));
-            for (int i = 0; i < it.size(); i++) {
-                it.get(i).delete();
-            }
-            it.clear();
-            it = getReferencedObjects(this, Context.getCredit(), getObject(Context.getCredit()));
-            for (int i = 0; i < it.size(); i++) {
-                it.get(i).delete();
-            }
-        } catch (Exception e) {
+        //documents which must be kept (issued invoices, business letters, booked income): the contact
+        //can not be deleted, only blocked (mpv5.handler.Privacy, Art. 17 Abs. 3, Art. 18 GDPR)
+        mpv5.handler.Privacy.Report report = mpv5.handler.Privacy.check(this);
+        if (report.mustKeep() && !report.expired(new java.util.Date())) {
+            Log.Debug(this, "Not deleted, documents must be kept until " + report.keepUntil + ": " + report.retained);
+            return false;
         }
-
+        //the documents which need not be kept (drafts, offers not accepted) go to the trash with it
+        for (mpv5.handler.Privacy.Document d : report.deletable) {
+            try {
+                Item i = (Item) getObject(mpv5.handler.Privacy.contextOf(d.type), d.id, true);
+                if (!i.delete()) {
+                    Log.Debug(this, "Document not moved to the trash: " + d);
+                }
+            } catch (Exception e) {
+                //never silently: the user sees the document still there and the log says why
+                Log.Debug(this, "Document not moved to the trash: " + d);
+                Log.Debug(e);
+            }
+        }
         return super.delete();
     }
 
