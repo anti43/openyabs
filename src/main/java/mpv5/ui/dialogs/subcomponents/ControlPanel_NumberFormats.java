@@ -423,6 +423,19 @@ public class ControlPanel_NumberFormats extends JPanel implements ControlApplet 
             }
             row++;
         }
+        if (FormatHandler.invoiceTypesShareARange(forAll)) {
+            //the same format for invoices, credit notes, deposit or part payment invoices (#212)
+            JLabel warn = new JLabel("<html>" + Messages.FORMATS_SHARED_RANGE + "</html>");
+            warn.setForeground(new java.awt.Color(180, 83, 9));
+            java.awt.GridBagConstraints g = new java.awt.GridBagConstraints();
+            g.gridx = 0;
+            g.gridy = row;
+            g.gridwidth = 4;
+            g.weightx = 1;
+            g.fill = java.awt.GridBagConstraints.HORIZONTAL;
+            g.insets = new java.awt.Insets(ModernTheme.px(8), 0, 0, 0);
+            overviewRows.add(warn, g);
+        }
         overviewRows.revalidate();
         overviewRows.repaint();
     }

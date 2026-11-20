@@ -1031,6 +1031,8 @@ public enum Messages {
     PAYMENT_INVALID("Please enter an amount above 0 and a date."),
     TYPE_PAYMENT("Payment"),
     ITEM_NEW_CUSTOMER_ENTRY("+ New customer ..."),
+    ITEM_NUMBER_USED_BY("The number %s is already used by the %s with this number. Invoices, credit notes, deposit and part payment invoices need numbers which are unique among all of them (\u00a7 14 Abs. 4 Nr. 4 UStG)."),
+    FORMATS_SHARED_RANGE("Invoices, credit notes, deposit and part payment invoices with the same number format: they share one range of numbers (a number is used only once). Give each kind a prefix of its own (e.g. RE-, GS-, AZ-, AR-) to tell them apart."),
     ITEM_TEXT_KEYS("Enter: apply, Shift+Enter: new line, Esc: cancel"),
     ITEM_NEW_CUSTOMER_HINT("New customer: fill in and save - the document gets the customer and is saved too."),
     ITEM_NEW_CUSTOMER_SAVED("%s saved with the new customer %s"),
