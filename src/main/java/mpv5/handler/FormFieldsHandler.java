@@ -114,7 +114,11 @@ public class FormFieldsHandler {
                 maps.put("companyinfo." + strings[0], resolve(strings[0], strings[1], obj));
             }
         }
-        
+        //the VAT ID of the company (stored as companyinfo.account1), required on invoices with
+        //reverse charge or intra-community supplies (§ 14a UStG)
+        Object vatId = maps.get("companyinfo.account1");
+        maps.put("companyinfo.vatid", vatId == null ? "" : vatId);
+
         //small business exemption: the note to print (the legal wording if none is set), empty without it
         try {
             maps.put("companyinfo." + mpv5.utils.export.SmallBusiness.KEY_NOTE,

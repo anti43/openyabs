@@ -377,6 +377,17 @@ public class DatabaseUpdater {
             "ALTER TABLE items ADD COLUMN datelastupdated TIMESTAMP DEFAULT NULL",
             "UPDATE items SET datetodo = dateadded WHERE datetodo IS NULL"
         });
+        //1.1993: the VAT category (UNCL5305), exemption reason code (VATEX) and note of a tax rate (#209)
+        UPDATES_DERBY.put(1.1993, new String[]{
+            "ALTER TABLE tax ADD COLUMN categorycode VARCHAR(10) DEFAULT NULL",
+            "ALTER TABLE tax ADD COLUMN exemptioncode VARCHAR(50) DEFAULT NULL",
+            "ALTER TABLE tax ADD COLUMN exemptionnote VARCHAR(1000) DEFAULT NULL"
+        });
+        UPDATES_POSTGRES.put(1.1993, new String[]{
+            "ALTER TABLE tax ADD COLUMN categorycode VARCHAR(10) DEFAULT NULL",
+            "ALTER TABLE tax ADD COLUMN exemptioncode VARCHAR(50) DEFAULT NULL",
+            "ALTER TABLE tax ADD COLUMN exemptionnote VARCHAR(1000) DEFAULT NULL"
+        });
         ////////////////////////////////////////////////////////////////////////////////////////////
         // mysql updates
         UPDATES_MYSQL.put(1.11, new String[]{
@@ -721,6 +732,11 @@ public class DatabaseUpdater {
         UPDATES_MYSQL.put(1.1992, new String[]{
             "ALTER TABLE items ADD COLUMN datelastupdated DATETIME DEFAULT NULL",
             "UPDATE items SET datetodo = dateadded WHERE datetodo IS NULL"
+        });
+        UPDATES_MYSQL.put(1.1993, new String[]{
+            "ALTER TABLE tax ADD COLUMN categorycode VARCHAR(10) DEFAULT NULL",
+            "ALTER TABLE tax ADD COLUMN exemptioncode VARCHAR(50) DEFAULT NULL",
+            "ALTER TABLE tax ADD COLUMN exemptionnote VARCHAR(1000) DEFAULT NULL"
         });
     }
 
