@@ -228,7 +228,7 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
     private final List<Component> othersColumn = new ArrayList<Component>();
     private final JLabel taxRates = new JLabel(" ");
     private final JLabel exportResult = new JLabel(" ");
-    private final JButton filtersToggle = new JButton();
+    private final mpv5.ui.modern.PrimaryButton filtersToggle = new mpv5.ui.modern.PrimaryButton(" ", null);
     private File exportedFile;
     //contact overview
     private final JTree jTree1 = new JTree();
@@ -728,7 +728,6 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         //export and reload: at the right of the filter line
         JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT, ModernTheme.px(8), 0));
         buttons.setOpaque(false);
-        buttons.add(filtersToggle);
         buttons.add(exportButton);
         buttons.add(loadButton);
         JPanel bar = new JPanel(new BorderLayout(gap, 0));
@@ -812,6 +811,12 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         findRow.setOpaque(false);
         findRow.add(new JLabel(Messages.JOURNAL_FIND.toString()));
         findRow.add(find);
+        //show / hide the filter cards: next to the search, green
+        filtersToggle.setColor(ModernTheme.isDark() ? new java.awt.Color(34, 160, 80) : new java.awt.Color(22, 140, 64));
+        filtersToggle.setFont(ModernTheme.font(0, Font.BOLD));
+        filtersToggle.setBorder(BorderFactory.createEmptyBorder(ModernTheme.px(5), ModernTheme.px(12), ModernTheme.px(5), ModernTheme.px(12)));
+        findRow.add(javax.swing.Box.createHorizontalStrut(ModernTheme.px(6)));
+        findRow.add(filtersToggle);
         tools.add(findRow, BorderLayout.WEST);
         JLabel legend = new JLabel(Messages.JOURNAL_LEGEND.toString());
         legend.setForeground(ModernTheme.muted());
