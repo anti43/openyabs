@@ -892,10 +892,54 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
      */
     private void setFiltersCollapsed(JComponent cards, boolean collapsed) {
         cards.setVisible(!collapsed);
-        filtersToggle.setText((collapsed ? "\u25B8 " : "\u25BE ") //NOI18N
-                + (collapsed ? Messages.JOURNAL_FILTERS_SHOW : Messages.JOURNAL_FILTERS_HIDE));
+        filtersToggle.setText((collapsed ? Messages.JOURNAL_FILTERS_SHOW : Messages.JOURNAL_FILTERS_HIDE).toString());
+        filtersToggle.setIcon(new ArrowIcon(collapsed));
         revalidate();
         repaint();
+    }
+
+    /**
+     * A small painted arrow (right: collapsed, down: expanded); painted, not a
+     * font glyph, so it shows with every font
+     */
+    private static final class ArrowIcon implements javax.swing.Icon {
+
+        private final boolean right;
+        private final int size = ModernTheme.px(8);
+
+        ArrowIcon(boolean right) {
+            this.right = right;
+        }
+
+        @Override
+        public void paintIcon(Component c, java.awt.Graphics g, int x, int y) {
+            java.awt.Graphics2D g2 = (java.awt.Graphics2D) g.create();
+            g2.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.setColor(c.isEnabled() ? c.getForeground() : ModernTheme.muted());
+            java.awt.geom.Path2D.Float p = new java.awt.geom.Path2D.Float();
+            if (right) {
+                p.moveTo(x + size * 0.25f, y);
+                p.lineTo(x + size * 0.85f, y + size / 2f);
+                p.lineTo(x + size * 0.25f, y + size);
+            } else {
+                p.moveTo(x, y + size * 0.25f);
+                p.lineTo(x + size, y + size * 0.25f);
+                p.lineTo(x + size / 2f, y + size * 0.85f);
+            }
+            p.closePath();
+            g2.fill(p);
+            g2.dispose();
+        }
+
+        @Override
+        public int getIconWidth() {
+            return size;
+        }
+
+        @Override
+        public int getIconHeight() {
+            return size;
+        }
     }
 
     private static JPanel flow(JComponent... cs) {
