@@ -153,9 +153,9 @@ public final class FirstStart extends JFrame {
     private final JTextField cIban = ModernTheme.roomy(new JTextField());
     private final JTextField cBic = ModernTheme.roomy(new JTextField());
     /**
-     * small businesses are the main users: preselected
+     * off by default: only for those exempt from VAT, who choose it
      */
-    private final JCheckBox smallBusiness = new JCheckBox("<html>" + tr(Messages.FIRSTSTART_SMALLBUSINESS) + "</html>", true);
+    private final JCheckBox smallBusiness = new JCheckBox("<html>" + tr(Messages.FIRSTSTART_SMALLBUSINESS) + "</html>", false);
     //folders (local settings of the connection)
     private final JTextField fDocuments = ModernTheme.roomy(new JTextField(defaultDocumentsFolder().getPath()));
     private final JTextField fReceipts = ModernTheme.roomy(new JTextField(mpv5.handler.ExpenseReceipts.DEFAULT_DIR));
