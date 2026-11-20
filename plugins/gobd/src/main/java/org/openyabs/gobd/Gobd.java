@@ -785,16 +785,35 @@ public final class Gobd {
     static final String MONEY_CORE_COLUMNS = "cnumber, dateadded, accountsids, netvalue, taxpercentvalue, brutvalue, description";
 
     static String contactSnapshot(Contact c) {
+        return contactSnapshot(c.__getIDS(), c.__getCNumber(), c.__getCompany(), c.__getPrename(), c.__getCname(), c.__getStreet(),
+                c.__getZip(), c.__getCity(), c.__getCountry(), c.__getTaxnumber());
+    }
+
+    private static String contactSnapshot(Object id, Object number, Object company, Object prename, Object name, Object street,
+            Object zip, Object city, Object country, Object taxNumber) {
         return String.join(" | ",
-                "ID=" + c.__getIDS(),
-                "Nr=" + str(c.__getCNumber()),
-                "Firma=" + str(c.__getCompany()),
-                ("Name=" + str(c.__getPrename()) + " " + str(c.__getCname())).trim(),
-                "Strasse=" + str(c.__getStreet()),
-                "PLZ=" + str(c.__getZip()),
-                "Ort=" + str(c.__getCity()),
-                "Land=" + str(c.__getCountry()),
-                "SteuerNr=" + str(c.__getTaxnumber()));
+                "ID=" + str(id),
+                "Nr=" + str(number),
+                "Firma=" + str(company),
+                ("Name=" + str(prename) + " " + str(name)).trim(),
+                "Strasse=" + str(street),
+                "PLZ=" + str(zip),
+                "Ort=" + str(city),
+                "Land=" + str(country),
+                "SteuerNr=" + str(taxNumber));
+    }
+
+    /**
+     * The snapshot of the contact as it is in the database now, not from the
+     * object cache of YaBS (which can hold an older state of the contact)
+     *
+     * @param contactId
+     * @return the snapshot, null if the contact is not there
+     */
+    String contactSnapshotInDb(long contactId) {
+        Object[] r = q1("SELECT ids, cnumber, company, prename, cname, street, zip, city, country, taxnumber FROM contacts WHERE ids = ?",
+                contactId);
+        return r == null ? null : contactSnapshot(r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9]);
     }
 
     static String contactSnapshot(long contactId) {
@@ -1793,7 +1812,10 @@ public final class Gobd {
                     return Collections.emptyList();
                 }
                 String then = str(lock[5]);
-                String now = contactSnapshot((long) ((Item) record).__getContactsids());
+                String now = contactSnapshotInDb(((Item) record).__getContactsids());
+                if (now == null) {
+                    now = contactSnapshot((long) ((Item) record).__getContactsids());
+                }
                 if (blank(then) || then.equals(now)) {
                     return Collections.emptyList();
                 }
