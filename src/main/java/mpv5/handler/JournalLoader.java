@@ -464,7 +464,7 @@ public final class JournalLoader {
             }
             BigDecimal gross = inv.getGrossAmount();
             BigDecimal net = gross.signum() == 0 ? p.amount
-                    : p.amount.multiply(inv.__getNetvalue().subtract(inv.__getDiscountvalue())).divide(gross, 2, java.math.RoundingMode.HALF_UP);
+                    : p.amount.multiply(inv.getNetAfterDiscount()).divide(gross, 2, java.math.RoundingMode.HALF_UP);
             Entry e = new Entry();
             e.obj = inv;
             e.itemId = inv.__getIDS();

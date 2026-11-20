@@ -912,7 +912,7 @@ public final class Gobd {
                     + " - archiviert wird stattdessen der Datensatz als XML.");
         }
         Path target = GobdUtil.uniquePath(yearDir, safeDocNum, "xml");
-        BigDecimal net = nz(doc.__getNetvalue()).subtract(nz(doc.__getDiscountvalue()));
+        BigDecimal net = doc.getNetAfterDiscount();
         StringBuilder xml = new StringBuilder();
         xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
         xml.append("<GoBDArchivedInvoice xmlns=\"urn:openyabs:gobd:archive:1.0\" standard=\"EN16931\">\n");

@@ -248,7 +248,7 @@ public final class WorkshopPlugin implements YabsExtension {
                 Log.Debug(WorkshopPlugin.class, e);
             }
         }
-        BigDecimal total = item.__getNetvalue();
+        BigDecimal total = item.getNetAfterDiscount();
         return WorkshopValidator.validate(job, v, total, prevMaxKm, Settings.load(), yabs);
     }
 

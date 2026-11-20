@@ -86,4 +86,43 @@ class InvoiceMathTest {
             assertEquals(0, vat.compareTo(t.tax), ctx + " tax " + vat + " vs " + t.tax);
         }
     }
+
+    @Test
+    void itemNetAfterDiscountPlusTaxEqualsGross() {
+        // Mixed 7% and 19% rates with line discounts (3% and 2.5%) and fractional quantities (#219)
+        InvoiceMath.Totals t = InvoiceMath.totals(Arrays.asList(
+                l("1.5", "20.00", "3", "19"),
+                l("2.25", "10.00", "2.5", "19"),
+                l("0.75", "12.15", "0", "7")));
+        mpv5.db.objects.Item item = new mpv5.db.objects.Item();
+        item.setNetvalue(t.amount);
+        item.setDiscountvalue(t.discount);
+        item.setTaxvalue(t.tax);
+
+        assertEquals(0, t.net.compareTo(item.getNetAfterDiscount()),
+                "getNetAfterDiscount() must match EN 16931 TaxBasisTotalAmount");
+        assertEquals(0, item.getGrossAmount().compareTo(item.getNetAfterDiscount().add(item.__getTaxvalue())),
+                "getNetAfterDiscount() + taxvalue must equal getGrossAmount()");
+        assertEquals(0, t.gross.compareTo(item.getGrossAmount()));
+        assertTrue(item.__getDiscountvalue().signum() > 0);
+        assertNotEquals(0, item.__getNetvalue().add(item.__getTaxvalue()).compareTo(item.getGrossAmount()),
+                "pre-discount netvalue + taxvalue intentionally differs from gross when discounted");
+
+        // Document-level discount scenario from #219 (61.61 - 0.99 = 60.62, + 10.99 = 71.61)
+        mpv5.db.objects.Item docDisc = new mpv5.db.objects.Item();
+        docDisc.setNetvalue(new BigDecimal("61.61"));
+        docDisc.setDiscountvalue(new BigDecimal("0.99"));
+        docDisc.setTaxvalue(new BigDecimal("10.99"));
+        assertEquals(new BigDecimal("60.62"), docDisc.getNetAfterDiscount());
+        assertEquals(new BigDecimal("71.61"), docDisc.getGrossAmount());
+        assertEquals(docDisc.getGrossAmount(), docDisc.getNetAfterDiscount().add(docDisc.__getTaxvalue()));
+
+        // Null-safe when discountvalue or taxvalue is null
+        mpv5.db.objects.Item empty = new mpv5.db.objects.Item();
+        empty.setNetvalue(new BigDecimal("100.00"));
+        empty.setDiscountvalue(null);
+        empty.setTaxvalue(null);
+        assertEquals(new BigDecimal("100.00"), empty.getNetAfterDiscount());
+        assertEquals(new BigDecimal("100.00"), empty.getGrossAmount());
+    }
 }

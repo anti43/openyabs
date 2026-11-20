@@ -233,7 +233,7 @@ public final class SmallBusiness {
             String to = "'" + (year + 1) + "-01-01'";
             mpv5.db.common.ReturnValue rv = mpv5.db.common.QueryHandler.instanceOf()
                     .clone(mpv5.db.common.Context.getInvoice()).freeSelectQuery(
-                    "SELECT inttype, SUM(netvalue) FROM items WHERE invisible = 0 AND inttype IN ("
+                    "SELECT inttype, SUM(netvalue - COALESCE(discountvalue, 0)) FROM items WHERE invisible = 0 AND inttype IN ("
                     + mpv5.db.objects.Item.TYPE_INVOICE + "," + mpv5.db.objects.Item.TYPE_CREDIT + ")"
                     + " AND intstatus <> " + mpv5.db.objects.Item.STATUS_CANCELLED
                     + " AND dateadded >= " + from + " AND dateadded < " + to
