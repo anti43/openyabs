@@ -430,6 +430,18 @@ public final class FirstStartSetup {
         PREVIOUS_RELEASE.put("c0b61bc6f77db59cc2b61e1c98c36a08be9653399f30d664cef4d6f9c190453b", "/extra/templates/demo-21.odt");
         PREVIOUS_RELEASE.put("6e09c0997ff6b75c22dd1555fee507c513d644c9fd8feaf72e9dc1779c85921c", "/extra/templates/demo-22.odt");
         PREVIOUS_RELEASE.put("b34ebf1bc103c0871f049feddbaf150868b8da062a156bf57d26969dd48e4716", INVOICE_TEMPLATE);
+        //with the VAT ID and the notes of the VAT categories (#209), before the reference of credit notes (#211)
+        PREVIOUS_RELEASE.put("2966c886f32735048952523a95200e899a018001179e55242d1c51aadc3e21ce", SMALL_BUSINESS_INVOICE_TEMPLATE);
+        PREVIOUS_RELEASE.put("1f169b2817ccf906b70018f7cec207fc9bf943abede238a5c743dc012f80090a", "/extra/templates/demo-00.odt");
+        PREVIOUS_RELEASE.put("87b3cc87e0cec0ef155f4b7ae367620a74fae2532ca29f68333431582af269c7", "/extra/templates/demo-01.odt");
+        PREVIOUS_RELEASE.put("0e77a4df19a73068d9c89eac417cdcc55ae13380e7cc564854ac18a1b760753d", "/extra/templates/demo-02.odt");
+        PREVIOUS_RELEASE.put("bebabcc37fdc64f5c8e37f38a8164b287de290eb7994edc24796d274b5567279", "/extra/templates/demo-03.odt");
+        PREVIOUS_RELEASE.put("3cbf82aa48024c35f6ff82ef1b989f95378cc499102a3866c6eca4ce6fa02e9c", "/extra/templates/demo-04.odt");
+        PREVIOUS_RELEASE.put("e44f064056031146b8cb7a3be438216df2dcbc632c858246d5ba8a52dd769302", "/extra/templates/demo-07.odt");
+        PREVIOUS_RELEASE.put("003cc009e737cebd057be882be32e4aedb5ada9b2845194955fd196d00cd79c8", "/extra/templates/demo-11.odt");
+        PREVIOUS_RELEASE.put("c759d467f9746cc5b72e752f2391ae818f3fb62d880c6012a746c2e60b25e9da", "/extra/templates/demo-20.odt");
+        PREVIOUS_RELEASE.put("86255683f04e5b495f1458878da16c765c5141f6959daaca66af8cbd2aa8eae4", "/extra/templates/demo-21.odt");
+        PREVIOUS_RELEASE.put("baac7a3abb29ef79ba0ffb71f52d26adbd70863956c354cf14b02ca8b0362286", "/extra/templates/demo-22.odt");
     }
 
     static {

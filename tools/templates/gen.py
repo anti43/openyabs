@@ -56,7 +56,8 @@ ITEM_EXTRA = ['item.servicedate', 'item.netvaluef', 'item.taxvaluef', 'item.gros
               'item.skontoamount', 'item.skontopayamount', 'group', 'addedby', 'addedbyfull',
               'item.vatgroupcount', 'item.hasmultipletaxrates', 'item.vatgroup1.rate', 'item.vatgroup1.ratevalue',
               'item.vatgroup1.name', 'item.vatgroup1.netf', 'item.vatgroup1.vatf', 'item.vatgroup1.grossf',
-              'item.vatgroup1.category', 'item.vatgroup1.note', 'item.taxnotes']
+              'item.vatgroup1.category', 'item.vatgroup1.note', 'item.taxnotes',
+              'item.correctedinvoice', 'item.correctedinvoicenumber', 'item.correctedinvoicedate']
 COMPANY = ['companyinfo.' + k for k in ['business', 'firstname', 'name', 'street', 'zip', 'city', 'country', 'phoneprefix', 'phone',
            'fax', 'email', 'account', 'banknumber', 'bankname', 'account1', 'taxnumber', 'taxauthority', 'taxmandant',
            'taxadvsior', 'taxadvjob', 'payterm', 'sepacreditorid', 'vatid']]
@@ -223,6 +224,23 @@ def service_date(c):
 # the kinds of documents which are invoices (show the service date)
 INVOICE_TYPES = (0, 20, 21, 22)
 
+# ---- a credit note corrects or cancels an invoice: "Zu Rechnung" with item.correctedinvoice ("Rechnung Nr. ...
+# vom ...", empty without a reference) below the service date, the heading "Rechnungskorrektur" (in German VAT
+# law a "Gutschrift" is a self-billed invoice, § 14 Abs. 2 Satz 2 UStG), #211
+CREDIT_HEADING = 'Rechnungskorrektur'
+
+def corrected_invoice(c):
+    m = re.search(r'<table:table-row><table:covered-table-cell/><table:table-cell table:style-name="Tabelle2.A1" office:value-type="string"><text:p text:style-name="P9">Leistungsdatum</text:p></table:table-cell>.*?</table:table-row>', c)
+    assert m, 'service date row'
+    row = m.group(0).replace('>Leistungsdatum<', '>Zu Rechnung<', 1).replace('&lt;item.servicedate&gt;', '&lt;item.correctedinvoice&gt;', 1)
+    assert '&lt;item.correctedinvoice&gt;' in row
+    c = c[:m.end()] + row + c[m.end():]
+    t = c.index('<table:table table:name="Tabelle2"')
+    span = re.compile(r'table:number-rows-spanned="(\d+)"')
+    sm = span.search(c, t)
+    assert sm and sm.start() < c.index('</table:table>', t)
+    return c[:sm.start()] + 'table:number-rows-spanned="%d"' % (int(sm.group(1)) + 1) + c[sm.end():]
+
 LOGO = ('<text:p text:style-name="P23"><draw:frame draw:style-name="frLogo" draw:name="Logo" text:anchor-type="as-char" svg:width="4.2cm" svg:height="1.4cm" draw:z-index="3">'
         '<draw:image xlink:href="Pictures/logo.png" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/></draw:frame></text:p>')
 
@@ -367,12 +385,14 @@ def make(fname, title, kind, groups, prefix=None, cprefix=None, blocks=None, tot
             c = vat_id(c)
         if kind in ('item', 'smallbusiness') and tid in INVOICE_TYPES:
             c = service_date(c)
+        if tid == 20:
+            c = corrected_invoice(c)
     if prefix:
         c = c.replace('&lt;item.contact.', '&lt;' + cprefix).replace('&lt;item.', '&lt;' + prefix)
     c = c.replace('</office:automatic-styles>', STYLES + BSTYLES + '</office:automatic-styles>', 1)
     assert kind == 'journal' or '<text:p text:style-name="P23">Firmenlogo</text:p>' in c
     c = c.replace('<text:p text:style-name="P23">Firmenlogo</text:p>', LOGO, 1)
-    c = c.replace('<text:span text:style-name="T6">Rechnung </text:span>', '<text:span text:style-name="T6">%s </text:span>' % esc(title), 1)
+    c = c.replace('<text:span text:style-name="T6">Rechnung </text:span>', '<text:span text:style-name="T6">%s </text:span>' % esc(CREDIT_HEADING if tid == 20 else title), 1)
     end = c.index('</office:text>')
     if kind in ('item', 'journal', 'positions', 'smallbusiness'):
         body_end = c[:end]
@@ -411,7 +431,7 @@ positions = ['item.xtable1 (Positionstabelle: Tabelle mit dem Namen xtable1)']
 # type, title, label of the total
 TYPES = [
     (0, 'Rechnung', 'Rechnungsbetrag'), (2, 'Angebot', 'Angebotssumme'), (1, 'Auftrag', 'Auftragssumme'),
-    (3, 'Lieferschein', 'Gesamtbetrag'), (4, 'Auftragsbestätigung', 'Auftragssumme'), (20, 'Gutschrift', 'Gutschriftsbetrag'),
+    (3, 'Lieferschein', 'Gesamtbetrag'), (4, 'Auftragsbestätigung', 'Auftragssumme'), (20, 'Gutschrift', 'Korrekturbetrag'),
     (21, 'Abschlagsrechnung', 'Rechnungsbetrag'), (22, 'Anzahlungsrechnung', 'Rechnungsbetrag'), (11, 'Vertrag', 'Gesamtbetrag'),
 ]
 made = []
