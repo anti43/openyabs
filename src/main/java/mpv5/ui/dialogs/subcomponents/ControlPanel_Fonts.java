@@ -286,6 +286,34 @@ public class ControlPanel_Fonts extends javax.swing.JPanel implements ControlApp
         add(mpv5.ui.modern.Applets.page(null, 300, card), java.awt.BorderLayout.CENTER);
         mpv5.ui.modern.PrimaryButton save = new mpv5.ui.modern.PrimaryButton(jButton1.getText(), "/images/16/filesave.png");
         save.addActionListener(e -> jButton1.doClick());
-        actions = mpv5.ui.modern.Applets.actionBar(new javax.swing.JComponent[]{}, new javax.swing.JComponent[]{jButton2, save});
+        //back to the default font and 100 % zoom (e.g. after a font too large for the views)
+        javax.swing.JButton standard = new javax.swing.JButton(Messages.FONTS_RESET.toString());
+        standard.setToolTipText(Messages.FONTS_RESET_TIP.toString());
+        standard.addActionListener(e -> resetToDefault());
+        actions = mpv5.ui.modern.Applets.actionBar(new javax.swing.JComponent[]{standard}, new javax.swing.JComponent[]{jButton2, save});
+    }
+
+    /**
+     * Sets the default font and 100 % zoom, applies and saves them
+     */
+    private void resetToDefault() {
+        String def = LocalSettings.getDefault(LocalSettings.DEFAULT_FONT);
+        if (def == null) {
+            return;
+        }
+        LocalSettings.setProperty(LocalSettings.DEFAULT_FONT, def);
+        LocalSettings.setProperty(mpv5.ui.modern.Zoom.SETTING, "1.0");
+        jFontChooser1.setSelectedFont(Font.decode(def));
+        font.setText(getFontString(def));
+        mpv5.ui.modern.Zoom.applyStoredFont();
+        for (java.awt.Window w : java.awt.Window.getWindows()) {
+            if (w.isDisplayable()) {
+                javax.swing.SwingUtilities.updateComponentTreeUI(w);
+                w.validate();
+                w.repaint();
+            }
+        }
+        LocalSettings.save();
+        Popup.notice(Messages.FONTS_SAVED_RESTART);
     }
 }

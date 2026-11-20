@@ -158,7 +158,11 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
      * the table model columns (the journal template refers to them)
      */
     private static final int COL_EFFECT = 15;
-    private static final int MIN_WIDTH = 980;
+    /**
+     * Narrowest width (in pixels, not scaled with the font: the filter lines
+     * wrap) before the view scrolls sideways; the sums need their own width
+     */
+    private static final int MIN_WIDTH = 760;
     private static final int MIN_HEIGHT = 620;
 
     public static JComponent instanceOf() {
@@ -225,9 +229,9 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
      * the components of the column of offers and orders: shown when they are
      * ticked
      */
-    private final List<Component> othersColumn = new ArrayList<Component>();
     private final JLabel taxRates = new JLabel(" ");
     private final JLabel exportResult = new JLabel(" ");
+    private Card sums;
     private final mpv5.ui.modern.PrimaryButton filtersToggle = new mpv5.ui.modern.PrimaryButton(" ", null);
     private File exportedFile;
     //contact overview
@@ -328,8 +332,9 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
     }
 
     /**
-     * The sums in a compact grid: one column each for income, expenses,
-     * result, open items and volume, three rows (label left, value right)
+     * The sums: one block each for income, expenses, result, open items,
+     * volume and offers/orders, three rows (label left, value right). The
+     * blocks stand in one row, in two when the view is too narrow.
      */
     private JPanel sumsGrid() {
         JLabel[][] cols = {
@@ -339,10 +344,12 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
             {openReceivables, openPayables, volumeDiscount},
             {volumeNetto, taxVolume, volumeBrutto},
             {openOffers, openOrders, openOthersGross}};
-        JPanel g = new JPanel(new GridBagLayout());
-        g.setOpaque(false);
-        int gap = ModernTheme.px(18);
+        sumsPanel = new JPanel(new GridBagLayout());
+        sumsPanel.setOpaque(false);
+        sumBlocks = new JPanel[cols.length];
         for (int c = 0; c < cols.length; c++) {
+            JPanel b = new JPanel(new GridBagLayout());
+            b.setOpaque(false);
             for (int r = 0; r < cols[c].length; r++) {
                 JLabel value = cols[c][r];
                 JLabel name = new JLabel(String.valueOf(value.getClientProperty("label")));
@@ -350,42 +357,115 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
                 name.setFont(ModernTheme.font(-1, Font.PLAIN));
                 GridBagConstraints gc = new GridBagConstraints();
                 gc.gridy = r;
-                gc.gridx = c * 2;
+                gc.gridx = 0;
                 gc.anchor = GridBagConstraints.WEST;
-                gc.insets = new Insets(0, c == 0 ? 0 : gap, 0, ModernTheme.px(8));
-                g.add(name, gc);
-                gc.gridx = c * 2 + 1;
+                gc.insets = new Insets(0, 0, 0, ModernTheme.px(8));
+                b.add(name, gc);
+                gc.gridx = 1;
                 gc.anchor = GridBagConstraints.EAST;
                 gc.weightx = 1;
                 gc.fill = GridBagConstraints.HORIZONTAL;
                 gc.insets = new Insets(0, 0, 0, 0);
-                g.add(value, gc);
-                if (c == cols.length - 1) {
-                    othersColumn.add(name);
-                    othersColumn.add(value);
-                }
+                b.add(value, gc);
             }
-            //a thin line between the columns
-            if (c > 0) {
-                javax.swing.JSeparator s = new javax.swing.JSeparator(javax.swing.SwingConstants.VERTICAL);
-                s.setForeground(ModernTheme.border());
-                GridBagConstraints gc = new GridBagConstraints();
-                gc.gridx = c * 2;
-                gc.gridy = 0;
-                gc.gridheight = 3;
-                gc.fill = GridBagConstraints.VERTICAL;
-                gc.anchor = GridBagConstraints.WEST;
-                gc.insets = new Insets(0, gap / 2, 0, 0);
-                g.add(s, gc);
-                if (c == cols.length - 1) {
-                    othersColumn.add(s);
-                }
+            sumBlocks[c] = b;
+            sumsPanel.add(b);
+        }
+        //offers and orders: only when shown
+        sumBlocks[cols.length - 1].setVisible(false);
+        arrangeSums(cols.length);
+        return sumsPanel;
+    }
+
+    private JPanel sumsPanel;
+    private JPanel[] sumBlocks;
+    private int sumsPerRow;
+
+    /**
+     * Places the visible sum blocks, perRow in a row, a thin line between
+     * the blocks of a row
+     */
+    private void arrangeSums(int perRow) {
+        sumsPerRow = perRow;
+        GridBagLayout l = (GridBagLayout) sumsPanel.getLayout();
+        int gap = ModernTheme.px(18);
+        int k = 0;
+        for (JPanel b : sumBlocks) {
+            if (!b.isVisible()) {
+                continue;
+            }
+            GridBagConstraints gc = new GridBagConstraints();
+            gc.gridx = k % perRow;
+            gc.gridy = k / perRow;
+            gc.weightx = 1;
+            gc.fill = GridBagConstraints.HORIZONTAL;
+            gc.anchor = GridBagConstraints.NORTHWEST;
+            gc.insets = new Insets(gc.gridy == 0 ? 0 : ModernTheme.px(8), 0, 0, 0);
+            l.setConstraints(b, gc);
+            //gap | line | gap between the blocks of a row
+            b.setBorder(gc.gridx == 0 ? BorderFactory.createEmptyBorder(0, 0, 0, gap / 2)
+                    : BorderFactory.createCompoundBorder(
+                            BorderFactory.createMatteBorder(0, 1, 0, 0, ModernTheme.border()),
+                            BorderFactory.createEmptyBorder(0, gap / 2, 0, gap / 2)));
+            k++;
+        }
+        sumsPanel.invalidate();
+    }
+
+    /**
+     * @param perRow
+     * @return the width of the widest row of the sums with perRow blocks in
+     * a row
+     */
+    private int sumsWidth(int perRow) {
+        int widest = 0;
+        int row = 0;
+        int k = 0;
+        int half = ModernTheme.px(18) / 2;
+        for (JPanel b : sumBlocks) {
+            if (!b.isVisible()) {
+                continue;
+            }
+            if (k % perRow == 0) {
+                row = 0;
+            }
+            //the width without its current border, plus the border it gets in that place
+            Insets i = b.getInsets();
+            row += b.getPreferredSize().width - i.left - i.right + (k % perRow == 0 ? half : 1 + 2 * half);
+            widest = Math.max(widest, row);
+            k++;
+        }
+        return widest;
+    }
+
+    private int visibleSumBlocks() {
+        int n = 0;
+        for (JPanel b : sumBlocks) {
+            n += b.isVisible() ? 1 : 0;
+        }
+        return n;
+    }
+
+    /**
+     * The sums in one row if they fit the width of the view, else in two
+     */
+    @Override
+    public void doLayout() {
+        if (sumsPanel != null && sums != null) {
+            Insets i = getInsets();
+            Insets ci = sums.getInsets();
+            int avail = getWidth() - i.left - i.right - ci.left - ci.right;
+            int n = Math.max(1, visibleSumBlocks());
+            int per = sumsWidth(n) <= avail ? n : (n + 1) / 2;
+            if (per != sumsPerRow) {
+                arrangeSums(per);
+                javax.swing.SwingUtilities.invokeLater(() -> {
+                    revalidate();
+                    repaint();
+                });
             }
         }
-        for (Component x : othersColumn) {
-            x.setVisible(false);
-        }
-        return g;
+        super.doLayout();
     }
 
     // <editor-fold defaultstate="collapsed" desc="Filters">
@@ -710,21 +790,18 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         for (JComponent c : new JComponent[]{view, incomeStatus, expenseStatus}) {
             ModernTheme.roomyCombo(c);
         }
-        JPanel chips = new JPanel(new mpv5.ui.modern.WrapLayout(FlowLayout.LEFT, ModernTheme.px(6), 0));
-        chips.setOpaque(false);
-        for (ChipToggle c : periodChips) {
-            chips.add(c);
-        }
         //period, shortcuts, view and user in one line (wraps in narrow windows)
-        timeframeChooser1.setPreferredSize(new Dimension(ModernTheme.px(250), timeframeChooser1.getPreferredSize().height));
+        //the date fields take the size of their font (the form sets fixed sizes, too small when zoomed)
+        naturalSize(timeframeChooser1);
         JPanel line = new JPanel(new mpv5.ui.modern.WrapLayout(FlowLayout.LEFT, ModernTheme.px(6), ModernTheme.px(2)));
         line.setOpaque(false);
-        line.add(ModernTheme.fieldLabel(Messages.JOURNAL_PERIOD.toString()));
-        line.add(timeframeChooser1);
-        line.add(chips);
-        line.add(javax.swing.Box.createHorizontalStrut(ModernTheme.px(10)));
-        line.add(ModernTheme.fieldLabel(Messages.JOURNAL_VIEW.toString()));
-        line.add(view);
+        //label and field stay together when the line wraps
+        line.add(group(ModernTheme.fieldLabel(Messages.JOURNAL_PERIOD.toString()), timeframeChooser1));
+        //the chips directly in the line (a wrapping panel inside a wrapping line keeps a stale width)
+        for (ChipToggle c : periodChips) {
+            line.add(c);
+        }
+        line.add(group(ModernTheme.fieldLabel(Messages.JOURNAL_VIEW.toString()), view));
         //export and reload: at the right of the filter line
         JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT, ModernTheme.px(8), 0));
         buttons.setOpaque(false);
@@ -821,7 +898,12 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         JLabel legend = new JLabel(Messages.JOURNAL_LEGEND.toString());
         legend.setForeground(ModernTheme.muted());
         legend.setFont(ModernTheme.font(-1, Font.PLAIN));
-        tools.add(legend, BorderLayout.EAST);
+        //right aligned; shortened ("...") when there is no room
+        legend.setHorizontalAlignment(JLabel.RIGHT);
+        legend.setToolTipText(legend.getText());
+        legend.setMinimumSize(new Dimension(0, 0));
+        legend.setPreferredSize(new Dimension(0, legend.getPreferredSize().height));
+        tools.add(legend, BorderLayout.CENTER);
         JPanel table = new JPanel(new BorderLayout(0, ModernTheme.px(6)));
         table.setOpaque(false);
         table.add(tools, BorderLayout.NORTH);
@@ -845,7 +927,7 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         info.setOpaque(false);
         info.add(taxRates, BorderLayout.CENTER);
         info.add(exportResult, BorderLayout.EAST);
-        Card sums = new Card(null)
+        sums = new Card(null)
                 .addFull(sumsGrid())
                 .addFull(info);
         //compact: less padding than the filter cards
@@ -947,6 +1029,51 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         }
     }
 
+    /**
+     * @return the narrowest width of the view: the fixed minimum or the
+     * width the sums need (they grow with the font)
+     */
+    private int minWidth() {
+        int w = MIN_WIDTH;
+        if (sums != null) {
+            Insets i = getInsets();
+            Insets ci = sums.getInsets();
+            //the sums in two rows
+            w = Math.max(w, sumsWidth(Math.max(1, (visibleSumBlocks() + 1) / 2)) + ci.left + ci.right + i.left + i.right);
+        }
+        return w;
+    }
+
+    /**
+     * Removes the fixed sizes of the date fields (and their spinners) of a
+     * form, so they follow the font
+     */
+    private static void naturalSize(java.awt.Container c) {
+        for (Component x : c.getComponents()) {
+            if (x instanceof mpv5.ui.beans.DateChooser || x instanceof javax.swing.JSpinner) {
+                ((JComponent) x).setPreferredSize(null);
+                ((JComponent) x).setMinimumSize(null);
+            }
+            if (x instanceof java.awt.Container && !(x instanceof javax.swing.JSpinner)) {
+                naturalSize((java.awt.Container) x);
+            }
+        }
+        if (c instanceof JComponent) {
+            ((JComponent) c).setPreferredSize(null);
+        }
+    }
+
+    /**
+     * A label and its field in one row (wrap together)
+     */
+    private static JPanel group(JComponent label, JComponent field) {
+        JPanel p = new JPanel(new FlowLayout(FlowLayout.LEFT, ModernTheme.px(6), 0));
+        p.setOpaque(false);
+        p.add(label);
+        p.add(field);
+        return p;
+    }
+
     private static JPanel flow(JComponent... cs) {
         JPanel p = new JPanel(new mpv5.ui.modern.WrapLayout(FlowLayout.LEFT, ModernTheme.px(4), 0));
         p.setOpaque(false);
@@ -1000,7 +1127,7 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
 
     @Override
     public boolean getScrollableTracksViewportWidth() {
-        return getParent() instanceof JViewport && getParent().getWidth() >= ModernTheme.px(MIN_WIDTH);
+        return getParent() instanceof JViewport && getParent().getWidth() >= minWidth();
     }
 
     @Override
@@ -1011,7 +1138,7 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
     @Override
     public Dimension getPreferredSize() {
         Dimension d = super.getPreferredSize();
-        return new Dimension(Math.min(d.width, ModernTheme.px(MIN_WIDTH)), d.height);
+        return new Dimension(Math.min(d.width, minWidth()), d.height);
     }
     // </editor-fold>
 
@@ -1214,8 +1341,10 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         openOrders.setText(FormatNumber.formatDezimal(t.openOrdersNet));
         openOthersGross.setText(FormatNumber.formatDezimal(t.openOffersGross.add(t.openOrdersGross)));
         boolean others = incOffers.isSelected() || incOrders.isSelected();
-        for (Component c : othersColumn) {
-            c.setVisible(others);
+        if (sumBlocks[sumBlocks.length - 1].isVisible() != others) {
+            sumBlocks[sumBlocks.length - 1].setVisible(others);
+            sumsPerRow = 0;
+            revalidate();
         }
         taxRates.setText(rates(Messages.JOURNAL_TAX_RATES_INCOME.toString(), t.incomeByRate, l.labels)
                 + "     " + rates(Messages.JOURNAL_TAX_RATES_EXPENSES.toString(), t.expensesByRate, l.labels));

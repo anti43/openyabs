@@ -597,6 +597,8 @@ public enum Messages {
     LOCALE_EXAMPLE_AMOUNT("Amount"),
     LOCALE_EXAMPLE_DATE("Date"),
     FONTS_RESTART("Restart YaBS after saving: Apply changes the open windows right away, but all windows and dialogs use the font only after a restart. The font is saved for this computer."),
+    FONTS_RESET("Default font"),
+    FONTS_RESET_TIP("Back to the default font and 100 % zoom (saved; restart YaBS afterwards)"),
     FONTS_SAVED_RESTART("Font saved for this computer. Please restart YaBS so that all windows use it."),
     FOLDER_BASE_SET("Documents (PDF, ODT, e-invoices) are saved here, in the subfolders of the file name defaults (user properties)."),
     FOLDER_BASE_EMPTY("Not set: documents are saved in the folder chosen last - now: %s"),
