@@ -47,13 +47,14 @@ class DeletedInvoiceNumberTest {
         assertEquals("RE-" + y + "-00002", second.__getCnumber());
         assertFalse(Privacy.isIssuedInvoice(second), "a draft");
 
-        //the last invoice is deleted: in the trash as "!RE-...-00002"
+        //the last invoice is deleted: in the trash as "!RE-...-00002" (delete() resets the id of the object)
+        int secondId = second.__getIDS();
         assertTrue(second.delete());
         Item next = save(Item.TYPE_INVOICE, c.__getIDS());
         assertEquals("RE-" + y + "-00003", next.__getCnumber(), "the number of the deleted invoice is not used again");
         int[] used = ItemService.invoiceNumberUsedBy("RE-" + y + "-00002", -1);
         assertNotNull(used, "the number editor sees the deleted one");
-        assertEquals(second.__getIDS(), used[1]);
+        assertEquals(secondId, used[1]);
 
         //issued: finished (or printed, paid)
         next.setIntstatus(Item.STATUS_FINISHED);
