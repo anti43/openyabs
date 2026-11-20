@@ -69,8 +69,23 @@ public class Popup {
         }
     }
 
+    /**
+     * System property: no message boxes at all, as with {@link #silently}
+     * (the automated tests, which run with a virtual display but nobody to
+     * answer a dialog)
+     */
+    public static final String NO_MESSAGE_BOXES = "yabs.nomessageboxes";
+
+    /**
+     * @return true if no message box may be shown now: on this thread
+     * ({@link #silently}) or at all ({@link #NO_MESSAGE_BOXES})
+     */
+    public static boolean isSilent() {
+        return SILENT.get() || Boolean.getBoolean(NO_MESSAGE_BOXES);
+    }
+
     private static boolean silent(Object text) {
-        if (!SILENT.get()) {
+        if (!isSilent()) {
             return false;
         }
         mpv5.logging.Log.Debug(Popup.class, "(no message box) " + text);

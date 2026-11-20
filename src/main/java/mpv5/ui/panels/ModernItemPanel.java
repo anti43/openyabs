@@ -1508,6 +1508,11 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
             } catch (Exception e) {
                 refinvoiceids_ = 0;
             }
+        } else {
+            //only credit notes refer to an invoice; never null (setRefinvoiceids takes an int:
+            //null made every save of another document log an IllegalArgumentException)
+            Integer stored = dataOwner == null ? null : dataOwner.__getRefinvoiceids();
+            refinvoiceids_ = stored == null ? 0 : stored;
         }
         return true;
     }

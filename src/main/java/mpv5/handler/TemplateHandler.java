@@ -225,13 +225,15 @@ public class TemplateHandler {
                 return candidates.isEmpty() ? fallback : candidates.get(0).__getIDS();
             }
             final Template[] answer = new Template[1];
+            //no question without somebody to answer it (as without a display: the last template)
+            final boolean mayAsk = !mpv5.ui.dialogs.Popup.isSilent();
             final String question = String.format(Messages.TEMPLATE_CHOOSE.toString(), getName(type));
             Runnable ask = new Runnable() {
                 @Override
                 public void run() {
                     if (chooser != null) {
                         answer[0] = chooser.apply(candidates);
-                    } else if (!java.awt.GraphicsEnvironment.isHeadless()) {
+                    } else if (mayAsk && !java.awt.GraphicsEnvironment.isHeadless()) {
                         Object o = javax.swing.JOptionPane.showInputDialog(mpv5.ui.dialogs.Popup.identifier, question,
                                 Messages.TEMPLATE_CHOOSE_TITLE.toString(), javax.swing.JOptionPane.QUESTION_MESSAGE, null,
                                 candidates.toArray(), candidates.get(candidates.size() - 1));

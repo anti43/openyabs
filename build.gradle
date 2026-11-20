@@ -30,6 +30,11 @@ dependencies {
 
 test {
     useJUnitPlatform()
+    // a test waiting for a dialog nobody answers (CI runs the GUI tests under xvfb) fails
+    // after 10 minutes instead of hanging the build
+    systemProperty 'junit.jupiter.execution.timeout.default', '10m'
+    // no message boxes nobody answers (mpv5.ui.dialogs.Popup#NO_MESSAGE_BOXES)
+    systemProperty 'yabs.nomessageboxes', 'true'
     // the application keeps its database connection in static fields: one JVM per test class
     forkEvery = 1
 }
