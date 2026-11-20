@@ -603,15 +603,16 @@ public final class JournalAdviserPackage {
         b.append("\r\n");
         for (Entry e : entries) {
             String contact = (e.contact + " " + e.prename).trim();
-            int sign = e.effect.signum();
+            boolean expenseSide = e.type == Constants.TYPE_EXPENSE || e.type == Constants.TYPE_CREDIT;
             for (Map.Entry<BigDecimal, BigDecimal[]> r : ratesOf(e).entrySet()) {
                 BigDecimal net = r.getValue()[0];
                 BigDecimal tax = r.getValue()[1];
+                BigDecimal effect = !e.counted ? BigDecimal.ZERO : expenseSide ? net.negate() : net;
                 Object[] row = {date(e.date), e.number, typeName(e), side(e), statusName(e),
                     e.counted ? Messages.JOURNAL_PKG_YES.toString() : Messages.JOURNAL_PKG_NO.toString(),
                     contact, e.group, e.account, e.description,
                     r.getKey() == null ? "" : r.getKey().toPlainString().replace('.', ','), rateName(r.getKey()),
-                    amount(net), amount(tax), amount(net.add(tax)), amount(sign == 0 ? BigDecimal.ZERO : sign < 0 ? net.negate() : net)};
+                    amount(net), amount(tax), amount(net.add(tax)), amount(effect)};
                 for (int i = 0; i < row.length; i++) {
                     b.append(i > 0 ? ";" : "").append(cell(row[i]));
                 }

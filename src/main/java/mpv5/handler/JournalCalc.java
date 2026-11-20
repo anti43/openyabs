@@ -319,7 +319,16 @@ public final class JournalCalc {
         if (lines == null || lines.isEmpty()) {
             return r;
         }
-        List<BigDecimal> keys = new java.util.ArrayList<BigDecimal>(lines.keySet());
+        List<BigDecimal> keys = new java.util.ArrayList<BigDecimal>();
+        for (Map.Entry<BigDecimal, BigDecimal[]> entry : lines.entrySet()) {
+            BigDecimal[] v = entry.getValue();
+            if (v[0].signum() != 0 || v[1].signum() != 0) {
+                keys.add(entry.getKey());
+            }
+        }
+        if (keys.isEmpty()) {
+            keys.addAll(lines.keySet());
+        }
         List<BigDecimal> nw = new java.util.ArrayList<BigDecimal>();
         List<BigDecimal> tw = new java.util.ArrayList<BigDecimal>();
         for (BigDecimal k : keys) {
