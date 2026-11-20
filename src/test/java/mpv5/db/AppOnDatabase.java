@@ -315,10 +315,15 @@ abstract class AppOnDatabase {
             //search index and trash bin (database triggers), restore
             Object[][] index = QueryHandler.instanceOf().clone("searchindex").select("dbidentity, rowid", new String[]{"dbidentity", "contacts", "'"});
             assertTrue(index.length > 0, "search index");
-            assertTrue(c2.delete());
+            assertTrue(!c2.delete(), "contact with issued invoice must not be deleted (#220)");
+            Contact trashable = (Contact) DatabaseObject.getObject(Context.getContact());
+            trashable.setCname("Trash Test");
+            trashable.setDateadded(new Date());
+            assertTrue(trashable.save(true));
+            assertTrue(trashable.delete());
             Object[][] trash = QueryHandler.instanceOf().clone("trashbin").select("cname, rowid", new String[]{"deleteme", "1", ""});
             assertTrue(Arrays.stream(trash).anyMatch(r -> "contacts".equalsIgnoreCase(String.valueOf(r[0]))));
-            assertTrue(c2.undelete());
+            assertTrue(trashable.undelete());
 
             //what YaBS saves on close: user properties (UPDATE, else INSERT) and the layout (binary value property)
             admin.getProperties().changeProperty("order.alert.days", "7");

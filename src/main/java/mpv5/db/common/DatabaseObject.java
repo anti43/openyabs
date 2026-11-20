@@ -1132,7 +1132,11 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                 ((Triggerable) this).triggerOnDelete();
             }
 
-            ValueProperty.deleteProperty(this, null);
+            //in the trash the record keeps its properties (restored with it); they are deleted
+            //when the trash is emptied (TrashHandler.delete)
+            if (!Context.getTrashableContexts().contains(getContext())) {
+                ValueProperty.deleteProperty(this, null);
+            }
             if (result && message != null) {
                 mpv5.handler.Activity.record(this, mpv5.handler.Activity.Kind.DELETED, message);
             }

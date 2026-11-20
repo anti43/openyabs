@@ -39,8 +39,7 @@ import mpv5.utils.numberformat.FormatNumber;
  * trash with it (can be restored), what is deleted permanently, and what stays.
  * <p>
  * Mirrors the delete logic of the records: {@link Contact#delete()} trashes
- * the offers, orders, invoices, deposits, part payments and credit notes of
- * the contact; {@link Item#delete()} trashes the positions;
+ * the documents of the contact which need not be kept ({@link Privacy}); {@link Item#delete()} trashes the positions;
  * {@link Product#delete()} deletes the staggered prices; every delete
  * removes the stored properties of the record
  * ({@link ValueProperty#deleteProperty}).
@@ -118,6 +117,12 @@ public final class DeletionPreview {
     private static void contact(Contact c, List<Group> groups) {
         List<Integer> allItems = new ArrayList<Integer>();
         int itemProperties = 0;
+        //only the documents which need not be kept go to the trash with the contact (Privacy)
+        java.util.Set<Integer> deletable = new java.util.HashSet<Integer>();
+        Privacy.Report report = Privacy.check(c);
+        for (Privacy.Document d : report.deletable) {
+            deletable.add(d.id);
+        }
         for (int type : CONTACT_ITEM_TYPES) {
             Context ctx = contextOf(type);
             Object[][] data;
@@ -128,6 +133,17 @@ public final class DeletionPreview {
                 continue;
             }
             if (data == null || data.length == 0) {
+                continue;
+            }
+            List<Object[]> trashed = new ArrayList<Object[]>();
+            for (Object[] row : data) {
+                Integer id = toInt(row[0]);
+                if (id != null && deletable.contains(id)) {
+                    trashed.add(row);
+                }
+            }
+            data = trashed.toArray(new Object[0][]);
+            if (data.length == 0) {
                 continue;
             }
             Group g = new Group(Effect.TRASH, String.format(Messages.DELETE_PREVIEW_COUNT.toString(), data.length, Item.getTypeString(type)));
@@ -152,6 +168,7 @@ public final class DeletionPreview {
         properties(groups, propertyNames(c), itemProperties);
 
         List<String> kept = new ArrayList<String>();
+        keptCount(kept, Messages.DELETE_PREVIEW_RETAINED, report.retained.size());
         keptCount(kept, Messages.DELETE_PREVIEW_ADDRESSES, count(Context.getAddress(),
                 "SELECT COUNT(*) FROM %%tablename%% WHERE contactsids = " + c.__getIDS(), true));
         keptCount(kept, Messages.DELETE_PREVIEW_FILES, count(Context.getFilesToContacts(),

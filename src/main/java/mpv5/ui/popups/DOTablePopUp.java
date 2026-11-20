@@ -83,7 +83,13 @@ public class DOTablePopUp extends JPopupMenu {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    DatabaseObject.getObject(c, Integer.valueOf(to.getModel().getValueAt(to.convertRowIndexToModel(to.getSelectedRow()), 0).toString())).delete();
+                    DatabaseObject o = DatabaseObject.getObject(c, Integer.valueOf(to.getModel().getValueAt(to.convertRowIndexToModel(to.getSelectedRow()), 0).toString()));
+                    if (o instanceof mpv5.db.objects.Contact) {
+                        //documents which must be kept: block instead of delete (GDPR)
+                        mpv5.ui.dialogs.ContactPrivacyDialog.delete(to, (mpv5.db.objects.Contact) o);
+                    } else {
+                        o.delete();
+                    }
                 } catch (NodataFoundException ex) {
                     Log.Debug(DOTablePopUp.class, ex);
                 }

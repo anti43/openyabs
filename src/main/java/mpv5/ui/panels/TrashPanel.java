@@ -190,6 +190,11 @@ public class TrashPanel extends JPanel {
         empty.addActionListener(e -> emptyTrash());
         delete.addActionListener(e -> deleteSelected());
         restore.addActionListener(e -> restoreSelected());
+        //blocked contacts (GDPR) whose retention period is over: delete them for good
+        JButton expired = new JButton(Messages.PRIVACY_EXPIRED_BUTTON.toString());
+        expired.setToolTipText(Messages.PRIVACY_EXPIRED_HINT.toString());
+        expired.addActionListener(e -> deleteExpired());
+        actions.add(expired);
         actions.add(empty);
         actions.add(delete);
         actions.add(restore);
@@ -346,6 +351,7 @@ public class TrashPanel extends JPanel {
             }
         }
         setData();
+        showKept();
     }
 
     private void emptyTrash() {
@@ -360,6 +366,46 @@ public class TrashPanel extends JPanel {
             }
         }
         setData();
+        showKept();
+    }
+
+    /**
+     * Records which were not deleted because they must be kept
+     * (retention of invoices, GDPR blocking instead of deletion)
+     */
+    /**
+     * The blocked contacts whose documents need not be kept any more: deleted
+     * for good with all documents after asking (GDPR Art. 17)
+     */
+    private void deleteExpired() {
+        java.util.List<mpv5.db.objects.Contact> l = mpv5.handler.Privacy.expired();
+        if (l.isEmpty()) {
+            Popup.notice(Messages.PRIVACY_EXPIRED_NONE.toString());
+            return;
+        }
+        StringBuilder b = new StringBuilder();
+        for (mpv5.db.objects.Contact c : l) {
+            b.append("\n - ").append(c.__getCNumber()).append(' ').append(c.__getCname());
+        }
+        if (!Popup.Y_N_dialog(String.format(Messages.PRIVACY_EXPIRED_ASK.toString(), l.size()) + b,
+                Messages.PRIVACY_EXPIRED_BUTTON.toString())) {
+            return;
+        }
+        int done = 0;
+        for (mpv5.db.objects.Contact c : l) {
+            if (mpv5.handler.Privacy.deleteFinally(c)) {
+                done++;
+            }
+        }
+        mpv5.YabsViewProxy.instance().addMessage(String.format(Messages.PRIVACY_EXPIRED_DONE.toString(), done));
+        setData();
+    }
+
+    private void showKept() {
+        java.util.List<String> kept = TrashHandler.takeRefused();
+        if (!kept.isEmpty()) {
+            Popup.notice(Messages.PRIVACY_TRASH_KEPT + "\n - " + String.join("\n - ", kept));
+        }
     }
 
     private void open() {

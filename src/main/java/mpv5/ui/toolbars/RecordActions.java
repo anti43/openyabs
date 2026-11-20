@@ -251,6 +251,23 @@ public final class RecordActions {
      */
     public static void delete(DataPanel view) {
         DatabaseObject dato = view.getDataOwner();
+        if (dato instanceof mpv5.db.objects.Contact && dato.isExisting()) {
+            //a contact with documents which must be kept is blocked instead (GDPR, retention)
+            mpv5.ui.dialogs.ContactPrivacyDialog.Result r = mpv5.ui.dialogs.ContactPrivacyDialog.delete(
+                    view instanceof java.awt.Component ? (java.awt.Component) view : null, (mpv5.db.objects.Contact) dato);
+            if (r == mpv5.ui.dialogs.ContactPrivacyDialog.Result.DELETED) {
+                view.refresh();
+                view.setDataOwner(dato.getObject(dato.getContext()), true);
+            } else if (r == mpv5.ui.dialogs.ContactPrivacyDialog.Result.BLOCKED) {
+                try {
+                    view.setDataOwner(DatabaseObject.getObject(dato.getContext(), dato.__getIDS(), true), true);
+                } catch (Exception e) {
+                    Log.Debug(RecordActions.class, e);
+                }
+                view.refresh();
+            }
+            return;
+        }
         //lists what is deleted with the record before asking
         if (dato.isExisting() && mpv5.ui.dialogs.DeleteConfirmDialog.confirm(
                 view instanceof java.awt.Component ? (java.awt.Component) view : null, dato)) {
