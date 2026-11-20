@@ -132,12 +132,11 @@ public class ItemPositionsTable extends JPanel {
         buttons.add(downButton);
 
         //the actions of the document right of the position buttons, directly above the list
-        JPanel bar = new JPanel(new BorderLayout(ModernTheme.px(12), 0));
         bar.setOpaque(false);
         bar.add(buttons, BorderLayout.WEST);
         actions.setOpaque(false);
         bar.add(actions, BorderLayout.CENTER);
-        bar.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, ModernTheme.px(6), 0));
+        bar.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, ModernTheme.px(4), 0));
 
         JScrollPane scroll = new JScrollPane(itemtable);
         scroll.getViewport().setBackground(ModernTheme.cardBackground());
@@ -147,7 +146,22 @@ public class ItemPositionsTable extends JPanel {
         setDefaultPositions();
     }
 
-    private final JPanel actions = new JPanel(new mpv5.ui.modern.WrapLayout(FlowLayout.RIGHT, ModernTheme.px(4), 0));
+    private final JPanel bar = new JPanel(new BorderLayout(ModernTheme.px(10), 0));
+    private final mpv5.ui.modern.OverflowBar actions = new mpv5.ui.modern.OverflowBar(true, true);
+
+    /**
+     * Detaches the position/document action toolbar from above the table so it
+     * can be placed inline in the surrounding {@link mpv5.ui.modern.Card}
+     * header row on compact screens.
+     *
+     * @return the toolbar component
+     */
+    public JComponent detachToolbar() {
+        remove(bar);
+        bar.setBorder(null);
+        revalidate();
+        return bar;
+    }
 
     /**
      * Adds an action of the document to the bar above the positions (right)
@@ -158,7 +172,7 @@ public class ItemPositionsTable extends JPanel {
         if (c instanceof javax.swing.AbstractButton) {
             ModernTheme.actionButton((javax.swing.AbstractButton) c, null);
         }
-        actions.add(c);
+        actions.addOverflowable(c, null);
     }
 
     private static JLabel total() {

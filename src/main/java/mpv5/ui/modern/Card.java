@@ -39,7 +39,7 @@ public class Card extends JPanel {
 
     private static final long serialVersionUID = 1L;
     private final JPanel body = new JPanel(new GridBagLayout());
-    private final JPanel header = new JPanel(new BorderLayout());
+    private final JPanel header = new JPanel(new BorderLayout(ModernTheme.px(12), 0));
     private int rows;
 
     /**
@@ -148,7 +148,7 @@ public class Card extends JPanel {
      * @return this
      */
     public Card headerAction(JComponent c) {
-        header.add(c, BorderLayout.EAST);
+        header.add(c, c instanceof OverflowBar ? BorderLayout.CENTER : BorderLayout.EAST);
         if (header.getParent() == null) {
             add(header, BorderLayout.NORTH);
         }

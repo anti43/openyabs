@@ -36,6 +36,19 @@ public class Tax extends DatabaseObject {
     private BigDecimal taxvalue = BigDecimal.ZERO;
     private String identifier = "";
     private String country = "";
+    /**
+     * the VAT category (UNCL5305, see {@link mpv5.utils.export.VatCategory}),
+     * empty: S for a rate above 0 %, E for 0 %
+     */
+    private String categorycode = "";
+    /**
+     * the exemption reason code (VATEX), empty: the default of the category
+     */
+    private String exemptioncode = "";
+    /**
+     * the note on the invoice, empty: the default of the category
+     */
+    private String exemptionnote = "";
 
     /**
      * Tries to fetch the value for the given tax id
@@ -132,5 +145,147 @@ public class Tax extends DatabaseObject {
      */
     public void setCountry(String country) {
         this.country = country;
+    }
+
+    /**
+     * @return the stored VAT category code, "" if not set
+     */
+    public String __getCategorycode() {
+        return categorycode;
+    }
+
+    /**
+     * @param categorycode the VAT category code (UNCL5305), "" for the default
+     */
+    public void setCategorycode(String categorycode) {
+        this.categorycode = categorycode == null ? "" : categorycode.trim();
+    }
+
+    /**
+     * @return the stored exemption reason code (VATEX), "" if not set
+     */
+    public String __getExemptioncode() {
+        return exemptioncode;
+    }
+
+    /**
+     * @param exemptioncode the exemption reason code (VATEX), "" for the
+     * default of the category
+     */
+    public void setExemptioncode(String exemptioncode) {
+        this.exemptioncode = exemptioncode == null ? "" : exemptioncode.trim();
+    }
+
+    /**
+     * @return the stored note on the invoice, "" if not set
+     */
+    public String __getExemptionnote() {
+        return exemptionnote;
+    }
+
+    /**
+     * @param exemptionnote the note on the invoice, "" for the default of the
+     * category
+     */
+    public void setExemptionnote(String exemptionnote) {
+        this.exemptionnote = exemptionnote == null ? "" : exemptionnote.trim();
+    }
+
+    /**
+     * @return the VAT category of this rate (the stored one if it fits the
+     * rate)
+     */
+    public mpv5.utils.export.VatCategory category() {
+        return mpv5.utils.export.VatCategory.of(categorycode, taxvalue);
+    }
+
+    /**
+     * @return the exemption reason code (VATEX): the stored one, else the
+     * default of the category; null for none
+     */
+    public String reasonCode() {
+        mpv5.utils.export.VatCategory c = category();
+        if (c == mpv5.utils.export.VatCategory.S) {
+            return null;
+        }
+        return exemptioncode != null && !exemptioncode.isEmpty() ? exemptioncode : c.defaultReasonCode();
+    }
+
+    /**
+     * @return the note on the invoice: the stored one, else the default of
+     * the category ("" for none)
+     */
+    public String note() {
+        mpv5.utils.export.VatCategory c = category();
+        if (c == mpv5.utils.export.VatCategory.S) {
+            return "";
+        }
+        return exemptionnote != null && !exemptionnote.isEmpty() ? exemptionnote : c.defaultNote();
+    }
+
+    /**
+     * The tax rate of a position: the first of the preferred rates (e.g. the
+     * customer's rate, then the product's rate) with the value of the
+     * position, else a rate with this value and a category, else any rate with
+     * this value
+     *
+     * @param rate the rate of the position in percent
+     * @param taxes all tax rates
+     * @param preferred ids of preferred rates, in order (null or &lt;= 0 are
+     * skipped)
+     * @return the rate, null if no rate has this value
+     */
+    public static Tax forRate(BigDecimal rate, java.util.List<Tax> taxes, Integer... preferred) {
+        BigDecimal r = rate == null ? BigDecimal.ZERO : rate;
+        if (taxes == null) {
+            return null;
+        }
+        if (preferred != null) {
+            for (Integer id : preferred) {
+                if (id == null || id <= 0) {
+                    continue;
+                }
+                for (Tax t : taxes) {
+                    if (id.equals(t.__getIDS()) && sameRate(t, r)) {
+                        return t;
+                    }
+                }
+            }
+        }
+        Tax any = null;
+        for (Tax t : taxes) {
+            if (sameRate(t, r)) {
+                if (t.__getCategorycode() != null && !t.__getCategorycode().isEmpty()) {
+                    return t;
+                }
+                if (any == null) {
+                    any = t;
+                }
+            }
+        }
+        return any;
+    }
+
+    private static boolean sameRate(Tax t, BigDecimal rate) {
+        return t.__getTaxvalue() != null && t.__getTaxvalue().compareTo(rate) == 0;
+    }
+
+    /**
+     * @return all tax rates, an empty list if there are none or no database
+     */
+    public static java.util.List<Tax> all() {
+        java.util.List<Tax> l = new java.util.ArrayList<Tax>();
+        try {
+            if (mpv5.db.common.DatabaseConnection.getConnector() == null
+                    || mpv5.db.common.DatabaseConnection.getConnector().getConnection() == null) {
+                return l;
+            }
+            for (DatabaseObject o : DatabaseObject.getObjects(Context.getTaxes())) {
+                l.add((Tax) o);
+            }
+        } catch (Exception e) {
+            Log.Debug(Tax.class, e.getMessage());
+        }
+        return l;
     }
 }

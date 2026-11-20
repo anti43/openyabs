@@ -162,6 +162,32 @@ public final class ItemService {
     }
 
     /**
+     * @param contact
+     * @return the invoices, deposit and part payment invoices of the contact a
+     * credit note can correct ("number (date)"), the newest first
+     */
+    public static MPComboBoxModelItem[] referenceInvoiceChoices(Contact contact) {
+        List<MPComboBoxModelItem> items = new ArrayList<MPComboBoxModelItem>();
+        DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM);
+        List<Item> bills = new ArrayList<Item>();
+        for (int type : new int[]{Item.TYPE_INVOICE, Item.TYPE_DEPOSIT, Item.TYPE_PART_PAYMENT}) {
+            try {
+                for (DatabaseObject o : DatabaseObject.getObjects(contextOf(type), new QueryCriteria("contactsids", contact.__getIDS()))) {
+                    bills.add((Item) o);
+                }
+            } catch (NodataFoundException e) {
+                //none of this type
+            }
+        }
+        bills.sort((a, b) -> Integer.compare(b.__getIDS(), a.__getIDS()));
+        for (Item i : bills) {
+            items.add(new MPComboBoxModelItem(i.__getIDS(), i.__getCnumber()
+                    + (i.__getDateadded() == null ? "" : " (" + df.format(i.__getDateadded()) + ")")));
+        }
+        return items.toArray(new MPComboBoxModelItem[0]);
+    }
+
+    /**
      * The contact with this name, or a new customer with these data (when a
      * name is typed instead of choosing a contact)
      *
@@ -387,6 +413,8 @@ public final class ItemService {
         }
         i2.setIntstatus(Item.STATUS_QUEUED);
         i2.setInttype(itemType);
+        //a credit note from an invoice refers to it (BT-25 of the e-invoice, #211)
+        i2.setRefinvoiceids(itemType == Item.TYPE_CREDIT && isBill(source.__getInttype()) ? source.__getIDS() : 0);
         i2.setIDS(-1);
         i2.defineFormatHandler(new FormatHandler(i2));
         i2.save();

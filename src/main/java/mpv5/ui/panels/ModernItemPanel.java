@@ -154,6 +154,11 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
     private final LabeledCombobox refOrder = ModernTheme.plain(new LabeledCombobox());
     private final JButton refOrderShow = action(text("ItemPanel2.refOrderShow.text"));
     private JComponent refOrderRow;
+    /**
+     * credit notes: the invoice it corrects or cancels (#211)
+     */
+    private final LabeledCombobox refInvoice = ModernTheme.plain(new LabeledCombobox());
+    private JComponent refInvoiceRow;
     private JButton numberEditButton;
     private JButton removeFileButton;
     //dates
@@ -226,6 +231,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
     public int intreminders_;
     public int intstatus_;
     public Integer reforderids_;
+    public Integer refinvoiceids_;
     public int inttype_;
     // </editor-fold>
 
@@ -369,31 +375,29 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
     }
 
     private JComponent createHeader() {
-        JPanel header = new JPanel(new BorderLayout(ModernTheme.px(14), 0));
+        JPanel header = new JPanel(new BorderLayout(ModernTheme.px(12), 0));
         header.setOpaque(false);
-        header.setBorder(ModernTheme.padding(8, 16));
+        header.setBorder(ModernTheme.padding(4, 12));
         avatar.setSquare(true);
         header.add(avatar, BorderLayout.WEST);
-        JPanel center = new JPanel();
-        center.setOpaque(false);
-        center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
         //the main information of the view: large
-        displayname.setFont(ModernTheme.font(13, Font.BOLD));
+        displayname.setFont(ModernTheme.font(12, Font.BOLD));
         displayname.setForeground(ModernTheme.foreground());
-        displayname.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, ModernTheme.px(14)));
-        //contact / date / user in the title line, readable (there is room for it)
-        meta.setFont(ModernTheme.font(5, Font.PLAIN));
-        meta.setBorder(BorderFactory.createEmptyBorder(0, ModernTheme.px(20), 0, 0));
+        displayname.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, ModernTheme.px(10)));
+        //contact / date / user on the same line, compact
+        meta.setFont(ModernTheme.font(2, Font.PLAIN));
+        meta.setBorder(BorderFactory.createEmptyBorder(0, ModernTheme.px(12), 0, 0));
         meta.setForeground(ModernTheme.muted());
-        JPanel titleRow = new JPanel(new WrapLayout(FlowLayout.LEFT, 0, ModernTheme.px(2)));
-        titleRow.setOpaque(false);
-        titleRow.add(displayname);
-        titleRow.add(statusPill);
-        titleRow.add(createPluginBadgeSlot());
-        titleRow.add(meta);
-        titleRow.setAlignmentX(LEFT_ALIGNMENT);
-        center.add(titleRow);
-        header.add(center, BorderLayout.CENTER);
+        JPanel leftRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        leftRow.setOpaque(false);
+        leftRow.add(displayname);
+        leftRow.add(statusPill);
+        leftRow.add(createPluginBadgeSlot());
+        JPanel row = new JPanel(new BorderLayout(ModernTheme.px(10), 0));
+        row.setOpaque(false);
+        row.add(leftRow, BorderLayout.WEST);
+        row.add(meta, BorderLayout.CENTER);
+        header.add(row, BorderLayout.CENTER);
         return header;
     }
 
@@ -436,7 +440,9 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
                 .row(Card.field(text("ItemPanel2.name._Label"), name))
                 .row(Card.field(text("ItemPanel2.groupnameselect._Label"), groupnameselect, 1),
                         Card.field(text("ItemPanel2.accountselect._Label"), accountselect, 1))
-                .row(Card.field(text("ItemPanel2.refOrder._Label"), refRow)));
+                .row(Card.field(text("ItemPanel2.refOrder._Label"), refRow))
+                .row(Card.field(Messages.ITEM_CORRECTED_INVOICE.toString(), refInvoiceRow = wrap(refInvoice))));
+        refInvoice.setToolTipText(Messages.ITEM_CORRECTED_INVOICE_HINT.toString());
 
         grid.add(new Card(Messages.ITEM_SECTION_DATES.toString())
                 .row(Card.field(Messages.ITEM_DATE_DOCUMENT.toString(), date1))
@@ -487,15 +493,17 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
 
     private JComponent createPositions() {
         Card card = new Card(Messages.ITEM_SECTION_POSITIONS.toString());
+        card.getHeader().add(positions.detachToolbar(), BorderLayout.CENTER);
         card.addFull(positions, 1);
         JPanel p = new JPanel(new BorderLayout());
         p.setBackground(ModernTheme.background());
-        p.setBorder(BorderFactory.createEmptyBorder(ModernTheme.px(8), 0, 0, 0));
+        p.setBorder(BorderFactory.createEmptyBorder(ModernTheme.px(6), 0, 0, 0));
         p.add(card, BorderLayout.CENTER);
         return p;
     }
 
     private static JButton menuButton(final JButton b, final JPopupMenu menu) {
+        b.putClientProperty(mpv5.ui.modern.OverflowBar.PROPERTY_POPUP_MENU, menu);
         b.addActionListener(e -> menu.show(b, 0, b.getHeight()));
         return b;
     }
@@ -611,6 +619,10 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
             Component row = refOrderRow.getParent();
             (row != null ? row : refOrderRow).setVisible(bill);
         }
+        if (refInvoiceRow != null) {
+            Component row = refInvoiceRow.getParent();
+            (row != null ? row : refInvoiceRow).setVisible(t == Item.TYPE_CREDIT);
+        }
         toOrder.setEnabled(t != Item.TYPE_ORDER && t != Item.TYPE_INVOICE);
         toInvoice.setEnabled(t != Item.TYPE_INVOICE);
         boolean partialAllowed = t != Item.TYPE_INVOICE && t != Item.TYPE_DEPOSIT && t != Item.TYPE_PART_PAYMENT;
@@ -696,6 +708,14 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         zip.setText(dbo.getDefaultaddress().__getZip());
         city.setText(dbo.getDefaultaddress().__getCity());
         street.setText(dbo.getDefaultaddress().__getStreet());
+        if (inttype_ == Item.TYPE_CREDIT) {
+            //the invoices of the customer the credit note can correct
+            refInvoice.setModel(new MPComboboxModel(ItemService.referenceInvoiceChoices(dbo)));
+            refInvoice.setSelectedIndex(-1);
+            if (refinvoiceids_ != null && refinvoiceids_ > 0) {
+                refInvoice.setSelectedItem(refinvoiceids_);
+            }
+        }
         if (ItemService.isBill(inttype_)) {
             if (dataOwner.__getRefOrderIDS() != null && dataOwner.__getRefOrderIDS() > 0) {
                 try {
@@ -715,6 +735,17 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
                 refOrder.setSelectedIndex(-1);
             }
         }
+    }
+
+    /**
+     * @param c
+     * @return a panel holding c (its parent row can be hidden)
+     */
+    private static JComponent wrap(JComponent c) {
+        JPanel p = new JPanel(new BorderLayout());
+        p.setOpaque(false);
+        p.add(c, BorderLayout.CENTER);
+        return p;
     }
 
     private void setEnddate(Contact dbo) {
@@ -1190,6 +1221,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         groupnameselect.setEnabled(editable);
         accountselect.setEnabled(editable);
         refOrder.setEnabled(editable);
+        refInvoice.setEnabled(editable);
         date1.setEnabled(editable);
         date2.setEnabled(editable);
         date3.setEnabled(editable);
@@ -1428,6 +1460,14 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
             reforderids_ = Integer.valueOf(String.valueOf(refOrder.getSelectedItem().getId()));
         } catch (Exception e) {
             reforderids_ = -1;
+        }
+        if (inttype_ == Item.TYPE_CREDIT) {
+            try {
+                MPComboBoxModelItem ri = refInvoice.getSelectedItem();
+                refinvoiceids_ = ri != null && ri.isValid() ? Integer.valueOf(String.valueOf(ri.getId())) : 0;
+            } catch (Exception e) {
+                refinvoiceids_ = 0;
+            }
         }
         return true;
     }
