@@ -228,7 +228,7 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
     private final List<Component> othersColumn = new ArrayList<Component>();
     private final JLabel taxRates = new JLabel(" ");
     private final JLabel exportResult = new JLabel(" ");
-    private final JButton filtersToggle = new JButton();
+    private final mpv5.ui.modern.PrimaryButton filtersToggle = new mpv5.ui.modern.PrimaryButton(" ", null);
     private File exportedFile;
     //contact overview
     private final JTree jTree1 = new JTree();
@@ -728,7 +728,6 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         //export and reload: at the right of the filter line
         JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT, ModernTheme.px(8), 0));
         buttons.setOpaque(false);
-        buttons.add(filtersToggle);
         buttons.add(exportButton);
         buttons.add(loadButton);
         JPanel bar = new JPanel(new BorderLayout(gap, 0));
@@ -812,6 +811,12 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         findRow.setOpaque(false);
         findRow.add(new JLabel(Messages.JOURNAL_FIND.toString()));
         findRow.add(find);
+        //show / hide the filter cards: next to the search, green
+        filtersToggle.setColor(ModernTheme.isDark() ? new java.awt.Color(34, 160, 80) : new java.awt.Color(22, 140, 64));
+        filtersToggle.setFont(ModernTheme.font(0, Font.BOLD));
+        filtersToggle.setBorder(BorderFactory.createEmptyBorder(ModernTheme.px(5), ModernTheme.px(12), ModernTheme.px(5), ModernTheme.px(12)));
+        findRow.add(javax.swing.Box.createHorizontalStrut(ModernTheme.px(6)));
+        findRow.add(filtersToggle);
         tools.add(findRow, BorderLayout.WEST);
         JLabel legend = new JLabel(Messages.JOURNAL_LEGEND.toString());
         legend.setForeground(ModernTheme.muted());
@@ -892,10 +897,54 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
      */
     private void setFiltersCollapsed(JComponent cards, boolean collapsed) {
         cards.setVisible(!collapsed);
-        filtersToggle.setText((collapsed ? "\u25B8 " : "\u25BE ") //NOI18N
-                + (collapsed ? Messages.JOURNAL_FILTERS_SHOW : Messages.JOURNAL_FILTERS_HIDE));
+        filtersToggle.setText((collapsed ? Messages.JOURNAL_FILTERS_SHOW : Messages.JOURNAL_FILTERS_HIDE).toString());
+        filtersToggle.setIcon(new ArrowIcon(collapsed));
         revalidate();
         repaint();
+    }
+
+    /**
+     * A small painted arrow (right: collapsed, down: expanded); painted, not a
+     * font glyph, so it shows with every font
+     */
+    private static final class ArrowIcon implements javax.swing.Icon {
+
+        private final boolean right;
+        private final int size = ModernTheme.px(8);
+
+        ArrowIcon(boolean right) {
+            this.right = right;
+        }
+
+        @Override
+        public void paintIcon(Component c, java.awt.Graphics g, int x, int y) {
+            java.awt.Graphics2D g2 = (java.awt.Graphics2D) g.create();
+            g2.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.setColor(c.isEnabled() ? c.getForeground() : ModernTheme.muted());
+            java.awt.geom.Path2D.Float p = new java.awt.geom.Path2D.Float();
+            if (right) {
+                p.moveTo(x + size * 0.25f, y);
+                p.lineTo(x + size * 0.85f, y + size / 2f);
+                p.lineTo(x + size * 0.25f, y + size);
+            } else {
+                p.moveTo(x, y + size * 0.25f);
+                p.lineTo(x + size, y + size * 0.25f);
+                p.lineTo(x + size / 2f, y + size * 0.85f);
+            }
+            p.closePath();
+            g2.fill(p);
+            g2.dispose();
+        }
+
+        @Override
+        public int getIconWidth() {
+            return size;
+        }
+
+        @Override
+        public int getIconHeight() {
+            return size;
+        }
     }
 
     private static JPanel flow(JComponent... cs) {
