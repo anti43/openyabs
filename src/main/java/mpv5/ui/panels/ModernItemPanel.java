@@ -912,7 +912,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
             }
             opts.add(Messages.PAYMENT_OVERPAY_AS_CREDIT.toString());
             opts.add(Messages.PAYMENT_OVERPAY_AS_IS.toString());
-            opts.add(Messages.CANCEL.toString());
+            opts.add(Messages.NUMWIZ_CANCEL.toString());
             int choice = javax.swing.JOptionPane.showOptionDialog(this, msg, Messages.PAYMENT_OVERPAY_TITLE.toString(),
                     javax.swing.JOptionPane.DEFAULT_OPTION, javax.swing.JOptionPane.WARNING_MESSAGE,
                     null, opts.toArray(), opts.get(0));
