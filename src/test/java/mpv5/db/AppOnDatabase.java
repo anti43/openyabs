@@ -141,10 +141,15 @@ abstract class AppOnDatabase {
             User._setUser(admin);
             mpv5.handler.FirstStartSetup.prepare(admin, true, null);
 
-            //the 18 demo templates, saved with their dates (H2 TIMESTAMP columns); the demo
-            //invoice is the assigned invoice template (no separate template-de any more)
+            //the 18 demo templates and the small business invoice, saved with their dates (H2 TIMESTAMP
+            //columns); without the small business exemption the demo invoice is the assigned invoice
+            //template, the small business invoice is there but not assigned
             List<DatabaseObject> templates = DatabaseObject.getObjects(Context.getTemplate());
-            assertEquals(mpv5.handler.FirstStartSetup.DEMO_TEMPLATES.length, templates.size());
+            assertEquals(mpv5.handler.FirstStartSetup.DEMO_TEMPLATES.length + 1, templates.size());
+            assertEquals("0", String.valueOf(QueryHandler.getConnection().freeQuery(
+                    "SELECT COUNT(*) FROM templatestousers a JOIN templates t ON t.ids = a.templatesids WHERE t.cname = '"
+                    + mpv5.handler.FirstStartSetup.SMALL_BUSINESS_INVOICE_NAME + "'",
+                    mpv5.usermanagement.MPSecurityManager.VIEW, null).getData()[0][0]));
             assertEquals("1", String.valueOf(QueryHandler.getConnection().freeQuery(
                     "SELECT COUNT(*) FROM templatestousers a JOIN templates t ON t.ids = a.templatesids WHERE a.usersids = "
                     + admin.__getIDS() + " AND t.mimetype = '" + Item.TYPE_INVOICE + "' AND t.cname = 'Demo - Rechnung'",
