@@ -286,7 +286,7 @@ public final class Privacy {
         Set<Integer> withFile = ids("SELECT DISTINCT itemsids FROM item_files WHERE itemsids IN (SELECT ids FROM items WHERE contactsids = " + id + ")");
         Set<Integer> withPayment = ids("SELECT DISTINCT itemsids FROM payments WHERE itemsids IN (SELECT ids FROM items WHERE contactsids = " + id + ")");
         Set<Integer> referenced = ids("SELECT DISTINCT reforderids FROM items WHERE reforderids IS NOT NULL");
-        for (Object[] row : rows("SELECT ids, inttype, cnumber, dateadded, intstatus, netvalue, taxvalue FROM items WHERE contactsids = " + id)) {
+        for (Object[] row : rows("SELECT ids, inttype, cnumber, dateadded, intstatus, netvalue, discountvalue, taxvalue FROM items WHERE contactsids = " + id)) {
             int ids = toInt(row[0]);
             int type = toInt(row[1]);
             int status = toInt(row[4]);
@@ -296,7 +296,7 @@ public final class Privacy {
             Date keep = years > 0 ? keepUntil(date, years) : null;
             boolean open = isOpen(type, status, issued);
             Document d = new Document(ids, type, row[2] == null ? "" : String.valueOf(row[2]), date, status,
-                    money(row[5]).add(money(row[6])), keep, open);
+                    money(row[5]).subtract(money(row[6])).add(money(row[7])), keep, open);
             (keep != null ? r.retained : r.deletable).add(d);
             if (open) {
                 r.open.add(d);

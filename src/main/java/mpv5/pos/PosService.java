@@ -437,8 +437,7 @@ public final class PosService {
         if (!credit.save()) {
             throw new IllegalStateException("The cancellation could not be saved");
         }
-        java.util.Map<BigDecimal, BigDecimal> perRate = new java.util.LinkedHashMap<BigDecimal, BigDecimal>();
-        BigDecimal gross = BigDecimal.ZERO;
+        java.util.List<mpv5.utils.numberformat.InvoiceMath.Line> lines = new java.util.ArrayList<mpv5.utils.numberformat.InvoiceMath.Line>();
         int n = 1;
         for (SubItem x : positions) {
             SubItem c = new SubItem();
@@ -449,18 +448,24 @@ public final class PosService {
             c.setQuantityvalue(x.__getQuantityvalue());
             c.setExternalvalue(x.__getExternalvalue());
             c.setInternalvalue(x.__getInternalvalue());
+            c.setDiscount(x.__getDiscount());
             c.setTaxpercentvalue(x.__getTaxpercentvalue());
             c.setMeasure(x.__getMeasure());
             c.setOrdernr(n++);
             c.setDateadded(now);
             c.setGroupsids(1);
             c.save(true);
-            BigDecimal net = x.__getExternalvalue().multiply(x.__getQuantityvalue());
-            BigDecimal g = net.add(net.multiply(x.__getTaxpercentvalue()).movePointLeft(2)).negate();
-            perRate.merge(x.__getTaxpercentvalue().stripTrailingZeros(), g, BigDecimal::add);
-            gross = gross.add(g);
+            lines.add(new mpv5.utils.numberformat.InvoiceMath.Line(
+                    c.effectiveQuantity(), c.__getExternalvalue(), c.__getDiscount(), c.__getTaxpercentvalue()));
         }
         mpv5.handler.ItemService.updateTotals(credit);
+        mpv5.utils.numberformat.InvoiceMath.Totals totals = mpv5.utils.numberformat.InvoiceMath.totals(lines);
+        java.util.Map<BigDecimal, BigDecimal> perRate = new java.util.LinkedHashMap<BigDecimal, BigDecimal>();
+        for (java.util.Map.Entry<BigDecimal, BigDecimal[]> entry : totals.byRate.entrySet()) {
+            BigDecimal rateGross = entry.getValue()[0].add(entry.getValue()[1]).negate();
+            perRate.put(entry.getKey().stripTrailingZeros(), rateGross);
+        }
+        BigDecimal gross = totals.gross.negate();
         tr.invoice = credit.__getIDS();
         tr.processData = mpv5.pos.tse.ProcessData.kassenbeleg(perRate, gross, true);
         if (device != null && started != null) {
@@ -477,10 +482,11 @@ public final class PosService {
         } catch (Exception e) {
             Log.Debug(this, e);
         }
-        BigDecimal net = credit.__getNetvalue() == null ? BigDecimal.ZERO : credit.__getNetvalue();
-        BigDecimal pos = gross.negate();
+        BigDecimal net = credit.getNetAfterDiscount();
+        BigDecimal tax = credit.__getTaxvalue() == null ? BigDecimal.ZERO : credit.__getTaxvalue();
+        BigDecimal pos = credit.getGrossAmount();
         return new Receipt(credit.__getCnumber(), net.setScale(2, RoundingMode.HALF_UP),
-                pos.subtract(net).setScale(2, RoundingMode.HALF_UP), pos.setScale(2, RoundingMode.HALF_UP),
+                tax.setScale(2, RoundingMode.HALF_UP), pos.setScale(2, RoundingMode.HALF_UP),
                 null, BigDecimal.ZERO, credit.__getIDS());
     }
 

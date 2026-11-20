@@ -250,10 +250,7 @@ public final class VereinPlugin implements YabsExtension {
     }
 
     static BigDecimal grossTotal(Item item) {
-        BigDecimal net = item.__getNetvalue() == null ? BigDecimal.ZERO : item.__getNetvalue();
-        BigDecimal disc = item.__getDiscountvalue() == null ? BigDecimal.ZERO : item.__getDiscountvalue();
-        BigDecimal tax = item.__getTaxvalue() == null ? BigDecimal.ZERO : item.__getTaxvalue();
-        return net.subtract(disc).add(tax);
+        return item == null ? BigDecimal.ZERO : item.getGrossAmount();
     }
 
     private static List<BigDecimal> extractTaxRates(Item item) {

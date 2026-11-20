@@ -782,7 +782,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
 
         //values
         map.put("netnodiscvalue", FormatNumber.formatDezimal(__getNetvalue())); //Netto Listenpreis
-        map.put("netvalue", FormatNumber.formatDezimal(__getNetvalue().subtract(__getDiscountvalue()))); //Netto Listenpreis mit Rabatt
+        map.put("netvalue", FormatNumber.formatDezimal(getNetAfterDiscount())); //Netto Listenpreis mit Rabatt
         map.put("taxvalue", FormatNumber.formatDezimal(__getTaxvalue()));
         //net/discount are before tax, the tax is after discount (per VAT rate)
         map.put("grosnodiscvalue", FormatNumber.formatDezimal(getGrossAmount().add(__getDiscountGrosvalue()))); //Brutto Listenpreis
@@ -791,7 +791,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
         map.put("discounttax", FormatNumber.formatDezimal(__getDiscountGrosvalue().subtract(__getDiscountvalue())));
 
         map.put("netnodiscvaluef", FormatNumber.formatLokalCurrency(__getNetvalue()));
-        map.put("netvaluef", FormatNumber.formatLokalCurrency(__getNetvalue().subtract(__getDiscountvalue())));
+        map.put("netvaluef", FormatNumber.formatLokalCurrency(getNetAfterDiscount()));
         map.put("taxvaluef", FormatNumber.formatLokalCurrency(__getTaxvalue()));
         map.put("grosnodiscvaluef", FormatNumber.formatLokalCurrency(getGrossAmount().add(__getDiscountGrosvalue())));
         map.put("grosvaluef", FormatNumber.formatLokalCurrency(getGrossAmount()));
@@ -1253,8 +1253,22 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
         }
     }
 
+    /**
+     * Net amount (Entgelt) after deducting line and document discounts:
+     * {@code netvalue - discountvalue}. Always satisfies
+     * {@code getNetAfterDiscount() + __getTaxvalue() == getGrossAmount()}.
+     *
+     * @return net amount after discount (never null)
+     */
+    public BigDecimal getNetAfterDiscount() {
+        BigDecimal net = __getNetvalue() == null ? BigDecimal.ZERO : __getNetvalue();
+        BigDecimal disc = __getDiscountvalue() == null ? BigDecimal.ZERO : __getDiscountvalue();
+        return net.subtract(disc);
+    }
+
     public BigDecimal getGrossAmount() {
-        return __getTaxvalue().add(__getNetvalue().subtract(__getDiscountvalue()));
+        BigDecimal tax = __getTaxvalue() == null ? BigDecimal.ZERO : __getTaxvalue();
+        return tax.add(getNetAfterDiscount());
     }
 
     private void buildCname() {
