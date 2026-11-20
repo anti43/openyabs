@@ -222,6 +222,80 @@ public class DatevPluginTest {
         assertTrue(btUnescaped.length() <= 60);
     }
 
+    private static Entry zeroRateInvoice(String number) throws Exception {
+        Entry e = new Entry();
+        e.type = Constants.TYPE_INVOICE;
+        e.status = Item.STATUS_PAID;
+        e.date = date("2026-01-22");
+        e.number = number;
+        e.contact = "Kunde";
+        e.net = bd("500.00");
+        e.tax = bd("0.00");
+        e.gross = bd("500.00");
+        e.rates.put(BigDecimal.ZERO, new BigDecimal[]{bd("500.00"), bd("0.00")});
+        return e;
+    }
+
+    /**
+     * 0 % sales by the VAT category of their tax rate (#214): EU services on
+     * 8336, domestic § 13b on 8337, intra-community supplies on 8125, exports
+     * on 8120; without a category an EU 0 % sale is a supply of goods, with a
+     * warning
+     */
+    @Test
+    public void zeroRateSalesByVatCategory() throws Exception {
+        DatevConfig cfg = sampleConfig();
+        cfg.euServiceAccount = "8336";
+        cfg.reverseChargeAccount = "8337";
+        cfg.exportAccount = "8120";
+        Account acc8400 = account(8400, "Erlöse 19% USt", Account.INCOME, 19.0);
+        Entry service = zeroRateInvoice("RE-EU-SERVICE");
+        Entry domestic = zeroRateInvoice("RE-13B");
+        Entry goods = zeroRateInvoice("RE-EU-GOODS");
+        Entry export = zeroRateInvoice("RE-EXPORT");
+        Entry unknown = zeroRateInvoice("RE-EU-UNKNOWN");
+        List<Entry> all = Arrays.asList(service, domestic, goods, export, unknown);
+        JournalCalc.compute(all, Collections.<Integer>emptySet());
+        Map<Entry, Account> accMap = new HashMap<Entry, Account>();
+        for (Entry e : all) {
+            accMap.put(e, acc8400);//the document account (19 %) does not fit 0 %
+        }
+        Map<Entry, mpv5.utils.export.VatCategory> cat = new HashMap<Entry, mpv5.utils.export.VatCategory>();
+        cat.put(service, mpv5.utils.export.VatCategory.AE);
+        cat.put(domestic, mpv5.utils.export.VatCategory.AE);
+        cat.put(goods, mpv5.utils.export.VatCategory.K);
+        cat.put(export, mpv5.utils.export.VatCategory.G);
+        DatevMapper.ContactVatLookup vat = e -> e == domestic || e == export ? "" : "FR40303265045";
+        DatevMapper.Result res = DatevMapper.map(all, cfg, date("2026-01-01"), date("2026-01-31"),
+                lookup(accMap, acc8400), vat, null, (e, r) -> cat.get(e));
+        Map<String, BookingLine> byNumber = new HashMap<String, BookingLine>();
+        for (BookingLine l : res.lines) {
+            byNumber.put(l.belegfeld1, l);
+        }
+        assertEquals("8336", byNumber.get("RE-EU-SERVICE").gegenkonto);
+        assertEquals("FR40303265045", byNumber.get("RE-EU-SERVICE").euLandUstId, "EU services: VAT ID for the ZM");
+        assertEquals("8337", byNumber.get("RE-13B").gegenkonto);
+        assertEquals("", byNumber.get("RE-13B").euLandUstId);
+        assertEquals("8125", byNumber.get("RE-EU-GOODS").gegenkonto);
+        assertEquals("FR40303265045", byNumber.get("RE-EU-GOODS").euLandUstId);
+        assertEquals("8120", byNumber.get("RE-EXPORT").gegenkonto);
+        assertEquals("8125", byNumber.get("RE-EU-UNKNOWN").gegenkonto, "no category: as before");
+        assertTrue(res.issues.stream().anyMatch(i -> i.message.contains("RE-EU-UNKNOWN") && i.message.contains("Kategorie AE")),
+                res.issues.toString());
+        assertTrue(res.issues.stream().noneMatch(i -> i.message.contains("RE-EU-SERVICE") && i.message.contains("ohne USt-Kategorie")));
+
+        //SKR04 defaults
+        DatevConfig skr04 = new DatevConfig();
+        skr04.kontenrahmen = "04";
+        skr04.euServiceAccount = "";
+        skr04.reverseChargeAccount = "";
+        skr04.exportAccount = "";
+        skr04.prefillFromAccounts(Collections.<Account>emptyList(), Collections.<BigDecimal>emptyList(), false);
+        assertEquals("4336", skr04.euServiceAccount);
+        assertEquals("4337", skr04.reverseChargeAccount);
+        assertEquals("4120", skr04.exportAccount);
+    }
+
     @Test
     public void mapsInvoiceMixedDiscountCreditExpensePartialPaymentAndEuDelivery() throws Exception {
         DatevConfig cfg = sampleConfig();

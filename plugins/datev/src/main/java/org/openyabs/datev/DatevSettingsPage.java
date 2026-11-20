@@ -88,6 +88,9 @@ final class DatevSettingsPage {
         final JTextField moneyExpense = new JTextField(config.moneyAccountExpense, 10);
         final JTextField cashAccount = new JTextField(config.cashAccount, 10);
         final JTextField euAccount = new JTextField(config.euDeliveryAccount, 10);
+        final JTextField euServiceAccount = new JTextField(config.euServiceAccount, 10);
+        final JTextField reverseChargeAccount = new JTextField(config.reverseChargeAccount, 10);
+        final JTextField exportAccount = new JTextField(config.exportAccount, 10);
         final JCheckBox automaticAccounts = new JCheckBox(
                 "Automatikkonten verwenden (kein BU-Schlüssel, wenn der Steuersatz des Kontos passt)",
                 config.useAutomaticAccounts);
@@ -127,7 +130,10 @@ final class DatevSettingsPage {
         addRow(form, g, row++, "Geldkonto Einnahmen (z. B. 1200 / 1800):", moneyIncome);
         addRow(form, g, row++, "Geldkonto Ausgaben (z. B. 1200 / 1800):", moneyExpense);
         addRow(form, g, row++, "Kassenkonto Barverkauf/POS (optional):", cashAccount);
-        addRow(form, g, row++, "EU-Lieferkonto 0 % (z. B. 8125 / 4125):", euAccount);
+        addRow(form, g, row++, "EU-Lieferkonto 0 % (USt-Kategorie K, z. B. 8125 / 4125):", euAccount);
+        addRow(form, g, row++, "EU-Leistungen, Reverse Charge (Kategorie AE, z. B. 8336 / 4336):", euServiceAccount);
+        addRow(form, g, row++, "§ 13b UStG im Inland (Kategorie AE ohne EU-USt-IdNr., z. B. 8337 / 4337):", reverseChargeAccount);
+        addRow(form, g, row++, "Ausfuhr Drittland (Kategorie G, z. B. 8120 / 4120):", exportAccount);
 
         g.gridx = 0;
         g.gridy = row++;
@@ -154,6 +160,9 @@ final class DatevSettingsPage {
             moneyExpense.setText(config.moneyAccountExpense);
             cashAccount.setText(config.cashAccount);
             euAccount.setText(config.euDeliveryAccount);
+            euServiceAccount.setText(config.euServiceAccount);
+            reverseChargeAccount.setText(config.reverseChargeAccount);
+            exportAccount.setText(config.exportAccount);
             fillRatesTable(ratesModel, config, taxRates);
         });
 
@@ -177,6 +186,9 @@ final class DatevSettingsPage {
             config.moneyAccountExpense = moneyExpense.getText().trim();
             config.cashAccount = cashAccount.getText().trim();
             config.euDeliveryAccount = euAccount.getText().trim();
+            config.euServiceAccount = euServiceAccount.getText().trim();
+            config.reverseChargeAccount = reverseChargeAccount.getText().trim();
+            config.exportAccount = exportAccount.getText().trim();
             config.useAutomaticAccounts = automaticAccounts.isSelected();
 
             config.revenueAccounts.clear();
