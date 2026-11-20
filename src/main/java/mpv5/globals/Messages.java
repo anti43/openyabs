@@ -1031,6 +1031,7 @@ public enum Messages {
     PAYMENT_INVALID("Please enter an amount above 0 and a date."),
     TYPE_PAYMENT("Payment"),
     ITEM_NEW_CUSTOMER_ENTRY("+ New customer ..."),
+    ITEM_TEXT_KEYS("Enter: apply, Shift+Enter: new line, Esc: cancel"),
     ITEM_NEW_CUSTOMER_HINT("New customer: fill in and save - the document gets the customer and is saved too."),
     ITEM_NEW_CUSTOMER_SAVED("%s saved with the new customer %s"),
     PRODUCTS_TITLE("Products"),

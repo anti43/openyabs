@@ -45,7 +45,7 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
         setUndecorated(true);
         initComponents();
         textArea.addKeyListener(this);
-//        okButton.setToolTipText("ctrl+Enter");
+        bindKeys();
         cancelButton.setToolTipText("Esc");
         labeledCombobox1.setContext(Context.getProduct());
         labeledCombobox1.setSearchOnEnterEnabled(true);
@@ -111,6 +111,51 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
         jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder());
         setContentPane(root);
         pack();
+    }
+
+    /**
+     * As in a spreadsheet: Enter (or Ctrl+Enter) applies the text and closes
+     * the dialog, Shift+Enter is a new line in the text
+     */
+    private void bindKeys() {
+        //the cell editor (TextAreaCellEditor) applies the text on the command "OK",
+        //not on the label of the button (which is "OK " in German)
+        okButton.setActionCommand("OK");
+        okButton.setToolTipText(Messages.ITEM_TEXT_KEYS.toString());
+        textArea.setToolTipText(Messages.ITEM_TEXT_KEYS.toString());
+        bindEnter(textArea, this::apply);
+    }
+
+    /**
+     * Enter and Ctrl+Enter run apply, Shift+Enter inserts a new line
+     *
+     * @param area
+     * @param apply
+     */
+    static void bindEnter(javax.swing.JTextArea area, final Runnable apply) {
+        javax.swing.InputMap im = area.getInputMap(javax.swing.JComponent.WHEN_FOCUSED);
+        im.put(javax.swing.KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "yabs.apply");
+        im.put(javax.swing.KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, java.awt.event.InputEvent.CTRL_DOWN_MASK), "yabs.apply");
+        im.put(javax.swing.KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, java.awt.event.InputEvent.SHIFT_DOWN_MASK), javax.swing.text.DefaultEditorKit.insertBreakAction);
+        area.getActionMap().put("yabs.apply", new javax.swing.AbstractAction() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                apply.run();
+            }
+        });
+    }
+
+    /**
+     * Applies the text to the position and closes the dialog (as the OK
+     * button)
+     */
+    void apply() {
+        ActionEvent actionEvent = new ActionEvent(okButton, ActionEvent.ACTION_PERFORMED, okButton.getActionCommand());
+        for (ActionListener l : okButton.getActionListeners()) {
+            l.actionPerformed(actionEvent);
+        }
     }
 
     @Override
@@ -235,14 +280,8 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
     }
 
     public void keyPressed(KeyEvent e) {
-        if (e.isControlDown() && e.getKeyCode() == e.VK_ENTER) {
-            ActionListener[] listeners = okButton.getActionListeners();
-            ActionEvent actionEvent = new ActionEvent(okButton, ActionEvent.ACTION_PERFORMED, okButton.getActionCommand());
-            for (int i = 0; i < listeners.length; i++) {
-                listeners[i].actionPerformed(actionEvent);
-            }
-            setRow();
-        } else if (e.getKeyCode() == e.VK_ESCAPE) {
+        //Enter, Ctrl+Enter, Shift+Enter: see bindKeys()
+        if (e.getKeyCode() == e.VK_ESCAPE) {
             ActionListener[] listeners = cancelButton.getActionListeners();
             ActionEvent actionEvent = new ActionEvent(cancelButton, ActionEvent.ACTION_PERFORMED, cancelButton.getActionCommand());
             for (int i = 0; i < listeners.length; i++) {
