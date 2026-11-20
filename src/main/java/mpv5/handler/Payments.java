@@ -129,12 +129,111 @@ public final class Payments {
     }
 
     /**
+     * Split of a payment into the part that settles the invoice (counts as
+     * revenue and VAT) and any overpayment / customer credit (not revenue, 0%
+     * VAT).
+     */
+    public static final class Allocation {
+
+        /**
+         * Gross portion of the payment that settles the invoice (at most the
+         * remaining open gross amount).
+         */
+        public final BigDecimal incomeGross;
+        /**
+         * Overpayment surplus above the invoice's gross amount (customer credit
+         * balance, not revenue or VAT).
+         */
+        public final BigDecimal surplus;
+
+        public Allocation(BigDecimal incomeGross, BigDecimal surplus) {
+            this.incomeGross = incomeGross;
+            this.surplus = surplus;
+        }
+    }
+
+    /**
      * @param i
      * @return gross amount minus the payments, not below 0
      */
     public static BigDecimal open(Item i) {
         BigDecimal o = i.getGrossAmount().subtract(paid(i.__getIDS())).setScale(2, RoundingMode.HALF_UP);
         return o.signum() < 0 ? BigDecimal.ZERO.setScale(2) : o;
+    }
+
+    /**
+     * Surplus paid above the invoice's gross amount (customer credit balance),
+     * or {@code 0.00} if the invoice is not overpaid.
+     *
+     * @param i the invoice
+     * @return paid minus gross, not below 0
+     */
+    public static BigDecimal overpayment(Item i) {
+        if (i == null || !i.isExisting()) {
+            return BigDecimal.ZERO.setScale(2);
+        }
+        return overpayment(i.getGrossAmount(), paid(i.__getIDS()));
+    }
+
+    /**
+     * Pure calculation of overpayment (surplus above invoice gross).
+     *
+     * @param invoiceGross invoice gross amount
+     * @param totalPaid total recorded payments
+     * @return surplus (&gt;= 0, scale 2)
+     */
+    public static BigDecimal overpayment(BigDecimal invoiceGross, BigDecimal totalPaid) {
+        BigDecimal g = invoiceGross == null ? BigDecimal.ZERO : invoiceGross;
+        BigDecimal p = totalPaid == null ? BigDecimal.ZERO : totalPaid;
+        BigDecimal diff = p.subtract(g).setScale(2, RoundingMode.HALF_UP);
+        return diff.signum() > 0 ? diff : BigDecimal.ZERO.setScale(2);
+    }
+
+    /**
+     * Splits a payment into the part that settles the remaining open gross
+     * amount of the invoice and any surplus overpayment (customer credit).
+     *
+     * @param invoiceGross total gross amount of the invoice
+     * @param paidBefore sum of payments recorded on the same invoice before
+     * this payment
+     * @param paymentAmount amount of this payment
+     * @return allocation into incomeGross and surplus (both &gt;= 0, scale 2)
+     */
+    public static Allocation allocate(BigDecimal invoiceGross, BigDecimal paidBefore, BigDecimal paymentAmount) {
+        BigDecimal g = (invoiceGross == null ? BigDecimal.ZERO : invoiceGross).setScale(2, RoundingMode.HALF_UP);
+        BigDecimal before = (paidBefore == null ? BigDecimal.ZERO : paidBefore).setScale(2, RoundingMode.HALF_UP);
+        BigDecimal amt = (paymentAmount == null ? BigDecimal.ZERO : paymentAmount).setScale(2, RoundingMode.HALF_UP);
+        if (amt.signum() <= 0) {
+            return new Allocation(BigDecimal.ZERO.setScale(2), BigDecimal.ZERO.setScale(2));
+        }
+        BigDecimal remaining = g.subtract(before);
+        if (remaining.signum() <= 0) {
+            return new Allocation(BigDecimal.ZERO.setScale(2), amt);
+        }
+        if (amt.compareTo(remaining) <= 0) {
+            return new Allocation(amt, BigDecimal.ZERO.setScale(2));
+        }
+        return new Allocation(remaining, amt.subtract(remaining).setScale(2, RoundingMode.HALF_UP));
+    }
+
+    /**
+     * @param invoicePayments all payments of an invoice in chronological order
+     * ({@link #of(int)})
+     * @param paymentId id of the payment to evaluate
+     * @return sum of payments on the same invoice before {@code paymentId}
+     */
+    public static BigDecimal paidBefore(List<Payment> invoicePayments, int paymentId) {
+        BigDecimal sum = BigDecimal.ZERO.setScale(2);
+        if (invoicePayments == null) {
+            return sum;
+        }
+        for (Payment p : invoicePayments) {
+            if (p.id == paymentId) {
+                break;
+            }
+            sum = sum.add(p.amount);
+        }
+        return sum.setScale(2, RoundingMode.HALF_UP);
     }
 
     /**

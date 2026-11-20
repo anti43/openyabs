@@ -656,6 +656,9 @@ public final class JournalAdviserPackage {
         b.append(nl).append(Messages.JOURNAL_PKG_OPEN_ITEMS).append(nl);
         b.append(line(Messages.JOURNAL_SUM_OPEN_RECEIVABLES.toString(), totals.openReceivables));
         b.append(line(Messages.JOURNAL_SUM_OPEN_PAYABLES.toString(), totals.openPayables));
+        if (totals.overpayments != null && totals.overpayments.signum() > 0) {
+            b.append(line(Messages.JOURNAL_SUM_OVERPAYMENTS.toString(), totals.overpayments));
+        }
         b.append(nl).append(Messages.JOURNAL_PKG_CONTENTS).append(nl);
         b.append("  journal.csv            ").append(String.format(Messages.JOURNAL_PKG_FILE_JOURNAL.toString(), entries.size())).append(nl);
         b.append("  journal_tax_rates.csv  ").append(Messages.JOURNAL_PKG_FILE_RATES).append(nl);

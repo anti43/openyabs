@@ -108,6 +108,11 @@ public final class JournalCalc {
          * expenses
          */
         public boolean counted;
+        /**
+         * overpayment surplus (customer credit) on a payment exceeding the
+         * invoice gross; not counted as revenue or VAT
+         */
+        public BigDecimal overpayment = BigDecimal.ZERO;
 
         /**
          * @return true for documents of the bookkeeping (invoices, credit
@@ -163,6 +168,11 @@ public final class JournalCalc {
         public BigDecimal discount = BigDecimal.ZERO;
         public BigDecimal openReceivables = BigDecimal.ZERO;
         public BigDecimal openPayables = BigDecimal.ZERO;
+        /**
+         * overpayments / customer credit balances (surplus above invoice gross,
+         * excluded from revenue and VAT)
+         */
+        public BigDecimal overpayments = BigDecimal.ZERO;
         /**
          * open offers and orders (not finished, paid or cancelled): net and
          * gross
@@ -366,7 +376,12 @@ public final class JournalCalc {
             boolean accounting = e.isAccounting();
             if (accounting) {
                 if (e.type == Constants.TYPE_PAYMENT) {
-                    income(t, e);
+                    if (e.overpayment != null && e.overpayment.signum() > 0) {
+                        t.overpayments = t.overpayments.add(e.overpayment);
+                    }
+                    if (e.gross.signum() != 0 || e.net.signum() != 0) {
+                        income(t, e);
+                    }
                 } else if (e.type == Constants.TYPE_EXPENSE) {
                     if (e.status == EXPENSE_PAID) {
                         expense(t, e);

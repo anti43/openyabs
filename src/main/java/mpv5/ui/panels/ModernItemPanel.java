@@ -844,10 +844,22 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
             paymentIds.add(p.id);
             paymentsModel.addRow(new Object[]{DateConverter.getDefDateString(p.date), p.amount, p.description});
         }
-        paymentsInfo.setText(paymentIds.isEmpty() ? Messages.PAYMENT_HINT.toString()
-                : String.format(Messages.PAYMENT_STATE.toString(),
-                        FormatNumber.formatLokalCurrency(mpv5.handler.Payments.paid(dataOwner.__getIDS())),
-                        FormatNumber.formatLokalCurrency(mpv5.handler.Payments.open(dataOwner))));
+        java.math.BigDecimal paid = mpv5.handler.Payments.paid(dataOwner.__getIDS());
+        java.math.BigDecimal over = mpv5.handler.Payments.overpayment(dataOwner);
+        if (paymentIds.isEmpty()) {
+            paymentsInfo.setForeground(ModernTheme.muted());
+            paymentsInfo.setText(Messages.PAYMENT_HINT.toString());
+        } else if (over.signum() > 0) {
+            paymentsInfo.setForeground(new java.awt.Color(180, 83, 9));
+            paymentsInfo.setText(String.format(Messages.PAYMENT_STATE_OVERPAID.toString(),
+                    FormatNumber.formatLokalCurrency(paid),
+                    FormatNumber.formatLokalCurrency(over)));
+        } else {
+            paymentsInfo.setForeground(ModernTheme.muted());
+            paymentsInfo.setText(String.format(Messages.PAYMENT_STATE.toString(),
+                    FormatNumber.formatLokalCurrency(paid),
+                    FormatNumber.formatLokalCurrency(mpv5.handler.Payments.open(dataOwner))));
+        }
     }
 
     /**
@@ -859,7 +871,8 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
             Popup.notice(Messages.PAYMENT_SAVE_FIRST);
             return;
         }
-        javax.swing.JTextField amount = new javax.swing.JTextField(FormatNumber.formatDezimal(mpv5.handler.Payments.open(dataOwner)), 12);
+        java.math.BigDecimal open = mpv5.handler.Payments.open(dataOwner);
+        javax.swing.JTextField amount = new javax.swing.JTextField(FormatNumber.formatDezimal(open), 12);
         javax.swing.JTextField date = new javax.swing.JTextField(DateConverter.getDefDateString(new Date()), 12);
         javax.swing.JTextField note = new javax.swing.JTextField(20);
         JPanel form = new JPanel(new java.awt.GridLayout(0, 2, ModernTheme.px(8), ModernTheme.px(6)));
@@ -886,8 +899,35 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
             Popup.notice(Messages.PAYMENT_INVALID);
             return;
         }
+        String noteText = note.getText().trim();
+        if (a.compareTo(open) > 0) {
+            java.math.BigDecimal surplus = a.subtract(open).setScale(2, java.math.RoundingMode.HALF_UP);
+            String msg = String.format(Messages.PAYMENT_OVERPAY_MSG.toString(),
+                    FormatNumber.formatLokalCurrency(a),
+                    FormatNumber.formatLokalCurrency(open),
+                    FormatNumber.formatLokalCurrency(surplus));
+            java.util.List<String> opts = new java.util.ArrayList<String>();
+            if (open.signum() > 0) {
+                opts.add(String.format(Messages.PAYMENT_OVERPAY_OPEN_ONLY.toString(), FormatNumber.formatLokalCurrency(open)));
+            }
+            opts.add(Messages.PAYMENT_OVERPAY_AS_CREDIT.toString());
+            opts.add(Messages.PAYMENT_OVERPAY_AS_IS.toString());
+            opts.add(Messages.NUMWIZ_CANCEL.toString());
+            int choice = javax.swing.JOptionPane.showOptionDialog(this, msg, Messages.PAYMENT_OVERPAY_TITLE.toString(),
+                    javax.swing.JOptionPane.DEFAULT_OPTION, javax.swing.JOptionPane.WARNING_MESSAGE,
+                    null, opts.toArray(), opts.get(0));
+            if (choice < 0 || choice == opts.size() - 1) {
+                return;
+            }
+            if (open.signum() > 0 && choice == 0) {
+                a = open;
+            } else if ((open.signum() > 0 && choice == 1) || (open.signum() == 0 && choice == 0)) {
+                String creditNote = String.format(Messages.PAYMENT_OVERPAY_NOTE.toString(), FormatNumber.formatLokalCurrency(surplus));
+                noteText = noteText.isEmpty() ? creditNote : noteText + " · " + creditNote;
+            }
+        }
         int before = dataOwner.__getIntstatus();
-        if (mpv5.handler.Payments.add(dataOwner, a, d, note.getText().trim())) {
+        if (mpv5.handler.Payments.add(dataOwner, a, d, noteText)) {
             afterPaymentChange(before);
         }
     }
