@@ -130,4 +130,65 @@ class JournalCalcTest {
         //the volume counts the invoice, not the payment
         assertEquals(new BigDecimal("100.00"), t.volumeNet);
     }
+
+    @Test
+    void splitDropsEmptyZeroRateBucketWhenNonZeroRatesExist() {
+        java.util.Map<BigDecimal, BigDecimal[]> lines = new java.util.TreeMap<BigDecimal, BigDecimal[]>(JournalCalc.RATE_ORDER);
+        lines.put(bd("0"), new BigDecimal[]{bd("0.00"), bd("0.00")});
+        lines.put(bd("19"), new BigDecimal[]{bd("52.00"), bd("9.88")});
+        java.util.Map<BigDecimal, BigDecimal[]> r = JournalCalc.split(bd("52.00"), bd("9.88"), lines);
+        assertEquals(1, r.size());
+        assertFalse(r.containsKey(bd("0")));
+        assertEquals(bd("52.00"), r.get(bd("19"))[0]);
+        assertEquals(bd("9.88"), r.get(bd("19"))[1]);
+
+        //a true zero-amount invoice keeps its rate
+        java.util.Map<BigDecimal, BigDecimal[]> zeroOnly = new java.util.TreeMap<BigDecimal, BigDecimal[]>(JournalCalc.RATE_ORDER);
+        zeroOnly.put(bd("0"), new BigDecimal[]{bd("0.00"), bd("0.00")});
+        java.util.Map<BigDecimal, BigDecimal[]> rZero = JournalCalc.split(bd("0.00"), bd("0.00"), zeroOnly);
+        assertEquals(1, rZero.size());
+        assertTrue(rZero.containsKey(bd("0")));
+
+        //a real 0% line with non-zero net is kept alongside 19%
+        java.util.Map<BigDecimal, BigDecimal[]> mixed = new java.util.TreeMap<BigDecimal, BigDecimal[]>(JournalCalc.RATE_ORDER);
+        mixed.put(bd("0"), new BigDecimal[]{bd("10.00"), bd("0.00")});
+        mixed.put(bd("19"), new BigDecimal[]{bd("52.00"), bd("9.88")});
+        java.util.Map<BigDecimal, BigDecimal[]> rMixed = JournalCalc.split(bd("62.00"), bd("9.88"), mixed);
+        assertEquals(2, rMixed.size());
+        assertEquals(bd("10.00"), rMixed.get(bd("0"))[0]);
+        assertEquals(bd("52.00"), rMixed.get(bd("19"))[0]);
+    }
+
+    @Test
+    void csvByRatePreservesEffectSignForNegativeAndMixedEntries() {
+        Entry negInv = e(Constants.TYPE_INVOICE, Item.STATUS_PAID, "-50.00", "-9.50");
+        negInv.number = "INV-NEG";
+        negInv.rates.put(bd("19"), new BigDecimal[]{bd("-50.00"), bd("-9.50")});
+
+        Entry negExp = e(Constants.TYPE_EXPENSE, JournalCalc.EXPENSE_PAID, "-20.00", "-3.80");
+        negExp.number = "EXP-REFUND";
+        negExp.rates.put(bd("19"), new BigDecimal[]{bd("-20.00"), bd("-3.80")});
+
+        Entry zeroSumInv = e(Constants.TYPE_INVOICE, Item.STATUS_PAID, "0.00", "19.00");
+        zeroSumInv.number = "INV-MIX";
+        zeroSumInv.rates.put(bd("0"), new BigDecimal[]{bd("-100.00"), bd("0.00")});
+        zeroSumInv.rates.put(bd("19"), new BigDecimal[]{bd("100.00"), bd("19.00")});
+
+        Entry unpaid = e(Constants.TYPE_INVOICE, Item.STATUS_IN_PROGRESS, "52.00", "9.88");
+        unpaid.number = "INV-OPEN";
+        unpaid.rates.put(bd("19"), new BigDecimal[]{bd("52.00"), bd("9.88")});
+
+        List<Entry> entries = Arrays.asList(negInv, negExp, zeroSumInv, unpaid);
+        Totals totals = JournalCalc.compute(entries, Collections.<Integer>emptySet());
+        mpv5.utils.export.JournalAdviserPackage pkg = new mpv5.utils.export.JournalAdviserPackage(
+                entries, totals, new java.util.Date(), new java.util.Date(), Collections.<String>emptyList(), Collections.<BigDecimal, String>emptyMap());
+        String[] rows = pkg.csvByRate().split("\r\n");
+        assertEquals(6, rows.length);
+        //last column is Ergebnis netto
+        assertTrue(rows[1].contains("\"INV-NEG\"") && rows[1].endsWith("\"-50,00\""), rows[1]);
+        assertTrue(rows[2].contains("\"EXP-REFUND\"") && rows[2].endsWith("\"20,00\""), rows[2]);
+        assertTrue(rows[3].contains("\"INV-MIX\"") && rows[3].endsWith("\"-100,00\""), rows[3]);
+        assertTrue(rows[4].contains("\"INV-MIX\"") && rows[4].endsWith("\"100,00\""), rows[4]);
+        assertTrue(rows[5].contains("\"INV-OPEN\"") && rows[5].endsWith("\"0,00\""), rows[5]);
+    }
 }
