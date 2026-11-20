@@ -257,6 +257,56 @@ class VereinPluginTest {
         }
     }
 
+    @Test
+    void sepaBatchUsesMemberMandatesAndPassesPain00800108Xsd() {
+        mpv5.utils.export.SepaDirectDebit.Creditor creditor = new mpv5.utils.export.SepaDirectDebit.Creditor(
+                "Turnverein Musterstadt e.V.",
+                "DE89370400440532013000",
+                "COBADEFFXXX",
+                "DE98ZZZ09999999999");
+
+        MemberData m1 = new MemberData();
+        m1.memberId = "M-001";
+        m1.sepaMandateRef = "SEPA-M-001";
+        m1.sepaMandateDate = "2024-02-15";
+
+        MemberData m2 = new MemberData();
+        m2.memberId = "M-002";
+        m2.sepaMandateRef = "SEPA-M-002";
+        m2.sepaMandateDate = "10.03.2025";
+
+        MemberData missingMandate = new MemberData();
+        missingMandate.memberId = "M-003";
+
+        mpv5.utils.export.SepaDirectDebit.Debit d1 = VereinValidator.buildMemberDebit(
+                "RE-2026-01", "Beitrag Aktiv", new BigDecimal("120.00"),
+                "Max Mustermann", "DE44500105175407324931", "INGDDEFFXXX", m1, "2026");
+        mpv5.utils.export.SepaDirectDebit.Debit d2 = VereinValidator.buildMemberDebit(
+                "RE-2026-02", "Beitrag Jugend", new BigDecimal("60.00"),
+                "Anna Schmidt", "DE89370400440532013000", "", m2, "2026");
+        mpv5.utils.export.SepaDirectDebit.Debit skipped = VereinValidator.buildMemberDebit(
+                "RE-2026-03", "Beitrag Aktiv", new BigDecimal("120.00"),
+                "Ohne Mandat", "DE44500105175407324931", "", missingMandate, "2026");
+
+        assertNotNull(d1);
+        assertNotNull(d2);
+        assertNull(skipped, "Member without SEPA mandate must be skipped");
+
+        String xml = VereinValidator.buildSepaBatchXml(
+                creditor,
+                java.util.Arrays.asList(d1, d2),
+                LocalDate.of(2026, 12, 4),
+                java.time.LocalDateTime.of(2026, 11, 19, 14, 0, 0));
+
+        assertTrue(xml.contains("<BtchBookg>true</BtchBookg>"));
+        assertTrue(xml.contains("<NbOfTxs>2</NbOfTxs>"));
+        assertTrue(xml.contains("<CtrlSum>180.00</CtrlSum>"));
+        assertTrue(xml.contains("<MndtId>SEPA-M-001</MndtId>"));
+        assertTrue(xml.contains("<DtOfSgntr>2024-02-15</DtOfSgntr>"));
+        assertTrue(xml.contains("<MndtId>SEPA-M-002</MndtId>"));
+        assertTrue(xml.contains("<DtOfSgntr>2025-03-10</DtOfSgntr>"));
+    }
+
     private static ExtensionContext stubCtx(File tmpDir, ExtensionManager mgr, String lang) {
         return new ExtensionContext() {
             @Override public void addCommand(String t, String d, Runnable a) {}
