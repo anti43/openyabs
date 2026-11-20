@@ -1,21 +1,129 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <office:document xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0"
+                 xmlns:style="urn:oasis:names:tc:opendocument:xmlns:style:1.0"
                  xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0"
+                 xmlns:table="urn:oasis:names:tc:opendocument:xmlns:table:1.0"
+                 xmlns:fo="urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0"
                  office:version="1.2"
                  office:mimetype="application/vnd.oasis.opendocument.text">
+  <office:automatic-styles>
+    <style:style style:name="BmfTitle" style:family="paragraph">
+      <style:paragraph-properties fo:margin-top="6pt" fo:margin-bottom="2pt"/>
+      <style:text-properties fo:font-size="12pt" fo:font-weight="bold"/>
+    </style:style>
+    <style:style style:name="BmfSub" style:family="paragraph">
+      <style:paragraph-properties fo:margin-bottom="6pt"/>
+      <style:text-properties fo:font-size="8.5pt"/>
+    </style:style>
+    <style:style style:name="BmfLabel" style:family="paragraph">
+      <style:paragraph-properties fo:margin-bottom="2pt"/>
+      <style:text-properties fo:font-size="8.5pt" fo:font-weight="bold"/>
+    </style:style>
+    <style:style style:name="BmfBody" style:family="paragraph">
+      <style:paragraph-properties fo:margin-top="2pt" fo:margin-bottom="4pt"/>
+      <style:text-properties fo:font-size="9.5pt"/>
+    </style:style>
+    <style:style style:name="BmfHint" style:family="paragraph">
+      <style:paragraph-properties fo:margin-top="2pt" fo:margin-bottom="3pt"/>
+      <style:text-properties fo:font-size="8pt"/>
+    </style:style>
+    <style:style style:name="BmfTable" style:family="table">
+      <style:table-properties style:width="17cm" table:align="margins" fo:margin-top="4pt" fo:margin-bottom="4pt"/>
+    </style:style>
+    <style:style style:name="BmfCell" style:family="table-cell">
+      <style:table-cell-properties fo:border="0.5pt solid #000000" fo:padding="4pt"/>
+    </style:style>
+  </office:automatic-styles>
   <office:body>
     <office:text>
-      <text:p>Aussteller (Bezeichnung und Anschrift der steuerbegünstigten Einrichtung):</text:p>
-      <text:p>[companyinfo.name] · [companyinfo.street] · [companyinfo.zip] [companyinfo.city]</text:p>
-      <text:h text:outline-level="1">Bestätigung über [ev.donationKind]</text:h>
-      <text:p>im Sinne des § 10b des Einkommensteuergesetzes an eine der in § 5 Abs. 1 Nr. 9 des Körperschaftsteuergesetzes bezeichneten Körperschaften, Personenvereinigungen oder Vermögensmassen</text:p>
-      <text:p>Name und Anschrift des Zuwendenden: [contact.cname], [contact.street], [contact.zip] [contact.city]</text:p>
-      <text:p>Betrag der Zuwendung – in Ziffern: [item.totalvalue] EUR | – in Buchstaben: [ev.amountInWords] | Tag der Zuwendung: [item.dateadded]</text:p>
-      <text:p>[ev.waiverNotice]</text:p>
-      <text:p>Wir sind wegen Förderung ([ev.purposeClause]) nach dem [ev.bescheidType] des Finanzamtes [ev.finanzamt], StNr. [ev.taxNumber], vom [ev.freistellungDate] (Veranlagungszeitraum: [ev.freistellungPeriod]) nach § 5 Abs. 1 Nr. 9 des Körperschaftsteuergesetzes von der Körperschaftsteuer befreit.</text:p>
-      <text:p>Es wird bestätigt, dass die Zuwendung nur zur Förderung ([ev.purposeClause]) verwendet wird.</text:p>
-      <text:p>Hinweis (§ 10b Abs. 4 EStG): Wer vorsätzlich oder grob fahrlässig eine unrichtige Zuwendungsbestätigung erstellt oder veranlasst, dass Zuwendungen nicht zu den angegebenen steuerbegünstigten Zwecken verwendet werden, haftet für die entgangene Steuer (30 % des zugewendeten Betrags).</text:p>
-      <text:p>Ort, Datum und Unterschrift des Zuwendungsempfängers: ___________________________</text:p>
+      <!-- Verbindliches amtliches Muster: Anlage 3 zum BMF-Schreiben vom 07.11.2013 (BStBl I S. 1333), § 50 Abs. 1 EStDV -->
+      <table:table table:name="AusstellerBox" table:style-name="BmfTable">
+        <table:table-column/>
+        <table:table-row>
+          <table:table-cell table:style-name="BmfCell">
+            <text:p text:style-name="BmfLabel">Aussteller (Bezeichnung und Anschrift der steuerbegünstigten Einrichtung)</text:p>
+            <text:p text:style-name="BmfBody">[companyinfo.name]</text:p>
+            <text:p text:style-name="BmfBody">[companyinfo.street], [companyinfo.zip] [companyinfo.city]</text:p>
+          </table:table-cell>
+        </table:table-row>
+      </table:table>
+
+      <text:p text:style-name="BmfTitle">Bestätigung über Geldzuwendungen/Mitgliedsbeitrag</text:p>
+      <text:p text:style-name="BmfSub">im Sinne des § 10b des Einkommensteuergesetzes an eine der in § 5 Abs. 1 Nr. 9 des Körperschaftsteuergesetzes bezeichneten Körperschaften, Personenvereinigungen oder Vermögensmassen</text:p>
+
+      <table:table table:name="ZuwendenderBox" table:style-name="BmfTable">
+        <table:table-column/>
+        <table:table-row>
+          <table:table-cell table:style-name="BmfCell">
+            <text:p text:style-name="BmfLabel">Name und Anschrift des Zuwendenden:</text:p>
+            <text:p text:style-name="BmfBody">[contact.cname]</text:p>
+            <text:p text:style-name="BmfBody">[contact.street], [contact.zip] [contact.city]</text:p>
+          </table:table-cell>
+        </table:table-row>
+      </table:table>
+
+      <table:table table:name="BetragBox" table:style-name="BmfTable">
+        <table:table-column/>
+        <table:table-column/>
+        <table:table-column/>
+        <table:table-row>
+          <table:table-cell table:style-name="BmfCell">
+            <text:p text:style-name="BmfLabel">Betrag der Zuwendung – in Ziffern –</text:p>
+            <text:p text:style-name="BmfBody">[item.totalvalue] EUR</text:p>
+          </table:table-cell>
+          <table:table-cell table:style-name="BmfCell">
+            <text:p text:style-name="BmfLabel">– in Buchstaben –</text:p>
+            <text:p text:style-name="BmfBody">[ev.amountInWords]</text:p>
+          </table:table-cell>
+          <table:table-cell table:style-name="BmfCell">
+            <text:p text:style-name="BmfLabel">Tag der Zuwendung:</text:p>
+            <text:p text:style-name="BmfBody">[item.dateadded]</text:p>
+          </table:table-cell>
+        </table:table-row>
+      </table:table>
+
+      <table:table table:name="AufwandBox" table:style-name="BmfTable">
+        <table:table-column/>
+        <table:table-row>
+          <table:table-cell table:style-name="BmfCell">
+            <text:p text:style-name="BmfBody">Es handelt sich um den Verzicht auf Erstattung von Aufwendungen   [ev.waiverCheckboxes]</text:p>
+          </table:table-cell>
+        </table:table-row>
+      </table:table>
+
+      <table:table table:name="BefreiungBox" table:style-name="BmfTable">
+        <table:table-column/>
+        <table:table-row>
+          <table:table-cell table:style-name="BmfCell">
+            <text:p text:style-name="BmfBody">[ev.exemptionClause]</text:p>
+          </table:table-cell>
+        </table:table-row>
+      </table:table>
+
+      <table:table table:name="VerwendungBox" table:style-name="BmfTable">
+        <table:table-column/>
+        <table:table-row>
+          <table:table-cell table:style-name="BmfCell">
+            <text:p text:style-name="BmfBody">Es wird bestätigt, dass die Zuwendung nur zur Förderung ([ev.purposeClause]) verwendet wird.</text:p>
+            <text:p text:style-name="BmfBody">[ev.membershipDuesClause]</text:p>
+          </table:table-cell>
+        </table:table-row>
+      </table:table>
+
+      <text:p text:style-name="BmfBody"/>
+      <text:p text:style-name="BmfBody">______________________________________________________________________________</text:p>
+      <text:p text:style-name="BmfSub">(Ort, Datum und Unterschrift des Zuwendungsempfängers)</text:p>
+
+      <table:table table:name="HinweisBox" table:style-name="BmfTable">
+        <table:table-column/>
+        <table:table-row>
+          <table:table-cell table:style-name="BmfCell">
+            <text:p text:style-name="BmfLabel">Hinweis:</text:p>
+            <text:p text:style-name="BmfHint">Wer vorsätzlich oder grob fahrlässig eine unrichtige Zuwendungsbestätigung erstellt oder veranlasst, dass Zuwendungen nicht zu den in der Zuwendungsbestätigung angegebenen steuerbegünstigten Zwecken verwendet werden, haftet für die entgangene Steuer (§ 10b Abs. 4 EStG, § 9 Abs. 3 KStG, § 9 Nr. 5 GewStG).</text:p>
+            <text:p text:style-name="BmfHint">Diese Bestätigung wird nicht als Nachweis für die steuerliche Berücksichtigung der Zuwendung anerkannt, wenn das Datum des Freistellungsbescheides länger als 5 Jahre bzw. das Datum der Feststellung der Einhaltung der satzungsmäßigen Voraussetzungen nach § 60a Abs. 1 AO länger als 3 Jahre seit Ausstellung des Bescheides zurückliegt (§ 63 Abs. 5 AO).</text:p>
+          </table:table-cell>
+        </table:table-row>
+      </table:table>
     </office:text>
   </office:body>
 </office:document>
