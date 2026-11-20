@@ -37,6 +37,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import javax.swing.JComponent;
 import mpv5.db.common.DatabaseObjectModifier;
@@ -49,6 +50,7 @@ import java.util.Locale;
 import mpv5.plugin.api.ExtensionContext;
 import mpv5.plugin.api.JournalExport;
 import mpv5.plugin.api.PluginSettings;
+import mpv5.plugin.api.PrivacyContributor;
 import mpv5.plugin.api.SearchResult;
 import mpv5.plugin.api.YabsExtension;
 import mpv5.ui.panels.DataPanel;
@@ -201,6 +203,12 @@ public final class ExtensionManager {
     private final List<Owned<JournalExport>> journalExports = new CopyOnWriteArrayList<Owned<JournalExport>>();
     private final List<Owned<Function<mpv5.db.common.DatabaseObject, java.util.Map<String, Object>>>> templateFieldProviders
             = new CopyOnWriteArrayList<Owned<Function<mpv5.db.common.DatabaseObject, java.util.Map<String, Object>>>>();
+    private final List<Owned<Function<mpv5.db.common.DatabaseObject, String>>> mailWarningProviders
+            = new CopyOnWriteArrayList<Owned<Function<mpv5.db.common.DatabaseObject, String>>>();
+    private final List<Owned<Predicate<mpv5.db.objects.Item>>> eInvoiceSkipRules
+            = new CopyOnWriteArrayList<Owned<Predicate<mpv5.db.objects.Item>>>();
+    private final List<Owned<PrivacyContributor>> privacyContributors
+            = new CopyOnWriteArrayList<Owned<PrivacyContributor>>();
     private final java.util.Map<String, java.util.Map<String, java.util.Map<String, String>>> translations
             = new java.util.concurrent.ConcurrentHashMap<String, java.util.Map<String, java.util.Map<String, String>>>();
     private final List<Runnable> changeListeners = new CopyOnWriteArrayList<Runnable>();
@@ -225,6 +233,14 @@ public final class ExtensionManager {
             String base = mpv5.Main.MPPATH != null ? mpv5.Main.MPPATH : System.getProperty("user.home");
             instance = new ExtensionManager(new File(base, "plugins"), new SwingHost());
         }
+        return instance;
+    }
+
+    /**
+     * @return the current instance if already created, or {@code null} (avoids
+     * initializing Swing host in headless tests)
+     */
+    public static synchronized ExtensionManager instanceOrNull() {
         return instance;
     }
 
@@ -900,6 +916,65 @@ public final class ExtensionManager {
     }
 
     /**
+     * Collects pre-send e-mail warnings from all running plugins; a failing
+     * provider is skipped.
+     *
+     * @param obj the record being e-mailed
+     * @return list of non-empty warning messages (never null)
+     */
+    public List<String> collectMailWarnings(mpv5.db.common.DatabaseObject obj) {
+        List<String> result = new ArrayList<String>();
+        if (obj == null || mailWarningProviders.isEmpty()) {
+            return result;
+        }
+        for (Owned<Function<mpv5.db.common.DatabaseObject, String>> p : mailWarningProviders) {
+            try {
+                String msg = p.value.apply(obj);
+                if (msg != null && !msg.trim().isEmpty()) {
+                    result.add(msg.trim());
+                }
+            } catch (Throwable t) {
+                Log.Debug(ExtensionManager.class, t);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Returns {@code true} if any running plugin instructs YaBS to skip
+     * e-invoice generation/delivery for the given item.
+     *
+     * @param item the invoice being exported or e-mailed
+     * @return {@code true} to skip e-invoice and use plain PDF
+     */
+    public boolean shouldSkipEInvoice(mpv5.db.objects.Item item) {
+        if (item == null || eInvoiceSkipRules.isEmpty()) {
+            return false;
+        }
+        for (Owned<Predicate<mpv5.db.objects.Item>> r : eInvoiceSkipRules) {
+            try {
+                if (r.value.test(item)) {
+                    return true;
+                }
+            } catch (Throwable t) {
+                Log.Debug(ExtensionManager.class, t);
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @return all registered GDPR privacy contributors from running plugins
+     */
+    public List<PrivacyContributor> privacyContributors() {
+        List<PrivacyContributor> l = new ArrayList<PrivacyContributor>();
+        for (Owned<PrivacyContributor> c : privacyContributors) {
+            l.add(c.value);
+        }
+        return Collections.unmodifiableList(l);
+    }
+
+    /**
      * Resolves a plugin-scoped translation key using the active OpenYaBS user
      * language.
      *
@@ -1131,6 +1206,9 @@ public final class ExtensionManager {
         listeners.removeIf(p -> p.owner.equals(owner));
         journalExports.removeIf(p -> p.owner.equals(owner));
         templateFieldProviders.removeIf(p -> p.owner.equals(owner));
+        mailWarningProviders.removeIf(p -> p.owner.equals(owner));
+        eInvoiceSkipRules.removeIf(p -> p.owner.equals(owner));
+        privacyContributors.removeIf(p -> p.owner.equals(owner));
         translations.remove(owner);
         boolean hadViews = viewListeners.removeIf(p -> p.owner.equals(owner));
         for (Owned<DatabaseObjectModifier> m : modifiers) {
@@ -1154,7 +1232,8 @@ public final class ExtensionManager {
     /**
      * @param owner
      * @return how many things the plugin added (commands, pages, providers,
-     * listeners, modifiers, view listeners, exports, templates, translations)
+     * listeners, modifiers, view listeners, exports, templates, translations,
+     * mail warnings, e-invoice skip rules, privacy contributors)
      */
     public int contributions(String owner) {
         int n = 0;
@@ -1180,6 +1259,15 @@ public final class ExtensionManager {
             n += p.owner.equals(owner) ? 1 : 0;
         }
         for (Owned<?> p : templateFieldProviders) {
+            n += p.owner.equals(owner) ? 1 : 0;
+        }
+        for (Owned<?> p : mailWarningProviders) {
+            n += p.owner.equals(owner) ? 1 : 0;
+        }
+        for (Owned<?> p : eInvoiceSkipRules) {
+            n += p.owner.equals(owner) ? 1 : 0;
+        }
+        for (Owned<?> p : privacyContributors) {
             n += p.owner.equals(owner) ? 1 : 0;
         }
         java.util.Map<String, java.util.Map<String, String>> trMap = translations.get(owner);
@@ -1334,6 +1422,27 @@ public final class ExtensionManager {
         public void addTemplateFields(Function<mpv5.db.common.DatabaseObject, java.util.Map<String, Object>> provider) {
             if (provider != null) {
                 templateFieldProviders.add(new Owned<Function<mpv5.db.common.DatabaseObject, java.util.Map<String, Object>>>(owner, provider));
+            }
+        }
+
+        @Override
+        public void addMailWarningProvider(Function<mpv5.db.common.DatabaseObject, String> provider) {
+            if (provider != null) {
+                mailWarningProviders.add(new Owned<Function<mpv5.db.common.DatabaseObject, String>>(owner, provider));
+            }
+        }
+
+        @Override
+        public void addEInvoiceSkipRule(Predicate<mpv5.db.objects.Item> rule) {
+            if (rule != null) {
+                eInvoiceSkipRules.add(new Owned<Predicate<mpv5.db.objects.Item>>(owner, rule));
+            }
+        }
+
+        @Override
+        public void addPrivacyContributor(PrivacyContributor contributor) {
+            if (contributor != null) {
+                privacyContributors.add(new Owned<PrivacyContributor>(owner, contributor));
             }
         }
 

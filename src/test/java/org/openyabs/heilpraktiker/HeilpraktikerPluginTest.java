@@ -285,6 +285,234 @@ public class HeilpraktikerPluginTest {
             assertEquals("Kreuzschmerz", loadedD.diagnosisText);
             assertTrue(loadedD.heilbehandlung);
             assertEquals("10.03.2026", loadedD.treatmentDates);
+            assertEquals("2036-03-10", loadedD.retentionUntil);
         }
+    }
+
+    @Test
+    public void diagnosisPrintingDefaultsAndOverridesRespectGdprArt9() {
+        Settings s = new Settings();
+
+        // PKV / Beihilfe default to printing diagnosis
+        PatientData pkv = new PatientData();
+        pkv.insuranceType = "PKV";
+        InvoiceData inv = new InvoiceData();
+        inv.icd10Code = "M54.5";
+        inv.diagnosisText = "Kreuzschmerz";
+
+        assertTrue(HeilpraktikerValidator.shouldPrintDiagnosis(pkv, inv));
+        assertFalse(HeilpraktikerValidator.needsPrintDiagnosisPrompt(pkv, inv));
+        Map<String, Object> pkvFields = HeilpraktikerValidator.templateFields(pkv, inv, s);
+        assertEquals("M54.5", pkvFields.get("hp.icd10"));
+        assertEquals("Kreuzschmerz", pkvFields.get("hp.diagnosis"));
+        assertEquals("ja", pkvFields.get("hp.printDiagnosis"));
+
+        // Explicit opt-out on invoice hides diagnosis even for PKV
+        inv.printDiagnosis = Boolean.FALSE;
+        assertFalse(HeilpraktikerValidator.shouldPrintDiagnosis(pkv, inv));
+        Map<String, Object> hiddenFields = HeilpraktikerValidator.templateFields(pkv, inv, s);
+        assertEquals("", hiddenFields.get("hp.icd10"));
+        assertEquals("", hiddenFields.get("hp.diagnosis"));
+        assertEquals("nein", hiddenFields.get("hp.printDiagnosis"));
+
+        // Selbstzahler defaults to NOT printing diagnosis and triggers prompt when undecided
+        PatientData selfPay = new PatientData();
+        selfPay.insuranceType = "Selbstzahler";
+        InvoiceData selfInv = new InvoiceData();
+        selfInv.icd10Code = "F43.0";
+        selfInv.diagnosisText = "Akute Belastungsreaktion";
+
+        assertFalse(HeilpraktikerValidator.shouldPrintDiagnosis(selfPay, selfInv));
+        assertTrue(HeilpraktikerValidator.needsPrintDiagnosisPrompt(selfPay, selfInv));
+        Map<String, Object> selfFields = HeilpraktikerValidator.templateFields(selfPay, selfInv, s);
+        assertEquals("", selfFields.get("hp.icd10"));
+        assertEquals("", selfFields.get("hp.diagnosis"));
+
+        // Explicit opt-in on invoice prints diagnosis for Selbstzahler and stops prompting
+        selfInv.printDiagnosis = Boolean.TRUE;
+        assertTrue(HeilpraktikerValidator.shouldPrintDiagnosis(selfPay, selfInv));
+        assertFalse(HeilpraktikerValidator.needsPrintDiagnosisPrompt(selfPay, selfInv));
+        assertEquals("F43.0", HeilpraktikerValidator.templateFields(selfPay, selfInv, s).get("hp.icd10"));
+    }
+
+    @Test
+    public void warnsBeforeUnencryptedEmailOnlyWhenDiagnosisIsPrinted() {
+        PatientData pkv = new PatientData();
+        pkv.insuranceType = "PKV";
+        InvoiceData inv = new InvoiceData();
+        inv.icd10Code = "M54.5";
+        inv.diagnosisText = "Kreuzschmerz";
+
+        String warn = HeilpraktikerValidator.mailWarning(pkv, inv);
+        assertNotNull(warn);
+        assertTrue(warn.contains("Art. 9 DSGVO"));
+        assertTrue(warn.contains("203 StGB"));
+
+        // Turning off diagnosis printing suppresses the unencrypted e-mail warning
+        inv.printDiagnosis = Boolean.FALSE;
+        assertNull(HeilpraktikerValidator.mailWarning(pkv, inv));
+
+        // Selbstzahler without explicit opt-in does not print diagnosis -> no warning
+        PatientData selfPay = new PatientData();
+        selfPay.insuranceType = "Selbstzahler";
+        InvoiceData selfInv = new InvoiceData();
+        selfInv.diagnosisText = "Kopfschmerz";
+        assertNull(HeilpraktikerValidator.mailWarning(selfPay, selfInv));
+    }
+
+    @Test
+    public void restrictsSoapNotesAccessByRoleAndUsername() {
+        Settings restricted = new Settings();
+        restricted.restrictSoapAccess = true;
+        restricted.soapAllowedUsers = "heilpraktiker1, dr_mueller";
+
+        // Admin always allowed
+        assertTrue(HeilpraktikerSecurity.canAccessSoapNotes("admin", mpv5.usermanagement.MPSecurityManager.RIGHT_TO_ADMINISTRATE, false, restricted));
+        // Regular user without role or allowlist entry denied
+        assertFalse(HeilpraktikerSecurity.canAccessSoapNotes("buchhaltung", mpv5.usermanagement.MPSecurityManager.RIGHT_TO_CREATE_OR_DELETE, false, restricted));
+        // User with explicit per-user role property allowed
+        assertTrue(HeilpraktikerSecurity.canAccessSoapNotes("praxis_assistenz", mpv5.usermanagement.MPSecurityManager.RIGHT_TO_EDIT, true, restricted));
+        // User listed in soapAllowedUsers (case-insensitive) allowed
+        assertTrue(HeilpraktikerSecurity.canAccessSoapNotes("DR_MUELLER", mpv5.usermanagement.MPSecurityManager.RIGHT_TO_VIEW, false, restricted));
+
+        // When restriction is disabled, everyone can access
+        restricted.restrictSoapAccess = false;
+        assertTrue(HeilpraktikerSecurity.canAccessSoapNotes("buchhaltung", mpv5.usermanagement.MPSecurityManager.RIGHT_TO_VIEW, false, restricted));
+    }
+
+    @Test
+    public void encryptsSoapNotesAtRestAndPreservesOnNonSoapSave() throws Exception {
+        javax.crypto.SecretKey key = HeilpraktikerCrypto.generateKey();
+        String secret = "S: Chronische Migr\u00e4ne (§ 630f BGB)\nO: Verspannung HWS";
+        String enc1 = HeilpraktikerCrypto.encrypt(secret, key);
+        String enc2 = HeilpraktikerCrypto.encrypt(secret, key);
+        assertTrue(HeilpraktikerCrypto.isEncrypted(enc1));
+        assertFalse(enc1.contains("Migr\u00e4ne"));
+        assertFalse(enc1.equals(enc2), "Random IV must produce distinct ciphertexts");
+        assertEquals(secret, HeilpraktikerCrypto.decrypt(enc1, key));
+        assertEquals("Legacy plain text", HeilpraktikerCrypto.decrypt("Legacy plain text", key));
+
+        // Key file persistence round-trip
+        java.nio.file.Path tmpKey = java.nio.file.Files.createTempFile("hp-soap-key-", ".key");
+        java.nio.file.Files.delete(tmpKey);
+        try {
+            javax.crypto.SecretKey created = HeilpraktikerCrypto.loadOrCreateKey(tmpKey.toFile());
+            javax.crypto.SecretKey reloaded = HeilpraktikerCrypto.loadOrCreateKey(tmpKey.toFile());
+            assertEquals(secret, HeilpraktikerCrypto.decrypt(HeilpraktikerCrypto.encrypt(secret, created), reloaded));
+        } finally {
+            java.nio.file.Files.deleteIfExists(tmpKey);
+        }
+
+        // Database persistence with encryption + savePatientWithoutSoap preserving ciphertext
+        try (Connection c = DriverManager.getConnection("jdbc:h2:mem:hpenc;MODE=Derby", "sa", "")) {
+            HeilpraktikerStore.initSchema(c);
+            PatientData p = new PatientData();
+            p.contactId = 7;
+            p.birthDate = "01.01.1980";
+            p.insuranceType = "PKV";
+            p.soapNotes = secret;
+            HeilpraktikerStore.savePatient(c, p, key);
+
+            // Raw column in DB must be encrypted, not plaintext
+            try (java.sql.PreparedStatement ps = c.prepareStatement("SELECT soap_notes FROM hp_patient_data WHERE contact_id = 7");
+                 java.sql.ResultSet rs = ps.executeQuery()) {
+                assertTrue(rs.next());
+                String raw = rs.getString(1);
+                assertTrue(HeilpraktikerCrypto.isEncrypted(raw));
+                assertFalse(raw.contains("Migr\u00e4ne"));
+            }
+
+            // Loading with key decrypts back to original text
+            PatientData loaded = HeilpraktikerStore.loadPatient(c, 7, key);
+            assertEquals(secret, loaded.soapNotes);
+
+            // Non-SOAP user editing insurance type must NOT erase encrypted SOAP notes
+            loaded.insuranceType = "Beihilfe";
+            loaded.soapNotes = "SHOULD_NOT_OVERWRITE";
+            HeilpraktikerStore.savePatientWithoutSoap(c, loaded);
+            PatientData afterAdminEdit = HeilpraktikerStore.loadPatient(c, 7, key);
+            assertEquals("Beihilfe", afterAdminEdit.insuranceType);
+            assertEquals(secret, afterAdminEdit.soapNotes);
+        }
+    }
+
+    @Test
+    public void tracksTenYearRetentionAndPurgesExpiredHealthData() throws Exception {
+        assertEquals(java.time.LocalDate.of(2026, 4, 10),
+                HeilpraktikerValidator.parseLatestTreatmentDate("03.04.2026, 10.04.2026"));
+        assertEquals(java.time.LocalDate.of(2036, 4, 10),
+                HeilpraktikerValidator.calculateTreatmentRetentionUntil(java.time.LocalDate.of(2026, 4, 10)));
+
+        try (Connection c = DriverManager.getConnection("jdbc:h2:mem:hpretention;MODE=Derby", "sa", "")) {
+            // Also verify schema migration from legacy tables without new columns
+            try (java.sql.Statement st = c.createStatement()) {
+                st.executeUpdate("CREATE TABLE hp_patient_data (contact_id INTEGER PRIMARY KEY, birth_date VARCHAR(20), insurance_type VARCHAR(40), honorarvereinbarung INTEGER, soap_notes VARCHAR(4000), updated_at TIMESTAMP)");
+                st.executeUpdate("CREATE TABLE hp_invoice_data (item_id INTEGER PRIMARY KEY, icd10_code VARCHAR(80), diagnosis_text VARCHAR(500), is_heilbehandlung INTEGER, treatment_dates VARCHAR(500), updated_at TIMESTAMP)");
+            }
+            HeilpraktikerStore.initSchema(c);
+
+            // Expired patient (treatment 2014 -> retention until 2024-05-01)
+            PatientData oldP = new PatientData();
+            oldP.contactId = 1;
+            oldP.birthDate = "10.10.1970";
+            oldP.lastTreatmentDate = "2014-05-01";
+            oldP.soapNotes = "Alte Behandlungsnotiz";
+            HeilpraktikerStore.savePatient(c, oldP, null);
+
+            // Active patient (treatment 2025 -> retention until 2035-06-01)
+            PatientData freshP = new PatientData();
+            freshP.contactId = 2;
+            freshP.birthDate = "11.11.1990";
+            freshP.lastTreatmentDate = "2025-06-01";
+            freshP.soapNotes = "Aktuelle Notiz";
+            HeilpraktikerStore.savePatient(c, freshP, null);
+
+            // Expired invoice (treatment 01.03.2015 -> retention until 2025-03-01)
+            InvoiceData oldInv = new InvoiceData();
+            oldInv.itemId = 10;
+            oldInv.icd10Code = "M54.5";
+            oldInv.diagnosisText = "Kreuzschmerz";
+            oldInv.treatmentDates = "01.03.2015";
+            oldInv.heilbehandlung = true;
+            HeilpraktikerStore.saveInvoice(c, oldInv);
+
+            java.time.LocalDate today = java.time.LocalDate.of(2026, 11, 20);
+            assertEquals(1, HeilpraktikerStore.findExpiredPatients(c, today).size());
+            assertEquals(1, HeilpraktikerStore.findExpiredInvoices(c, today).size());
+
+            // Anonymise expired records
+            HeilpraktikerStore.PurgeResult res = HeilpraktikerStore.purgeExpired(c, today, false);
+            assertEquals(1, res.patientsAffected);
+            assertEquals(1, res.invoicesAffected);
+
+            // Expired patient & invoice are anonymised; fresh patient untouched
+            PatientData afterOldP = HeilpraktikerStore.loadPatient(c, 1, null);
+            assertEquals("", afterOldP.soapNotes);
+            assertEquals("", afterOldP.birthDate);
+            assertEquals("Aktuelle Notiz", HeilpraktikerStore.loadPatient(c, 2, null).soapNotes);
+
+            InvoiceData afterOldInv = HeilpraktikerStore.loadInvoice(c, 10);
+            assertEquals("", afterOldInv.icd10Code);
+            assertEquals("", afterOldInv.diagnosisText);
+            assertTrue(afterOldInv.heilbehandlung, "VAT exemption flag kept for auditability on anonymisation");
+        }
+    }
+
+    @Test
+    public void skipsEInvoiceForTaxExemptMedicalTreatments() {
+        Settings s = new Settings();
+        s.skipEInvoiceForTaxExempt = true;
+
+        InvoiceData heil = new InvoiceData();
+        heil.heilbehandlung = true;
+        assertTrue(HeilpraktikerValidator.shouldSkipEInvoice(heil, true, s));
+        assertFalse(HeilpraktikerValidator.shouldSkipEInvoice(heil, false, s));
+
+        InvoiceData wellness = new InvoiceData();
+        wellness.heilbehandlung = false;
+        assertFalse(HeilpraktikerValidator.shouldSkipEInvoice(wellness, true, s));
+
+        s.skipEInvoiceForTaxExempt = false;
+        assertFalse(HeilpraktikerValidator.shouldSkipEInvoice(heil, true, s));
     }
 }

@@ -156,6 +156,22 @@ public enum EInvoiceDelivery {
     }
 
     /**
+     * @param contact
+     * @param item the invoice being exported or sent (may be null)
+     * @return the effective delivery for the contact and item; returns
+     * {@link #PDF} if a running plugin skips e-invoice delivery for this item
+     */
+    public static EInvoiceDelivery effectiveFor(DatabaseObject contact, mpv5.db.objects.Item item) {
+        if (item != null) {
+            mpv5.plugin.ExtensionManager em = mpv5.plugin.ExtensionManager.instanceOrNull();
+            if (em != null && em.shouldSkipEInvoice(item)) {
+                return PDF;
+            }
+        }
+        return effectiveFor(contact);
+    }
+
+    /**
      * Store the delivery for the contact (which must exist)
      *
      * @param contact
