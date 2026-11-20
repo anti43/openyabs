@@ -1139,6 +1139,8 @@ public final class Gobd {
             storno.setDiscountvalue(nz(original.__getDiscountvalue()));
             storno.setDiscountGrosvalue(nz(original.__getDiscountGrosvalue()));
             storno.setDescription("Stornorechnung zu Rechnung Nr. " + original.__getCnumber());
+            //the cancelled invoice: on the document and in the e-invoice (BT-25 / BT-26)
+            storno.setRefinvoiceids(original.__getIDS());
             storno.save(true);
             if (storno.__getIDS() <= 0) {
                 error("Stornorechnung konnte nicht in der Datenbank gespeichert werden.");

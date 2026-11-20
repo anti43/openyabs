@@ -55,10 +55,12 @@ ITEM_EXTRA = ['item.servicedate', 'item.netvaluef', 'item.taxvaluef', 'item.gros
               'item.paymentduedate', 'item.paymentterms', 'item.skontopercent', 'item.skontodays', 'item.skontodate',
               'item.skontoamount', 'item.skontopayamount', 'group', 'addedby', 'addedbyfull',
               'item.vatgroupcount', 'item.hasmultipletaxrates', 'item.vatgroup1.rate', 'item.vatgroup1.ratevalue',
-              'item.vatgroup1.name', 'item.vatgroup1.netf', 'item.vatgroup1.vatf', 'item.vatgroup1.grossf']
+              'item.vatgroup1.name', 'item.vatgroup1.netf', 'item.vatgroup1.vatf', 'item.vatgroup1.grossf',
+              'item.vatgroup1.category', 'item.vatgroup1.note', 'item.taxnotes',
+              'item.correctedinvoice', 'item.correctedinvoicenumber', 'item.correctedinvoicedate']
 COMPANY = ['companyinfo.' + k for k in ['business', 'firstname', 'name', 'street', 'zip', 'city', 'country', 'phoneprefix', 'phone',
            'fax', 'email', 'account', 'banknumber', 'bankname', 'account1', 'taxnumber', 'taxauthority', 'taxmandant',
-           'taxadvsior', 'taxadvjob', 'payterm', 'sepacreditorid']]
+           'taxadvsior', 'taxadvjob', 'payterm', 'sepacreditorid', 'vatid']]
 
 # ---- the base template
 z = zipfile.ZipFile(os.path.join(REPO, 'src/main/resources/extra/DE-Yabs-2.0.odt'))
@@ -110,7 +112,8 @@ VAT_STYLES = ('<style:style style:name="Tabelle1.F" style:family="table-column">
               '<style:style style:name="VatP" style:family="paragraph" style:parent-style-name="Standard"><style:paragraph-properties fo:text-align="end"/><style:text-properties fo:font-size="9pt"/></style:style>'
               '<style:style style:name="VatPL" style:family="paragraph" style:parent-style-name="Standard"><style:text-properties fo:font-size="9pt"/></style:style>'
               '<style:style style:name="VatPB" style:family="paragraph" style:parent-style-name="Standard"><style:paragraph-properties fo:text-align="end"/><style:text-properties fo:font-size="9pt" fo:font-weight="bold"/></style:style>'
-              '<style:style style:name="VatPBL" style:family="paragraph" style:parent-style-name="Standard"><style:text-properties fo:font-size="9pt" fo:font-weight="bold"/></style:style>')
+              '<style:style style:name="VatPBL" style:family="paragraph" style:parent-style-name="Standard"><style:text-properties fo:font-size="9pt" fo:font-weight="bold"/></style:style>'
+              '<style:style style:name="TaxNote" style:family="paragraph" style:parent-style-name="Standard"><style:paragraph-properties fo:margin-top="0.3cm"/><style:text-properties fo:font-size="9pt" fo:font-weight="bold"/></style:style>')
 
 def vat_layout(c):
     """the tax rate column in the positions (format 1,2,4,5,7,6) and the VAT table after the totals"""
@@ -149,10 +152,26 @@ def vat_layout(c):
            '<table:table-row>' + vcell(ph('vatgroups.name'), 'VatPL') + vcell(ph('vatgroups.netf')) + vcell(ph('vatgroups.vatf')) + vcell(ph('vatgroups.grossf')) + '</table:table-row>'
            '<table:table-row>' + vcell('Gesamt', 'VatPBL', 'VatT.S') + vcell(ph('item.netvaluef'), 'VatPB', 'VatT.S') + vcell(ph('item.taxvaluef'), 'VatPB', 'VatT.S') + vcell(ph('item.grosvaluef'), 'VatPB', 'VatT.S') + '</table:table-row>'
            '</table:table>')
+    # the notes the VAT categories of the positions need (reverse charge, intra-community supply, export,
+    # exemption: item.taxnotes, empty for positions with VAT), #209
+    vat += '<text:p text:style-name="TaxNote">%s</text:p>' % ph('item.taxnotes')
     m = TOTALS.search(c)
     assert m
     c = c[:m.end()] + vat + c[m.end():]
     return c
+
+# ---- the tax number is the Steuernummer ("St.-Nr."), the VAT ID (USt-IdNr., companyinfo.vatid) in the empty row
+# below it: invoices with reverse charge or intra-community supplies need it (§ 14a UStG), #209
+TAXNO_ROW = ('<table:table-row><table:covered-table-cell/><table:table-cell table:style-name="Tabelle2.A1" office:value-type="string"><text:p text:style-name="P17">Ust-Nr:</text:p></table:table-cell>'
+             '<table:table-cell table:style-name="Tabelle2.A1" office:value-type="string"><text:p text:style-name="P11">' + ph('companyinfo.taxnumber') + '</text:p></table:table-cell></table:table-row>')
+EMPTY_ROW = ('<table:table-row><table:covered-table-cell/><table:table-cell table:style-name="Tabelle2.A1" office:value-type="string"><text:p text:style-name="P9"/></table:table-cell>'
+             '<table:table-cell table:style-name="Tabelle2.A1" office:value-type="string"><text:p text:style-name="P17"/></table:table-cell></table:table-row>')
+
+def vat_id(c):
+    assert c.count(TAXNO_ROW + EMPTY_ROW) == 1, 'tax number row'
+    vatid = ('<table:table-row><table:covered-table-cell/><table:table-cell table:style-name="Tabelle2.A1" office:value-type="string"><text:p text:style-name="P17">USt-IdNr.:</text:p></table:table-cell>'
+             '<table:table-cell table:style-name="Tabelle2.A1" office:value-type="string"><text:p text:style-name="P11">' + ph('companyinfo.vatid') + '</text:p></table:table-cell></table:table-row>')
+    return c.replace(TAXNO_ROW + EMPTY_ROW, TAXNO_ROW.replace('>Ust-Nr:<', '>St.-Nr.:<') + vatid, 1)
 
 # ---- the invoice of a small business (Kleinunternehmer, § 19 UStG): no VAT column, no VAT
 # table, no VAT row in the totals, the note of the exemption below the totals (companyinfo.smallbusinessnote:
@@ -162,8 +181,7 @@ KU_STYLES = ('<style:style style:name="KuNote" style:family="paragraph" style:pa
              '<style:text-properties style:font-name="Arial" fo:font-size="10pt" fo:font-weight="bold"/></style:style>')
 
 def small_business(c):
-    for old, new in (('<text:p text:style-name="P16">Netto-Einzel-Preis</text:p>', '<text:p text:style-name="P16">Einzelpreis</text:p>'),
-                     ('<text:p text:style-name="P17">Ust-Nr:</text:p>', '<text:p text:style-name="P17">St.-Nr.:</text:p>')):
+    for old, new in (('<text:p text:style-name="P16">Netto-Einzel-Preis</text:p>', '<text:p text:style-name="P16">Einzelpreis</text:p>'),):
         assert c.count(old) == 1, old
         c = c.replace(old, new)
     c = c.replace('</office:automatic-styles>', KU_STYLES + '</office:automatic-styles>', 1)
@@ -205,6 +223,23 @@ def service_date(c):
 
 # the kinds of documents which are invoices (show the service date)
 INVOICE_TYPES = (0, 20, 21, 22)
+
+# ---- a credit note corrects or cancels an invoice: "Zu Rechnung" with item.correctedinvoice ("Rechnung Nr. ...
+# vom ...", empty without a reference) below the service date, the heading "Rechnungskorrektur" (in German VAT
+# law a "Gutschrift" is a self-billed invoice, § 14 Abs. 2 Satz 2 UStG), #211
+CREDIT_HEADING = 'Rechnungskorrektur'
+
+def corrected_invoice(c):
+    m = re.search(r'<table:table-row><table:covered-table-cell/><table:table-cell table:style-name="Tabelle2.A1" office:value-type="string"><text:p text:style-name="P9">Leistungsdatum</text:p></table:table-cell>.*?</table:table-row>', c)
+    assert m, 'service date row'
+    row = m.group(0).replace('>Leistungsdatum<', '>Zu Rechnung<', 1).replace('&lt;item.servicedate&gt;', '&lt;item.correctedinvoice&gt;', 1)
+    assert '&lt;item.correctedinvoice&gt;' in row
+    c = c[:m.end()] + row + c[m.end():]
+    t = c.index('<table:table table:name="Tabelle2"')
+    span = re.compile(r'table:number-rows-spanned="(\d+)"')
+    sm = span.search(c, t)
+    assert sm and sm.start() < c.index('</table:table>', t)
+    return c[:sm.start()] + 'table:number-rows-spanned="%d"' % (int(sm.group(1)) + 1) + c[sm.end():]
 
 LOGO = ('<text:p text:style-name="P23"><draw:frame draw:style-name="frLogo" draw:name="Logo" text:anchor-type="as-char" svg:width="4.2cm" svg:height="1.4cm" draw:z-index="3">'
         '<draw:image xlink:href="Pictures/logo.png" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/></draw:frame></text:p>')
@@ -346,14 +381,18 @@ def make(fname, title, kind, groups, prefix=None, cprefix=None, blocks=None, tot
             c = vat_layout(c)
         elif kind == 'smallbusiness':
             c = small_business(c)
+        if kind in ('item', 'smallbusiness'):
+            c = vat_id(c)
         if kind in ('item', 'smallbusiness') and tid in INVOICE_TYPES:
             c = service_date(c)
+        if tid == 20:
+            c = corrected_invoice(c)
     if prefix:
         c = c.replace('&lt;item.contact.', '&lt;' + cprefix).replace('&lt;item.', '&lt;' + prefix)
     c = c.replace('</office:automatic-styles>', STYLES + BSTYLES + '</office:automatic-styles>', 1)
     assert kind == 'journal' or '<text:p text:style-name="P23">Firmenlogo</text:p>' in c
     c = c.replace('<text:p text:style-name="P23">Firmenlogo</text:p>', LOGO, 1)
-    c = c.replace('<text:span text:style-name="T6">Rechnung </text:span>', '<text:span text:style-name="T6">%s </text:span>' % esc(title), 1)
+    c = c.replace('<text:span text:style-name="T6">Rechnung </text:span>', '<text:span text:style-name="T6">%s </text:span>' % esc(CREDIT_HEADING if tid == 20 else title), 1)
     end = c.index('</office:text>')
     if kind in ('item', 'journal', 'positions', 'smallbusiness'):
         body_end = c[:end]
@@ -392,7 +431,7 @@ positions = ['item.xtable1 (Positionstabelle: Tabelle mit dem Namen xtable1)']
 # type, title, label of the total
 TYPES = [
     (0, 'Rechnung', 'Rechnungsbetrag'), (2, 'Angebot', 'Angebotssumme'), (1, 'Auftrag', 'Auftragssumme'),
-    (3, 'Lieferschein', 'Gesamtbetrag'), (4, 'Auftragsbestätigung', 'Auftragssumme'), (20, 'Gutschrift', 'Gutschriftsbetrag'),
+    (3, 'Lieferschein', 'Gesamtbetrag'), (4, 'Auftragsbestätigung', 'Auftragssumme'), (20, 'Gutschrift', 'Korrekturbetrag'),
     (21, 'Abschlagsrechnung', 'Rechnungsbetrag'), (22, 'Anzahlungsrechnung', 'Rechnungsbetrag'), (11, 'Vertrag', 'Gesamtbetrag'),
 ]
 made = []
@@ -472,7 +511,7 @@ def write_odt(fname, c):
     zo.close()
     open(os.path.join(OUT, fname), 'wb').write(out.getvalue())
     return len(out.getvalue())
-inv = service_date(vat_layout(content.replace(SENDER[0], SENDER[1], 1)))
+inv = vat_id(service_date(vat_layout(content.replace(SENDER[0], SENDER[1], 1))))
 inv, n = DUPLICATE_NAME.subn('', inv, 1)
 assert n == 1
 made.append((0, 'Rechnung (Standard)', 'invoice.odt', write_odt('invoice.odt', inv)))

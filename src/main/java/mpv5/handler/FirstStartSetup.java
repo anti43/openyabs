@@ -405,9 +405,11 @@ public final class FirstStartSetup {
             "51a57b06204d9827b135e3d6c11b429f4458a473d08186eeaffda23783b1b508"));
 
     /**
-     * SHA-256 of the bundled templates of the previous release -> the
-     * resource that replaces them (the invoices got the service date,
-     * item.servicedate, #208); a template whose file was changed is kept
+     * SHA-256 of the bundled templates of previous releases -> the resource
+     * that replaces them (the invoices got the service date, item.servicedate,
+     * #208, then the VAT ID and the notes of the VAT categories,
+     * companyinfo.vatid and item.taxnotes, #209); a template whose file was
+     * changed is kept
      */
     private static final java.util.Map<String, String> PREVIOUS_RELEASE = new java.util.HashMap<>();
 
@@ -424,6 +426,31 @@ public final class FirstStartSetup {
         PREVIOUS_RELEASE.put("04ece9267c08364f5fcfa80636c142eab2c5cbdfa652fe2f21932525065a11b5", "/extra/templates/demo-21.odt");
         PREVIOUS_RELEASE.put("c91c15c26612f8df1cb17706ec67ca0f658566df5c4deec9a05e5092dbe376ea", "/extra/templates/demo-22.odt");
         PREVIOUS_RELEASE.put("16d3cc0bf3872fe4efa550032dde9410bbde8b87bc13733646ee22529d629a53", INVOICE_TEMPLATE);
+        //the templates with the service date (#208), before the VAT ID and the notes of the VAT categories (#209)
+        PREVIOUS_RELEASE.put("6cc5913d02cbf9d16fb92133742f3ff542c9a58e417f9b92c41b46e2c0a25baf", SMALL_BUSINESS_INVOICE_TEMPLATE);
+        PREVIOUS_RELEASE.put("1886d10d7fbd93f11e9821af902ad3bb266724fb945b8254a05feca189105ccc", "/extra/templates/demo-00.odt");
+        PREVIOUS_RELEASE.put("526ce5d4b065567c5887a4197de4528b306e2d1d737d872146224e1c0e50b8a7", "/extra/templates/demo-01.odt");
+        PREVIOUS_RELEASE.put("b3b495e072fea03e9f4120b73fad4519a919da1836c489c4f10f885180132e94", "/extra/templates/demo-02.odt");
+        PREVIOUS_RELEASE.put("fc8637a4a059b3d683848150492848bc52254a1ec4d905bcf5876810a679bfd8", "/extra/templates/demo-03.odt");
+        PREVIOUS_RELEASE.put("72b77d848568332240feff525e11cbbf75f59cf016321ab6efcfa8d84f7f89eb", "/extra/templates/demo-04.odt");
+        PREVIOUS_RELEASE.put("20b9bbf5705fc3b7953effa78a1ba49bc374d56525918cbe56f65b30e0700024", "/extra/templates/demo-07.odt");
+        PREVIOUS_RELEASE.put("96a2055b5a3da7365a9ffa7a1365330a64661d9fbd94d5914bcaeb55f723df1e", "/extra/templates/demo-11.odt");
+        PREVIOUS_RELEASE.put("a76f80b5a627dbcc597cbb5cc2f69c0b31a398d889faaa265c77a67dabf834a5", "/extra/templates/demo-20.odt");
+        PREVIOUS_RELEASE.put("c0b61bc6f77db59cc2b61e1c98c36a08be9653399f30d664cef4d6f9c190453b", "/extra/templates/demo-21.odt");
+        PREVIOUS_RELEASE.put("6e09c0997ff6b75c22dd1555fee507c513d644c9fd8feaf72e9dc1779c85921c", "/extra/templates/demo-22.odt");
+        PREVIOUS_RELEASE.put("b34ebf1bc103c0871f049feddbaf150868b8da062a156bf57d26969dd48e4716", INVOICE_TEMPLATE);
+        //with the VAT ID and the notes of the VAT categories (#209), before the reference of credit notes (#211)
+        PREVIOUS_RELEASE.put("2966c886f32735048952523a95200e899a018001179e55242d1c51aadc3e21ce", SMALL_BUSINESS_INVOICE_TEMPLATE);
+        PREVIOUS_RELEASE.put("1f169b2817ccf906b70018f7cec207fc9bf943abede238a5c743dc012f80090a", "/extra/templates/demo-00.odt");
+        PREVIOUS_RELEASE.put("87b3cc87e0cec0ef155f4b7ae367620a74fae2532ca29f68333431582af269c7", "/extra/templates/demo-01.odt");
+        PREVIOUS_RELEASE.put("0e77a4df19a73068d9c89eac417cdcc55ae13380e7cc564854ac18a1b760753d", "/extra/templates/demo-02.odt");
+        PREVIOUS_RELEASE.put("bebabcc37fdc64f5c8e37f38a8164b287de290eb7994edc24796d274b5567279", "/extra/templates/demo-03.odt");
+        PREVIOUS_RELEASE.put("3cbf82aa48024c35f6ff82ef1b989f95378cc499102a3866c6eca4ce6fa02e9c", "/extra/templates/demo-04.odt");
+        PREVIOUS_RELEASE.put("e44f064056031146b8cb7a3be438216df2dcbc632c858246d5ba8a52dd769302", "/extra/templates/demo-07.odt");
+        PREVIOUS_RELEASE.put("003cc009e737cebd057be882be32e4aedb5ada9b2845194955fd196d00cd79c8", "/extra/templates/demo-11.odt");
+        PREVIOUS_RELEASE.put("c759d467f9746cc5b72e752f2391ae818f3fb62d880c6012a746c2e60b25e9da", "/extra/templates/demo-20.odt");
+        PREVIOUS_RELEASE.put("86255683f04e5b495f1458878da16c765c5141f6959daaca66af8cbd2aa8eae4", "/extra/templates/demo-21.odt");
+        PREVIOUS_RELEASE.put("baac7a3abb29ef79ba0ffb71f52d26adbd70863956c354cf14b02ca8b0362286", "/extra/templates/demo-22.odt");
     }
 
     static {

@@ -72,6 +72,13 @@ public class ControlPanel_Taxes extends JPanel implements ControlApplet, DataPan
     private final JTextField cname = ModernTheme.roomy(new JTextField());
     private final JTextField value = ModernTheme.roomy(new JTextField());
     private final JComboBox<Object> countries = new JComboBox<Object>();
+    /**
+     * the VAT category (e-invoice), the exemption reason code and the note on
+     * the invoice (#209)
+     */
+    private final JComboBox<mpv5.utils.export.VatCategory> category = new JComboBox<mpv5.utils.export.VatCategory>(mpv5.utils.export.VatCategory.values());
+    private final JTextField reasonCode = ModernTheme.roomy(new JTextField());
+    private final JTextField note = ModernTheme.roomy(new JTextField());
     private final JLabel title = new JLabel();
     private final JButton delete = Applets.danger(new JButton(Messages.TAXES_DELETE.toString()));
     private JPanel actions = new JPanel();
@@ -112,7 +119,12 @@ public class ControlPanel_Taxes extends JPanel implements ControlApplet, DataPan
                 .row(Card.field(bundle.getString("ControlPanel_Taxes.cname._Label"), cname, 2),
                         Card.field(Messages.TAXES_RATE.toString(), value, 1))
                 .row(Card.field(bundle.getString("ControlPanel_Taxes.countries._Label"), countries))
-                .addFull(Applets.hint(Messages.TAXES_HINT.toString()));
+                .addFull(Applets.hint(Messages.TAXES_HINT.toString()))
+                .row(Card.field(Messages.TAXES_CATEGORY.toString(), category))
+                .row(Card.field(Messages.TAXES_REASON_CODE.toString(), reasonCode, 1),
+                        Card.field(Messages.TAXES_NOTE.toString(), note, 2))
+                .addFull(Applets.hint(Messages.TAXES_CATEGORY_HINT.toString()));
+        category.addActionListener(e -> showDefaults());
         JPanel right = new JPanel(new BorderLayout(0, ModernTheme.px(8)));
         right.setOpaque(false);
         right.add(title, BorderLayout.NORTH);
@@ -137,6 +149,9 @@ public class ControlPanel_Taxes extends JPanel implements ControlApplet, DataPan
         listing = false;
         cname.setText("");
         value.setText(FormatNumber.formatDezimal(0d));
+        category.setSelectedItem(mpv5.utils.export.VatCategory.S);
+        reasonCode.setText("");
+        note.setText("");
         title.setText(Messages.TAXES_NEW.toString());
         delete.setEnabled(false);
         cname.requestFocusInWindow();
@@ -154,6 +169,9 @@ public class ControlPanel_Taxes extends JPanel implements ControlApplet, DataPan
         t.setCname(cname_);
         t.setCountry(country_);
         t.setTaxvalue(taxvalue_);
+        t.setCategorycode(categorycode_);
+        t.setExemptioncode(exemptioncode_);
+        t.setExemptionnote(exemptionnote_);
         if (t.save()) {
             dataOwner = t;
             actionAfterSave();
@@ -183,6 +201,23 @@ public class ControlPanel_Taxes extends JPanel implements ControlApplet, DataPan
     public BigDecimal taxvalue_;
     public String identifier_ = "";
     public String country_ = "";
+    public String categorycode_ = "";
+    public String exemptioncode_ = "";
+    public String exemptionnote_ = "";
+
+    /**
+     * The defaults of the selected category as tooltips of the code and note
+     */
+    private void showDefaults() {
+        mpv5.utils.export.VatCategory c = (mpv5.utils.export.VatCategory) category.getSelectedItem();
+        boolean reason = c != null && c.needsReason();
+        reasonCode.setEnabled(reason);
+        note.setEnabled(reason);
+        reasonCode.setToolTipText(reason && c.defaultReasonCode() != null
+                ? String.format(Messages.TAXES_DEFAULT.toString(), c.defaultReasonCode()) : null);
+        note.setToolTipText(reason && !c.defaultNote().isEmpty()
+                ? String.format(Messages.TAXES_DEFAULT.toString(), c.defaultNote()) : null);
+    }
 
     @Override
     public void setValues(PropertyStore values) {
@@ -228,7 +263,7 @@ public class ControlPanel_Taxes extends JPanel implements ControlApplet, DataPan
                 r.badge = "%";
                 r.color = RichList.GREEN;
                 r.title = t.__getCname();
-                r.detail = t.__getCountry();
+                r.detail = t.__getCountry() + (t.category() == mpv5.utils.export.VatCategory.S ? "" : " \u00b7 " + t.category());
                 r.right = FormatNumber.formatDezimal(t.__getTaxvalue()) + " %";
                 r.strong = true;
                 r.data = t;
@@ -261,6 +296,16 @@ public class ControlPanel_Taxes extends JPanel implements ControlApplet, DataPan
             cname_ = cname.getText();
             taxvalue_ = FormatNumber.parseDezimal(value.getText().trim().isEmpty() ? "0" : value.getText());
             country_ = countries.getSelectedItem() == null ? "" : countries.getSelectedItem().toString();
+            mpv5.utils.export.VatCategory c = (mpv5.utils.export.VatCategory) category.getSelectedItem();
+            //the category must fit the rate (0 % or not); S/E as before is stored as empty
+            mpv5.utils.export.VatCategory fitting = mpv5.utils.export.VatCategory.of(c == null ? null : c.code(), taxvalue_);
+            if (c != null && fitting != c) {
+                Popup.notice(String.format(Messages.TAXES_CATEGORY_RATE.toString(), c));
+                return false;
+            }
+            categorycode_ = c == null || fitting == mpv5.utils.export.VatCategory.of(null, taxvalue_) ? "" : c.code();
+            exemptioncode_ = c != null && c.needsReason() ? reasonCode.getText().trim() : "";
+            exemptionnote_ = c != null && c.needsReason() ? note.getText().trim() : "";
             return true;
         } catch (Exception e) {
             Popup.notice(Messages.TAXES_RATE_INVALID.toString());
@@ -293,6 +338,10 @@ public class ControlPanel_Taxes extends JPanel implements ControlApplet, DataPan
                 countries.setSelectedIndex(i);
             }
         }
+        category.setSelectedItem(mpv5.utils.export.VatCategory.of(categorycode_, taxvalue_));
+        reasonCode.setText(exemptioncode_ == null ? "" : exemptioncode_);
+        note.setText(exemptionnote_ == null ? "" : exemptionnote_);
+        showDefaults();
     }
 
     @Override
