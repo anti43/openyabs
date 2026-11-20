@@ -228,6 +228,30 @@ class VatBreakdownTest {
     }
 
     @Test
+    void invoicesShowTheServiceDate() throws Exception {
+        //§ 14 Abs. 4 Nr. 6 UStG: the date of the service on every invoice (#208)
+        for (String t : new String[]{"/extra/templates/invoice.odt", "/extra/templates/demo-00.odt", "/extra/templates/demo-00-ku.odt",
+            "/extra/templates/demo-20.odt", "/extra/templates/demo-21.odt", "/extra/templates/demo-22.odt"}) {
+            String c = content(t);
+            assertTrue(c.contains(">Leistungsdatum<"), t);
+            assertTrue(c.contains("&lt;item.servicedate&gt;"), t);
+        }
+        //not on an offer
+        assertFalse(content("/extra/templates/demo-02.odt").contains(">Leistungsdatum<"));
+    }
+
+    private static String content(String resource) throws Exception {
+        try (ZipInputStream z = new ZipInputStream(VatBreakdownTest.class.getResourceAsStream(resource))) {
+            for (ZipEntry e; (e = z.getNextEntry()) != null;) {
+                if (e.getName().equals("content.xml")) {
+                    return new String(z.readAllBytes(), StandardCharsets.UTF_8);
+                }
+            }
+        }
+        throw new AssertionError("no content.xml in " + resource);
+    }
+
+    @Test
     void theSmallBusinessInvoiceShowsNoVat() throws Exception {
         //Kleinunternehmer (§ 19 UStG): no VAT column, no VAT table, no VAT total - but the note and the QR code
         String c = render(mpv5.handler.FirstStartSetup.SMALL_BUSINESS_INVOICE_TEMPLATE,

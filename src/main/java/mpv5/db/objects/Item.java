@@ -299,8 +299,17 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     private BigDecimal taxvalue = BigDecimal.ZERO;
     private BigDecimal discountvalue = BigDecimal.ZERO;
     private BigDecimal discountgrosvalue = BigDecimal.ZERO;
+    /**
+     * the service date (Leistungsdatum, § 14 Abs. 4 Nr. 6 UStG, BT-72); the
+     * document date if not set (see {@link #save(boolean)})
+     */
     private Date datetodo;
     private Date dateend;
+    /**
+     * when the document was saved last, set by {@link #save(boolean)} (not
+     * editable)
+     */
+    private Date datelastupdated;
     private int intreminders;
     private int intstatus;
     private int inttype;
@@ -375,17 +384,45 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     }
 
     /**
-     * @return the datetodo
+     * @return the service date (Leistungsdatum), may be null for a document not
+     * saved yet
      */
     public Date __getDatetodo() {
         return datetodo;
     }
 
     /**
-     * @param datetodo the datetodo to set
+     * @param datetodo the service date (Leistungsdatum); null: the document
+     * date
      */
     public void setDatetodo(Date datetodo) {
         this.datetodo = datetodo;
+    }
+
+    /**
+     * @return the service date (Leistungsdatum): the stored one, else the
+     * document date
+     */
+    public Date getServiceDate() {
+        Date added = __getDateadded();
+        return datetodo != null ? datetodo : added != null && added.getTime() > 0 ? added : null;
+    }
+
+    /**
+     * @return when the document was saved last, null if unknown (saved before
+     * YaBS stored it)
+     */
+    public Date __getDatelastupdated() {
+        return datelastupdated;
+    }
+
+    /**
+     * Set by {@link #save(boolean)}; needed to read it from the database
+     *
+     * @param datelastupdated
+     */
+    public void setDatelastupdated(Date datelastupdated) {
+        this.datelastupdated = datelastupdated;
     }
 
     /**
@@ -784,6 +821,9 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
         }
         map.put("dateend", __getDateend() == null ? "" : df.format(__getDateend()));
         map.put("datetodo", __getDatetodo() == null ? "" : df.format(__getDatetodo()));
+        //the service date (Leistungsdatum): the document date if not set
+        map.put("servicedate", getServiceDate() == null ? "" : df.format(getServiceDate()));
+        map.put("datelastupdated", __getDatelastupdated() == null ? "" : df.format(__getDatelastupdated()));
         map.put("description", evaluateAll(__getDescription()));
         map.put("reference", getReferenceOrder());
         putPaymentFields(map, df);
@@ -941,6 +981,12 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     @Override
     public boolean save(boolean silent) {
         buildCname();
+        //no service date: the service was rendered on the document date
+        if (datetodo == null) {
+            Date added = __getDateadded();
+            datetodo = added != null && added.getTime() > 0 ? added : new Date();
+        }
+        datelastupdated = new Date();
         boolean saved = super.save(silent);
         if (saved) {
             if (mpv5.db.objects.User.getCurrentUser().getProperty("org.openyabs.property", "autocreatepdf") || GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.autocreatepdf")) {

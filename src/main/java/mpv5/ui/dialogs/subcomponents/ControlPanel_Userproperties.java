@@ -969,7 +969,8 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
      * what happens when the option is on or off
      */
     private void describeOptions() {
-        describe(transdateX, Messages.OPT_KEEP_WORKEDON, Messages.OPT_KEEP_WORKEDON_INFO);
+        //the service date (datetodo) is never changed when a document is opened: no option any more
+        transdateX.setVisible(false);
         describe(enddateX, Messages.OPT_KEEP_ENDDATE, Messages.OPT_KEEP_ENDDATE_INFO);
         describe(calcEnddateX, Messages.OPT_CALC_ENDDATE, Messages.OPT_CALC_ENDDATE_INFO);
         describe(nocount, Messages.OPT_NOCOUNT, Messages.OPT_NOCOUNT_INFO);

@@ -62,7 +62,8 @@ class ZugpferdFileTest {
         Calendar cal = Calendar.getInstance();
         cal.set(2026, Calendar.NOVEMBER, 4, 0, 0, 0);
         item.setDateadded(cal.getTime());
-        cal.add(Calendar.DAY_OF_MONTH, 14);
+        //the service date (Leistungsdatum): the work was done in October
+        cal.set(2026, Calendar.OCTOBER, 21, 0, 0, 0);
         item.setDatetodo(cal.getTime());
         return item;
     }
@@ -151,7 +152,7 @@ class ZugpferdFileTest {
 
     @Test
     void dueDateIsInvoiceDatePlusPaymentTerm() throws Exception {
-        //YaBS sets "datetodo" (last edited) to the day of saving - it must not be used as due date
+        //"datetodo" is the service date - it must not be used as due date
         Item item = invoice();
         item.setDatetodo(item.__getDateadded());
         SubItem[] lines = {line("a", "", "1", "Stk", "100", "19", "0")};
@@ -166,6 +167,27 @@ class ZugpferdFileTest {
         File xml = tmp.resolve("noterm.xml").toFile();
         ZugpferdFile.writeXml(noTerm, xml);
         assertValid(xml);
+    }
+
+    @Test
+    void serviceDateIsTheDeliveryDate() throws Exception {
+        //BT-72 (ActualDeliverySupplyChainEvent): the service date, not the invoice date (#208)
+        Invoice invoice = build();
+        File xml = tmp.resolve("servicedate.xml").toFile();
+        ZugpferdFile.writeXml(invoice, xml);
+        String s = new String(Files.readAllBytes(xml.toPath()), StandardCharsets.UTF_8);
+        assertTrue(s.matches("(?s).*<ram:ActualDeliverySupplyChainEvent>\\s*<ram:OccurrenceDateTime>\\s*<udt:DateTimeString format=\"102\">20261021<.*"), s);
+        assertValid(xml);
+
+        //no service date: the invoice date
+        Item item = invoice();
+        item.setDatetodo(null);
+        Invoice noDate = ZugpferdFile.createInvoice(item, new SubItem[]{line("a", "", "1", "Stk", "100", "19", "0")},
+                ZugpferdFile.createSender(company()::get), buyer(), "ref", ZugpferdFile.PAYTERM_UNSET, null);
+        File xml2 = tmp.resolve("noservicedate.xml").toFile();
+        ZugpferdFile.writeXml(noDate, xml2);
+        String s2 = new String(Files.readAllBytes(xml2.toPath()), StandardCharsets.UTF_8);
+        assertTrue(s2.matches("(?s).*<ram:ActualDeliverySupplyChainEvent>\\s*<ram:OccurrenceDateTime>\\s*<udt:DateTimeString format=\"102\">20261104<.*"), s2);
     }
 
     @Test
