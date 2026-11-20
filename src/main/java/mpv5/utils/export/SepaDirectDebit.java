@@ -152,6 +152,7 @@ public class SepaDirectDebit extends Exportable implements Waitable {
                 throw new IllegalStateException(problem);
             }
             String xml = toXml(creditor, debits, nextCollectionDate(LocalDate.now()), LocalDateTime.now());
+            validateXml(xml);
             Files.write(toPath(), xml.getBytes(StandardCharsets.UTF_8));
             List<String> report = new ArrayList<String>(done);
             if (!skipped.isEmpty()) {
@@ -238,8 +239,29 @@ public class SepaDirectDebit extends Exportable implements Waitable {
      * @return the XML document
      */
     public static String toXml(Creditor creditor, List<Debit> debits, LocalDate collection, LocalDateTime now) {
-        BigDecimal sum = BigDecimal.ZERO;
+        if (creditor == null || !Iban.isValid(creditor.iban)) {
+            throw new IllegalArgumentException("Invalid SEPA creditor IBAN");
+        }
+        if (!isValidCreditorId(creditor.creditorId)) {
+            throw new IllegalArgumentException("Invalid SEPA creditor identifier: " + creditor.creditorId);
+        }
+        if (creditor.bic != null && !creditor.bic.isEmpty() && !Iban.isValidBic(creditor.bic)) {
+            throw new IllegalArgumentException("Invalid SEPA creditor BIC: " + creditor.bic);
+        }
+        if (debits == null || debits.isEmpty()) {
+            throw new IllegalArgumentException("SEPA direct debit batch must contain at least one transaction");
+        }
+        BigDecimal sum = BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP);
         for (Debit d : debits) {
+            if (d == null || !Iban.isValid(d.iban)) {
+                throw new IllegalArgumentException("Invalid SEPA debtor IBAN");
+            }
+            if (d.bic != null && !d.bic.isEmpty() && !Iban.isValidBic(d.bic)) {
+                throw new IllegalArgumentException("Invalid SEPA debtor BIC: " + d.bic);
+            }
+            if (d.amount == null || d.amount.compareTo(new BigDecimal("0.01")) < 0) {
+                throw new IllegalArgumentException("SEPA debit amount must be at least 0.01 EUR");
+            }
             sum = sum.add(d.amount);
         }
         String msgId = "YABS-" + now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
@@ -251,7 +273,7 @@ public class SepaDirectDebit extends Exportable implements Waitable {
         x.append("   <MsgId>").append(msgId).append("</MsgId>\n");
         x.append("   <CreDtTm>").append(now.withNano(0).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)).append("</CreDtTm>\n");
         x.append("   <NbOfTxs>").append(debits.size()).append("</NbOfTxs>\n");
-        x.append("   <CtrlSum>").append(sum.toPlainString()).append("</CtrlSum>\n");
+        x.append("   <CtrlSum>").append(sum.setScale(2, RoundingMode.HALF_UP).toPlainString()).append("</CtrlSum>\n");
         x.append("   <InitgPty><Nm>").append(text(creditor.name, 70)).append("</Nm></InitgPty>\n");
         x.append("  </GrpHdr>\n");
         x.append("  <PmtInf>\n");
@@ -259,7 +281,7 @@ public class SepaDirectDebit extends Exportable implements Waitable {
         x.append("   <PmtMtd>DD</PmtMtd>\n");
         x.append("   <BtchBookg>true</BtchBookg>\n");
         x.append("   <NbOfTxs>").append(debits.size()).append("</NbOfTxs>\n");
-        x.append("   <CtrlSum>").append(sum.toPlainString()).append("</CtrlSum>\n");
+        x.append("   <CtrlSum>").append(sum.setScale(2, RoundingMode.HALF_UP).toPlainString()).append("</CtrlSum>\n");
         x.append("   <PmtTpInf><SvcLvl><Cd>SEPA</Cd></SvcLvl><LclInstrm><Cd>CORE</Cd></LclInstrm><SeqTp>RCUR</SeqTp></PmtTpInf>\n");
         x.append("   <ReqdColltnDt>").append(collection).append("</ReqdColltnDt>\n");
         x.append("   <Cdtr><Nm>").append(text(creditor.name, 70)).append("</Nm></Cdtr>\n");
@@ -270,9 +292,9 @@ public class SepaDirectDebit extends Exportable implements Waitable {
                 .append("</Id><SchmeNm><Prtry>SEPA</Prtry></SchmeNm></Othr></PrvtId></Id></CdtrSchmeId>\n");
         for (Debit d : debits) {
             x.append("   <DrctDbtTxInf>\n");
-            x.append("    <PmtId><EndToEndId>").append(text(d.endToEndId, 35)).append("</EndToEndId></PmtId>\n");
+            x.append("    <PmtId><EndToEndId>").append(idText(d.endToEndId, 35)).append("</EndToEndId></PmtId>\n");
             x.append("    <InstdAmt Ccy=\"EUR\">").append(d.amount.toPlainString()).append("</InstdAmt>\n");
-            x.append("    <DrctDbtTx><MndtRltdInf><MndtId>").append(text(d.mandateId, 35))
+            x.append("    <DrctDbtTx><MndtRltdInf><MndtId>").append(idText(d.mandateId, 35))
                     .append("</MndtId><DtOfSgntr>").append(d.mandateDate).append("</DtOfSgntr></MndtRltdInf></DrctDbtTx>\n");
             x.append("    <DbtrAgt>").append(agent(d.bic)).append("</DbtrAgt>\n");
             x.append("    <Dbtr><Nm>").append(text(d.name, 70)).append("</Nm></Dbtr>\n");
@@ -286,10 +308,51 @@ public class SepaDirectDebit extends Exportable implements Waitable {
         return x.toString();
     }
 
+    /**
+     * Validates a SEPA {@code pain.008.001.08} XML document against the
+     * bundled official ISO 20022 XSD schema.
+     *
+     * @param xml the generated XML document
+     * @throws IllegalStateException if the XML fails XSD validation
+     */
+    public static void validateXml(String xml) {
+        if (xml == null || xml.trim().isEmpty()) {
+            throw new IllegalStateException("SEPA XML is empty");
+        }
+        try (java.io.InputStream xsd = SepaDirectDebit.class.getResourceAsStream("/mpv5/utils/export/pain.008.001.08.xsd")) {
+            if (xsd == null) {
+                throw new IllegalStateException("Missing bundled pain.008.001.08.xsd schema");
+            }
+            javax.xml.validation.SchemaFactory sf = javax.xml.validation.SchemaFactory.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            sf.setProperty(javax.xml.XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            sf.setProperty(javax.xml.XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+            javax.xml.validation.Schema schema = sf.newSchema(new javax.xml.transform.stream.StreamSource(xsd));
+            javax.xml.validation.Validator validator = schema.newValidator();
+            validator.setProperty(javax.xml.XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            validator.setProperty(javax.xml.XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+            validator.validate(new javax.xml.transform.stream.StreamSource(new java.io.StringReader(xml)));
+        } catch (IllegalStateException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw new IllegalStateException("SEPA pain.008.001.08 XSD validation failed: " + ex.getMessage(), ex);
+        }
+    }
+
     private static String agent(String bic) {
         return bic == null || bic.isEmpty()
                 ? "<FinInstnId><Othr><Id>NOTPROVIDED</Id></Othr></FinInstnId>"
                 : "<FinInstnId><BICFI>" + bic + "</BICFI></FinInstnId>";
+    }
+
+    /**
+     * Sanitizes EPC SEPA identification fields ({@code EndToEndId},
+     * {@code MndtId}): removes leading/trailing {@code '/'} and consecutive
+     * {@code "//"} per EPC130-08 rules.
+     */
+    static String idText(String s, int max) {
+        String v = text(s, max);
+        v = v.replaceAll("/{2,}", "/").replaceAll("^/+|/+$", "").trim();
+        return v.isEmpty() ? "NOTPROVIDED" : (v.length() > max ? v.substring(0, max).trim() : v);
     }
 
     /**
