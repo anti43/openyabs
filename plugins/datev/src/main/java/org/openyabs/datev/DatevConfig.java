@@ -224,7 +224,7 @@ public final class DatevConfig {
         return preferred;
     }
 
-    private static String canonicalAccount(int accountType, BigDecimal rate, boolean skr04) {
+    static String canonicalAccount(int accountType, BigDecimal rate, boolean skr04) {
         if (rate == null) {
             return null;
         }

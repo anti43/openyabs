@@ -189,6 +189,19 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
     }
 
     private void save() {
+        //e-invoices by default: the company info must be complete (it is the seller of every e-invoice)
+        if (defaultZugpferd.isSelected()) {
+            java.util.Map<String, String> values = new java.util.HashMap<String, String>();
+            for (LabeledTextField f : fields) {
+                values.put(f.getName(), f.getText() == null ? "" : f.getText());
+            }
+            values.put("country", getSelectedCountry());
+            java.util.List<String> missing = ZugpferdFile.sellerProblems(ZugpferdFile.createSender(values::get));
+            if (!missing.isEmpty()) {
+                Popup.warn(Messages.EINVOICE_COMPANY_INCOMPLETE + "\n - " + String.join("\n - ", missing));
+                return;
+            }
+        }
         String problems = checkSettings();
         if (!problems.isEmpty() && !Popup.Y_N_dialog(Messages.COMPANY_CHECK_DATA + "\n" + problems + "\n\n"
                 + Messages.COMPANY_SAVE_ANYWAY)) {

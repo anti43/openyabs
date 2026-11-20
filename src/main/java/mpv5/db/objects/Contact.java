@@ -837,7 +837,9 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
         }
         String phone = ZugpferdFile.firstNonEmpty(__getWorkphone(), __getMainphone(), __getMobilephone());
         if (!company.isEmpty() && !person.isEmpty() || !phone.isEmpty() || !mail.isEmpty()) {
-            party.setContact(new org.mustangproject.Contact(ZugpferdFile.firstNonEmpty(person, name), phone, mail));
+            //no empty phone / mail element: invalid in XRechnung (PEPPOL-EN16931-R008)
+            party.setContact(new org.mustangproject.Contact(ZugpferdFile.firstNonEmpty(person, name),
+                    phone.trim().isEmpty() ? null : phone, mail.isEmpty() ? null : mail));
         }
         return party;
     }

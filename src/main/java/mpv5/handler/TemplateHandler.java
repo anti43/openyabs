@@ -168,6 +168,14 @@ public class TemplateHandler {
             } catch (Exception ex) {
                 Log.Debug(ex);
                 Log.Debug(Template.class, "Possibly invalid template: " + id);
+                //say which template is broken (not just "no template")
+                String name = "#" + id;
+                try {
+                    name = DatabaseObject.getObject(Context.getTemplate(), id).__getCname();
+                } catch (Exception ignored) {
+                    //the id
+                }
+                mpv5.YabsViewProxy.instance().addMessage(String.format(Messages.TEMPLATE_BROKEN.toString(), name, ex.getMessage()), Color.RED);
                 return null;
             }
             return preloadedTemplate;

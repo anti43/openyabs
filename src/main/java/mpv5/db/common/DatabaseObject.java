@@ -3052,14 +3052,20 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                 if (inv != null) {
                     mpv5.utils.export.ExportProgress.step(Messages.EXPORT_STEP_EINVOICE_CHECK);
                     List<String> problems = mpv5.utils.export.ZugpferdFile.validate(inv);
-                    boolean create = problems.isEmpty() || !showDialog;
+                    boolean create = problems.isEmpty();
                     if (!create) {
-                        StringBuilder text = new StringBuilder(Messages.ZUGFERD_MISSING_DATA.toString()).append("\n");
+                        //an e-invoice with missing data would be rejected: not created
+                        StringBuilder text = new StringBuilder(Messages.EINVOICE_NOT_CREATED + ", " + Messages.ZUGFERD_MISSING_DATA).append("\n");
                         for (String problem : problems) {
                             text.append("\n - ").append(problem);
                         }
-                        text.append("\n\n").append(Messages.ZUGFERD_CONTINUE_ANYWAY);
-                        create = mpv5.utils.export.ExportProgress.onEdtAndWait(() -> Popup.Y_N_dialog(text.toString()));
+                        Log.Debug(DatabaseObject.class, text);
+                        if (showDialog) {
+                            mpv5.utils.export.ExportProgress.onEdtAndWait(() -> {
+                                Popup.warn(text.toString());
+                                return Boolean.TRUE;
+                            });
+                        }
                     }
                     if (!create) {
                         //neither e-invoice nor plain PDF, as before

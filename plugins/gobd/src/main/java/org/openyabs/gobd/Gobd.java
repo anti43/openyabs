@@ -40,11 +40,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import javax.swing.JOptionPane;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -78,8 +75,6 @@ public final class Gobd {
     public static final List<Integer> ITEM_TYPES = Arrays.asList(Item.TYPE_INVOICE, Item.TYPE_CREDIT, Item.TYPE_DEPOSIT, Item.TYPE_PART_PAYMENT);
     static final String S_ARCHIVE = "gobd.archivePath";
     static final String S_AUTOLOCK = "gobd.autoLockOnExport";
-    static final String S_AUTOINCOME = "gobd.autoImportIncome";
-    static final String S_WATCH = "gobd.incomeWatchPath";
 
     final ExtensionContext yabs;
     /**
@@ -91,14 +86,7 @@ public final class Gobd {
      */
     final Map<String, String> masterDataBeforeSave = new ConcurrentHashMap<String, String>();
     final Set<Integer> finalizingIds = Collections.synchronizedSet(new HashSet<Integer>());
-    final Set<String> seenWatchFiles = Collections.synchronizedSet(new HashSet<String>());
-    /**
-     * Files of the watch folder seen once: path -> size and time; imported
-     * when they are the same in the next round (not being written any more)
-     */
-    final Map<String, String> pendingWatchFiles = new ConcurrentHashMap<String, String>();
     volatile boolean creatingStorno = false;
-    private Timer incomeWatchTimer;
     /**
      * The inventory seal (records that existed before the plugin or were
      * changed without it)
@@ -1111,10 +1099,13 @@ public final class Gobd {
                     return stornoNumber;
                 }
             });
-            storno.setNetvalue(nz(original.__getNetvalue()).negate());
-            storno.setTaxvalue(nz(original.__getTaxvalue()).negate());
-            storno.setDiscountvalue(nz(original.__getDiscountvalue()).negate());
-            storno.setDiscountGrosvalue(nz(original.__getDiscountGrosvalue()).negate());
+            //a credit note is a reduction by its type: the amounts as in the invoice (positive). Negative
+            //amounts were counted twice negative (the journal showed the cancellation as receivable, the
+            //e-invoice credit note had negative amounts)
+            storno.setNetvalue(nz(original.__getNetvalue()));
+            storno.setTaxvalue(nz(original.__getTaxvalue()));
+            storno.setDiscountvalue(nz(original.__getDiscountvalue()));
+            storno.setDiscountGrosvalue(nz(original.__getDiscountGrosvalue()));
             storno.setDescription("Stornorechnung zu Rechnung Nr. " + original.__getCnumber());
             storno.save(true);
             if (storno.__getIDS() <= 0) {
@@ -1128,7 +1119,7 @@ public final class Gobd {
                 rev.setCname(blank(line.__getCname()) ? " " : line.__getCname());
                 rev.setMeasure(str(line.__getMeasure()));
                 rev.setDescription(str(line.__getDescription()));
-                rev.setQuantityvalue(nz(line.__getQuantityvalue()).negate());
+                rev.setQuantityvalue(nz(line.__getQuantityvalue()));
                 rev.setExternalvalue(nz(line.__getExternalvalue()));
                 rev.setInternalvalue(nz(line.__getInternalvalue()));
                 rev.setDiscount(nz(line.__getDiscount()));
@@ -1193,218 +1184,129 @@ public final class Gobd {
         }
     }
 
-    // ---------------------------------------------------------------- income import
-    int defaultIncomeAccountId() {
-        Object[] r = row("SELECT ids FROM accounts WHERE intaccounttype = " + Account.INCOME + " ORDER BY ids ASC");
-        return r == null ? 1 : GobdUtil.toInt(r[0], 1);
-    }
-
+    // ---------------------------------------------------------------- income: locked by its receipt
     /**
-     * Imports a ZUGFeRD PDF / XRechnung XML as finalized income, or links a
-     * file as original receipt to an existing income
+     * Links a receipt file to an existing income and locks the income. YaBS
+     * archives the file with its checksum (revenue_receipts); the lock refers
+     * to that receipt. E-invoices as new income are imported by YaBS (import
+     * button, drag and drop, e-invoice folder) and locked by
+     * {@link #onActivity(Activity.Entry)}.
      *
      * @param sourceFile
-     * @param targetRevenue the income to link, null for a new one
-     * @param silent no dialogs (the watch folder)
-     * @return the income, null if not imported
+     * @param targetRevenue the saved income
+     * @param silent no dialogs
+     * @return the income, null if not linked
      */
     Revenue importIncomeFile(Path sourceFile, Revenue targetRevenue, boolean silent) {
+        if (targetRevenue == null || targetRevenue.__getIDS() <= 0 || sourceFile == null || !Files.isRegularFile(sourceFile)) {
+            return null;
+        }
         try {
-            return importIncome(sourceFile, targetRevenue, silent);
+            mpv5.handler.RevenueReceipts.Receipt r = mpv5.handler.RevenueReceipts.attach(targetRevenue, sourceFile.toFile());
+            if (r == null) {
+                return null;
+            }
+            lockIncome(targetRevenue, r.originalName, r.archivePath, r.fileSize, r.sha256, silent);
+            return targetRevenue;
         } catch (Exception e) {
             Log.Debug(Gobd.class, e);
             if (!silent) {
-                error("GoBD-Einnahmen-Import fehlgeschlagen:\n" + e.getMessage());
+                error("GoBD: Beleg konnte nicht mit der Einnahme verknuepft werden:\n" + e.getMessage());
             }
             return null;
         }
     }
 
-    private Revenue importIncome(Path sourceFile, Revenue targetRevenue, boolean silent) throws Exception {
-        if (sourceFile == null || !Files.isRegularFile(sourceFile)) {
-            if (!silent) {
-                error("GoBD-Einnahmen-Import: Datei existiert nicht (" + sourceFile + ").");
-            }
-            return null;
+    /**
+     * A receipt of an income was archived by YaBS: the income is locked with
+     * its first receipt
+     *
+     * @param revenueId
+     * @param archived the archived file (path in revenue_receipts)
+     */
+    void incomeReceiptArchived(long revenueId, File archived) {
+        if (revenueId <= 0 || archived == null || incomeLockRecord(revenueId) != null) {
+            return;
         }
-        byte[] fileBytes = Files.readAllBytes(sourceFile);
-        String fileSha = GobdUtil.sha256(fileBytes);
-        Object[] dupe = q1("SELECT revenue_id, document_number FROM gobd_income_lock WHERE file_sha256 = ?", fileSha);
-        if (dupe != null) {
-            if (!silent) {
-                error("GoBD-Dublettenschutz:\nDie Datei '" + sourceFile.getFileName() + "' (SHA-256: " + fileSha.substring(0, 12)
-                        + "…) wurde bereits als Einnahme '" + dupe[1] + "' (#" + dupe[0] + ") importiert!");
-            }
-            return null;
+        Object[] r = q1("SELECT originalname, archivepath, filesize, sha256 FROM revenue_receipts WHERE revenuesids = ? AND archivepath = ?",
+                revenueId, archived.getAbsolutePath());
+        if (r == null) {
+            return;
         }
-        String origName = sourceFile.getFileName().toString();
-        String lower = origName.toLowerCase();
-        byte[] xmlBytes = null;
+        try {
+            Revenue rev = (Revenue) DatabaseObject.getObject(Context.getRevenue(), (int) revenueId);
+            lockIncome(rev, str(r[0]), str(r[1]), GobdUtil.toLong(r[2], 0), str(r[3]), true);
+        } catch (Exception e) {
+            Log.Debug(Gobd.class, e);
+        }
+    }
+
+    /**
+     * Locks an income: a link of the income chain with the receipt (archived
+     * by YaBS) and the booking data; nothing if it is locked already
+     *
+     * @return true if locked now
+     */
+    boolean lockIncome(Revenue rev, String origName, String archivePath, long size, String fileSha, boolean silent) throws Exception {
+        final long revId = rev.__getIDS();
+        if (incomeLockRecord(revId) != null) {
+            return false;
+        }
+        Path file = Paths.get(archivePath);
+        String lower = str(origName).toLowerCase();
         String format = "RECEIPT_FILE";
-        if (lower.endsWith(".pdf")) {
-            xmlBytes = EInvoice.extractEmbeddedXml(sourceFile);
-            if (xmlBytes != null) {
-                format = "ZUGFERD_PDFA3";
-            }
-        } else if (lower.endsWith(".xml")) {
-            xmlBytes = fileBytes;
+        if (lower.endsWith(".xml")) {
             format = "XRECHNUNG_XML";
+        } else if (lower.endsWith(".pdf") && Files.isRegularFile(file) && EInvoice.extractEmbeddedXml(file) != null) {
+            format = "ZUGFERD_PDFA3";
         }
-        EInvoice.Parsed parsed = null;
-        if (xmlBytes != null) {
-            parsed = EInvoice.parse(xmlBytes);
-            if (!parsed.valid()) {
-                if (!silent) {
-                    error("GoBD-Einnahmen-Import abgelehnt (EN 16931 Validierungsfehler in '" + origName + "'):\n- " + String.join("\n- ", parsed.errors));
-                }
+        final String docNum = blank(rev.__getCnumber()) ? "#" + revId : rev.__getCnumber();
+        Object[] db = row("SELECT cnumber, dateadded, accountsids, netvalue, taxpercentvalue, brutvalue, description FROM revenues WHERE ids = " + revId);
+        if (db == null) {
+            throw new GobdException("Die Einnahme konnte nicht aus der Datenbank gelesen werden.");
+        }
+        final String core = moneyCoreOfRow(db);
+        final String finSnap = revenueSnapshot(rev);
+        final String fmt = format;
+        final Timestamp at = nowSeconds();
+        final String user = trunc(currentUser(), 100);
+        final String sha = str(fileSha).trim().toLowerCase();
+        //not synchronized: the transaction runs on the Swing thread, one after the other; locked
+        //meanwhile (the import and its activity event): nothing
+        String linked = addLink(c -> {
+            if (Db.first(c, "SELECT revenue_id FROM gobd_income_lock WHERE revenue_id = ?", revId) != null) {
                 return null;
             }
-        } else if (targetRevenue == null) {
-            if (!silent) {
-                error("GoBD-Einnahmen-Import abgelehnt:\nDatei '" + origName + "' enthaelt kein eingebettetes ZUGFeRD / Factur-X / XRechnung XML"
-                        + " (factur-x.xml / zugferd-invoice.xml / xrechnung.xml).");
+            //an invoice with several VAT rates is booked as one income per rate, all with the same file:
+            //locked once (file_sha256 is unique); the other parts are protected by their receipts
+            if (Db.first(c, "SELECT revenue_id FROM gobd_income_lock WHERE file_sha256 = ?", sha) != null) {
+                return null;
             }
-            return null;
-        }
-
-        final String docNum = parsed != null ? parsed.documentNumber : (blank(targetRevenue.__getCnumber()) ? origName : targetRevenue.__getCnumber());
-        Object[] sameNum = q1("SELECT revenue_id, file_sha256 FROM gobd_income_lock WHERE document_number = ?", docNum);
-        if (sameNum != null && (targetRevenue == null || GobdUtil.toLong(sameNum[0], -1) != (long) targetRevenue.__getIDS())) {
-            if (!silent) {
-                error("GoBD-Dublettenschutz:\nEine Einnahme mit der Belegnummer '" + docNum + "' ist bereits festgeschrieben (Einnahme #" + sameNum[0] + ")!");
-            }
-            return null;
-        }
-
-        boolean created = targetRevenue == null;
-        Revenue rev = targetRevenue != null ? targetRevenue : new Revenue();
-        Date issueDate = parsed != null ? parsed.issueDate : (rev.__getDateadded() != null ? rev.__getDateadded() : new Date());
-        Date dueDate = parsed != null ? (parsed.dueDate != null ? parsed.dueDate : parsed.issueDate)
-                : (rev.__getDateend() != null ? rev.__getDateend() : issueDate);
-        if (parsed != null) {
-            String partner = str(parsed.partnerName).trim();
-            String kind = parsed.creditNote ? "E-Gutschrift " : "E-Rechnung ";
-            rev.setCnumber(docNum);
-            rev.setCname(docNum);
-            rev.setDescription((partner.isEmpty() ? "" : partner + " - ") + kind + docNum + " (" + origName + ")"
-                    + (parsed.mixedTaxRates ? " [mehrere Steuersaetze: " + parsed.taxRates + "]" : ""));
-            rev.setNetvalue(parsed.netAmount);
-            rev.setTaxpercentvalue(parsed.taxPercent);
-            rev.setBrutvalue(parsed.grossAmount);
-            rev.setDateadded(issueDate);
-            rev.setDateend(dueDate);
-            if (rev.__getAccountsids() <= 0) {
-                rev.setAccountsids(defaultIncomeAccountId());
-            }
-            if (rev.__getGroupsids() <= 0) {
-                rev.setGroupsids(1);
-            }
-            if (targetRevenue == null) {
-                rev.setStatus(Item.STATUS_QUEUED);
-                rev.setIspaid(false);
-            }
-        }
-        if (!rev.save(true) || rev.__getIDS() <= 0) {
-            if (!silent) {
-                error("GoBD-Einnahmen-Import: Einnahme '" + docNum + "' konnte nicht gespeichert werden.");
-            }
-            return null;
-        }
-        //issue date (BT-2), due date (BT-9) and number (BT-1) exactly as in the e-invoice
-        if (parsed != null) {
-            rev.setCnumber(docNum);
-            rev.setCname(docNum);
-            rev.setDateadded(issueDate);
-            rev.setDateend(dueDate);
-            rev.save(true);
-        }
-
-        final long revId = rev.__getIDS();
-        Path archived = null;
-        boolean committed = false;
-        try {
-            int year = GobdUtil.yearOf(issueDate);
-            Path yearDir = archiveRoot().resolve("einnahmen").resolve(String.valueOf(year));
-            Files.createDirectories(yearDir);
-            String ext = origName.contains(".") ? origName.substring(origName.lastIndexOf('.') + 1).toLowerCase() : "pdf";
-            Path target = GobdUtil.uniquePath(yearDir, GobdUtil.safeFileName(docNum), ext);
-            Files.write(target, fileBytes, StandardOpenOption.CREATE_NEW);
-            archived = target;
-            Object[] db = row("SELECT cnumber, dateadded, accountsids, netvalue, taxpercentvalue, brutvalue, description FROM revenues WHERE ids = " + revId);
-            if (db == null) {
-                throw new GobdException("Die Einnahme konnte nicht aus der Datenbank gelesen werden.");
-            }
-            final String core = moneyCoreOfRow(db);
-            final String finSnap = revenueSnapshot(rev);
-            final String fmt = format;
-            final Timestamp at = nowSeconds();
-            final String user = trunc(currentUser(), 100);
-            final long size = fileBytes.length;
-            addLink(c -> {
-                Object[] end = chainEnd(c, "gobd_income_lock", "chain_hash");
-                String prev = (String) end[1];
-                String record = incomeRecord(end[0], revId, docNum, at, user, origName, fmt, fileSha, size, core);
-                String h = GobdUtil.recordHash(record, prev);
-                Db.update(c, "INSERT INTO gobd_income_lock (revenue_id, chain_seq, document_number, status, imported_at, imported_by, original_name,"
-                        + " archive_path, file_size, artifact_format, file_sha256, chain_hash, prev_chain_hash, financial_snapshot, hash_version, record_data)"
-                        + " VALUES (?, ?, ?, 'LOCKED', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 2, ?)",
-                        revId, end[0], docNum, at, user, origName, target.toString(), size, fmt, fileSha, h, prev, trunc(finSnap, 2000), record);
-                logAudit(c, "REVENUE", revId, "INCOME_IMPORTED", null, finSnap, fileSha,
-                        "Einnahme " + docNum + " (" + fmt + ") revisionssicher importiert und festgeschrieben.");
-                return h;
-            });
-            committed = true;
-            GobdUtil.makeReadOnly(target);
-            try {
-                Files.write(yearDir.resolve("SHA256SUMS"), (fileSha + "  " + target.getFileName() + "\n").getBytes(StandardCharsets.UTF_8),
-                        StandardOpenOption.CREATE, StandardOpenOption.APPEND);
-            } catch (Exception e) {
-                Log.Debug(Gobd.class, e);
-                error("GoBD: Einnahme " + docNum + " ist festgeschrieben, aber SHA256SUMS in " + yearDir + " konnte nicht geschrieben werden:\n" + e.getMessage());
-            }
-            archived = target;
-        } finally {
-            if (!committed) {
-                if (archived != null) {
-                    try {
-                        Files.deleteIfExists(archived);
-                    } catch (Exception e) {
-                        Log.Debug(Gobd.class, e);
-                    }
-                }
-                //no income without lock: a new import must not find a half one
-                if (created) {
-                    try {
-                        rev.delete();
-                    } catch (Exception e) {
-                        Log.Debug(Gobd.class, e);
-                    }
-                }
-            }
-        }
-        yabs.refreshView(rev);
-        final Revenue shown = rev;
-        yabs.ui(() -> {
-            try {
-                mpv5.ui.panels.ModernRevenuePanel.instanceOf().refresh();
-                mpv5.ui.panels.ModernRevenuePanel.instanceOf().setDataOwner(shown, true);
-            } catch (Exception ignored) {
-                //no income panel
-            }
+            Object[] end = chainEnd(c, "gobd_income_lock", "chain_hash");
+            String prev = (String) end[1];
+            String record = incomeRecord(end[0], revId, docNum, at, user, origName, fmt, sha, size, core);
+            String h = GobdUtil.recordHash(record, prev);
+            Db.update(c, "INSERT INTO gobd_income_lock (revenue_id, chain_seq, document_number, status, imported_at, imported_by, original_name,"
+                    + " archive_path, file_size, artifact_format, file_sha256, chain_hash, prev_chain_hash, financial_snapshot, hash_version, record_data)"
+                    + " VALUES (?, ?, ?, 'LOCKED', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 2, ?)",
+                    revId, end[0], docNum, at, user, origName, archivePath, size, fmt, sha, h, prev, trunc(finSnap, 2000), record);
+            logAudit(c, "REVENUE", revId, "INCOME_LOCKED", null, finSnap, sha,
+                    "Einnahme " + docNum + " (" + fmt + ") mit Beleg " + origName + " festgeschrieben.");
+            return h;
         });
-        String amounts = "Netto: " + fmtDec(rev.__getNetvalue()) + " EUR | Brutto: " + fmtDec(rev.__getBrutvalue()) + " EUR\nSHA-256: "
-                + fileSha.substring(0, 16) + "...\nArchiv: " + archived.getFileName();
-        if (!silent) {
-            notifyQuiet(parsed == null
-                    ? "GoBD-Einnahmen-Beleg archiviert:\nBeleg: " + docNum + " (" + format + ")\n" + amounts
-                    + "\n(Hinweis: Einfacher PDF-Beleg - Werte koennen nicht automatisch auf rechnerische Richtigkeit geprueft werden.)"
-                    : "GoBD-Einnahmen-Import erfolgreich:\nBeleg: " + docNum + " (" + format + ")\n" + amounts
-                    + (parsed.mixedTaxRates ? "\n(Hinweis: Mehrere Steuersaetze " + parsed.taxRates + " - als effektiver Satz "
-                            + fmtDec(parsed.taxPercent) + " % gebucht.)" : ""), rev);
-        } else {
-            status("GoBD Auto-Import: Einnahme " + docNum + " (" + origName + ") importiert und festgeschrieben.");
+        if (linked == null) {
+            return false;
         }
-        return rev;
+        chainReceipts(Receipts.REVENUE);
+        yabs.refreshView(rev);
+        String text = "GoBD: Einnahme " + docNum + " festgeschrieben (" + fmt + ", SHA-256: " + sha.substring(0, Math.min(16, sha.length())) + "...)";
+        if (silent) {
+            status(text);
+        } else {
+            notifyQuiet(text + ("RECEIPT_FILE".equals(fmt)
+                    ? "\n(Hinweis: Einfacher Beleg - Werte koennen nicht automatisch auf rechnerische Richtigkeit geprueft werden.)" : ""), rev);
+        }
+        return true;
     }
 
     // ---------------------------------------------------------------- receipts of expenses and income
@@ -1414,7 +1316,7 @@ public final class Gobd {
      *
      * @return the number of receipts chained now
      */
-    synchronized int chainReceipts() {
+    int chainReceipts() {
         return chainReceipts(Receipts.EXPENSE) + chainReceipts(Receipts.REVENUE);
     }
 
@@ -1426,7 +1328,9 @@ public final class Gobd {
      *
      * @return the number of receipts chained now
      */
-    synchronized int chainReceipts(Receipts kind) {
+    //not synchronized: a thread holding the lock would wait for the Swing thread (Db.tx) while that
+    //waits for the lock (deadlock); the transactions run one after the other on the Swing thread
+    int chainReceipts(Receipts kind) {
         Object[][] open = rows("SELECT r.ids, r." + kind.ownerColumn + ", r.originalname, r.archivepath, r.filesize, r.sha256, r.mimetype FROM "
                 + kind.table + " r WHERE NOT EXISTS (SELECT 1 FROM " + kind.chainTable + " g WHERE g.receipt_ref = CAST(r.ids AS VARCHAR(250)))"
                 + " ORDER BY r.ids ASC");
@@ -1452,7 +1356,11 @@ public final class Gobd {
                 final String format = lower.endsWith(".xml") ? "XML" : lower.endsWith(".pdf") ? "PDF" : blank(str(r[6])) ? "FILE" : trunc(str(r[6]), 30);
                 final Timestamp at = nowSeconds();
                 final String user = trunc(currentUser(), 100);
-                addLink(c -> {
+                String linked = addLink(c -> {
+                    //chained meanwhile (another caller)
+                    if (Db.first(c, "SELECT chain_hash FROM " + kind.chainTable + " WHERE receipt_ref = ?", ref) != null) {
+                        return null;
+                    }
                     Object[] end = chainEnd(c, kind.chainTable, "chain_hash");
                     String prev = (String) end[1];
                     String record = receiptRecord(kind, end[0], ref, ownerId, name, size, sha, at, user, core);
@@ -1465,73 +1373,14 @@ public final class Gobd {
                             kind.receiptName + " " + name + " in die Hash-Kette aufgenommen.");
                     return h;
                 });
-                chained++;
+                if (linked != null) {
+                    chained++;
+                }
             } catch (Exception e) {
                 Log.Debug(Gobd.class, e);
             }
         }
         return chained;
-    }
-
-    /**
-     * Starts or stops the watch folder for the automatic income import
-     */
-    synchronized void configureIncomeWatch() {
-        if (incomeWatchTimer != null) {
-            incomeWatchTimer.cancel();
-            incomeWatchTimer = null;
-        }
-        boolean enabled = yabs.settings().getBoolean(S_AUTOINCOME, false);
-        String dir = yabs.settings().get(S_WATCH, "").trim();
-        if (!enabled || dir.isEmpty()) {
-            return;
-        }
-        final Path watchDir = Paths.get(dir);
-        if (!Files.isDirectory(watchDir)) {
-            return;
-        }
-        incomeWatchTimer = new Timer("gobd-income-watch", true);
-        incomeWatchTimer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                if (!Files.isDirectory(watchDir)) {
-                    return;
-                }
-                List<Path> ready = new ArrayList<Path>();
-                try (Stream<Path> s = Files.list(watchDir)) {
-                    for (Path p : (Iterable<Path>) s::iterator) {
-                        String fn = p.getFileName().toString().toLowerCase();
-                        if (!Files.isRegularFile(p) || !(fn.endsWith(".pdf") || fn.endsWith(".xml"))) {
-                            continue;
-                        }
-                        String key = p.toAbsolutePath().toString();
-                        String sig = Files.size(p) + ":" + Files.getLastModifiedTime(p).toMillis();
-                        if (seenWatchFiles.contains(key + "|" + sig)) {
-                            continue;
-                        }
-                        //a new or changed file may still be written: import it when it is the same in the next round
-                        if (sig.equals(pendingWatchFiles.put(key, sig))) {
-                            pendingWatchFiles.remove(key);
-                            seenWatchFiles.add(key + "|" + sig);
-                            ready.add(p);
-                        }
-                    }
-                } catch (Exception e) {
-                    Log.Debug(Gobd.class, e);
-                }
-                for (Path p : ready) {
-                    //records and views of YaBS belong to the Swing thread
-                    try {
-                        javax.swing.SwingUtilities.invokeAndWait(() -> importIncomeFile(p, null, true));
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                        return;
-                    } catch (Exception e) {
-                        Log.Debug(Gobd.class, e);
-                    }
-                }
-            }
-        }, 5000L, 10000L);
     }
 
     // ---------------------------------------------------------------- the guard
@@ -1799,6 +1648,20 @@ public final class Gobd {
         if (entry.file == null || (entry.kind != null && entry.kind.name().equals("DELETED"))) {
             return;
         }
+        //a receipt of an income archived by YaBS (import, drag and drop, e-invoice folder, link):
+        //the income is locked with it
+        if (entry.context != null && entry.id > 0 && Context.getRevenue() != null
+                && String.valueOf(entry.context.getDbIdentity()).equalsIgnoreCase(String.valueOf(Context.getRevenue().getDbIdentity()))) {
+            incomeReceiptArchived(entry.id, entry.file);
+            chainReceipts(Receipts.REVENUE);
+            return;
+        }
+        //a receipt of an expense archived by YaBS: into the hash chain now
+        if (entry.context != null && entry.id > 0 && Context.getExpense() != null
+                && String.valueOf(entry.context.getDbIdentity()).equalsIgnoreCase(String.valueOf(Context.getExpense().getDbIdentity()))) {
+            chainReceipts(Receipts.EXPENSE);
+            return;
+        }
         String fileName = entry.file.getName().toLowerCase();
         if (!(fileName.endsWith(".pdf") || fileName.endsWith(".xml"))) {
             return;
@@ -1893,15 +1756,13 @@ public final class Gobd {
         String settings = String.join(" | ",
                 "VERSION=" + version,
                 "ARCHIVE=" + archiveRoot(),
-                "AUTOLOCK_ON_EXPORT=" + yabs.settings().getBoolean(S_AUTOLOCK, true),
-                "AUTO_IMPORT_INCOME=" + yabs.settings().getBoolean(S_AUTOINCOME, false),
-                "WATCH=" + yabs.settings().get(S_WATCH, "").trim());
+                "AUTOLOCK_ON_EXPORT=" + yabs.settings().getBoolean(S_AUTOLOCK, true));
         logAudit("PLUGIN", 0L, "PLUGIN_STARTED", "STATE=STOPPED", "STATE=RUNNING | " + settings, null,
                 "GoBD-Konformitaets-Plugin gestartet oder aktiviert. " + before);
     }
 
     /**
-     * Stops the watch folder and forgets the state
+     * Forgets the state
      */
     void stop() {
         try {
@@ -1909,14 +1770,6 @@ public final class Gobd {
         } catch (Exception ignored) {
             //no database
         }
-        synchronized (this) {
-            if (incomeWatchTimer != null) {
-                incomeWatchTimer.cancel();
-                incomeWatchTimer = null;
-            }
-        }
-        seenWatchFiles.clear();
-        pendingWatchFiles.clear();
         inventory.stop();
         creatingStorno = false;
         finalizingIds.clear();

@@ -426,13 +426,35 @@ public final class JournalLoader {
         return s;
     }
 
+    /**
+     * @return the invoices with payments that are in the trash bin
+     */
+    private static Set<Integer> trashedInvoices() {
+        Set<Integer> s = new HashSet<Integer>();
+        try {
+            mpv5.db.common.ReturnValue rv = QueryHandler.instanceOf().clone(Context.getInvoice()).freeSelectQuery(
+                    "SELECT ids FROM items WHERE invisible = 1 AND ids IN (SELECT itemsids FROM payments)", //NOI18N
+                    mpv5.usermanagement.MPSecurityManager.VIEW, null);
+            if (rv != null && rv.hasData()) {
+                for (Object[] r : rv.getData()) {
+                    s.add(Integer.valueOf(String.valueOf(r[0])));
+                }
+            }
+        } catch (Exception e) {
+            Log.Debug(JournalLoader.class, e);
+        }
+        return s;
+    }
+
     private static List<Entry> payments(Filter f, Set<Integer> groupIds, Set<Integer> paidInParts) {
         List<Entry> rows = new ArrayList<Entry>();
         if (paidInParts.isEmpty()) {
             return rows;
         }
+        Set<Integer> trashed = trashedInvoices();
         for (Payments.Payment p : Payments.between(f.time.getStart(), f.time.getEnd())) {
-            Item inv = Payments.invoice(p.invoice);
+            //the payments of an invoice in the trash bin are no income
+            Item inv = trashed.contains(p.invoice) ? null : Payments.invoice(p.invoice);
             if (inv == null
                     || (f.contact != null && inv.__getContactsids() != f.contact.__getIDS())
                     || (!groupIds.isEmpty() && !groupIds.contains(inv.__getGroupsids()))

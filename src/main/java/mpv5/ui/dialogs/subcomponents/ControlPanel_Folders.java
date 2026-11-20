@@ -481,6 +481,7 @@ public class ControlPanel_Folders extends JPanel implements ControlApplet {
         ZugpferdExpenseImport.setFolderPath(einvoiceField.getText().trim());
         ZugpferdExpenseImport.Result res = ZugpferdExpenseImport.importFromFolder(dir);
         mpv5.ui.panels.ModernExpensePanel.refreshIfOpen();
+        mpv5.ui.panels.ModernRevenuePanel.refreshIfOpen();
         Popup.notice(this, res.summary());
     }
 

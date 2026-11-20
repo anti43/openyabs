@@ -18,16 +18,11 @@ package org.openyabs.gobd;
 
 import static org.openyabs.gobd.GobdUtil.str;
 
-import java.io.File;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import mpv5.db.objects.Item;
 import mpv5.plugin.api.ExtensionContext;
 import mpv5.plugin.api.SearchResult;
@@ -170,30 +165,8 @@ public final class GobdCompliance implements YabsExtension {
                         g.popup(r.message());
                     }
                 }));
-        yabs.addCommand("GoBD: 7. ZUGFeRD / XRechnung als Einnahme importieren",
-                "Importiert ZUGFeRD-PDF/A-3 oder XRechnung-XML als GoBD-festgeschriebene Einnahme (Revenue)", () -> {
-                    JFileChooser chooser = new JFileChooser();
-                    String watchDir = yabs.settings().get(Gobd.S_WATCH, "");
-                    if (!GobdUtil.blank(watchDir) && Files.exists(Paths.get(watchDir))) {
-                        chooser.setCurrentDirectory(new File(watchDir));
-                    }
-                    chooser.setDialogTitle("ZUGFeRD PDF/A-3 oder XRechnung XML als Einnahme importieren");
-                    chooser.setMultiSelectionEnabled(true);
-                    chooser.setFileFilter(new FileNameExtensionFilter("E-Rechnungen (ZUGFeRD PDF/A-3, XRechnung XML)", "pdf", "xml"));
-                    if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-                        File[] selected = chooser.getSelectedFiles();
-                        if ((selected == null || selected.length == 0) && chooser.getSelectedFile() != null) {
-                            selected = new File[]{chooser.getSelectedFile()};
-                        }
-                        if (selected != null) {
-                            for (File f : selected) {
-                                g.importIncomeFile(f.toPath(), null, false);
-                            }
-                        }
-                    }
-                });
 
-        yabs.addSettingsPage("GoBD-Konformitaet", "Einstellungen fuer automatische Beleg-Festschreibung, GoBD-Archivpfad und ZUGFeRD-Einnahmen-Import",
+        yabs.addSettingsPage("GoBD-Konformitaet", "Einstellungen fuer automatische Beleg-Festschreibung und GoBD-Archivpfad",
                 pages::settingsPage);
 
         //Search anything (Shift Shift): finalized invoices and income by number
@@ -217,7 +190,6 @@ public final class GobdCompliance implements YabsExtension {
         });
 
         yabs.onView(views::decorate);
-        g.configureIncomeWatch();
         //receipts of expenses attached without the plugin (or before): into the hash chain
         //then the inventory seal: what existed before the plugin or was changed without it
         yabs.background(() -> {

@@ -377,6 +377,9 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         JMenuItem check = new JMenuItem(Messages.ZUGFERD_VALIDATE_FILE.toString());
         check.addActionListener(e -> validateEInvoiceFile());
         menu.add(check);
+        JMenuItem stored = new JMenuItem(Messages.DOCFILES_VERIFY.toString());
+        stored.addActionListener(e -> verifyStoredFiles());
+        menu.add(stored);
 
         button_einvoice.setText(Messages.CREATE_X_INVOICE.toString());
         button_einvoice.setBorder(button_orderconf.getBorder());
@@ -438,7 +441,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
     }
 
     /**
-     * Asks if data is missing, then where to save; creates the e-invoice in
+     * Refuses if data is missing, else asks where to save; creates the e-invoice in
      * the background
      */
     private void createEInvoice(final ZugpferdFile.Format format, final org.mustangproject.Invoice invoice, List<String> problems) {
@@ -447,10 +450,9 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
             for (String problem : problems) {
                 text.append("\n - ").append(problem);
             }
-            text.append("\n\n").append(Messages.ZUGFERD_CONTINUE_ANYWAY);
-            if (!Popup.Y_N_dialog(text.toString())) {
-                return;
-            }
+            //an e-invoice with missing data would be rejected: not created
+            Popup.warn(Messages.EINVOICE_NOT_CREATED + ", " + text);
+            return;
         }
 
         //like the PDF export: folder and file name from the user settings ("Filename Defaults")
@@ -490,6 +492,29 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
      * Check an existing XRechnung / ZUGFeRD file (e.g. before sending it to a
      * customer)
      */
+    /**
+     * Compares the files written for this invoice with their checksums
+     */
+    private void verifyStoredFiles() {
+        java.util.List<mpv5.handler.DocumentFiles.Entry> files = mpv5.handler.DocumentFiles.verify(dataOwner);
+        if (files.isEmpty()) {
+            Popup.notice(Messages.DOCFILES_NONE.toString());
+            return;
+        }
+        int ok = 0;
+        StringBuilder sb = new StringBuilder();
+        for (mpv5.handler.DocumentFiles.Entry f : files) {
+            if (f.ok()) {
+                ok++;
+            }
+            String state = f.ok() ? Messages.DOCFILES_OK.toString() : "MISSING".equals(f.state)
+                    ? Messages.DOCFILES_MISSING.toString() : Messages.DOCFILES_CHANGED.toString();
+            sb.append("\n").append(state).append(": ").append(f.path)
+                    .append(" (SHA-256 ").append(f.sha256, 0, Math.min(16, f.sha256.length())).append("\u2026)");
+        }
+        Popup.notice(String.format(Messages.DOCFILES_RESULT.toString(), ok, files.size()) + sb);
+    }
+
     private void validateEInvoiceFile() {
         DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY);
         d.setFileFilter(new javax.swing.filechooser.FileFilter() {

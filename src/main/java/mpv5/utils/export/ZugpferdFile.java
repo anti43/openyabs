@@ -182,6 +182,20 @@ public class ZugpferdFile implements Waitable {
                 ExportProgress.step(Messages.EXPORT_STEP_EINVOICE_DATA);
             }
             Invoice invoice = prepared != null ? prepared : createInvoice(item, format);
+            //no e-invoice with missing or wrong data (company info, customer): it would be rejected
+            List<String> missing = validate(invoice);
+            try {
+                String buyerVatId = checkBuyerVatId(item.getContact(), item.getContact().getInvoiceaddress());
+                if (buyerVatId != null) {
+                    missing.add(buyerVatId);
+                }
+            } catch (Exception e) {
+                Log.Debug(this, e.getMessage());
+            }
+            if (!missing.isEmpty()) {
+                return new ExportFailedException(Messages.EINVOICE_NOT_CREATED + ", " + Messages.ZUGFERD_MISSING_DATA
+                        + "\n - " + String.join("\n - ", missing), null);
+            }
             if (format == Format.XRECHNUNG) {
                 ExportProgress.step(Messages.EXPORT_STEP_EINVOICE_XML);
                 writeXml(invoice, target);
@@ -202,9 +216,21 @@ public class ZugpferdFile implements Waitable {
                 //the file has been written, a missing validator must not hide that
                 Log.Debug(this, "E-Rechnung could not be validated: " + t);
             }
+            if (validation != null && !validation.isValid()) {
+                //an invalid e-invoice is not kept: it would be rejected by the recipient
+                target.delete();
+                return new ExportFailedException(Messages.EINVOICE_NOT_CREATED + ", " + Messages.EINVOICE_INVALID
+                        + "\n - " + String.join("\n - ", validation.getErrors()), null);
+            }
+            //the file of this invoice (history, plugins; the checksum to verify it later)
+            mpv5.handler.Activity.file(target, item);
             return null;
         } catch (Exception ex) {
             Log.Debug(ex);
+            //no half written file
+            if (target != null && target.isFile()) {
+                target.delete();
+            }
             return ex;
         } finally {
             mpv5.YabsViewProxy.instance().setWaiting(false);
@@ -490,7 +516,9 @@ public class ZugpferdFile implements Waitable {
         if (!email.isEmpty()) {
             sender.setEmail(email);
         }
-        sender.setContact(new org.mustangproject.Contact(firstNonEmpty(person, name), phone, email));
+        //no empty phone / mail element: invalid in XRechnung (PEPPOL-EN16931-R008)
+        sender.setContact(new org.mustangproject.Contact(firstNonEmpty(person, name),
+                phone.trim().isEmpty() ? null : phone, email.isEmpty() ? null : email));
         return sender;
     }
 
@@ -502,8 +530,17 @@ public class ZugpferdFile implements Waitable {
      * @return a list of human readable problems, empty if everything is fine
      */
     public static List<String> validate(Invoice invoice) {
+        List<String> problems = sellerProblems(invoice.getSender());
+        buyerProblems(problems, invoice.getRecipient());
+        return problems;
+    }
+
+    /**
+     * @param s the seller (the company info, {@link #createSender})
+     * @return what is missing or wrong for an e-invoice (EN 16931 / XRechnung)
+     */
+    public static List<String> sellerProblems(TradeParty s) {
         List<String> problems = new ArrayList<String>();
-        TradeParty s = invoice.getSender();
         String seller = Messages.ZUGFERD_SELLER + ": ";
         check(problems, seller, Messages.ZUGFERD_FIELD_NAME, s.getName());
         check(problems, seller, Messages.ZUGFERD_FIELD_STREET, s.getStreet());
@@ -533,7 +570,10 @@ public class ZugpferdFile implements Waitable {
             }
         }
 
-        TradeParty r = invoice.getRecipient();
+        return problems;
+    }
+
+    private static void buyerProblems(List<String> problems, TradeParty r) {
         String buyer = Messages.ZUGFERD_BUYER + (isEmpty(r.getName()) ? "" : " '" + r.getName().trim() + "'") + ": ";
         check(problems, buyer, Messages.ZUGFERD_FIELD_NAME, r.getName());
         check(problems, buyer, Messages.ZUGFERD_FIELD_STREET, r.getStreet());
@@ -541,7 +581,6 @@ public class ZugpferdFile implements Waitable {
         check(problems, buyer, Messages.ZUGFERD_FIELD_CITY, r.getLocation());
         checkCountry(problems, buyer, r.getCountry());
         check(problems, buyer, Messages.ZUGFERD_FIELD_EMAIL, r.getUriUniversalCommunicationID());
-        return problems;
     }
 
     /**
@@ -617,7 +656,6 @@ public class ZugpferdFile implements Waitable {
         provider.setProfile(Profiles.getByName(Format.XRECHNUNG.getProfile()));
         provider.generateXML(invoice);
         Files.write(target.toPath(), provider.getXML());
-        mpv5.handler.Activity.file(target, null);
     }
 
     /**
@@ -642,7 +680,6 @@ public class ZugpferdFile implements Waitable {
         } finally {
             exporter.close();
         }
-        mpv5.handler.Activity.file(target, null);
     }
 
     /**

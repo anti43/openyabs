@@ -23,6 +23,8 @@ repositories {
 dependencies {
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
+    // independent check of the DATEV Buchungsstapel of the DATEV plugin (field types, lengths, formats); tests only
+    testImplementation 'io.github.mrtyldr:datev-exporter-core:0.2.0'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
