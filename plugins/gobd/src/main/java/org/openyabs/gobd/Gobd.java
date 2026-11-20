@@ -1751,6 +1751,103 @@ public final class Gobd {
         }
     }
 
+    // ---------------------------------------------------------------- locked documents
+    /**
+     * The provider of the archived originals for YaBS: print, PDF, preview, ODT
+     * and e-invoice of a finalized invoice open the archived file instead of
+     * creating a new one; if the file is missing, YaBS offers a stamped
+     * duplicate, which this provider checks and records in the audit log
+     *
+     * @return
+     */
+    mpv5.plugin.api.LockedDocumentProvider lockedDocuments() {
+        return new mpv5.plugin.api.LockedDocumentProvider() {
+            @Override
+            public File lockedDocument(DatabaseObject record) {
+                Object[] lock = lockOf(record);
+                return lock == null || blank(str(lock[7])) ? null : new File(str(lock[7]).trim());
+            }
+
+            @Override
+            public String duplicateRefused(DatabaseObject record) {
+                Object[] lock = lockOf(record);
+                if (lock == null) {
+                    return null;
+                }
+                String changed = changedSinceFinalized(record.__getIDS(), str(lock[12]));
+                if (changed == null) {
+                    return null;
+                }
+                String num = str(lock[1]);
+                logAudit("INVOICE", record.__getIDS(), "DUPLICATE_REFUSED", "ARCHIVE_MISSING=" + str(lock[7]), "CHANGED=" + changed, null,
+                        "Archivierte Originaldatei von Beleg " + num + " fehlt; Duplikat abgelehnt, die Daten weichen vom festgeschriebenen Stand ab.");
+                return "Die Daten von Beleg " + num + " in der Datenbank weichen vom festgeschriebenen Stand ab (" + changed + ")."
+                        + " Ein Duplikat zeigte einen anderen Inhalt als das Original. Bitte die GoBD-Pruefung ausfuehren"
+                        + " und das Original aus der Datensicherung wiederherstellen.";
+            }
+
+            @Override
+            public List<String> duplicateWarnings(DatabaseObject record) {
+                Object[] lock = lockOf(record);
+                if (lock == null || !(record instanceof Item)) {
+                    return Collections.emptyList();
+                }
+                String then = str(lock[5]);
+                String now = contactSnapshot((long) ((Item) record).__getContactsids());
+                if (blank(then) || then.equals(now)) {
+                    return Collections.emptyList();
+                }
+                return Collections.singletonList("Die Kundendaten wurden seit der Festschreibung geaendert."
+                        + "\nBei Festschreibung: " + then + "\nJetzt: " + now);
+            }
+
+            @Override
+            public void duplicateCreated(DatabaseObject record, File missing, File duplicate) {
+                Object[] lock = lockOf(record);
+                String sha = null;
+                try {
+                    sha = GobdUtil.sha256(Files.readAllBytes(duplicate.toPath()));
+                } catch (Exception e) {
+                    Log.Debug(Gobd.class, e);
+                }
+                logAudit("INVOICE", record.__getIDS(), "DUPLICATE_CREATED", "ARCHIVE_MISSING=" + missing, "DUPLICATE=" + duplicate, sha,
+                        "Archivierte Originaldatei von Beleg " + (lock == null ? record.__getCname() : str(lock[1]))
+                        + " fehlt; Duplikat erstellt (auf jeder Seite als Kopie gestempelt, kein Original, nicht archiviert).");
+            }
+        };
+    }
+
+    /**
+     * @return the lock of a finalized invoice, null for other records
+     */
+    private Object[] lockOf(DatabaseObject record) {
+        if (!(record instanceof Item) || !isGobdItemType(((Item) record).__getInttype()) || record.__getIDS() <= 0) {
+            return null;
+        }
+        return lockRecord(record.__getIDS());
+    }
+
+    /**
+     * @param docId
+     * @param record the finalized record (hash version 2), may be empty
+     * @return the changed parts (invoice, positions), null if the database
+     * still holds what was finalized (or nothing to compare with)
+     */
+    String changedSinceFinalized(long docId, String record) {
+        if (blank(record)) {
+            return null;
+        }
+        List<String> changed = new ArrayList<String>();
+        String core = itemCoreInDb(docId);
+        if (core == null || !GobdUtil.recordValue(core).equals(GobdUtil.recordField(record, "core"))) {
+            changed.add("Belegdaten");
+        }
+        if (!GobdUtil.recordValue(positionsCoreInDb(docId)).equals(GobdUtil.recordField(record, "positions"))) {
+            changed.add("Positionen");
+        }
+        return changed.isEmpty() ? null : String.join(", ", changed);
+    }
+
     // ---------------------------------------------------------------- files
     /**
      * Opens an archived file, or says where it is / that it is missing

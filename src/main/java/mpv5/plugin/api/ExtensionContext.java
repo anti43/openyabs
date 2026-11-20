@@ -134,6 +134,16 @@ public interface ExtensionContext {
     }
 
     /**
+     * Registers a provider of archived originals of locked records: print,
+     * PDF, preview, ODT and e-invoice open the archived file instead of
+     * creating a new one
+     *
+     * @param provider
+     */
+    default void addLockedDocumentProvider(LockedDocumentProvider provider) {
+    }
+
+    /**
      * Registers localized message keys for this plugin (automatically scoped by
      * plugin ID and removed when the plugin stops).
      *
