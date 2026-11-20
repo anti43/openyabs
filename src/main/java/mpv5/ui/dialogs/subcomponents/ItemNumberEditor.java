@@ -185,8 +185,13 @@ public class ItemNumberEditor extends javax.swing.JPanel {
             next = auto.getText();
             manual.setText(next);
         }
+        int[] usedBy = mpv5.handler.ItemService.isInvoiceType(item.__getInttype())
+                ? mpv5.handler.ItemService.invoiceNumberUsedBy(next, item.__getIDS()) : null;
         if (!QueryHandler.instanceOf().clone(item.getContext()).checkUniqueness("cnumber", next)) {
             jTextArea1.setText(Messages.VALUE_ALREADY_EXISTS + next);
+        } else if (usedBy != null) {
+            //unique among invoices, credit notes, deposit and part payment invoices (#212)
+            jTextArea1.setText(String.format(Messages.ITEM_NUMBER_USED_BY.toString(), next, Item.getTypeString(usedBy[0])));
         } else {
             jTextArea1.setText("OK!");
             return true;

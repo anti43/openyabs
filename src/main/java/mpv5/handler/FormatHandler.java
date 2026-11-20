@@ -171,6 +171,46 @@ public class FormatHandler {
         return new FormatHandler(forObject, formatType, null).getFormat() != DEFAULT_FORMAT;
     }
 
+    /**
+     * @param patternsForAll the number format of each kind for all users
+     * (kinds without one use {@link #INTEGERPART_IDENTIFIER})
+     * @return true if two of the invoice kinds (invoice, credit note, deposit,
+     * part payment invoice) have the same format: they share one range of
+     * numbers then (#212)
+     */
+    public static boolean invoiceTypesShareARange(Map<Integer, String> patternsForAll) {
+        java.util.Set<String> seen = new java.util.HashSet<String>();
+        for (int t : mpv5.handler.ItemService.INVOICE_TYPES) {
+            String p = patternsForAll == null ? null : patternsForAll.get(t);
+            if (!seen.add(p == null || p.trim().isEmpty() ? INTEGERPART_IDENTIFIER : p.trim())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * The number formats for new databases: invoices, credit notes, deposit
+     * and part payment invoices each with a prefix of their own and the year,
+     * counted from 1 every year, e.g. RE-2026-00001, GS-2026-00001 (#212)
+     *
+     * @param german German prefixes (RE, GS, AZ, AR), else English (INV, CN,
+     * DP, PI)
+     * @return kind -> pattern
+     */
+    public static Map<Integer, String> defaultInvoiceFormats(boolean german) {
+        Map<Integer, String> m = new java.util.LinkedHashMap<Integer, String>();
+        m.put(Item.TYPE_INVOICE, german ? "RE" : "INV");
+        m.put(Item.TYPE_CREDIT, german ? "GS" : "CN");
+        m.put(Item.TYPE_DEPOSIT, german ? "AZ" : "DP");
+        m.put(Item.TYPE_PART_PAYMENT, german ? "AR" : "PI");
+        for (Map.Entry<Integer, String> e : m.entrySet()) {
+            e.setValue(new NumberFormatBuilder().setPrefix(e.getValue() + "-").setDate(NumberFormatBuilder.DatePart.YEAR)
+                    .setSeparator("-").setDigits(5).setRestart(true).pattern());
+        }
+        return m;
+    }
+
     @Override
     public String toString() {
         return "Format: " + getFormat().format(43) + " for " + source + " (" + determineType(source) + ")";
@@ -400,8 +440,11 @@ public class FormatHandler {
                 || forThis.getContext().equals(Context.getCredit())
                 || forThis.getContext().equals(Context.getDeposit())
                 || forThis.getContext().equals(Context.getPartPayment())) {
-            query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + cnumber + "' AND inttype ="
-                    + ((Item) forThis).__getInttype();
+            int type = ((Item) forThis).__getInttype();
+            //invoices, credit notes, deposit and part payment invoices: unique among all of them
+            //(§ 14 Abs. 4 Nr. 4 UStG); with the same number format they share one range (#212)
+            query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + cnumber.replace("'", "''") + "' AND inttype "
+                    + (mpv5.handler.ItemService.isInvoiceType(type) ? "IN (" + mpv5.handler.ItemService.invoiceTypesSql() + ")" : "= " + type);
         } else if (forThis.getContext().equals(Context.getProduct())) {
             query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + cnumber + "' AND inttype ="
                     + ((Product) forThis).__getInttype();

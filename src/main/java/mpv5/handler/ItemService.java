@@ -323,8 +323,64 @@ public final class ItemService {
     }
 
     private static boolean isInvoiceLike(int type) {
-        return type == Item.TYPE_INVOICE || type == Item.TYPE_CREDIT
-                || type == Item.TYPE_DEPOSIT || type == Item.TYPE_PART_PAYMENT;
+        return isInvoiceType(type);
+    }
+
+    /**
+     * The kinds of documents which are invoices in the sense of the VAT law:
+     * invoice, credit note (correction, cancellation), deposit and part
+     * payment invoice. Their numbers must be unique among all of them (§ 14
+     * Abs. 4 Nr. 4 UStG), #212.
+     */
+    public static final int[] INVOICE_TYPES = {Item.TYPE_INVOICE, Item.TYPE_CREDIT, Item.TYPE_DEPOSIT, Item.TYPE_PART_PAYMENT};
+
+    /**
+     * @param type
+     * @return true for the kinds of {@link #INVOICE_TYPES}
+     */
+    public static boolean isInvoiceType(int type) {
+        for (int t : INVOICE_TYPES) {
+            if (t == type) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @return the {@link #INVOICE_TYPES} for SQL, e.g. "0, 20, 22, 21"
+     */
+    public static String invoiceTypesSql() {
+        StringBuilder b = new StringBuilder();
+        for (int t : INVOICE_TYPES) {
+            b.append(b.length() == 0 ? "" : ", ").append(t);
+        }
+        return b.toString();
+    }
+
+    /**
+     * The document of one of the {@link #INVOICE_TYPES} with this number
+     *
+     * @param number
+     * @param exceptIds a document not to count (the one being numbered), &lt;= 0 for none
+     * @return its kind and id ({inttype, ids}), null if the number is free
+     */
+    public static int[] invoiceNumberUsedBy(String number, int exceptIds) {
+        if (number == null || number.trim().isEmpty()) {
+            return null;
+        }
+        try {
+            mpv5.db.common.ReturnValue rv = mpv5.db.common.QueryHandler.getConnection().freeQuery(
+                    "SELECT inttype, ids FROM " + Context.getInvoice().getDbIdentity() + " WHERE cnumber = '" + number.replace("'", "''") + "' AND inttype IN ("
+                    + invoiceTypesSql() + ") AND ids <> " + exceptIds, mpv5.usermanagement.MPSecurityManager.VIEW, null);
+            if (rv.hasData()) {
+                Object[] r = rv.getData()[0];
+                return new int[]{Integer.parseInt(String.valueOf(r[0])), Integer.parseInt(String.valueOf(r[1]))};
+            }
+        } catch (Exception e) {
+            Log.Debug(ItemService.class, e.getMessage());
+        }
+        return null;
     }
 
     /**

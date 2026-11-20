@@ -1002,6 +1002,12 @@ public final class Gobd {
             }
             final String positions = positionsCoreInDb(docId);
             final String number = doc.__getCnumber();
+            //a number is locked once: another invoice type with the same number (e.g. invoice and credit
+            //note 000001, the same number format) is refused with a message, not a database error (#212)
+            Object[] taken = q1("SELECT document_id FROM gobd_document_lock WHERE document_number = ? AND document_id <> ?", number, docId);
+            if (taken != null) {
+                throw new GobdException(duplicateNumberMessage(number, ((Number) taken[0]).longValue()));
+            }
             String safeDocNum = GobdUtil.safeFileName(blank(number) ? "BELEG_" + docId : number);
             final String customerSnap = contactSnapshot((long) doc.__getContactsids());
             final String positionsSnap = positionsSnapshot(doc);
@@ -1013,6 +1019,10 @@ public final class Gobd {
             String hash = addLink(c -> {
                 if (Db.first(c, "SELECT document_id FROM gobd_document_lock WHERE document_id = ?", docId) != null) {
                     throw new GobdException("Beleg " + number + " wurde gleichzeitig an anderer Stelle festgeschrieben.");
+                }
+                Object[] same = Db.first(c, "SELECT document_id FROM gobd_document_lock WHERE document_number = ?", number);
+                if (same != null) {
+                    throw new GobdException(duplicateNumberMessage(number, ((Number) same[0]).longValue()));
                 }
                 Object[] end = chainEnd(c, "gobd_document_lock", "sha256_hash");
                 String prev = (String) end[1];
@@ -1044,6 +1054,18 @@ public final class Gobd {
             }
             finalizingIds.remove(doc.__getIDS());
         }
+    }
+
+    /**
+     * @param number
+     * @param otherId the finalized document with this number
+     * @return why a document with a number already locked is not finalized
+     */
+    static String duplicateNumberMessage(String number, long otherId) {
+        return "Die Nummer " + number + " ist bereits für einen anderen festgeschriebenen Beleg (ID " + otherId + ") vergeben."
+                + " Rechnungen, Gutschriften, Anzahlungs- und Abschlagsrechnungen brauchen Nummern, die unter allen eindeutig sind"
+                + " (§ 14 Abs. 4 Nr. 4 UStG). Bitte vergeben Sie dem Beleg eine eigene Nummer (Nummer ändern) und legen Sie in"
+                + " Systemsteuerung › Formate je Belegart ein eigenes Präfix fest (z. B. RE-, GS-, AZ-, AR-).";
     }
 
     /**

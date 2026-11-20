@@ -232,6 +232,15 @@ public final class FirstStartSetup {
      */
     public static void prepare(User admin, boolean german, Progress progress, java.util.Map<String, String> company) {
         saveCompany(admin, company);
+        //invoice numbers unique among invoices, credit notes, deposit and part payment invoices:
+        //a prefix of their own (#212)
+        try {
+            for (java.util.Map.Entry<Integer, String> f : FormatHandler.defaultInvoiceFormats(german).entrySet()) {
+                FormatHandler.store(f.getKey(), User.ADMIN_ID, f.getValue(), 0, null);
+            }
+        } catch (Exception e) {
+            Log.Debug(FirstStartSetup.class, e);
+        }
         step(progress, Step.COUNTRIES);
         try {
             importCountries();
