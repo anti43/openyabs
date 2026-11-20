@@ -324,17 +324,32 @@ public class SepaDirectDebit extends Exportable implements Waitable {
                 throw new IllegalStateException("Missing bundled pain.008.001.08.xsd schema");
             }
             javax.xml.validation.SchemaFactory sf = javax.xml.validation.SchemaFactory.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
-            sf.setProperty(javax.xml.XMLConstants.ACCESS_EXTERNAL_DTD, "");
-            sf.setProperty(javax.xml.XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+            trySetProperty(sf, javax.xml.XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            trySetProperty(sf, javax.xml.XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
             javax.xml.validation.Schema schema = sf.newSchema(new javax.xml.transform.stream.StreamSource(xsd));
             javax.xml.validation.Validator validator = schema.newValidator();
-            validator.setProperty(javax.xml.XMLConstants.ACCESS_EXTERNAL_DTD, "");
-            validator.setProperty(javax.xml.XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+            trySetProperty(validator, javax.xml.XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            trySetProperty(validator, javax.xml.XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
             validator.validate(new javax.xml.transform.stream.StreamSource(new java.io.StringReader(xml)));
         } catch (IllegalStateException ex) {
             throw ex;
         } catch (Exception ex) {
             throw new IllegalStateException("SEPA pain.008.001.08 XSD validation failed: " + ex.getMessage(), ex);
+        }
+    }
+
+    private static void trySetProperty(javax.xml.validation.SchemaFactory sf, String name, Object value) {
+        try {
+            sf.setProperty(name, value);
+        } catch (org.xml.sax.SAXNotRecognizedException | org.xml.sax.SAXNotSupportedException ignored) {
+            // Older Apache Xerces on classpath does not recognize JAXP 1.5 accessExternal* properties
+        }
+    }
+
+    private static void trySetProperty(javax.xml.validation.Validator v, String name, Object value) {
+        try {
+            v.setProperty(name, value);
+        } catch (org.xml.sax.SAXNotRecognizedException | org.xml.sax.SAXNotSupportedException ignored) {
         }
     }
 
