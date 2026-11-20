@@ -191,4 +191,51 @@ class JournalCalcTest {
         assertTrue(rows[4].contains("\"INV-MIX\"") && rows[4].endsWith("\"100,00\""), rows[4]);
         assertTrue(rows[5].contains("\"INV-OPEN\"") && rows[5].endsWith("\"0,00\""), rows[5]);
     }
+
+    @Test
+    void overpaymentIsExcludedFromIncomeAndVat() {
+        // Exact #218 scenario: 100.00 net + 19.00 VAT = 119.00 gross, 200.00 paid
+        assertEquals(bd("81.00"), Payments.overpayment(bd("119.00"), bd("200.00")));
+        assertEquals(bd("0.00"), Payments.overpayment(bd("119.00"), bd("100.00")));
+
+        Payments.Allocation single = Payments.allocate(bd("119.00"), bd("0.00"), bd("200.00"));
+        assertEquals(bd("119.00"), single.incomeGross);
+        assertEquals(bd("81.00"), single.surplus);
+
+        // Split payments across dates: 100.00 + 100.00 + 50.00 on a 119.00 invoice
+        Payments.Allocation p1 = Payments.allocate(bd("119.00"), bd("0.00"), bd("100.00"));
+        Payments.Allocation p2 = Payments.allocate(bd("119.00"), bd("100.00"), bd("100.00"));
+        Payments.Allocation p3 = Payments.allocate(bd("119.00"), bd("200.00"), bd("50.00"));
+        assertEquals(bd("100.00"), p1.incomeGross);
+        assertEquals(bd("0.00"), p1.surplus);
+        assertEquals(bd("19.00"), p2.incomeGross);
+        assertEquals(bd("81.00"), p2.surplus);
+        assertEquals(bd("0.00"), p3.incomeGross);
+        assertEquals(bd("50.00"), p3.surplus);
+
+        // JournalCalc totals: revenue & VAT capped at 100.00 / 19.00, surplus tracked separately
+        Entry inv = e(Constants.TYPE_INVOICE, Item.STATUS_PAID, "100.00", "19.00");
+        inv.itemId = 42;
+        Entry pay = e(Constants.TYPE_PAYMENT, Item.STATUS_PAID, "100.00", "19.00");
+        pay.itemId = 42;
+        pay.overpayment = bd("81.00");
+        Entry pureSurplus = e(Constants.TYPE_PAYMENT, Item.STATUS_PAID, "0.00", "0.00");
+        pureSurplus.itemId = 42;
+        pureSurplus.overpayment = bd("50.00");
+
+        Totals totals = JournalCalc.compute(Arrays.asList(inv, pay, pureSurplus), Collections.singleton(42));
+        assertFalse(inv.counted);
+        assertTrue(pay.counted);
+        assertFalse(pureSurplus.counted);
+        assertEquals(bd("100.00"), totals.incomeNet);
+        assertEquals(bd("19.00"), totals.incomeTax);
+        assertEquals(bd("119.00"), totals.incomeGross);
+        assertEquals(bd("131.00"), totals.overpayments);
+
+        mpv5.utils.export.JournalAdviserPackage pkg = new mpv5.utils.export.JournalAdviserPackage(
+                Arrays.asList(inv, pay, pureSurplus), totals, new java.util.Date(), new java.util.Date(),
+                Collections.<String>emptyList(), Collections.<BigDecimal, String>emptyMap());
+        String summary = pkg.summary(new mpv5.utils.export.JournalAdviserPackage.EInvoiceCheck());
+        assertTrue(summary.contains("131,00"), summary);
+    }
 }

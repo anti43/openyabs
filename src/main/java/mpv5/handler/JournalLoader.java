@@ -452,6 +452,7 @@ public final class JournalLoader {
             return rows;
         }
         Set<Integer> trashed = trashedInvoices();
+        Map<Integer, List<Payments.Payment>> paymentsByInvoice = new HashMap<Integer, List<Payments.Payment>>();
         for (Payments.Payment p : Payments.between(f.time.getStart(), f.time.getEnd())) {
             //the payments of an invoice in the trash bin are no income
             Item inv = trashed.contains(p.invoice) ? null : Payments.invoice(p.invoice);
@@ -462,9 +463,22 @@ public final class JournalLoader {
                     || (f.user != null && inv.__getIntaddedby() != f.user.__getIDS())) {
                 continue;
             }
-            BigDecimal gross = inv.getGrossAmount();
-            BigDecimal net = gross.signum() == 0 ? p.amount
-                    : p.amount.multiply(inv.getNetAfterDiscount()).divide(gross, 2, java.math.RoundingMode.HALF_UP);
+            List<Payments.Payment> allOfInv = paymentsByInvoice.computeIfAbsent(inv.__getIDS(), Payments::of);
+            BigDecimal paidBefore = Payments.paidBefore(allOfInv, p.id);
+            BigDecimal invGross = inv.getGrossAmount().setScale(2, java.math.RoundingMode.HALF_UP);
+            BigDecimal invNet = inv.getNetAfterDiscount().setScale(2, java.math.RoundingMode.HALF_UP);
+            Payments.Allocation alloc = Payments.allocate(invGross, paidBefore, p.amount);
+            BigDecimal incomeGross = alloc.incomeGross;
+            BigDecimal net;
+            if (incomeGross.signum() == 0) {
+                net = BigDecimal.ZERO.setScale(2);
+            } else if (invGross.signum() == 0) {
+                net = incomeGross;
+            } else if (incomeGross.compareTo(invGross) == 0) {
+                net = invNet;
+            } else {
+                net = incomeGross.multiply(invNet).divide(invGross, 2, java.math.RoundingMode.HALF_UP);
+            }
             Entry e = new Entry();
             e.obj = inv;
             e.itemId = inv.__getIDS();
@@ -489,9 +503,16 @@ public final class JournalLoader {
             e.type = Constants.TYPE_PAYMENT;
             e.status = Item.STATUS_PAID;
             e.net = net.setScale(2, java.math.RoundingMode.HALF_UP);
-            e.gross = p.amount.setScale(2, java.math.RoundingMode.HALF_UP);
+            e.gross = incomeGross.setScale(2, java.math.RoundingMode.HALF_UP);
             e.tax = e.gross.subtract(e.net);
-            e.description = p.description;
+            e.overpayment = alloc.surplus;
+            String desc = p.description == null ? "" : p.description.trim();
+            if (alloc.surplus.signum() > 0) {
+                String note = String.format(mpv5.globals.Messages.PAYMENT_OVERPAY_NOTE.toString(),
+                        mpv5.utils.numberformat.FormatNumber.formatLokalCurrency(alloc.surplus));
+                desc = desc.isEmpty() ? note : desc + " (" + note + ")";
+            }
+            e.description = desc;
             rows.add(e);
         }
         return rows;
