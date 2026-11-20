@@ -214,7 +214,7 @@ public class OverflowBar extends JPanel {
             JComboBox<?> cb = pcb.getComboBox();
             String label = pcb.getLabelText();
             if (label == null || label.trim().isEmpty()) {
-                label = Messages.ACTION_PRINT.toString();
+                label = "Print";
             } else {
                 label = label.trim().replaceAll(":$", "");
             }
