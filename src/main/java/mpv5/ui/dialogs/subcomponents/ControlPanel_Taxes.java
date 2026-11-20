@@ -299,11 +299,13 @@ public class ControlPanel_Taxes extends JPanel implements ControlApplet, DataPan
             mpv5.utils.export.VatCategory c = (mpv5.utils.export.VatCategory) category.getSelectedItem();
             //the category must fit the rate (0 % or not); S/E as before is stored as empty
             mpv5.utils.export.VatCategory fitting = mpv5.utils.export.VatCategory.of(c == null ? null : c.code(), taxvalue_);
-            if (c != null && fitting != c) {
+            //S and E follow the rate (0 % or not); a special category must fit it
+            if (c != null && fitting != c && c != mpv5.utils.export.VatCategory.S && c != mpv5.utils.export.VatCategory.E) {
                 Popup.notice(String.format(Messages.TAXES_CATEGORY_RATE.toString(), c));
                 return false;
             }
-            categorycode_ = c == null || fitting == mpv5.utils.export.VatCategory.of(null, taxvalue_) ? "" : c.code();
+            //stored explicitly, also S and E (#209)
+            categorycode_ = fitting.code();
             exemptioncode_ = c != null && c.needsReason() ? reasonCode.getText().trim() : "";
             exemptionnote_ = c != null && c.needsReason() ? note.getText().trim() : "";
             return true;

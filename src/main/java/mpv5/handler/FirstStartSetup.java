@@ -251,9 +251,42 @@ public final class FirstStartSetup {
         } catch (Exception e) {
             Log.Debug(FirstStartSetup.class, e);
         }
+        //the rates of the installation: VAT category and country
+        completeTaxRates();
         step(progress, Step.TEMPLATES);
         //the demo templates, the demo invoice is the assigned invoice template
         importDemoTemplates(admin);
+    }
+
+    /**
+     * The country of the bundled tax rates (0 %, 7 %, 19 %: the German rates),
+     * as in the country list (countries.xml)
+     */
+    public static final String TAX_COUNTRY = "Germany";
+
+    /**
+     * Completes the tax rates of older databases and of new ones (the rates
+     * of the installation have no VAT category and no country): an empty VAT
+     * category becomes S (rate above 0 %) or E (0 %), the meaning it had
+     * anyway (#209); rates of 0, 7 and 19 % without a country get
+     * {@link #TAX_COUNTRY}. Only empty fields are changed.
+     */
+    public static void completeTaxRates() {
+        String[] sql = {
+            "UPDATE %%tablename%% SET categorycode = 'S' WHERE (categorycode IS NULL OR categorycode = '') AND taxvalue > 0",
+            "UPDATE %%tablename%% SET categorycode = 'E' WHERE (categorycode IS NULL OR categorycode = '') AND (taxvalue IS NULL OR taxvalue = 0)",
+            "UPDATE %%tablename%% SET country = '" + TAX_COUNTRY + "' WHERE (country IS NULL OR country = '')"
+            + " AND (taxvalue IS NULL OR taxvalue = 0 OR taxvalue = 7 OR taxvalue = 19)"};
+        for (String q : sql) {
+            try {
+                QueryHandler.instanceOf().clone(Context.getTaxes()).freeUpdateQuery(q,
+                        mpv5.usermanagement.MPSecurityManager.CREATE_OR_DELETE, null);
+            } catch (Exception e) {
+                Log.Debug(FirstStartSetup.class, e);
+            }
+        }
+        //cached rates would still show the old values
+        DatabaseObject.clearCache(Context.getTaxes());
     }
 
     /**

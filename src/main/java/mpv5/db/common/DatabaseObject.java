@@ -318,6 +318,19 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     /**
+     * Forget the cached objects of one table (e.g. after an update by SQL)
+     *
+     * @param context
+     */
+    public static void clearCache(Context context) {
+        if (context == null) {
+            return;
+        }
+        String prefix = context.getDbIdentity() + "@";
+        cache.keySet().removeIf(k -> String.valueOf(k).startsWith(prefix));
+    }
+
+    /**
      * @return false if caching is switched off in the local settings (control
      * panel): every object is read from the database again
      */
