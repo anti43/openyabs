@@ -315,7 +315,7 @@ abstract class AppOnDatabase {
             //search index and trash bin (database triggers), restore
             Object[][] index = QueryHandler.instanceOf().clone("searchindex").select("dbidentity, rowid", new String[]{"dbidentity", "contacts", "'"});
             assertTrue(index.length > 0, "search index");
-            assertFalse(c2.delete(), "contact with issued invoice must not be deleted (#220)");
+            assertTrue(!c2.delete(), "contact with issued invoice must not be deleted (#220)");
             Contact trashable = (Contact) DatabaseObject.getObject(Context.getContact());
             trashable.setCname("Trash Test");
             trashable.setDateadded(new Date());
