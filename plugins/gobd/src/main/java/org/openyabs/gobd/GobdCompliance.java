@@ -96,6 +96,7 @@ public final class GobdCompliance implements YabsExtension {
 
         yabs.addRecordModifier(g.modifier());
         yabs.onActivity(g::onActivity);
+        yabs.addLockedDocumentProvider(g.lockedDocuments());
 
         yabs.addCommand("GoBD: 1. Beleg festschreiben", "Schreibt eine Rechnung unveraenderbar nach GoBD fest (inkl. Stammdaten-Snapshot & SHA-256 Hash-Kette)", () -> {
             Item doc = g.selectInvoice("GoBD-Festschreibung (§ 146 Abs. 4 AO)", false);

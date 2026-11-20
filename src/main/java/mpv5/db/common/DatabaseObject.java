@@ -1000,6 +1000,10 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                         ((Triggerable) this).triggerOnUpdate();
                     }
                 }
+                //the cache was emptied before the plugins ran; a plugin that read the record in
+                //modifyOnSave (e.g. the GoBD plugin, for the state before the change) put the old row
+                //back into it: drop it, the next read gets the saved values
+                uncacheObject(this);
 
                 final String fmessage = message;
                 final String fdbid = this.getDbIdentity();
