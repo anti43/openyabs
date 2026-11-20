@@ -150,17 +150,19 @@ class PrivacyTest {
         c.setCname("Interessent");
         c.setDateadded(new Date());
         assertTrue(c.save(true));
+        int contactId = c.__getIDS();
         ValueProperty.addOrUpdateProperty("note", "x", c);
-        Item draft = item(c, Item.TYPE_INVOICE, "ENTWURF-1", new Date(), Item.STATUS_IN_PROGRESS);
+        Item draft = item(c, Item.TYPE_INVOICE, "ENTWURF-1", new Date(), Item.STATUS_INPROGRESS);
         assertFalse(Privacy.check(c).mustKeep(), "a draft invoice need not be kept");
         assertTrue(c.delete());
-        assertEquals(1, count("SELECT invisible FROM contacts WHERE ids = " + c.__getIDS()), "in the trash");
+        assertEquals(1, count("SELECT invisible FROM contacts WHERE ids = " + contactId), "in the trash");
         assertEquals(1, count("SELECT invisible FROM items WHERE ids = " + draft.__getIDS()), "the draft too");
         //in the trash the record keeps its properties (restored with it)
-        assertTrue(ValueProperty.hasProperty(c, "note"));
-        assertTrue(TrashHandler.deleteFinally("contacts", c.__getIDS(), "test"));
-        assertEquals(0, count("SELECT COUNT(*) FROM contacts WHERE ids = " + c.__getIDS()));
+        Contact trashed = (Contact) DatabaseObject.getObject(Context.getContact(), contactId, true);
+        assertTrue(ValueProperty.hasProperty(trashed, "note"));
+        assertTrue(TrashHandler.deleteFinally("contacts", contactId, "test"));
+        assertEquals(0, count("SELECT COUNT(*) FROM contacts WHERE ids = " + contactId));
         assertEquals(0, count("SELECT COUNT(*) FROM valueproperties WHERE contextids = " + Context.getContact().getId()
-                + " AND objectids = " + c.__getIDS()), "deleted with the record");
+                + " AND objectids = " + contactId), "deleted with the record");
     }
 }
