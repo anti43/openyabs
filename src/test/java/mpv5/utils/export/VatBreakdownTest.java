@@ -232,6 +232,9 @@ class VatBreakdownTest {
         //Kleinunternehmer (§ 19 UStG): no VAT column, no VAT table, no VAT total - but the note and the QR code
         String c = render(mpv5.handler.FirstStartSetup.SMALL_BUSINESS_INVOICE_TEMPLATE,
                 fields(Arrays.asList(l("1", "100", "0", "0"))), true);
+        //the invoice page only: the page listing all fields at the end has the VAT fields as well
+        assertTrue(c.contains("Verf\u00fcgbare Felder"), c);
+        c = c.substring(0, c.indexOf("Verf\u00fcgbare Felder"));
         assertFalse(c.contains("USt."), c);
         assertFalse(c.contains("Steuersatz"), c);
         assertFalse(c.contains("MwSt"), c);

@@ -61,17 +61,25 @@ class FirstStartSmallBusinessTest {
         company.put(SmallBusiness.KEY_ENABLED, "true");
         FirstStartSetup.prepare(admin, true, null, company);
 
-        //saved (and read back from the database)
-        User again = (User) DatabaseObject.getObject(Context.getUser(), "admin");
-        assertEquals("30/123/45678", again.getProperty("companyinfo.taxnumber"));
-        assertEquals("true", again.getProperty("companyinfo." + SmallBusiness.KEY_ENABLED));
-        assertTrue(FirstStartSetup.isSmallBusiness(again));
+        //saved in the database (the properties of a user are read at login)
+        assertEquals("30/123/45678", stored(admin, "companyinfo.taxnumber"));
+        assertEquals("true", stored(admin, "companyinfo." + SmallBusiness.KEY_ENABLED));
+        assertEquals("Erika Muster", stored(admin, "companyinfo.name"));
+        assertNull(stored(admin, "companyinfo.account1"), "empty values are not saved");
+        assertTrue(FirstStartSetup.isSmallBusiness(admin));
         assertTrue(SmallBusiness.isEnabled());
 
         assertEquals(FirstStartSetup.DEMO_TEMPLATES.length + 1, DatabaseObject.getObjects(Context.getTemplate()).size());
         assertEquals(1, assigned(admin, FirstStartSetup.SMALL_BUSINESS_INVOICE_NAME), "the small business invoice is the invoice template");
         assertEquals(0, assigned(admin, "Demo - Rechnung"), "the regular invoice is there, but not assigned");
         assertEquals(1, assigned(admin, "Demo - Angebot"), "the other templates are assigned as before");
+    }
+
+    private static String stored(User admin, String key) throws Exception {
+        Object[][] d = QueryHandler.getConnection().freeQuery(
+                "SELECT value FROM userproperties WHERE usersids = " + admin.__getIDS() + " AND cname = '" + key + "'",
+                mpv5.usermanagement.MPSecurityManager.VIEW, null).getData();
+        return d == null || d.length == 0 ? null : String.valueOf(d[0][0]);
     }
 
     private static int assigned(User admin, String template) throws Exception {
