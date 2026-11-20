@@ -673,15 +673,21 @@ public final class SearchAnything extends JDialog {
                 }
             }
         }
+        java.util.Set<String> seen = new java.util.HashSet<String>();
+        for (Command cmd : l) {
+            seen.add(cmd.title);
+        }
         List<Component> todo = new ArrayList<Component>();
         todo.add(((JFrame) getOwner()).getContentPane());
         while (!todo.isEmpty()) {
             Component c = todo.remove(0);
-            if (c instanceof javax.swing.JButton && c.getName() != null && c.getName().startsWith("jButton")
+            if (c instanceof javax.swing.JButton && c.isVisible() && c.getName() != null
                     && SwingUtilities.getAncestorNamed("naviPanel", c) != null) {
                 javax.swing.JButton b = (javax.swing.JButton) c;
-                if (b.getText() != null && !b.getText().trim().isEmpty() && SearchService.matches(b.getText(), needle)) {
-                    l.add(new Command(b.getText().trim(), Messages.SEARCH_NAVIGATION.toString(), b));
+                String text = b.getText() == null ? "" : b.getText().trim();
+                if (!text.isEmpty() && !seen.contains(text) && SearchService.matches(text, needle)) {
+                    l.add(new Command(text, Messages.SEARCH_NAVIGATION.toString(), b));
+                    seen.add(text);
                 }
             }
             if (c instanceof java.awt.Container) {

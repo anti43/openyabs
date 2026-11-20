@@ -85,6 +85,10 @@ public class YabsQRCodeGenerator {
                 Item.getTypeString(item.__getInttype()) + " " + item.__getCname());
     }
 
+    YabsQRCodeGenerator(String text) {
+        this.text = text;
+    }
+
     /**
      * The content of the code (EPC069-12, version 002, UTF-8)
      *
@@ -215,8 +219,9 @@ public class YabsQRCodeGenerator {
     }
 
     public IImageProvider getImageProvider() throws IOException {
+        //keeps the size of the frame in the template instead of blowing it up to raw pixel dimensions
         IImageProvider qrcode = new ByteArrayImageProvider(new ByteArrayInputStream(toPng()));
-        qrcode.setSize((float) image.getWidth(), (float) image.getHeight());
+        qrcode.setUseImageSize(false);
         return qrcode;
     }
 }

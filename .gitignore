@@ -44,3 +44,5 @@ derby.log
 /Cache/Yabs-2.0-dev.start
 /install.log
 *.derby
+/scratch/
+/ext/templates/baumschule.odt
