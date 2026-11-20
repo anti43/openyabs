@@ -298,6 +298,11 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
      * the invoice a credit note corrects or cancels (#211)
      */
     private int refinvoiceids;
+    /**
+     * deposits / part payment invoices: the final invoice they were deducted
+     * in (#221)
+     */
+    private int finalinvoiceids;
     private int accountsids;
     private BigDecimal netvalue = BigDecimal.ZERO;
     private BigDecimal taxvalue = BigDecimal.ZERO;
@@ -640,6 +645,22 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     }
 
     /**
+     * @return the id of the final invoice this deposit / part payment invoice
+     * was deducted in, null if none
+     */
+    public Integer __getFinalinvoiceids() {
+        return finalinvoiceids > 0 ? finalinvoiceids : null;
+    }
+
+    /**
+     * @param finalinvoiceids the final invoice this deposit was deducted in,
+     * &lt;= 0 for none
+     */
+    public void setFinalinvoiceids(int finalinvoiceids) {
+        this.finalinvoiceids = Math.max(finalinvoiceids, 0);
+    }
+
+    /**
      * @return the invoice (invoice, deposit or part payment invoice) this
      * credit note corrects or cancels, null if none
      */
@@ -890,9 +911,44 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
         map.put("correctedinvoicedate", corrected == null || corrected.__getDateadded() == null ? "" : df.format(corrected.__getDateadded()));
         map.put("correctedinvoice", corrected == null ? "" : String.format(mpv5.globals.Messages.ITEM_CORRECTED_INVOICE_TEXT.toString(),
                 corrected.__getCnumber(), corrected.__getDateadded() == null ? "" : df.format(corrected.__getDateadded())));
+        //a final invoice: the deposits / part payment invoices deducted in it (§ 14 Abs. 5 UStG, #221)
+        putDeductedDeposits(map, __getInttype() == TYPE_INVOICE ? mpv5.handler.ItemService.deductedIn(this)
+                : new ArrayList<Item>(), df);
         putPaymentFields(map, df);
 
         return super.resolveReferences(map);
+    }
+
+    /**
+     * Template fields of a final invoice: item.finalinvoice ("true" /
+     * "false"), item.deductedinvoices (one line per deducted deposit / part
+     * payment invoice: number, date, net, VAT), item.deductednetf and
+     * item.deductedtaxf (their sums)
+     *
+     * @param map
+     * @param deposits the deducted deposits
+     * @param df
+     */
+    static void putDeductedDeposits(Map<String, Object> map, List<Item> deposits, DateFormat df) {
+        StringBuilder text = new StringBuilder();
+        BigDecimal net = BigDecimal.ZERO;
+        BigDecimal tax = BigDecimal.ZERO;
+        for (Item d : deposits) {
+            BigDecimal n = d.getNetAfterDiscount();
+            BigDecimal t = d.__getTaxvalue() == null ? BigDecimal.ZERO : d.__getTaxvalue();
+            net = net.add(n);
+            tax = tax.add(t);
+            if (text.length() > 0) {
+                text.append('\n');
+            }
+            text.append(String.format(mpv5.globals.Messages.FINAL_DEDUCTED_LINE.toString(), getTypeString(d.__getInttype()),
+                    d.__getCnumber(), d.__getDateadded() == null ? "" : df.format(d.__getDateadded()),
+                    FormatNumber.formatLokalCurrency(n), FormatNumber.formatLokalCurrency(t)));
+        }
+        map.put("finalinvoice", String.valueOf(!deposits.isEmpty()));
+        map.put("deductedinvoices", text.toString());
+        map.put("deductednetf", deposits.isEmpty() ? "" : FormatNumber.formatLokalCurrency(net));
+        map.put("deductedtaxf", deposits.isEmpty() ? "" : FormatNumber.formatLokalCurrency(tax));
     }
 
     /**

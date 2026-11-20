@@ -350,6 +350,37 @@ class ZugpferdFileTest {
         assertNull(none.getInvoiceReferencedDocumentID());
     }
 
+    /**
+     * A final invoice: the deducted deposit is a negative quantity at a
+     * positive price (BR-27: the net price must not be negative) and a
+     * preceding invoice (BG-3), #221
+     */
+    @Test
+    void finalInvoiceWithDeductedDeposit() throws Exception {
+        Map<String, String> c = company();
+        SubItem[] lines = {
+            line("Montage", "", "100", "Std.", "100", "19", "0"),
+            line("Material", "", "1", "Stk", "1000", "7", "0"),
+            line("Abzug", "Abzüglich Anzahlungsrechnung Nr. AZ-2026-00001 vom 01.10.2026", "1", "", "-3000", "19", "0")
+        };
+        Calendar cal = Calendar.getInstance();
+        cal.set(2026, Calendar.OCTOBER, 1, 0, 0, 0);
+        for (ZugpferdFile.Format format : ZugpferdFile.Format.values()) {
+            Invoice invoice = ZugpferdFile.createInvoice(invoice(), lines, ZugpferdFile.createSender(c::get), buyer(), "ref",
+                    ZugpferdFile.PAYTERM_UNSET, null, format);
+            ZugpferdFile.addPrecedingInvoice(invoice, "AZ-2026-00001", cal.getTime());
+            File xml = tmp.resolve("final-" + format + ".xml").toFile();
+            ZugpferdFile.writeXml(invoice, xml);
+            String x = new String(Files.readAllBytes(xml.toPath()), StandardCharsets.UTF_8);
+            assertFalse(x.contains("<ram:ChargeAmount>-"), "no negative net price (BR-27): " + x);
+            assertTrue(java.util.regex.Pattern.compile(">-1(\\.0+)?</ram:BilledQuantity>").matcher(x).find(), "negative quantity: " + x);
+            //8.000 x 1,19 + 1.000 x 1,07 = 9.520 + 1.070
+            assertTrue(x.contains("<ram:GrandTotalAmount>10590.00</ram:GrandTotalAmount>"), x);
+            assertTrue(x.contains("<ram:IssuerAssignedID>AZ-2026-00001</ram:IssuerAssignedID>"), x);
+            assertValid(xml);
+        }
+    }
+
     @Test
     void findsIbanAndBicWhateverFieldTheyAreIn() {
         //older German labels: "Konto" = account, "IBAN" = banknumber
