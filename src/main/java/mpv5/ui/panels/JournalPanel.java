@@ -228,6 +228,7 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
     private final List<Component> othersColumn = new ArrayList<Component>();
     private final JLabel taxRates = new JLabel(" ");
     private final JLabel exportResult = new JLabel(" ");
+    private final JButton filtersToggle = new JButton();
     private File exportedFile;
     //contact overview
     private final JTree jTree1 = new JTree();
@@ -351,13 +352,13 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
                 gc.gridy = r;
                 gc.gridx = c * 2;
                 gc.anchor = GridBagConstraints.WEST;
-                gc.insets = new Insets(r == 0 ? 0 : ModernTheme.px(2), c == 0 ? 0 : gap, 0, ModernTheme.px(8));
+                gc.insets = new Insets(0, c == 0 ? 0 : gap, 0, ModernTheme.px(8));
                 g.add(name, gc);
                 gc.gridx = c * 2 + 1;
                 gc.anchor = GridBagConstraints.EAST;
                 gc.weightx = 1;
                 gc.fill = GridBagConstraints.HORIZONTAL;
-                gc.insets = new Insets(r == 0 ? 0 : ModernTheme.px(2), 0, 0, 0);
+                gc.insets = new Insets(0, 0, 0, 0);
                 g.add(value, gc);
                 if (c == cols.length - 1) {
                     othersColumn.add(name);
@@ -727,6 +728,7 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         //export and reload: at the right of the filter line
         JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT, ModernTheme.px(8), 0));
         buttons.setOpaque(false);
+        buttons.add(filtersToggle);
         buttons.add(exportButton);
         buttons.add(loadButton);
         JPanel bar = new JPanel(new BorderLayout(gap, 0));
@@ -786,6 +788,17 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         filters.setOpaque(false);
         filters.add(period, BorderLayout.NORTH);
         filters.add(cards, BorderLayout.CENTER);
+        //the filter cards can be collapsed (more room for the table); remembered per user
+        setFiltersCollapsed(cards, filtersCollapsed());
+        filtersToggle.addActionListener(e -> {
+            boolean collapse = cards.isVisible();
+            setFiltersCollapsed(cards, collapse);
+            try {
+                mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(JournalPanel.class.getSimpleName(), FILTERS_COLLAPSED, collapse);
+            } catch (Exception ex) {
+                Log.Debug(JournalPanel.class, ex.getMessage());
+            }
+        });
 
         //the table: one scroll bar (the panel follows the height of the tab)
         ModernTheme.style(jTable1);
@@ -821,16 +834,17 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
                 }
             }
         });
-        JPanel info = new JPanel(new mpv5.ui.modern.WrapLayout(FlowLayout.LEFT, 0, 0));
+        exportResult.setFont(ModernTheme.font(-1, Font.PLAIN));
+        //tax rates and export result share one line below the sums
+        JPanel info = new JPanel(new BorderLayout(gap, 0));
         info.setOpaque(false);
-        info.add(taxRates);
-        JPanel info2 = new JPanel(new BorderLayout(gap, 0));
-        info2.setOpaque(false);
-        info2.add(exportResult, BorderLayout.CENTER);
+        info.add(taxRates, BorderLayout.CENTER);
+        info.add(exportResult, BorderLayout.EAST);
         Card sums = new Card(null)
                 .addFull(sumsGrid())
-                .addFull(info)
-                .addFull(info2);
+                .addFull(info);
+        //compact: less padding than the filter cards
+        sums.setBorder(BorderFactory.createEmptyBorder(ModernTheme.px(6), ModernTheme.px(12), ModernTheme.px(6), ModernTheme.px(12)));
 
         JPanel journal = new JPanel(new BorderLayout(0, gap));
         journal.setOpaque(false);
@@ -858,6 +872,30 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
             add(tabs, BorderLayout.CENTER);
         }
         revalidate();
+    }
+
+    private static final String FILTERS_COLLAPSED = "filterscollapsed"; //NOI18N
+
+    /**
+     * @return true if the user collapsed the filter cards
+     */
+    private static boolean filtersCollapsed() {
+        try {
+            return mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(JournalPanel.class.getSimpleName(), FILTERS_COLLAPSED);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * Shows or hides the filter cards (the period line stays)
+     */
+    private void setFiltersCollapsed(JComponent cards, boolean collapsed) {
+        cards.setVisible(!collapsed);
+        filtersToggle.setText((collapsed ? "\u25B8 " : "\u25BE ") //NOI18N
+                + (collapsed ? Messages.JOURNAL_FILTERS_SHOW : Messages.JOURNAL_FILTERS_HIDE));
+        revalidate();
+        repaint();
     }
 
     private static JPanel flow(JComponent... cs) {
