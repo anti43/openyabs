@@ -142,6 +142,20 @@ public final class DeleteConfirmDialog {
         intro.setForeground(ModernTheme.foreground());
         intro.setAlignmentX(Component.LEFT_ALIGNMENT);
         p.add(intro);
+        if (mpv5.handler.Privacy.isIssuedInvoice(o)) {
+            //an issued invoice: retention, its number stays used, correct it with a credit note (#213)
+            JTextArea issued = new JTextArea(String.format(Messages.DELETE_ISSUED_INVOICE.toString(), o.__getCname()));
+            issued.setLineWrap(true);
+            issued.setWrapStyleWord(true);
+            issued.setEditable(false);
+            issued.setFocusable(false);
+            issued.setOpaque(false);
+            issued.setFont(ModernTheme.font(1, Font.BOLD));
+            issued.setForeground(PERMANENT);
+            issued.setBorder(BorderFactory.createEmptyBorder(ModernTheme.px(8), 0, 0, 0));
+            issued.setAlignmentX(Component.LEFT_ALIGNMENT);
+            p.add(issued);
+        }
         section(p, groups, Effect.TRASH, Messages.DELETE_PREVIEW_TRASH.toString(), TRASH);
         section(p, groups, Effect.PERMANENT, Messages.DELETE_PREVIEW_PERMANENT.toString(), PERMANENT);
         section(p, groups, Effect.KEPT, Messages.DELETE_PREVIEW_KEPT.toString(), KEPT);
