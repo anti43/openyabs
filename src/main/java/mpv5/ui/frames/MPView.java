@@ -740,27 +740,7 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
             }
         });
 
-        //build bigdrop Button
-        ActionListener l = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                addTab(mpv5.YabsViewProxy.instance().newItemView(Item.TYPE_INVOICE), Messages.NEW_INVOICE);
-            }
-        };
-        ddb1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/32/folder_blue.png")));
-        ddb1.setLabel(Messages.NEW_INVOICE.toString());
-        ddb1.addActionListener(l);
-
-        //no new deposits: the same as a partial payment, only confusing (existing ones stay readable)
-        ddb1.add(
-                new javax.swing.ImageIcon(getClass().getResource("/images/32/folder_blue.png")),
-                Item.getTypeString(Item.TYPE_PART_PAYMENT),
-                new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                addTab(mpv5.YabsViewProxy.instance().newItemView(Item.TYPE_PART_PAYMENT), Messages.NEW_PART_PAYMENT);
-            }
-        });
+        navigationMenu = NavigationMenu.install(menuBar, viewMenu, nav_contacts, nav_accounting, nav_products, nav_extras);
 
         if (predefTitle != null) {
             identifierFrame.setTitle(identifierFrame.getTitle() + predefTitle);
@@ -779,12 +759,6 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
         openDashboard.addActionListener(e -> Scheduler.openHomeScreen(true));
         viewMenu.insert(openDashboard, 0);
         viewMenu.insertSeparator(1);
-
-        //the products: one entry in the navigation ("All products" and "Product overview" are one view)
-        //removed, not hidden: the grid of the navigation keeps a gap for hidden buttons
-        nav_products.remove(jButton20);
-        nav_products.revalidate();
-        jButton19.setText(Messages.PRODUCTS_TITLE.toString());
 
         addTab(new StartPage(), Messages.WELCOME);
         LocalSettings.save();
@@ -3135,6 +3109,10 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
         jMenuItem48.setVisible(false);
         //View > Add toolbar action: in the script manager (Control Panel)
         jMenuItem49.setVisible(false);
+        //the products: one entry in the navigation ("All products" and "Product overview" are one view)
+        //removed, not hidden: the grid of the navigation keeps a gap for hidden buttons
+        nav_products.remove(jButton20);
+        jButton19.setText(Messages.PRODUCTS_TITLE.toString());
         javax.swing.JButton stock = new javax.swing.JButton(Messages.STOCK_MANAGER.toString(),
                 new javax.swing.ImageIcon(getClass().getResource("/images/32/ark.png")));
         stock.setFont(jButton19.getFont());
@@ -3147,6 +3125,11 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
         stock.setName("navStockmanager");
         stock.addActionListener(e -> jMenuItem48ActionPerformed(e));
         nav_products.add(stock);
+        nav_products.revalidate();
+        //replace the invoice drop-down with dedicated invoice and progress-invoice buttons
+        NavigationMenu.replaceInvoiceDropDown(nav_accounting, ddb1, jButton10,
+                e -> addTab(mpv5.YabsViewProxy.instance().newItemView(Item.TYPE_INVOICE), Messages.NEW_INVOICE),
+                e -> addTab(mpv5.YabsViewProxy.instance().newItemView(Item.TYPE_PART_PAYMENT), Messages.NEW_PART_PAYMENT));
     }
 
     private void jMenuItem48ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem48ActionPerformed
@@ -3708,6 +3691,8 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
      */
     public static final int NAV_EXTRAS = 3;
 
+    private javax.swing.JMenu navigationMenu;
+
     /**
      * Add a Button to the navigation panel
      *
@@ -3744,6 +3729,9 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 
             default:
                 throw new UnsupportedOperationException("Target not defined.");
+        }
+        if (navigationMenu != null) {
+            NavigationMenu.populate(navigationMenu, nav_contacts, nav_accounting, nav_products, nav_extras);
         }
     }
 
