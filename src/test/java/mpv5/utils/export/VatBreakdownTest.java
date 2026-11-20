@@ -228,6 +228,35 @@ class VatBreakdownTest {
     }
 
     @Test
+    void theSmallBusinessInvoiceShowsNoVat() throws Exception {
+        //Kleinunternehmer (§ 19 UStG): no VAT column, no VAT table, no VAT total - but the note and the QR code
+        String c = render(mpv5.handler.FirstStartSetup.SMALL_BUSINESS_INVOICE_TEMPLATE,
+                fields(Arrays.asList(l("1", "100", "0", "0"))), true);
+        //the invoice page only: the page listing all fields at the end has the VAT fields as well
+        assertTrue(c.contains("Verf\u00fcgbare Felder"), c);
+        c = c.substring(0, c.indexOf("Verf\u00fcgbare Felder"));
+        assertFalse(c.contains("USt."), c);
+        assertFalse(c.contains("Steuersatz"), c);
+        assertFalse(c.contains("MwSt"), c);
+        assertFalse(c.contains("TAX-TOTAL"), c);
+        assertTrue(c.contains("Summe|NET-TOTAL"), c);
+        assertTrue(c.contains("Rechnungsbetrag|GROSS-TOTAL"), c);
+        String raw;
+        try (ZipInputStream z = new ZipInputStream(getClass().getResourceAsStream(mpv5.handler.FirstStartSetup.SMALL_BUSINESS_INVOICE_TEMPLATE))) {
+            StringBuilder b = new StringBuilder();
+            for (ZipEntry e; (e = z.getNextEntry()) != null;) {
+                b.append(e.getName()).append('\n');
+                if (e.getName().equals("content.xml")) {
+                    b.append(new String(z.readAllBytes(), StandardCharsets.UTF_8));
+                }
+            }
+            raw = b.toString();
+        }
+        assertTrue(raw.contains("&lt;companyinfo.smallbusinessnote&gt;"), "the note of the exemption");
+        assertTrue(raw.contains("Pictures/QRCode.png"), "the EPC QR code");
+    }
+
+    @Test
     void aTemplateWithoutTheVatTableIsUnchanged() throws Exception {
         //the purchase order keeps its 5 columns and has no VAT table
         String c = render("/extra/templates/demo-10.odt", fields(Arrays.asList(l("1", "1", "0", "19"))), true);

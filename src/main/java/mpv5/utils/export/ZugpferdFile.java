@@ -183,7 +183,7 @@ public class ZugpferdFile implements Waitable {
             }
             Invoice invoice = prepared != null ? prepared : createInvoice(item, format);
             //no e-invoice with missing or wrong data (company info, customer): it would be rejected
-            List<String> missing = validate(invoice);
+            List<String> missing = validate(invoice, SmallBusiness.isEnabled());
             try {
                 String buyerVatId = checkBuyerVatId(item.getContact(), item.getContact().getInvoiceaddress());
                 if (buyerVatId != null) {
@@ -261,7 +261,7 @@ public class ZugpferdFile implements Waitable {
         PaymentTerms terms = PaymentTerms.forContact(contact, contact.__getPayterm(), paytermOf(template), company);
         Invoice invoice = createInvoice(item, item.getSubitems(), createSender(company, terms.getAccount()),
                 contact.asZugpferdTradeparty(), findBuyerReference(item, contact), terms.getDays(),
-                company.apply(KEY_TAX_EXEMPTION_REASON), format);
+                company.apply(KEY_TAX_EXEMPTION_REASON), SmallBusiness.note(company), format);
         applySkonto(invoice, terms);
         return invoice;
     }
@@ -296,6 +296,32 @@ public class ZugpferdFile implements Waitable {
      */
     public static Invoice createInvoice(Item item, SubItem[] subitems, TradeParty sender, TradeParty recipient,
             String buyerReference, int paytermDays, String taxExemptionReason, Format format) {
+        return createInvoice(item, subitems, sender, recipient, buyerReference, paytermDays, taxExemptionReason,
+                null, format);
+    }
+
+    /**
+     * Build the Mustang invoice from the given parts (no database access)
+     *
+     * @param item
+     * @param subitems
+     * @param sender
+     * @param recipient
+     * @param buyerReference
+     * @param paytermDays payment term in days, 0 for payable immediately
+     * (due on the invoice date), &lt; 0 for the default of
+     * {@value #DEFAULT_PAYTERM_DAYS} days
+     * @param taxExemptionReason
+     * @param smallBusinessNote the note of the small business exemption
+     * ({@link SmallBusiness#note}), empty or null if it does not apply. With
+     * it, it is the exemption reason of the 0 % lines and a note (BT-22) of
+     * the invoice
+     * @param format
+     * @return
+     */
+    public static Invoice createInvoice(Item item, SubItem[] subitems, TradeParty sender, TradeParty recipient,
+            String buyerReference, int paytermDays, String taxExemptionReason, String smallBusinessNote,
+            Format format) {
         Date issueDate = item.__getDateadded() != null ? item.__getDateadded() : new Date();
         //Item#datetodo is the "last edited" date, not a due date - always use the payment term
         Date dueDate = dueDate(issueDate, paytermDays);
@@ -315,7 +341,12 @@ public class ZugpferdFile implements Waitable {
             invoice.setDocumentCode(code);
         }
 
-        String reason = isEmpty(taxExemptionReason) ? DEFAULT_TAX_EXEMPTION_REASON : taxExemptionReason;
+        boolean smallBusiness = !isEmpty(smallBusinessNote);
+        if (smallBusiness) {
+            invoice.addTaxNote(smallBusinessNote.trim());
+        }
+        String reason = smallBusiness ? smallBusinessNote.trim()
+                : isEmpty(taxExemptionReason) ? DEFAULT_TAX_EXEMPTION_REASON : taxExemptionReason;
         int count = 0;
         for (SubItem subItem : subitems) {
             IZUGFeRDExportableItem line = subItem.asZugpferdSubitem(reason);
@@ -498,6 +529,11 @@ public class ZugpferdFile implements Waitable {
                 : !vatField.isEmpty() && !vatField.equals(vatId) && !isValidVatId(vatField) ? vatField : "";
         if (!taxNumber.isEmpty()) {
             sender.addTaxID(taxNumber);
+            if (isEmpty(vatId)) {
+                //no VAT ID (e.g. small business): BR-CO-26 needs a seller identifier (BT-29),
+                //the tax number (BT-32, schemeID FC) identifies the seller
+                sender.setID(taxNumber);
+            }
         }
 
         //the account the customer pays to (default: the account of the company info)
@@ -530,8 +566,30 @@ public class ZugpferdFile implements Waitable {
      * @return a list of human readable problems, empty if everything is fine
      */
     public static List<String> validate(Invoice invoice) {
+        return validate(invoice, false);
+    }
+
+    /**
+     * Check the seller and buyer for data which is required by EN 16931 /
+     * XRechnung
+     *
+     * @param invoice
+     * @param smallBusiness true if the small business exemption applies: no
+     * line may show VAT
+     * @return a list of human readable problems, empty if everything is fine
+     */
+    public static List<String> validate(Invoice invoice, boolean smallBusiness) {
         List<String> problems = sellerProblems(invoice.getSender());
         buyerProblems(problems, invoice.getRecipient());
+        if (smallBusiness && invoice.getZFItems() != null) {
+            for (IZUGFeRDExportableItem line : invoice.getZFItems()) {
+                BigDecimal rate = line.getProduct().getVATPercent();
+                if (rate != null && rate.signum() != 0) {
+                    problems.add(Messages.SMALLBUSINESS_LINE_HAS_VAT + ": " + line.getProduct().getName()
+                            + " (" + rate.stripTrailingZeros().toPlainString() + " %)");
+                }
+            }
+        }
         return problems;
     }
 
@@ -547,10 +605,10 @@ public class ZugpferdFile implements Waitable {
         check(problems, seller, Messages.ZUGFERD_FIELD_ZIP, s.getZIP());
         check(problems, seller, Messages.ZUGFERD_FIELD_CITY, s.getLocation());
         checkCountry(problems, seller, s.getCountry());
-        //BR-CO-26: the seller must be identified by the VAT ID, a tax number alone is not enough
-        if (isEmpty(s.getVATID())) {
+        //BR-CO-26 / BR-S-02 / BR-E-02: VAT ID, or the tax number (e.g. small business without VAT ID)
+        if (isEmpty(s.getVATID()) && isEmpty(s.getTaxID())) {
             problems.add(seller + Messages.ZUGFERD_FIELD_VATID);
-        } else if (!isValidVatId(s.getVATID())) {
+        } else if (!isEmpty(s.getVATID()) && !isValidVatId(s.getVATID())) {
             problems.add(seller + Messages.ZUGFERD_INVALID_VATID + " '" + s.getVATID() + "'");
         }
         check(problems, seller, Messages.ZUGFERD_FIELD_EMAIL, s.getUriUniversalCommunicationID());

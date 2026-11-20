@@ -36,8 +36,10 @@ import mpv5.logging.Log;
 import mpv5.utils.files.FileDirectoryHandler;
 
 /**
- * What a new database gets without asking: the countries, the bundled
- * languages and the invoice template, assigned to the administrator
+ * What a new database gets: the countries, the bundled languages, the
+ * company info of the first start and the demo templates; the invoice
+ * template assigned to the administrator is the small business one
+ * (Kleinunternehmer, no VAT) or the regular one
  */
 public final class FirstStartSetup {
 
@@ -80,8 +82,26 @@ public final class FirstStartSetup {
      * @throws Exception
      */
     public static boolean importTemplate(final User owner, long wait) throws Exception {
+        if (isSmallBusiness(owner)) {
+            return importTemplate(owner, SMALL_BUSINESS_INVOICE_TEMPLATE, SMALL_BUSINESS_INVOICE_NAME,
+                    POSITIONS_FORMAT, Constants.TYPE_INVOICE, wait) != null;
+        }
         return importTemplate(owner, DEMO_INVOICE_TEMPLATE, "Demo - Rechnung",
                 ITEM_FORMAT, Constants.TYPE_INVOICE, wait) != null;
+    }
+
+    /**
+     * @param user
+     * @return true if the company of the user uses the small business VAT
+     * exemption (Kleinunternehmer)
+     */
+    public static boolean isSmallBusiness(User user) {
+        try {
+            return user != null && "true".equalsIgnoreCase(String.valueOf(
+                    user.getProperty("companyinfo." + mpv5.utils.export.SmallBusiness.KEY_ENABLED)).trim());
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     /**
@@ -195,6 +215,23 @@ public final class FirstStartSetup {
      * @param progress told before every step, may be null
      */
     public static void prepare(User admin, boolean german, Progress progress) {
+        prepare(admin, german, progress, null);
+    }
+
+    /**
+     * Prepares a new database (see {@link #prepare(User, boolean, Progress)})
+     * with the company info of the first start
+     *
+     * @param admin the administrator of the new database
+     * @param german switch the administrator to German
+     * @param progress told before every step, may be null
+     * @param company the company info (keys without "companyinfo."), e.g.
+     * {@link mpv5.utils.export.SmallBusiness#KEY_ENABLED}; null or empty for
+     * none. With the small business exemption the small business invoice
+     * template is the assigned invoice template.
+     */
+    public static void prepare(User admin, boolean german, Progress progress, java.util.Map<String, String> company) {
+        saveCompany(admin, company);
         step(progress, Step.COUNTRIES);
         try {
             importCountries();
@@ -242,14 +279,47 @@ public final class FirstStartSetup {
      * @param admin
      */
     public static void importDemoTemplates(User admin) {
+        //small business: the invoice without VAT is the invoice template, the regular one is there
+        //but not assigned (and the other way round)
+        boolean small = isSmallBusiness(admin);
         for (Object[] d : DEMO_TEMPLATES) {
             int type = (Integer) d[0];
             try {
                 importTemplate(admin, String.format("/extra/templates/demo-%02d.odt", type), "Demo - " + d[1],
-                        demoFormat(type), type, 60000, true);
+                        demoFormat(type), type, 60000, !(small && type == Constants.TYPE_INVOICE));
             } catch (Exception e) {
                 Log.Debug(FirstStartSetup.class, e);
             }
+        }
+        try {
+            importTemplate(admin, SMALL_BUSINESS_INVOICE_TEMPLATE, SMALL_BUSINESS_INVOICE_NAME, POSITIONS_FORMAT,
+                    Constants.TYPE_INVOICE, 60000, small);
+        } catch (Exception e) {
+            Log.Debug(FirstStartSetup.class, e);
+        }
+    }
+
+    /**
+     * Saves the company info of the first start
+     *
+     * @param admin
+     * @param company keys without "companyinfo.", empty values are skipped;
+     * null for none
+     */
+    public static void saveCompany(User admin, java.util.Map<String, String> company) {
+        if (admin == null || company == null || company.isEmpty()) {
+            return;
+        }
+        try {
+            for (java.util.Map.Entry<String, String> e : company.entrySet()) {
+                String v = e.getValue() == null ? "" : e.getValue().trim();
+                if (!v.isEmpty()) {
+                    admin.setProperty("companyinfo." + e.getKey(), v);
+                }
+            }
+            admin.saveProperties();
+        } catch (Exception e) {
+            Log.Debug(FirstStartSetup.class, e);
         }
     }
 
@@ -269,6 +339,13 @@ public final class FirstStartSetup {
      * users without one
      */
     public static final String DEMO_INVOICE_TEMPLATE = "/extra/templates/demo-00.odt";
+    /**
+     * The invoice template of a small business (Kleinunternehmer, § 19 UStG):
+     * no VAT, the note of the exemption, the EPC QR code; the assigned invoice
+     * template when the small business exemption is chosen at the first start
+     */
+    public static final String SMALL_BUSINESS_INVOICE_TEMPLATE = "/extra/templates/demo-00-ku.odt";
+    public static final String SMALL_BUSINESS_INVOICE_NAME = "Demo - Rechnung Kleinunternehmer";
     /**
      * The table columns of the documents: position, quantity, text, price,
      * tax rate, net total (the 6-column table of the bundled templates; the

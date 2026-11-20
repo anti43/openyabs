@@ -154,6 +154,31 @@ def vat_layout(c):
     c = c[:m.end()] + vat + c[m.end():]
     return c
 
+# ---- the invoice of a small business (Kleinunternehmer, § 19 UStG): no VAT column, no VAT
+# table, no VAT row in the totals, the note of the exemption below the totals (companyinfo.smallbusinessnote:
+# the § 19 wording, or the note of the company info). Positions: format 1,2,4,5,6
+KU_STYLES = ('<style:style style:name="KuNote" style:family="paragraph" style:parent-style-name="Standard">'
+             '<style:paragraph-properties fo:margin-top="0.4cm" fo:margin-bottom="0.2cm"/>'
+             '<style:text-properties style:font-name="Arial" fo:font-size="10pt" fo:font-weight="bold"/></style:style>')
+
+def small_business(c):
+    for old, new in (('<text:p text:style-name="P16">Netto-Einzel-Preis</text:p>', '<text:p text:style-name="P16">Einzelpreis</text:p>'),
+                     ('<text:p text:style-name="P17">Ust-Nr:</text:p>', '<text:p text:style-name="P17">St.-Nr.:</text:p>')):
+        assert c.count(old) == 1, old
+        c = c.replace(old, new)
+    c = c.replace('</office:automatic-styles>', KU_STYLES + '</office:automatic-styles>', 1)
+    m = TOTALS.search(c)
+    assert m
+    t = m.group(0)
+    rows = re.findall(r'<table:table-row>.*?</table:table-row>', t)
+    assert len(rows) == 5 and 'Nettogesamtbetrag' in rows[0] and 'MwSt' in rows[3] and 'grosvaluef' in rows[4], rows
+    # sum, discount, invoice amount (no VAT: gross = net)
+    keep = [rows[0].replace('>Nettogesamtbetrag <', '>Summe<'), rows[1].replace('>Rabatt Netto (<', '>Rabatt (<'), rows[4]]
+    assert '>Summe<' in keep[0] and '>Rabatt (<' in keep[1]
+    t = t[:t.index('<table:table-row>')] + ''.join(keep) + '</table:table>'
+    note = '<text:p text:style-name="KuNote">%s</text:p>' % ph('companyinfo.smallbusinessnote')
+    return c[:m.start()] + t + note + c[m.end():]
+
 LOGO = ('<text:p text:style-name="P23"><draw:frame draw:style-name="frLogo" draw:name="Logo" text:anchor-type="as-char" svg:width="4.2cm" svg:height="1.4cm" draw:z-index="3">'
         '<draw:image xlink:href="Pictures/logo.png" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/></draw:frame></text:p>')
 
@@ -292,6 +317,8 @@ def make(fname, title, kind, groups, prefix=None, cprefix=None, blocks=None, tot
             c = TOTALS.sub(lambda m: body(totals), c, 1)
         if kind == 'item':
             c = vat_layout(c)
+        elif kind == 'smallbusiness':
+            c = small_business(c)
     if prefix:
         c = c.replace('&lt;item.contact.', '&lt;' + cprefix).replace('&lt;item.', '&lt;' + prefix)
     c = c.replace('</office:automatic-styles>', STYLES + BSTYLES + '</office:automatic-styles>', 1)
@@ -299,7 +326,7 @@ def make(fname, title, kind, groups, prefix=None, cprefix=None, blocks=None, tot
     c = c.replace('<text:p text:style-name="P23">Firmenlogo</text:p>', LOGO, 1)
     c = c.replace('<text:span text:style-name="T6">Rechnung </text:span>', '<text:span text:style-name="T6">%s </text:span>' % esc(title), 1)
     end = c.index('</office:text>')
-    if kind in ('item', 'journal', 'positions'):
+    if kind in ('item', 'journal', 'positions', 'smallbusiness'):
         body_end = c[:end]
     else:
         # keep the head (logo, addresses, title line); the positions and totals are replaced by the body
@@ -396,6 +423,11 @@ OTHERS = [
 ]
 for tid, title, kind, g, kw in OTHERS:
     made.append((tid, title, 'demo-%02d.odt' % tid, make('demo-%02d.odt' % tid, title, kind, g, tid=tid, **kw)))
+# the invoice of a small business (the default invoice template when "Kleinunternehmer" is chosen at the first start)
+KU_COMPANY = COMPANY + ['companyinfo.smallbusinessnote', 'companyinfo.smallbusinessid']
+g = [('Beleg', item + positions), ('Kontakt des Belegs', contact_of('item.contact.')), ('Firma', KU_COMPANY)]
+made.append((0, 'Rechnung Kleinunternehmer', 'demo-00-ku.odt',
+             make('demo-00-ku.odt', 'Rechnung', 'smallbusiness', g, total_label='Rechnungsbetrag', tid=0)))
 # the regular invoice template (imported on first start): the base with the sender line from the
 # company information and the name only once
 def write_odt(fname, c):

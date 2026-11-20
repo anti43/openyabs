@@ -137,7 +137,32 @@ public final class FirstStart extends JFrame {
     private final JProgressBar bar = new JProgressBar();
     private final JTextArea error = text("");
     private final JPanel errorButtons = new JPanel(new FlowLayout(FlowLayout.RIGHT, ModernTheme.px(8), 0));
-    private final PrimaryButton start = new PrimaryButton(tr(Messages.FIRSTSTART_START), null);
+    private final PrimaryButton start = new PrimaryButton(tr(Messages.FIRSTSTART_NEXT), null);
+    //company (companyinfo.*): only for a new database
+    private final JTextField cBusiness = ModernTheme.roomy(new JTextField());
+    private final JTextField cFirstname = ModernTheme.roomy(new JTextField());
+    private final JTextField cName = ModernTheme.roomy(new JTextField());
+    private final JTextField cStreet = ModernTheme.roomy(new JTextField());
+    private final JTextField cZip = ModernTheme.roomy(new JTextField());
+    private final JTextField cCity = ModernTheme.roomy(new JTextField());
+    private final JComboBox<String> cCountry = new JComboBox<String>(countries());
+    private final JTextField cPhone = ModernTheme.roomy(new JTextField());
+    private final JTextField cEmail = ModernTheme.roomy(new JTextField());
+    private final JTextField cTaxnumber = ModernTheme.roomy(new JTextField());
+    private final JTextField cVatid = ModernTheme.roomy(new JTextField());
+    private final JTextField cIban = ModernTheme.roomy(new JTextField());
+    private final JTextField cBic = ModernTheme.roomy(new JTextField());
+    /**
+     * small businesses are the main users: preselected
+     */
+    private final JCheckBox smallBusiness = new JCheckBox("<html>" + tr(Messages.FIRSTSTART_SMALLBUSINESS) + "</html>", true);
+    //folders (local settings of the connection)
+    private final JTextField fDocuments = ModernTheme.roomy(new JTextField(defaultDocumentsFolder().getPath()));
+    private final JTextField fReceipts = ModernTheme.roomy(new JTextField(mpv5.handler.ExpenseReceipts.DEFAULT_DIR));
+    private final JTextField fEinvoice = ModernTheme.roomy(new JTextField());
+    private final JCheckBox fEinvoiceAuto = new JCheckBox(tr(Messages.FIRSTSTART_F_EINVOICE_AUTO), true);
+    private final JTextField fBackups = ModernTheme.roomy(new JTextField(mpv5.db.common.DatabaseBackup.DEFAULT_DIR));
+    private final JCheckBox fBackupOnExit = new JCheckBox(tr(Messages.FIRSTSTART_F_BACKUP_ON_EXIT), true);
 
     /**
      * Shows the first start
@@ -215,6 +240,8 @@ public final class FirstStart extends JFrame {
 
         content.setBackground(ModernTheme.background());
         content.add(form(), "form");
+        content.add(company(), "company");
+        content.add(folders(), "folders");
         content.add(progress(), "progress");
         setContentPane(content);
         setMinimumSize(new Dimension(ModernTheme.px(560), ModernTheme.px(460)));
@@ -309,13 +336,248 @@ public final class FirstStart extends JFrame {
         auto.setForeground(ModernTheme.muted());
         auto.setFont(ModernTheme.font(-1, Font.PLAIN));
         foot.add(auto, BorderLayout.CENTER);
-        start.addActionListener(e -> go());
+        start.addActionListener(e -> next());
         JPanel startRow = new JPanel(new GridBagLayout());
         startRow.setOpaque(false);
         startRow.add(start);
         foot.add(startRow, BorderLayout.EAST);
         p.add(foot, BorderLayout.SOUTH);
         getRootPane().setDefaultButton(start);
+        return p;
+    }
+
+    /**
+     * After the choice of the database: the company and the folders for a new
+     * database, else straight to the setup
+     */
+    private void next() {
+        if (server.isSelected() && existing.isSelected()) {
+            go();
+        } else if (!server.isSelected() && importFrom != null) {
+            //the old database brings its company info
+            show("folders");
+        } else {
+            show("company");
+        }
+    }
+
+    private void show(String page) {
+        pages.show(content, page);
+        if ("form".equals(page)) {
+            getRootPane().setDefaultButton(start);
+        }
+        Dimension pref = getPreferredSize();
+        if (pref.height > getHeight()) {
+            setSize(getWidth(), Math.min(pref.height, ModernTheme.px(760)));
+        }
+        validate();
+        repaint();
+    }
+
+    // ---------------------------------------------------------------- company
+    private JPanel company() {
+        Card c = new Card(null);
+        c.flat();
+        smallBusiness.setOpaque(false);
+        smallBusiness.setFont(ModernTheme.font(1, Font.BOLD));
+        c.addFull(smallBusiness);
+        JTextArea hint = text(tr(Messages.FIRSTSTART_SMALLBUSINESS_HINT));
+        hint.setForeground(ModernTheme.muted());
+        hint.setFont(ModernTheme.font(-1, Font.PLAIN));
+        c.addFull(hint);
+        c.row(Card.field(tr(Messages.FIRSTSTART_C_BUSINESS), cBusiness));
+        c.row(Card.field(tr(Messages.FIRSTSTART_C_FIRSTNAME), cFirstname), Card.field(tr(Messages.FIRSTSTART_C_NAME), cName));
+        c.row(Card.field(tr(Messages.FIRSTSTART_C_STREET), cStreet));
+        c.row(Card.field(tr(Messages.FIRSTSTART_C_ZIP), cZip, 1), Card.field(tr(Messages.FIRSTSTART_C_CITY), cCity, 2),
+                Card.field(tr(Messages.FIRSTSTART_C_COUNTRY), cCountry, 2));
+        c.row(Card.field(tr(Messages.FIRSTSTART_C_PHONE), cPhone), Card.field(tr(Messages.FIRSTSTART_C_EMAIL), cEmail));
+        c.row(Card.field(tr(Messages.FIRSTSTART_C_TAXNUMBER), cTaxnumber), Card.field(tr(Messages.FIRSTSTART_C_VATID), cVatid));
+        c.row(Card.field(tr(Messages.FIRSTSTART_C_IBAN), cIban, 2), Card.field(tr(Messages.FIRSTSTART_C_BIC), cBic, 1));
+        ModernTheme.roomyCombo(cCountry);
+        selectDefaultCountry();
+        PrimaryButton next = new PrimaryButton(tr(Messages.FIRSTSTART_NEXT), null);
+        next.addActionListener(e -> show("folders"));
+        return page(tr(Messages.FIRSTSTART_COMPANY_TITLE), tr(Messages.FIRSTSTART_COMPANY_INTRO), c, "form", next);
+    }
+
+    /**
+     * @return the company info of the page (keys without "companyinfo.")
+     */
+    private java.util.Map<String, String> companyInfo() {
+        java.util.Map<String, String> m = new java.util.LinkedHashMap<String, String>();
+        m.put("business", cBusiness.getText());
+        m.put("firstname", cFirstname.getText());
+        m.put("name", cName.getText());
+        m.put("street", cStreet.getText());
+        m.put("zip", cZip.getText());
+        m.put("city", cCity.getText());
+        m.put("country", cCountry.getSelectedItem() == null ? "" : String.valueOf(cCountry.getSelectedItem()));
+        m.put("phone", cPhone.getText());
+        m.put("email", cEmail.getText());
+        m.put("taxnumber", cTaxnumber.getText());
+        m.put("account1", cVatid.getText());
+        m.put("account", cIban.getText());
+        m.put("banknumber", cBic.getText());
+        m.put(mpv5.utils.export.SmallBusiness.KEY_ENABLED, String.valueOf(smallBusiness.isSelected()));
+        return m;
+    }
+
+    /**
+     * The country names of the bundled list (as the company info stores them)
+     */
+    private static String[] countries() {
+        java.util.List<String> l = new java.util.ArrayList<String>();
+        try (java.io.InputStream in = Main.class.getResourceAsStream("/extra/countries.xml")) {
+            if (in != null) {
+                String xml = new String(in.readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
+                java.util.regex.Matcher m = java.util.regex.Pattern.compile("<country[^>]*>([^<]+)</country>").matcher(xml);
+                while (m.find()) {
+                    l.add(m.group(1).trim());
+                }
+            }
+        } catch (Exception e) {
+            Log.Debug(FirstStart.class, e);
+        }
+        if (l.isEmpty()) {
+            l.add("Germany");
+        }
+        return l.toArray(new String[0]);
+    }
+
+    /**
+     * The country of the system (Germany if unknown)
+     */
+    private void selectDefaultCountry() {
+        String sys = java.util.Locale.getDefault().getCountry();
+        String fallback = null;
+        for (int i = 0; i < cCountry.getItemCount(); i++) {
+            String code = mpv5.utils.export.ZugpferdFile.toCountryCode(cCountry.getItemAt(i));
+            if (code.equals(sys)) {
+                cCountry.setSelectedIndex(i);
+                return;
+            }
+            if ("DE".equals(code)) {
+                fallback = cCountry.getItemAt(i);
+            }
+        }
+        if (fallback != null) {
+            cCountry.setSelectedItem(fallback);
+        }
+    }
+
+    // ---------------------------------------------------------------- folders
+    private JPanel folders() {
+        Card c = new Card(null);
+        c.flat();
+        c.row(Card.field(tr(Messages.FIRSTSTART_F_DOCUMENTS), pathRow(fDocuments)));
+        c.row(Card.field(tr(Messages.FIRSTSTART_F_RECEIPTS), pathRow(fReceipts)));
+        c.row(Card.field(tr(Messages.FIRSTSTART_F_EINVOICE), pathRow(fEinvoice)));
+        fEinvoiceAuto.setOpaque(false);
+        c.addFull(fEinvoiceAuto);
+        c.row(Card.field(tr(Messages.FIRSTSTART_F_BACKUPS), pathRow(fBackups)));
+        fBackupOnExit.setOpaque(false);
+        c.addFull(fBackupOnExit);
+        PrimaryButton go = new PrimaryButton(tr(Messages.FIRSTSTART_START), null);
+        go.addActionListener(e -> go());
+        return page(tr(Messages.FIRSTSTART_FOLDERS_TITLE), tr(Messages.FIRSTSTART_FOLDERS_INTRO), c, null, go);
+    }
+
+    private JPanel pathRow(JTextField field) {
+        JPanel row = new JPanel(new BorderLayout(ModernTheme.px(6), 0));
+        row.setOpaque(false);
+        row.add(field, BorderLayout.CENTER);
+        JButton browse = ModernTheme.actionButton(new JButton(tr(Messages.FIRSTSTART_BROWSE)), null);
+        browse.addActionListener(e -> {
+            String t = field.getText().trim();
+            File start = t.isEmpty() || t.contains("[") ? new File(System.getProperty("user.home")) : new File(t);
+            JFileChooser ch = new JFileChooser(start.isDirectory() ? start : start.getParentFile());
+            ch.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            if (ch.showOpenDialog(this) == JFileChooser.APPROVE_OPTION && ch.getSelectedFile() != null) {
+                field.setText(ch.getSelectedFile().getAbsolutePath());
+            }
+        });
+        row.add(browse, BorderLayout.EAST);
+        return row;
+    }
+
+    /**
+     * &lt;home&gt;/Documents/YaBS (Dokumente on German systems), else
+     * &lt;home&gt;/YaBS
+     */
+    static File defaultDocumentsFolder() {
+        File home = new File(System.getProperty("user.home"));
+        for (String d : new String[]{"Documents", "Dokumente"}) {
+            File f = new File(home, d);
+            if (f.isDirectory()) {
+                return new File(f, "YaBS");
+            }
+        }
+        return new File(home, "YaBS");
+    }
+
+    /**
+     * The folders of the page into the local settings of the connection
+     * (saved with the connection)
+     */
+    private void applyFolders() {
+        String docs = fDocuments.getText().trim();
+        LocalSettings.setProperty(LocalSettings.BASE_DIR, docs);
+        if (!docs.isEmpty() && !docs.contains("[")) {
+            new File(docs).mkdirs();
+        }
+        String receipts = fReceipts.getText().trim();
+        mpv5.handler.ExpenseReceipts.setFolderPattern(receipts.isEmpty() ? mpv5.handler.ExpenseReceipts.DEFAULT_DIR : receipts);
+        mpv5.handler.ZugpferdExpenseImport.setFolderPath(fEinvoice.getText().trim());
+        mpv5.handler.ZugpferdExpenseImport.setAutoImportEnabled(fEinvoiceAuto.isSelected());
+        String zip = fBackups.getText().trim();
+        LocalSettings.setProperty(mpv5.db.common.DatabaseBackup.KEY_DIR, zip.isEmpty() ? mpv5.db.common.DatabaseBackup.DEFAULT_DIR : zip);
+        LocalSettings.setProperty(mpv5.db.common.DatabaseBackup.KEY_ON_EXIT, String.valueOf(fBackupOnExit.isSelected()));
+    }
+
+    /**
+     * A page of the first start: title, intro, the content (scrolls), Back
+     * and the main button
+     *
+     * @param back the page Back goes to, null: the previous page by choice
+     */
+    private JPanel page(String title, String intro, JComponent body, final String back, PrimaryButton main) {
+        JPanel p = new JPanel(new BorderLayout(0, ModernTheme.px(14)));
+        p.setOpaque(false);
+        p.setBorder(ModernTheme.padding(26, 30));
+        JPanel head = column();
+        JLabel t = new JLabel(title);
+        t.setFont(ModernTheme.font(9, Font.BOLD));
+        head.add(t);
+        head.add(Box.createVerticalStrut(ModernTheme.px(6)));
+        head.add(text(intro));
+        p.add(head, BorderLayout.NORTH);
+        javax.swing.JScrollPane scroll = new javax.swing.JScrollPane(body);
+        scroll.setBorder(null);
+        scroll.setOpaque(false);
+        scroll.getViewport().setOpaque(false);
+        scroll.getVerticalScrollBar().setUnitIncrement(ModernTheme.px(16));
+        scroll.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        p.add(scroll, BorderLayout.CENTER);
+        JButton b = ModernTheme.actionButton(new JButton(tr(Messages.FIRSTSTART_BACK)), null);
+        b.addActionListener(e -> {
+            if (back != null) {
+                show(back);
+            } else {
+                //folders: back to the company, or to the start with an import
+                show(!server.isSelected() && importFrom != null ? "form" : "company");
+            }
+        });
+        JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT, ModernTheme.px(8), 0));
+        buttons.setOpaque(false);
+        buttons.add(b);
+        buttons.add(main);
+        p.add(buttons, BorderLayout.SOUTH);
+        p.addComponentListener(new java.awt.event.ComponentAdapter() {
+            @Override
+            public void componentShown(java.awt.event.ComponentEvent e) {
+                getRootPane().setDefaultButton(main);
+            }
+        });
         return p;
     }
 
@@ -443,6 +705,7 @@ public final class FirstStart extends JFrame {
         back.addActionListener(e -> {
             pages.show(content, "form");
             start.setEnabled(true);
+            getRootPane().setDefaultButton(start);
         });
         errorButtons.add(log);
         errorButtons.add(back);
@@ -480,6 +743,12 @@ public final class FirstStart extends JFrame {
         }
         //the import goes into a local (H2) database only
         final File imp = server.isSelected() ? null : importFrom;
+        //company and folders: not when only connecting to an existing database
+        final boolean onlyConnect = s.onlyConnect;
+        final java.util.Map<String, String> companyInfo = onlyConnect || imp != null ? null : companyInfo();
+        if (!onlyConnect) {
+            applyFolders();
+        }
         steps[IMPORT_STEP].setVisible(imp != null);
         start.setEnabled(false);
         for (Step st : steps) {
@@ -593,7 +862,7 @@ public final class FirstStart extends JFrame {
                         public void step(FirstStartSetup.Step st) {
                             at(2 + st.ordinal());
                         }
-                    });
+                    }, companyInfo);
                     //signed in as admin at the start
                     LocalSettings.setProperty(LocalSettings.LAST_USER, String.valueOf(admin.__getIDS()));
                     LocalSettings.setProperty(LocalSettings.LAST_USER_PW, admin.__getPassword());

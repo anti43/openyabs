@@ -1633,6 +1633,19 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
 
     @Override
     public void actionBeforeSave() throws ChangeNotApprovedException {
+        //small business exemption: no VAT on invoices, revenue limits (§ 19 UStG)
+        if (dataOwner.__getInttype() == Item.TYPE_INVOICE && mpv5.utils.export.SmallBusiness.isEnabled()) {
+            //called before collectData: the values of the form
+            positions.stopEditing();
+            BigDecimal[] totals = positions.getTotals();
+            java.util.List<String> warnings = mpv5.utils.export.SmallBusiness.checkInvoice(
+                    date1.getDate() != null ? date1.getDate() : new Date(), totals[0], totals[1],
+                    !dataOwner.isExisting());
+            if (!warnings.isEmpty() && !Popup.Y_N_dialog(String.join("\n\n", warnings) + "\n\n"
+                    + Messages.SMALLBUSINESS_SAVE_ANYWAY)) {
+                throw new ChangeNotApprovedException(dataOwner);
+            }
+        }
         if (dataOwner.isExisting()) {
             boolean done = dataOwner.__getIntstatus() == Item.STATUS_PAID || dataOwner.__getIntstatus() == Item.STATUS_CANCELLED;
             if (done && !Popup.Y_N_dialog(Messages.REALLY_CHANGE_DONE_ITEM)) {

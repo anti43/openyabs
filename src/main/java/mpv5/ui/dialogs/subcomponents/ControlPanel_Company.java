@@ -62,7 +62,8 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
     private final LabeledTextField bankname = field("bankname", "ControlPanel_Company.bankname._Label", false);
     private final LabeledTextField banknumber = field("banknumber", "ControlPanel_Company.banknumber._Label", false);
     private final LabeledTextField account = field("account", "ControlPanel_Company.account._Label", true);
-    private final LabeledTextField account1 = field("account1", "ControlPanel_Company.account1._Label", true);
+    //VAT ID or tax number: one of them is required for e-invoices (small businesses often have no VAT ID)
+    private final LabeledTextField account1 = field("account1", "ControlPanel_Company.account1._Label", false);
     /**
      * Default payment term (days) of e-invoices, for contacts and templates
      * without their own; stored as companyinfo.payterm like the other fields
@@ -74,6 +75,13 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
      * SEPA creditor ID (for direct debits), stored as companyinfo.sepacreditorid
      */
     private final LabeledTextField creditorid = new LabeledTextField();
+    /**
+     * Small business VAT exemption (companyinfo.smallbusiness*), see
+     * {@link mpv5.utils.export.SmallBusiness}
+     */
+    private final javax.swing.JCheckBox smallBusiness = new javax.swing.JCheckBox(Messages.COMPANY_SMALLBUSINESS.toString());
+    private final LabeledTextField smallBusinessNote = new LabeledTextField();
+    private final LabeledTextField smallBusinessId = new LabeledTextField();
     private final javax.swing.JCheckBox defaultZugpferd = new javax.swing.JCheckBox(Messages.COMPANY_DEFAULT_ZUGFERD.toString());
     private final JPanel actions;
 
@@ -96,6 +104,16 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
         creditorid.set_Label(Messages.COMPANY_CREDITOR_ID.toString());
         creditorid.setName(mpv5.utils.export.SepaDirectDebit.KEY_CREDITOR_ID);
         fields.add(creditorid);
+
+        smallBusinessNote.set_Label(Messages.COMPANY_SMALLBUSINESS_NOTE.toString());
+        smallBusinessNote.setName(mpv5.utils.export.SmallBusiness.KEY_NOTE);
+        smallBusinessId.set_Label(Messages.COMPANY_SMALLBUSINESS_ID.toString());
+        smallBusinessId.setName(mpv5.utils.export.SmallBusiness.KEY_KU_ID);
+        fields.add(smallBusinessNote);
+        fields.add(smallBusinessId);
+        smallBusiness.setOpaque(false);
+        smallBusiness.setToolTipText(Messages.COMPANY_SMALLBUSINESS_HINT.toString());
+        smallBusiness.addActionListener(e -> showDefaultNote());
 
         ModernTheme.roomyCombo(country);
         loadCountries();
@@ -136,6 +154,11 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
                 .row(Applets.field(taxnumber), Applets.field(taxauthority))
                 .row(Applets.field(taxmandant))
                 .row(Applets.field(taxadvsior), Applets.field(taxadvjob));
+        Card smallBusinessCard = new Card(Messages.COMPANY_CARD_SMALLBUSINESS.toString())
+                .addFull(smallBusiness)
+                .row(Applets.field(smallBusinessNote))
+                .row(Applets.field(smallBusinessId))
+                .addFull(Applets.hint(Messages.COMPANY_SMALLBUSINESS_HINT.toString()));
         defaultZugpferd.setToolTipText(Messages.COMPANY_DEFAULT_ZUGFERD_HINT.toString());
         defaultZugpferd.setOpaque(false);
         JButton foldersBtn = new JButton(Messages.FOLDERS_TITLE.toString() + " \u2026");
@@ -149,7 +172,7 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
                 .addFull(Applets.hint(Messages.COMPANY_DEFAULT_ZUGFERD_HINT.toString()))
                 .addFull(foldersRow);
         String info = "* " + Messages.COMPANY_REQUIRED_LEGEND + "  \u00b7  " + bundle.getString("ControlPanel_Company.jTextArea1.text");
-        add(Applets.page(info, 380, company, contact, bank, tax, einvoice), BorderLayout.CENTER);
+        add(Applets.page(info, 380, company, contact, bank, tax, smallBusinessCard, einvoice), BorderLayout.CENTER);
 
         //mark invalid values while typing
         FieldCheck.attach(account1, ZugpferdFile::isValidVatId, Messages.COMPANY_VATID_TOOLTIP.toString(),
@@ -196,6 +219,7 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
                 values.put(f.getName(), f.getText() == null ? "" : f.getText());
             }
             values.put("country", getSelectedCountry());
+            values.put(mpv5.utils.export.SmallBusiness.KEY_ENABLED, String.valueOf(smallBusiness.isSelected()));
             java.util.List<String> missing = ZugpferdFile.sellerProblems(ZugpferdFile.createSender(values::get));
             if (!missing.isEmpty()) {
                 Popup.warn(Messages.EINVOICE_COMPANY_INCOMPLETE + "\n - " + String.join("\n - ", missing));
@@ -304,6 +328,8 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
             User.getCurrentUser().setProperty("companyinfo." + f.getName(), f.getText() == null ? "" : f.getText());
         }
         User.getCurrentUser().setProperty("companyinfo.country", getSelectedCountry());
+        User.getCurrentUser().setProperty("companyinfo." + mpv5.utils.export.SmallBusiness.KEY_ENABLED,
+                String.valueOf(smallBusiness.isSelected()));
         mpv5.utils.export.EInvoiceDelivery.setZugpferdDefault(defaultZugpferd.isSelected());
         mpv5.globals.LocalSettings.save();
     }
@@ -336,10 +362,31 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
                 }
             }
             selectCountry(countryVal);
+            boolean small = false;
+            if (values != null && values.getList() != null) {
+                for (String[] v : values.getList()) {
+                    if (mpv5.utils.export.SmallBusiness.KEY_ENABLED.equalsIgnoreCase(v[0])) {
+                        small = "true".equalsIgnoreCase(String.valueOf(v[1]).trim());
+                    }
+                }
+            }
+            smallBusiness.setSelected(small);
+            showDefaultNote();
             defaultZugpferd.setSelected(mpv5.utils.export.EInvoiceDelivery.isZugpferdDefault());
         } catch (Exception e) {
             Log.Debug(this, e);
         }
+    }
+
+    /**
+     * Show the legal wording of the selected country in the empty note field
+     */
+    private void showDefaultNote() {
+        String code = mpv5.utils.export.ZugpferdFile.toCountryCode(getSelectedCountry());
+        String def = mpv5.utils.export.SmallBusiness.defaultNote(code, smallBusinessId.getText());
+        smallBusinessNote.getTextField().setToolTipText(def);
+        smallBusinessNote.setEnabled(smallBusiness.isSelected());
+        smallBusinessId.setEnabled(smallBusiness.isSelected());
     }
 
     private void loadCountries() {
