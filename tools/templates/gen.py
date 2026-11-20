@@ -67,6 +67,17 @@ z = zipfile.ZipFile(os.path.join(REPO, 'src/main/resources/extra/DE-Yabs-2.0.odt
 files = {n: z.read(n) for n in z.namelist()}
 content = files['content.xml'].decode('utf-8')
 manifest = files['META-INF/manifest.xml'].decode('utf-8')
+# room for the QR code on the first page: with the fonts of Linux (Liberation) the empty paragraph after
+# the QR code and the empty spacer before the payment term pushed a 5-position invoice onto an empty
+# second page with only the footer (YabsQRCodeGeneratorTest). The tax note before the payment term
+# keeps the gap to the VAT table.
+EMPTY_AFTER_QR = '</draw:frame></text:p><text:p text:style-name="P9"><text:span text:style-name="T6"/></text:p>'
+assert content.count(EMPTY_AFTER_QR) == 1
+content = content.replace(EMPTY_AFTER_QR, '</draw:frame></text:p>')
+SPACER_BEFORE_TERM = ('<text:p text:style-name="P9"/><text:p text:style-name="P9"><text:span text:style-name="T6">'
+                      '<text:placeholder text:placeholder-type="text">&lt;item.contact.zahlungsziel&gt;')
+assert content.count(SPACER_BEFORE_TERM) == 1, content.count(SPACER_BEFORE_TERM)
+content = content.replace(SPACER_BEFORE_TERM, SPACER_BEFORE_TERM[len('<text:p text:style-name="P9"/>'):])
 
 ph = lambda n: '<text:placeholder text:placeholder-type="text">&lt;%s&gt;</text:placeholder>' % n
 def esc(s): return s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
