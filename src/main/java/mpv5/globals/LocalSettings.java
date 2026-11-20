@@ -258,6 +258,14 @@ public class LocalSettings {
      * @param propertyname
      * @return True if the key exists
      */
+    /**
+     * @param name
+     * @return the predefined value of a setting, null if none
+     */
+    public static String getDefault(String name) {
+        return predefinedSettings.getProperty(name);
+    }
+
     public static boolean hasProperty(String propertyname) {
         return (cookie.hasProperty(propertyname)
                 && !cookie.getProperty(propertyname).equals("null")
