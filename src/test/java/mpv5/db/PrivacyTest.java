@@ -152,7 +152,7 @@ class PrivacyTest {
         assertTrue(c.save(true));
         int contactId = c.__getIDS();
         ValueProperty.addOrUpdateProperty("note", "x", c);
-        Item draft = item(c, Item.TYPE_INVOICE, "ENTWURF-1", new Date(), Item.STATUS_INPROGRESS);
+        Item draft = item(c, Item.TYPE_INVOICE, "ENTWURF-1", new Date(), Item.STATUS_IN_PROGRESS);
         assertFalse(Privacy.check(c).mustKeep(), "a draft invoice need not be kept");
         assertTrue(c.delete());
         assertEquals(1, count("SELECT invisible FROM contacts WHERE ids = " + contactId), "in the trash");
