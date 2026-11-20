@@ -2198,6 +2198,8 @@ public enum Messages {
     LOCKED_DOCUMENT_DUPLICATE_WORD("DUPLICATE"),
     LOCKED_DOCUMENT_DUPLICATE_FILE("DUPLICATE"),
     LOCKED_DOCUMENT_OPEN("Open archived file"),
+    LOCKED_DOCUMENT_MAIL_ARCHIVED("The document is locked: its archived original is attached:"),
+    LOCKED_DOCUMENT_MAIL_MISSING("Not sent: the document is locked and its archived original was not found. Restore it from the backup; a duplicate stamped as a copy can be created with PDF."),
     RECEIPT_PLAIN_PDF_NOTE("[Receipt: %s (plain PDF receipt attached - correctness of receipt amounts cannot be verified automatically)]"),
     RECEIPT_ARCHIVED("Receipt archived: %s"),
     FOLDERS_TITLE("Folders & Paths"),

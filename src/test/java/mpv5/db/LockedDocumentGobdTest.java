@@ -82,6 +82,18 @@ class LockedDocumentGobdTest {
         assertTrue(EInvoiceRoundTripTest.onEdt(() -> RecordActions.openLockedDocument(view)));
         assertArrayEquals(original, Files.readAllBytes(archived.toPath()), "the original is not touched");
 
+        //mail (single and batch): the archived original is attached, nothing is created from the template
+        java.lang.reflect.Method attachments = mpv5.utils.export.Export.class.getDeclaredMethod("invoiceAttachments",
+                mpv5.utils.export.Export.class, DatabaseObject.class, Contact.class, List.class);
+        attachments.setAccessible(true);
+        Contact customer = (Contact) DatabaseObject.getObject(Context.getContact(), fresh.__getContactsids());
+        Object mail = attachments.invoke(null, null, fresh, customer, new java.util.ArrayList<String>());
+        assertTrue(mail instanceof mpv5.mail.MailAttachments, String.valueOf(mail));
+        assertNull(((mpv5.utils.jobs.Waitable) mail).waitFor());
+        List<File> attached = ((mpv5.mail.MailAttachments) mail).getAttachments();
+        assertEquals(1, attached.size());
+        assertEquals(archived.getCanonicalFile(), attached.get(0).getCanonicalFile(), "the archived original is sent");
+
         //other records are not locked
         Item draft = (Item) DatabaseObject.getObject(Context.getInvoice());
         assertNull(m[0].lockedDocument(draft), "a new record");
@@ -94,6 +106,11 @@ class LockedDocumentGobdTest {
         assertEquals(archived.getCanonicalFile(), view.getLockedDocument().getCanonicalFile(), "still locked, file missing");
         assertNull(provider.duplicateRefused(fresh), "the data are as finalized: a duplicate is possible");
         assertEquals(List.of(), provider.duplicateWarnings(fresh));
+        //no mail without the original: not sent, said in the batch log
+        List<String> mailLog = new java.util.ArrayList<String>();
+        assertNull(attachments.invoke(null, null, fresh, customer, mailLog), "nothing is sent");
+        assertEquals(1, mailLog.size(), String.valueOf(mailLog));
+        assertTrue(mailLog.get(0).contains(archived.getPath()), mailLog.get(0));
 
         //the customer moved: the duplicate shows the new address, the user is told
         Contact c = (Contact) DatabaseObject.getObject(Context.getContact(), fresh.__getContactsids());
