@@ -3058,7 +3058,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                 contact = item.getContact();
             } catch (Exception ignored) {
             }
-            if (contact != null && mpv5.utils.export.EInvoiceDelivery.effectiveFor(contact) == mpv5.utils.export.EInvoiceDelivery.ZUGFERD) {
+            if (contact != null && mpv5.utils.export.EInvoiceDelivery.effectiveFor(contact, item) == mpv5.utils.export.EInvoiceDelivery.ZUGFERD) {
                 mpv5.utils.export.ExportProgress.step(Messages.EXPORT_STEP_EINVOICE_DATA);
                 org.mustangproject.Invoice inv = null;
                 try {

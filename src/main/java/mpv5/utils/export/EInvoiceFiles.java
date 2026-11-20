@@ -54,7 +54,7 @@ public final class EInvoiceFiles {
      * @return the report lines, empty if the contact gets a normal PDF
      */
     public static List<String> write(Item item, Contact contact, File dir) {
-        EInvoiceDelivery delivery = EInvoiceDelivery.effectiveFor(contact);
+        EInvoiceDelivery delivery = EInvoiceDelivery.effectiveFor(contact, item);
         if (!delivery.isEInvoice()) {
             return new ArrayList<String>();
         }

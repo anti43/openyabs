@@ -104,6 +104,36 @@ public interface ExtensionContext {
     }
 
     /**
+     * Registers a warning provider invoked before a document is sent by e-mail.
+     * Return a non-empty German/localized warning message to prompt the user for
+     * confirmation before sending (or log in batch mode), or {@code null} /
+     * empty string if no warning is needed.
+     *
+     * @param provider called with the record being e-mailed
+     */
+    default void addMailWarningProvider(Function<mpv5.db.common.DatabaseObject, String> provider) {
+    }
+
+    /**
+     * Registers a rule that skips e-invoice generation/delivery (ZUGFeRD /
+     * XRechnung) for matching invoices (for example, tax-exempt medical
+     * treatments under § 4 Nr. 14 UStG, exempt under § 14 Abs. 2 UStG).
+     *
+     * @param rule predicate returning {@code true} to fall back to plain PDF
+     */
+    default void addEInvoiceSkipRule(java.util.function.Predicate<mpv5.db.objects.Item> rule) {
+    }
+
+    /**
+     * Registers a GDPR privacy contributor that participates in retention
+     * checks, Art. 15/20 data export, and final deletion of contacts.
+     *
+     * @param contributor
+     */
+    default void addPrivacyContributor(PrivacyContributor contributor) {
+    }
+
+    /**
      * Registers localized message keys for this plugin (automatically scoped by
      * plugin ID and removed when the plugin stops).
      *

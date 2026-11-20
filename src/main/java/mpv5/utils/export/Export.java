@@ -195,6 +195,9 @@ public final class Export extends HashMap<String, Object> implements Waitable {
                                 GlobalSettings.hasProperty(KEY_MAIL_CC) ? GlobalSettings.getProperty(KEY_MAIL_CC) : null));
 
                         try {
+                            if (!confirmPluginMailWarnings(dataOwner, log)) {
+                                return;
+                            }
                             //invoices: PDF, e-invoice or both, as configured for the contact
                             Waitable attachments = invoiceAttachments(ex, dataOwner, cont, log);
                             if (attachments == null) {
@@ -236,6 +239,45 @@ public final class Export extends HashMap<String, Object> implements Waitable {
     }
 
     /**
+     * Checks plugin-registered pre-send e-mail warnings (e.g. unencrypted
+     * transmission of Art. 9 GDPR health data). In interactive mode ({@code log == null}),
+     * prompts the user for confirmation; in batch mode, records the warning in
+     * {@code log} and skips sending so sensitive data are not sent unconfirmed.
+     */
+    private static boolean confirmPluginMailWarnings(DatabaseObject dataOwner, List<String> log) {
+        mpv5.plugin.ExtensionManager em = mpv5.plugin.ExtensionManager.instanceOrNull();
+        if (em == null || dataOwner == null) {
+            return true;
+        }
+        List<String> warnings = em.collectMailWarnings(dataOwner);
+        if (warnings.isEmpty()) {
+            return true;
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < warnings.size(); i++) {
+            if (i > 0) {
+                sb.append("\n\n");
+            }
+            sb.append(warnings.get(i));
+        }
+        if (log != null) {
+            log.add(dataOwner.__getCname() + " -> " + sb.toString() + "\n");
+            return false;
+        }
+        int choice = javax.swing.JOptionPane.showConfirmDialog(
+                null,
+                sb.toString(),
+                Messages.EXPORT_MAIL.toString(),
+                javax.swing.JOptionPane.YES_NO_OPTION,
+                javax.swing.JOptionPane.WARNING_MESSAGE);
+        if (choice != javax.swing.JOptionPane.YES_OPTION) {
+            mpv5.YabsViewProxy.instance().addMessage(Messages.MAIL_PREVIEW_CANCELED.toString());
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * A single mail: the attachments are created in the background (with a
      * progress), the mail is shown before it is sent (on the event dispatch
      * thread) and sent in the background
@@ -245,6 +287,9 @@ public final class Export extends HashMap<String, Object> implements Waitable {
         if (sender == null || cont == null || cont.__getMailaddress() == null
                 || !Pattern.matches(EMAIL_PATTERN, sender) || !Pattern.matches(EMAIL_PATTERN, cont.__getMailaddress())) {
             Popup.notice(Messages.NO_MAIL_DEFINED);
+            return;
+        }
+        if (!confirmPluginMailWarnings(dataOwner, null)) {
             return;
         }
         final String title = Messages.EXPORT_MAIL + " " + dataOwner.__getCname();
@@ -373,11 +418,11 @@ public final class Export extends HashMap<String, Object> implements Waitable {
         if (!(dataOwner instanceof mpv5.db.objects.Item) || !ZugpferdFile.supports((mpv5.db.objects.Item) dataOwner)) {
             return pdf;
         }
-        EInvoiceDelivery delivery = EInvoiceDelivery.effectiveFor(contact);
+        mpv5.db.objects.Item item = (mpv5.db.objects.Item) dataOwner;
+        EInvoiceDelivery delivery = EInvoiceDelivery.effectiveFor(contact, item);
         if (!delivery.isEInvoice()) {
             return pdf;
         }
-        mpv5.db.objects.Item item = (mpv5.db.objects.Item) dataOwner;
         ExportProgress.step(Messages.EXPORT_STEP_EINVOICE_CHECK);
         List<String> problems;
         org.mustangproject.Invoice invoice;

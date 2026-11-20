@@ -16,16 +16,26 @@
  */
 package org.openyabs.heilpraktiker;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import java.io.File;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.nio.file.Files;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.crypto.SecretKey;
 import javax.swing.JOptionPane;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -38,6 +48,7 @@ import mpv5.db.objects.Tax;
 import mpv5.globals.Constants;
 import mpv5.logging.Log;
 import mpv5.plugin.api.ExtensionContext;
+import mpv5.plugin.api.PrivacyContributor;
 import mpv5.plugin.api.YabsExtension;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.panels.ChangeNotApprovedException;
@@ -53,9 +64,12 @@ import org.openyabs.heilpraktiker.HeilpraktikerValidator.LineItem;
  * <li>Complete verified GebüH 85/2002 catalog (144 services, Ziffern 1–39.13)
  * with one-click import as 0 % VAT services,</li>
  * <li>Patient metadata (DOB, insurance type, § 630a BGB Honorarvereinbarung,
- * § 630f BGB SOAP notes) and invoice medical metadata (ICD-10-GM, diagnosis,
- * § 4 Nr. 14 lit. a UStG flag, treatment dates),</li>
+ * AES-256-GCM encrypted &amp; role-restricted § 630f BGB SOAP notes) and
+ * invoice medical metadata (ICD-10-GM, diagnosis, opt-in printing per Art. 9
+ * GDPR, § 4 Nr. 14 lit. a UStG flag, treatment dates, 10-year retention),</li>
  * <li>Pre-save GebüH fee-range, analog-billing and combination-rule validation,</li>
+ * <li>Pre-mail GDPR/§ 203 StGB warning for unencrypted e-mail with diagnoses,</li>
+ * <li>Automatic e-invoice skip for tax-exempt treatments (§ 14 Abs. 2 UStG),</li>
  * <li>Template placeholder provider ({@code hp.*}) and bundled {@code .fodt}
  * invoice template.</li>
  * </ul>
@@ -64,6 +78,10 @@ public final class HeilpraktikerPlugin implements YabsExtension {
 
     public static final String ID = "org.openyabs.heilpraktiker";
     public static final String TEMPLATE_RESOURCE = "/org/openyabs/heilpraktiker/heilpraktiker_rechnung.fodt";
+    private static final String KEY_FILE_NAME = "soap.key";
+
+    private static final ObjectMapper JSON = new ObjectMapper()
+            .enable(SerializationFeature.INDENT_OUTPUT);
 
     private GebuehCatalog catalog;
 
@@ -79,12 +97,12 @@ public final class HeilpraktikerPlugin implements YabsExtension {
 
     @Override
     public String description() {
-        return "Offizieller Geb\u00fcH-85/2002-Katalog (144 Ziffern, 1\u201339.13), ICD-10-Diagnosen, PKV/Beihilfe-Pr\u00fcfung, \u00a7 4 Nr. 14 UStG und Rechnungsvorlage.";
+        return "Offizieller Geb\u00fcH-85/2002-Katalog (144 Ziffern, 1\u201339.13), ICD-10-Diagnosen, PKV/Beihilfe-Pr\u00fcfung, \u00a7 4 Nr. 14 UStG, Art.-9-DSGVO-Schutz und Rechnungsvorlage.";
     }
 
     @Override
     public String version() {
-        return "1.0.0";
+        return "1.1.0";
     }
 
     @Override
@@ -101,16 +119,21 @@ public final class HeilpraktikerPlugin implements YabsExtension {
     public void start(final ExtensionContext yabs) throws Exception {
         catalog = GebuehCatalog.loadDefault();
 
+        initEncryptionKey(yabs);
+
         if (HeilpraktikerStore.hasDatabase()) {
             HeilpraktikerStore.initSchema(HeilpraktikerStore.connection());
         }
 
         yabs.addSettingsPage(
                 "Heilpraktiker & Geb\u00fcH",
-                "Berufsbezeichnung, Gesundheitsamt (\u00a7 1 HeilprG), \u00a7 4 Nr. 14 UStG-Hinweis und Geb\u00fcH-Pr\u00fcfung",
+                "Berufsbezeichnung, Gesundheitsamt (\u00a7 1 HeilprG), \u00a7 4 Nr. 14 UStG, Art.-9-DSGVO-Datenschutz und Geb\u00fcH-Pr\u00fcfung",
                 () -> HeilpraktikerUi.settingsPage(yabs));
 
         yabs.addTemplateFields(this::provideTemplateFields);
+        yabs.addMailWarningProvider(this::mailWarningForObject);
+        yabs.addEInvoiceSkipRule(this::shouldSkipEInvoice);
+        yabs.addPrivacyContributor(createPrivacyContributor());
 
         yabs.onView(panel -> {
             if (HeilpraktikerStore.hasDatabase()) {
@@ -134,6 +157,125 @@ public final class HeilpraktikerPlugin implements YabsExtension {
                 "Heilpraktiker: Aktuelle Rechnung pr\u00fcfen",
                 "Pr\u00fcft die ge\u00f6ffnete Rechnung auf Geb\u00fcH-Grenzen, Kombinationsregeln, Diagnose und \u00a7 4 Nr. 14 UStG",
                 () -> checkCurrentInvoice(yabs));
+
+        yabs.addCommand(
+                "Heilpraktiker: Abgelaufene Gesundheitsdaten l\u00f6schen / anonymisieren (DSGVO)",
+                "Pr\u00fcft 10-Jahres-Aufbewahrungsfristen (\u00a7 630f Abs. 3 BGB) und anonymisiert oder l\u00f6scht abgelaufene SOAP-/Diagnosedaten",
+                () -> HeilpraktikerUi.showPurgeExpiredDialog(null, yabs));
+    }
+
+    private void initEncryptionKey(ExtensionContext yabs) {
+        try {
+            File folder = yabs.dataFolder();
+            if (folder != null) {
+                SecretKey key = HeilpraktikerCrypto.loadOrCreateKey(new File(folder, KEY_FILE_NAME));
+                HeilpraktikerCrypto.setActiveKey(key);
+            }
+        } catch (Exception e) {
+            Log.Debug(HeilpraktikerPlugin.class, e);
+        }
+    }
+
+    private String mailWarningForObject(DatabaseObject obj) {
+        if (!(obj instanceof Item) || !HeilpraktikerStore.hasDatabase()) {
+            return null;
+        }
+        Item item = (Item) obj;
+        try {
+            if (!HeilpraktikerStore.hasInvoiceData(HeilpraktikerStore.connection(), item.__getIDS())) {
+                return null;
+            }
+            PatientData p = HeilpraktikerStore.loadPatientSafe(item.__getContactsids());
+            InvoiceData d = HeilpraktikerStore.loadInvoiceSafe(item.__getIDS());
+            return HeilpraktikerValidator.mailWarning(p, d);
+        } catch (Exception e) {
+            Log.Debug(HeilpraktikerPlugin.class, e);
+            return null;
+        }
+    }
+
+    private boolean shouldSkipEInvoice(Item item) {
+        if (item == null || !HeilpraktikerStore.hasDatabase()) {
+            return false;
+        }
+        try {
+            boolean hasHpData = HeilpraktikerStore.hasInvoiceData(HeilpraktikerStore.connection(), item.__getIDS());
+            if (!hasHpData) {
+                return false;
+            }
+            InvoiceData d = HeilpraktikerStore.loadInvoiceSafe(item.__getIDS());
+            return HeilpraktikerValidator.shouldSkipEInvoice(d, hasHpData, Settings.load());
+        } catch (Exception e) {
+            Log.Debug(HeilpraktikerPlugin.class, e);
+            return false;
+        }
+    }
+
+    private PrivacyContributor createPrivacyContributor() {
+        return new PrivacyContributor() {
+            @Override
+            public Date retentionUntil(Contact contact) {
+                if (contact == null || contact.__getIDS() <= 0 || !HeilpraktikerStore.hasDatabase()) {
+                    return null;
+                }
+                PatientData p = HeilpraktikerStore.loadPatientSafe(contact.__getIDS());
+                LocalDate until = HeilpraktikerValidator.parseDate(p.retentionUntil);
+                if (until == null) {
+                    return null;
+                }
+                return Date.from(until.atStartOfDay(ZoneId.systemDefault()).toInstant());
+            }
+
+            @Override
+            public Map<String, String> exportData(Contact contact) {
+                if (contact == null || contact.__getIDS() <= 0 || !HeilpraktikerStore.hasDatabase()) {
+                    return Collections.emptyMap();
+                }
+                try {
+                    PatientData p = HeilpraktikerStore.loadPatient(HeilpraktikerStore.connection(), contact.__getIDS());
+                    if (p.birthDate.isEmpty() && p.soapNotes.isEmpty() && p.lastTreatmentDate.isEmpty() && p.retentionUntil.isEmpty()) {
+                        return Collections.emptyMap();
+                    }
+                    Map<String, Object> m = new LinkedHashMap<String, Object>();
+                    m.put("contact_id", p.contactId);
+                    m.put("birth_date", p.birthDate);
+                    m.put("insurance_type", p.insuranceType);
+                    m.put("honorarvereinbarung", p.honorarvereinbarung);
+                    m.put("print_diagnosis_default", p.printDiagnosis);
+                    m.put("last_treatment_date", p.lastTreatmentDate);
+                    m.put("retention_until", p.retentionUntil);
+                    boolean canSoap = HeilpraktikerSecurity.canAccessSoapNotes(Settings.load());
+                    m.put("soap_notes", canSoap ? p.soapNotes : "[Zugriff eingeschr\u00e4nkt \u2013 \u00a7 203 StGB]");
+                    Map<String, String> out = new LinkedHashMap<String, String>();
+                    out.put("heilpraktiker_patient.json", JSON.writeValueAsString(m));
+                    return out;
+                } catch (Exception e) {
+                    Log.Debug(HeilpraktikerPlugin.class, e);
+                    return Collections.emptyMap();
+                }
+            }
+
+            @Override
+            public void onDeleteFinally(Contact contact) {
+                if (contact == null || contact.__getIDS() <= 0 || !HeilpraktikerStore.hasDatabase()) {
+                    return;
+                }
+                try {
+                    Connection conn = HeilpraktikerStore.connection();
+                    HeilpraktikerStore.deletePatient(conn, contact.__getIDS());
+                    try (PreparedStatement ps = conn.prepareStatement("SELECT ids FROM items WHERE contactsids = ?")) {
+                        ps.setInt(1, contact.__getIDS());
+                        try (ResultSet rs = ps.executeQuery()) {
+                            while (rs.next()) {
+                                HeilpraktikerStore.deleteInvoice(conn, rs.getInt(1));
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    Log.Debug(HeilpraktikerPlugin.class, e);
+                }
+            }
+        };
     }
 
     private Map<String, Object> provideTemplateFields(DatabaseObject obj) {
@@ -171,9 +313,6 @@ public final class HeilpraktikerPlugin implements YabsExtension {
                     return object;
                 }
                 Settings settings = Settings.load();
-                if (!settings.warnOnSave) {
-                    return object;
-                }
                 try {
                     boolean hasHpData = HeilpraktikerStore.hasInvoiceData(HeilpraktikerStore.connection(), item.__getIDS());
                     List<LineItem> lines = extractLines(item);
@@ -189,6 +328,21 @@ public final class HeilpraktikerPlugin implements YabsExtension {
                     }
                     PatientData p = HeilpraktikerStore.loadPatientSafe(item.__getContactsids());
                     InvoiceData d = HeilpraktikerStore.loadInvoiceSafe(item.__getIDS());
+
+                    // Art. 9 GDPR: for self-payers without an explicit decision, ask whether to print diagnosis
+                    if (hasHpData && HeilpraktikerValidator.needsPrintDiagnosisPrompt(p, d)) {
+                        int printChoice = JOptionPane.showConfirmDialog(null,
+                                "F\u00fcr Selbstzahler ist eine Diagnose auf der Rechnung i. d. R. nicht erforderlich "
+                                + "(Art. 9 DSGVO / \u00a7 203 StGB).\n\nDiagnose trotzdem auf der Rechnung drucken?",
+                                "Heilpraktiker \u2013 Diagnose auf Rechnung",
+                                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                        d.printDiagnosis = (printChoice == JOptionPane.YES_OPTION);
+                        HeilpraktikerStore.saveInvoice(HeilpraktikerStore.connection(), d);
+                    }
+
+                    if (!settings.warnOnSave) {
+                        return object;
+                    }
                     List<String> warnings = HeilpraktikerValidator.validate(p, d, lines, catalog);
                     if (!warnings.isEmpty()) {
                         StringBuilder sb = new StringBuilder("Heilpraktiker-Pr\u00fcfung hat Hinweise gefunden:\n\n");
@@ -377,6 +531,8 @@ public final class HeilpraktikerPlugin implements YabsExtension {
 
     @Override
     public void stop() {
-        // ExtensionManager removes all registered pages, commands, modifiers, views and template providers
+        HeilpraktikerCrypto.setActiveKey(null);
+        // ExtensionManager removes all registered pages, commands, modifiers, views,
+        // template providers, mail warnings, e-invoice skip rules and privacy contributors
     }
 }

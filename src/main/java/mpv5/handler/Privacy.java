@@ -314,6 +314,16 @@ public final class Privacy {
                 later(r, keepUntil(toDate(row[0]), YEARS_BUSINESS_LETTERS));
             }
         }
+        mpv5.plugin.ExtensionManager em = mpv5.plugin.ExtensionManager.instanceOrNull();
+        if (em != null) {
+            for (mpv5.plugin.api.PrivacyContributor contributor : em.privacyContributors()) {
+                try {
+                    later(r, contributor.retentionUntil(c));
+                } catch (Throwable t) {
+                    Log.Debug(Privacy.class, t);
+                }
+            }
+        }
         return r;
     }
 
@@ -482,6 +492,16 @@ public final class Privacy {
         }
         update("DELETE FROM valueproperties WHERE contextids IN (" + contextIds("contacts") + ") AND objectids = " + id);
         update("DELETE FROM addresses WHERE contactsids = " + id);
+        mpv5.plugin.ExtensionManager em = mpv5.plugin.ExtensionManager.instanceOrNull();
+        if (em != null) {
+            for (mpv5.plugin.api.PrivacyContributor contributor : em.privacyContributors()) {
+                try {
+                    contributor.onDeleteFinally(c);
+                } catch (Throwable t) {
+                    Log.Debug(Privacy.class, t);
+                }
+            }
+        }
         //the rest (income, conversations, appointments, ...) by the database (ON DELETE CASCADE)
         update("DELETE FROM contacts WHERE ids = " + id);
         Activity.record(c, Activity.Kind.DELETED, String.format(Messages.PRIVACY_DELETED_LOG.toString(), c.__getCNumber()));
@@ -619,6 +639,24 @@ public final class Privacy {
                 File f = new File(String.valueOf(row[0]));
                 if (f.isFile()) {
                     put(out, "documents/" + safe(String.valueOf(row[1])), f);
+                }
+            }
+            //additional personal data from running plugins (e.g. Heilpraktiker patient data)
+            mpv5.plugin.ExtensionManager em = mpv5.plugin.ExtensionManager.instanceOrNull();
+            if (em != null) {
+                for (mpv5.plugin.api.PrivacyContributor contributor : em.privacyContributors()) {
+                    try {
+                        Map<String, String> extra = contributor.exportData(c);
+                        if (extra != null) {
+                            for (Map.Entry<String, String> entry : extra.entrySet()) {
+                                if (entry.getKey() != null && entry.getValue() != null) {
+                                    put(out, safe(entry.getKey()), entry.getValue());
+                                }
+                            }
+                        }
+                    } catch (Throwable t) {
+                        Log.Debug(Privacy.class, t);
+                    }
                 }
             }
         }
