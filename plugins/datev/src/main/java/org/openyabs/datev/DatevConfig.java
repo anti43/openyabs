@@ -53,6 +53,9 @@ public final class DatevConfig {
     private static final String K_CASH_ACCOUNT = PREFIX + "cashAccount";
     private static final String K_AUTOMATIC = PREFIX + "useAutomaticAccounts";
     private static final String K_EU_ACCOUNT = PREFIX + "euDeliveryAccount";
+    private static final String K_EU_SERVICE_ACCOUNT = PREFIX + "euServiceAccount";
+    private static final String K_REVERSE_CHARGE_ACCOUNT = PREFIX + "reverseChargeAccount";
+    private static final String K_EXPORT_ACCOUNT = PREFIX + "exportAccount";
     private static final String K_REV_PREFIX = PREFIX + "revAccount.";
     private static final String K_EXP_PREFIX = PREFIX + "expAccount.";
     private static final String K_BU_INC_PREFIX = PREFIX + "buKeyIncome.";
@@ -76,6 +79,22 @@ public final class DatevConfig {
     public String cashAccount = "";
     public boolean useAutomaticAccounts = true;
     public String euDeliveryAccount = "8125";
+    /**
+     * services to businesses in the EU, reverse charge (VAT category AE with
+     * an EU VAT ID of the customer, § 3a Abs. 2 UStG): SKR03 8336 / SKR04
+     * 4336 (#214)
+     */
+    public String euServiceAccount = "8336";
+    /**
+     * domestic reverse charge (§ 13b UStG, category AE without an EU VAT ID):
+     * SKR03 8337 / SKR04 4337
+     */
+    public String reverseChargeAccount = "8337";
+    /**
+     * exports outside the EU (category G, § 4 Nr. 1a UStG): SKR03 8120 /
+     * SKR04 4120
+     */
+    public String exportAccount = "8120";
 
     public final Map<BigDecimal, String> revenueAccounts = new TreeMap<BigDecimal, String>(JournalCalc.RATE_ORDER);
     public final Map<BigDecimal, String> expenseAccounts = new TreeMap<BigDecimal, String>(JournalCalc.RATE_ORDER);
@@ -135,6 +154,15 @@ public final class DatevConfig {
         }
         if (overwriteExisting || isBlank(euDeliveryAccount)) {
             euDeliveryAccount = defaultEu;
+        }
+        if (overwriteExisting || isBlank(euServiceAccount)) {
+            euServiceAccount = skr04 ? "4336" : "8336";
+        }
+        if (overwriteExisting || isBlank(reverseChargeAccount)) {
+            reverseChargeAccount = skr04 ? "4337" : "8337";
+        }
+        if (overwriteExisting || isBlank(exportAccount)) {
+            exportAccount = skr04 ? "4120" : "8120";
         }
 
         if (rates != null) {
@@ -285,6 +313,9 @@ public final class DatevConfig {
         c.cashAccount = readString(K_CASH_ACCOUNT, "");
         c.useAutomaticAccounts = readBool(K_AUTOMATIC, true);
         c.euDeliveryAccount = readString(K_EU_ACCOUNT, "04".equals(c.kontenrahmen) ? "4125" : "8125");
+        c.euServiceAccount = readString(K_EU_SERVICE_ACCOUNT, "04".equals(c.kontenrahmen) ? "4336" : "8336");
+        c.reverseChargeAccount = readString(K_REVERSE_CHARGE_ACCOUNT, "04".equals(c.kontenrahmen) ? "4337" : "8337");
+        c.exportAccount = readString(K_EXPORT_ACCOUNT, "04".equals(c.kontenrahmen) ? "4120" : "8120");
 
         readRateMap(K_REV_PREFIX, c.revenueAccounts);
         readRateMap(K_EXP_PREFIX, c.expenseAccounts);
@@ -313,6 +344,9 @@ public final class DatevConfig {
         GlobalSettings.setProperty(K_CASH_ACCOUNT, safe(cashAccount));
         GlobalSettings.setProperty(K_AUTOMATIC, String.valueOf(useAutomaticAccounts));
         GlobalSettings.setProperty(K_EU_ACCOUNT, safe(euDeliveryAccount));
+        GlobalSettings.setProperty(K_EU_SERVICE_ACCOUNT, safe(euServiceAccount));
+        GlobalSettings.setProperty(K_REVERSE_CHARGE_ACCOUNT, safe(reverseChargeAccount));
+        GlobalSettings.setProperty(K_EXPORT_ACCOUNT, safe(exportAccount));
 
         writeRateMap(K_REV_PREFIX, revenueAccounts);
         writeRateMap(K_EXP_PREFIX, expenseAccounts);

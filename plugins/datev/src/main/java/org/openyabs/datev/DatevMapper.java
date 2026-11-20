@@ -74,6 +74,21 @@ public final class DatevMapper {
     }
 
     /**
+     * Resolves the VAT category (UNCL5305, see
+     * {@link mpv5.utils.export.VatCategory}) of the part of a document with a
+     * rate, from the tax rates of its positions (#214)
+     */
+    public interface TaxCategoryLookup {
+
+        /**
+         * @param entry
+         * @param rate the rate of the part
+         * @return the category, null if unknown
+         */
+        mpv5.utils.export.VatCategory categoryOf(Entry entry, BigDecimal rate);
+    }
+
+    /**
      * Optional resolver for a receipt file name (Beleglink).
      */
     public interface ReceiptLinkLookup {
@@ -206,7 +221,61 @@ public final class DatevMapper {
      * Maps journal entries using the database lookups.
      */
     public static Result map(List<Entry> entries, DatevConfig config, Date from, Date to) {
-        return map(entries, config, from, to, dbAccountLookup(), dbContactVatLookup(), null);
+        return map(entries, config, from, to, dbAccountLookup(), dbContactVatLookup(), null, dbTaxCategoryLookup());
+    }
+
+    /**
+     * The VAT category of the positions of a document with a rate: the tax
+     * rate of each position as in the e-invoice (the customer's rate, the
+     * product's rate, any rate with the value), the first position with the
+     * rate decides
+     *
+     * @return the lookup (reads the documents)
+     */
+    public static TaxCategoryLookup dbTaxCategoryLookup() {
+        final List<mpv5.db.objects.Tax> taxes = mpv5.db.objects.Tax.all();
+        final Map<String, mpv5.utils.export.VatCategory> cache = new HashMap<String, mpv5.utils.export.VatCategory>();
+        return (entry, rate) -> {
+            if (entry == null || rate == null) {
+                return null;
+            }
+            Item item = entry.obj instanceof Item ? (Item) entry.obj : null;
+            if (item == null && entry.itemId > 0) {
+                try {
+                    item = (Item) DatabaseObject.getObject(Context.getInvoice(), entry.itemId);
+                } catch (Exception ex) {
+                    item = null;
+                }
+            }
+            if (item == null) {
+                return null;
+            }
+            BigDecimal r = mpv5.utils.numberformat.InvoiceMath.rate(rate);
+            String key = item.__getIDS() + "@" + r.stripTrailingZeros().toPlainString();
+            if (cache.containsKey(key)) {
+                return cache.get(key);
+            }
+            mpv5.utils.export.VatCategory found = null;
+            try {
+                Contact contact = item.__getContactsids() > 0 ? item.getContact() : null;
+                java.util.function.Function<mpv5.db.objects.SubItem, mpv5.db.objects.Tax> rates
+                        = mpv5.utils.export.ZugpferdFile.taxRates(contact, taxes);
+                for (mpv5.db.objects.SubItem s : item.getSubitems()) {
+                    BigDecimal sr = mpv5.utils.numberformat.InvoiceMath.rate(s.__getTaxpercentvalue());
+                    if (sr.compareTo(r) != 0 || s.__getDescription() == null || s.__getDescription().trim().isEmpty()) {
+                        continue;
+                    }
+                    mpv5.db.objects.Tax t = rates.apply(s);
+                    found = t != null && t.__getTaxvalue() != null && t.__getTaxvalue().compareTo(r) == 0
+                            ? t.category() : mpv5.utils.export.VatCategory.of(null, r);
+                    break;
+                }
+            } catch (Exception ex) {
+                Log.Debug(DatevMapper.class, ex.getMessage());
+            }
+            cache.put(key, found);
+            return found;
+        };
     }
 
     /**
@@ -215,10 +284,25 @@ public final class DatevMapper {
      */
     public static Result map(List<Entry> entries, DatevConfig config, Date from, Date to,
             AccountLookup accountLookup, ContactVatLookup vatLookup, ReceiptLinkLookup receiptLookup) {
+        return map(entries, config, from, to, accountLookup, vatLookup, receiptLookup, null);
+    }
+
+    /**
+     * Maps journal entries into DATEV booking lines and validates settings and
+     * entries.
+     *
+     * @param categoryLookup the VAT category of the 0 % part of a document
+     * (reverse charge, intra-community supply, export: the account), null:
+     * every 0 % sale to an EU business is an intra-community supply of goods
+     */
+    public static Result map(List<Entry> entries, DatevConfig config, Date from, Date to,
+            AccountLookup accountLookup, ContactVatLookup vatLookup, ReceiptLinkLookup receiptLookup,
+            TaxCategoryLookup categoryLookup) {
         Result result = new Result();
         validateConfig(config, from, to, result.issues);
 
         Set<String> warnedMissingRateAccounts = new HashSet<String>();
+        Set<String> warnedGoodsAssumed = new HashSet<String>();
         int countedDocs = 0;
 
         if (entries != null) {
@@ -280,6 +364,10 @@ public final class DatevMapper {
                         debitMoney = !debitMoney;
                     }
 
+                    // the VAT category of the 0 % part (#214)
+                    mpv5.utils.export.VatCategory category = categoryLookup == null || isExpense || rate == null || rate.signum() != 0
+                            ? null : categoryLookup.categoryOf(e, rate);
+
                     // Determine Gegenkonto
                     String gegenkonto = "";
                     Account effectiveGegenkontoObj = null;
@@ -291,11 +379,22 @@ public final class DatevMapper {
                         gegenkonto = String.valueOf(docAccount.__getIntaccountclass());
                         effectiveGegenkontoObj = docAccount;
                     } else {
-                        // Fallback from settings per tax rate (and EU delivery for 0% with EU VAT ID)
-                        if (!isExpense && rate != null && rate.signum() == 0
-                                && isOtherEuVatId(contactVat)
-                                && !DatevConfig.isBlank(config.euDeliveryAccount)) {
-                            gegenkonto = config.euDeliveryAccount.trim();
+                        // Fallback from settings per tax rate; 0 % sales by their VAT category (#214):
+                        // reverse charge (EU service / § 13b), intra-community supply, export
+                        String byCategory = !isExpense && rate != null && rate.signum() == 0
+                                ? zeroRateAccount(config, category, isOtherEuVatId(contactVat)) : null;
+                        if (!DatevConfig.isBlank(byCategory)) {
+                            gegenkonto = byCategory.trim();
+                            if (category == null || category == mpv5.utils.export.VatCategory.E) {
+                                //no category: EU 0 % sales as before as supplies of goods - services are booked wrong
+                                if (warnedGoodsAssumed.add(labelOf(e))) {
+                                    result.issues.add(new Issue(Issue.Severity.WARNING,
+                                            "Beleg " + labelOf(e) + ": 0 %-Umsatz an ein Unternehmen in der EU ohne USt-Kategorie, als"
+                                            + " innergemeinschaftliche Lieferung (Konto " + gegenkonto + ") gebucht. Leistungen (§ 3a Abs. 2 UStG)"
+                                            + " gehören auf das Konto für EU-Leistungen: dem Kunden einen Steuersatz mit Kategorie AE"
+                                            + " (Reverse Charge) zuordnen, Lieferungen Kategorie K."));
+                                }
+                            }
                         } else if (rate != null) {
                             BigDecimal key = JournalCalc.rateKey(rate);
                             gegenkonto = nullToEmpty(isExpense
@@ -323,15 +422,17 @@ public final class DatevMapper {
                     // BU-Schlüssel
                     String bu = resolveBuKey(rate, isExpense, config, effectiveGegenkontoObj, gegenkonto);
 
-                    // EU-Land u. UStID for 0% EU deliveries (e.g. SKR03 8125 / SKR04 4125)
+                    // EU-Land u. UStID for 0% EU deliveries and services (e.g. SKR03 8125 / 8336, SKR04 4125 / 4336):
+                    // the Zusammenfassende Meldung needs it
                     String euVatField = "";
-                    boolean isEuAccount = !DatevConfig.isBlank(config.euDeliveryAccount)
-                            && config.euDeliveryAccount.trim().equals(gegenkonto);
+                    boolean isEuAccount = (!DatevConfig.isBlank(config.euDeliveryAccount)
+                            && config.euDeliveryAccount.trim().equals(gegenkonto))
+                            || (!DatevConfig.isBlank(config.euServiceAccount) && config.euServiceAccount.trim().equals(gegenkonto));
                     if (!isExpense && rate != null && rate.signum() == 0 && (isEuAccount || isOtherEuVatId(contactVat))) {
                         euVatField = contactVat;
                         if (isEuAccount && DatevConfig.isBlank(euVatField)) {
                             result.issues.add(new Issue(Issue.Severity.WARNING,
-                                    "Beleg " + labelOf(e) + ": EU-Lieferung (Konto " + gegenkonto + ") ohne USt-IdNr. beim Kontakt."));
+                                    "Beleg " + labelOf(e) + ": EU-Lieferung/-Leistung (Konto " + gegenkonto + ") ohne USt-IdNr. beim Kontakt."));
                         }
                     }
 
@@ -491,5 +592,31 @@ public final class DatevMapper {
 
     private static String nullToEmpty(String s) {
         return s == null ? "" : s.trim();
+    }
+
+    /**
+     * The revenue account of a 0 % sale by its VAT category (#214)
+     *
+     * @param config
+     * @param category the category of the part, null if unknown
+     * @param euBusiness the customer has a VAT ID of another EU country
+     * @return the account, null: the account of the rate (0 %)
+     */
+    static String zeroRateAccount(DatevConfig config, mpv5.utils.export.VatCategory category, boolean euBusiness) {
+        if (category == mpv5.utils.export.VatCategory.AE) {
+            //reverse charge: a service to an EU business (§ 3a Abs. 2 UStG), else domestic § 13b UStG
+            return euBusiness ? config.euServiceAccount : config.reverseChargeAccount;
+        }
+        if (category == mpv5.utils.export.VatCategory.K) {
+            return config.euDeliveryAccount;
+        }
+        if (category == mpv5.utils.export.VatCategory.G) {
+            return config.exportAccount;
+        }
+        if ((category == null || category == mpv5.utils.export.VatCategory.E) && euBusiness) {
+            //as before the categories: EU 0 % = intra-community supply of goods
+            return config.euDeliveryAccount;
+        }
+        return null;
     }
 }
