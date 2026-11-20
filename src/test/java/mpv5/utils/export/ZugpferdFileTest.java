@@ -169,9 +169,10 @@ class ZugpferdFileTest {
     }
 
     @Test
-    void sellerNeedsVatId() throws Exception {
+    void sellerNeedsVatIdOrTaxNumber() throws Exception {
         Map<String, String> c = company();
         c.remove("account1");
+        c.remove("taxnumber");
         Invoice invoice = ZugpferdFile.createInvoice(invoice(), new SubItem[]{line("a", "", "1", "Stk", "100", "19", "0")},
                 ZugpferdFile.createSender(c::get), buyer(), "ref", ZugpferdFile.PAYTERM_UNSET, null);
         List<String> problems = ZugpferdFile.validate(invoice);
@@ -183,6 +184,54 @@ class ZugpferdFileTest {
         EInvoiceValidator.Result result = EInvoiceValidator.validate(xml);
         assertFalse(result.isValid());
         assertTrue(result.getErrors().toString().contains("BR-CO-26"), result.getErrors().toString());
+    }
+
+    @Test
+    void taxNumberWithoutVatIdIsEnough() throws Exception {
+        //e.g. a small business (Kleinunternehmer) without USt-IdNr. (#210)
+        Map<String, String> c = company();
+        c.remove("account1");
+        TradeParty sender = ZugpferdFile.createSender(c::get);
+        assertTrue(ZugpferdFile.isEmpty(sender.getVATID()), sender.getVATID());
+        assertEquals("30/123/45678", sender.getTaxID());
+        assertEquals("30/123/45678", sender.getID(), "seller identifier BT-29 (BR-CO-26)");
+        Invoice invoice = ZugpferdFile.createInvoice(invoice(), new SubItem[]{line("a", "", "1", "Stk", "100", "19", "0")},
+                sender, buyer(), "ref", ZugpferdFile.PAYTERM_UNSET, null);
+        assertTrue(ZugpferdFile.validate(invoice).isEmpty(), ZugpferdFile.validate(invoice).toString());
+        File xml = tmp.resolve("taxnumberonly.xml").toFile();
+        ZugpferdFile.writeXml(invoice, xml);
+        String s = new String(Files.readAllBytes(xml.toPath()), StandardCharsets.UTF_8);
+        assertTrue(s.contains("schemeID=\"FC\">30/123/45678"), s);
+        assertValid(xml);
+    }
+
+    @Test
+    void smallBusinessInvoice() throws Exception {
+        Map<String, String> c = company();
+        c.remove("account1");
+        c.put(SmallBusiness.KEY_ENABLED, "true");
+        String note = SmallBusiness.note(c::get);
+        assertTrue(note.contains("\u00a7 19 UStG"), note);
+        SubItem[] lines = {line("Beratung", "", "2", "Std.", "50", "0", "0")};
+        for (ZugpferdFile.Format format : ZugpferdFile.Format.values()) {
+            Invoice invoice = ZugpferdFile.createInvoice(invoice(), lines, ZugpferdFile.createSender(c::get), buyer(), "ref",
+                    ZugpferdFile.PAYTERM_UNSET, null, note, format);
+            assertTrue(ZugpferdFile.validate(invoice, true).isEmpty(), ZugpferdFile.validate(invoice, true).toString());
+            File xml = tmp.resolve("ku-" + format + ".xml").toFile();
+            ZugpferdFile.writeXml(invoice, xml);
+            String s = new String(Files.readAllBytes(xml.toPath()), StandardCharsets.UTF_8);
+            assertTrue(s.contains("<ram:CategoryCode>E</ram:CategoryCode>"), s);
+            assertTrue(s.contains("<ram:ExemptionReason>" + note + "</ram:ExemptionReason>"), s);
+            assertTrue(s.contains("<ram:Content>" + note + "</ram:Content>"), "invoice note BT-22: " + s);
+            assertValid(xml);
+        }
+
+        //a position with VAT is not allowed
+        Invoice withVat = ZugpferdFile.createInvoice(invoice(), new SubItem[]{line("a", "", "1", "Stk", "100", "19", "0")},
+                ZugpferdFile.createSender(c::get), buyer(), "ref", ZugpferdFile.PAYTERM_UNSET, null, note,
+                ZugpferdFile.Format.XRECHNUNG);
+        assertTrue(ZugpferdFile.validate(withVat, true).toString().contains(Messages.SMALLBUSINESS_LINE_HAS_VAT.toString()));
+        assertTrue(ZugpferdFile.validate(withVat, false).isEmpty());
     }
 
     @Test

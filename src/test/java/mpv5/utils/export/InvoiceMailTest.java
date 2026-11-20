@@ -85,7 +85,8 @@ class InvoiceMailTest {
     @Test
     void invalidEInvoiceIsNotAttached() {
         Map<String, String> c = ZugpferdFileTest.company();
-        c.remove("account1");//no VAT ID -> BR-CO-26
+        c.remove("account1");//no VAT ID and no tax number -> BR-CO-26
+        c.remove("taxnumber");
         Invoice invoice = ZugpferdFile.createInvoice(ZugpferdFileTest.invoice(),
                 new SubItem[]{ZugpferdFileTest.line("a", "", "1", "Stk", "100", "19", "0")},
                 ZugpferdFile.createSender(c::get), ZugpferdFileTest.buyer(), "ref", ZugpferdFile.PAYTERM_UNSET, null);

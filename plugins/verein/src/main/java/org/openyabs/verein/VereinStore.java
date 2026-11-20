@@ -110,6 +110,12 @@ public final class VereinStore {
                 if (GlobalSettings.hasProperty(PREFIX + "kleinunternehmer")) {
                     s.kleinunternehmer = GlobalSettings.getBooleanProperty(PREFIX + "kleinunternehmer");
                 }
+                //the company setting of the core (small business exemption) wins; the plugin's
+                //default (true) applies only while it has never been set
+                Boolean core = mpv5.utils.export.SmallBusiness.configured();
+                if (core != null) {
+                    s.kleinunternehmer = core.booleanValue();
+                }
                 if (GlobalSettings.hasProperty(PREFIX + "warnOnSave")) {
                     s.warnOnSave = GlobalSettings.getBooleanProperty(PREFIX + "warnOnSave");
                 }
@@ -131,6 +137,15 @@ public final class VereinStore {
             GlobalSettings.setProperty(PREFIX + "kleinunternehmer", String.valueOf(kleinunternehmer));
             GlobalSettings.setProperty(PREFIX + "warnOnSave", String.valueOf(warnOnSave));
             GlobalSettings.save();
+            //one setting for the core (invoice note, e-invoice, revenue limits) and the plugin
+            try {
+                Boolean core = mpv5.utils.export.SmallBusiness.configured();
+                if (core == null || core.booleanValue() != kleinunternehmer) {
+                    mpv5.utils.export.SmallBusiness.setEnabled(kleinunternehmer);
+                }
+            } catch (Throwable ignored) {
+                //an older YaBS without the core setting
+            }
         }
     }
 

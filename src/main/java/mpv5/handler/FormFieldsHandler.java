@@ -115,6 +115,14 @@ public class FormFieldsHandler {
             }
         }
         
+        //small business exemption: the note to print (the legal wording if none is set), empty without it
+        try {
+            maps.put("companyinfo." + mpv5.utils.export.SmallBusiness.KEY_NOTE,
+                    mpv5.utils.export.SmallBusiness.note(mpv5.utils.export.ZugpferdFile.companySettings()));
+        } catch (Exception e) {
+            Log.Debug(this, e.getMessage());
+        }
+
         mapi = User.getCurrentUser().getProperties().getProperties("template.").getList();
         for (String[] strings : mapi) {
             if (strings[1] != null) {
