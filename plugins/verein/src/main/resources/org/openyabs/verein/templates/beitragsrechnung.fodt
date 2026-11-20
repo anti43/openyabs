@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<office:document xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0"
+                 xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0"
+                 office:version="1.2"
+                 office:mimetype="application/vnd.oasis.opendocument.text">
+  <office:body>
+    <office:text>
+      <text:p>[companyinfo.name] · [companyinfo.street] · [companyinfo.zip] [companyinfo.city]</text:p>
+      <text:p>[contact.cname]</text:p>
+      <text:p>[contact.street], [contact.zip] [contact.city]</text:p>
+      <text:h text:outline-level="1">Beitragsrechnung [item.cnumber] – Beitragsjahr [ev.fiscalYear]</text:h>
+      <text:p>Mitgliedsnummer: [ev.memberId] | Status: [ev.status] | Steuersphäre: [ev.taxSphere]</text:p>
+      <text:p>Rechnungsdatum: [item.dateadded] | Fälligkeitsdatum: [item.dateend]</text:p>
+      <text:p>[xtable1]</text:p>
+      <text:p>Gesamtbetrag (umsatzsteuerfrei im ideellen Bereich): [item.totalvalue] EUR</text:p>
+      <text:p>SEPA-Pre-Notification / Zahlungshinweis: [ev.sepaPreNotification]</text:p>
+    </office:text>
+  </office:body>
+</office:document>
