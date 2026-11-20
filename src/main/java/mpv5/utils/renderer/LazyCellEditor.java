@@ -22,11 +22,46 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.JTextComponent;
 
 /**
- *
+ * A text cell editor which starts empty when editing is started with the
+ * keyboard (typing replaces the value). If nothing is typed (editing started by
+ * a key the table does not use, e.g. Ctrl+S, or by the program) the value of
+ * the cell is kept when editing stops.
  */
 public class LazyCellEditor extends DefaultCellEditor {
+
+    /**
+     * true if the text was changed by the user since editing started
+     */
+    protected boolean typed;
+
+    /**
+     * Sets {@link #typed} when the text of the field changes; reset it after
+     * setting the text of the editor
+     *
+     * @param tf
+     */
+    protected final void trackTyping(JTextComponent tf) {
+        tf.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                typed = true;
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                typed = true;
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+            }
+        });
+    }
 
     public LazyCellEditor(JComboBox c) {
         super(c);
@@ -35,12 +70,18 @@ public class LazyCellEditor extends DefaultCellEditor {
     public LazyCellEditor(final JTextField tf) {
         super(tf);
         super.setClickCountToStart(1);
+        trackTyping(tf);
         delegate = new EditorDelegate() {
 
             boolean isMousePressed = false;
+            /**
+             * the value of the cell: kept if nothing is typed
+             */
+            Object original;
 
             @Override
             public void setValue(Object value) {
+                original = value;
                 if(isMousePressed && value != null){
                 SwingUtilities.invokeLater(new Runnable() {
 
@@ -51,10 +92,14 @@ public class LazyCellEditor extends DefaultCellEditor {
                 tf.setText(value.toString());
                 } else {
                 tf.setText(""); }
+                typed = false;
             }
 
             @Override
             public Object getCellEditorValue() {
+                if (!typed) {
+                    return original;
+                }
                 return tf.getText();
             }
 

@@ -93,11 +93,16 @@ public class TableCellEditorForDezimal extends LazyCellEditor {
                 } else {
                     tf.setText("");
                 }
-
+                typed = false;
             }
 
             @Override
             public Object getCellEditorValue() {
+                if (!typed) {
+                    //nothing typed (e.g. editing started by Ctrl+S, which saves): the value stays,
+                    //an empty field must not turn the VAT, the price or the quantity into 0
+                    return original instanceof Number ? FormatNumber.getBigDecimal(original) : original;
+                }
                 try {
                     String _field = tf.getText();
                     if (_field == null || _field.trim().length() == 0) {
