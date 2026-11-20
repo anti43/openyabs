@@ -24,6 +24,7 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
         with:
@@ -36,9 +37,11 @@ jobs:
 
       - uses: gradle/actions/setup-gradle@v4
 
-      # the ZUGFeRD PDF test needs an installed font family to embed (PDF/A-3)
-      - name: Install fonts
-        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends fonts-liberation
+      # the ZUGFeRD PDF test needs an installed font family to embed (PDF/A-3); xvfb is the
+      # virtual display for the tests that open views (WorkflowTest, the GoBD tests ...), which
+      # skip themselves without a display
+      - name: Install fonts and virtual display
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends fonts-liberation xvfb
 
       # Use the release version, tag version or a pre-release version of the next patch.
       - name: Test and build distribution zip
@@ -46,15 +49,15 @@ jobs:
           RELEASE_VERSION: ${{ inputs.release-version }}
         run: |
           if [[ -n "$RELEASE_VERSION" ]]; then
-            ./gradlew --no-daemon test distributionZip -PreleaseVersion="$RELEASE_VERSION"
+            xvfb-run -a ./gradlew --no-daemon test distributionZip -PreleaseVersion="$RELEASE_VERSION"
           elif [[ "$GITHUB_REF" == refs/tags/v* ]]; then
-            ./gradlew --no-daemon test distributionZip -PreleaseVersion="${GITHUB_REF_NAME#v}"
+            xvfb-run -a ./gradlew --no-daemon test distributionZip -PreleaseVersion="${GITHUB_REF_NAME#v}"
           else
             # semantic versioning: a pre-release of the next patch after the latest
             # release tag (2.0.3 -> 2.0.4-dev.<build number>), so releases compare right
             latest=$(git tag --list 'v*' | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sed 's/^v//' | sort -V | tail -n 1)
             IFS=. read -r major minor patch <<< "${latest:-2.0.-1}"
-            ./gradlew --no-daemon test distributionZip -PreleaseVersion="${major}.${minor}.$((patch + 1))-dev.${GITHUB_RUN_NUMBER}"
+            xvfb-run -a ./gradlew --no-daemon test distributionZip -PreleaseVersion="${major}.${minor}.$((patch + 1))-dev.${GITHUB_RUN_NUMBER}"
           fi
 
       # the artifact download is itself a zip which contains openyabs-<version>.zip;
