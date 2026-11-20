@@ -254,6 +254,26 @@ public final class Privacy {
     }
 
     /**
+     * @param o a record
+     * @return true for a saved invoice, credit note, deposit or part payment
+     * invoice which was issued (finished, paid, cancelled, a file written for
+     * it or a payment): deleting it warns (#213)
+     */
+    public static boolean isIssuedInvoice(mpv5.db.common.DatabaseObject o) {
+        if (!(o instanceof Item) || !o.isExisting()) {
+            return false;
+        }
+        Item i = (Item) o;
+        boolean invoice = false;
+        for (int t : INVOICE_TYPES) {
+            invoice |= t == i.__getInttype();
+        }
+        return invoice && isIssued(i.__getIntstatus(),
+                !ids("SELECT itemsids FROM item_files WHERE itemsids = " + i.__getIDS()).isEmpty(),
+                !ids("SELECT itemsids FROM payments WHERE itemsids = " + i.__getIDS()).isEmpty());
+    }
+
+    /**
      * What the law says about the data of a contact (including documents in
      * the trash)
      *

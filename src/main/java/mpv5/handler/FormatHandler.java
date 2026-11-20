@@ -441,10 +441,14 @@ public class FormatHandler {
                 || forThis.getContext().equals(Context.getDeposit())
                 || forThis.getContext().equals(Context.getPartPayment())) {
             int type = ((Item) forThis).__getInttype();
+            boolean invoice = mpv5.handler.ItemService.isInvoiceType(type);
+            String q = cnumber.replace("'", "''");
             //invoices, credit notes, deposit and part payment invoices: unique among all of them
-            //(§ 14 Abs. 4 Nr. 4 UStG); with the same number format they share one range (#212)
-            query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + cnumber.replace("'", "''") + "' AND inttype "
-                    + (mpv5.handler.ItemService.isInvoiceType(type) ? "IN (" + mpv5.handler.ItemService.invoiceTypesSql() + ")" : "= " + type);
+            //(§ 14 Abs. 4 Nr. 4 UStG); with the same number format they share one range (#212).
+            //The number of a deleted one (in the trash as "!number") is not given out again (#213).
+            query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE "
+                    + (invoice ? "cnumber IN ('" + q + "', '" + DELETED_IDENTIFIER + q + "') AND inttype IN (" + mpv5.handler.ItemService.invoiceTypesSql() + ")"
+                            : "cnumber = '" + q + "' AND inttype = " + type);
         } else if (forThis.getContext().equals(Context.getProduct())) {
             query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + cnumber + "' AND inttype ="
                     + ((Product) forThis).__getInttype();

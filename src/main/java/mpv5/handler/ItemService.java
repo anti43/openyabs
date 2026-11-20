@@ -343,9 +343,10 @@ public final class ItemService {
         if (number == null || number.trim().isEmpty()) {
             return null;
         }
+        String q = number.trim().replace("'", "''");
         try {
             mpv5.db.common.ReturnValue rv = mpv5.db.common.QueryHandler.getConnection().freeQuery(
-                    "SELECT inttype, ids FROM " + Context.getInvoice().getDbIdentity() + " WHERE cnumber = '" + number.replace("'", "''") + "' AND inttype IN ("
+                    "SELECT inttype, ids FROM " + Context.getInvoice().getDbIdentity() + " WHERE cnumber IN ('" + q + "', '" + FormatHandler.DELETED_IDENTIFIER + q + "') AND inttype IN ("
                     + invoiceTypesSql() + ") AND ids <> " + exceptIds, mpv5.usermanagement.MPSecurityManager.VIEW, null);
             if (rv.hasData()) {
                 Object[] r = rv.getData()[0];
