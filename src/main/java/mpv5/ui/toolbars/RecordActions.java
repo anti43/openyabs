@@ -451,7 +451,9 @@ public final class RecordActions {
             mpv5.YabsViewProxy.instance().addMessage(Messages.LOCKED_DOCUMENT_OPENED + " " + f.getPath());
             mpv5.utils.files.FileDirectoryHandler.open(f);
         } else {
-            mpv5.ui.dialogs.Popup.notice(Messages.LOCKED_DOCUMENT_MISSING + "\n" + f.getPath());
+            //the original is gone: never a new original, at most a duplicate stamped as a copy
+            mpv5.plugin.ExtensionManager.LockedDocument locked = view.lockedDocumentOfPlugins();
+            mpv5.utils.export.LockedDocumentCopy.offer(view.getDataOwner(), f, locked == null ? null : locked.provider);
         }
         return true;
     }

@@ -785,16 +785,35 @@ public final class Gobd {
     static final String MONEY_CORE_COLUMNS = "cnumber, dateadded, accountsids, netvalue, taxpercentvalue, brutvalue, description";
 
     static String contactSnapshot(Contact c) {
+        return contactSnapshot(c.__getIDS(), c.__getCNumber(), c.__getCompany(), c.__getPrename(), c.__getCname(), c.__getStreet(),
+                c.__getZip(), c.__getCity(), c.__getCountry(), c.__getTaxnumber());
+    }
+
+    private static String contactSnapshot(Object id, Object number, Object company, Object prename, Object name, Object street,
+            Object zip, Object city, Object country, Object taxNumber) {
         return String.join(" | ",
-                "ID=" + c.__getIDS(),
-                "Nr=" + str(c.__getCNumber()),
-                "Firma=" + str(c.__getCompany()),
-                ("Name=" + str(c.__getPrename()) + " " + str(c.__getCname())).trim(),
-                "Strasse=" + str(c.__getStreet()),
-                "PLZ=" + str(c.__getZip()),
-                "Ort=" + str(c.__getCity()),
-                "Land=" + str(c.__getCountry()),
-                "SteuerNr=" + str(c.__getTaxnumber()));
+                "ID=" + str(id),
+                "Nr=" + str(number),
+                "Firma=" + str(company),
+                ("Name=" + str(prename) + " " + str(name)).trim(),
+                "Strasse=" + str(street),
+                "PLZ=" + str(zip),
+                "Ort=" + str(city),
+                "Land=" + str(country),
+                "SteuerNr=" + str(taxNumber));
+    }
+
+    /**
+     * The snapshot of the contact as it is in the database now, not from the
+     * object cache of YaBS (which can hold an older state of the contact)
+     *
+     * @param contactId
+     * @return the snapshot, null if the contact is not there
+     */
+    String contactSnapshotInDb(long contactId) {
+        Object[] r = q1("SELECT ids, cnumber, company, prename, cname, street, zip, city, country, taxnumber FROM contacts WHERE ids = ?",
+                contactId);
+        return r == null ? null : contactSnapshot(r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9]);
     }
 
     static String contactSnapshot(long contactId) {
@@ -1749,6 +1768,106 @@ public final class Gobd {
                 status("Belegdatei erstellt (" + entry.file.getName() + "). Jetzt ueber 'Plugins > GoBD: 1. Beleg festschreiben' sichern.");
             }
         }
+    }
+
+    // ---------------------------------------------------------------- locked documents
+    /**
+     * The provider of the archived originals for YaBS: print, PDF, preview, ODT
+     * and e-invoice of a finalized invoice open the archived file instead of
+     * creating a new one; if the file is missing, YaBS offers a stamped
+     * duplicate, which this provider checks and records in the audit log
+     *
+     * @return
+     */
+    mpv5.plugin.api.LockedDocumentProvider lockedDocuments() {
+        return new mpv5.plugin.api.LockedDocumentProvider() {
+            @Override
+            public File lockedDocument(DatabaseObject record) {
+                Object[] lock = lockOf(record);
+                return lock == null || blank(str(lock[7])) ? null : new File(str(lock[7]).trim());
+            }
+
+            @Override
+            public String duplicateRefused(DatabaseObject record) {
+                Object[] lock = lockOf(record);
+                if (lock == null) {
+                    return null;
+                }
+                String changed = changedSinceFinalized(record.__getIDS(), str(lock[12]));
+                if (changed == null) {
+                    return null;
+                }
+                String num = str(lock[1]);
+                logAudit("INVOICE", record.__getIDS(), "DUPLICATE_REFUSED", "ARCHIVE_MISSING=" + str(lock[7]), "CHANGED=" + changed, null,
+                        "Archivierte Originaldatei von Beleg " + num + " fehlt; Duplikat abgelehnt, die Daten weichen vom festgeschriebenen Stand ab.");
+                return "Die Daten von Beleg " + num + " in der Datenbank weichen vom festgeschriebenen Stand ab (" + changed + ")."
+                        + " Ein Duplikat zeigte einen anderen Inhalt als das Original. Bitte die GoBD-Pruefung ausfuehren"
+                        + " und das Original aus der Datensicherung wiederherstellen.";
+            }
+
+            @Override
+            public List<String> duplicateWarnings(DatabaseObject record) {
+                Object[] lock = lockOf(record);
+                if (lock == null || !(record instanceof Item)) {
+                    return Collections.emptyList();
+                }
+                String then = str(lock[5]);
+                String now = contactSnapshotInDb(((Item) record).__getContactsids());
+                if (now == null) {
+                    now = contactSnapshot((long) ((Item) record).__getContactsids());
+                }
+                if (blank(then) || then.equals(now)) {
+                    return Collections.emptyList();
+                }
+                return Collections.singletonList("Die Kundendaten wurden seit der Festschreibung geaendert."
+                        + "\nBei Festschreibung: " + then + "\nJetzt: " + now);
+            }
+
+            @Override
+            public void duplicateCreated(DatabaseObject record, File missing, File duplicate) {
+                Object[] lock = lockOf(record);
+                String sha = null;
+                try {
+                    sha = GobdUtil.sha256(Files.readAllBytes(duplicate.toPath()));
+                } catch (Exception e) {
+                    Log.Debug(Gobd.class, e);
+                }
+                logAudit("INVOICE", record.__getIDS(), "DUPLICATE_CREATED", "ARCHIVE_MISSING=" + missing, "DUPLICATE=" + duplicate, sha,
+                        "Archivierte Originaldatei von Beleg " + (lock == null ? record.__getCname() : str(lock[1]))
+                        + " fehlt; Duplikat erstellt (auf jeder Seite als Kopie gestempelt, kein Original, nicht archiviert).");
+            }
+        };
+    }
+
+    /**
+     * @return the lock of a finalized invoice, null for other records
+     */
+    private Object[] lockOf(DatabaseObject record) {
+        if (!(record instanceof Item) || !isGobdItemType(((Item) record).__getInttype()) || record.__getIDS() <= 0) {
+            return null;
+        }
+        return lockRecord(record.__getIDS());
+    }
+
+    /**
+     * @param docId
+     * @param record the finalized record (hash version 2), may be empty
+     * @return the changed parts (invoice, positions), null if the database
+     * still holds what was finalized (or nothing to compare with)
+     */
+    String changedSinceFinalized(long docId, String record) {
+        if (blank(record)) {
+            return null;
+        }
+        List<String> changed = new ArrayList<String>();
+        String core = itemCoreInDb(docId);
+        if (core == null || !GobdUtil.recordValue(core).equals(GobdUtil.recordField(record, "core"))) {
+            changed.add("Belegdaten");
+        }
+        if (!GobdUtil.recordValue(positionsCoreInDb(docId)).equals(GobdUtil.recordField(record, "positions"))) {
+            changed.add("Positionen");
+        }
+        return changed.isEmpty() ? null : String.join(", ", changed);
     }
 
     // ---------------------------------------------------------------- files

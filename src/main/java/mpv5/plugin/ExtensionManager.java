@@ -209,6 +209,8 @@ public final class ExtensionManager {
             = new CopyOnWriteArrayList<Owned<Predicate<mpv5.db.objects.Item>>>();
     private final List<Owned<PrivacyContributor>> privacyContributors
             = new CopyOnWriteArrayList<Owned<PrivacyContributor>>();
+    private final List<Owned<mpv5.plugin.api.LockedDocumentProvider>> lockedDocumentProviders
+            = new CopyOnWriteArrayList<Owned<mpv5.plugin.api.LockedDocumentProvider>>();
     private final java.util.Map<String, java.util.Map<String, java.util.Map<String, String>>> translations
             = new java.util.concurrent.ConcurrentHashMap<String, java.util.Map<String, java.util.Map<String, String>>>();
     private final List<Runnable> changeListeners = new CopyOnWriteArrayList<Runnable>();
@@ -964,6 +966,50 @@ public final class ExtensionManager {
     }
 
     /**
+     * The archived original of a locked record and the plugin that locked it
+     */
+    public static final class LockedDocument {
+
+        /**
+         * the archived file (may be missing on disk)
+         */
+        public final File file;
+        /**
+         * the provider that knows the file
+         */
+        public final mpv5.plugin.api.LockedDocumentProvider provider;
+
+        LockedDocument(File file, mpv5.plugin.api.LockedDocumentProvider provider) {
+            this.file = file;
+            this.provider = provider;
+        }
+    }
+
+    /**
+     * Asks the running plugins whether the record is locked with an archived
+     * original
+     *
+     * @param record
+     * @return the archived original, null if no plugin locked the record
+     */
+    public LockedDocument lockedDocument(mpv5.db.common.DatabaseObject record) {
+        if (record == null || !record.isExisting() || lockedDocumentProviders.isEmpty()) {
+            return null;
+        }
+        for (Owned<mpv5.plugin.api.LockedDocumentProvider> p : lockedDocumentProviders) {
+            try {
+                File f = p.value.lockedDocument(record);
+                if (f != null) {
+                    return new LockedDocument(f, p.value);
+                }
+            } catch (Throwable t) {
+                Log.Debug(ExtensionManager.class, t);
+            }
+        }
+        return null;
+    }
+
+    /**
      * @return all registered GDPR privacy contributors from running plugins
      */
     public List<PrivacyContributor> privacyContributors() {
@@ -1209,6 +1255,7 @@ public final class ExtensionManager {
         mailWarningProviders.removeIf(p -> p.owner.equals(owner));
         eInvoiceSkipRules.removeIf(p -> p.owner.equals(owner));
         privacyContributors.removeIf(p -> p.owner.equals(owner));
+        lockedDocumentProviders.removeIf(p -> p.owner.equals(owner));
         translations.remove(owner);
         boolean hadViews = viewListeners.removeIf(p -> p.owner.equals(owner));
         for (Owned<DatabaseObjectModifier> m : modifiers) {
@@ -1268,6 +1315,9 @@ public final class ExtensionManager {
             n += p.owner.equals(owner) ? 1 : 0;
         }
         for (Owned<?> p : privacyContributors) {
+            n += p.owner.equals(owner) ? 1 : 0;
+        }
+        for (Owned<?> p : lockedDocumentProviders) {
             n += p.owner.equals(owner) ? 1 : 0;
         }
         java.util.Map<String, java.util.Map<String, String>> trMap = translations.get(owner);
@@ -1444,6 +1494,34 @@ public final class ExtensionManager {
             if (contributor != null) {
                 privacyContributors.add(new Owned<PrivacyContributor>(owner, contributor));
             }
+        }
+
+        @Override
+        public void addLockedDocumentProvider(mpv5.plugin.api.LockedDocumentProvider provider) {
+            if (provider != null) {
+                lockedDocumentProviders.add(new Owned<mpv5.plugin.api.LockedDocumentProvider>(owner, provider));
+            }
+        }
+
+        @Override
+        public void refreshView(mpv5.db.common.DatabaseObject record) {
+            if (host == null) {
+                ExtensionContext.super.refreshView(record);
+                return;
+            }
+            if (record == null || record.__getIDS() <= 0) {
+                return;
+            }
+            //every open view of the record, not only the selected tab (the record
+            //may be locked while another tab or a progress window is in front)
+            host.ui(() -> {
+                for (DataPanel v : host.openViews()) {
+                    mpv5.db.common.DatabaseObject o = v.getDataOwner();
+                    if (o != null && o.getClass() == record.getClass() && o.__getIDS() == record.__getIDS()) {
+                        v.setDataOwner(record, true);
+                    }
+                }
+            });
         }
 
         @Override

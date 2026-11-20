@@ -171,15 +171,37 @@ public interface DataPanel {
     }
 
     /**
-     * @return the archived document file of the locked record, or null if the
-     * content is not locked or no file was set
+     * The archived document file of the locked record. The running plugins are
+     * asked first ({@link mpv5.plugin.api.LockedDocumentProvider}), so a record
+     * that was locked while its view was not refreshed (e.g. another tab or a
+     * progress window was in front) is found too.
+     *
+     * @return the archived file (may be missing on disk), or null if the
+     * record is not locked
      */
     public default java.io.File getLockedDocument() {
+        mpv5.plugin.ExtensionManager.LockedDocument locked = lockedDocumentOfPlugins();
+        if (locked != null) {
+            return locked.file;
+        }
         if (!isContentLocked() || !(this instanceof javax.swing.JComponent)) {
             return null;
         }
         Object f = ((javax.swing.JComponent) this).getClientProperty(PROPERTY_LOCKED_DOCUMENT);
         return f instanceof java.io.File ? (java.io.File) f : null;
+    }
+
+    /**
+     * @return the archived original of the record of this view as a running
+     * plugin knows it, null if no plugin locked it
+     */
+    public default mpv5.plugin.ExtensionManager.LockedDocument lockedDocumentOfPlugins() {
+        try {
+            return mpv5.plugin.ExtensionManager.instance().lockedDocument(getDataOwner());
+        } catch (Throwable t) {
+            mpv5.logging.Log.Debug(DataPanel.class, t);
+            return null;
+        }
     }
 
 }

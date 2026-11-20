@@ -415,6 +415,29 @@ public final class Export extends HashMap<String, Object> implements Waitable {
      * be created (reported to the user / batch log)
      */
     static Waitable invoiceAttachments(Export pdf, DatabaseObject dataOwner, Contact contact, List<String> log) {
+        //a locked record (e.g. a finalized invoice): the archived original is sent, never a file
+        //created again from the template (another document with the same number)
+        mpv5.plugin.ExtensionManager.LockedDocument locked = lockedDocument(dataOwner);
+        if (locked != null) {
+            if (locked.file.isFile()) {
+                ExportProgress.step(Messages.LOCKED_DOCUMENT_MAIL_ARCHIVED + " " + locked.file.getName());
+                return new ArchivedAttachment(locked.file);
+            }
+            String text = Messages.LOCKED_DOCUMENT_MAIL_MISSING + " (" + dataOwner.__getCname() + ")\n" + locked.file.getPath();
+            if (log == null) {
+                try {
+                    ExportProgress.onEdtAndWait(() -> {
+                        Popup.warn(text);
+                        return null;
+                    });
+                } catch (Exception e) {
+                    Log.Debug(e);
+                }
+            } else {
+                log.add(text + "\n");
+            }
+            return null;
+        }
         if (!(dataOwner instanceof mpv5.db.objects.Item) || !ZugpferdFile.supports((mpv5.db.objects.Item) dataOwner)) {
             return pdf;
         }
@@ -463,6 +486,41 @@ public final class Export extends HashMap<String, Object> implements Waitable {
             return null;
         }
         return new InvoiceMail(pdf, invoice, delivery);
+    }
+
+    /**
+     * @return the archived original of a record a running plugin locked, null
+     * if it is not locked
+     */
+    static mpv5.plugin.ExtensionManager.LockedDocument lockedDocument(DatabaseObject dataOwner) {
+        try {
+            return mpv5.plugin.ExtensionManager.instance().lockedDocument(dataOwner);
+        } catch (Throwable t) {
+            Log.Debug(Export.class, t);
+            return null;
+        }
+    }
+
+    /**
+     * The archived original of a locked record as the attachment of a mail
+     */
+    static final class ArchivedAttachment implements Waitable, mpv5.mail.MailAttachments {
+
+        private final File file;
+
+        ArchivedAttachment(File file) {
+            this.file = file;
+        }
+
+        @Override
+        public Exception waitFor() {
+            return file.isFile() ? null : new FileNotFoundException(file.getPath());
+        }
+
+        @Override
+        public List<File> getAttachments() {
+            return java.util.Collections.singletonList(file);
+        }
     }
 
     /**
