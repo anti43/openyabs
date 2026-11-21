@@ -372,7 +372,10 @@ final class Inventory {
                     seq, at, user, reason, since, n, (long) res.added, (long) res.changed.size(), (long) res.deleted.size(), stateHash, record, prev, h);
             Gobd.logAudit(c, "SEAL", seq, "INVENTORY_SEALED", null, "records=" + n + " | new=" + res.added + " | changed=" + res.changed.size()
                     + " | deleted=" + res.deleted.size() + " | state=" + stateHash, h,
-                    "Bestandsversiegelung #" + seq + " (" + reason + ")" + (since == null ? "" : ", ohne Plugin seit " + GobdUtil.fmtTimestamp(since)));
+                    "Bestandsversiegelung #" + seq + " (" + reason + ")" + (since == null ? ""
+                    : res.added == 0 && res.changed.isEmpty() && res.deleted.isEmpty()
+                    ? ": Keine Aenderung seit dem letzten Beenden gefunden."
+                    : ", ohne Plugin seit " + GobdUtil.fmtTimestamp(since)));
             res.sealHash = h;
             return res;
         });
