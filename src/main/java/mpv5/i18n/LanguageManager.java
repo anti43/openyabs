@@ -883,15 +883,13 @@ public class LanguageManager {
     }
 
     private static java.util.Properties bundledGerman;
-    private static ResourceBundle lastChecked;
-    private static boolean lastIsGerman;
 
     /**
-     * @return true if the active language is German. Before the main window
-     * exists (login, first start) the system language decides. After that only
-     * the user's language does: a German system with the built-in English (or
-     * a German import that failed) stays English everywhere instead of German
-     * messages next to English forms.
+     * @return true if the active language is German: the locale of the user
+     * in YaBS (settings), else the language of the system. Before the main
+     * window exists (login, first start) the system language decides. A user
+     * with the built-in English stays English everywhere (no German messages
+     * next to English forms), also on a German system.
      */
     public static synchronized boolean isGerman() {
         if (!Main.INSTANTIATED) {
@@ -899,28 +897,27 @@ public class LanguageManager {
         }
         try {
             ResourceBundle b = getBundle();
-            if (b != lastChecked) {
-                lastChecked = b;
-                lastIsGerman = isGermanBundle(b);
+            if (b == null || b == defLanguageBundle) {
+                return false;
             }
-            return lastIsGerman;
+            return isGermanLocale(mpv5.db.objects.User.getCurrentUser());
         } catch (Exception e) {
             return false;
         }
     }
 
     /**
-     * @param b a language
-     * @return true if a known text is the German one, or header 0 is German
+     * @param u the user, may be null
+     * @return true if the locale of the user in YaBS is German, or (none set)
+     * the language of the system
      */
-    static boolean isGermanBundle(ResourceBundle b) {
-        if (b == null || b == defLanguageBundle) {
-            return false;
+    static boolean isGermanLocale(User u) {
+        String locale = u == null ? null : u.__getLocale();
+        if (locale != null && !locale.trim().isEmpty() && !"null".equals(locale.trim())) {
+            return locale.trim().toLowerCase().startsWith("de");
         }
-        java.util.Properties de = bundledGerman();
-        return (de.getProperty("INSERTED") != null && b.containsKey("INSERTED")
-                && de.getProperty("INSERTED").equals(b.getString("INSERTED")))
-                || (b.containsKey("CONTACT_DETAILS.0") && "Interne ID".equals(b.getString("CONTACT_DETAILS.0")));
+        String system = System.getProperty("user.language");
+        return system != null && system.toLowerCase().startsWith("de");
     }
 
     /**
