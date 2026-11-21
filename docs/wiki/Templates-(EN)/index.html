@@ -1717,6 +1717,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#images-in-templates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Images in templates
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2125,6 +2136,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#images-in-templates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Images in templates
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2150,7 +2172,7 @@
 <li>New installations import <strong>18 demo templates</strong> (one per template type, named "Demo - <type>") with a dummy logo, assigned to the administrator for all groups. The demo invoice ("Demo - Rechnung", with logo placeholder and the <a href="../QR-code-%28EN%29/">QR code</a> <code>QRCode.img</code>) is the administrator's invoice template; users without an invoice template get it at their first login.</li>
 <li><strong>Small business:</strong> there is also "Demo - Rechnung Kleinunternehmer": no VAT column or VAT table, with the note <code>&lt;companyinfo.smallbusinessnote&gt;</code> (§ 19 UStG) and the QR code. If "small business" is chosen at the first start (the default), it is the assigned invoice template and the regular demo invoice is imported but not assigned – otherwise the other way round. See <a href="../Small-business-VAT-exemption-%28EN%29/">Small business VAT exemption</a>.</li>
 <li>Each demo template ends with a page <strong>"Verfügbare Felder"</strong> listing every field of its type with a ready-to-copy placeholder; delete the page in your own template.</li>
-<li>Image fields: <code>QRCode.img</code> (GiroCode on invoices), <code>TSEQRCode.img</code> (TSE QR code on receipts).</li>
+<li>Image fields: <code>Barcode.img</code> / <code>Code39.img</code> (Code 39 barcode of the document/record <code>cnumber</code>, included in all demo templates except the journal), <code>QRCode.img</code> (GiroCode on invoices), <code>TSEQRCode.img</code> (TSE QR code on receipts).</li>
 <li>Regenerate with <code>python3 tools/templates/gen.py .</code> (output <code>src/main/resources/extra/templates/demo-XX.odt</code> and the download copies in <code>tools/templates/</code>).</li>
 <li>Position tables are tables named <code>xtable1</code>; their columns follow the format of the template: 1 pos., 2 quantity, 3 unit, 4 text, 5 unit price net, 6 total net, 7 tax rate, 8 tax amount, 9 total gross, 10 link, 11 short name, 12 discount %, 13 total net after discount. The document templates use <code>1,2,4,5,7,6</code>: the <strong>tax rate of each position</strong> before the total.</li>
 </ul>
@@ -2398,7 +2420,7 @@
 </tr>
 </tbody>
 </table>
-<p><strong>To use one:</strong> <em>Template manager › Import</em>, choose the file, enter the type as <strong>kind</strong> and the column format from the table as <strong>format</strong>, then assign it to the user (and group). "VAT per rate": a table with one row per tax rate below the totals. QR code: <a href="../QR-code-%28EN%29/">EPC QR code</a> on invoices; on the receipt the TSE QR code (see <a href="../Cash-register-and-TSE-%28EN%29/">Cash register and TSE</a>).</p>
+<p><strong>To use one:</strong> <em>Template manager › Import</em>, choose the file, enter the type as <strong>kind</strong> and the column format from the table as <strong>format</strong>, then assign it to the user (and group). "VAT per rate": a table with one row per tax rate below the totals. QR code: <a href="../QR-code-%28EN%29/">EPC QR code</a> on invoices; on the receipt the TSE QR code (see <a href="../Cash-register-and-TSE-%28EN%29/">Cash register and TSE</a>). All demo templates except the journal also include the <strong>Code 39 barcode</strong> (<code>Barcode.img</code>) of the document/record number (<code>cnumber</code>) next to the heading.</p>
 <h2 id="service-date-and-last-change">Service date and last change<a class="headerlink" href="#service-date-and-last-change" title="Permanent link">&para;</a></h2>
 <p>Every invoice must state the date of the supply or service (§ 14 Abs. 4 Nr. 6 UStG). A document has three separate dates:</p>
 <table>
@@ -2492,6 +2514,31 @@
 </table>
 <p><strong>Fixed fields</strong> (for templates with a fixed layout): <code>item.vatgroup1.rate</code>, <code>item.vatgroup1.netf</code>, <code>item.vatgroup1.vatf</code>, <code>item.vatgroup1.grossf</code> … and <code>item.vatgroup2.*</code>, <code>item.vatgroup3.*</code> (same names as above), plus <code>item.vatgroupcount</code> (number of rates) and <code>item.hasmultipletaxrates</code> (<code>true</code> / <code>false</code>).</p>
 <p><strong>Older templates</strong> keep working: <code>item.tax</code> (the rate; with several rates the lowest one), <code>item.taxgroup1</code>, <code>item.taxgroupvalue1</code> … and <code>item.taxgroups</code> (text with all rates) stay as they were. Templates already imported, and their column format, are not changed; import the new demo templates in the template manager.</p>
+<h2 id="images-in-templates">Images in templates<a class="headerlink" href="#images-in-templates" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Image name</th>
+<th>Content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Barcode.img</code> (or <code>Code39.img</code>)</td>
+<td>Code 39 barcode of the document/record number (<code>cnumber</code>, e.g. <code>item.cnumber</code>, <code>contact.cnumber</code>, <code>product.cnumber</code>, <code>reminder.item.cnumber</code>) with human-readable text below</td>
+</tr>
+<tr>
+<td><code>QRCode.img</code></td>
+<td>EPC QR code (GiroCode) on invoices – see <a href="../QR-code-%28EN%29/">QR code</a></td>
+</tr>
+<tr>
+<td><code>TSEQRCode.img</code></td>
+<td>TSE QR code on receipts – see <a href="../Cash-register-and-TSE-%28EN%29/">Cash register and TSE</a></td>
+</tr>
+</tbody>
+</table>
+<p>Set the name in LibreOffice under <em>Image › Properties › Options › Name</em> (the frame size set in the template is preserved, e.g. <code>5.0 × 1.0 cm</code> for the barcode). If there is no data – or if <code>cnumber</code> contains characters outside Code 39 – the placeholder image is removed automatically.</p>
+<p><strong>Code 39 notes:</strong> supports <code>0–9</code>, <code>A–Z</code>, <code>-</code>, <code>.</code>, space, <code>$</code>, <code>/</code>, <code>+</code>, <code>%</code> up to 80 characters; lowercase letters are converted to uppercase and start/stop delimiters (<code>*</code>) are added automatically. All demo templates except the journal already include <code>Barcode.img</code> on the heading row.</p>
 <hr />
 <p><em>Deutsch: <a href="../Vorlagen/">Vorlagen</a></em></p>
 

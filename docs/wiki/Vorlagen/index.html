@@ -2442,7 +2442,7 @@
 </tr>
 </tbody>
 </table>
-<p><strong>Einbinden:</strong> <em>Vorlagen-Manager › Importieren</em>, die Datei wählen, als <strong>Art</strong> den Typ und als <strong>Format</strong> das Spaltenformat aus der Tabelle eintragen, dann dem Benutzer (und der Gruppe) zuweisen. „MwSt. je Satz“: Tabelle mit einer Zeile je Steuersatz unter den Summen (siehe unten). QR-Code: <a href="../QR-Code/">EPC-QR-Code</a> bei Rechnungen; beim Kassenbon der QR-Code der TSE (siehe <a href="../Kasse-und-TSE/">Kasse und TSE</a>).</p>
+<p><strong>Einbinden:</strong> <em>Vorlagen-Manager › Importieren</em>, die Datei wählen, als <strong>Art</strong> den Typ und als <strong>Format</strong> das Spaltenformat aus der Tabelle eintragen, dann dem Benutzer (und der Gruppe) zuweisen. „MwSt. je Satz“: Tabelle mit einer Zeile je Steuersatz unter den Summen (siehe unten). QR-Code: <a href="../QR-Code/">EPC-QR-Code</a> bei Rechnungen; beim Kassenbon der QR-Code der TSE (siehe <a href="../Kasse-und-TSE/">Kasse und TSE</a>). Alle Demo-Vorlagen außer dem Journal enthalten zudem rechts neben der Überschrift den <strong>Code-39-Barcode</strong> (<code>Barcode.img</code>) der jeweiligen Dokument- bzw. Datensatznummer (<code>cnumber</code>).</p>
 <h2 id="leistungsdatum-und-letzte-änderung">Leistungsdatum und letzte Änderung<a class="headerlink" href="#leistungsdatum-und-letzte-änderung" title="Permanent link">&para;</a></h2>
 <p>Jede Rechnung muss das Datum der Lieferung oder Leistung nennen (§ 14 Abs. 4 Nr. 6 UStG). Ein Beleg hat dafür drei getrennte Daten:</p>
 <table>
@@ -2614,6 +2614,10 @@
 </thead>
 <tbody>
 <tr>
+<td><code>Barcode.img</code> (oder <code>Code39.img</code>)</td>
+<td>Code-39-Barcode der Dokument- bzw. Datensatznummer (<code>cnumber</code>, z. B. <code>item.cnumber</code>, <code>contact.cnumber</code>, <code>product.cnumber</code>, <code>reminder.item.cnumber</code>) mit Klartextzeile darunter</td>
+</tr>
+<tr>
 <td><code>QRCode.img</code></td>
 <td>EPC-QR-Code (GiroCode) auf Rechnungen – siehe <a href="../QR-Code/">QR-Code</a></td>
 </tr>
@@ -2623,12 +2627,13 @@
 </tr>
 </tbody>
 </table>
-<p>Den Namen vergibt man in LibreOffice unter <em>Bild › Eigenschaften › Optionen › Name</em>. Ohne Daten wird das Bild entfernt.</p>
+<p>Den Namen vergibt man in LibreOffice unter <em>Bild › Eigenschaften › Optionen › Name</em> (die im Dokument eingestellte Rahmengröße bleibt erhalten, z. B. <code>5,0 × 1,0 cm</code> für den Barcode). Ohne Daten – oder wenn die Nummer nicht in Code 39 darstellbar ist – wird das Bild entfernt.</p>
+<p><strong>Code-39-Hinweise:</strong> Unterstützt werden <code>0–9</code>, <code>A–Z</code>, <code>-</code>, <code>.</code>, Leerzeichen, <code>$</code>, <code>/</code>, <code>+</code>, <code>%</code> bis 80 Zeichen; Kleinbuchstaben werden automatisch in Großbuchstaben umgewandelt, Start-/Stoppzeichen (<code>*</code>) ergänzt YaBS automatisch. Alle Demo-Vorlagen (außer dem Journal) enthalten <code>Barcode.img</code> bereits rechts neben der Überschrift.</p>
 <h2 id="demo-vorlagen-neu-erzeugen">Demo-Vorlagen neu erzeugen<a class="headerlink" href="#demo-vorlagen-neu-erzeugen" title="Permanent link">&para;</a></h2>
 <p>Die Vorlagen werden aus der deutschen Standardvorlage <code>src/main/resources/extra/DE-Yabs-2.0.odt</code> erzeugt; die Feldlisten kommen aus der Datenbankstruktur:</p>
 <div class="highlight"><pre><span></span><code>python3<span class="w"> </span>tools/templates/gen.py<span class="w"> </span>.
 </code></pre></div>
-<p>Ergebnis: <code>src/main/resources/extra/templates/demo-XX.odt</code> (XX = Typ-Nr.) und die Kopien zum Herunterladen in <code>tools/templates/</code> (siehe oben). Logo: <code>tools/templates/logo.png</code>. Danach neu bauen; bestehende Installationen importieren die Vorlagen nicht automatisch (Vorlagen-Manager › Importieren).</p>
+<p>Ergebnis: <code>src/main/resources/extra/templates/demo-XX.odt</code> (XX = Typ-Nr.) und die Kopien zum Herunterladen in <code>tools/templates/</code> (siehe oben). Logo: <code>tools/templates/logo.png</code>, Barcode-Platzhalter: <code>tools/templates/barcode.png</code>. Danach neu bauen; bestehende Installationen importieren die Vorlagen nicht automatisch (Vorlagen-Manager › Importieren).</p>
 
 
 
