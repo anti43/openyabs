@@ -210,16 +210,16 @@ public class MPCombobox extends javax.swing.JPanel {
                     Object[][] data = null;
                     if (getComboBox().isEditable()) {
                         if (getContext().equals(Context.getProduct())) {
-                            data = new DatabaseSearch(getContext(), 20).getValuesFor2("ids, " + ConnectionTypeHandler.concat("cname", "' '", ConnectionTypeHandler.getToChar("externalnetvalue")), String.valueOf(value), null, true, true);
+                            data = searcher().getValuesFor2("ids, " + ConnectionTypeHandler.concat("cname", "' '", ConnectionTypeHandler.getToChar("externalnetvalue")), String.valueOf(value), null, true, true);
                         } else if (((getContext().equals(Context.getCustomer()) || getContext().equals(Context.getManufacturer()) || getContext().equals(Context.getSupplier())) && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "companiesovernames")) || getContext().isCompany() == true) {
-                            data = new DatabaseSearch(getContext(), 20).getValuesFor("ids, company", "company", value.toString(), true);
+                            data = searcher().getValuesFor("ids, company", "company", value.toString(), true);
                         } else if (getContext().equals(Context.getCustomer()) || getContext().equals(Context.getManufacturer()) || getContext().equals(Context.getSupplier())) {
-                            data = new DatabaseSearch(getContext(), 20).getValuesFor("ids, cname, prename", "cname", value.toString(), true);
+                            data = searcher().getValuesFor("ids, cname, prename", "cname", value.toString(), true);
                         } else {
-                            data = new DatabaseSearch(getContext(), 20).getValuesFor(getContext().getSearchFields(), "cname", value.toString(), true);
+                            data = searcher().getValuesFor(getContext().getSearchFields(), "cname", value.toString(), true);
                         }
                     } else {
-                        data = new DatabaseSearch(getContext(), 20).getValuesFor("ids, cname", "cname", "", true);
+                        data = searcher().getValuesFor("ids, cname", "cname", "", true);
                     }
 
                     //the models are changed on the EDT, not while Swing handles the key event
@@ -657,6 +657,33 @@ public class MPCombobox extends javax.swing.JPanel {
             return null;
         }
         return x.getIdObject();
+    }
+
+    private String restrictColumn;
+    private java.util.function.Supplier<java.util.Collection<Integer>> restrictIds;
+
+    /**
+     * Limits the search to rows whose column holds one of the ids (e.g. the
+     * products of a product group)
+     *
+     * @param column the column, e.g. productgroupsids
+     * @param ids the allowed ids at the time of the search, null or empty: no
+     * limit
+     */
+    public void setSearchRestriction(String column, java.util.function.Supplier<java.util.Collection<Integer>> ids) {
+        this.restrictColumn = column;
+        this.restrictIds = ids;
+    }
+
+    /**
+     * @return the search of the context, with the restriction if set
+     */
+    private DatabaseSearch searcher() {
+        DatabaseSearch s = new DatabaseSearch(getContext(), 20);
+        if (restrictColumn != null && restrictIds != null) {
+            s.restrictTo(restrictColumn, restrictIds.get());
+        }
+        return s;
     }
 
     /**

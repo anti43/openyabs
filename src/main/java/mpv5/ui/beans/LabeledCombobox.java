@@ -43,6 +43,17 @@ public class LabeledCombobox extends javax.swing.JPanel {
         setVisible(!_invisible);
     }
 
+    /**
+     * Limits the search to rows whose column holds one of the ids, see
+     * {@link MPCombobox#setSearchRestriction}
+     *
+     * @param column
+     * @param ids
+     */
+    public void setSearchRestriction(String column, java.util.function.Supplier<java.util.Collection<Integer>> ids) {
+        mPCombobox1.setSearchRestriction(column, ids);
+    }
+
     public JComboBox getComboBox() {
         return mPCombobox1.getComboBox();
     }

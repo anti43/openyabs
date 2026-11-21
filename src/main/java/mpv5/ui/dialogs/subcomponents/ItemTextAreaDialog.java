@@ -29,6 +29,8 @@ import mpv5.db.objects.SubItem;
 import mpv5.db.objects.User;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
+import mpv5.utils.models.MPComboBoxModelItem;
+import mpv5.utils.models.MPComboboxModel;
 import mpv5.utils.models.MPTableModel;
 
 public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListener, DatabaseObejctReceiver {
@@ -51,9 +53,156 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
         labeledCombobox1.setSearchOnEnterEnabled(true);
         labeledCombobox1.setReceiver(this);
         labeledCombobox1.setToolTipText(Messages.SEARCHABLE.toString());
+        setupProductGroups();
 
         labeledSpinner1.setValue(1);
         makeMovable();
+    }
+
+    /**
+     * The property (per user) of the last selected product group
+     */
+    private static final String GROUP_PROPERTY = "productgroup"; //NOI18N
+    private final mpv5.ui.beans.LabeledCombobox groupselect = new mpv5.ui.beans.LabeledCombobox();
+    /**
+     * The selected product group and its child groups, empty: all
+     */
+    private volatile java.util.Set<Integer> searchedGroups = java.util.Collections.emptySet();
+
+    /**
+     * A product group selection above the product search: the search finds
+     * the products of the selected group and its child groups. The selection
+     * is remembered per user.
+     */
+    private void setupProductGroups() {
+        groupselect.set_Label(Messages.ITEM_TEXT_PRODUCTGROUP.toString());
+        groupselect.setName("groupselect"); //NOI18N
+        final java.util.Map<Integer, java.util.List<mpv5.db.objects.ProductGroup>> children = new java.util.HashMap<>();
+        java.util.List<MPComboBoxModelItem> items = new java.util.ArrayList<>();
+        items.add(new MPComboBoxModelItem(Integer.valueOf(0), Messages.ITEM_TEXT_PRODUCTGROUP_ALL.toString()));
+        try {
+            java.util.List<mpv5.db.objects.ProductGroup> groups = new java.util.ArrayList<>();
+            for (DatabaseObject o : DatabaseObject.getObjects(Context.getProductGroup())) {
+                groups.add((mpv5.db.objects.ProductGroup) o);
+            }
+            java.util.Set<Integer> ids = new java.util.HashSet<>();
+            for (mpv5.db.objects.ProductGroup g : groups) {
+                ids.add(g.__getIDS());
+            }
+            java.util.List<mpv5.db.objects.ProductGroup> roots = new java.util.ArrayList<>();
+            for (mpv5.db.objects.ProductGroup g : groups) {
+                int parent = g.__getProductgroupsids();
+                if (parent <= 0 || parent == g.__getIDS() || !ids.contains(parent)) {
+                    roots.add(g);
+                } else {
+                    children.computeIfAbsent(parent, k -> new java.util.ArrayList<>()).add(g);
+                }
+            }
+            java.util.Comparator<mpv5.db.objects.ProductGroup> byName = java.util.Comparator.comparing(
+                    g -> String.valueOf(g.__getCname()), String.CASE_INSENSITIVE_ORDER);
+            for (java.util.List<mpv5.db.objects.ProductGroup> l : children.values()) {
+                l.sort(byName);
+            }
+            roots.sort(byName);
+            for (mpv5.db.objects.ProductGroup g : roots) {
+                addGroup(items, children, g, 0, new java.util.HashSet<>());
+            }
+        } catch (mpv5.db.common.NodataFoundException ex) {
+            Log.Debug(this, ex.getMessage());
+        }
+        groupselect.setModel(new MPComboboxModel(items.toArray(new MPComboBoxModelItem[0])));
+        groupselect.getComboBox().setMaximumRowCount(20);
+
+        int last = 0;
+        try {
+            String v = User.getCurrentUser().getProperties().getProperty(ItemTextAreaDialog.class.getSimpleName() + "$" + GROUP_PROPERTY);
+            last = v == null || v.trim().isEmpty() || "null".equals(v) ? 0 : Integer.parseInt(v.trim());
+        } catch (Exception ex) {
+            last = 0;
+        }
+        groupselect.setSelectedIndex(0);
+        if (last > 0 && MPComboBoxModelItem.getItemID(Integer.valueOf(last), groupselect.getModel()) >= 0) {
+            groupselect.setSelectedItem(Integer.valueOf(last));
+        }
+        searchedGroups = withChildren(selectedGroup(), children);
+
+        groupselect.getComboBox().addItemListener(e -> {
+            if (e.getStateChange() != java.awt.event.ItemEvent.SELECTED) {
+                return;
+            }
+            int id = selectedGroup();
+            searchedGroups = withChildren(id, children);
+            try {
+                User.getCurrentUser().getProperties().changeProperty(ItemTextAreaDialog.class.getSimpleName(), GROUP_PROPERTY, id);
+            } catch (Exception ex) {
+                Log.Debug(this, ex.getMessage());
+            }
+        });
+        labeledCombobox1.setSearchRestriction("productgroupsids", () -> searchedGroups); //NOI18N
+
+        //above the product search
+        javax.swing.JPanel searches = new javax.swing.JPanel(new java.awt.GridLayout(2, 1, 0, 3));
+        searches.setOpaque(false);
+        ((javax.swing.GroupLayout) jPanel1.getLayout()).replace(labeledCombobox1, searches);
+        searches.add(groupselect);
+        searches.add(labeledCombobox1);
+    }
+
+    /**
+     * Adds the group and its children (indented) to the items
+     */
+    private static void addGroup(java.util.List<MPComboBoxModelItem> items,
+            java.util.Map<Integer, java.util.List<mpv5.db.objects.ProductGroup>> children,
+            mpv5.db.objects.ProductGroup g, int depth, java.util.Set<Integer> seen) {
+        if (!seen.add(g.__getIDS())) {
+            return;
+        }
+        StringBuilder indent = new StringBuilder();
+        for (int i = 0; i < depth; i++) {
+            indent.append("    ");
+        }
+        items.add(new MPComboBoxModelItem(g.__getIDS(), indent + String.valueOf(g.__getCname())));
+        for (mpv5.db.objects.ProductGroup c : children.getOrDefault(g.__getIDS(), java.util.Collections.emptyList())) {
+            addGroup(items, children, c, depth + 1, seen);
+        }
+    }
+
+    /**
+     * @return the id of the selected product group, 0: all
+     */
+    private int selectedGroup() {
+        MPComboBoxModelItem item = groupselect.getSelectedItem();
+        if (item == null) {
+            return 0;
+        }
+        try {
+            return Integer.parseInt(item.getId());
+        } catch (NumberFormatException ex) {
+            return 0;
+        }
+    }
+
+    /**
+     * @param id a product group, 0: all
+     * @return the group and all its child groups, empty for 0
+     */
+    static java.util.Set<Integer> withChildren(int id,
+            java.util.Map<Integer, java.util.List<mpv5.db.objects.ProductGroup>> children) {
+        if (id <= 0) {
+            return java.util.Collections.emptySet();
+        }
+        java.util.Set<Integer> all = new java.util.LinkedHashSet<>();
+        java.util.Deque<Integer> todo = new java.util.ArrayDeque<>();
+        todo.add(id);
+        while (!todo.isEmpty()) {
+            Integer g = todo.poll();
+            if (all.add(g)) {
+                for (mpv5.db.objects.ProductGroup c : children.getOrDefault(g, java.util.Collections.emptyList())) {
+                    todo.add(c.__getIDS());
+                }
+            }
+        }
+        return java.util.Collections.unmodifiableSet(all);
     }
 
     /**
