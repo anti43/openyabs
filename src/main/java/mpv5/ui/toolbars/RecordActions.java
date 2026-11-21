@@ -45,12 +45,48 @@ public final class RecordActions {
      * @param view
      */
     public static void save(DataPanel view) {
+        saveInternal(view);
+    }
+
+    /**
+     * Saves pending changes of an invoice/item view before exporting it to a
+     * PDF or file (PDF, ODT, preview, print, mail, e-invoice, GoBD
+     * finalization). Locked or read-only records are not saved.
+     *
+     * @param view
+     * @return true if the record exists and is ready to be exported, false if
+     * saving failed or was cancelled
+     */
+    public static boolean saveBeforeExport(DataPanel view) {
+        if (view == null) {
+            return false;
+        }
+        DatabaseObject dato = view.getDataOwner();
+        if (dato == null) {
+            return false;
+        }
+        if (view.getLockedDocument() != null || view.isContentLocked() || dato.isReadOnly()) {
+            return dato.isExisting();
+        }
+        if (dato instanceof mpv5.db.objects.Item
+                && (!dato.isExisting() || isPendingCopy(view) || view.hasUnsavedChanges())) {
+            return saveInternal(view) && view.getDataOwner() != null && view.getDataOwner().isExisting();
+        }
+        return dato.isExisting();
+    }
+
+    private static boolean saveInternal(DataPanel view) {
+        if (view == null) {
+            return false;
+        }
         if (isPendingCopy(view)) {
-            saveCopy(view);
-            return;
+            return saveCopy(view);
         }
         try {
             DatabaseObject dato = view.getDataOwner();
+            if (dato == null) {
+                return false;
+            }
             view.actionBeforeSave();
             if (dato.getPanelData(view) && dato.save()) {
                 try {
@@ -59,11 +95,14 @@ public final class RecordActions {
                 } catch (Exception e) {
                     Log.Debug(RecordActions.class, e);
                 }
+                return true;
             } else {
                 view.showRequiredFields();
+                return false;
             }
         } catch (ChangeNotApprovedException ex) {
             Log.Debug(RecordActions.class, ex.getMessage());
+            return false;
         }
     }
 
@@ -204,9 +243,9 @@ public final class RecordActions {
         return String.valueOf(((Object[]) ((javax.swing.JComponent) view).getClientProperty(COPY_OF))[1]);
     }
 
-    private static void saveCopy(DataPanel view) {
+    private static boolean saveCopy(DataPanel view) {
         DatabaseObject dato = view.getDataOwner();
-        if (dato.getPanelData(view) && dato.save()) {
+        if (dato != null && dato.getPanelData(view) && dato.save()) {
             ((javax.swing.JComponent) view).putClientProperty(COPY_OF, null);
             try {
                 view.actionAfterCreate();
@@ -214,8 +253,10 @@ public final class RecordActions {
             } catch (Exception e) {
                 Log.Debug(RecordActions.class, e);
             }
+            return true;
         } else {
             view.showRequiredFields();
+            return false;
         }
     }
 
@@ -307,11 +348,11 @@ public final class RecordActions {
      * @param view
      */
     public static void print(DataPanel view) {
-        DatabaseObject dato = view.getDataOwner();
         if (openLockedDocument(view)) {
             return;
         }
-        if (dato.isExisting()) {
+        if (saveBeforeExport(view)) {
+            DatabaseObject dato = view.getDataOwner();
             view.print();
             final String fmessage = Messages.PRINTED + dato.__getCname();
             final String fdbid = dato.getDbIdentity();
@@ -326,7 +367,7 @@ public final class RecordActions {
      * @param view
      */
     public static void mail(DataPanel view) {
-        if (view.getDataOwner().isExisting()) {
+        if (saveBeforeExport(view)) {
             view.mail();
         }
     }
@@ -338,7 +379,7 @@ public final class RecordActions {
         if (openLockedDocument(view)) {
             return;
         }
-        if (view.getDataOwner().isExisting() && view instanceof ExportablePanel) {
+        if (saveBeforeExport(view) && view instanceof ExportablePanel) {
             ((ExportablePanel) view).pdf();
         }
     }
@@ -352,7 +393,7 @@ public final class RecordActions {
         if (openLockedDocument(view)) {
             return;
         }
-        if (view.getDataOwner().isExisting() && view instanceof ExportablePanel) {
+        if (saveBeforeExport(view) && view instanceof ExportablePanel) {
             ((ExportablePanel) view).preview();
         }
     }
@@ -364,7 +405,7 @@ public final class RecordActions {
         if (openLockedDocument(view)) {
             return;
         }
-        if (view.getDataOwner().isExisting() && view instanceof ExportablePanel) {
+        if (saveBeforeExport(view) && view instanceof ExportablePanel) {
             ((ExportablePanel) view).odt();
         }
     }

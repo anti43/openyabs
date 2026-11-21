@@ -2977,7 +2977,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * a temporary file)
      */
     public void preview() {
-        if (this instanceof Templateable && TemplateHandler.isLoaded((Templateable) this)) {
+        if (this instanceof Templateable && TemplateHandler.ensureLoaded((Templateable) this)) {
             mpv5.ui.panels.PreviewWaiter pr = new mpv5.ui.panels.PreviewWaiter();
             pr.setDataOwner(this);
             Export.createFileWithProgress(() -> TemplateHandler.loadTemplate((Templateable) this), this, pr);
@@ -3010,7 +3010,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     private void export(final boolean convertToPdf, final boolean showDialog, final mpv5.db.objects.Template[] appended) {
         if (this instanceof Templateable) {
             final Templateable me = (Templateable) this;
-            if (TemplateHandler.isLoaded(me)) {
+            if (TemplateHandler.ensureLoaded(me)) {
                 File d = User.getSaveDir(this);
                 d.mkdirs();
                 if(!d.exists()){

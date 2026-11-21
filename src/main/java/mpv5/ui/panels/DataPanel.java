@@ -204,4 +204,11 @@ public interface DataPanel {
         }
     }
 
+    /**
+     * @return true if the view currently holds unsaved edits
+     */
+    public default boolean hasUnsavedChanges() {
+        return false;
+    }
+
 }

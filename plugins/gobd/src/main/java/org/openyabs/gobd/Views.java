@@ -260,7 +260,15 @@ final class Views {
             panel.setPluginBadge(draft);
             JPanel b = banner("GoBD-Hinweis: Dieser Beleg ist noch ein bearbeitbarer Entwurf und wird beim PDF-/E-Rechnungs-Export automatisch festgeschrieben.",
                     false, ModernTheme.accentSoft(), ModernTheme.foreground(), ModernTheme.border(), 5,
-                    button("Jetzt GoBD-festschreiben", () -> g.finalizeDocument(doc, null)));
+                    button("Jetzt GoBD-festschreiben", () -> {
+                        if (!mpv5.ui.toolbars.RecordActions.saveBeforeExport(panel)) {
+                            return;
+                        }
+                        DatabaseObject current = panel.getDataOwner();
+                        if (current instanceof Item) {
+                            g.finalizeDocument((Item) current, null);
+                        }
+                    }));
             panel.setPluginBanner(b);
             return;
         }

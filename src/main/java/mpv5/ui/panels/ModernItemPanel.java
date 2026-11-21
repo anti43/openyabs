@@ -132,6 +132,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
     private Item dataOwner;
     private final ModernCommandBar tb;
     private boolean loading = true;
+    private String savedSnapshot;
     private final List<Runnable> afterSaveRunnables = new ArrayList<Runnable>();
     //header
     private final Avatar avatar = new Avatar();
@@ -284,6 +285,9 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         //the last entry of the list: a new customer for this document
         contactname.setActionEntry(Messages.ITEM_NEW_CUSTOMER_ENTRY.toString(), this::newCustomer);
         contactname.getComboBox().addActionListener(e -> {
+            if (loading) {
+                return;
+            }
             final MPComboBoxModelItem item = contactname.getSelectedItem();
             if (item != null && item.isValid()) {
                 SwingUtilities.invokeLater(() -> {
@@ -683,6 +687,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
             if (dataOwner.getPanelData(this) && dataOwner.save()) {
                 try {
                     actionAfterSave();
+                    savedSnapshot = captureSnapshot();
                     dataOwner.createRevenue();
                 } catch (Exception ef) {
                     Log.Debug(this, ef);
@@ -1015,14 +1020,20 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
 
     @Override
     public void preview() {
+        if (mpv5.ui.toolbars.RecordActions.openLockedDocument(this)) {
+            return;
+        }
         if (dataOwner != null) {
             preview(dataOwner.__getInttype());
         }
     }
 
     private void preview(int templateType) {
+        if (!ensureSavedForExport()) {
+            return;
+        }
         if (dataOwner != null && dataOwner.isExisting()) {
-            if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), templateType)) {
+            if (TemplateHandler.ensureLoaded(Long.valueOf(dataOwner.templateGroupIds()), templateType)) {
                 PreviewWaiter pr = new PreviewWaiter();
                 pr.setDataOwner(dataOwner);
                 Export.createFileWithProgress(() -> TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), templateType), dataOwner, pr);
@@ -1047,8 +1058,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         if (mpv5.ui.toolbars.RecordActions.openLockedDocument(this)) {
             return;
         }
-        if (dataOwner == null || !dataOwner.isExisting()) {
-            Popup.notice(Messages.NOT_POSSIBLE + "\n" + Messages.NOT_SAVED_YET);
+        if (!ensureSavedForExport()) {
             return;
         }
         if (!ZugpferdFile.supports(dataOwner)) {
@@ -1056,7 +1066,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
             return;
         }
         if (format == ZugpferdFile.Format.ZUGFERD
-                && !TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
+                && !TemplateHandler.ensureLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
             Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + User.getCurrentUser() + ")");
             return;
         }
@@ -1115,9 +1125,15 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
             }
             final File target = chosen;
             ItemService.ensureFinishedAndEndDate(dataOwner);
-            dataOwner.setPanelData(this);
-            exposeData();
-            updateHeader();
+            loading = true;
+            try {
+                dataOwner.setPanelData(this);
+                exposeData();
+                updateHeader();
+                savedSnapshot = captureSnapshot();
+            } finally {
+                loading = false;
+            }
             final mpv5.db.objects.Item item = dataOwner;
             mpv5.utils.export.ExportProgress.execute(Messages.EXPORT_EINVOICE + " " + target.getName(), null, () -> new Job(new ZugpferdFile(item, invoice, target, format), new Waiter() {
                 @Override
@@ -1287,6 +1303,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
                     setTabTitle(cname_);
                     tb.setFavourite(Favourite.isFavourite(object));
                     tb.setEditable(!object.isReadOnly());
+                    tb.updateCopyBanner();
                     BigDecimal rate = ContactService.customerTaxRate(dataOwner.__getContactsids());
                     positions.setCustomerTaxRate(rate);
                     positions.setPositions(dataOwner.getSubitems());
@@ -1299,6 +1316,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
                     updateHeader();
                     validate();
                     notifyViewOpened();
+                    savedSnapshot = dataOwner.isExisting() ? captureSnapshot() : null;
                 }
             } else if (object instanceof SubItem) {
                 try {
@@ -1310,6 +1328,46 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         } finally {
             loading = false;
         }
+    }
+
+    private boolean ensureSavedForExport() {
+        return mpv5.ui.toolbars.RecordActions.saveBeforeExport(this);
+    }
+
+    @Override
+    public boolean hasUnsavedChanges() {
+        if (dataOwner == null) {
+            return false;
+        }
+        if (isContentLocked() || getLockedDocument() != null || dataOwner.isReadOnly()) {
+            return false;
+        }
+        positions.stopEditing();
+        if (!dataOwner.isExisting() || mpv5.ui.toolbars.RecordActions.isPendingCopy(this)) {
+            return true;
+        }
+        if (pendingCustomerPanel != null || !afterSaveRunnables.isEmpty() || !positions.getUsedOrders().isEmpty()) {
+            return true;
+        }
+        return savedSnapshot == null || !savedSnapshot.equals(captureSnapshot());
+    }
+
+    private String captureSnapshot() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(ItemPanelSnapshot.comboId(contactname)).append('\u001d')
+                .append(ItemPanelSnapshot.comboId(accountselect)).append('\u001d')
+                .append(ItemPanelSnapshot.comboId(groupnameselect)).append('\u001d')
+                .append(ItemPanelSnapshot.text(number.getText())).append('\u001d')
+                .append(ItemPanelSnapshot.text(name.getText())).append('\u001d')
+                .append(ItemPanelSnapshot.comboId(status)).append('\u001d')
+                .append(ItemPanelSnapshot.comboId(refOrder)).append('\u001d')
+                .append(ItemPanelSnapshot.comboId(refInvoice)).append('\u001d')
+                .append(ItemPanelSnapshot.date(date1)).append('\u001d')
+                .append(ItemPanelSnapshot.date(date2)).append('\u001d')
+                .append(ItemPanelSnapshot.date(date3)).append('\u001d')
+                .append(ItemPanelSnapshot.text(notes.getText())).append('\u001d')
+                .append(ItemPanelSnapshot.positions(positions.getModel()));
+        return sb.toString();
     }
 
     // <editor-fold defaultstate="collapsed" desc="New customer from the customer box">
@@ -1778,8 +1836,11 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
 
     @Override
     public void mail() {
+        if (!ensureSavedForExport()) {
+            return;
+        }
         if (dataOwner != null && dataOwner.isExisting()) {
-            if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
+            if (TemplateHandler.ensureLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
                 try {
                     Contact cont = (Contact) Contact.getObject(Context.getContact(), dataOwner.__getContactsids());
                     Export.mail(TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()), dataOwner, cont, null);
@@ -1796,8 +1857,14 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
 
     @Override
     public void print() {
+        if (mpv5.ui.toolbars.RecordActions.openLockedDocument(this)) {
+            return;
+        }
+        if (!ensureSavedForExport()) {
+            return;
+        }
         if (dataOwner != null && dataOwner.isExisting()) {
-            if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
+            if (TemplateHandler.ensureLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
                 Template[] oc = appendedConfirmation();
                 if (oc != null) {
                     Export.print(new Template[]{TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()),
@@ -1816,6 +1883,12 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
 
     @Override
     public void pdf() {
+        if (mpv5.ui.toolbars.RecordActions.openLockedDocument(this)) {
+            return;
+        }
+        if (!ensureSavedForExport()) {
+            return;
+        }
         if (dataOwner != null && dataOwner.isExisting()) {
             dataOwner.toPdf(true, appendedConfirmation());
         }
@@ -1843,6 +1916,12 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
 
     @Override
     public void odt() {
+        if (mpv5.ui.toolbars.RecordActions.openLockedDocument(this)) {
+            return;
+        }
+        if (!ensureSavedForExport()) {
+            return;
+        }
         if (dataOwner != null && dataOwner.isExisting()) {
             dataOwner.toOdt(true);
         }

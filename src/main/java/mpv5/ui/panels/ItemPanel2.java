@@ -132,6 +132,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
     private DynamicTableCalculator discbrutcalculator;
     private JLabel hidden = new JLabel();
     private boolean loading = true;
+    private String savedSnapshot;
     private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
     private List<Runnable> afterSaveRunnables = new ArrayList<>();
 
@@ -167,6 +168,9 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (loading) {
+                    return;
+                }
                 final MPComboBoxModelItem item = contactname.getSelectedItem();
                 if (item != null && item.isValid()) {
                     Runnable runnable = new Runnable() {
@@ -294,6 +298,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                         if (dato.getPanelData(p) && dato.save()) {
                             try {
                                 actionAfterSave();
+                                savedSnapshot = captureSnapshot();
                                 dato.createRevenue();
                             } catch (Exception ef) {
                                 Log.Debug(this, ef);
@@ -401,8 +406,10 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
      * current invoice
      */
     private void createEInvoice(final ZugpferdFile.Format format) {
-        if (dataOwner == null || !dataOwner.isExisting()) {
-            Popup.notice(Messages.NOT_POSSIBLE + "\n" + Messages.NOT_SAVED_YET);
+        if (mpv5.ui.toolbars.RecordActions.openLockedDocument(this)) {
+            return;
+        }
+        if (!ensureSavedForExport()) {
             return;
         }
         if (!ZugpferdFile.supports(dataOwner)) {
@@ -410,7 +417,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
             return;
         }
         if (format == ZugpferdFile.Format.ZUGFERD
-                && !TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
+                && !TemplateHandler.ensureLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
             Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
             return;
         }
@@ -472,8 +479,14 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
             }
             final File target = chosen;
             mpv5.handler.ItemService.ensureFinishedAndEndDate(dataOwner);
-            dataOwner.setPanelData(this);
-            exposeData();
+            loading = true;
+            try {
+                dataOwner.setPanelData(this);
+                exposeData();
+                savedSnapshot = captureSnapshot();
+            } finally {
+                loading = false;
+            }
             final mpv5.db.objects.Item item = dataOwner;
             mpv5.utils.export.ExportProgress.execute(Messages.EXPORT_EINVOICE + " " + target.getName(), null, () -> new Job(new ZugpferdFile(item, invoice, target, format), new Waiter() {
                 @Override
@@ -704,6 +717,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                 button_preview.setEnabled(false);
                 preloadTemplates();
                 validate();
+                savedSnapshot = dataOwner.isExisting() ? captureSnapshot() : null;
             }
         } else if (object instanceof SubItem) {
             Item i;
@@ -718,6 +732,56 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         properties();
         loading = false;
 
+    }
+
+    private boolean ensureSavedForExport() {
+        return mpv5.ui.toolbars.RecordActions.saveBeforeExport(this);
+    }
+
+    private void stopItemTableEditing() {
+        if (itemtable.getCellEditor() != null) {
+            try {
+                itemtable.getCellEditor().stopCellEditing();
+            } catch (Exception e) {
+                Log.Debug(this, e.getMessage());
+            }
+        }
+    }
+
+    @Override
+    public boolean hasUnsavedChanges() {
+        if (dataOwner == null) {
+            return false;
+        }
+        if (isContentLocked() || getLockedDocument() != null || dataOwner.isReadOnly()) {
+            return false;
+        }
+        stopItemTableEditing();
+        if (!dataOwner.isExisting() || mpv5.ui.toolbars.RecordActions.isPendingCopy(this)) {
+            return true;
+        }
+        if (!afterSaveRunnables.isEmpty() || !usedOrders.isEmpty()) {
+            return true;
+        }
+        return savedSnapshot == null || !savedSnapshot.equals(captureSnapshot());
+    }
+
+    private String captureSnapshot() {
+        StringBuilder sb = new StringBuilder();
+        MPTableModel model = itemtable.getModel() instanceof MPTableModel ? (MPTableModel) itemtable.getModel() : null;
+        sb.append(ItemPanelSnapshot.comboId(contactname)).append('\u001d')
+                .append(ItemPanelSnapshot.comboId(accountselect)).append('\u001d')
+                .append(ItemPanelSnapshot.comboId(groupnameselect)).append('\u001d')
+                .append(ItemPanelSnapshot.text(number.getText())).append('\u001d')
+                .append(ItemPanelSnapshot.text(name.getText())).append('\u001d')
+                .append(ItemPanelSnapshot.comboId(status)).append('\u001d')
+                .append(ItemPanelSnapshot.comboId(refOrder)).append('\u001d')
+                .append(ItemPanelSnapshot.date(date1)).append('\u001d')
+                .append(ItemPanelSnapshot.date(date2)).append('\u001d')
+                .append(ItemPanelSnapshot.date(date3)).append('\u001d')
+                .append(ItemPanelSnapshot.text(notes.getText())).append('\u001d')
+                .append(ItemPanelSnapshot.positions(model));
+        return sb.toString();
     }
 
     private void setTitle() {
@@ -2500,6 +2564,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
             intaddedby_ = User.getUserId(addedby.getText());
             description_ = notes.getText();
             dateadded_ = date1.getDate();
+            stopItemTableEditing();
 
             netvalue_ = FormatNumber.parseDezimal(netvalue.getText());
             taxvalue_ = FormatNumber.parseDezimal(taxvalue.getText());
@@ -2906,6 +2971,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
             o.setIntstatus(Item.STATUS_FINISHED);
             o.save(true);
         }
+        usedOrders.clear();
     }
     List<Item> usedOrders = new ArrayList<>();
 
@@ -3178,9 +3244,12 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
     }
 
     private void delivery() {
+        if (!ensureSavedForExport()) {
+            return;
+        }
         PreviewWaiter pr;
         if (dataOwner != null && dataOwner.isExisting()) {
-            if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), Constants.TYPE_DELIVERY_NOTE)) {
+            if (TemplateHandler.ensureLoaded(Long.valueOf(dataOwner.templateGroupIds()), Constants.TYPE_DELIVERY_NOTE)) {
                 pr = new PreviewWaiter();
                 pr.setDataOwner(dataOwner);
                 Export.createFileWithProgress(() -> TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), Constants.TYPE_DELIVERY_NOTE), dataOwner, pr);
@@ -3191,9 +3260,12 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
     }
 
     private void confirmation() {
+        if (!ensureSavedForExport()) {
+            return;
+        }
         PreviewWaiter pr;
         if (dataOwner != null && dataOwner.isExisting()) {
-            if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), Constants.TYPE_ORDER_CONFIRMATION)) {
+            if (TemplateHandler.ensureLoaded(Long.valueOf(dataOwner.templateGroupIds()), Constants.TYPE_ORDER_CONFIRMATION)) {
 
                 pr = new PreviewWaiter();
                 pr.setDataOwner(dataOwner);
@@ -3206,9 +3278,11 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
 
     @Override
     public void mail() {
-
+        if (!ensureSavedForExport()) {
+            return;
+        }
         if (dataOwner != null && dataOwner.isExisting()) {
-            if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
+            if (TemplateHandler.ensureLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
 
                 try {
                     Contact cont = (Contact) (Contact.getObject(Context.getContact(), dataOwner.__getContactsids()));
@@ -3226,8 +3300,14 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
 
     @Override
     public void print() {
+        if (mpv5.ui.toolbars.RecordActions.openLockedDocument(this)) {
+            return;
+        }
+        if (!ensureSavedForExport()) {
+            return;
+        }
         if (dataOwner != null && dataOwner.isExisting()) {
-            if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
+            if (TemplateHandler.ensureLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
                 Template[] oc = appendedConfirmation();
                 if (oc != null) {
                     Export.print(new Template[]{TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()), oc[0]}, dataOwner);
@@ -3245,9 +3325,15 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
 
     @Override
     public void preview() {
+        if (mpv5.ui.toolbars.RecordActions.openLockedDocument(this)) {
+            return;
+        }
+        if (!ensureSavedForExport()) {
+            return;
+        }
         PreviewWaiter pr;
         if (dataOwner != null && dataOwner.isExisting()) {
-            if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
+            if (TemplateHandler.ensureLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
                 pr = new PreviewWaiter();
                 pr.setDataOwner(dataOwner);
                 Export.createFileWithProgress(() -> TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()), dataOwner, pr);
@@ -3279,6 +3365,12 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
 
     @Override
     public void pdf() {
+        if (mpv5.ui.toolbars.RecordActions.openLockedDocument(this)) {
+            return;
+        }
+        if (!ensureSavedForExport()) {
+            return;
+        }
         if (dataOwner != null && dataOwner.isExisting()) {
             dataOwner.toPdf(true, appendedConfirmation());
         }
@@ -3306,6 +3398,12 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
 
     @Override
     public void odt() {
+        if (mpv5.ui.toolbars.RecordActions.openLockedDocument(this)) {
+            return;
+        }
+        if (!ensureSavedForExport()) {
+            return;
+        }
         if (dataOwner != null && dataOwner.isExisting()) {
             dataOwner.toOdt(true);
         }

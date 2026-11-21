@@ -2682,7 +2682,11 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
     private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
         DataPanel pane = getCurrentTab();
         if (pane != null) {
-            pane.print();
+            if (pane.getDataOwner() != null) {
+                mpv5.ui.toolbars.RecordActions.print(pane);
+            } else {
+                pane.print();
+            }
         } else {
             Export.print(getTabPane().getSelectedComponent());
         }
@@ -3064,7 +3068,11 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         DataPanel pane = getCurrentTab();
         if (pane != null) {
-            pane.print();
+            if (pane.getDataOwner() != null) {
+                mpv5.ui.toolbars.RecordActions.print(pane);
+            } else {
+                pane.print();
+            }
         } else {
             Export.print(getTabPane().getSelectedComponent());
         }

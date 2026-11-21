@@ -70,6 +70,30 @@ public class TemplateHandler {
     }
 
     /**
+     * Ensures the template for the current user, group and type is loaded in
+     * cache, loading it synchronously if background preloading has not finished
+     * yet.
+     *
+     * @param group
+     * @param type
+     * @return true if a template is loaded and ready
+     */
+    public static boolean ensureLoaded(Long group, int type) {
+        return isLoaded(group, type) || loadTemplate(group == null ? 1L : group, type) != null;
+    }
+
+    /**
+     * Ensures the template for the given target is loaded in cache, loading it
+     * synchronously if background preloading has not finished yet.
+     *
+     * @param target
+     * @return true if a template is loaded and ready
+     */
+    public static boolean ensureLoaded(Templateable target) {
+        return target != null && (isLoaded(target) || loadTemplate(target) != null);
+    }
+
+    /**
      * Loads a template including neccesary files, target's group
      *
      * @param target
