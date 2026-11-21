@@ -500,6 +500,8 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
 
     private JComponent createPositions() {
         Card card = new Card(Messages.ITEM_SECTION_POSITIONS.toString());
+        //the totals end the card: less room below them than below fields
+        card.setBorder(BorderFactory.createEmptyBorder(ModernTheme.px(12), ModernTheme.px(14), ModernTheme.px(6), ModernTheme.px(14)));
         card.getHeader().add(positions.detachToolbar(), BorderLayout.CENTER);
         card.addFull(positions, 1);
         JPanel p = new JPanel(new BorderLayout());

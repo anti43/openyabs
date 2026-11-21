@@ -213,9 +213,8 @@ public class ItemPositionsTable extends JPanel {
         value.setFont(ModernTheme.font(6, Font.BOLD));
         value.setForeground(ModernTheme.accent());
         p.add(pair(text("ItemPanel2.jLabel3.text"), value));
-        p.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createMatteBorder(1, 0, 0, 0, ModernTheme.border()),
-                BorderFactory.createEmptyBorder(ModernTheme.px(6), 0, 0, 0)));
+        //directly below the list: no line, no extra room
+        p.setBorder(BorderFactory.createEmptyBorder(ModernTheme.px(4), 0, 0, 0));
         return p;
     }
 
