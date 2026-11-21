@@ -326,6 +326,109 @@ public final class DatevConfig {
     }
 
     /**
+     * The location of the settings page, for messages
+     */
+    public static final String SETTINGS_PATH = "Einstellungen › Plugins › DATEV-Export";
+
+    /**
+     * @return true if the DATEV settings were saved once for this database
+     */
+    public static boolean isSaved() {
+        return GlobalSettings.hasProperty(K_BERATER);
+    }
+
+    /**
+     * Loads the DATEV settings and fills what was not saved from the chart of
+     * accounts: the chart (SKR03/SKR04) if never saved, the money and EU
+     * accounts and the accounts of each tax rate of the settings and the
+     * given entries (as the settings page suggests them). The export uses
+     * these, so it does not fail on rate accounts never saved.
+     *
+     * @param entries the journal rows to export (their rates), may be null
+     * @return the settings
+     */
+    public static DatevConfig loadWithDefaults(Collection<JournalCalc.Entry> entries) {
+        DatevConfig c = load();
+        List<Account> accounts = dbAccounts();
+        if (!GlobalSettings.hasProperty(K_KONTENRAHMEN)) {
+            String detected = detectKontenrahmen(accounts);
+            if (!isBlank(detected) && !detected.equals(c.kontenrahmen)) {
+                c.kontenrahmen = detected;
+                //the accounts not saved follow the detected chart
+                if (!GlobalSettings.hasProperty(K_MONEY_INCOME)) {
+                    c.moneyAccountIncome = "";
+                }
+                if (!GlobalSettings.hasProperty(K_MONEY_EXPENSE)) {
+                    c.moneyAccountExpense = "";
+                }
+                if (!GlobalSettings.hasProperty(K_EU_ACCOUNT)) {
+                    c.euDeliveryAccount = "";
+                }
+                if (!GlobalSettings.hasProperty(K_EU_SERVICE_ACCOUNT)) {
+                    c.euServiceAccount = "";
+                }
+                if (!GlobalSettings.hasProperty(K_REVERSE_CHARGE_ACCOUNT)) {
+                    c.reverseChargeAccount = "";
+                }
+                if (!GlobalSettings.hasProperty(K_EXPORT_ACCOUNT)) {
+                    c.exportAccount = "";
+                }
+            }
+        }
+        java.util.Set<BigDecimal> rates = dbTaxRates();
+        if (entries != null) {
+            for (JournalCalc.Entry e : entries) {
+                if (e != null && e.rates != null) {
+                    for (BigDecimal r : e.rates.keySet()) {
+                        if (r != null) {
+                            rates.add(JournalCalc.rateKey(r));
+                        }
+                    }
+                }
+            }
+        }
+        c.prefillFromAccounts(accounts, rates, false);
+        return c;
+    }
+
+    /**
+     * @return the accounts of the database, empty if not available
+     */
+    static List<Account> dbAccounts() {
+        List<Account> list = new java.util.ArrayList<Account>();
+        try {
+            for (mpv5.db.common.DatabaseObject o : mpv5.db.common.DatabaseObject.getObjects(mpv5.db.common.Context.getAccounts())) {
+                list.add((Account) o);
+            }
+        } catch (Exception e) {
+            mpv5.logging.Log.Debug(DatevConfig.class, e.getMessage());
+        }
+        return list;
+    }
+
+    /**
+     * @return the tax rates of the database, 19/7/0 % if none
+     */
+    static java.util.Set<BigDecimal> dbTaxRates() {
+        java.util.Set<BigDecimal> set = new java.util.TreeSet<BigDecimal>(JournalCalc.RATE_ORDER);
+        try {
+            for (BigDecimal r : mpv5.utils.export.JournalAdviserPackage.rateLabels().keySet()) {
+                if (r != null) {
+                    set.add(JournalCalc.rateKey(r));
+                }
+            }
+        } catch (Exception e) {
+            mpv5.logging.Log.Debug(DatevConfig.class, e.getMessage());
+        }
+        if (set.isEmpty()) {
+            set.add(JournalCalc.rateKey(bd("19")));
+            set.add(JournalCalc.rateKey(bd("7")));
+            set.add(JournalCalc.rateKey(BigDecimal.ZERO));
+        }
+        return set;
+    }
+
+    /**
      * Saves the DATEV settings to {@link GlobalSettings} (per database).
      */
     public void save() {

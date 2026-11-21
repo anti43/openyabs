@@ -23,7 +23,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -40,13 +39,10 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.table.DefaultTableModel;
-import mpv5.db.common.Context;
-import mpv5.db.common.DatabaseObject;
 import mpv5.db.objects.Account;
 import mpv5.handler.JournalCalc;
 import mpv5.logging.Log;
 import mpv5.plugin.api.ExtensionContext;
-import mpv5.utils.export.JournalAdviserPackage;
 
 /**
  * Control panel settings page for the DATEV export plugin.
@@ -59,8 +55,8 @@ final class DatevSettingsPage {
     static JComponent create(final ExtensionContext yabs) {
         final List<Account> accounts = loadAccounts();
         final Set<BigDecimal> taxRates = loadTaxRates();
-        final DatevConfig config = DatevConfig.load();
-        config.prefillFromAccounts(accounts, taxRates, false);
+        //as the export uses them: what was never saved from the chart of accounts
+        final DatevConfig config = DatevConfig.loadWithDefaults(null);
 
         final JTextField berater = new JTextField(config.beraterNummer > 0 ? String.valueOf(config.beraterNummer) : "", 12);
         final JTextField mandant = new JTextField(config.mandantenNummer > 0 ? String.valueOf(config.mandantenNummer) : "", 12);
@@ -269,26 +265,11 @@ final class DatevSettingsPage {
     }
 
     private static List<Account> loadAccounts() {
-        List<Account> list = new ArrayList<Account>();
-        try {
-            for (DatabaseObject o : DatabaseObject.getObjects(Context.getAccounts())) {
-                list.add((Account) o);
-            }
-        } catch (Exception e) {
-            Log.Debug(DatevSettingsPage.class, e.getMessage());
-        }
-        return list;
+        return DatevConfig.dbAccounts();
     }
 
     private static Set<BigDecimal> loadTaxRates() {
-        Set<BigDecimal> set = new TreeSet<BigDecimal>(JournalCalc.RATE_ORDER);
-        set.addAll(JournalAdviserPackage.rateLabels().keySet());
-        if (set.isEmpty()) {
-            set.add(new BigDecimal("19"));
-            set.add(new BigDecimal("7"));
-            set.add(BigDecimal.ZERO);
-        }
-        return set;
+        return DatevConfig.dbTaxRates();
     }
 
     private static int parseInt(String s, int fallback) {
