@@ -81,7 +81,6 @@ import mpv5.ui.dialogs.BigPopup;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.Notificator;
 import mpv5.ui.dialogs.Popup;
-import mpv5.ui.dialogs.ScheduleDayEvent;
 import mpv5.ui.dialogs.TableView;
 import mpv5.ui.dialogs.subcomponents.ItemNumberEditor;
 import mpv5.ui.misc.MPTable;
@@ -209,7 +208,8 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
     private final JMenuItem toCredit = new JMenuItem(text("ItemPanel2.tocredit.text"));
     //a dunning letter (Mahnung) for the invoice: in the "Create" menu
     private final JMenuItem remindButton = new JMenuItem(Messages.ITEM_CREATE_REMINDER.toString());
-    private final JButton scheduleButton = new JButton(text("ItemPanel2.button_schedule.text"));
+    //the invoice due again every n months: in the "Create" menu
+    private final JMenuItem scheduleButton = new JMenuItem(Messages.RECURRING_TITLE.toString());
     private final JButton compareButton = new JButton(text("ItemPanel2.button_compare.text"));
     private final JButton referencesButton = new JButton(text("ItemPanel2.button_references.text"));
     // <editor-fold defaultstate="collapsed" desc="Data fields, filled by name from / copied to the document">
@@ -593,6 +593,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         create.addSeparator();
         create.add(toCredit);
         create.add(remindButton);
+        create.add(scheduleButton);
         positions.addAction(menuButton(createButton, create));
 
         remindButton.addActionListener(e -> {
@@ -602,12 +603,11 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         });
         scheduleButton.addActionListener(e -> {
             if (dataOwner != null && dataOwner.isExisting()) {
-                ScheduleDayEvent.instanceOf().setItem(dataOwner);
+                mpv5.ui.dialogs.RecurringInvoiceDialog.show(dataOwner);
             }
         });
         compareButton.addActionListener(e -> compareToOrder());
         referencesButton.addActionListener(e -> showReferences());
-        positions.addAction(scheduleButton);
         positions.addAction(compareButton);
         positions.addAction(referencesButton);
     }
