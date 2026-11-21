@@ -93,10 +93,94 @@ public class LanguageManager {
         for (int i = 0; i < COUNTRIES.size(); i++) {
             MPComboBoxModelItem mPComboBoxModelItem = COUNTRIES.get(i);
             if (mPComboBoxModelItem.getId().equals(String.valueOf(id))) {
-                return mPComboBoxModelItem.getValue();
+                return localizedCountryName(mPComboBoxModelItem.getId(), mPComboBoxModelItem.getValue());
             }
         }
         return "---";
+    }
+
+    /**
+     * The name of a country in the language of the user (Locale.getDefault(),
+     * set at the login): "Deutschland", "Österreich" for German. The bundled
+     * country list (countries.xml) has English names; English users see them
+     * as stored.
+     *
+     * @param iso the ISO 3166 numeric code (276) or null
+     * @param name the name as stored ("Germany")
+     * @return the localized name, or the name as stored if the country is unknown
+     */
+    public static String localizedCountryName(Object iso, String name) {
+        return localizedCountryName(iso, name, Locale.getDefault());
+    }
+
+    /**
+     * @see #localizedCountryName(Object, String)
+     */
+    public static String localizedCountryName(Object iso, String name, Locale locale) {
+        if (locale == null || locale.getLanguage().isEmpty() || "en".equals(locale.getLanguage())) {
+            return name;
+        }
+        String code = "";
+        if (iso != null && String.valueOf(iso).trim().matches("\\d{1,3}")) {
+            code = mpv5.utils.export.ZugpferdFile.toCountryCode(String.valueOf(iso).trim());
+        }
+        if (code.isEmpty() && name != null && !name.trim().isEmpty()) {
+            //toCountryCode gives "DE" for an empty value: only for a name
+            code = mpv5.utils.export.ZugpferdFile.toCountryCode(name.trim());
+        }
+        if (code.isEmpty()) {
+            return name;
+        }
+        String d = new Locale("", code).getDisplayCountry(locale);
+        return d == null || d.isEmpty() || d.equals(code) ? name : d;
+    }
+
+    /**
+     * The index of a stored country in a list of {@link #getCountriesAsComboBoxModel()}:
+     * by name (also of another language: "Germany" in the German list), by code (276)
+     *
+     * @param stored the country as stored
+     * @param model the countries
+     * @return the index, 0 (the first country, as before) if the country is not in the list
+     */
+    public static int countryIndex(String stored, ComboBoxModel model) {
+        if (stored == null || stored.trim().isEmpty()) {
+            return 0;
+        }
+        String c = stored.trim();
+        for (int i = 0; i < model.getSize(); i++) {
+            if (c.equals(String.valueOf(model.getElementAt(i)))) {
+                return i;
+            }
+        }
+        for (int i = 0; i < model.getSize(); i++) {
+            Object o = model.getElementAt(i);
+            if (o instanceof MPComboBoxModelItem && c.equals(((MPComboBoxModelItem) o).getId())) {
+                return i;
+            }
+        }
+        for (int i = 0; i < model.getSize(); i++) {
+            if (sameCountry(String.valueOf(model.getElementAt(i)), c)) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * @param a a country as stored (name in any language, ISO numeric or alpha-2 code)
+     * @param b another one
+     * @return true if both name the same country ("Germany", "Deutschland", "276", "DE")
+     */
+    public static boolean sameCountry(String a, String b) {
+        if (a == null || b == null || a.trim().isEmpty() || b.trim().isEmpty()) {
+            return false;
+        }
+        if (a.trim().equalsIgnoreCase(b.trim())) {
+            return true;
+        }
+        String ca = mpv5.utils.export.ZugpferdFile.toCountryCode(a.trim());
+        return !ca.isEmpty() && ca.equals(mpv5.utils.export.ZugpferdFile.toCountryCode(b.trim()));
     }
 
     /**
@@ -334,14 +418,30 @@ public class LanguageManager {
                     COUNTRIES.add(new MPComboBoxModelItem(objects[0].toString(), objects[1].toString()));
                 }
                 Log.Debug(LanguageManager.class, "Cached countries: " + COUNTRIES.size());
-                return MPComboBoxModelItem.toModel(COUNTRIES);
             } catch (NodataFoundException ex) {
                 Log.Debug(LanguageManager.class, ex.getMessage());
                 return new MPComboboxModel(new MPComboBoxModelItem[]{});
             }
-        } else {
-            return MPComboBoxModelItem.toModel(COUNTRIES);
         }
+        return MPComboBoxModelItem.toModel(localizedCountries());
+    }
+
+    /**
+     * The cached countries with their names in the language of the user, sorted
+     * by these names (the cache keeps the names as stored: the locale is set at
+     * the login, after the cache may have been filled)
+     */
+    private static List<MPComboBoxModelItem> localizedCountries() {
+        List<MPComboBoxModelItem> l = new ArrayList<MPComboBoxModelItem>();
+        Locale locale = Locale.getDefault();
+        for (MPComboBoxModelItem c : COUNTRIES) {
+            l.add(new MPComboBoxModelItem(c.getId(), localizedCountryName(c.getId(), c.getValue(), locale)));
+        }
+        if (!"en".equals(locale.getLanguage())) {
+            final java.text.Collator col = java.text.Collator.getInstance(locale);
+            Collections.sort(l, (a, b) -> col.compare(a.getValue(), b.getValue()));
+        }
+        return l;
     }
 
     /**
