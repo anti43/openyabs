@@ -1143,9 +1143,28 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         }
         if (dataOwner != null && dataOwner.isExisting()) {
             if (TemplateHandler.ensureLoaded(Long.valueOf(dataOwner.templateGroupIds()), templateType)) {
-                PreviewWaiter pr = new PreviewWaiter();
-                pr.setDataOwner(dataOwner);
-                Export.createFileWithProgress(() -> TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), templateType), dataOwner, pr);
+                final Template[] oc = templateType == dataOwner.__getInttype() ? appendedConfirmation() : null;
+                if (oc != null) {
+                    //with the order confirmation: the preview shows what is printed / issued
+                    final Item item = dataOwner;
+                    mpv5.utils.export.ExportProgress.run(Messages.ACTION_PREVIEW + " " + item.__getCname(), () -> {
+                        item.getFormFields();
+                        Template[] all = new Template[]{TemplateHandler.loadTemplate(item.templateGroupIds(), item.__getInttype()), oc[0]};
+                        //the parts are drafts (no issued document)
+                        return Export.createMergedFile(all, item);
+                    }, (merged, failure) -> {
+                        if (merged != null) {
+                            mpv5.ui.dialogs.PdfPreview.show(merged, item, oc);
+                        } else if (failure != null) {
+                            Log.Debug(this, failure);
+                            Popup.error(failure);
+                        }
+                    });
+                } else {
+                    PreviewWaiter pr = new PreviewWaiter();
+                    pr.setDataOwner(dataOwner);
+                    Export.createFileWithProgress(() -> TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), templateType), dataOwner, pr);
+                }
             } else {
                 Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + User.getCurrentUser() + ")");
             }
@@ -2010,7 +2029,26 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         if (dataOwner != null && dataOwner.isExisting()) {
             if (TemplateHandler.ensureLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
                 Template[] oc = appendedConfirmation();
-                if (oc != null) {
+                if (mpv5.utils.export.IssuedDocument.applies(dataOwner)) {
+                    //an invoice: printing issues it (e-invoice as set for the customer, finalized by a
+                    //running GoBD plugin), then the issued file is printed - as "Drucken" in the preview
+                    final Item invoice = dataOwner;
+                    final java.io.File target = mpv5.utils.export.IssuedDocument.defaultFile(invoice);
+                    Template t = TemplateHandler.loadTemplate(invoice.templateGroupIds(), invoice.__getInttype());
+                    final String printer = t != null ? t.__getPrinter() : null;
+                    mpv5.utils.export.ExportProgress.run(Messages.EXPORT_PRINT + " " + invoice.__getCname(), () -> {
+                        java.io.File f = mpv5.utils.export.IssuedDocument.issue(invoice, target, oc);
+                        mpv5.utils.export.ExportProgress.step(Messages.EXPORT_STEP_PRINT);
+                        mpv5.utils.print.PrintJob2.print(f, printer);
+                        return f;
+                    }, (f, failure) -> {
+                        if (failure != null) {
+                            Log.Debug(this, failure);
+                            //e.g. the e-invoice can not be created: nothing printed
+                            Popup.warn(failure.getLocalizedMessage());
+                        }
+                    });
+                } else if (oc != null) {
                     Export.print(new Template[]{TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()),
                         oc[0]}, dataOwner);
                 } else {

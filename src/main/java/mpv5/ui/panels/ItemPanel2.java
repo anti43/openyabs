@@ -3313,7 +3313,23 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         if (dataOwner != null && dataOwner.isExisting()) {
             if (TemplateHandler.ensureLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
                 Template[] oc = appendedConfirmation();
-                if (oc != null) {
+                if (mpv5.utils.export.IssuedDocument.applies(dataOwner)) {
+                    final Item invoice = dataOwner;
+                    final java.io.File target = mpv5.utils.export.IssuedDocument.defaultFile(invoice);
+                    Template t = TemplateHandler.loadTemplate(invoice.templateGroupIds(), invoice.__getInttype());
+                    final String printer = t != null ? t.__getPrinter() : null;
+                    mpv5.utils.export.ExportProgress.run(Messages.EXPORT_PRINT + " " + invoice.__getCname(), () -> {
+                        java.io.File f = mpv5.utils.export.IssuedDocument.issue(invoice, target, oc);
+                        mpv5.utils.export.ExportProgress.step(Messages.EXPORT_STEP_PRINT);
+                        mpv5.utils.print.PrintJob2.print(f, printer);
+                        return f;
+                    }, (f, failure) -> {
+                        if (failure != null) {
+                            Log.Debug(this, failure);
+                            Popup.warn(failure.getLocalizedMessage());
+                        }
+                    });
+                } else if (oc != null) {
                     Export.print(new Template[]{TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()), oc[0]}, dataOwner);
                 } else {
                     Export.print(TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()), dataOwner);
@@ -3338,9 +3354,26 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         PreviewWaiter pr;
         if (dataOwner != null && dataOwner.isExisting()) {
             if (TemplateHandler.ensureLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
-                pr = new PreviewWaiter();
-                pr.setDataOwner(dataOwner);
-                Export.createFileWithProgress(() -> TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()), dataOwner, pr);
+                final Template[] oc = appendedConfirmation();
+                if (oc != null) {
+                    final Item item = dataOwner;
+                    mpv5.utils.export.ExportProgress.run(Messages.ACTION_PREVIEW + " " + item.__getCname(), () -> {
+                        item.getFormFields();
+                        Template[] all = new Template[]{TemplateHandler.loadTemplate(item.templateGroupIds(), item.__getInttype()), oc[0]};
+                        return Export.createMergedFile(all, item);
+                    }, (merged, failure) -> {
+                        if (merged != null) {
+                            mpv5.ui.dialogs.PdfPreview.show(merged, item, oc);
+                        } else if (failure != null) {
+                            Log.Debug(this, failure);
+                            Popup.error(failure);
+                        }
+                    });
+                } else {
+                    pr = new PreviewWaiter();
+                    pr.setDataOwner(dataOwner);
+                    Export.createFileWithProgress(() -> TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()), dataOwner, pr);
+                }
             } else {
                 Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
             }

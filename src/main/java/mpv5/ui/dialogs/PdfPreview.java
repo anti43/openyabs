@@ -88,6 +88,18 @@ public final class PdfPreview extends JFrame {
      * @param owner the record, may be null
      */
     public static void show(File file, mpv5.db.common.DatabaseObject owner) {
+        show(file, owner, null);
+    }
+
+    /**
+     * As {@link #show(File, DatabaseObject)}; the appended documents (e.g. the
+     * order confirmation) follow the invoice in the issued file too
+     *
+     * @param file
+     * @param owner
+     * @param appended may be null
+     */
+    public static void show(File file, mpv5.db.common.DatabaseObject owner, mpv5.db.objects.Template[] appended) {
         //one preview per record (or file): a second request (double click, two buttons, a
         //preview finished late) replaces the open window instead of opening another one
         for (java.awt.Window w : java.awt.Window.getWindows()) {
@@ -95,7 +107,9 @@ public final class PdfPreview extends JFrame {
                 w.dispose();
             }
         }
-        new PdfPreview(file, owner).setVisible(true);
+        PdfPreview p = new PdfPreview(file, owner);
+        p.appended = appended;
+        p.setVisible(true);
     }
 
     /**
@@ -109,6 +123,12 @@ public final class PdfPreview extends JFrame {
         }
         return o == null && owner == null && f != null && f.equals(file);
     }
+
+    /**
+     * documents whose pages follow the invoice in the issued file, may be
+     * null
+     */
+    private mpv5.db.objects.Template[] appended;
 
     private PdfPreview(File file, mpv5.db.common.DatabaseObject owner) {
         super(file.getName() + " – " + Messages.ACTION_PREVIEW);
@@ -384,7 +404,7 @@ public final class PdfPreview extends JFrame {
         }
         final File pdf = target != null ? target : mpv5.utils.export.IssuedDocument.defaultFile(invoice);
         mpv5.utils.export.ExportProgress.run(Messages.PDF_PREVIEW_ISSUE_TITLE + " " + invoice.__getCnumber(),
-                () -> mpv5.utils.export.IssuedDocument.issue(invoice, pdf),
+                () -> mpv5.utils.export.IssuedDocument.issue(invoice, pdf, appended),
                 (issued, failure) -> {
                     if (failure != null) {
                         Log.Debug(this, failure);
