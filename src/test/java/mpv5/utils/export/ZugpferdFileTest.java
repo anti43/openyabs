@@ -640,6 +640,45 @@ class ZugpferdFileTest {
         assertValid(pdf);
     }
 
+    /**
+     * Merging two PDF/A-compatible template PDFs (e.g. invoice + order
+     * confirmation) must preserve embedded fonts so the resulting ZUGFeRD
+     * e-invoice passes veraPDF PDF/A-3 validation.
+     */
+    @Test
+    void mergedTemplatePdfIsPdfA3() throws Exception {
+        PdfOptions options = PdfOptions.create();
+        options.fontProvider(EmbeddingFontRegistry.getRegistry());
+        File part1 = tmp.resolve("part1.pdf").toFile();
+        File part2 = tmp.resolve("part2.pdf").toFile();
+        for (File part : new File[]{part1, part2}) {
+            OdfTextDocument doc = OdfTextDocument.loadDocument(new File("ext/templates/Yabs-1.2-Template-DE.odt"));
+            try (OutputStream out = new FileOutputStream(part)) {
+                PdfConverter.getInstance().convert(doc, out, options);
+            }
+        }
+        int expectedPages;
+        try (PDDocument d1 = org.apache.pdfbox.Loader.loadPDF(part1);
+                PDDocument d2 = org.apache.pdfbox.Loader.loadPDF(part2)) {
+            expectedPages = d1.getNumberOfPages() + d2.getNumberOfPages();
+        }
+        File merged = Export.mergeFiles(java.util.Arrays.asList(part1, part2));
+        assertNotNull(merged, "merged PDF should be created");
+        try {
+            File pdf = tmp.resolve("R-2026-0042-merged.pdf").toFile();
+            ZugpferdFile.writePdf(build(), merged, pdf);
+            try (PDDocument resultDoc = org.apache.pdfbox.Loader.loadPDF(pdf)) {
+                assertEquals(expectedPages, resultDoc.getNumberOfPages(), "merged page count");
+            }
+            ZUGFeRDImporter importer = new ZUGFeRDImporter(pdf.getAbsolutePath());
+            String xml = new String(importer.getRawXML(), StandardCharsets.UTF_8);
+            assertTrue(xml.contains("357.00"), xml);
+            assertValid(pdf);
+        } finally {
+            merged.delete();
+        }
+    }
+
     @Test
     void validatorReportsPdfAErrors() throws Exception {
         String report = "<validation><pdf>ValidationResult [flavour=3u, assertions=[TestAssertion [ruleId=RuleId "

@@ -146,6 +146,16 @@ public class ZugpferdFile implements Waitable {
         this.format = format;
     }
 
+    private Template[] appended;
+
+    /**
+     * @param appended templates whose pages follow the invoice in the PDF
+     * (e.g. the order confirmation), may be null
+     */
+    public void setAppended(Template[] appended) {
+        this.appended = appended;
+    }
+
     public File getTarget() {
         return target;
     }
@@ -203,7 +213,7 @@ public class ZugpferdFile implements Waitable {
                 ExportProgress.step(Messages.EXPORT_STEP_EINVOICE_XML);
                 writeXml(invoice, target);
             } else {
-                File pdf = renderPdf(item);
+                File pdf = renderPdf(item, appended);
                 try {
                     ExportProgress.step(Messages.EXPORT_STEP_EINVOICE_EMBED);
                     writePdf(invoice, pdf, target);
@@ -876,10 +886,22 @@ public class ZugpferdFile implements Waitable {
      * Create the invoice PDF using the configured invoice template. All fonts
      * are embedded, as required by PDF/A-3.
      */
-    private static File renderPdf(Item item) throws Exception {
+    private static File renderPdf(Item item, Template[] appended) throws Exception {
         Template template = TemplateHandler.loadTemplate((long) item.templateGroupIds(), item.__getInttype());
         if (template == null) {
             throw new IllegalStateException(Messages.NO_TEMPLATE_LOADED + " (" + User.getCurrentUser() + ")");
+        }
+        if (appended != null && appended.length > 0) {
+            //the invoice followed by the appended documents (e.g. the order confirmation)
+            ExportProgress.step(Messages.EXPORT_STEP_FIELDS);
+            Template[] all = new Template[appended.length + 1];
+            all[0] = template;
+            System.arraycopy(appended, 0, all, 1, appended.length);
+            File merged = Export.createMergedFile(all, item, true);
+            if (merged == null || !merged.isFile() || merged.length() == 0) {
+                throw new IOException(Messages.ZUGFERD_PDF_FAILED + ": " + template);
+            }
+            return merged;
         }
         ExportProgress.step(Messages.EXPORT_STEP_FIELDS);
         Export export = (Export) Export.createFile(item.__getCnumber().replaceAll("[^A-Za-z0-9._-]", "_"), template, item);

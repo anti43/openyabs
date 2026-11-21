@@ -398,6 +398,18 @@ public class DialogForFile extends JFileChooser implements Waiter {
       return false;
    }
 
+   private mpv5.db.common.DatabaseObject dataOwner;
+
+   /**
+    * Sets the record whose exported file is saved by {@link #set(Object, Exception)}
+    * so file activity (e.g. GoBD finalization) is recorded on the saved file.
+    *
+    * @param dataOwner
+    */
+   public void setDataOwner(mpv5.db.common.DatabaseObject dataOwner) {
+      this.dataOwner = dataOwner;
+   }
+
    /**
     * Calls saveFile((File) object)
     *
@@ -420,13 +432,18 @@ public class DialogForFile extends JFileChooser implements Waiter {
                }
             }
          } else if (object instanceof File) {
-            saveFile((File) object);
+            File saved = saveFile((File) object);
+            if (saved != null && saved.exists() && dataOwner != null) {
+               mpv5.handler.Activity.file(saved, dataOwner);
+            }
          } else if (object instanceof Export) {
             File target = ((Export) object).getTargetFile();
             suggest(target);
             if (saveFile()) {
                FileDirectoryHandler.copyFile2(target, file, false);
                target.delete();
+               mpv5.db.common.DatabaseObject owner = ((Export) object).getDob();
+               mpv5.handler.Activity.file(file, owner != null ? owner : dataOwner);
             }
          }
       } else {

@@ -3021,9 +3021,11 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                 Log.Debug(this, "Export to: " + xf);
                 final Waiter x;
                 if (showDialog) {
-                    x = new DialogForFile(DialogForFile.FILES_ONLY, xf);
+                    DialogForFile dialog = new DialogForFile(DialogForFile.FILES_ONLY, xf);
+                    dialog.setDataOwner(this);
+                    x = dialog;
                 } else {
-                    x = Export.wait(xf);
+                    x = Export.wait(xf, this);
                 }
                 final DatabaseObject self = this;
                 //off the event dispatch thread, with the steps in a progress window and their times in the log
@@ -3056,7 +3058,11 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         getFormFields();
         mpv5.utils.export.ExportProgress.step(Messages.EXPORT_STEP_TEMPLATE);
         mpv5.db.objects.Template template = TemplateHandler.loadTemplate(me);
-        if (convertToPdf && appended != null && appended.length > 0) {
+        //an invoice whose customer gets ZUGFeRD: the order confirmation goes into the e-invoice
+        //PDF (below), not into a plain merged PDF
+        boolean zugferd = convertToPdf && this instanceof mpv5.db.objects.Item && mpv5.utils.export.ZugpferdFile.supports((mpv5.db.objects.Item) this)
+                && zugferdFor((mpv5.db.objects.Item) this);
+        if (convertToPdf && appended != null && appended.length > 0 && !zugferd) {
             mpv5.db.objects.Template[] all = new mpv5.db.objects.Template[appended.length + 1];
             all[0] = template;
             System.arraycopy(appended, 0, all, 1, appended.length);
@@ -3119,7 +3125,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                     }
                     mpv5.utils.export.ExportProgress.step(Messages.EXPORT_STEP_EINVOICE_STATUS);
                     mpv5.handler.ItemService.ensureFinishedAndEndDate(item);
-                    work = new mpv5.utils.export.ZugpferdFile(item, inv, xf, mpv5.utils.export.ZugpferdFile.Format.ZUGFERD);
+                    mpv5.utils.export.ZugpferdFile z = new mpv5.utils.export.ZugpferdFile(item, inv, xf, mpv5.utils.export.ZugpferdFile.Format.ZUGFERD);
+                    z.setAppended(appended);
+                    work = z;
                 }
             }
         }
@@ -3127,10 +3135,25 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             work = convertToPdf
                     ? Export.createFile(null, template, this)
                     : Export.sourceFile(null, template, this);
+            if (work instanceof Export) {
+                //the temporary file: the copy in the folder (by the waiter) is the issued document
+                ((Export) work).setDraft(true);
+            }
         }
         final mpv5.utils.jobs.Job job = new mpv5.utils.jobs.Job(work, x);
         job.doInBackground();
         return job::done;
+    }
+
+    /**
+     * @return true if the customer of the invoice gets ZUGFeRD
+     */
+    private static boolean zugferdFor(mpv5.db.objects.Item item) {
+        try {
+            return mpv5.utils.export.EInvoiceDelivery.effectiveFor(item.getContact(), item) == mpv5.utils.export.EInvoiceDelivery.ZUGFERD;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     private static void setQuietly(Waiter x, Object object, Exception failure) {

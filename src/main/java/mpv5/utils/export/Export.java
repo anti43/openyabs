@@ -16,25 +16,17 @@
  */
 package mpv5.utils.export;
 
-import com.lowagie.text.Document;
-import com.lowagie.text.pdf.BaseFont;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfImportedPage;
-import com.lowagie.text.pdf.PdfReader;
-import com.lowagie.text.pdf.PdfWriter;
-
 import java.awt.Component;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+
+import org.apache.pdfbox.io.IOUtils;
+import org.apache.pdfbox.multipdf.PDFMergerUtility;
 
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -709,6 +701,18 @@ public final class Export extends HashMap<String, Object> implements Waitable {
      * @return the merged temporary PDF, or null if none could be created
      */
     public static File createMergedFile(Template[] templates, DatabaseObject dataOwner) {
+        return createMergedFile(templates, dataOwner, false);
+    }
+
+    /**
+     * Merges the rendered PDFs of the given templates for one record.
+     *
+     * @param templates
+     * @param dataOwner
+     * @param embedAllFonts true to embed all fonts into each part (required for PDF/A-3, e.g. ZUGFeRD)
+     * @return the merged temporary PDF, or null if none could be created
+     */
+    public static File createMergedFile(Template[] templates, DatabaseObject dataOwner, boolean embedAllFonts) {
         List<File> files = new ArrayList<File>();
         for (Template template : templates) {
             if (template == null) {
@@ -718,6 +722,9 @@ public final class Export extends HashMap<String, Object> implements Waitable {
             Export ex = new Export(template);
             ex.putAll(dataOwner.getFormFields());
             ex.putDataOwner(dataOwner);
+            //a part of the merged file (e.g. the order confirmation): no issued document of the record
+            ex.setDraft(true);
+            ex.setEmbedAllFonts(embedAllFonts);
             try {
                 ex.processData(f2);
                 if (f2.exists() && f2.length() > 0) {
@@ -739,70 +746,26 @@ public final class Export extends HashMap<String, Object> implements Waitable {
             return files.get(0);
         }
         ExportProgress.step(Messages.EXPORT_STEP_MERGE);
-        return mergeFiles(files);
+        File merged = mergeFiles(files);
+        for (File part : files) {
+            part.delete();
+        }
+        return merged;
     }
 
-    private static File mergeFiles(List<File> p) {
-
-        Document document = new Document();
+    static File mergeFiles(List<File> p) {
         try {
-            List<InputStream> pdfs = new ArrayList<InputStream>();
-            for (int i = 0; i < p.size(); i++) {
-                File inputStream = p.get(i);
-                pdfs.add(new FileInputStream(inputStream));
+            PDFMergerUtility merger = new PDFMergerUtility();
+            for (File input : p) {
+                merger.addSource(input);
             }
-            List<PdfReader> readers = new ArrayList<PdfReader>();
-            int totalPages = 0;
-            Iterator<InputStream> iteratorPDFs = pdfs.iterator();
-
-            while (iteratorPDFs.hasNext()) {
-                InputStream pdf = iteratorPDFs.next();
-                PdfReader pdfReader = new PdfReader(pdf);
-                readers.add(pdfReader);
-                totalPages += pdfReader.getNumberOfPages();
-            }
-
             File f = FileDirectoryHandler.getTempFile("pdf");
-            FileOutputStream outputstream = new FileOutputStream(f);
-            PdfWriter writer = PdfWriter.getInstance(document, outputstream);
-
-            document.open();
-            BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
-            PdfContentByte cb = writer.getDirectContent();
-
-            PdfImportedPage page;
-            int currentPageNumber = 0;
-            int pageOfCurrentReaderPDF = 0;
-            Iterator<PdfReader> iteratorPDFReader = readers.iterator();
-
-            // Loop through the PDF files and add to the output.
-            while (iteratorPDFReader.hasNext()) {
-                PdfReader pdfReader = iteratorPDFReader.next();
-
-                // Create a new page in the target for each source page.
-                while (pageOfCurrentReaderPDF < pdfReader.getNumberOfPages()) {
-                    document.newPage();
-                    pageOfCurrentReaderPDF++;
-                    currentPageNumber++;
-                    page = writer.getImportedPage(pdfReader, pageOfCurrentReaderPDF);
-                    cb.addTemplate(page, 0, 0);
-
-                }
-                pageOfCurrentReaderPDF = 0;
-            }
-            outputstream.flush();
-            document.close();
-            outputstream.close();
-
+            merger.setDestinationFileName(f.getAbsolutePath());
+            merger.mergeDocuments(IOUtils.createMemoryOnlyStreamCache());
             return f;
         } catch (Exception e) {
             Log.Debug(e);
-        } finally {
-            if (document.isOpen()) {
-                document.close();
-            }
         }
-
         return null;
     }
 
@@ -1014,6 +977,18 @@ public final class Export extends HashMap<String, Object> implements Waitable {
      * @return
      */
     public static Waiter wait(final File targetFile) {
+        return wait(targetFile, null);
+    }
+
+    /**
+     * Generates a waiter for export that associates the written file with the
+     * owning record (e.g. for GoBD finalization of merged PDFs).
+     *
+     * @param targetFile
+     * @param dataOwner
+     * @return
+     */
+    public static Waiter wait(final File targetFile, final DatabaseObject dataOwner) {
         return new Waiter() {
 
             @Override
@@ -1021,10 +996,11 @@ public final class Export extends HashMap<String, Object> implements Waitable {
                 if (exceptions == null) {
                     if (object instanceof Export) {
                         FileDirectoryHandler.copyFile2(((Export) object).getTargetFile(), targetFile);
-                        mpv5.handler.Activity.file(targetFile, ((Export) object).getDob());
+                        DatabaseObject owner = ((Export) object).getDob();
+                        mpv5.handler.Activity.file(targetFile, owner != null ? owner : dataOwner);
                     } else if (object instanceof File) {
                         FileDirectoryHandler.copyFile2((File) object, targetFile);
-                        mpv5.handler.Activity.file(targetFile, null);
+                        mpv5.handler.Activity.file(targetFile, dataOwner);
                     } else {
                         Log.Debug(this, "Not a file: " + String.valueOf(object));
                     }

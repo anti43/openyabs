@@ -62,6 +62,20 @@ public final class IssuedDocument {
      * the e-invoice can not be created: then nothing is written)
      */
     public static File issue(Item item, File pdf) throws Exception {
+        return issue(item, pdf, null);
+    }
+
+    /**
+     * As {@link #issue(Item, File)}, with documents whose pages follow the
+     * invoice in the PDF (e.g. the order confirmation)
+     *
+     * @param item
+     * @param pdf
+     * @param appended may be null
+     * @return the PDF
+     * @throws Exception
+     */
+    public static File issue(Item item, File pdf, Template[] appended) throws Exception {
         Contact contact = item.getContact();
         EInvoiceDelivery delivery = EInvoiceDelivery.effectiveFor(contact, item);
         Template template = TemplateHandler.loadTemplate((long) item.templateGroupIds(), item.__getInttype());
@@ -69,7 +83,7 @@ public final class IssuedDocument {
             throw new ExportFailedException(Messages.NO_TEMPLATE_LOADED.toString(), null);
         }
         if (!delivery.isEInvoice()) {
-            return plainPdf(item, template, pdf);
+            return plainPdf(item, template, pdf, appended);
         }
         ExportProgress.step(Messages.EXPORT_STEP_EINVOICE_DATA);
         org.mustangproject.Invoice invoice;
@@ -95,7 +109,9 @@ public final class IssuedDocument {
         ExportProgress.step(Messages.EXPORT_STEP_EINVOICE_STATUS);
         mpv5.handler.ItemService.ensureFinishedAndEndDate(item);
         if (delivery.getFormat() == ZugpferdFile.Format.ZUGFERD) {
-            Exception failure = new ZugpferdFile(item, invoice, pdf, ZugpferdFile.Format.ZUGFERD).waitFor();
+            ZugpferdFile z = new ZugpferdFile(item, invoice, pdf, ZugpferdFile.Format.ZUGFERD);
+            z.setAppended(appended);
+            Exception failure = z.waitFor();
             if (failure != null) {
                 throw failure;
             }
@@ -108,14 +124,29 @@ public final class IssuedDocument {
         if (failure != null) {
             throw failure;
         }
-        return plainPdf(item, template, pdf);
+        return plainPdf(item, template, pdf, appended);
     }
 
     /**
      * The PDF of the template, written to the file
      */
-    private static File plainPdf(Item item, Template template, File pdf) throws Exception {
+    private static File plainPdf(Item item, Template template, File pdf, Template[] appended) throws Exception {
         ExportProgress.step(Messages.EXPORT_STEP_FIELDS);
+        if (appended != null && appended.length > 0) {
+            Template[] all = new Template[appended.length + 1];
+            all[0] = template;
+            System.arraycopy(appended, 0, all, 1, appended.length);
+            File merged = Export.createMergedFile(all, item);
+            if (merged == null || !merged.isFile() || merged.length() == 0) {
+                throw new ExportFailedException(Messages.ZUGFERD_PDF_FAILED + ": " + template, null);
+            }
+            if (pdf.getParentFile() != null) {
+                pdf.getParentFile().mkdirs();
+            }
+            FileDirectoryHandler.copyFile2(merged, pdf, true);
+            mpv5.handler.Activity.file(pdf, item);
+            return pdf;
+        }
         Export export = (Export) Export.createFile(template, item);
         //the temporary file is not the issued one: the copy below is
         export.setDraft(true);
