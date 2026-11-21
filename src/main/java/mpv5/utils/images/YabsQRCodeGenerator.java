@@ -34,7 +34,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import javax.imageio.ImageIO;
@@ -45,6 +48,7 @@ import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.utils.export.BankAccount;
 import mpv5.utils.export.ZugpferdFile;
+import mpv5.utils.text.Iban;
 
 /**
  * EPC QR code ("GiroCode", EPC069-12 version 002) for SEPA credit transfers:
@@ -62,7 +66,7 @@ public class YabsQRCodeGenerator {
 
     /**
      * @param dob the invoice
-     * @throws IllegalStateException if the company info has no IBAN
+     * @throws IllegalStateException if the company info has no valid IBAN or beneficiary name
      */
     public YabsQRCodeGenerator(DatabaseObject dob) {
         Item item = (Item) dob;
@@ -76,11 +80,14 @@ public class YabsQRCodeGenerator {
         BankAccount account = contact == null
                 ? (BankAccount.companyAccounts(company).isEmpty() ? null : BankAccount.companyAccounts(company).get(0))
                 : BankAccount.forContact(contact, company);
-        if (account == null || account.getIban().isEmpty()) {
-            throw new IllegalStateException("No IBAN in the company info");
+        if (account == null || !Iban.isValid(account.getIban())) {
+            throw new IllegalStateException("No valid IBAN in the company info");
         }
         String person = (ZugpferdFile.nvl(company.apply("firstname")) + " " + ZugpferdFile.nvl(company.apply("name"))).trim();
         String name = ZugpferdFile.firstNonEmpty(company.apply("business"), person);
+        if (name.isEmpty()) {
+            throw new IllegalStateException("No beneficiary name in the company info");
+        }
         text = payload(name, account.getIban(), account.getBic(), item.getGrossAmount(),
                 Item.getTypeString(item.__getInttype()) + " " + item.__getCname());
     }
@@ -107,18 +114,23 @@ public class YabsQRCodeGenerator {
                 eur = "EUR" + a.toPlainString();
             }
         }
-        return String.join("\n",
+        List<String> lines = new ArrayList<String>(Arrays.asList(
                 "BCD", //service tag
                 "002", //version
                 "1", //UTF-8
                 "SCT", //SEPA credit transfer
-                clean(bic, 11),
+                clean(Iban.normalize(bic), 11),
                 clean(name, 70),
-                clean(iban, 34).replace(" ", ""),
+                clean(Iban.normalize(iban), 34),
                 eur,
                 "", //purpose
                 "", //structured reference
-                clean(reference, 140));
+                clean(reference, 140)));
+        // EPC069-12: the last populated element must not be followed by empty lines
+        while (lines.size() > 7 && lines.get(lines.size() - 1).isEmpty()) {
+            lines.remove(lines.size() - 1);
+        }
+        return String.join("\n", lines);
     }
 
     private static String clean(String s, int max) {

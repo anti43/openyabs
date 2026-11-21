@@ -252,6 +252,44 @@ def corrected_invoice(c):
     assert sm and sm.start() < c.index('</table:table>', t)
     return c[:sm.start()] + 'table:number-rows-spanned="%d"' % (int(sm.group(1)) + 1) + c[sm.end():]
 
+# ---- compact EPC payment QR code: place it in the empty left area of the totals table (Tabelle3)
+# at 2.4 cm x 2.596 cm and trim redundant blank paragraphs so invoice + VAT table + payment terms + QR stay on page 1
+QR_STYLE = ('<style:style style:name="Tabelle3.QR" style:family="table-cell">'
+            '<style:table-cell-properties style:vertical-align="top" fo:padding-left="0cm" fo:padding-right="0cm" '
+            'fo:padding-top="0.1cm" fo:padding-bottom="0cm" fo:border-left="none" fo:border-right="none" '
+            'fo:border-top="0.002cm solid #000000" fo:border-bottom="none"/></style:style>')
+QR_PARA = re.compile(r'<text:p text:style-name="P9">(<draw:frame[^>]*draw:name="QRCode\.img"[^>]*>.*?</draw:frame>)</text:p>')
+
+def compact_qr(c):
+    m_qr = QR_PARA.search(c)
+    assert m_qr, 'QRCode.img frame'
+    frame = re.sub(r'svg:width="[^"]*"', 'svg:width="2.4cm"', m_qr.group(1), count=1)
+    frame = re.sub(r'svg:height="[^"]*"', 'svg:height="2.596cm"', frame, count=1)
+    c = c[:m_qr.start()] + c[m_qr.end():]
+    c = c.replace('</office:automatic-styles>', QR_STYLE + '</office:automatic-styles>', 1)
+    # trim excess blank lines above the heading (address window is above these in Tabelle2) and between tables
+    c = c.replace('<text:p text:style-name="P5"><text:span text:style-name="T6"/></text:p>' * 3,
+                  '<text:p text:style-name="P5"><text:span text:style-name="T6"/></text:p>', 1)
+    c = c.replace('</table:table><text:p text:style-name="P9"/><text:p text:style-name="P9"/><table:table table:name="Tabelle3"',
+                  '</table:table><text:p text:style-name="P9"/><table:table table:name="Tabelle3"', 1)
+    m = TOTALS.search(c)
+    assert m, 'Tabelle3'
+    t = m.group(0)
+    rows = re.findall(r'<table:table-row>.*?</table:table-row>', t)
+    assert len(rows) >= 3, rows
+    empty_a1 = '<table:table-cell table:style-name="Tabelle3.A1" office:value-type="string"><text:p text:style-name="P7"/></table:table-cell>'
+    empty_a2 = '<table:table-cell table:style-name="Tabelle3.A2" office:value-type="string"><text:p text:style-name="P7"/></table:table-cell>'
+    qr_cell = ('<table:table-cell table:style-name="Tabelle3.QR" table:number-columns-spanned="2" '
+               'table:number-rows-spanned="%d" office:value-type="string">'
+               '<text:p text:style-name="P7">%s</text:p></table:table-cell><table:covered-table-cell/>') % (len(rows), frame)
+    assert rows[0].startswith('<table:table-row>' + empty_a1 + empty_a1), rows[0]
+    new_rows = [rows[0].replace(empty_a1 + empty_a1, qr_cell, 1)]
+    for r in rows[1:]:
+        assert r.startswith('<table:table-row>' + empty_a2 + empty_a2), r
+        new_rows.append(r.replace(empty_a2 + empty_a2, '<table:covered-table-cell/><table:covered-table-cell/>', 1))
+    t = t[:t.index('<table:table-row>')] + ''.join(new_rows) + '</table:table>'
+    return c[:m.start()] + t + c[m.end():]
+
 LOGO = ('<text:p text:style-name="P23"><draw:frame draw:style-name="frLogo" draw:name="Logo" text:anchor-type="as-char" svg:width="4.2cm" svg:height="1.4cm" draw:z-index="3">'
         '<draw:image xlink:href="Pictures/logo.png" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/></draw:frame></text:p>')
 
@@ -393,6 +431,7 @@ def make(fname, title, kind, groups, prefix=None, cprefix=None, blocks=None, tot
         elif kind == 'smallbusiness':
             c = small_business(c)
         if kind in ('item', 'smallbusiness'):
+            c = compact_qr(c)
             c = vat_id(c)
         if kind in ('item', 'smallbusiness') and tid in INVOICE_TYPES:
             c = service_date(c)
@@ -412,9 +451,13 @@ def make(fname, title, kind, groups, prefix=None, cprefix=None, blocks=None, tot
         cut = c.index('<text:p text:style-name="P7"/><table:table table:name="Tabelle1"')
         body_end = c[:cut]
     c = body_end + body(blocks or []) + reference('Verfügbare Felder – ' + title, groups, tid, title) + c[end:]
+    def zipinfo(name, dt=None):
+        zi = zipfile.ZipInfo(name, dt) if dt is not None else zipfile.ZipInfo(name)
+        zi.create_system = 3
+        return zi
     out = io.BytesIO()
     zo = zipfile.ZipFile(out, 'w')
-    zo.writestr(zipfile.ZipInfo('mimetype'), files['mimetype'], compress_type=zipfile.ZIP_STORED)
+    zo.writestr(zipinfo('mimetype'), files['mimetype'], compress_type=zipfile.ZIP_STORED)
     man = manifest
     if 'Pictures/logo.png' not in man:
         man = man.replace('</manifest:manifest>', ' <manifest:file-entry manifest:media-type="image/png" manifest:full-path="Pictures/logo.png"/>\n</manifest:manifest>')
@@ -427,8 +470,8 @@ def make(fname, title, kind, groups, prefix=None, cprefix=None, blocks=None, tot
             d = styles_xml.encode('utf-8')
         elif n == 'META-INF/manifest.xml':
             d = man.encode('utf-8')
-        zo.writestr(zipfile.ZipInfo(n, (2026, 1, 1, 0, 0, 0)), d, compress_type=zipfile.ZIP_DEFLATED)
-    zo.writestr(zipfile.ZipInfo('Pictures/logo.png', (2026, 1, 1, 0, 0, 0)), open(os.path.join(os.path.dirname(__file__), 'logo.png'), 'rb').read(), compress_type=zipfile.ZIP_STORED)
+        zo.writestr(zipinfo(n, (2026, 1, 1, 0, 0, 0)), d, compress_type=zipfile.ZIP_DEFLATED)
+    zo.writestr(zipinfo('Pictures/logo.png', (2026, 1, 1, 0, 0, 0)), open(os.path.join(os.path.dirname(__file__), 'logo.png'), 'rb').read(), compress_type=zipfile.ZIP_STORED)
     zo.close()
     data = out.getvalue()
     open(os.path.join(OUT, fname), 'wb').write(data)
@@ -510,19 +553,23 @@ made.append((0, 'Rechnung Kleinunternehmer', 'demo-00-ku.odt',
 # the regular invoice template (imported on first start): the base with the sender line from the
 # company information and the name only once
 def write_odt(fname, c):
+    def zipinfo(name, dt=None):
+        zi = zipfile.ZipInfo(name, dt) if dt is not None else zipfile.ZipInfo(name)
+        zi.create_system = 3
+        return zi
     out = io.BytesIO()
     zo = zipfile.ZipFile(out, 'w')
-    zo.writestr(zipfile.ZipInfo('mimetype'), files['mimetype'], compress_type=zipfile.ZIP_STORED)
+    zo.writestr(zipinfo('mimetype'), files['mimetype'], compress_type=zipfile.ZIP_STORED)
     for n, d in files.items():
         if n == 'mimetype':
             continue
         if n == 'content.xml':
             d = c.encode('utf-8')
-        zo.writestr(zipfile.ZipInfo(n, (2026, 1, 1, 0, 0, 0)), d, compress_type=zipfile.ZIP_DEFLATED)
+        zo.writestr(zipinfo(n, (2026, 1, 1, 0, 0, 0)), d, compress_type=zipfile.ZIP_DEFLATED)
     zo.close()
     open(os.path.join(OUT, fname), 'wb').write(out.getvalue())
     return len(out.getvalue())
-inv = vat_id(service_date(vat_layout(content.replace(SENDER[0], SENDER[1], 1))))
+inv = compact_qr(vat_id(service_date(vat_layout(content.replace(SENDER[0], SENDER[1], 1)))))
 inv, n = DUPLICATE_NAME.subn('', inv, 1)
 assert n == 1
 made.append((0, 'Rechnung (Standard)', 'invoice.odt', write_odt('invoice.odt', inv)))

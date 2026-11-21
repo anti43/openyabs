@@ -499,6 +499,18 @@ public final class FirstStartSetup {
         PREVIOUS_RELEASE.put("14f1d1c0c196d8971758e7314412f0e870b9912d7bb40b71ce894c754ee63357", "/extra/templates/demo-21.odt");
         PREVIOUS_RELEASE.put("84b4a680d6d519a3a7a9477874457d87b3b2ac33d9f3c3d9a18f59db535943af", "/extra/templates/demo-22.odt");
         PREVIOUS_RELEASE.put("c11b393baee5a6f03eb39ec9e1094be90ecfd97cb5e583a2f5734d27c690b7b0", INVOICE_TEMPLATE);
+        //v2.0.13, before compact QR code beside totals
+        PREVIOUS_RELEASE.put("182d55fd1b4465bb6e58cdae10554911bdc7fc8c461dbc603e63143afcc69eb2", SMALL_BUSINESS_INVOICE_TEMPLATE);
+        PREVIOUS_RELEASE.put("a941eb984121ddb051c72a67aaed10374b323d557e5ae57b741c6281fe805f58", "/extra/templates/demo-00.odt");
+        PREVIOUS_RELEASE.put("7c36dd297b31c0985ebbb6dd9819bfa5d6682865a7b3c5f2328e3921a1df5b67", "/extra/templates/demo-01.odt");
+        PREVIOUS_RELEASE.put("0f64139cdd9193ce32721cd0c033d4609236f61f748c47df873e7d9d45fd7717", "/extra/templates/demo-02.odt");
+        PREVIOUS_RELEASE.put("f32d2bc603e818fe00fdaf7d0d82b9f17205a6eb5e7f48bf345ab4f65d7fae4e", "/extra/templates/demo-03.odt");
+        PREVIOUS_RELEASE.put("b686ab463232ab8e0bfecde452988afd971796989b19577d9d9937d83714e6f9", "/extra/templates/demo-04.odt");
+        PREVIOUS_RELEASE.put("df8a4dd642cf992c9cda4abd6ef61b3d9dbfa683315c3ef9dec272aa3ba64ae8", "/extra/templates/demo-11.odt");
+        PREVIOUS_RELEASE.put("8b6e6f0538db8f836ca457dbb1b76230c97c63b80073fc918ff3b7bc27d65bd0", "/extra/templates/demo-20.odt");
+        PREVIOUS_RELEASE.put("b195f17680b5936e2716e6d10a2a2b8894da41908d969efd4ed431254fbe8d99", "/extra/templates/demo-21.odt");
+        PREVIOUS_RELEASE.put("e7c2c98733c4d6a6b14d84325655193e664b86ad0d9293b63b69b76e4438c286", "/extra/templates/demo-22.odt");
+        PREVIOUS_RELEASE.put("8e5e5e3fb681cd5ef2e5255e163f72091d1062314c50244741e0516c01c016f0", INVOICE_TEMPLATE);
     }
 
     static {
