@@ -337,6 +337,7 @@ public class ItemPositionsTable extends JPanel {
      */
     public void setModel(MPTableModel model) {
         itemtable.setModel(model);
+        keepTrailingEmptyRow(model);
         fireUpdate();
     }
 
@@ -782,6 +783,7 @@ public class ItemPositionsTable extends JPanel {
         }
         //the price of a product follows its staggered prices when the quantity changes
         mpv5.handler.ItemService.followStaggeredPrices(getModel());
+        keepTrailingEmptyRow(getModel());
         followCustomerTaxRate();
         taxcalculator.setSumFunction(m -> invoiceTotals(m, optional).tax);
         itemMultiplier.setSumFunction(m -> invoiceTotals(m, optional).gross);
@@ -910,6 +912,14 @@ public class ItemPositionsTable extends JPanel {
             lines.add(new InvoiceMath.Line(quantity(v, optional), cell(v, 5), cell(v, 15), cell(v, 6)));
         }
         return InvoiceMath.totals(lines);
+    }
+
+    private void keepTrailingEmptyRow(MPTableModel model) {
+        mpv5.handler.ItemService.keepTrailingEmptyRow(model, this::isEditable, row -> {
+            if (customerTaxRate != null) {
+                model.setValueAt(customerTaxRate, row, 6);
+            }
+        });
     }
 
     private void followCustomerTaxRate() {

@@ -972,4 +972,201 @@ public final class ItemService {
             }
         }
     }
+
+    /**
+     * Appends a new empty row whenever a value is entered into the last row of
+     * a positions table so there is always a free row at the bottom to add text
+     * to.
+     *
+     * @param model the positions
+     */
+    public static void keepTrailingEmptyRow(final MPTableModel model) {
+        keepTrailingEmptyRow(model, () -> true, null);
+    }
+
+    /**
+     * Appends a new empty row whenever a value is entered into the last row of
+     * a positions table (when editable) so there is always a free row at the
+     * bottom to add text to.
+     *
+     * @param model the positions
+     * @param editable whether the table is currently editable
+     * @param onRowAdded optional callback invoked with the index of the newly
+     * added row
+     */
+    public static void keepTrailingEmptyRow(final MPTableModel model,
+            final java.util.function.BooleanSupplier editable,
+            final java.util.function.IntConsumer onRowAdded) {
+        for (javax.swing.event.TableModelListener l : model.getTableModelListeners()) {
+            if (l instanceof TrailingEmptyRow) {
+                return;
+            }
+        }
+        model.addTableModelListener(new TrailingEmptyRow(model, editable, onRowAdded));
+    }
+
+    private static final class TrailingEmptyRow implements javax.swing.event.TableModelListener {
+
+        private final MPTableModel model;
+        private final java.util.function.BooleanSupplier editable;
+        private final java.util.function.IntConsumer onRowAdded;
+        private boolean adding;
+
+        TrailingEmptyRow(MPTableModel model,
+                java.util.function.BooleanSupplier editable,
+                java.util.function.IntConsumer onRowAdded) {
+            this.model = model;
+            this.editable = editable != null ? editable : () -> true;
+            this.onRowAdded = onRowAdded;
+        }
+
+        @Override
+        public void tableChanged(javax.swing.event.TableModelEvent e) {
+            if (adding || e.getType() != javax.swing.event.TableModelEvent.UPDATE) {
+                return;
+            }
+            int rowCount = model.getRowCount();
+            if (rowCount <= 0) {
+                return;
+            }
+            int lastRow = rowCount - 1;
+            if (e.getFirstRow() < 0 || e.getLastRow() < lastRow || e.getFirstRow() > lastRow) {
+                return;
+            }
+            if (!editable.getAsBoolean() || !model.isCellEditable(lastRow, 4)) {
+                return;
+            }
+            if (!hasEnteredValue(model, lastRow, e.getColumn())) {
+                return;
+            }
+            adding = true;
+            try {
+                model.addRow(1);
+                if (onRowAdded != null) {
+                    onRowAdded.accept(model.getRowCount() - 1);
+                }
+            } finally {
+                adding = false;
+            }
+        }
+
+        private static boolean hasEnteredValue(MPTableModel model, int row, int col) {
+            if (col == javax.swing.event.TableModelEvent.ALL_COLUMNS) {
+                return hasText(model, row, 4) || hasNonZeroNumber(model, row, 5)
+                        || hasProduct(model, row) || hasText(model, row, 14)
+                        || hasNonZeroNumber(model, row, 15);
+            }
+            switch (col) {
+                case 4:
+                case 14:
+                    return hasText(model, row, col);
+                case 5:
+                case 15:
+                    return hasNonZeroNumber(model, row, col);
+                case 10:
+                    return hasProduct(model, row);
+                case 3:
+                    return hasNonDefaultUnit(model, row);
+                case 2:
+                    return hasNonDefaultQuantity(model, row);
+                default:
+                    return false;
+            }
+        }
+
+        private static boolean hasText(MPTableModel model, int row, int col) {
+            if (col >= model.getColumnCount()) {
+                return false;
+            }
+            Object v = model.getValueAt(row, col);
+            return v != null && !v.toString().trim().isEmpty();
+        }
+
+        private static boolean hasNonZeroNumber(MPTableModel model, int row, int col) {
+            if (col >= model.getColumnCount()) {
+                return false;
+            }
+            Object v = model.getValueAt(row, col);
+            if (v == null) {
+                return false;
+            }
+            try {
+                BigDecimal n = v instanceof Number
+                        ? mpv5.utils.numberformat.FormatNumber.getBigDecimal(v)
+                        : mpv5.utils.numberformat.FormatNumber.parseDezimal(v.toString());
+                return n != null && n.signum() != 0;
+            } catch (Exception ex) {
+                return false;
+            }
+        }
+
+        private static boolean hasProduct(MPTableModel model, int row) {
+            if (10 >= model.getColumnCount()) {
+                return false;
+            }
+            Object v = model.getValueAt(row, 10);
+            if (v == null) {
+                return false;
+            }
+            if (v instanceof Product) {
+                return true;
+            }
+            if (v instanceof Number) {
+                return ((Number) v).intValue() > 0;
+            }
+            return !v.toString().trim().isEmpty();
+        }
+
+        private static boolean hasNonDefaultUnit(MPTableModel model, int row) {
+            if (3 >= model.getColumnCount()) {
+                return false;
+            }
+            Object v = model.getValueAt(row, 3);
+            if (v == null) {
+                return false;
+            }
+            String s = v.toString().trim();
+            if (s.isEmpty()) {
+                return false;
+            }
+            String def = "";
+            try {
+                if (User.getCurrentUser().getProperties().hasProperty("defunit")) {
+                    String d = User.getCurrentUser().getProperties().getProperty("defunit");
+                    def = d == null ? "" : d.trim();
+                }
+            } catch (Exception ignored) {
+            }
+            return !s.equals(def);
+        }
+
+        private static boolean hasNonDefaultQuantity(MPTableModel model, int row) {
+            if (2 >= model.getColumnCount()) {
+                return false;
+            }
+            Object v = model.getValueAt(row, 2);
+            if (v == null) {
+                return false;
+            }
+            BigDecimal q;
+            try {
+                q = v instanceof Number
+                        ? mpv5.utils.numberformat.FormatNumber.getBigDecimal(v)
+                        : mpv5.utils.numberformat.FormatNumber.parseDezimal(v.toString());
+            } catch (Exception ex) {
+                return false;
+            }
+            if (q == null || q.signum() == 0) {
+                return false;
+            }
+            BigDecimal def = BigDecimal.ONE;
+            try {
+                if (User.getCurrentUser().getProperties().hasProperty("defcount")) {
+                    def = BigDecimal.valueOf(User.getCurrentUser().getProperties().getProperty("defcount", 0d));
+                }
+            } catch (Exception ignored) {
+            }
+            return q.compareTo(def) != 0;
+        }
+    }
 }

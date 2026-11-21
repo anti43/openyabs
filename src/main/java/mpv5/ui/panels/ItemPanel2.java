@@ -3042,6 +3042,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         }
         //the price of a product follows its staggered prices when the quantity changes
         mpv5.handler.ItemService.followStaggeredPrices((MPTableModel) itemtable.getModel());
+        mpv5.handler.ItemService.keepTrailingEmptyRow((MPTableModel) itemtable.getModel());
         taxcalculator.setSumFunction(m -> invoiceTotals(m, optional).tax);
         itemMultiplier.setSumFunction(m -> invoiceTotals(m, optional).gross);
 

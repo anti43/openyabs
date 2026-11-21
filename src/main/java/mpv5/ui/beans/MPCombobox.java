@@ -78,14 +78,20 @@ public class MPCombobox extends javax.swing.JPanel {
 
             @Override
             public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER && isSelectionCommitted()) {
+                int code = e.getKeyCode();
+                if (code == KeyEvent.VK_ESCAPE || code == KeyEvent.VK_TAB
+                        || code == KeyEvent.VK_SHIFT || code == KeyEvent.VK_CONTROL
+                        || code == KeyEvent.VK_ALT || code == KeyEvent.VK_META) {
+                    return;
+                }
+                if (code == KeyEvent.VK_ENTER && isSelectionCommitted()) {
                     //the user picked an entry of the list (e.g. with the arrow keys): Enter selects it,
                     //searching again for its text would replace the selection
                     return;
                 }
                 if (SEARCH_WHILE_TYPE && getContext() != null) {
                     search();
-                } else if (SEARCH_ON_ENTER && (e.getKeyCode() == KeyEvent.VK_ENTER) && getContext() != null) {
+                } else if (SEARCH_ON_ENTER && (code == KeyEvent.VK_ENTER) && getContext() != null) {
                     search();
                 }
                 jComboBox1.showPopup();

@@ -142,8 +142,10 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
         labeledCombobox1.setSearchRestriction("productgroupsids", () -> searchedGroups); //NOI18N
 
         //above the product search
-        javax.swing.JPanel searches = new javax.swing.JPanel(new java.awt.GridLayout(2, 1, 0, 3));
+        javax.swing.JPanel searches = new javax.swing.JPanel(new java.awt.GridLayout(2, 1, 0, mpv5.ui.modern.ModernTheme.px(4)));
         searches.setOpaque(false);
+        searches.setBorder(javax.swing.BorderFactory.createEmptyBorder(
+                mpv5.ui.modern.ModernTheme.px(4), 0, mpv5.ui.modern.ModernTheme.px(6), 0));
         ((javax.swing.GroupLayout) jPanel1.getLayout()).replace(labeledCombobox1, searches);
         searches.add(groupselect);
         searches.add(labeledCombobox1);
@@ -254,18 +256,25 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
         handle.addMouseListener(drag);
         handle.addMouseMotionListener(drag);
 
+        textArea.setRows(6);
         javax.swing.JPanel root = new javax.swing.JPanel(new java.awt.BorderLayout());
         root.setBorder(javax.swing.BorderFactory.createLineBorder(line));
         root.add(handle, java.awt.BorderLayout.NORTH);
         root.add(jPanel1, java.awt.BorderLayout.CENTER);
-        jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+        int side = mpv5.ui.modern.ModernTheme.px(6);
+        int bottom = mpv5.ui.modern.ModernTheme.px(12);
+        jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(
+                mpv5.ui.modern.ModernTheme.px(2), side, bottom, side));
         setContentPane(root);
         pack();
+        java.awt.Dimension size = getSize();
+        setSize(size.width + mpv5.ui.modern.ModernTheme.px(50), size.height);
     }
 
     /**
      * As in a spreadsheet: Enter (or Ctrl+Enter) applies the text and closes
-     * the dialog, Shift+Enter is a new line in the text
+     * the dialog, Shift+Enter is a new line in the text, Tab moves focus out
+     * of the text area to the dropdowns and controls, Esc cancels
      */
     private void bindKeys() {
         //the cell editor (TextAreaCellEditor) applies the text on the command "OK",
@@ -274,6 +283,35 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
         okButton.setToolTipText(Messages.ITEM_TEXT_KEYS.toString());
         textArea.setToolTipText(Messages.ITEM_TEXT_KEYS.toString());
         bindEnter(textArea, this::apply);
+        bindTab(textArea);
+        getRootPane().getInputMap(javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW)
+                .put(javax.swing.KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "yabs.cancel");
+        getRootPane().getActionMap().put("yabs.cancel", new javax.swing.AbstractAction() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (groupselect.getComboBox().isPopupVisible()) {
+                    groupselect.getComboBox().hidePopup();
+                } else if (labeledCombobox1.getComboBox().isPopupVisible()) {
+                    labeledCombobox1.getComboBox().hidePopup();
+                } else {
+                    cancel();
+                }
+            }
+        });
+    }
+
+    /**
+     * Tab and Shift+Tab move focus out of the text area so the product group
+     * dropdown, product search, quantity spinner and buttons can be reached by
+     * keyboard.
+     *
+     * @param area
+     */
+    static void bindTab(javax.swing.JTextArea area) {
+        area.setFocusTraversalKeys(java.awt.KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, null);
+        area.setFocusTraversalKeys(java.awt.KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, null);
     }
 
     /**
@@ -305,6 +343,17 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
         ActionEvent actionEvent = new ActionEvent(okButton, ActionEvent.ACTION_PERFORMED, okButton.getActionCommand());
         for (ActionListener l : okButton.getActionListeners()) {
             l.actionPerformed(actionEvent);
+        }
+    }
+
+    /**
+     * Cancels editing and closes the dialog (as the Cancel button)
+     */
+    void cancel() {
+        ActionListener[] listeners = cancelButton.getActionListeners();
+        ActionEvent actionEvent = new ActionEvent(cancelButton, ActionEvent.ACTION_PERFORMED, cancelButton.getActionCommand());
+        for (int i = 0; i < listeners.length; i++) {
+            listeners[i].actionPerformed(actionEvent);
         }
     }
 
@@ -430,14 +479,7 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
     }
 
     public void keyPressed(KeyEvent e) {
-        //Enter, Ctrl+Enter, Shift+Enter: see bindKeys()
-        if (e.getKeyCode() == e.VK_ESCAPE) {
-            ActionListener[] listeners = cancelButton.getActionListeners();
-            ActionEvent actionEvent = new ActionEvent(cancelButton, ActionEvent.ACTION_PERFORMED, cancelButton.getActionCommand());
-            for (int i = 0; i < listeners.length; i++) {
-                listeners[i].actionPerformed(actionEvent);
-            }
-        }
+        //Enter, Ctrl+Enter, Shift+Enter, Tab, Esc: see bindKeys()
     }
 
     public void keyReleased(KeyEvent e) {

@@ -1628,6 +1628,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
         disccalculator = new DynamicTableCalculator(itemtable, "[2]*[5]%[15]", new int[]{16});
         ((MPTableModel) itemtable.getModel()).addCalculator(disccalculator);
         disccalculator.addLabel(discount, 16);
+        mpv5.handler.ItemService.keepTrailingEmptyRow((MPTableModel) itemtable.getModel());
 
 //        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("shiptax")) {
 //            int taxid = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("shiptax", new Integer(0));
