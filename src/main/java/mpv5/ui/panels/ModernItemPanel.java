@@ -603,7 +603,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
 
         remindButton.addActionListener(e -> {
             if (dataOwner != null && dataOwner.isExisting()) {
-                BigPopup.showPopup(YabsViewProxy.instance().getIdentifierFrame().getRootPane(), new RemindPanel(dataOwner), Messages.REMINDER.toString(), false);
+                mpv5.ui.dialogs.DunningDialog.show(dataOwner);
             }
         });
         scheduleButton.addActionListener(e -> {
