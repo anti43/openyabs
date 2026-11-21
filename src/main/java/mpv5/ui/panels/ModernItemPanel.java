@@ -210,7 +210,8 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
     private final JMenuItem remindButton = new JMenuItem(Messages.ITEM_CREATE_REMINDER.toString());
     //the invoice due again every n months: in the "Create" menu
     private final JMenuItem scheduleButton = new JMenuItem(Messages.RECURRING_TITLE.toString());
-    private final JButton compareButton = new JButton(text("ItemPanel2.button_compare.text"));
+    //the reference of an invoice is an order (Auftrag), not an offer
+    private final JButton compareButton = new JButton(Messages.ITEM_COMPARE_ORDER.toString());
     private final JButton referencesButton = new JButton(text("ItemPanel2.button_references.text"));
     // <editor-fold defaultstate="collapsed" desc="Data fields, filled by name from / copied to the document">
     public String cname_;
@@ -442,13 +443,17 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         refRow.add(refOrder, BorderLayout.CENTER);
         refRow.add(refOrderShow, BorderLayout.EAST);
         refOrderRow = refRow;
+        refOrder.setToolTipText(Messages.ITEM_REF_ORDER_TIP.toString());
+        refOrder.getComboBox().setToolTipText(Messages.ITEM_REF_ORDER_TIP.toString());
+        filterRefOrderWhileTyping();
+        refOrder.getComboBox().addItemListener(e -> updateCompareButton());
         grid.add(new Card(Messages.ITEM_SECTION_DOCUMENT.toString())
                 .row(Card.field(text("ItemPanel2.number._Label"), numberRow, 1),
                         Card.field(text("ItemPanel2.status._Label"), status, 1))
                 .row(Card.field(text("ItemPanel2.name._Label"), name))
                 .row(Card.field(text("ItemPanel2.groupnameselect._Label"), groupnameselect, 1),
                         Card.field(text("ItemPanel2.accountselect._Label"), accountselect, 1))
-                .row(Card.field(text("ItemPanel2.refOrder._Label"), refRow))
+                .row(Card.field(Messages.ITEM_REF_ORDER.toString(), refRow))
                 .row(Card.field(Messages.ITEM_CORRECTED_INVOICE.toString(), refInvoiceRow = wrap(refInvoice))));
         refInvoice.setToolTipText(Messages.ITEM_CORRECTED_INVOICE_HINT.toString());
 
@@ -645,6 +650,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         remindButton.setVisible(t == Item.TYPE_INVOICE);
         scheduleButton.setVisible(t == Item.TYPE_INVOICE);
         compareButton.setVisible(t == Item.TYPE_INVOICE);
+        updateCompareButton();
         referencesButton.setVisible(t == Item.TYPE_ORDER);
         refOrderShow.setVisible(t == Item.TYPE_INVOICE);
         if (refOrderRow != null) {
@@ -989,13 +995,85 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         }
     }
 
+    /**
+     * @return the order the invoice refers to: the one chosen in the field,
+     * else the saved one; 0 if none
+     */
+    private int refOrderId() {
+        try {
+            MPComboBoxModelItem i = refOrder.getSelectedItem();
+            if (i != null && i.isValid()) {
+                int id = Integer.parseInt(String.valueOf(i.getId()));
+                if (id > 0) {
+                    return id;
+                }
+            }
+        } catch (Exception e) {
+            //typed text, no order
+        }
+        return reforderids_ != null && reforderids_ > 0 ? reforderids_ : 0;
+    }
+
+    /**
+     * "Compare with order" only with a linked order
+     */
+    private void updateCompareButton() {
+        boolean linked = refOrderId() > 0;
+        compareButton.setEnabled(linked);
+        compareButton.setToolTipText(linked ? null : Messages.ITEM_COMPARE_ORDER_NONE.toString());
+    }
+
+    /**
+     * The reference field is editable, but had no search: typing filters the
+     * orders of the customer (number, date) shown in the list
+     */
+    private void filterRefOrderWhileTyping() {
+        final javax.swing.JComboBox<?> box = refOrder.getComboBox();
+        java.awt.Component editor = box.getEditor().getEditorComponent();
+        if (!(editor instanceof javax.swing.text.JTextComponent)) {
+            return;
+        }
+        final javax.swing.text.JTextComponent field = (javax.swing.text.JTextComponent) editor;
+        field.addKeyListener(new java.awt.event.KeyAdapter() {
+            @Override
+            public void keyReleased(java.awt.event.KeyEvent e) {
+                int k = e.getKeyCode();
+                if (refChoices == null || !box.isEditable() || k == java.awt.event.KeyEvent.VK_UP || k == java.awt.event.KeyEvent.VK_DOWN
+                        || k == java.awt.event.KeyEvent.VK_ENTER || k == java.awt.event.KeyEvent.VK_ESCAPE
+                        || k == java.awt.event.KeyEvent.VK_TAB || e.isActionKey() && k != java.awt.event.KeyEvent.VK_DELETE) {
+                    return;
+                }
+                final String typed = field.getText();
+                String needle = typed.trim().toLowerCase();
+                List<MPComboBoxModelItem> found = new ArrayList<MPComboBoxModelItem>();
+                for (MPComboBoxModelItem i : refChoices) {
+                    if (needle.isEmpty() || String.valueOf(i).toLowerCase().contains(needle)) {
+                        found.add(i);
+                    }
+                }
+                SwingUtilities.invokeLater(() -> {
+                    refOrder.setModel(new MPComboboxModel(found.toArray(new MPComboBoxModelItem[0])));
+                    box.setSelectedIndex(-1);
+                    field.setText(typed);
+                    if (!found.isEmpty() && box.isShowing()) {
+                        box.showPopup();
+                    } else {
+                        box.hidePopup();
+                    }
+                    updateCompareButton();
+                });
+            }
+        });
+    }
+
     private void compareToOrder() {
-        if (reforderids_ == null || reforderids_ <= 0) {
+        int ref = refOrderId();
+        if (ref <= 0) {
             return;
         }
         TableView tv = new TableView();
         JTable table = tv.getTable();
-        table.setModel(new MPTableModel(ItemService.compareToOrder(reforderids_), Headers.ITEM_COMPARE.getValue(),
+        table.setModel(new MPTableModel(ItemService.compareToOrder(ref), Headers.ITEM_COMPARE.getValue(),
                 new Class[]{String.class, String.class, String.class, String.class, String.class, Object.class}));
         TableFormat.resizeCols(table, new Integer[]{75, 75, 75, 300, 75, 200}, new Boolean[]{false, false, false, false, false, false});
         //red: more used than ordered, or not ordered at all
