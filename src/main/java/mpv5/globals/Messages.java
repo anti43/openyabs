@@ -1273,6 +1273,8 @@ public enum Messages {
     SHORTCUT_REVERT("Discard changes (show the saved data)"),
     SHORTCUT_FIND_LIST("Find: filter the list (in documents: go to the positions)"),
     SHORTCUT_COPY_RECORD("Copy the record to the temporary list (outside text fields)"),
+    ACTION_COPY_TO_CLIPBOARD("Copy to the clipboard"),
+    ACTION_COPY_TO_CLIPBOARD_TIP("Puts this record into the clipboard (window \"Clipboard & favourites\"), e.g. to paste it into another document"),
     SHORTCUT_PASTE_RECORD("Paste from the temporary list (outside text fields)"),
     SHORTCUT_DELETE_RECORD("Delete the record (asks first; in text fields: delete word)"),
     SHORTCUT_HISTORY("History (contacts)"),

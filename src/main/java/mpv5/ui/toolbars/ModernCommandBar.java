@@ -250,7 +250,9 @@ public class ModernCommandBar extends JPanel {
         saveAsNewItem = menuItem(Messages.ACTION_SAVE_AS_NEW.toString(), "/images/16/filesaveas.png", SAVE_AS_NEW);
         saveAsNewItem.setToolTipText(Messages.ACTION_CREATE_COPY_TIP.toString());
         saveAsNewItem.addActionListener(e -> triggerSaveAsNew());
-        JMenuItem copy = menuItem(text("DataPanelTB.but10.toolTipText"), "/images/16/editcopy.png", COPY);
+        //any record (a document, contact, product ...): into the clipboard of the "Ablage"
+        JMenuItem copy = menuItem(Messages.ACTION_COPY_TO_CLIPBOARD.toString(), "/images/16/editcopy.png", COPY);
+        copy.setToolTipText(Messages.ACTION_COPY_TO_CLIPBOARD_TIP.toString());
         copy.addActionListener(e -> copy());
         JMenuItem paste = menuItem(Messages.ACTION_PASTE.toString(), "/images/16/editpaste.png", PASTE);
         paste.addActionListener(e -> {
