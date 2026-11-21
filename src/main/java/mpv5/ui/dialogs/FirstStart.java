@@ -951,6 +951,7 @@ public final class FirstStart extends JFrame {
         LocalSettings.setProperty(LocalSettings.OFFICE_ALT, "true");
         LocalSettings.setProperty(LocalSettings.DBTYPE, s.network ? "network" : "single");
         LocalSettings.setProperty(LocalSettings.SUPPRESS_UPDATE_CHECK, String.valueOf(!updates.isSelected()));
+        DatabaseConnection.shutdown();
         DatabaseConnection conn = new DatabaseConnection();
         if (!conn.connect(s.driver, s.user, s.password, s.url, s.dbname, s.prefix, !s.onlyConnect)) {
             return null;

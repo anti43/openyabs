@@ -217,6 +217,7 @@ public final class ExtensionManager {
     private final File folder;
     private Host host;
     private boolean activityHooked;
+    private final java.util.concurrent.atomic.AtomicInteger startEpoch = new java.util.concurrent.atomic.AtomicInteger();
 
     /**
      * @param folder the plugins folder
@@ -439,8 +440,12 @@ public final class ExtensionManager {
      * they may build their user interface).
      */
     public void startAllInBackground() {
+        final int epoch = startEpoch.incrementAndGet();
         Thread t = new Thread(() -> {
             try {
+                if (startEpoch.get() != epoch) {
+                    return;
+                }
                 discover();
                 List<Installed> todo = new ArrayList<Installed>();
                 for (Installed i : installed) {
@@ -450,6 +455,9 @@ public final class ExtensionManager {
                 }
                 int n = 0;
                 for (Installed i : todo) {
+                    if (startEpoch.get() != epoch) {
+                        return;
+                    }
                     n++;
                     notifyHost(String.format(mpv5.globals.Messages.PLUGINS_LOADING.toString(), n, todo.size(), name(i)));
                     if (i.extension instanceof GroovyExtension) {
@@ -463,9 +471,15 @@ public final class ExtensionManager {
                 }
                 final int total = todo.size();
                 ui(() -> {
+                    if (startEpoch.get() != epoch) {
+                        return;
+                    }
                     hookActivity();
                     int running = 0;
                     for (Installed i : todo) {
+                        if (startEpoch.get() != epoch) {
+                            return;
+                        }
                         if (i.state == State.STOPPED && start(i)) {
                             running++;
                         } else if (i.state == State.RUNNING) {
@@ -688,6 +702,34 @@ public final class ExtensionManager {
         removeContributions(i.id());
         if (i.state != State.DISABLED) {
             i.state = State.STOPPED;
+            i.error = null;
+        }
+        fireChanged();
+    }
+
+    /**
+     * Stops all running plugins and removes all of their contributions (e.g.
+     * before switching to or creating another database connection). Previously
+     * failed plugins are reset to {@link State#STOPPED} so they can be retried
+     * on the next {@link #startAll()} / {@link #startAllInBackground()};
+     * disabled plugins remain {@link State#DISABLED}.
+     */
+    public void stopAll() {
+        startEpoch.incrementAndGet();
+        for (Installed i : installed) {
+            if (i.state == State.DISABLED) {
+                continue;
+            }
+            if (i.state == State.RUNNING) {
+                try {
+                    i.extension.stop();
+                } catch (Throwable t) {
+                    Log.Debug(ExtensionManager.class, t);
+                }
+            }
+            removeContributions(i.id());
+            i.state = State.STOPPED;
+            i.error = null;
         }
         fireChanged();
     }

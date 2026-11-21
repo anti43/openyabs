@@ -97,6 +97,23 @@ public class MPControlPanel extends JPanel {
     }
 
     /**
+     * Returns an already created control panel back to its overview and clears
+     * any open setting detail view (e.g. after switching databases).
+     */
+    public static synchronized void resetToOverview() {
+        if (cpanel == null) {
+            return;
+        }
+        cpanel.actions.removeAll();
+        cpanel.scroller.setViewportView(null);
+        cpanel.list.clearSelection();
+        cpanel.cards.show(cpanel.right, "overview");
+        cpanel.reload();
+        cpanel.revalidate();
+        cpanel.repaint();
+    }
+
+    /**
      * One setting
      */
     public static final class Entry {

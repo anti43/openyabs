@@ -491,4 +491,203 @@ class ExtensionManagerTest {
         assertFalse(ExtensionManager.isExtensionFile(other));
         assertFalse(ExtensionManager.isExtensionFile(dir.resolve("missing.jar").toFile()));
     }
+
+    @Test
+    void stopAllStopsRunningResetsFailedKeepsDisabledAndAllowsRestart() {
+        TestHost h = new TestHost();
+        ExtensionManager m = new ExtensionManager(dir.toFile(), h);
+        final int[] goodStarts = {0};
+        final int[] goodStops = {0};
+        final int[] goodOnStops = {0};
+        final int[] flakyStarts = {0};
+        final int[] offStarts = {0};
+        mpv5.db.common.DatabaseObjectModifier mod = new mpv5.db.common.DatabaseObjectModifier() {
+            @Override
+            public mpv5.db.common.DatabaseObject modifyOnExplode(mpv5.db.common.DatabaseObject object) {
+                return object;
+            }
+
+            @Override
+            public mpv5.db.common.DatabaseObject modifyOnSave(mpv5.db.common.DatabaseObject object) {
+                return object;
+            }
+
+            @Override
+            public mpv5.db.common.DatabaseObject executeAfterCreate(mpv5.db.common.DatabaseObject object) {
+                return object;
+            }
+
+            @Override
+            public mpv5.db.common.DatabaseObject executeAfterSave(mpv5.db.common.DatabaseObject object) {
+                return object;
+            }
+
+            @Override
+            public java.util.Map<String, Object> modifyOnResolve(java.util.Map<String, Object> map) {
+                return map;
+            }
+
+            @Override
+            public mpv5.db.common.DatabaseObject modifyOnDelete(mpv5.db.common.DatabaseObject object) {
+                return object;
+            }
+        };
+
+        ExtensionManager.Installed good = m.register(new YabsExtension() {
+            public String id() { return "switch.good"; }
+            public String name() { return "Good"; }
+            public void start(ExtensionContext ctx) {
+                goodStarts[0]++;
+                ctx.addCommand("Good cmd", "", () -> {});
+                ctx.addSettingsPage("Good page", "", () -> null);
+                ctx.addRecordModifier(mod);
+                ctx.onStop(() -> goodOnStops[0]++);
+            }
+            public void stop() {
+                goodStops[0]++;
+            }
+        });
+        ExtensionManager.Installed flaky = m.register(new YabsExtension() {
+            public String id() { return "switch.flaky"; }
+            public String name() { return "Flaky"; }
+            public void start(ExtensionContext ctx) {
+                flakyStarts[0]++;
+                if (flakyStarts[0] == 1) {
+                    throw new IllegalStateException("missing table");
+                }
+                ctx.addCommand("Flaky cmd", "", () -> {});
+            }
+        });
+        ExtensionManager.Installed off = m.register(new YabsExtension() {
+            public String id() { return "switch.off"; }
+            public String name() { return "Off"; }
+            public void start(ExtensionContext ctx) {
+                offStarts[0]++;
+            }
+        });
+        m.setEnabled(off, false);
+
+        m.startAll();
+        assertEquals(ExtensionManager.State.RUNNING, good.getState());
+        assertEquals(ExtensionManager.State.FAILED, flaky.getState());
+        assertNotNull(flaky.getError());
+        assertEquals(ExtensionManager.State.DISABLED, off.getState());
+        assertEquals(1, goodStarts[0]);
+        assertEquals(1, flakyStarts[0]);
+        assertEquals(0, offStarts[0]);
+        assertTrue(mpv5.pluginhandling.YabsPluginLoader.registeredModifiers.contains(mod));
+
+        m.stopAll();
+        assertEquals(ExtensionManager.State.STOPPED, good.getState());
+        assertEquals(ExtensionManager.State.STOPPED, flaky.getState());
+        assertEquals(null, flaky.getError());
+        assertEquals(ExtensionManager.State.DISABLED, off.getState());
+        assertEquals(1, goodStops[0]);
+        assertEquals(1, goodOnStops[0]);
+        assertEquals(0, m.contributions("switch.good"));
+        assertTrue(m.commands().isEmpty());
+        assertTrue(m.pages().isEmpty());
+        assertFalse(mpv5.pluginhandling.YabsPluginLoader.registeredModifiers.contains(mod));
+
+        // Restarting after switching to a new DB runs start() again (e.g. schema init)
+        m.startAll();
+        assertEquals(ExtensionManager.State.RUNNING, good.getState());
+        assertEquals(ExtensionManager.State.RUNNING, flaky.getState());
+        assertEquals(ExtensionManager.State.DISABLED, off.getState());
+        assertEquals(2, goodStarts[0]);
+        assertEquals(2, flakyStarts[0]);
+        assertEquals(0, offStarts[0]);
+        assertEquals(2, m.commands().size());
+        assertTrue(mpv5.pluginhandling.YabsPluginLoader.registeredModifiers.contains(mod));
+
+        m.stopAll();
+        assertFalse(mpv5.pluginhandling.YabsPluginLoader.registeredModifiers.contains(mod));
+    }
+
+    @Test
+    void stopAllThenStartAllInBackgroundRestartsEnabledPlugins() throws Exception {
+        TestHost h = new TestHost();
+        ExtensionManager m = new ExtensionManager(dir.toFile(), h);
+        final int[] starts = {0};
+        final int[] disabledStarts = {0};
+        ExtensionManager.Installed active = m.register(new YabsExtension() {
+            public String id() { return "bg.restart"; }
+            public String name() { return "BG Restart"; }
+            public void start(ExtensionContext ctx) {
+                starts[0]++;
+                ctx.addCommand("BG " + starts[0], "", () -> {});
+            }
+        });
+        ExtensionManager.Installed disabled = m.register(new YabsExtension() {
+            public String id() { return "bg.disabled"; }
+            public String name() { return "BG Disabled"; }
+            public void start(ExtensionContext ctx) {
+                disabledStarts[0]++;
+            }
+        });
+        m.setEnabled(disabled, false);
+
+        m.startAll();
+        assertEquals(1, starts[0]);
+        assertEquals(ExtensionManager.State.RUNNING, active.getState());
+
+        m.stopAll();
+        assertEquals(ExtensionManager.State.STOPPED, active.getState());
+        assertTrue(m.commands().isEmpty());
+
+        m.startAllInBackground();
+        long until = System.currentTimeMillis() + 10000;
+        while (System.currentTimeMillis() < until && active.getState() != ExtensionManager.State.RUNNING) {
+            Thread.sleep(25);
+        }
+        assertEquals(ExtensionManager.State.RUNNING, active.getState());
+        assertEquals(2, starts[0]);
+        assertEquals(ExtensionManager.State.DISABLED, disabled.getState());
+        assertEquals(0, disabledStarts[0]);
+        assertTrue(m.commands().stream().anyMatch(c -> "BG 2".equals(c.title)));
+    }
+
+    @Test
+    void stopAllAndRestartCreatesSchemaInNewDatabase() throws Exception {
+        String url1 = "jdbc:h2:mem:ext_switch_db1_" + System.nanoTime() + ";DB_CLOSE_DELAY=-1";
+        String url2 = "jdbc:h2:mem:ext_switch_db2_" + System.nanoTime() + ";DB_CLOSE_DELAY=-1";
+        try (java.sql.Connection c1 = java.sql.DriverManager.getConnection(url1, "sa", "");
+             java.sql.Connection c2 = java.sql.DriverManager.getConnection(url2, "sa", "")) {
+            final java.sql.Connection[] currentDb = {c1};
+            ExtensionManager m = new ExtensionManager(dir.toFile(), new TestHost());
+            ExtensionManager.Installed schemaPlugin = m.register(new YabsExtension() {
+                public String id() { return "schema.test"; }
+                public String name() { return "Schema Test"; }
+                public void start(ExtensionContext ctx) throws Exception {
+                    try (java.sql.Statement st = currentDb[0].createStatement()) {
+                        st.execute("CREATE TABLE IF NOT EXISTS plugin_demo_table (id INT PRIMARY KEY, label VARCHAR(64))");
+                        st.execute("INSERT INTO plugin_demo_table (id, label) VALUES (1, 'ok')");
+                    }
+                }
+            });
+
+            m.startAll();
+            assertEquals(ExtensionManager.State.RUNNING, schemaPlugin.getState());
+            try (java.sql.Statement st = c1.createStatement();
+                 java.sql.ResultSet rs = st.executeQuery("SELECT COUNT(*) FROM plugin_demo_table")) {
+                assertTrue(rs.next());
+                assertEquals(1, rs.getInt(1));
+            }
+
+            // Switch to a fresh second database: stop plugins, switch DB, restart plugins
+            m.stopAll();
+            assertEquals(ExtensionManager.State.STOPPED, schemaPlugin.getState());
+            currentDb[0] = c2;
+            m.startAll();
+            assertEquals(ExtensionManager.State.RUNNING, schemaPlugin.getState());
+
+            // The plugin schema was created in the second database too
+            try (java.sql.Statement st = c2.createStatement();
+                 java.sql.ResultSet rs = st.executeQuery("SELECT COUNT(*) FROM plugin_demo_table")) {
+                assertTrue(rs.next());
+                assertEquals(1, rs.getInt(1));
+            }
+            m.stopAll();
+        }
+    }
 }

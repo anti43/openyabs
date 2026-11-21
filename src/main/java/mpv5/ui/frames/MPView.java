@@ -3804,6 +3804,66 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         getTabPane().validate();
     }
 
+    /**
+     * Closes open tabs and clears cached view state after switching to or
+     * creating another database connection, so views and records from the
+     * previous database are not left open.
+     */
+    public void resetForDatabaseSwitch() {
+        Runnable task = () -> {
+            if (tabPane != null) {
+                tabPane.removeAll();
+                tabPane.validate();
+                tabPane.repaint();
+            }
+            clisttabc = null;
+            clisttabs = null;
+            clisttabm = null;
+            polisttab = null;
+            FLOW.clear();
+            pif = 0;
+            if (clipboardMenu != null) {
+                clipboardMenu.removeAll();
+                if (jMenu6 != null) {
+                    clipboardMenu.add(jMenu6);
+                }
+            }
+            if (currentList != null) {
+                currentList.clear();
+            }
+            try {
+                MPControlPanel.resetToOverview();
+            } catch (Exception ex) {
+                Log.Debug(this, ex);
+            }
+            if (favMenu != null) {
+                favMenu.removeAll();
+                try {
+                    reloadFavorites();
+                } catch (Exception ex) {
+                    Log.Debug(this, ex);
+                }
+            }
+            if (BINDING_VARS != null) {
+                try {
+                    BINDING_VARS.put("QueryHandler", QueryHandler.instanceOf());
+                } catch (Exception ex) {
+                    Log.Debug(this, ex);
+                }
+            }
+            try {
+                Scheduler.openHomeScreen(true);
+            } catch (Exception ex) {
+                Log.Debug(this, ex);
+            }
+        };
+        if (SwingUtilities.isEventDispatchThread()) {
+            task.run();
+        } else {
+            SwingUtilities.invokeLater(task);
+        }
+    }
+
     @Override
     public synchronized void setClipBoardVisible(boolean show) {
         if (clipboard == null) {

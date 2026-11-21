@@ -160,6 +160,11 @@ public final class ConnectionManager extends JDialog {
      * show the dialog again (the new database was cancelled or failed)
      */
     private boolean reopen;
+    /**
+     * plugins were stopped before switching or creating a database and need to
+     * be started again once a database is active (new or restored)
+     */
+    private boolean pluginsStopped;
 
     /**
      * The first start assistant has finished (or was cancelled): {@link #open}
@@ -187,6 +192,8 @@ public final class ConnectionManager extends JDialog {
                 dispose();
                 if (ConnectionManager.this.startup) {
                     Main.getApplication().exit();
+                } else {
+                    restartPluginsAfterSwitch();
                 }
             }
         });
@@ -359,6 +366,48 @@ public final class ConnectionManager extends JDialog {
                 && DatabaseConnection.getConnector().getConnection() != null;
     }
 
+    private void stopPluginsForSwitch() {
+        if (startup || pluginsStopped) {
+            return;
+        }
+        mpv5.plugin.ExtensionManager em = mpv5.plugin.ExtensionManager.instanceOrNull();
+        if (em != null) {
+            em.stopAll();
+            pluginsStopped = true;
+        }
+    }
+
+    private void restartPluginsAfterSwitch() {
+        if (startup || !pluginsStopped) {
+            return;
+        }
+        pluginsStopped = false;
+        mpv5.plugin.ExtensionManager em = mpv5.plugin.ExtensionManager.instanceOrNull();
+        if (em != null) {
+            em.startAllInBackground();
+        }
+    }
+
+    static void clearCaches() {
+        mpv5.db.objects.ValueProperty.clearScripts();
+        mpv5.ui.dialogs.subcomponents.wizard_Yabs132_Import.clearCaches();
+        try {
+            User.cacheUser();
+        } catch (Throwable t) {
+            Log.Debug(ConnectionManager.class, t);
+        }
+    }
+
+    private void resetUiForSwitch() {
+        if (startup) {
+            return;
+        }
+        mpv5.ui.frames.MPView view = mpv5.ui.frames.MPView.identifierView;
+        if (view != null) {
+            view.resetForDatabaseSwitch();
+        }
+    }
+
     /**
      * Switches to the selected connection and signs in; back to the previous
      * one if that fails
@@ -378,10 +427,18 @@ public final class ConnectionManager extends JDialog {
         setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.WAIT_CURSOR));
         try {
             if (switched) {
+                stopPluginsForSwitch();
                 switchTo(c.id);
             }
             User u = mpv5.usermanagement.MPSecurityManager.checkAuth(user.getText(), new String(password.getPassword()));
             if (u == null) {
+                if (switched && before != c.id) {
+                    try {
+                        switchTo(before);
+                    } catch (Exception ex) {
+                        Log.Debug(this, ex);
+                    }
+                }
                 problem.setText(Messages.CONNMGR_DENIED.toString());
                 return;
             }
@@ -391,8 +448,14 @@ public final class ConnectionManager extends JDialog {
             LocalSettings.save();
             mpv5.globals.ConnectionStart.used(c.id);
             dispose();
-            if (switched && !startup) {
-                mpv5.YabsViewProxy.instance().addMessage(String.format(Messages.CONNMGR_SWITCHED.toString(), c.name));
+            if (!startup) {
+                if (switched) {
+                    resetUiForSwitch();
+                }
+                restartPluginsAfterSwitch();
+                if (switched) {
+                    mpv5.YabsViewProxy.instance().addMessage(String.format(Messages.CONNMGR_SWITCHED.toString(), c.name));
+                }
             }
         } catch (Exception e) {
             Log.Debug(this, e);
@@ -427,7 +490,7 @@ public final class ConnectionManager extends JDialog {
         //version check and updates of this database, like at start
         QueryHandler.restart();
         GlobalSettings.read();
-        mpv5.db.objects.ValueProperty.clearScripts();
+        clearCaches();
     }
 
     /**
@@ -443,6 +506,8 @@ public final class ConnectionManager extends JDialog {
         }
         try {
             final int before = LocalSettings.getConnectionID();
+            final DatabaseConnection beforeConn = DatabaseConnection.getConnector();
+            stopPluginsForSwitch();
             PropertyStore p = new PropertyStore();
             p.addProperty(LocalSettings.CONNECTION_NAME, name.trim());
             final int id = LocalSettings.addConnection(p);
@@ -455,6 +520,7 @@ public final class ConnectionManager extends JDialog {
                 try {
                     QueryHandler.restart();
                     GlobalSettings.read();
+                    clearCaches();
                     mpv5.globals.ConnectionStart.used(id);
                     signIn().login();
                     LocalSettings.save();
@@ -462,6 +528,8 @@ public final class ConnectionManager extends JDialog {
                     //at start: YaBS goes on starting (signed in, the new database); a second
                     //Main.start() here started YaBS twice
                     if (!startup) {
+                        resetUiForSwitch();
+                        restartPluginsAfterSwitch();
                         mpv5.YabsViewProxy.instance().addMessage(String.format(Messages.CONNMGR_CREATED.toString(), name.trim()));
                     }
                     setupEnded(false);
@@ -475,9 +543,17 @@ public final class ConnectionManager extends JDialog {
                 //cancelled: back to the previous connection, the empty entry is removed
                 try {
                     LocalSettings.removeInstance(id);
-                    LocalSettings.setConnectionID(before);
-                    LocalSettings.read();
-                    LocalSettings.apply();
+                    boolean reconnect = !startup && (DatabaseConnection.getConnector() != beforeConn
+                            || beforeConn == null
+                            || beforeConn.getConnection() == null
+                            || beforeConn.getConnection().isClosed());
+                    if (reconnect) {
+                        switchTo(before);
+                    } else {
+                        LocalSettings.setConnectionID(before);
+                        LocalSettings.read();
+                        LocalSettings.apply();
+                    }
                 } catch (Exception e) {
                     Log.Debug(ConnectionManager.class, e);
                 }
