@@ -4065,32 +4065,37 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 
     /**
      * Back / forward enabled only if there is a step; tooltips and the
-     * shortcuts Ctrl+Left / Ctrl+Right (outside text fields, where they move
-     * the cursor by words)
+     * shortcuts Ctrl+Shift+Left / Ctrl+Shift+Right, anywhere in the main
+     * window (also in text fields and tables, where Ctrl+Left / Ctrl+Right
+     * belong to the field)
      */
     private void initFlowButtons() {
         closeButton1.setToolTipText(Messages.FLOW_BACK.toString());
         closeButton2.setToolTipText(Messages.FLOW_FORWARD.toString());
-        javax.swing.JRootPane root = getFrame().getRootPane();
-        root.getInputMap(javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-                javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_LEFT, java.awt.event.InputEvent.CTRL_DOWN_MASK), "yabs.flowBack");
-        root.getInputMap(javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-                javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_RIGHT, java.awt.event.InputEvent.CTRL_DOWN_MASK), "yabs.flowForward");
-        root.getActionMap().put("yabs.flowBack", new AbstractAction() {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                showPreviousDatabaseObject();
+        final java.awt.Window main = getFrame();
+        java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(e -> {
+            if (e.getID() != java.awt.event.KeyEvent.KEY_PRESSED
+                    || (e.getKeyCode() != java.awt.event.KeyEvent.VK_LEFT && e.getKeyCode() != java.awt.event.KeyEvent.VK_RIGHT)) {
+                return false;
             }
-        });
-        root.getActionMap().put("yabs.flowForward", new AbstractAction() {
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
+            int mods = e.getModifiersEx() & (java.awt.event.InputEvent.CTRL_DOWN_MASK | java.awt.event.InputEvent.SHIFT_DOWN_MASK
+                    | java.awt.event.InputEvent.ALT_DOWN_MASK | java.awt.event.InputEvent.META_DOWN_MASK);
+            if (mods != (java.awt.event.InputEvent.CTRL_DOWN_MASK | java.awt.event.InputEvent.SHIFT_DOWN_MASK)) {
+                return false;
+            }
+            java.awt.Component c = e.getComponent();
+            java.awt.Window w = c instanceof java.awt.Window ? (java.awt.Window) c : SwingUtilities.getWindowAncestor(c);
+            if (w != main) {
+                return false;
+            }
+            if (e.getKeyCode() == java.awt.event.KeyEvent.VK_LEFT) {
+                showPreviousDatabaseObject();
+            } else {
                 showNextDatabaseObject();
             }
+            //not to the focused field (which would select words)
+            e.consume();
+            return true;
         });
         //a tab selected or closed: the steps that can be reached change
         getTabPane().addChangeListener(e -> {
