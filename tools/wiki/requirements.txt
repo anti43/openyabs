@@ -1,0 +1,4 @@
+# Reproducible Python dependencies for building the GitHub wiki into docs/wiki/.
+# Keep these separate from the Java/Gradle application build.
+mkdocs-material>=9.5,<10
+PyYAML>=6.0,<7
