@@ -1,0 +1,129 @@
+# Publishes the GitHub wiki (https://github.com/anti43/openyabs.wiki.git) into
+# docs/wiki/ so GitHub Pages serves it at https://anti43.github.io/openyabs/wiki/.
+#
+# GitHub wiki edits live in a separate git repository and do not trigger push
+# events in anti43/openyabs, so automatic updates are detected via the hourly
+# schedule below (and can also be triggered on demand with workflow_dispatch).
+name: Sync Wiki to Pages
+
+on:
+  schedule:
+    # Run once an hour (off the top of the hour to avoid GitHub Actions spikes).
+    - cron: '17 * * * *'
+  workflow_dispatch:
+  push:
+    branches: [master]
+    # Only rebuild when the wiki sync workflow or builder changes.
+    # Bot commits that only update docs/wiki/ will never match these paths.
+    paths:
+      - '.github/workflows/sync-wiki.yml'
+      - 'tools/wiki/**'
+  pull_request:
+    paths:
+      - '.github/workflows/sync-wiki.yml'
+      - 'tools/wiki/**'
+
+permissions: {}
+
+concurrency:
+  group: sync-wiki-${{ github.event_name == 'pull_request' && github.ref || 'master' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  verify:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: tools/wiki/requirements.txt
+
+      - name: Install wiki builder dependencies
+        run: python -m pip install -r tools/wiki/requirements.txt
+
+      - name: Clone public wiki repository
+        run: |
+          rm -rf "${{ runner.temp }}/openyabs.wiki"
+          git clone --depth 1 https://github.com/anti43/openyabs.wiki.git "${{ runner.temp }}/openyabs.wiki"
+
+      - name: Build and verify wiki site (dry run)
+        run: |
+          python tools/wiki/build_wiki.py \
+            --wiki-dir "${{ runner.temp }}/openyabs.wiki" \
+            --output-dir docs/wiki
+
+      - name: Verify existing docs files are untouched
+        run: |
+          changed=$(git status --porcelain -- docs/ ':!docs/wiki/')
+          if [[ -n "$changed" ]]; then
+            echo "::error::Unexpected changes outside docs/wiki/:"
+            echo "$changed"
+            exit 1
+          fi
+
+  sync:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: tools/wiki/requirements.txt
+
+      - name: Install wiki builder dependencies
+        run: python -m pip install -r tools/wiki/requirements.txt
+
+      - name: Clone public wiki repository
+        id: wiki
+        run: |
+          rm -rf "${{ runner.temp }}/openyabs.wiki"
+          git clone --depth 1 https://github.com/anti43/openyabs.wiki.git "${{ runner.temp }}/openyabs.wiki"
+          wiki_sha=$(git -C "${{ runner.temp }}/openyabs.wiki" rev-parse --short HEAD)
+          echo "sha=${wiki_sha}" >> "$GITHUB_OUTPUT"
+          echo "Cloned wiki at commit ${wiki_sha}"
+
+      - name: Build wiki into docs/wiki/
+        run: |
+          python tools/wiki/build_wiki.py \
+            --wiki-dir "${{ runner.temp }}/openyabs.wiki" \
+            --output-dir docs/wiki
+
+      - name: Verify existing docs files are untouched
+        run: |
+          changed=$(git status --porcelain -- docs/ ':!docs/wiki/')
+          if [[ -n "$changed" ]]; then
+            echo "::error::Unexpected changes outside docs/wiki/:"
+            echo "$changed"
+            exit 1
+          fi
+
+      - name: Commit and push updated wiki pages
+        env:
+          WIKI_SHA: ${{ steps.wiki.outputs.sha }}
+        run: |
+          git add -A -- docs/wiki
+          if git diff --cached --quiet -- docs/wiki; then
+            echo "No changes in docs/wiki/; nothing to commit."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Sync wiki to GitHub Pages (wiki@${WIKI_SHA})"
+          git push origin HEAD:master
