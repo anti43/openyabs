@@ -17,6 +17,7 @@
 package mpv5.utils.export;
 
 import com.lowagie.text.FontFactory;
+import mpv5.utils.images.YabsBarcodeGenerator;
 import mpv5.utils.images.YabsQRCodeGenerator;
 
 import fr.opensagres.odfdom.converter.core.ODFConverterException;
@@ -254,6 +255,21 @@ public class ODTFile2 extends Exportable {
                 }
             }
 
+            //Code 39 barcode of the document/record cnumber: an image named Barcode.img (or Code39.img),
+            //removed when the document has no cnumber or the value is not valid Code 39
+            metadata.addFieldAsImage("Barcode.img", NullImageBehaviour.RemoveImageTemplate);
+            metadata.addFieldAsImage("Code39.img", NullImageBehaviour.RemoveImageTemplate);
+            String cnumber = documentNumber(templateData);
+            if (cnumber != null) {
+                try {
+                    byte[] barcodePng = YabsBarcodeGenerator.code39Png(cnumber);
+                    context.put("Barcode.img", YabsBarcodeGenerator.imageProvider(barcodePng));
+                    context.put("Code39.img", YabsBarcodeGenerator.imageProvider(barcodePng));
+                } catch (Exception e) {
+                    Log.Debug(this, "No Code 39 barcode for '" + cnumber + "': " + e.getMessage());
+                }
+            }
+
             report.setFieldsMetadata(metadata);
             report.extractFields(extractor);
 
@@ -324,6 +340,59 @@ public class ODTFile2 extends Exportable {
             }
         }
         return null;
+    }
+
+    /**
+     * Resolves the primary {@code cnumber} of the exported document or record
+     * from the template data map (e.g. {@code item.cnumber},
+     * {@code contact.cnumber}, {@code product.cnumber},
+     * {@code reminder.item.cnumber}). Picks the shallowest {@code cnumber} /
+     * {@code *.cnumber} key (preferring non-{@code .reference.} keys) and does
+     * not fall back to a deeper nested entity's number if the primary number is
+     * blank.
+     *
+     * @param data the template data map
+     * @return trimmed document number, or {@code null} if absent or blank
+     */
+    public static String documentNumber(java.util.Map<String, Object> data) {
+        if (data == null || data.isEmpty()) {
+            return null;
+        }
+        String bestKey = null;
+        int bestDepth = Integer.MAX_VALUE;
+        boolean bestIsReference = true;
+        for (String key : data.keySet()) {
+            if (key == null || (!key.equals("cnumber") && !key.endsWith(".cnumber"))) {
+                continue;
+            }
+            int depth = 0;
+            for (int i = 0; i < key.length(); i++) {
+                if (key.charAt(i) == '.') {
+                    depth++;
+                }
+            }
+            boolean isRef = key.contains(".reference.");
+            if (bestKey == null
+                    || depth < bestDepth
+                    || (depth == bestDepth && !isRef && bestIsReference)
+                    || (depth == bestDepth && isRef == bestIsReference && "item.cnumber".equals(key))
+                    || (depth == bestDepth && isRef == bestIsReference && !"item.cnumber".equals(bestKey)
+                            && (key.length() < bestKey.length()
+                                    || (key.length() == bestKey.length() && key.compareTo(bestKey) < 0)))) {
+                bestKey = key;
+                bestDepth = depth;
+                bestIsReference = isRef;
+            }
+        }
+        if (bestKey == null) {
+            return null;
+        }
+        Object value = data.get(bestKey);
+        if (value == null) {
+            return null;
+        }
+        String s = String.valueOf(value).trim();
+        return s.isEmpty() ? null : s;
     }
 
     private void filltable(int index, String[] cols, Object tablel, FieldsMetadata metadata, IContext context) {

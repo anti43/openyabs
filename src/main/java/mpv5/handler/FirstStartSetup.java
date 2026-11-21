@@ -511,6 +511,25 @@ public final class FirstStartSetup {
         PREVIOUS_RELEASE.put("b195f17680b5936e2716e6d10a2a2b8894da41908d969efd4ed431254fbe8d99", "/extra/templates/demo-21.odt");
         PREVIOUS_RELEASE.put("e7c2c98733c4d6a6b14d84325655193e664b86ad0d9293b63b69b76e4438c286", "/extra/templates/demo-22.odt");
         PREVIOUS_RELEASE.put("8e5e5e3fb681cd5ef2e5255e163f72091d1062314c50244741e0516c01c016f0", INVOICE_TEMPLATE);
+        //before Code 39 cnumber barcode (Barcode.img) on demo templates
+        PREVIOUS_RELEASE.put("3f0a98f8ca59f34fb7ab0f8a36676e3427a13f6d8890c2956e2635fed3879723", SMALL_BUSINESS_INVOICE_TEMPLATE);
+        PREVIOUS_RELEASE.put("ecade8fa7d70e9275a3417b4be295ff6601db7fdbc878969788528e7e05c6f74", "/extra/templates/demo-00.odt");
+        PREVIOUS_RELEASE.put("5dc70b8c75c7cdde9fece4e62094055cc4172c4196bf2caf11a90598dd6eafd1", "/extra/templates/demo-01.odt");
+        PREVIOUS_RELEASE.put("cbb5efe183e9b56b395de7c3647564d46f17dc1aee96d26dddd40f436f9400cb", "/extra/templates/demo-02.odt");
+        PREVIOUS_RELEASE.put("e1de01bba58c01b7cf0e6881e940e72553610af5cd5ea44c0960157ef4febf69", "/extra/templates/demo-03.odt");
+        PREVIOUS_RELEASE.put("c6c49b5c37bf131547b7d7b9e59a5da20a3f5b6d5b499fc0e47cac02df7642ef", "/extra/templates/demo-04.odt");
+        PREVIOUS_RELEASE.put("54739eaf363c8cd14afa91cef7b64cfa6b9d90312d9c6bf360566411979c0127", "/extra/templates/demo-05.odt");
+        PREVIOUS_RELEASE.put("a040858cd143a392f12261e02458d59e4d53666f38875593bab4e534e2cd645c", "/extra/templates/demo-06.odt");
+        PREVIOUS_RELEASE.put("4e924e7c7e9068bfa6ad35c6e6d97d900f0aa4bd3bdd78f1031ca5cd6e0ae94e", "/extra/templates/demo-07.odt");
+        PREVIOUS_RELEASE.put("0b358dff2f87823a3029d86ae6ad922c4493c6fe39ab0c745d1678db6b450a1e", "/extra/templates/demo-08.odt");
+        PREVIOUS_RELEASE.put("5937827ea1813fc0bd9bed9aef2dcad9b4237100b5fd977a365bd17fe176ee30", "/extra/templates/demo-10.odt");
+        PREVIOUS_RELEASE.put("1ab97b52949ce543d5abc1a95e4c6315009eb6dd68d75e875ce0f7cb69d9cd57", "/extra/templates/demo-11.odt");
+        PREVIOUS_RELEASE.put("822ce363b0f38722eebc450a372748905a059d1a3e16927cac60aaaee3adc252", "/extra/templates/demo-12.odt");
+        PREVIOUS_RELEASE.put("056e6beb517d9477240c70e257e0e4aecdc50dbe61926f5a30946329be7c94d7", "/extra/templates/demo-13.odt");
+        PREVIOUS_RELEASE.put("c41612852696197b61b53776c4829fafc7591025924ee36af7dde4d3fb29e4ec", "/extra/templates/demo-14.odt");
+        PREVIOUS_RELEASE.put("3fcc08bd31af27bd1502e1211f5f0bd922367bfa71e0a1233003f14e2a37ff44", "/extra/templates/demo-20.odt");
+        PREVIOUS_RELEASE.put("c9ce3d950c53948ccadccc627196af1ae8eff91d4a4a273b2b34b349eb0e5069", "/extra/templates/demo-21.odt");
+        PREVIOUS_RELEASE.put("c294e39c0c1ebc45992e67651bea6e41a7081d7d7ceeb1b9316bbcd14ab4d5ec", "/extra/templates/demo-22.odt");
     }
 
     static {

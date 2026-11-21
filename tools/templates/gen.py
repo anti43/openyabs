@@ -92,13 +92,21 @@ STYLES = ('<style:style style:name="PBreak" style:family="paragraph" style:paren
           '<style:style style:name="RefT.B" style:family="table-column"><style:table-column-properties style:column-width="10cm"/></style:style>'
           '<style:style style:name="RefT.C" style:family="table-cell"><style:table-cell-properties fo:padding="0.04cm" fo:border-bottom="0.5pt solid #dddddd" fo:border-top="none" fo:border-left="none" fo:border-right="none"/></style:style>'
           '<style:style style:name="frLogo" style:family="graphic" style:parent-style-name="Graphics"><style:graphic-properties style:vertical-pos="top" style:vertical-rel="baseline" fo:padding="0cm" fo:border="none"/></style:style>')
+BARCODE_STYLES = ('<style:style style:name="frBarcode" style:family="graphic" style:parent-style-name="Graphics"><style:graphic-properties style:vertical-pos="top" style:vertical-rel="baseline" fo:padding="0cm" fo:border="none"/></style:style>'
+                  '<style:style style:name="HeadT" style:family="table"><style:table-properties style:width="16.14cm" table:align="left"/></style:style>'
+                  '<style:style style:name="HeadT.A" style:family="table-column"><style:table-column-properties style:column-width="10.94cm"/></style:style>'
+                  '<style:style style:name="HeadT.B" style:family="table-column"><style:table-column-properties style:column-width="5.2cm"/></style:style>'
+                  '<style:style style:name="HeadT.C" style:family="table-cell"><style:table-cell-properties style:vertical-align="middle" fo:padding="0cm" fo:border="none"/></style:style>'
+                  '<style:style style:name="PBarcode" style:family="paragraph" style:parent-style-name="Standard"><style:paragraph-properties fo:text-align="end"/></style:style>')
 
-def reference(title, groups, tid=None, tname=None):
+def reference(title, groups, tid=None, tname=None, has_barcode=True):
     x = ['<text:p text:style-name="PBreak">%s</text:p>' % esc(title)]
     if tid is not None:
         # the template type, for easier debugging: which kind of document uses this template
         x.append('<text:p text:style-name="PRefHint">%s</text:p>' % esc('Vorlagentyp: %d – %s' % (tid, tname)))
     x += ['<text:p text:style-name="PRefHint">%s</text:p>' % esc('Alle Felder dieser Vorlage: links der Name, rechts der Wert beim Export. Felder in eigene Vorlagen kopieren (Einfügen › Feldbefehl › Platzhalter) und diese Seite löschen.')]
+    if has_barcode:
+        x.append('<text:p text:style-name="PRefHint">%s</text:p>' % esc('Bildfelder (Name der Grafik in den Bildeigenschaften): Barcode.img oder Code39.img (Code-39-Barcode der Dokumentnummer cnumber), QRCode.img (EPC-Zahlungs-QR-Code bei Rechnungen).'))
     for gname, flist in groups:
         if not flist:
             continue
@@ -292,6 +300,11 @@ def compact_qr(c):
 
 LOGO = ('<text:p text:style-name="P23"><draw:frame draw:style-name="frLogo" draw:name="Logo" text:anchor-type="as-char" svg:width="4.2cm" svg:height="1.4cm" draw:z-index="3">'
         '<draw:image xlink:href="Pictures/logo.png" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/></draw:frame></text:p>')
+BARCODE = ('<text:p text:style-name="PBarcode"><draw:frame draw:style-name="frBarcode" draw:name="Barcode.img" text:anchor-type="as-char" svg:width="5.0cm" svg:height="1.0cm" draw:z-index="4">'
+           '<draw:image xlink:href="Pictures/barcode.png" xlink:type="simple" xlink:show="embed" xlink:actuate="onLoad"/></draw:frame></text:p>')
+HEADING_PARA = re.compile(
+    r'<text:p text:style-name="P5"><text:span text:style-name="T6">[^<]+</text:span>'
+    r'<text:span text:style-name="T6"><text:placeholder text:placeholder-type="text">&lt;[^&]+&gt;</text:placeholder></text:span></text:p>')
 
 # ---- the journal: landscape, the journal table (xtable1, columns from the template
 # format: date, number, type, name, account, status, net, tax, gross, profit) and the totals
@@ -439,10 +452,23 @@ def make(fname, title, kind, groups, prefix=None, cprefix=None, blocks=None, tot
             c = corrected_invoice(c)
     if prefix:
         c = c.replace('&lt;item.contact.', '&lt;' + cprefix).replace('&lt;item.', '&lt;' + prefix)
-    c = c.replace('</office:automatic-styles>', STYLES + BSTYLES + '</office:automatic-styles>', 1)
+    c = c.replace('</office:automatic-styles>', STYLES + BSTYLES + ('' if kind == 'journal' else BARCODE_STYLES) + '</office:automatic-styles>', 1)
     assert kind == 'journal' or '<text:p text:style-name="P23">Firmenlogo</text:p>' in c
     c = c.replace('<text:p text:style-name="P23">Firmenlogo</text:p>', LOGO, 1)
     c = c.replace('<text:span text:style-name="T6">Rechnung </text:span>', '<text:span text:style-name="T6">%s </text:span>' % esc(CREDIT_HEADING if tid == 20 else title), 1)
+    if kind != 'journal':
+        # place the Code 39 barcode (Barcode.img) right-aligned on the same row as the document heading,
+        # and trim one blank P13 spacer above so the vertical height of page 1 stays unchanged
+        c = c.replace('<text:p text:style-name="P13"/>' * 3, '<text:p text:style-name="P13"/>' * 2, 1)
+        m_head = HEADING_PARA.search(c)
+        assert m_head, 'heading paragraph for ' + fname
+        head_table = ('<table:table table:name="BelegKopf" table:style-name="HeadT">'
+                      '<table:table-column table:style-name="HeadT.A"/><table:table-column table:style-name="HeadT.B"/>'
+                      '<table:table-row>'
+                      '<table:table-cell table:style-name="HeadT.C" office:value-type="string">' + m_head.group(0) + '</table:table-cell>'
+                      '<table:table-cell table:style-name="HeadT.C" office:value-type="string">' + BARCODE + '</table:table-cell>'
+                      '</table:table-row></table:table>')
+        c = c[:m_head.start()] + head_table + c[m_head.end():]
     end = c.index('</office:text>')
     if kind in ('item', 'journal', 'positions', 'smallbusiness'):
         body_end = c[:end]
@@ -450,7 +476,7 @@ def make(fname, title, kind, groups, prefix=None, cprefix=None, blocks=None, tot
         # keep the head (logo, addresses, title line); the positions and totals are replaced by the body
         cut = c.index('<text:p text:style-name="P7"/><table:table table:name="Tabelle1"')
         body_end = c[:cut]
-    c = body_end + body(blocks or []) + reference('Verfügbare Felder – ' + title, groups, tid, title) + c[end:]
+    c = body_end + body(blocks or []) + reference('Verfügbare Felder – ' + title, groups, tid, title, has_barcode=(kind != 'journal')) + c[end:]
     def zipinfo(name, dt=None):
         zi = zipfile.ZipInfo(name, dt) if dt is not None else zipfile.ZipInfo(name)
         zi.create_system = 3
@@ -461,6 +487,8 @@ def make(fname, title, kind, groups, prefix=None, cprefix=None, blocks=None, tot
     man = manifest
     if 'Pictures/logo.png' not in man:
         man = man.replace('</manifest:manifest>', ' <manifest:file-entry manifest:media-type="image/png" manifest:full-path="Pictures/logo.png"/>\n</manifest:manifest>')
+    if kind != 'journal' and 'Pictures/barcode.png' not in man:
+        man = man.replace('</manifest:manifest>', ' <manifest:file-entry manifest:media-type="image/png" manifest:full-path="Pictures/barcode.png"/>\n</manifest:manifest>')
     for n, d in files.items():
         if n in ('mimetype',):
             continue
@@ -472,6 +500,8 @@ def make(fname, title, kind, groups, prefix=None, cprefix=None, blocks=None, tot
             d = man.encode('utf-8')
         zo.writestr(zipinfo(n, (2026, 1, 1, 0, 0, 0)), d, compress_type=zipfile.ZIP_DEFLATED)
     zo.writestr(zipinfo('Pictures/logo.png', (2026, 1, 1, 0, 0, 0)), open(os.path.join(os.path.dirname(__file__), 'logo.png'), 'rb').read(), compress_type=zipfile.ZIP_STORED)
+    if kind != 'journal':
+        zo.writestr(zipinfo('Pictures/barcode.png', (2026, 1, 1, 0, 0, 0)), open(os.path.join(os.path.dirname(__file__), 'barcode.png'), 'rb').read(), compress_type=zipfile.ZIP_STORED)
     zo.close()
     data = out.getvalue()
     open(os.path.join(OUT, fname), 'wb').write(data)
