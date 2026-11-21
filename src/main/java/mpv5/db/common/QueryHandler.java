@@ -111,6 +111,10 @@ public class QueryHandler implements Cloneable {
      */
     public static synchronized QueryHandler restart() {
         instance = null;
+        DatabaseObject.clearCache();
+        mpv5.handler.TemplateHandler.clearCache();
+        mpv5.handler.FormatHandler.clearCache();
+        mpv5.db.objects.ValueProperty.clearScripts();
         return instanceOf();
     }
 
@@ -2804,7 +2808,7 @@ public class QueryHandler implements Cloneable {
             ps.setLong(4, file.length());
             ps.setDate(3, new java.sql.Date(new Date().getTime()));
             ps.setBinaryStream(2, fin, fileLength);
-            j = new backgroundSqlQuery(ps);
+            j = new backgroundSqlQuery(ps, fin);
             j.execute();
 
             Log.Debug(this, "File added: " + name);
@@ -3032,6 +3036,16 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
+     * Inserts the data of a file into the files table now, in this thread
+     *
+     * @param file
+     * @return the stored name ({@code files.cname}), or {@code null} on failure
+     */
+    public String insertFileNow(File file) {
+        return new backgroundFileInsert(file, null, new SaveString("", true), null, null).doInBackground();
+    }
+
+    /**
      * Updates the data of a stored file now, in this thread
      *
      * @param file
@@ -3098,9 +3112,15 @@ public class QueryHandler implements Cloneable {
     class backgroundSqlQuery extends SwingWorker<Void, Void> {
 
         private final PreparedStatement ps;
+        private final java.io.Closeable resource;
 
         public backgroundSqlQuery(PreparedStatement ps) {
+            this(ps, null);
+        }
+
+        public backgroundSqlQuery(PreparedStatement ps, java.io.Closeable resource) {
             this.ps = ps;
+            this.resource = resource;
             this.addPropertyChangeListener(new changeListener());
         }
 
@@ -3120,6 +3140,18 @@ public class QueryHandler implements Cloneable {
                 Log.Debug(this, ex);
                 //Popup.error(ex);
             } finally {
+                try {
+                    ps.close();
+                } catch (Exception ex) {
+                    Log.Debug(this, ex);
+                }
+                if (resource != null) {
+                    try {
+                        resource.close();
+                    } catch (Exception ex) {
+                        Log.Debug(this, ex);
+                    }
+                }
                 progressbar.setValue(0);
                 mpv5.ui.modern.Edt.setIndeterminate(progressbar, false);
             }
@@ -3195,16 +3227,19 @@ public class QueryHandler implements Cloneable {
                 try {
                     sqlConn.setAutoCommit(false);
                     int fileLength = (int) file.length();
-                    name = RandomText.getText(23);
-                    java.io.InputStream fin = new java.io.FileInputStream(file);
-                    PreparedStatement ps = sqlConn.prepareStatement(query, DatabaseConnection.generatedKeys(query));
-                    ps.setString(1, name);
-                    ps.setLong(4, file.length());
-                    ps.setDate(3, new java.sql.Date(new Date().getTime()));
-                    ps.setBinaryStream(2, fin, fileLength);
-                    ps.execute();
+                    String generated = RandomText.getText(23);
+                    try (java.io.InputStream fin = new java.io.FileInputStream(file);
+                            PreparedStatement ps = sqlConn.prepareStatement(query, DatabaseConnection.generatedKeys(query))) {
+                        ps.setString(1, generated);
+                        ps.setLong(4, file.length());
+                        ps.setDate(3, new java.sql.Date(new Date().getTime()));
+                        ps.setBinaryStream(2, fin, fileLength);
+                        ps.execute();
+                    }
                     sqlConn.commit();
+                    name = generated;
                 } catch (Exception ex) {
+                    name = null;
                     progressbar.setValue(0);
                     mpv5.ui.modern.Edt.setIndeterminate(progressbar, false);
                     Log.Debug(this, "Datenbankfehler: " + query);
@@ -3247,6 +3282,7 @@ public class QueryHandler implements Cloneable {
                 x.add("intsize", file.length());
                 x.add("mimetype", fileextension);
                 int newid = QueryHandler.instanceOf().clone(tcontext).insert(x, Messages.FILE_SAVED + file.getName());
+                DatabaseObject.uncacheObject(tcontext, newid);
                 newObject = DatabaseObject.getObject(tcontext, newid);
                 mpv5.YabsViewProxy.instance().addMessage(Messages.FILE_SAVED + file.getName());
                 if (viewToBeNotified != null) {
@@ -3306,11 +3342,12 @@ public class QueryHandler implements Cloneable {
                 try {
                     int fileLength = (int) file.length();
                     name = RandomText.getText(23);
-                    java.io.InputStream fin = new java.io.FileInputStream(file);
-                    PreparedStatement ps = sqlConn.prepareStatement(query, DatabaseConnection.generatedKeys(query));
-                    ps.setBinaryStream(1, fin, fileLength);
-                    ps.setString(2, cname);
-                    ps.execute();
+                    try (java.io.InputStream fin = new java.io.FileInputStream(file);
+                            PreparedStatement ps = sqlConn.prepareStatement(query, DatabaseConnection.generatedKeys(query))) {
+                        ps.setBinaryStream(1, fin, fileLength);
+                        ps.setString(2, cname);
+                        ps.execute();
+                    }
                     if (!sqlConn.getAutoCommit()) {
                         sqlConn.commit();
                     }

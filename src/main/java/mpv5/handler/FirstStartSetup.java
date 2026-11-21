@@ -19,8 +19,6 @@ package mpv5.handler;
 import java.io.File;
 import java.io.InputStream;
 import java.util.Date;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 import mpv5.Main;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -163,46 +161,51 @@ public final class FirstStartSetup {
      * @param assign assign it to the owner for all groups
      */
     public static Template importTemplate(final User owner, String resource, final String name, final String format, final int type, long wait, final boolean assign) throws Exception {
-        InputStream s = Main.class.getResourceAsStream(resource);
         final File f = FileDirectoryHandler.getTempFile(name, "odt");
-        FileDirectoryHandler.copyFile(s, f);
-        final CountDownLatch done = new CountDownLatch(1);
-        final Template[] made = new Template[1];
-        TemplateHandler.importTemplateAndAssign(f, new FutureCallback<Template>() {
-            @Override
-            public void call(Template t) {
-                try {
-                    if (t != null) {
-                        t.setGroupsids(1);
-                        t.setCname(name);
-                        t.setMimetype(String.valueOf(type));
-                        t.setFormat(format);
-                        t.setDescription("Wizard insert");
-                        t.save(true);
-                        if (!assign) {
-                            made[0] = t;
-                            return;
-                        }
-                        QueryData c = new QueryData();
-                        c.add("usersids", owner.__getIDS());
-                        c.add("templatesids", t.__getIDS());
-                        c.add("groupsids", 1);
-                        c.add("cname", t.__getIDS() + "@" + owner.__getIDS() + "@" + 1);
-                        QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).insert(c, null);
-                        TemplateHandler.clearCache();
-                        made[0] = t;
-                    }
-                } catch (Exception e) {
-                    Log.Debug(FirstStartSetup.class, e);
-                } finally {
-                    done.countDown();
+        try {
+            try (InputStream s = Main.class.getResourceAsStream(resource)) {
+                if (s == null) {
+                    Log.Debug(FirstStartSetup.class, "Template resource not found: " + resource);
+                    return null;
                 }
+                FileDirectoryHandler.copyFile(s, f);
             }
-        });
-        if (wait > 0) {
-            done.await(wait, TimeUnit.MILLISECONDS);
+            String stored = QueryHandler.instanceOf().clone(Context.getFiles()).insertFileNow(f);
+            if (stored == null) {
+                return null;
+            }
+            int addedBy = owner != null && owner.__getIDS() > 0
+                    ? owner.__getIDS()
+                    : User.getCurrentUser().__getIDS();
+            QueryData x = new QueryData();
+            x.add("cname", name);
+            x.add("filename", stored);
+            x.add("description", "Wizard insert");
+            x.add("dateadded", mpv5.utils.date.DateConverter.getTodayDBDate());
+            x.add("intaddedby", addedBy);
+            x.add("intsize", f.length());
+            x.add("mimetype", String.valueOf(type));
+            x.add("format", format);
+            x.add("groupsids", 1);
+            int newid = QueryHandler.instanceOf().clone(Context.getTemplate()).insert(x, null);
+            if (newid <= 0) {
+                return null;
+            }
+            DatabaseObject.uncacheObject(Context.getTemplate(), newid);
+            Template t = (Template) DatabaseObject.getObject(Context.getTemplate(), newid);
+            if (assign && owner != null && owner.__getIDS() > 0) {
+                QueryData c = new QueryData();
+                c.add("usersids", owner.__getIDS());
+                c.add("templatesids", t.__getIDS());
+                c.add("groupsids", 1);
+                c.add("cname", t.__getIDS() + "@" + owner.__getIDS() + "@" + 1);
+                QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).insert(c, null);
+            }
+            TemplateHandler.clearCache();
+            return t;
+        } finally {
+            f.delete();
         }
-        return made[0];
     }
 
     /**
@@ -561,6 +564,7 @@ public final class FirstStartSetup {
      * the one shipped; changed templates stay as they are.
      */
     public static void upgradeDemoTemplates() {
+        repairUnassignedDemoTemplates();
         try {
             ReturnValue rv = QueryHandler.getConnection().freeQuery(
                     "SELECT ids FROM templates WHERE description = 'Wizard insert'",
@@ -589,8 +593,14 @@ public final class FirstStartSetup {
                         continue;
                     }
                     File f = FileDirectoryHandler.getTempFile("template-" + type, "odt");
-                    FileDirectoryHandler.copyFile(Main.class.getResourceAsStream(resource), f);
-                    QueryHandler.instanceOf().clone(Context.getFiles()).updateFileNow(f, t.__getFilename());
+                    try {
+                        try (InputStream in = Main.class.getResourceAsStream(resource)) {
+                            FileDirectoryHandler.copyFile(in, f);
+                        }
+                        QueryHandler.instanceOf().clone(Context.getFiles()).updateFileNow(f, t.__getFilename());
+                    } finally {
+                        f.delete();
+                    }
                     if (oldFormat) {
                         t.setFormat(demoFormat(type));
                     }
@@ -606,14 +616,212 @@ public final class FirstStartSetup {
         }
     }
 
+    private static final class DemoSpec {
+        final int type;
+        final String name;
+        final String format;
+        final boolean smallBusiness;
+
+        DemoSpec(int type, String name, String format, boolean smallBusiness) {
+            this.type = type;
+            this.name = name;
+            this.format = format;
+            this.smallBusiness = smallBusiness;
+        }
+    }
+
+    private static volatile java.util.Map<String, DemoSpec> demoByHash;
+    private static volatile java.util.Map<String, DemoSpec> demoByFileName;
+
+    private static void initDemoSpecs() {
+        if (demoByHash != null) {
+            return;
+        }
+        synchronized (FirstStartSetup.class) {
+            if (demoByHash != null) {
+                return;
+            }
+            java.util.Map<String, DemoSpec> byHash = new java.util.HashMap<>();
+            java.util.Map<String, DemoSpec> byName = new java.util.HashMap<>();
+            java.util.Map<String, DemoSpec> byResource = new java.util.HashMap<>();
+            java.util.Map<Integer, DemoSpec> byType = new java.util.HashMap<>();
+
+            for (Object[] d : DEMO_TEMPLATES) {
+                int type = (Integer) d[0];
+                String name = "Demo - " + d[1];
+                String resource = String.format("/extra/templates/demo-%02d.odt", type);
+                DemoSpec spec = new DemoSpec(type, name, demoFormat(type), false);
+                byName.put(name + ".odt", spec);
+                byResource.put(resource, spec);
+                byType.put(type, spec);
+                String hash = resourceSha256(resource);
+                if (hash != null) {
+                    byHash.put(hash, spec);
+                }
+            }
+            DemoSpec smallSpec = new DemoSpec(Constants.TYPE_INVOICE, SMALL_BUSINESS_INVOICE_NAME, POSITIONS_FORMAT, true);
+            byName.put(SMALL_BUSINESS_INVOICE_NAME + ".odt", smallSpec);
+            byResource.put(SMALL_BUSINESS_INVOICE_TEMPLATE, smallSpec);
+            String smallHash = resourceSha256(SMALL_BUSINESS_INVOICE_TEMPLATE);
+            if (smallHash != null) {
+                byHash.put(smallHash, smallSpec);
+            }
+            for (java.util.Map.Entry<String, String> e : PREVIOUS_RELEASE.entrySet()) {
+                DemoSpec spec = byResource.get(e.getValue());
+                if (spec != null) {
+                    byHash.putIfAbsent(e.getKey(), spec);
+                }
+            }
+            for (java.util.Map.Entry<Integer, String> e : OLD_DEMOS.entrySet()) {
+                DemoSpec spec = byType.get(e.getKey());
+                if (spec != null) {
+                    byHash.putIfAbsent(e.getValue(), spec);
+                }
+            }
+            demoByFileName = byName;
+            demoByHash = byHash;
+        }
+    }
+
+    private static String resourceSha256(String resource) {
+        try (InputStream in = Main.class.getResourceAsStream(resource)) {
+            return in == null ? null : sha256(in);
+        } catch (Exception e) {
+            Log.Debug(FirstStartSetup.class, e);
+            return null;
+        }
+    }
+
+    private static boolean isNumericType(String mimetype) {
+        if (mimetype == null) {
+            return false;
+        }
+        String s = mimetype.trim();
+        if (s.isEmpty()) {
+            return false;
+        }
+        try {
+            Integer.parseInt(s);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Repairs bundled demo templates that were left without a usage type
+     * (e.g. {@code mimetype = "odt"}) in databases created before the cache
+     * clear / synchronous import fix.
+     */
+    public static void repairUnassignedDemoTemplates() {
+        try {
+            ReturnValue rv = QueryHandler.getConnection().freeQuery(
+                    "SELECT ids, mimetype FROM templates",
+                    MPSecurityManager.VIEW, null);
+            if (!rv.hasData()) {
+                return;
+            }
+            boolean repaired = false;
+            User current = User.getCurrentUser();
+            boolean hasUser = current != null && current.__getIDS() > 0 && !current.isDefault();
+            boolean small = hasUser && isSmallBusiness(current);
+            for (Object[] row : rv.getData()) {
+                String mime = row.length > 1 && row[1] != null ? String.valueOf(row[1]) : "";
+                if (isNumericType(mime)) {
+                    continue;
+                }
+                try {
+                    initDemoSpecs();
+                    int id = Integer.parseInt(String.valueOf(row[0]));
+                    Template t = (Template) DatabaseObject.getObject(Context.getTemplate(), id);
+                    DemoSpec spec = null;
+                    try {
+                        String hash = sha256(t.getFile());
+                        spec = demoByHash.get(hash);
+                    } catch (Exception e) {
+                        Log.Debug(FirstStartSetup.class, e);
+                    }
+                    String oldCname = t.__getCname();
+                    String oldDesc = t.__getDescription();
+                    if (spec == null && oldCname != null
+                            && (oldDesc == null || oldDesc.trim().isEmpty() || oldDesc.equals(oldCname))) {
+                        spec = demoByFileName.get(oldCname);
+                    }
+                    if (spec == null) {
+                        continue;
+                    }
+                    t.setMimetype(String.valueOf(spec.type));
+                    if ((spec.name + ".odt").equals(oldCname)) {
+                        t.setCname(spec.name);
+                    }
+                    String fmt = t.__getFormat();
+                    if (fmt == null || fmt.trim().isEmpty() || Template.DEFAULT_FORMAT.equals(fmt)) {
+                        t.setFormat(spec.format);
+                    }
+                    if (oldDesc == null || oldDesc.trim().isEmpty() || oldDesc.equals(oldCname)) {
+                        t.setDescription("Wizard insert");
+                    }
+                    if (t.__getGroupsids() <= 0) {
+                        t.setGroupsids(1);
+                    }
+                    t.save(true);
+                    if (hasUser) {
+                        reconcileTemplateAssignment(current, t, spec, small);
+                    }
+                    repaired = true;
+                    Log.Debug(FirstStartSetup.class, "Template usage type repaired: " + t + " (" + spec.type + ")");
+                } catch (Exception e) {
+                    Log.Debug(FirstStartSetup.class, e);
+                }
+            }
+            if (repaired) {
+                TemplateHandler.clearCache();
+            }
+        } catch (Exception e) {
+            Log.Debug(FirstStartSetup.class, e);
+        }
+    }
+
+    private static void reconcileTemplateAssignment(User user, Template t, DemoSpec spec, boolean small) {
+        int uid = user.__getIDS();
+        int tid = t.__getIDS();
+        ReturnValue existing = QueryHandler.getConnection().freeQuery(
+                "SELECT ids FROM templatestousers WHERE usersids = " + uid + " AND templatesids = " + tid,
+                MPSecurityManager.VIEW, null);
+        boolean assigned = existing.hasData();
+        ReturnValue other = QueryHandler.getConnection().freeQuery(
+                "SELECT templatestousers.ids FROM templatestousers LEFT OUTER JOIN templates AS templates0 ON "
+                + "templates0.ids = templatestousers.templatesids WHERE templatestousers.usersids = " + uid
+                + " AND templates0.mimetype = '" + spec.type + "' AND templatestousers.templatesids <> " + tid,
+                MPSecurityManager.VIEW, null);
+        boolean hasOther = other.hasData();
+        if (assigned && hasOther) {
+            mpv5.db.common.QueryCriteria2 c = new mpv5.db.common.QueryCriteria2();
+            c.and(new mpv5.db.common.QueryParameter(Context.getTemplatesToUsers(), "usersids", uid, mpv5.db.common.QueryParameter.EQUALS));
+            c.and(new mpv5.db.common.QueryParameter(Context.getTemplatesToUsers(), "templatesids", tid, mpv5.db.common.QueryParameter.EQUALS));
+            QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).delete(c);
+        } else if (!assigned && !hasOther && (spec.type != Constants.TYPE_INVOICE || small == spec.smallBusiness)) {
+            QueryData c = new QueryData();
+            c.add("usersids", uid);
+            c.add("templatesids", tid);
+            c.add("groupsids", 1);
+            c.add("cname", tid + "@" + uid + "@" + 1);
+            QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).insert(c, null);
+        }
+    }
+
     static String sha256(File f) throws Exception {
-        java.security.MessageDigest md = java.security.MessageDigest.getInstance("SHA-256");
         //java.io: the cached file has the template name, toPath() fails on umlauts without an UTF-8 file system encoding
         try (InputStream in = new java.io.FileInputStream(f)) {
-            byte[] buf = new byte[8192];
-            for (int n; (n = in.read(buf)) > 0;) {
-                md.update(buf, 0, n);
-            }
+            return sha256(in);
+        }
+    }
+
+    private static String sha256(InputStream in) throws Exception {
+        java.security.MessageDigest md = java.security.MessageDigest.getInstance("SHA-256");
+        byte[] buf = new byte[8192];
+        for (int n; (n = in.read(buf)) > 0;) {
+            md.update(buf, 0, n);
         }
         StringBuilder b = new StringBuilder();
         for (byte x : md.digest()) {

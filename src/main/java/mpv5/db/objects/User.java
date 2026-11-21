@@ -348,9 +348,10 @@ public class User extends DatabaseObject {
                     mpv5.handler.FirstStartSetup.completeTaxRates();
                     DatabaseObject.cacheObjects();//re-cache for user
                     YabsViewProxy.instance().addMessage(Messages.CACHED_OBJECTS);
+                    //repair/upgrade bundled demo templates before checking if an invoice template is missing
+                    mpv5.handler.FirstStartSetup.upgradeDemoTemplates();
                     //no invoice template (e.g. an existing database or a new user): the demo template
                     mpv5.handler.FirstStartSetup.ensureInvoiceTemplate(t);
-                    mpv5.handler.FirstStartSetup.upgradeDemoTemplates();
                     try {
                         layoutinfo.putAll(ValueProperty.getProperty(t, "layoutinfo").getValue(new HashMap<String, String>()));
                     } catch (Exception ex) {

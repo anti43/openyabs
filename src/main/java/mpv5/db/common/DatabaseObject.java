@@ -360,6 +360,22 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         }
     }
 
+    /**
+     * Removes a cached object by context and id so a freshly inserted row
+     * cannot be shadowed by a stale cached instance.
+     *
+     * @param context
+     * @param id
+     */
+    public static void uncacheObject(final Context context, final int id) {
+        if (context != null && id > 0) {
+            String key = context.getDbIdentity() + "@" + id;
+            if (cache.remove(key) != null) {
+                Log.Debug(DatabaseObject.class, "Removed from cache: " + key);
+            }
+        }
+    }
+
     private static DatabaseObject getCachedObject(final Context context, final int id) {
         return getCachedObject(context, id, true);
     }
