@@ -69,6 +69,7 @@ public class ListView extends JPanel {
     private final JButton pasteAndClear = new JButton(Messages.CLIPBOARD_PASTE_AND_CLEAR.toString());
     private final PrimaryButton paste = new PrimaryButton(Messages.CLIPBOARD_PASTE.toString(), null);
     private Runnable onChange;
+    private final JPanel titleBar = new JPanel(new BorderLayout(ModernTheme.px(8), 0));
 
     /**
      * @param list the records of the clipboard
@@ -81,12 +82,11 @@ public class ListView extends JPanel {
 
         JPanel top = new JPanel(new BorderLayout(0, ModernTheme.px(4)));
         top.setOpaque(false);
-        JPanel title = new JPanel(new BorderLayout(ModernTheme.px(8), 0));
-        title.setOpaque(false);
-        title.add(ModernTheme.heading(Messages.CLIPBOARD_TITLE.toString()), BorderLayout.WEST);
+        titleBar.setOpaque(false);
+        titleBar.add(ModernTheme.heading(Messages.CLIPBOARD_TITLE.toString()), BorderLayout.WEST);
         count.setForeground(ModernTheme.muted());
-        title.add(count, BorderLayout.CENTER);
-        top.add(title, BorderLayout.NORTH);
+        titleBar.add(count, BorderLayout.CENTER);
+        top.add(titleBar, BorderLayout.NORTH);
         JLabel info = new JLabel("<html><div style='width:" + ModernTheme.px(340) + "px'>"
                 + Messages.CLIPBOARD_INFO.toString().replace("&", "&amp;").replace("<", "&lt;") + "</div></html>");
         info.setForeground(ModernTheme.muted());
@@ -154,6 +154,14 @@ public class ListView extends JPanel {
                 r.run();
             }
         };
+    }
+
+    /**
+     * @return the line with the title (a window adds its controls and moves
+     * by it)
+     */
+    public JPanel getTitleBar() {
+        return titleBar;
     }
 
     /**

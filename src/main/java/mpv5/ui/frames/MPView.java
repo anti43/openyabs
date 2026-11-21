@@ -153,7 +153,7 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
     private static JLabel staterrorlabel = new JLabel();
     private static MPList currentList = new MPList();
     private static ListView clistview = new ListView(currentList);
-    private static JFrame clipboard = null;
+    private static mpv5.ui.dialogs.ClipboardWindow clipboard = null;
     private static boolean loaded = false;
     private GroovyShell groovyShell;
     public static HashMap<String, Object> BINDING_VARS;
@@ -3883,29 +3883,21 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 
     @Override
     public synchronized void setClipBoardVisible(boolean show) {
-        if (clipboard == null) {
-            clipboard = new JFrame(Messages.CLIPBOARD_TITLE + " \u2013 " + Messages.YABS.getValue());
-            try {
-                clipboard.setIconImage(getFrame().getIconImage());
-            } catch (Exception e) {
-                Log.Debug(this, e.getMessage());
-            }
-            clipboard.setLayout(new BorderLayout());
-            clipboard.add(clistview, BorderLayout.CENTER);
-            clistview.setOnChange(this::syncClipboardMenu);
-            clipboard.pack();
-            clipboard.setMinimumSize(clipboard.getSize());
-            clipboard.setLocationRelativeTo(YabsViewProxy.instance().getIdentifierFrame());
-            clipboard.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-            clipboard.setAlwaysOnTop(User.getCurrentUser().getProperty("org.openyabs.uiproperty", "clipboardontop"));
-        }
         try {
             clistview.refresh();
             clistview.setOnChange(this::syncClipboardMenu);
             if (User.getCurrentUser().getProperty("org.openyabs.uiproperty", "clipboardtab")) {
                 addOrShowTab(clistview, Messages.CLIPBOARD_TITLE.toString());
             } else {
-                clipboard.setVisible(show);
+                if (clipboard == null) {
+                    //floating like "Search anything": moved by its title, pinned stays on top
+                    clipboard = new mpv5.ui.dialogs.ClipboardWindow(getFrame(), clistview);
+                }
+                if (show) {
+                    clipboard.open();
+                } else {
+                    clipboard.setVisible(false);
+                }
             }
         } catch (Exception ex) {
             Log.Debug(ex);
