@@ -107,7 +107,7 @@ public final class DatevPlugin implements YabsExtension {
 
             @Override
             public Map<String, byte[]> adviserPackageEntries(JournalExportContext ctx) {
-                DatevConfig config = DatevConfig.load();
+                DatevConfig config = DatevConfig.loadWithDefaults(ctx.entries);
                 DatevMapper.Result res = DatevMapper.map(ctx.entries, config, ctx.from, ctx.to);
                 String csv = DatevFormat.render(config, ctx.from, ctx.to, new Date(), res.lines);
                 String path = "datev/" + DatevFormat.fileName(ctx.from, ctx.to);
@@ -135,8 +135,14 @@ public final class DatevPlugin implements YabsExtension {
 
     private void exportInteractive(ExtensionContext yabs, JournalExportContext ctx) {
         try {
-            DatevConfig config = DatevConfig.load();
+            DatevConfig config = DatevConfig.loadWithDefaults(ctx.entries);
             DatevMapper.Result result = DatevMapper.map(ctx.entries, config, ctx.from, ctx.to);
+            if (!DatevConfig.isSaved()) {
+                result.issues.add(0, new DatevMapper.Issue(DatevMapper.Issue.Severity.WARNING,
+                        "Die DATEV-Einstellungen wurden noch nicht gespeichert: verwendet werden die Standardkonten des SKR"
+                        + config.kontenrahmen + ". Berater- und Mandantennummer unter " + DatevConfig.SETTINGS_PATH
+                        + " eintragen, die Konten prüfen und speichern."));
+            }
             String defaultName = DatevFormat.fileName(ctx.from, ctx.to);
             if (!DatevCheckDialog.confirm(ctx.parent, result, defaultName)) {
                 return;

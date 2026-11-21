@@ -318,7 +318,9 @@ public final class DatevMapper {
                             "Beleg " + labelOf(e) + ": kein Konto zugeordnet (Fallback-Konto wird verwendet)."));
                 } else if (docAccount.__getIntaccountclass() <= 0) {
                     result.issues.add(new Issue(Issue.Severity.WARNING,
-                            "Beleg " + labelOf(e) + ": Konto '" + docAccount.__getCname() + "' hat keine Kontonummer (intaccountclass)."));
+                            "Beleg " + labelOf(e) + ": Konto '" + docAccount.__getCname() + "' hat keine Kontonummer, gebucht wird auf das "
+                            + (e.type == Constants.TYPE_EXPENSE ? "Aufwandskonto" : "Erlöskonto") + " des Steuersatzes aus den DATEV-Einstellungen."
+                            + " Für ein eigenes Konto dem Beleg ein Konto mit Kontonummer zuordnen."));
                 }
 
                 String rawNum = e.number == null ? "" : e.number.trim();
@@ -415,7 +417,8 @@ public final class DatevMapper {
                         if (warnedMissingRateAccounts.add(rk)) {
                             result.issues.add(new Issue(Issue.Severity.ERROR,
                                     "Kein " + (isExpense ? "Aufwandskonto" : "Erlöskonto") + " für Steuersatz "
-                                    + (rate == null ? "unbekannt" : rate.toPlainString() + " %") + " konfiguriert."));
+                                    + (rate == null ? "unbekannt" : rate.toPlainString() + " %") + " konfiguriert (Tabelle der Steuersätze unter "
+                                    + DatevConfig.SETTINGS_PATH + ")."));
                         }
                     }
 
@@ -464,11 +467,13 @@ public final class DatevMapper {
     private static void validateConfig(DatevConfig config, Date from, Date to, List<Issue> issues) {
         if (config.beraterNummer < 1001 || config.beraterNummer > 9999999) {
             issues.add(new Issue(Issue.Severity.ERROR,
-                    "Beraternummer fehlt oder ungültig (erlaubt: 1001–9999999)."));
+                    "Beraternummer fehlt oder ungültig (erlaubt: 1001–9999999, vom Steuerberater; einzutragen unter "
+                    + DatevConfig.SETTINGS_PATH + ")."));
         }
         if (config.mandantenNummer < 1 || config.mandantenNummer > 99999) {
             issues.add(new Issue(Issue.Severity.ERROR,
-                    "Mandantennummer fehlt oder ungültig (erlaubt: 1–99999)."));
+                    "Mandantennummer fehlt oder ungültig (erlaubt: 1–99999, vom Steuerberater; einzutragen unter "
+                    + DatevConfig.SETTINGS_PATH + ")."));
         }
         if (config.wjBeginn == null || !config.wjBeginn.trim().matches("\\d{8}")) {
             issues.add(new Issue(Issue.Severity.ERROR,
