@@ -88,7 +88,26 @@ public final class PdfPreview extends JFrame {
      * @param owner the record, may be null
      */
     public static void show(File file, mpv5.db.common.DatabaseObject owner) {
+        //one preview per record (or file): a second request (double click, two buttons, a
+        //preview finished late) replaces the open window instead of opening another one
+        for (java.awt.Window w : java.awt.Window.getWindows()) {
+            if (w instanceof PdfPreview && w.isDisplayable() && ((PdfPreview) w).shows(file, owner)) {
+                w.dispose();
+            }
+        }
         new PdfPreview(file, owner).setVisible(true);
+    }
+
+    /**
+     * @return true if this window shows the record (same context and id),
+     * or the file if there is no record
+     */
+    private boolean shows(File f, mpv5.db.common.DatabaseObject o) {
+        Integer id = o == null ? null : o.__getIDS();
+        if (id != null && id > 0 && owner != null) {
+            return id.equals(owner.__getIDS()) && String.valueOf(o.getDbIdentity()).equals(String.valueOf(owner.getDbIdentity()));
+        }
+        return o == null && owner == null && f != null && f.equals(file);
     }
 
     private PdfPreview(File file, mpv5.db.common.DatabaseObject owner) {
