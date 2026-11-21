@@ -3325,7 +3325,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
 
     @Override
     public void preview() {
-        if (mpv5.ui.toolbars.RecordActions.openLockedDocument(this)) {
+        if (mpv5.ui.toolbars.RecordActions.openLockedDocument(this, true)) {
             return;
         }
         if (!ensureSavedForExport()) {

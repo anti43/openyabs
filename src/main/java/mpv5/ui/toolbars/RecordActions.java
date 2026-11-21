@@ -390,7 +390,7 @@ public final class RecordActions {
      * @param view
      */
     public static void preview(DataPanel view) {
-        if (openLockedDocument(view)) {
+        if (openLockedDocument(view, true)) {
             return;
         }
         if (saveBeforeExport(view) && view instanceof ExportablePanel) {
@@ -484,11 +484,27 @@ public final class RecordActions {
      * reported missing), false to create the file as usual
      */
     public static boolean openLockedDocument(DataPanel view) {
+        return openLockedDocument(view, false);
+    }
+
+    /**
+     * As {@link #openLockedDocument(DataPanel)}; for the preview the archived
+     * PDF is shown in the preview window of YaBS
+     *
+     * @param view
+     * @param inline true: a PDF in the preview window instead of the system
+     * viewer
+     * @return true if the record is locked (the archived file was shown)
+     */
+    public static boolean openLockedDocument(DataPanel view, boolean inline) {
         java.io.File f = view == null ? null : view.getLockedDocument();
         if (f == null) {
             return false;
         }
-        if (f.isFile()) {
+        if (inline && f.isFile() && f.getName().toLowerCase().endsWith(".pdf")) {
+            mpv5.YabsViewProxy.instance().addMessage(Messages.LOCKED_DOCUMENT_OPENED + " " + f.getPath());
+            mpv5.ui.dialogs.PdfPreview.show(f, view.getDataOwner());
+        } else if (f.isFile()) {
             mpv5.YabsViewProxy.instance().addMessage(Messages.LOCKED_DOCUMENT_OPENED + " " + f.getPath());
             mpv5.utils.files.FileDirectoryHandler.open(f);
         } else {

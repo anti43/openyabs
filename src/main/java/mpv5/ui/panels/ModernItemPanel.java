@@ -518,7 +518,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
     private void createActions() {
         //a locked document with an archived file: show that file, do not create a new one
         previewButton.addActionListener(e -> {
-            if (!mpv5.ui.toolbars.RecordActions.openLockedDocument(this)) {
+            if (!mpv5.ui.toolbars.RecordActions.openLockedDocument(this, true)) {
                 preview(dataOwner.__getInttype());
             }
         });
@@ -1020,7 +1020,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
 
     @Override
     public void preview() {
-        if (mpv5.ui.toolbars.RecordActions.openLockedDocument(this)) {
+        if (mpv5.ui.toolbars.RecordActions.openLockedDocument(this, true)) {
             return;
         }
         if (dataOwner != null) {

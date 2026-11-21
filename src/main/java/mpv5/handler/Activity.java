@@ -70,8 +70,18 @@ public final class Activity {
          */
         public final Context context;
         public final int id;
+        /**
+         * a draft file (preview, intermediate file of an export): not an
+         * issued document, plugins do not finalize on it
+         */
+        public final boolean draft;
 
         Entry(Kind kind, String text, String detail, File file, Context context, int id) {
+            this(kind, text, detail, file, context, id, false);
+        }
+
+        Entry(Kind kind, String text, String detail, File file, Context context, int id, boolean draft) {
+            this.draft = draft;
             this.kind = kind;
             this.text = text == null ? "" : text;
             this.detail = detail == null ? "" : detail;
@@ -159,6 +169,22 @@ public final class Activity {
      * @param owner the record it was made for, may be null
      */
     public static void file(File f, DatabaseObject owner) {
+        file(f, owner, false);
+    }
+
+    /**
+     * A draft file: a preview, or the intermediate PDF of an e-invoice. Shown
+     * as a file, but not an issued document (no checksum, plugins do not
+     * finalize the record on it)
+     *
+     * @param f
+     * @param owner
+     */
+    public static void draftFile(File f, DatabaseObject owner) {
+        file(f, owner, true);
+    }
+
+    private static void file(File f, DatabaseObject owner, boolean draft) {
         if (f == null) {
             return;
         }
@@ -175,12 +201,14 @@ public final class Activity {
             Log.Debug(Activity.class, e);
         }
         //invoices: the checksum of the written file (verify it later)
-        DocumentFiles.record(owner, f);
+        if (!draft) {
+            DocumentFiles.record(owner, f);
+        }
         synchronized (entries) {
             //the same file again (a new preview, saved again): only the newest
             entries.removeIf(e -> e.file != null && e.file.equals(f));
         }
-        add(new Entry(Kind.FILE, f.getName(), detail, f, c, id));
+        add(new Entry(Kind.FILE, f.getName(), detail, f, c, id, draft));
     }
 
     /**

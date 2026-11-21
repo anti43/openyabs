@@ -922,7 +922,7 @@ public final class Gobd {
             if (EInvoice.mentionsNumber(recent, str(doc.__getCnumber()))) {
                 String fileName = recent.getFileName().toString();
                 String ext = fileName.contains(".") ? fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase() : "pdf";
-                String format = ext.equals("xml") ? "XRECHNUNG_XML" : "ZUGFERD_PDFA3";
+                String format = ext.equals("xml") ? "XRECHNUNG_XML" : isEInvoiceFile(recent) ? "ZUGFERD_PDFA3" : "PDF";
                 Path target = GobdUtil.uniquePath(yearDir, safeDocNum, ext);
                 Files.copy(recent, target);
                 return new Archived(target, Files.readAllBytes(target), format);
@@ -960,6 +960,35 @@ public final class Gobd {
         byte[] bytes = xml.toString().getBytes(StandardCharsets.UTF_8);
         Files.write(target, bytes, StandardOpenOption.CREATE_NEW);
         return new Archived(target, bytes, "XRECHNUNG_XML");
+    }
+
+    /**
+     * @param doc
+     * @return true if the customer of the invoice gets e-invoices (tab
+     * E-Invoice of the contact, or the default)
+     */
+    static boolean requiresEInvoice(Item doc) {
+        try {
+            return mpv5.utils.export.EInvoiceDelivery.effectiveFor(doc.getContact(), doc).isEInvoice();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * @param file
+     * @return true for an XRechnung (XML) or a PDF with an embedded e-invoice
+     */
+    static boolean isEInvoiceFile(Path file) {
+        String name = file.getFileName().toString().toLowerCase();
+        if (name.endsWith(".xml")) {
+            return true;
+        }
+        try {
+            return name.endsWith(".pdf") && Files.isRegularFile(file) && EInvoice.extractEmbeddedXml(file) != null;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     static BigDecimal nz(BigDecimal b) {
@@ -1701,6 +1730,10 @@ public final class Gobd {
         if (entry.file == null || (entry.kind != null && entry.kind.name().equals("DELETED"))) {
             return;
         }
+        //a preview or the intermediate PDF of an e-invoice: not the issued document
+        if (entry.draft) {
+            return;
+        }
         //a receipt of an income archived by YaBS (import, drag and drop, e-invoice folder, link):
         //the income is locked with it
         if (entry.context != null && entry.id > 0 && Context.getRevenue() != null
@@ -1763,6 +1796,12 @@ public final class Gobd {
         }
         if (lockRecord(doc.__getIDS()) == null) {
             if (yabs.settings().getBoolean(S_AUTOLOCK, true)) {
+                if (requiresEInvoice(doc) && !isEInvoiceFile(entry.file.toPath())) {
+                    //the customer gets e-invoices: not finalized with a plain PDF
+                    status("GoBD: Beleg " + doc.__getCnumber() + " nicht festgeschrieben: fuer den Kunden ist eine E-Rechnung eingestellt, "
+                            + entry.file.getName() + " ist keine E-Rechnung.");
+                    return;
+                }
                 finalizeDocument(doc, null);
             } else {
                 status("Belegdatei erstellt (" + entry.file.getName() + "). Jetzt ueber 'Plugins > GoBD: 1. Beleg festschreiben' sichern.");

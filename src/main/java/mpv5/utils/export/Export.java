@@ -831,7 +831,12 @@ public final class Export extends HashMap<String, Object> implements Waitable {
             if (t == null) {
                 throw new FileNotFoundException(Messages.NO_TEMPLATE_LOADED.toString());
             }
-            Job job = new Job(createFile(t, dataOwner), waiter);
+            Waitable file = createFile(t, dataOwner);
+            if (waiter instanceof mpv5.ui.panels.PreviewWaiter && file instanceof Export) {
+                //a preview is no issued document: not finalized (GoBD), no e-invoice
+                ((Export) file).setDraft(true);
+            }
+            Job job = new Job(file, waiter);
             job.doInBackground();
             return job;
         }, (job, failure) -> {
@@ -1114,7 +1119,11 @@ public final class Export extends HashMap<String, Object> implements Waitable {
             }
         }
         if (toFile.exists()) {
-            mpv5.handler.Activity.file(toFile, dob);
+            if (draft) {
+                mpv5.handler.Activity.draftFile(toFile, dob);
+            } else {
+                mpv5.handler.Activity.file(toFile, dob);
+            }
         }
     }
 
@@ -1149,6 +1158,16 @@ public final class Export extends HashMap<String, Object> implements Waitable {
      * @param embedAllFonts true to embed every font into the created PDF
      * (required for PDF/A, e.g. ZUGFeRD)
      */
+    private boolean draft;
+
+    /**
+     * @param draft true: the file is a preview or an intermediate file, not
+     * an issued document ({@link mpv5.handler.Activity#draftFile})
+     */
+    public void setDraft(boolean draft) {
+        this.draft = draft;
+    }
+
     public void setEmbedAllFonts(boolean embedAllFonts) {
         this.embedAllFonts = embedAllFonts;
     }

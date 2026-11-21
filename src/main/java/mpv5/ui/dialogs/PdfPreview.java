@@ -56,6 +56,11 @@ public final class PdfPreview extends JFrame {
 
     private static final long serialVersionUID = 1L;
     private final File file;
+    /**
+     * the record shown, may be null; an invoice is issued by print, save as
+     * and open (the preview is a draft)
+     */
+    private final mpv5.db.common.DatabaseObject owner;
     private final JPanel pages = new JPanel();
     private final JScrollPane scroll;
     private final JLabel zoomLabel = new JLabel();
@@ -71,12 +76,25 @@ public final class PdfPreview extends JFrame {
      * @param file a PDF
      */
     public static void show(File file) {
-        new PdfPreview(file).setVisible(true);
+        show(file, null);
     }
 
-    private PdfPreview(File file) {
+    /**
+     * Shows the preview of a record; for an invoice, print, save as and open
+     * in the PDF viewer issue it first (e-invoice as set for the customer,
+     * finalized by a running GoBD plugin), after a warning
+     *
+     * @param file a PDF
+     * @param owner the record, may be null
+     */
+    public static void show(File file, mpv5.db.common.DatabaseObject owner) {
+        new PdfPreview(file, owner).setVisible(true);
+    }
+
+    private PdfPreview(File file, mpv5.db.common.DatabaseObject owner) {
         super(file.getName() + " – " + Messages.ACTION_PREVIEW);
         this.file = file;
+        this.owner = owner;
         try {
             setIconImage(java.awt.Toolkit.getDefaultToolkit().getImage(mpv5.Main.class.getResource(mpv5.globals.Constants.ICON)));
         } catch (Exception e) {
@@ -107,18 +125,18 @@ public final class PdfPreview extends JFrame {
             layoutPages();
         });
         JButton print = new JButton(Messages.PDF_PREVIEW_PRINT.toString());
-        print.addActionListener(e -> {
+        print.addActionListener(e -> withDocument(null, f -> {
             try {
-                mpv5.utils.print.PrintJob2.print(file, null);
+                mpv5.utils.print.PrintJob2.print(f, null);
             } catch (Exception ex) {
                 Log.Debug(this, ex);
                 Popup.error(ex);
             }
-        });
+        }));
         JButton save = new JButton(Messages.PDF_PREVIEW_SAVE.toString());
         save.addActionListener(e -> saveAs());
         PrimaryButton external = new PrimaryButton(Messages.PDF_PREVIEW_OPEN.toString(), null);
-        external.addActionListener(e -> mpv5.utils.files.FileDirectoryHandler.open(file));
+        external.addActionListener(e -> withDocument(null, f -> mpv5.utils.files.FileDirectoryHandler.open(f)));
 
         JPanel zoomBar = new JPanel(new FlowLayout(FlowLayout.LEFT, ModernTheme.px(4), 0));
         zoomBar.setOpaque(false);
@@ -202,16 +220,162 @@ public final class PdfPreview extends JFrame {
     }
 
     private void saveAs() {
-        JFileChooser c = new JFileChooser(mpv5.db.objects.User.getSaveDir(null));
-        c.setSelectedFile(new File(c.getCurrentDirectory(), file.getName()));
-        if (c.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+        final mpv5.db.objects.Item invoice = issuedInvoice();
+        if (invoice != null && lockedFile(invoice) == null && !confirmIssue()) {
+            return;
+        }
+        JFileChooser c = new JFileChooser(invoice != null ? mpv5.db.objects.User.getSaveDir(invoice) : mpv5.db.objects.User.getSaveDir(null));
+        c.setSelectedFile(invoice != null ? mpv5.utils.export.IssuedDocument.defaultFile(invoice) : new File(c.getCurrentDirectory(), file.getName()));
+        if (c.showSaveDialog(this) != JFileChooser.APPROVE_OPTION) {
+            return;
+        }
+        File target = c.getSelectedFile();
+        if (!target.getName().toLowerCase().endsWith(".pdf")) {
+            target = new File(target.getPath() + ".pdf");
+        }
+        final File chosen = target;
+        if (invoice != null) {
+            //the issued document (e-invoice), not the draft
+            withDocument(chosen, f -> mpv5.YabsViewProxy.instance().addMessage(f.getPath()), false);
+            return;
+        }
+        try {
+            Files.copy(file.toPath(), chosen.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            mpv5.YabsViewProxy.instance().addMessage(chosen.getPath());
+        } catch (Exception ex) {
+            Log.Debug(this, ex);
+            Popup.error(ex);
+        }
+    }
+
+    /**
+     * The property (per user): no warning before an invoice is issued
+     */
+    private static final String NO_ISSUE_WARNING = "noissuewarning"; //NOI18N
+
+    /**
+     * @return the invoice of the preview if print, save and open issue it,
+     * else null
+     */
+    private mpv5.db.objects.Item issuedInvoice() {
+        if (owner instanceof mpv5.db.objects.Item && mpv5.utils.export.IssuedDocument.applies((mpv5.db.objects.Item) owner)) {
+            return (mpv5.db.objects.Item) owner;
+        }
+        return null;
+    }
+
+    /**
+     * @return the archived original if a plugin locked the invoice, else null
+     */
+    private static File lockedFile(mpv5.db.objects.Item invoice) {
+        try {
+            mpv5.plugin.ExtensionManager em = mpv5.plugin.ExtensionManager.instanceOrNull();
+            mpv5.plugin.ExtensionManager.LockedDocument d = em == null ? null : em.lockedDocument(invoice);
+            return d == null || d.file == null || !d.file.isFile() ? null : d.file;
+        } catch (Throwable t) {
+            Log.Debug(PdfPreview.class, t);
+            return null;
+        }
+    }
+
+    /**
+     * Warns that the invoice can not be changed after the action, with "do
+     * not warn again"
+     *
+     * @return true to go on
+     */
+    private boolean confirmIssue() {
+        //only a plugin that finalizes (GoBD) makes the invoice unchangeable
+        try {
+            mpv5.plugin.ExtensionManager em = mpv5.plugin.ExtensionManager.instanceOrNull();
+            if (em == null || !em.locksDocuments()) {
+                return true;
+            }
+        } catch (Throwable t) {
+            Log.Debug(this, t);
+            return true;
+        }
+        mpv5.db.objects.User user = mpv5.db.objects.User.getCurrentUser();
+        try {
+            if (user.getProperties().getProperty(PdfPreview.class.getSimpleName(), NO_ISSUE_WARNING)) {
+                return true;
+            }
+        } catch (Exception e) {
+            Log.Debug(this, e);
+        }
+        javax.swing.JCheckBox dontWarn = new javax.swing.JCheckBox(Messages.PDF_PREVIEW_ISSUE_DONT_WARN.toString());
+        //short, wrapped to a fixed width: the buttons fit the dialog
+        JLabel text = new JLabel("<html><div style='width:" + ModernTheme.px(300) + "px'>"
+                + Messages.PDF_PREVIEW_ISSUE_WARNING.toString().replace("&", "&amp;").replace("<", "&lt;") + "</div></html>");
+        JPanel message = new JPanel(new BorderLayout(0, ModernTheme.px(10)));
+        message.setOpaque(false);
+        message.add(text, BorderLayout.CENTER);
+        message.add(dontWarn, BorderLayout.SOUTH);
+        int answer = javax.swing.JOptionPane.showConfirmDialog(this, message, Messages.PDF_PREVIEW_ISSUE_TITLE.toString(),
+                javax.swing.JOptionPane.OK_CANCEL_OPTION, javax.swing.JOptionPane.WARNING_MESSAGE);
+        if (answer != javax.swing.JOptionPane.OK_OPTION) {
+            return false;
+        }
+        if (dontWarn.isSelected()) {
             try {
-                Files.copy(file.toPath(), c.getSelectedFile().toPath(), StandardCopyOption.REPLACE_EXISTING);
-                mpv5.YabsViewProxy.instance().addMessage(c.getSelectedFile().getPath());
-            } catch (Exception ex) {
-                Log.Debug(this, ex);
-                Popup.error(ex);
+                user.getProperties().changeProperty(PdfPreview.class.getSimpleName(), NO_ISSUE_WARNING, true);
+            } catch (Exception e) {
+                Log.Debug(this, e);
             }
         }
+        return true;
+    }
+
+    /**
+     * Runs the action with the document to print / open: for an invoice the
+     * issued document (after the warning), else the previewed file
+     *
+     * @param target where to write the issued document, null: its usual
+     * place
+     * @param action
+     */
+    private void withDocument(File target, java.util.function.Consumer<File> action) {
+        withDocument(target, action, true);
+    }
+
+    private void withDocument(File target, final java.util.function.Consumer<File> action, boolean warn) {
+        final mpv5.db.objects.Item invoice = issuedInvoice();
+        if (invoice == null) {
+            action.accept(file);
+            return;
+        }
+        File locked = lockedFile(invoice);
+        if (locked != null) {
+            //already issued and finalized: the archived original
+            if (target != null) {
+                try {
+                    Files.copy(locked.toPath(), target.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    action.accept(target);
+                } catch (Exception ex) {
+                    Log.Debug(this, ex);
+                    Popup.error(ex);
+                }
+            } else {
+                action.accept(locked);
+            }
+            return;
+        }
+        if (warn && !confirmIssue()) {
+            return;
+        }
+        final File pdf = target != null ? target : mpv5.utils.export.IssuedDocument.defaultFile(invoice);
+        mpv5.utils.export.ExportProgress.run(Messages.PDF_PREVIEW_ISSUE_TITLE + " " + invoice.__getCnumber(),
+                () -> mpv5.utils.export.IssuedDocument.issue(invoice, pdf),
+                (issued, failure) -> {
+                    if (failure != null) {
+                        Log.Debug(this, failure);
+                        //e.g. the e-invoice can not be created: nothing is printed, saved or opened
+                        Popup.warn(this, failure.getLocalizedMessage());
+                    } else if (issued != null) {
+                        //the issued document may be locked now: the archived original if so
+                        File l = lockedFile(invoice);
+                        action.accept(l != null && target == null ? l : issued);
+                    }
+                });
     }
 }

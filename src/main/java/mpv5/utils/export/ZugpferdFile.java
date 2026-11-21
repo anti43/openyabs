@@ -884,6 +884,8 @@ public class ZugpferdFile implements Waitable {
         ExportProgress.step(Messages.EXPORT_STEP_FIELDS);
         Export export = (Export) Export.createFile(item.__getCnumber().replaceAll("[^A-Za-z0-9._-]", "_"), template, item);
         export.setEmbedAllFonts(true);
+        //only the PDF the e-invoice is embedded in: the e-invoice is the issued document
+        export.setDraft(true);
         Exception ex = export.waitFor();
         if (ex != null) {
             throw ex;

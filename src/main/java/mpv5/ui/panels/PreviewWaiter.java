@@ -114,7 +114,8 @@ public class PreviewWaiter implements Waiter {
             try {
                 //inside YaBS (PDFBox); the window has a button for the system viewer
                 final File f = file;
-                javax.swing.SwingUtilities.invokeLater(() -> mpv5.ui.dialogs.PdfPreview.show(f));
+                final DatabaseObject owner = dataOwner;
+                javax.swing.SwingUtilities.invokeLater(() -> mpv5.ui.dialogs.PdfPreview.show(f, owner));
             } catch (Exception ex) {
                 Log.Debug(ex);
             }

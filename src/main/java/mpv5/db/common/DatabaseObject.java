@@ -3085,6 +3085,15 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                     inv = mpv5.utils.export.ZugpferdFile.createInvoice(item, mpv5.utils.export.ZugpferdFile.Format.ZUGFERD);
                 } catch (Exception ex) {
                     Log.Debug(DatabaseObject.class, ex);
+                    //the customer gets e-invoices: no plain PDF instead (it was created silently)
+                    final String text = Messages.EINVOICE_NOT_CREATED + ", " + Messages.ZUGFERD_MISSING_DATA + "\n\n - " + ex.getLocalizedMessage();
+                    if (showDialog) {
+                        mpv5.utils.export.ExportProgress.onEdtAndWait(() -> {
+                            Popup.warn(text);
+                            return Boolean.TRUE;
+                        });
+                    }
+                    return null;
                 }
                 if (inv != null) {
                     mpv5.utils.export.ExportProgress.step(Messages.EXPORT_STEP_EINVOICE_CHECK);

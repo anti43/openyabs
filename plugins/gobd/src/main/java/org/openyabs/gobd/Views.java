@@ -291,8 +291,11 @@ final class Views {
         panel.setPluginBadge(badge(cancelled ? "GoBD STORNIERT" : "GoBD FESTGESCHRIEBEN", bg, fg, line,
                 "GoBD § 146 Abs. 4 AO | Festgeschrieben am " + str(lock[3]) + " von " + str(lock[4]) + " | Format: " + format + " | SHA-256: " + sha));
         JButton open = openButton(path);
-        String text = "GoBD-Festschreibung (§ 146 Abs. 4 AO): Beleg " + docNum + " [" + state + "] ist unveraenderbar archiviert (" + format
-                + ", SHA-256: " + shortHash(sha) + "…). Steuerrelevante Felder & Positionen sind gesperrt; Zahlungsstatus, Teilzahlungen & Mahnungen bleiben buchbar.";
+        //short; the details (format, checksum, what stays free) in the tooltip and the badge
+        String text = "Beleg " + docNum + " wurde von " + str(lock[4]) + " am " + germanTime(lock[3]) + " festgeschrieben"
+                + (cancelled ? " (storniert)." : ".");
+        String details = "GoBD § 146 Abs. 4 AO: unveraenderbar archiviert (" + format + ", SHA-256: " + shortHash(sha)
+                + "…). Steuerrelevante Felder und Positionen sind gesperrt; Zahlungsstatus, Teilzahlungen und Mahnungen bleiben buchbar.";
         if (!cancelled && doc.__getInttype() != Item.TYPE_CREDIT) {
             JButton storno = button("Stornorechnung erstellen", () -> {
                 int ok = javax.swing.JOptionPane.showConfirmDialog(parent(panel),
@@ -302,9 +305,32 @@ final class Views {
                     g.stornoDocument(doc);
                 }
             });
-            panel.setPluginBanner(banner(text, true, bg, fg, line, 6, open, storno));
+            panel.setPluginBanner(withTooltip(banner(text, true, bg, fg, line, 6, open, storno), details));
         } else {
-            panel.setPluginBanner(banner(text, true, bg, fg, line, 6, open));
+            panel.setPluginBanner(withTooltip(banner(text, true, bg, fg, line, 6, open), details));
         }
+    }
+
+    /**
+     * @return e.g. 21.11.2026 14:03
+     */
+    private static String germanTime(Object t) {
+        if (t instanceof java.util.Date) {
+            return new java.text.SimpleDateFormat("dd.MM.yyyy HH:mm").format((java.util.Date) t);
+        }
+        return GobdUtil.fmtTimestamp(t);
+    }
+
+    /**
+     * @return the banner, its text with the tooltip
+     */
+    private static JPanel withTooltip(JPanel banner, String tooltip) {
+        banner.setToolTipText(tooltip);
+        for (java.awt.Component c : banner.getComponents()) {
+            if (c instanceof javax.swing.JComponent && !(c instanceof JButton)) {
+                ((javax.swing.JComponent) c).setToolTipText(tooltip);
+            }
+        }
+        return banner;
     }
 }

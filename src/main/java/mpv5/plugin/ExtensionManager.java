@@ -1028,6 +1028,14 @@ public final class ExtensionManager {
     }
 
     /**
+     * @return true if a running plugin locks (finalizes) documents, e.g.
+     * GoBD
+     */
+    public boolean locksDocuments() {
+        return !lockedDocumentProviders.isEmpty();
+    }
+
+    /**
      * Asks the running plugins whether the record is locked with an archived
      * original
      *
