@@ -234,6 +234,15 @@ public final class Activity {
         }
     }
 
+    /**
+     * @param dbo
+     * @return the kind of the record as shown to the user, e.g. "Rechnung",
+     * "Kontakte", "Produkte"
+     */
+    public static String typeName(DatabaseObject dbo) {
+        return type(dbo);
+    }
+
     private static String type(DatabaseObject dbo) {
         try {
             if (dbo instanceof mpv5.db.objects.Item) {

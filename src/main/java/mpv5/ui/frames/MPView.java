@@ -537,6 +537,10 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
 
     @Override
     public final void reloadFavorites() {
+        //built anew (it was appended to: each added favourite listed all again)
+        if (getFavMenu() != null) {
+            getFavMenu().removeAll();
+        }
         Favourite[] favs = Favourite.getUserFavourites();
         for (int i = 0; i < favs.length; i++) {
             Favourite fav = favs[i];
