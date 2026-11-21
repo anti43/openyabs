@@ -45,4 +45,27 @@ class ItemTextAreaDialogKeysTest {
         press(area, InputEvent.CTRL_DOWN_MASK);
         assertEquals(2, applied.get(), "Ctrl+Enter applies (as before)");
     }
+
+    @Test
+    void withChildrenIncludesNestedGroupsAndHandlesAllAndCycles() {
+        mpv5.db.objects.ProductGroup root = group(1);
+        mpv5.db.objects.ProductGroup child = group(2);
+        mpv5.db.objects.ProductGroup grandChild = group(3);
+        mpv5.db.objects.ProductGroup sibling = group(4);
+
+        java.util.Map<Integer, java.util.List<mpv5.db.objects.ProductGroup>> children = new java.util.HashMap<>();
+        children.put(1, java.util.Arrays.asList(child, sibling));
+        children.put(2, java.util.Arrays.asList(grandChild, root)); // includes cycle back to root
+
+        assertEquals(java.util.Collections.emptySet(), ItemTextAreaDialog.withChildren(0, children));
+        assertEquals(new java.util.LinkedHashSet<>(java.util.Arrays.asList(1, 2, 4, 3)),
+                ItemTextAreaDialog.withChildren(1, children));
+        assertEquals(java.util.Collections.singleton(4), ItemTextAreaDialog.withChildren(4, children));
+    }
+
+    private static mpv5.db.objects.ProductGroup group(int id) {
+        mpv5.db.objects.ProductGroup g = new mpv5.db.objects.ProductGroup();
+        g.setIDS(id);
+        return g;
+    }
 }

@@ -1060,6 +1060,8 @@ public enum Messages {
     PRODUCTS_TITLE("Products"),
     PRODUCTS_COUNT("%d products"),
     PRODUCTS_KIND_ALL("All"),
+    ITEM_TEXT_PRODUCTGROUP("Product group"),
+    ITEM_TEXT_PRODUCTGROUP_ALL("All product groups"),
     PRODUCTS_KIND_PRODUCTS("Products"),
     PRODUCTS_KIND_SERVICES("Services"),
     PRODUCTS_BELOW_THRESHOLD("Stock at threshold"),

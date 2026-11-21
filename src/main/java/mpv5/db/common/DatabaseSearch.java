@@ -25,6 +25,8 @@ public class DatabaseSearch {
     public static String ALL_COLUMNS = "*";
     private final Context context;
     private int ROWLIMIT = 0;
+    private String restrictColumn;
+    private java.util.Collection<Integer> restrictIds;
 
     /**
      * Initiates a new search
@@ -223,6 +225,20 @@ public class DatabaseSearch {
     }
 
     /**
+     * Limits the searches of {@link #getValuesFor2} (and the methods using
+     * it) to rows whose column holds one of the ids
+     *
+     * @param column the column, e.g. productgroupsids
+     * @param ids the allowed ids, null or empty: no limit
+     * @return this
+     */
+    public DatabaseSearch restrictTo(String column, java.util.Collection<Integer> ids) {
+        this.restrictColumn = column;
+        this.restrictIds = ids;
+        return this;
+    }
+
+    /**
      * Get multiple values from a search, ignores reference tables and is
      * herewith faster
      *
@@ -277,6 +293,15 @@ public class DatabaseSearch {
             }
         }
         qc.or(ps);
+        if (restrictColumn != null && restrictIds != null && !restrictIds.isEmpty()) {
+            List<QueryParameter> in = new ArrayList<QueryParameter>();
+            for (Integer id : restrictIds) {
+                if (id != null) {
+                    in.add(new QueryParameter(context, restrictColumn, id, QueryParameter.EQUALS));
+                }
+            }
+            qc.list(in);
+        }
         try {
             return QueryHandler.instanceOf().clone(context, ROWLIMIT).select(resultingFieldNames, qc).getData();
         } catch (NodataFoundException ex) {
