@@ -1,0 +1,2603 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Searchable OpenYaBS documentation synced from the GitHub wiki (English & Deutsch)">
+      
+      
+      
+        <link rel="canonical" href="https://anti43.github.io/openyabs/wiki/Plugins-schreiben/">
+      
+      
+        <link rel="prev" href="../ScriptOnSavePlugin/">
+      
+      
+        <link rel="next" href="../Openyabs-documentation-%28EN%29/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.2">
+    
+    
+      
+        <title>Plugins schreiben - OpenYaBS Wiki</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#plugins-für-yabs-schreiben" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="OpenYaBS Wiki" class="md-header__button md-logo" aria-label="OpenYaBS Wiki" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            OpenYaBS Wiki
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Plugins schreiben
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/anti43/openyabs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    anti43/openyabs
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="OpenYaBS Wiki" class="md-nav__button md-logo" aria-label="OpenYaBS Wiki" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    OpenYaBS Wiki
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/anti43/openyabs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    anti43/openyabs
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deutsch
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Deutsch
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Openyabs-Dokumentation-%28DE%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dokumentation (DE)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../YaBS-Beschreibung/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Beschreibung
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Hinweise-und-Neuerungen/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hinweise und Neuerungen
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Datenbank/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Datenbank
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../E-Rechnung/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    E-Rechnung
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Kleinunternehmer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kleinunternehmer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Datenschutz-DSGVO/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Datenschutz (DSGVO)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Journal/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Journal
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Rechnung-stornieren/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rechnung stornieren
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Ist-Yabs-GoBD-konforme-Software/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GoBD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SEPA-Lastschrift/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SEPA-Lastschrift
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Kontaktliste/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kontaktliste
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../QR-Code/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    QR-Code
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Dateinamengrundeinstellung/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dateinamen
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Shopify/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shopify
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Kasse-und-TSE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kasse und TSE
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Vorlagen/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vorlagen
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Spaltendefinition/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spaltendefinition
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Skripte/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Skripte
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins (DE)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Plugins (DE)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Plugins/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins (Übersicht)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DATEV-Export/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DATEV-Export
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GoBD-Plugin/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GoBD-Plugin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Heilpraktiker-Plugin/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Heilpraktiker-Plugin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Kfz-Werkstatt-Plugin/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kfz-Werkstatt-Plugin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Vereinsverwaltung-Plugin/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vereinsverwaltung-Plugin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ScriptOnSavePlugin/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ScriptOnSavePlugin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins schreiben
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins schreiben
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#ein-plugin-in-groovy--30-sekunden" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ein Plugin in Groovy – 30 Sekunden
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ein-plugin-in-java" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ein Plugin in Java
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#groovy-und-java-im-vergleich" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Groovy und Java im Vergleich
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#was-der-kontext-bietet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Was der Kontext bietet
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Was der Kontext bietet">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#beiträge-werden-beim-stoppen-des-plugins-wieder-entfernt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Beiträge (werden beim Stoppen des Plugins wieder entfernt)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aktionen-und-hilfen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Aktionen und Hilfen
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#datensatz-ansichten" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Datensatz-Ansichten
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#threads" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Threads
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#beispiele" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Beispiele
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#klassische-plugins" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Klassische Plugins
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    English
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    English
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Openyabs-documentation-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation (EN)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Notes-and-changes-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notes and changes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Database-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Database
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Journal-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Journal
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Cancelling-an-invoice-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cancelling an invoice
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Small-business-VAT-exemption-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Small business VAT exemption
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Data-protection-GDPR-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data protection (GDPR)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SEPA-direct-debit-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SEPA direct debit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Contact-list-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contact list
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../QR-code-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    QR code
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../File-name-defaults-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    File name defaults
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Shopify-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shopify
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Cash-register-and-TSE-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cash register and TSE
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Templates-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Templates
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Scripts-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scripts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins (EN)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Plugins (EN)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Plugins-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins (Overview)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Association-plugin-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Association plugin (e.V.)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Car-repair-shop-plugin-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Car repair shop plugin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DATEV-export-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DATEV export
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GoBD-plugin-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GoBD plugin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Heilpraktiker-plugin-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Heilpraktiker plugin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Writing-plugins-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Writing plugins
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#ein-plugin-in-groovy--30-sekunden" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ein Plugin in Groovy – 30 Sekunden
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ein-plugin-in-java" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ein Plugin in Java
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#groovy-und-java-im-vergleich" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Groovy und Java im Vergleich
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#was-der-kontext-bietet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Was der Kontext bietet
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Was der Kontext bietet">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#beiträge-werden-beim-stoppen-des-plugins-wieder-entfernt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Beiträge (werden beim Stoppen des Plugins wieder entfernt)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aktionen-und-hilfen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Aktionen und Hilfen
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#datensatz-ansichten" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Datensatz-Ansichten
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#threads" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Threads
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#beispiele" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Beispiele
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#klassische-plugins" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Klassische Plugins
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<p><em>English: <a href="../Writing-plugins-%28EN%29/">Writing plugins</a></em></p>
+<h1 id="plugins-für-yabs-schreiben">Plugins für YaBS schreiben<a class="headerlink" href="#plugins-für-yabs-schreiben" title="Permanent link">&para;</a></h1>
+<p>Plugins ergänzen YaBS um <strong>Befehle</strong>, <strong>Suchergebnisse</strong>, <strong>Einstellungsseiten</strong>, <strong>Tabs</strong>, <strong>Markierungen in Datensatz-Ansichten</strong> und <strong>Reaktionen</strong> – in <strong>Groovy</strong> (eine einzelne Datei, ohne Build) oder in <strong>Java</strong> (ein Jar). Beide bekommen <strong>dieselbe Schnittstelle</strong>: den <a href="https://github.com/anti43/openyabs/blob/master/src/main/java/mpv5/plugin/api/ExtensionContext.java"><code>ExtensionContext</code></a>.</p>
+<ul>
+<li>Plugins liegen im Ordner <strong><code>plugins</code></strong> im YaBS-Ordner (<em>Einstellungen › Plugin-Manager › Ordner öffnen</em>).</li>
+<li><em>Einstellungen › Plugin-Manager</em> zeigt alle Plugins mit ihrem Zustand. Dort lassen sich Plugins aktivieren, deaktivieren, neu laden, bearbeiten und entfernen; oben unter <em>Plugin hinzufügen</em> stehen gleichrangig <em>Neues Groovy-Plugin…</em>, <em>Groovy-Plugin importieren…</em> und <em>Java-Plugin importieren…</em>; eine <code>.jar</code>- / <code>.groovy</code>-Datei kann man auch auf die Seite ziehen.</li>
+<li>Befehle von Plugins erscheinen im Menü <strong>Plugins</strong> und in <strong>Alles durchsuchen</strong> (<code>Umschalt Umschalt</code>).</li>
+<li>YaBS lädt die Plugins nach dem Start <strong>im Hintergrund</strong>; die Statuszeile zeigt den Fortschritt (<em>Plugins werden geladen (2/5): …</em>). Das Fenster ist währenddessen bedienbar.</li>
+<li>Ein fehlerhaftes Plugin wird mit seiner Fehlermeldung als <em>fehlgeschlagen</em> markiert; YaBS und die anderen Plugins laufen weiter.</li>
+<li>Alles, was ein Plugin hinzufügt, wird beim Stoppen (deaktivieren, neu laden, entfernen) wieder entfernt – ein Plugin kann also ohne Neustart von YaBS entwickelt und neu geladen werden.</li>
+<li>Jedes Plugin hat eine <strong>ID</strong>. Zwei Plugins mit derselben ID laufen nie gleichzeitig. Wird ein Jar installiert, dessen Plugin die ID eines Plugins aus einer anderen Datei hat (z. B. die Java-Version eines Groovy-Skripts), ersetzt es dieses Plugin; die alte Datei bleibt als <code>&lt;Name&gt;.replaced</code> erhalten.</li>
+</ul>
+<h2 id="ein-plugin-in-groovy--30-sekunden">Ein Plugin in Groovy – 30 Sekunden<a class="headerlink" href="#ein-plugin-in-groovy--30-sekunden" title="Permanent link">&para;</a></h2>
+<p><em>Einstellungen › Plugin-Manager › Neues Groovy-Plugin…</em> legt ein lauffähiges Plugin aus einer Vorlage an und öffnet es im <strong>Plugin-Editor von YaBS</strong>: Groovy-Hervorhebung, Zeilennummern, <em>Beispiel einfügen</em> (Befehl, Suchergebnisse, Reaktion auf neue Datensätze, Einstellungsseite, eigener Tab, Record-Modifier, gespeicherte Werte, Hintergrundarbeit), <em>Prüfen</em> (F5) zeigt die Zeile eines Fehlers, <em>Speichern und starten</em> (<code>Strg+S</code>) lädt das Plugin sofort neu. <em>Bearbeiten</em> öffnet vorhandene Groovy-Plugins dort; <em>Anderer Editor</em> öffnet die Datei im eigenen Editor. Bei großen Skripten (ab etwa 60.000 Zeichen) schaltet der Editor die Hervorhebung ab, damit das Tippen schnell bleibt – sehr große Plugins schreibt man besser in Java.</p>
+<p>Oder <code>plugins/hallo.groovy</code> selbst anlegen:</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// @name Hallo</span>
+<span class="c1">// @description Sagt Hallo und bemerkt neue Rechnungen</span>
+<span class="c1">// @version 1.0</span>
+<span class="c1">// @author Sie</span>
+<span class="c1">// @minYabsVersion 2.0.10</span>
+
+<span class="c1">// ein Befehl: Menü "Plugins" und Alles durchsuchen</span>
+<span class="n">yabs</span><span class="o">.</span><span class="na">addCommand</span><span class="o">(</span><span class="s1">'Hallo sagen'</span><span class="o">,</span><span class="w"> </span><span class="s1">'Ein erster Befehl'</span><span class="o">,</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="n">yabs</span><span class="o">.</span><span class="na">notify</span><span class="o">(</span><span class="s1">'Hallo aus Groovy!'</span><span class="o">)</span>
+<span class="o">})</span>
+
+<span class="c1">// auf neue Datensätze reagieren (und erzeugte Dateien, geänderte und gelöschte Datensätze)</span>
+<span class="n">yabs</span><span class="o">.</span><span class="na">onActivity</span><span class="o">({</span><span class="w"> </span><span class="n">entry</span><span class="w"> </span><span class="o">-&gt;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span><span class="n">entry</span><span class="o">.</span><span class="na">kind</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">mpv5</span><span class="o">.</span><span class="na">handler</span><span class="o">.</span><span class="na">Activity</span><span class="o">.</span><span class="na">Kind</span><span class="o">.</span><span class="na">CREATED</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">entry</span><span class="o">.</span><span class="na">detail</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">'Rechnung'</span><span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="n">yabs</span><span class="o">.</span><span class="na">notify</span><span class="o">(</span><span class="s1">'Neue Rechnung: '</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">entry</span><span class="o">.</span><span class="na">text</span><span class="o">)</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="o">})</span>
+
+<span class="c1">// Ergebnisse in Alles durchsuchen</span>
+<span class="n">yabs</span><span class="o">.</span><span class="na">addSearchProvider</span><span class="o">({</span><span class="w"> </span><span class="n">text</span><span class="w"> </span><span class="o">-&gt;</span>
+<span class="w">    </span><span class="n">text</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s1">'wetter'</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="o">[</span><span class="k">new</span><span class="w"> </span><span class="n">mpv5</span><span class="o">.</span><span class="na">plugin</span><span class="o">.</span><span class="na">api</span><span class="o">.</span><span class="na">SearchResult</span><span class="o">(</span><span class="s1">'Wetter öffnen'</span><span class="o">,</span><span class="w"> </span><span class="s1">'wttr.in'</span><span class="o">,</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="n">java</span><span class="o">.</span><span class="na">awt</span><span class="o">.</span><span class="na">Desktop</span><span class="o">.</span><span class="na">desktop</span><span class="o">.</span><span class="na">browse</span><span class="o">(</span><span class="k">new</span><span class="w"> </span><span class="n">URI</span><span class="o">(</span><span class="s1">'https://wttr.in'</span><span class="o">))</span>
+<span class="w">    </span><span class="o">})]</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="o">[]</span>
+<span class="o">})</span>
+
+<span class="c1">// läuft, wenn das Plugin stoppt (dasselbe wie yabs.onStop { ... })</span>
+<span class="n">onStop</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="o">}</span>
+</code></pre></div>
+<p>Speichern und im Plugin-Manager <strong>Neu laden</strong> klicken – fertig.</p>
+<ul>
+<li>Die Kommentarzeilen oben (<code>// @name</code>, <code>@description</code>, <code>@version</code>, <code>@author</code>, <code>@id</code>, <code>@minYabsVersion</code>) beschreiben das Plugin; die ID ist ohne Angabe <code>groovy.&lt;Dateiname&gt;</code>.</li>
+<li>Das Skript läuft beim Start des Plugins; <strong><code>yabs</code></strong> ist der <code>ExtensionContext</code>, <strong><code>plugin</code></strong> das Plugin selbst. Closures funktionieren überall, wo die Schnittstelle eine Funktion erwartet.</li>
+<li>Ein Skript kann auch ein Objekt zurückgeben (<code>return</code>), das <code>YabsExtension</code> implementiert – dann ist dieses Objekt das Plugin.</li>
+</ul>
+<h2 id="ein-plugin-in-java">Ein Plugin in Java<a class="headerlink" href="#ein-plugin-in-java" title="Permanent link">&para;</a></h2>
+<ol>
+<li><a href="https://github.com/anti43/openyabs/blob/master/src/main/java/mpv5/plugin/api/YabsExtension.java"><code>mpv5.plugin.api.YabsExtension</code></a> implementieren:</li>
+</ol>
+<div class="highlight"><pre><span></span><code><span class="kn">package</span><span class="w"> </span><span class="nn">com.example</span><span class="p">;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">mpv5.plugin.api.ExtensionContext</span><span class="p">;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">mpv5.plugin.api.YabsExtension</span><span class="p">;</span>
+
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">Hallo</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">YabsExtension</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">id</span><span class="p">()</span><span class="w">             </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="s">"com.example.hallo"</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">name</span><span class="p">()</span><span class="w">           </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="s">"Hallo"</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">description</span><span class="p">()</span><span class="w">    </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="s">"Sagt Hallo"</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">minYabsVersion</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="s">"2.0.10"</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span><span class="n">ExtensionContext</span><span class="w"> </span><span class="n">ctx</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">ctx</span><span class="p">.</span><span class="na">addCommand</span><span class="p">(</span><span class="s">"Hallo sagen"</span><span class="p">,</span><span class="w"> </span><span class="s">"Ein erster Befehl"</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">ctx</span><span class="p">.</span><span class="na">notify</span><span class="p">(</span><span class="s">"Hallo!"</span><span class="p">));</span>
+<span class="w">        </span><span class="n">ctx</span><span class="p">.</span><span class="na">onStop</span><span class="p">(()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* schließen, was das Plugin selbst geöffnet hat */</span><span class="w"> </span><span class="p">});</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<ol>
+<li>Die Klasse in <strong><code>META-INF/services/mpv5.plugin.api.YabsExtension</code></strong> eintragen (eine Klasse pro Zeile – ein Jar kann mehrere Plugins enthalten):</li>
+</ol>
+<div class="highlight"><pre><span></span><code>com.example.Hallo
+</code></pre></div>
+<ol>
+<li>Gegen <code>openyabs.jar</code> (und bei Bedarf <code>lib/*</code>) kompilieren, ein Jar bauen, in <code>plugins</code> legen oder im Plugin-Manager installieren.</li>
+</ol>
+<p>Ein minimales <code>build.gradle</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="n">plugins</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="s1">'java'</span><span class="w"> </span><span class="o">}</span>
+<span class="n">dependencies</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="n">compileOnly</span><span class="w"> </span><span class="n">files</span><span class="o">(</span><span class="s1">'/pfad/zu/openyabs/openyabs.jar'</span><span class="o">)</span><span class="w"> </span><span class="o">}</span>
+<span class="n">java</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="n">toolchain</span><span class="w"> </span><span class="o">{</span><span class="w"> </span><span class="n">languageVersion</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">JavaLanguageVersion</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="mi">21</span><span class="o">)</span><span class="w"> </span><span class="o">}</span><span class="w"> </span><span class="o">}</span>
+</code></pre></div>
+<h2 id="groovy-und-java-im-vergleich">Groovy und Java im Vergleich<a class="headerlink" href="#groovy-und-java-im-vergleich" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Groovy</th>
+<th>Java</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Die Schnittstelle</td>
+<td><code>yabs</code> (der <code>ExtensionContext</code>)</td>
+<td>das <code>ctx</code>, das <code>start</code> bekommt</td>
+</tr>
+<tr>
+<td>ID, Name, Beschreibung, Version, Autor</td>
+<td><code>// @id</code>, <code>// @name</code>, <code>// @description</code>, <code>// @version</code>, <code>// @author</code></td>
+<td><code>id()</code>, <code>name()</code>, <code>description()</code>, <code>version()</code>, <code>author()</code></td>
+</tr>
+<tr>
+<td>Mindestversion von YaBS</td>
+<td><code>// @minYabsVersion 2.0.10</code></td>
+<td><code>minYabsVersion()</code></td>
+</tr>
+<tr>
+<td>Start</td>
+<td>das Skript läuft</td>
+<td><code>start(ctx)</code></td>
+</tr>
+<tr>
+<td>Stopp</td>
+<td><code>onStop = { … }</code> oder <code>yabs.onStop { … }</code></td>
+<td><code>stop()</code> oder <code>ctx.onStop(() -&gt; …)</code></td>
+</tr>
+<tr>
+<td>Funktionen</td>
+<td>Closures <code>{ x -&gt; … }</code></td>
+<td>Lambdas <code>x -&gt; …</code></td>
+</tr>
+<tr>
+<td>Weitergabe</td>
+<td>eine <code>.groovy</code>-Datei</td>
+<td>ein <code>.jar</code> mit <code>META-INF/services/mpv5.plugin.api.YabsExtension</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="was-der-kontext-bietet">Was der Kontext bietet<a class="headerlink" href="#was-der-kontext-bietet" title="Permanent link">&para;</a></h2>
+<h3 id="beiträge-werden-beim-stoppen-des-plugins-wieder-entfernt">Beiträge (werden beim Stoppen des Plugins wieder entfernt)<a class="headerlink" href="#beiträge-werden-beim-stoppen-des-plugins-wieder-entfernt" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Methode</th>
+<th>Was sie tut</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>addCommand(titel, beschreibung, aktion)</code></td>
+<td>ein Befehl im Menü <em>Plugins</em> und in Alles durchsuchen (läuft im Swing-Thread)</td>
+</tr>
+<tr>
+<td><code>addSearchProvider(text -&gt; List&lt;SearchResult&gt;)</code></td>
+<td>Ergebnisse in Alles durchsuchen (läuft im Hintergrund; schnell halten). <code>new SearchResult(titel, detail, () -&gt; …)</code></td>
+</tr>
+<tr>
+<td><code>addSettingsPage(titel, beschreibung, () -&gt; JComponent)</code></td>
+<td>eine Seite in den <em>Einstellungen</em> (Gruppe <em>Plugins</em>), über die Suche der Einstellungen zu finden</td>
+</tr>
+<tr>
+<td><code>onActivity(entry -&gt; …)</code></td>
+<td>erfährt von angelegten / geänderten / gelöschten Datensätzen, erzeugten Dateien (PDF, ODT, E-Rechnungen) und Meldungen – siehe <a href="https://github.com/anti43/openyabs/blob/master/src/main/java/mpv5/handler/Activity.java"><code>Activity.Entry</code></a>: <code>kind</code>, <code>text</code>, <code>detail</code>, <code>file</code>, <code>context</code>, <code>id</code> (Swing-Thread)</td>
+</tr>
+<tr>
+<td><code>addRecordModifier(DatabaseObjectModifier)</code></td>
+<td>wirkt beim Speichern, Anlegen und Löschen von Datensätzen mit: <code>modifyOnSave</code>, <code>modifyOnDelete</code> (<code>ChangeNotApprovedException</code> werfen, um die Änderung zu verhindern), <code>executeAfterCreate</code>, <code>executeAfterSave</code>, <code>modifyOnExplode</code>, <code>modifyOnResolve</code></td>
+</tr>
+<tr>
+<td><code>onView(ansicht -&gt; …)</code></td>
+<td>erfährt, wenn eine Datensatz-Ansicht (<code>DataPanel</code>) geöffnet wird oder einen anderen Datensatz zeigt, auch für Ansichten, die beim Start des Plugins schon offen sind – siehe <em>Datensatz-Ansichten</em> unten</td>
+</tr>
+<tr>
+<td><code>onStop(() -&gt; …)</code></td>
+<td>läuft, wenn das Plugin stoppt, deaktiviert, neu geladen wird oder nicht starten kann</td>
+</tr>
+<tr>
+<td><code>addLockedDocumentProvider(LockedDocumentProvider)</code></td>
+<td>nennt die archivierte Originaldatei gesperrter Datensätze: <code>lockedDocument(datensatz)</code> liefert die Datei (auch wenn sie fehlt) oder null. Drucken, PDF, Vorschau, ODT und E-Rechnung öffnen sie, statt eine neue Datei zu erzeugen; YaBS fragt bei jedem Klick. Fehlt die Datei, bietet YaBS ein gestempeltes Duplikat an: <code>duplicateRefused</code>, <code>duplicateWarnings</code> und <code>duplicateCreated</code> lassen das Plugin es ablehnen, Abweichungen nennen und es protokollieren (Beispiel: GoBD-Plugin, <a href="../GoBD-Plugin/#archivierter-originalbeleg-statt-neuer-datei">Archivierter Originalbeleg</a>)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="aktionen-und-hilfen">Aktionen und Hilfen<a class="headerlink" href="#aktionen-und-hilfen" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Methode</th>
+<th>Was sie tut</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>openTab(titel, komponente)</code></td>
+<td>öffnet einen Tab im Hauptfenster</td>
+</tr>
+<tr>
+<td><code>notify(meldung)</code></td>
+<td>eine Meldung in der Statuszeile und der Aktivitätenliste</td>
+</tr>
+<tr>
+<td><code>popup(meldung)</code> / <code>error(meldung)</code></td>
+<td>ein Benachrichtigungsfenster (und die Aktivitätenliste)</td>
+</tr>
+<tr>
+<td><code>notify(meldung, datensatz)</code></td>
+<td>ein Benachrichtigungsfenster zu einem Datensatz, mit dem Datensatz protokolliert (ein Klick öffnet ihn)</td>
+</tr>
+<tr>
+<td><code>select(sql)</code></td>
+<td>führt ein <code>SELECT</code> auf der YaBS-Datenbank aus, liefert <code>Object[][]</code> (nie null)</td>
+</tr>
+<tr>
+<td><code>execute(sql)</code></td>
+<td>führt eine Anweisung aus (<code>CREATE TABLE</code>, <code>INSERT</code>, <code>UPDATE</code> …)</td>
+</tr>
+<tr>
+<td><code>ui(() -&gt; …)</code></td>
+<td>führt Code im Swing-Thread aus (sofort, wenn schon dort)</td>
+</tr>
+<tr>
+<td><code>background(arbeit, danach)</code></td>
+<td>erledigt Arbeit im Hintergrund und macht mit dem Ergebnis im Swing-Thread weiter; Fehler werden gemeldet</td>
+</tr>
+<tr>
+<td><code>currentView()</code></td>
+<td>die Datensatz-Ansicht im ausgewählten Tab, oder null</td>
+</tr>
+<tr>
+<td><code>refreshView(datensatz)</code></td>
+<td>zeigt den Datensatz in allen offenen Ansichten neu an, die ihn zeigen (z. B. nachdem das Plugin ihn geändert oder gesperrt hat)</td>
+</tr>
+<tr>
+<td><code>openFile(datei)</code></td>
+<td>öffnet eine Datei mit ihrem Programm (PDFs: der PDF-Betrachter aus <em>Einstellungen › Externe Programme</em>)</td>
+</tr>
+<tr>
+<td><code>settings()</code></td>
+<td>Einstellungen des Plugins (Schlüssel/Wert), auf diesem Rechner gespeichert: <code>get</code>, <code>set</code>, <code>getBoolean</code>, <code>setBoolean</code></td>
+</tr>
+<tr>
+<td><code>dataFolder()</code></td>
+<td>ein Ordner für eigene Dateien des Plugins</td>
+</tr>
+<tr>
+<td><code>yabsVersion()</code></td>
+<td>die Version von YaBS</td>
+</tr>
+</tbody>
+</table>
+<p><code>select</code> und <code>execute</code> nehmen einfaches SQL: Eingaben von Benutzern nur maskiert (<code>'</code> verdoppelt) in eine Abfrage übernehmen, oder die normalen YaBS-Klassen verwenden.</p>
+<h3 id="datensatz-ansichten">Datensatz-Ansichten<a class="headerlink" href="#datensatz-ansichten" title="Permanent link">&para;</a></h3>
+<p>In <code>onView</code> kann ein Plugin die Ansicht (<code>mpv5.ui.panels.DataPanel</code>) markieren; YaBS entfernt diese Markierungen, bevor es die Plugins erneut aufruft:</p>
+<table>
+<thead>
+<tr>
+<th>Methode der Ansicht</th>
+<th>Was sie tut</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>getDataOwner()</code></td>
+<td>der gezeigte Datensatz (<code>Item</code>, <code>Contact</code>, <code>Product</code>, <code>Expense</code>, <code>Revenue</code> …)</td>
+</tr>
+<tr>
+<td><code>setPluginBadge(komponente)</code></td>
+<td>eine kleine Markierung im Kopf der Ansicht, neben dem Status</td>
+</tr>
+<tr>
+<td><code>setPluginBanner(komponente)</code></td>
+<td>ein Banner unter der Befehlsleiste, z. B. mit Schaltflächen</td>
+</tr>
+<tr>
+<td><code>setContentLocked(true)</code></td>
+<td>sperrt die Inhaltsfelder und Positionen (Zahlungsstatus, Mahnungen, Export bleiben bedienbar)</td>
+</tr>
+<tr>
+<td><code>setLockedDocument(datei)</code></td>
+<td>für einen gesperrten Datensatz: Drucken, PDF, Vorschau, ODT und E-Rechnung öffnen diese archivierte Datei, statt eine neue zu erzeugen. Verlässlicher ist <code>addLockedDocumentProvider</code>: die Markierung der Ansicht fehlt, solange sie nicht neu angezeigt wurde</td>
+</tr>
+<tr>
+<td><code>setDataOwner(datensatz, true)</code></td>
+<td>zeigt einen Datensatz (neu) an</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre><span></span><code><span class="n">yabs</span><span class="o">.</span><span class="na">onView</span><span class="o">({</span><span class="w"> </span><span class="n">ansicht</span><span class="w"> </span><span class="o">-&gt;</span>
+<span class="w">    </span><span class="kt">def</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ansicht</span><span class="o">.</span><span class="na">getDataOwner</span><span class="o">()</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span><span class="n">r</span><span class="w"> </span><span class="k">instanceof</span><span class="w"> </span><span class="n">mpv5</span><span class="o">.</span><span class="na">db</span><span class="o">.</span><span class="na">objects</span><span class="o">.</span><span class="na">Item</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">r</span><span class="o">.</span><span class="na">__getIntstatus</span><span class="o">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">mpv5</span><span class="o">.</span><span class="na">db</span><span class="o">.</span><span class="na">objects</span><span class="o">.</span><span class="na">Item</span><span class="o">.</span><span class="na">STATUS_PAID</span><span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">        </span><span class="n">ansicht</span><span class="o">.</span><span class="na">setPluginBadge</span><span class="o">(</span><span class="k">new</span><span class="w"> </span><span class="n">javax</span><span class="o">.</span><span class="na">swing</span><span class="o">.</span><span class="na">JLabel</span><span class="o">(</span><span class="s1">'bezahlt'</span><span class="o">))</span>
+<span class="w">    </span><span class="o">}</span>
+<span class="o">})</span>
+</code></pre></div>
+<h3 id="threads">Threads<a class="headerlink" href="#threads" title="Permanent link">&para;</a></h3>
+<p><code>start</code>, <code>stop</code>, Befehle, <code>onActivity</code>, <code>onView</code> und der zweite Teil von <code>background</code> laufen im Swing-Thread – kurz halten und für länger dauernde Datenbankarbeit <code>background</code> verwenden. Suchanbieter laufen im Hintergrund. <code>stop()</code> / <code>onStop</code> braucht ein Plugin nur für das, was es selbst angelegt hat (Threads, Timer, Verbindungen) – alles über den Kontext Registrierte entfernt YaBS.</p>
+<p>Datensätze, Kontexte und Abfragen sind die normalen YaBS-Klassen (<code>mpv5.db.common.DatabaseObject</code>, <code>Context</code>, <code>QueryHandler</code>, …); die Groovy-Konsole (<em>Einstellungen › GroovyConsole</em>) eignet sich gut zum Ausprobieren.</p>
+<h2 id="beispiele">Beispiele<a class="headerlink" href="#beispiele" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Das <strong>Aktivitätsjournal</strong> (<a href="https://github.com/anti43/openyabs/blob/master/src/main/java/mpv5/plugin/builtin/ActivityJournal.java">Quelltext</a>) gehört zu YaBS: Es schreibt erzeugte Dateien und Datensätze in ein CSV-Journal, macht das Journal in Alles durchsuchen findbar und bietet einen Befehl und eine Einstellungsseite. Es lässt sich wie jedes andere Plugin deaktivieren.</li>
+<li>Das <strong>GoBD-Plugin</strong> (<a href="https://github.com/anti43/openyabs/tree/master/plugins/gobd">Quelltext</a>, <a href="../GoBD-Plugin/">Dokumentation</a>) ist ein großes Java-Plugin: Record-Modifier, <code>onActivity</code>, <code>onView</code> mit Badges, Bannern und Sperren, Befehle, eine Einstellungsseite, ein Tab, Suchergebnisse, eigene Datenbanktabellen und ein Timer. Es liegt YaBS als <code>plugins/gobd-compliance.jar</code> bei.</li>
+</ul>
+<h2 id="klassische-plugins">Klassische Plugins<a class="headerlink" href="#klassische-plugins" title="Permanent link">&para;</a></h2>
+<p>Plugins älterer YaBS-Versionen (eine Klasse <code>plugin.Main</code>, die <code>mpv5.pluginhandling.YabsPlugin</code> implementiert, in der Datenbank gespeichert) funktionieren weiterhin; sie stehen unten im Plugin-Manager unter <em>Klassische Plugins (Datenbank)</em> (mit <em>Anzeigen</em> aufklappen).</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://anti43.github.io/openyabs/" target="_blank" rel="noopener" title="OpenYaBS Website" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M351.9 280H161c2.9 64.5 17.2 123.9 37.5 167.4 11.4 24.5 23.7 41.8 35.1 52.4 11.2 10.5 18.9 12.2 22.9 12.2s11.7-1.7 22.9-12.2c11.4-10.6 23.7-28 35.1-52.4 20.3-43.5 34.6-102.9 37.5-167.4zm-191-48h190.9c-2.8-64.5-17.1-123.9-37.4-167.4-11.4-24.4-23.7-41.8-35.1-52.4C268.1 1.7 260.4 0 256.4 0s-11.7 1.7-22.9 12.2c-11.4 10.6-23.7 28-35.1 52.4-20.3 43.5-34.6 102.9-37.5 167.4m-48 0c3.5-85.6 25.6-165.1 57.9-217.3C78.7 47.3 10.9 131.2 1.5 232zM1.5 280c9.4 100.8 77.2 184.7 169.3 217.3-32.3-52.2-54.4-131.7-57.9-217.3zm398.4 0c-3.5 85.6-25.6 165.1-57.9 217.3 92.1-32.7 159.9-116.5 169.3-217.3zm111.4-48C501.9 131.2 434.1 47.3 342 14.7c32.3 52.2 54.4 131.7 57.9 217.3z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://github.com/anti43/openyabs" target="_blank" rel="noopener" title="GitHub Repository" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://github.com/anti43/openyabs/wiki" target="_blank" rel="noopener" title="GitHub Wiki (source)" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M384 512H96c-53 0-96-43-96-96V96C0 43 43 0 96 0h304c26.5 0 48 21.5 48 48v288c0 20.9-13.4 38.7-32 45.3V448c17.7 0 32 14.3 32 32s-14.3 32-32 32zM96 384c-17.7 0-32 14.3-32 32s14.3 32 32 32h256v-64zm32-232c0 13.3 10.7 24 24 24h176c13.3 0 24-10.7 24-24s-10.7-24-24-24H152c-13.3 0-24 10.7-24 24m24 72c-13.3 0-24 10.7-24 24s10.7 24 24 24h176c13.3 0 24-10.7 24-24s-10.7-24-24-24z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://github.com/anti43/openyabs/releases" target="_blank" rel="noopener" title="Download Releases" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M256 32c0-17.7-14.3-32-32-32s-32 14.3-32 32v210.7l-41.4-41.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l96 96c12.5 12.5 32.8 12.5 45.3 0l96-96c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 242.7zM64 320c-35.3 0-64 28.7-64 64v32c0 35.3 28.7 64 64 64h320c35.3 0 64-28.7 64-64v-32c0-35.3-28.7-64-64-64h-46.9l-56.6 56.6c-31.2 31.2-81.9 31.2-113.1 0L110.9 320zm304 56a24 24 0 1 1 0 48 24 24 0 1 1 0-48"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.sections", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "toc.follow"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.a5f9d56c.min.js"></script>
+      
+    
+  </body>
+</html>

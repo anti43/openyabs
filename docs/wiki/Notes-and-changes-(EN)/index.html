@@ -1,0 +1,2087 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Searchable OpenYaBS documentation synced from the GitHub wiki (English & Deutsch)">
+      
+      
+      
+        <link rel="canonical" href="https://anti43.github.io/openyabs/wiki/Notes-and-changes-%28EN%29/">
+      
+      
+        <link rel="prev" href="../Openyabs-documentation-%28EN%29/">
+      
+      
+        <link rel="next" href="../Database-%28EN%29/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.2">
+    
+    
+      
+        <title>Notes and changes - OpenYaBS Wiki</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#yabs--notes-and-recent-changes-en" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="OpenYaBS Wiki" class="md-header__button md-logo" aria-label="OpenYaBS Wiki" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            OpenYaBS Wiki
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Notes and changes
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/anti43/openyabs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    anti43/openyabs
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="OpenYaBS Wiki" class="md-nav__button md-logo" aria-label="OpenYaBS Wiki" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    OpenYaBS Wiki
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/anti43/openyabs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    anti43/openyabs
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deutsch
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Deutsch
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Openyabs-Dokumentation-%28DE%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dokumentation (DE)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../YaBS-Beschreibung/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Beschreibung
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Hinweise-und-Neuerungen/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hinweise und Neuerungen
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Datenbank/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Datenbank
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../E-Rechnung/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    E-Rechnung
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Kleinunternehmer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kleinunternehmer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Datenschutz-DSGVO/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Datenschutz (DSGVO)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Journal/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Journal
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Rechnung-stornieren/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rechnung stornieren
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Ist-Yabs-GoBD-konforme-Software/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GoBD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SEPA-Lastschrift/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SEPA-Lastschrift
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Kontaktliste/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kontaktliste
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../QR-Code/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    QR-Code
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Dateinamengrundeinstellung/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dateinamen
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Shopify/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shopify
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Kasse-und-TSE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kasse und TSE
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Vorlagen/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vorlagen
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Spaltendefinition/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spaltendefinition
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Skripte/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Skripte
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins (DE)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Plugins (DE)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Plugins/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins (Übersicht)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DATEV-Export/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DATEV-Export
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GoBD-Plugin/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GoBD-Plugin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Heilpraktiker-Plugin/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Heilpraktiker-Plugin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Kfz-Werkstatt-Plugin/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kfz-Werkstatt-Plugin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Vereinsverwaltung-Plugin/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vereinsverwaltung-Plugin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ScriptOnSavePlugin/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ScriptOnSavePlugin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Plugins-schreiben/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins schreiben
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    English
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    English
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Openyabs-documentation-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation (EN)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notes and changes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Database-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Database
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Journal-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Journal
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Cancelling-an-invoice-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cancelling an invoice
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Small-business-VAT-exemption-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Small business VAT exemption
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Data-protection-GDPR-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data protection (GDPR)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SEPA-direct-debit-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SEPA direct debit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Contact-list-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contact list
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../QR-code-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    QR code
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../File-name-defaults-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    File name defaults
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Shopify-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shopify
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Cash-register-and-TSE-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cash register and TSE
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Templates-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Templates
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Scripts-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scripts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins (EN)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Plugins (EN)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Plugins-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins (Overview)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Association-plugin-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Association plugin (e.V.)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Car-repair-shop-plugin-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Car repair shop plugin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DATEV-export-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DATEV export
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GoBD-plugin-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GoBD plugin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Heilpraktiker-plugin-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Heilpraktiker plugin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Writing-plugins-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Writing plugins
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="yabs--notes-and-recent-changes-en">YaBS – notes and recent changes (EN)<a class="headerlink" href="#yabs--notes-and-recent-changes-en" title="Permanent link">&para;</a></h1>
+<ul>
+<li><strong>Switching from YaBS 1.3.2 (Derby → H2):</strong> <em>File › Import › From YaBS 1.3.2 …</em> takes over an old YaBS 1.3.2 database (Apache Derby) completely into the open H2 database: contacts with addresses, documents with positions, products with prices and suppliers, expenses, revenues, accounts, tax rates, groups, users with passwords and rights, user and global settings, number formats, templates with their files, attachments, history, schedules, reminders, conversations, activity lists, product orders, mail templates, mass print rules, favourites and trash entries – with their numbers, dates ("created on") and old ids, so all links stay and the next number continues. YaBS finds the folder of the old database (usually <code>~/.yabs/&lt;database name&gt;</code>, containing <code>service.properties</code> and <code>seg0</code>) or you choose it. <strong>The old database is never opened or changed</strong>: YaBS reads a copy (older versions are first updated on the copy as YaBS 1.3.2 would have done). <strong>How:</strong> create a new, empty database first (<em>File › Connection manager › New database …</em>), then import; the default data of the new database (administrator, groups, accounts, tax rates …) is replaced by the old data – a database with contacts, documents or products of its own is refused. The templates of the new database are kept as additional templates, as are countries and settings the old database does not have. The old substitutes are converted back: <code>&lt;removedbackslash&gt;</code> becomes \ again, <code>`</code> becomes ' (can be switched off; number formats and document numbers keep their <code>`</code> so numbering stays the same). The import runs in one transaction (on an error the new database stays unchanged) and finally shows the old and imported rows per table; anything that could not be taken over is listed explicitly (only the record locks of the old program are not taken over, the search index is rebuilt). The report is also saved in the YaBS folder. Then restart YaBS and sign in with a user of the old database (same password as before). Also offered in the setup assistant at first start ("Take over the data of YaBS 1.3.2 …" under <em>Local</em>) and in the connection manager (<em>Import from YaBS 1.3.2 …</em>: a new database with the old data); YaBS then starts signed in as the administrator of the old database.</li>
+<li><strong>Database:</strong> new local installations use H2; Derby databases keep working. Developer mode <code>-devmode</code>: H2 in memory only, mails are saved as <code>.eml</code> in <code>devmode-mails</code> instead of being sent. PostgreSQL and MySQL/MariaDB are supported; new server databases are created in one step from <code>db/schema.sql</code>. Missing tables are created at start. Details: <a href="../Database-%28EN%29/">Datenbank</a>.</li>
+<li><strong>Connection manager</strong> (<em>File › Database connections …</em>, at start with several connections): list of all databases with name, type and place (missing ones in red), sign in and connect in one step. <em>New database …</em> sets one up with the setup assistant, then YaBS starts signed in with it; <em>Cancel</em> returns to the list. <em>Add existing …</em> adds an H2 or Derby database, plus <em>Rename</em> and <em>Remove</em> (the entry only). Switching runs the same checks as a program start (update, missing tables). <em>At start open</em>: the database used last (default) or always a certain one (<code>connectionstart.properties</code>; <code>-connectionInstance</code> wins). On an error the current connection stays active.</li>
+<li><strong>Zip backup</strong> (<em>Control Panel › Database</em>): shows the database in use (type, place, size) and whether a zip backup is possible (server databases are backed up on the server). Closes the local H2/Derby database, zips it with a timestamp into a folder (variables <code>[HOME] [APPDIR] [DBNAME] [YEAR] [MONTH] [DAY]</code>), reopens it; keeps the newest 3 by default; optionally at every exit. Restore unzips next to the zip and adds a new connection "Backup <timestamp>". The older tools (Derby backup, SQL export, restore) are hidden.</li>
+<li><strong>Local options, folders:</strong> each folder field says which folder is used now, also when empty (then the folder chosen last).</li>
+<li><strong>File name defaults:</strong> insert variables and <code>/</code> from a list, with a preview. Variables: <a href="../File-name-defaults-%28EN%29/">wiki</a>.</li>
+<li><strong>User settings:</strong> <em>Document dates</em>, <em>Export</em> and <em>New positions</em> explain every option; <em>New positions</em> sets unit, quantity and VAT of new positions and which product fields make the position text (with preview).</li>
+<li><strong>Regional settings:</strong> formats with a country (currency), an example of number, amount and date; dates follow the format everywhere, also in e-invoices.</li>
+<li><strong>Default font:</strong> <em>Apply</em> changes the open windows at once; all windows and dialogs use it after a restart. The size is set with <em>View › Zoom</em>.</li>
+<li><strong>Translate</strong> (<em>Control Panel › Translate</em>): all keys sorted, filter over all columns, a base language to start from; <em>Save and use</em> creates one own language per user, fills missing translations with English and uses it at once; <code>.properties</code> import/export (UTF-8 and ISO-8859-1).</li>
+<li><strong>Script manager:</strong> <em>Use as</em> choice with an explanation of what the name does, help text, <em>Toolbar actions…</em> and <em>Documentation</em> buttons; scripts may span several lines, are loaded once and apply at once after a change. Details: <a href="../Scripts-%28EN%29/">Scripts</a>.</li>
+<li><strong>Groovy plugins</strong> (<em>Control Panel › Plugin manager</em>): editor with highlighting; an empty plugin file opens with a working skeleton.</li>
+<li><strong>Settings lists</strong> (<em>Mail templates</em>, <em>Reminders</em>, <em>Accounts</em>, <em>Product groups</em>, <em>Groups</em>): <strong>Save</strong> creates a new entry when none is selected; <strong>Save as new</strong> creates a copy everywhere – in Settings, the <em>File</em> menu and the <em>More</em> menu of the document, contact and product bar (Ctrl+Shift+S).</li>
+<li><strong>Menus:</strong> <em>New offer/order/invoice/credit note</em>, <em>Expenses</em>, <em>Income</em>, <em>Bill of materials</em>, <em>Product overview</em>, <em>Settings …</em>, <em>Database connections …</em>. Product orders, new deposits and activity lists are hidden; existing ones stay readable.</li>
+<li><strong>Search:</strong> the magnifier in the contact, document and product bar (or Ctrl+Shift+F) opens "Search anything" right below it. Positions found show their document (type and number, customer, date), documents also the customer; long texts are shortened around the searched word, so e.g. an order number stays visible.</li>
+<li><strong>Editing templates</strong> (<em>Control Panel › Templates</em>): <em>Edit in LibreOffice</em> opens the template as a file in the YaBS folder (<code>templates-edit/&lt;name&gt;_&lt;id&gt;.odt</code>). Every save there (Ctrl+S) is taken over at once: a message in the status bar, an entry in the history, and the <em>File</em> card shows "Open in LibreOffice · Last change taken over: …". No need to import again; the old watch checkbox and <em>Discard changes</em> are gone.</li>
+<li><strong>Template manager:</strong> a <em>Preview</em> (last card, full width) always shows the first page with a document and 20 sample positions, made again after every save (<em>Show larger</em>, <em>Other document …</em>). <em>Position table</em> card: the columns by name, <em>Choose columns …</em> to tick and order them, <em>Show all placeholders</em> with a search (by name or value, e.g. an IBAN), <em>Only with a value</em> and copying by double click. Cards <em>Payment term</em> (what it is used for) and <em>Printing</em> (a list of printers).</li>
+<li><strong>Updates:</strong> release versions ask GitHub at start for a newer version and offer <em>Open download page</em>, <em>Skip this version</em> or <em>Later</em>. Nothing about you or your data is sent. Switch it off in the setup assistant at the first start or in <em>Local settings › Updates</em> (also <em>Check now</em>). Builds made on your own computer (<code>2.0-dev</code>) do not check at start. Versions follow semantic versioning: master builds are pre-releases of the next version, e.g. <code>2.0.4-dev.250</code> after 2.0.3 – the release 2.0.4 counts as newer.</li>
+<li><strong>New and changed records in the tab bar:</strong> the tab title is orange while a record is new or has unsaved edits (the tooltip says which); normal again after saving.</li>
+<li><strong>Movable cards</strong> (contact, document, product): drag a card by its handle (⋮⋮) or title onto another; the order and the divider position are saved per user; right click on a title restores the order.</li>
+<li><strong>Contact header:</strong> name on the first line (shortened, full name as tooltip), roles and ID · date · user on the second; a loaded contact shows its overview from the top.</li>
+<li><strong>Properties table</strong> in documents and contacts: own fields for templates: <code>&lt;item.property.NAME&gt;</code>, <code>&lt;contact.property.NAME&gt;</code>, <code>&lt;item.contact.property.NAME&gt;</code>.</li>
+<li><strong>Positions:</strong> full-width table with clear column names; right click: choose product (or insert order), insert row above/below, duplicate, move up/down, copy, paste, clear, remove.</li>
+<li><strong>Open the product of a position:</strong> in the positions of a document (offer, order, invoice, credit note …, modern view), <em>right-click › Open product</em> or Ctrl+click on the (underlined) product number opens the product the position was added from – also in locked documents. Free-text positions: entry disabled. If the product is in the trash, YaBS asks whether to open it anyway; if it was deleted for good, a message says so ("#ID (deleted)"). The link is kept when saving, copying and converting (offer › order › invoice, credit note). The other way round, the product lists the documents using it under <em>Documents</em>.</li>
+<li><strong>Saving a document without customer:</strong> a small dialog offers <em>Existing contact</em> (search) or <em>New contact</em>, prefilled with the typed name and the address of the document; <em>Cancel</em> (or Esc) saves nothing.</li>
+<li><strong>Converting opens a new tab:</strong> an invoice from an order (and an order from an offer) opens in a new tab; the source stays open.</li>
+<li><strong>Pasting documents as summary lines</strong> (default, also in <em>Combine into new invoice</em>): one line per document and VAT rate, the documents set to <em>Finished</em>; switch off in the user settings to copy the positions.</li>
+<li><strong>Find documents › Combine into new invoice:</strong> the invoice gets the positions of all selected documents of a contact; with PDF/e-invoice/e-mail its status is <em>Finished</em>, else <em>Queue</em>; nothing is preselected; the log lists number, contact, amount and positions; the search also finds "Contact-Number" labels.</li>
+<li><strong>Payments received on invoices:</strong> card <em>Payments received</em> in the invoice, <strong>+</strong> records a payment (amount, date, note); paid in full → status <em>Paid</em> with the date of the last payment, removed → open again. The journal counts payments as income on their date. Template fields <code>&lt;item.paidvaluef&gt;</code>, <code>&lt;item.openvaluef&gt;</code>. A <strong>progress invoice</strong> bills part of an order and is deducted in the final invoice.</li>
+<li><strong>Number formats</strong> (<em>Control Panel › Formats</em>): "Your numbers" shows the next number for every kind of record. "Change ..." opens an assistant: pick a style (e.g. INV-2026-00001, restarting every year), adjust prefix, date part, separator, digits and suffix with a live preview, optionally "Continue with number" (when switching from another program), and choose whom it applies to. The next number can be set once; an expert pattern is still possible; changes apply at once.</li>
+<li><strong>Unique invoice numbers</strong> (§ 14 Abs. 4 Nr. 4 UStG): invoices, credit notes, deposit and part payment invoices never get a number another of these kinds already has. New databases have a prefix per kind (<code>INV-</code>, <code>CN-</code>, <code>DP-</code>, <code>PI-</code> with the year, e.g. <code>INV-2026-00001</code>; German <code>RE-</code>, <code>GS-</code>, <code>AZ-</code>, <code>AR-</code>). If several kinds have the same format (e.g. older databases with <code>000001</code> for all), they share one range: a credit note after invoice <code>000001</code> gets <code>000002</code>. <em>Control Panel › Formats</em> points this out; a prefix per kind tells the numbers apart. <em>Change number</em> refuses a number another of these kinds already has. The number of a deleted invoice (in the trash as <code>!INV-…</code>) is not given out again either; issued invoices (finished, paid, cancelled, printed/exported or with a payment) stay in the trash for 8 years. Deleting an issued invoice shows a warning – also without the GoBD plugin – and suggests a credit note (correction) instead. The GoBD plugin refuses to finalize a document whose number is already finalized, with a message instead of a database error.</li>
+<li><strong>Preview inside YaBS:</strong> <em>Preview</em> next to <em>PDF</em> in the command bar; previews open in a YaBS window (PDFBox) with all pages, zoom, fit width, print, save as and open in the PDF viewer.</li>
+<li><strong>Printing:</strong> printed documents are named e.g. "Kontaktdatenblatt-000001-Muster GmbH" or "Rechnung-RE-2026-0001" – the print job too, so a PDF printer (e.g. "Microsoft Print to PDF") suggests it as file name. PDFs are printed with PDFBox (vectors, page size from the PDF). <em>Print</em> on the contact page (and <em>Print › Printer</em>) prints the contact sheet (template of type "Contact"); without such a template the view is printed.</li>
+<li><strong>Mailing a document:</strong> sender and recipient are checked first (YaBS asks for a missing contact address and offers to save it); one mail template is used directly, several to choose, none: send with the document name as subject if wanted. The preview shows HTML as the recipient sees it (<em>HTML source</em> tab for editing); plain text is sent as plain text. Cancel sends nothing.</li>
+<li><strong>Templates</strong> (details: <a href="../Templates-%28EN%29/">Vorlagen</a>): a new installation imports 18 demo templates (one per template type) with a dummy logo, assigned to the administrator for all groups; a user without invoice template gets the bundled one at login. Each demo template has a page listing its template type (e.g. "Vorlagentyp: 4 – Auftragsbestätigung") and all available fields of its type. The journal has a landscape template (period, filters, all rows, totals); the reminder is a letter with invoice number, amount, due date, fee and bank account. Text boxes and shapes in table cells appear as text in the PDF; if a document cannot be created, a message gives the reason. Unchanged templates of older versions are replaced at login, changed ones are kept.</li>
+<li><strong>Several templates assigned:</strong> YaBS asks which one to use (once per session).</li>
+<li><strong>EPC QR code (GiroCode):</strong> image named <code>QRCode.img</code> in ODT templates – <a href="../QR-code-%28EN%29/">QR-Code</a>.</li>
+<li><strong>Journal:</strong> redesigned – income and expenses with their own filters, groups and accounts as the same lists, period shortcuts, views <em>Cash basis (EÜR)</em>, <em>All documents</em>, <em>Open items</em>, totals with VAT balance, open items and amounts per tax rate, e-invoice check, package for the tax adviser (ZIP). Credit notes now reduce income and output VAT. Right click <em>PDF</em>/<em>ODT</em> saves like the document. Details: <a href="../Journal-%28EN%29/">Journal</a>.</li>
+<li><strong>SEPA direct debit</strong> (journal, right click on unpaid invoices); requirements: <a href="../SEPA-direct-debit-%28EN%29/">SEPA-Lastschrift</a>.</li>
+<li><strong>History with errors:</strong> the history has the category <em>Errors</em>. Every program error (logged exceptions, also uncaught ones in the background or the user interface) is listed once per error message – with how often it happened (e.g. "5×"), where in the program, and when and for which user it happened last. Errors are saved in the background; "nothing found" is not an error. Useful for bug reports.</li>
+<li><strong>Product lists:</strong> <em>All products</em> shows the whole list when it opens, <em>Products</em> / <em>Services</em> / <em>Both</em> filter right away. A preview shows the selected product (picture, price, stock, description); select products and press <strong>Enter</strong> for a new invoice with them, cursor in the customer box; <strong>+ New customer …</strong> at the end of its list opens a new customer – saving it also sets it in the invoice and saves the invoice.</li>
+<li><strong>Product datasheet:</strong> choose (or drop) an image/PDF file or enter a web address; a clickable link with the file name opens it.</li>
+<li><strong>Bill of materials (product list):</strong> components with quantity and prices; <em>Create product</em> / <em>Update product</em> sells it as one product (price = sales total or your own); <em>Add the components to an invoice</em> adds one position per component.</li>
+<li><strong>Stock management</strong> (navigation › <em>Products</em>): scan or type a code, Enter; stock in or out, <em>Book</em>.</li>
+<li><strong>Cash register and TSE:</strong> test TSE (not certified), signed transactions stored per sale, receipt fields and TSE QR code (<code>TSEQRCode.img</code>); sales can be cancelled (signed credit note, negative TSE amounts); JavaPOS/ADK can be downloaded or taken from an installed Epson ADK, YaBS runs without it. No certified TSE yet – <a href="../Cash-register-and-TSE-%28EN%29/">Kasse und TSE</a>.</li>
+<li><strong>Shopify:</strong> import new orders as orders or invoices, customers as contacts, never twice – <a href="../Shopify-%28EN%29/">Shopify</a>.</li>
+<li><strong>CSV import:</strong> <em>File › Import › CSV file …</em> imports customers, suppliers, manufacturers or products in three steps. 1) Choose the file – encoding (UTF-8 or Windows/Excel), separator (; , tab |) and header row are detected and can be changed. 2) Choose for every column what it becomes – guessed from the column names (German and English) – with a live preview. Every row is checked first; rows with problems are marked red, listed with the reason and not imported. 3) Result: how many were imported, which were skipped and why. Numbers and "created on" dates from the file are kept; importing the same file again creates no duplicates.</li>
+<li><strong>Fakturama import, VAT:</strong> a default VAT rate for everything whose rate cannot be determined; rates already in YaBS are used; the rate is read from the name if the value is missing. Status messages are collected during the Fakturama and Shopify imports; one line afterwards says how many were skipped.</li>
+<li><strong>Texts are stored as typed:</strong> apostrophes and backslashes stay unchanged. Data of older YaBS versions (<code>`</code> for <code>'</code>, <code>&lt;removedbackslash&gt;</code> for <code>\</code>) is read and found correctly.</li>
+<li><strong>Dropdowns</strong> always take their colors from the look and feel (readable with dark Linux desktop themes); in the YaBS theme the selected entry is light blue with dark text, as in tables.</li>
+<li><strong>Fast:</strong> records load quickly and with little memory (e.g. 2000 contacts in 4 ms), documents open quickly (dialogs and calendars are created on first use), database queries do not block the user interface. The database layer also runs without a screen (server, tests).</li>
+</ul>
+<hr />
+<p><em>Deutsch: <a href="../Hinweise-und-Neuerungen/">Hinweise-und-Neuerungen</a></em></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://anti43.github.io/openyabs/" target="_blank" rel="noopener" title="OpenYaBS Website" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M351.9 280H161c2.9 64.5 17.2 123.9 37.5 167.4 11.4 24.5 23.7 41.8 35.1 52.4 11.2 10.5 18.9 12.2 22.9 12.2s11.7-1.7 22.9-12.2c11.4-10.6 23.7-28 35.1-52.4 20.3-43.5 34.6-102.9 37.5-167.4zm-191-48h190.9c-2.8-64.5-17.1-123.9-37.4-167.4-11.4-24.4-23.7-41.8-35.1-52.4C268.1 1.7 260.4 0 256.4 0s-11.7 1.7-22.9 12.2c-11.4 10.6-23.7 28-35.1 52.4-20.3 43.5-34.6 102.9-37.5 167.4m-48 0c3.5-85.6 25.6-165.1 57.9-217.3C78.7 47.3 10.9 131.2 1.5 232zM1.5 280c9.4 100.8 77.2 184.7 169.3 217.3-32.3-52.2-54.4-131.7-57.9-217.3zm398.4 0c-3.5 85.6-25.6 165.1-57.9 217.3 92.1-32.7 159.9-116.5 169.3-217.3zm111.4-48C501.9 131.2 434.1 47.3 342 14.7c32.3 52.2 54.4 131.7 57.9 217.3z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://github.com/anti43/openyabs" target="_blank" rel="noopener" title="GitHub Repository" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://github.com/anti43/openyabs/wiki" target="_blank" rel="noopener" title="GitHub Wiki (source)" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M384 512H96c-53 0-96-43-96-96V96C0 43 43 0 96 0h304c26.5 0 48 21.5 48 48v288c0 20.9-13.4 38.7-32 45.3V448c17.7 0 32 14.3 32 32s-14.3 32-32 32zM96 384c-17.7 0-32 14.3-32 32s14.3 32 32 32h256v-64zm32-232c0 13.3 10.7 24 24 24h176c13.3 0 24-10.7 24-24s-10.7-24-24-24H152c-13.3 0-24 10.7-24 24m24 72c-13.3 0-24 10.7-24 24s10.7 24 24 24h176c13.3 0 24-10.7 24-24s-10.7-24-24-24z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://github.com/anti43/openyabs/releases" target="_blank" rel="noopener" title="Download Releases" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M256 32c0-17.7-14.3-32-32-32s-32 14.3-32 32v210.7l-41.4-41.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l96 96c12.5 12.5 32.8 12.5 45.3 0l96-96c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 242.7zM64 320c-35.3 0-64 28.7-64 64v32c0 35.3 28.7 64 64 64h320c35.3 0 64-28.7 64-64v-32c0-35.3-28.7-64-64-64h-46.9l-56.6 56.6c-31.2 31.2-81.9 31.2-113.1 0L110.9 320zm304 56a24 24 0 1 1 0 48 24 24 0 1 1 0-48"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.sections", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "toc.follow"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.a5f9d56c.min.js"></script>
+      
+    
+  </body>
+</html>

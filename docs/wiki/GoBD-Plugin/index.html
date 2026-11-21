@@ -1,0 +1,2657 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Searchable OpenYaBS documentation synced from the GitHub wiki (English & Deutsch)">
+      
+      
+      
+        <link rel="canonical" href="https://anti43.github.io/openyabs/wiki/GoBD-Plugin/">
+      
+      
+        <link rel="prev" href="../DATEV-Export/">
+      
+      
+        <link rel="next" href="../Heilpraktiker-Plugin/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.2">
+    
+    
+      
+        <title>GoBD-Plugin - OpenYaBS Wiki</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#gobd-konformitäts-plugin" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="OpenYaBS Wiki" class="md-header__button md-logo" aria-label="OpenYaBS Wiki" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            OpenYaBS Wiki
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              GoBD-Plugin
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/anti43/openyabs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    anti43/openyabs
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="OpenYaBS Wiki" class="md-nav__button md-logo" aria-label="OpenYaBS Wiki" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    OpenYaBS Wiki
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/anti43/openyabs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    anti43/openyabs
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deutsch
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Deutsch
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Openyabs-Dokumentation-%28DE%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dokumentation (DE)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../YaBS-Beschreibung/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Beschreibung
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Hinweise-und-Neuerungen/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hinweise und Neuerungen
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Datenbank/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Datenbank
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../E-Rechnung/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    E-Rechnung
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Kleinunternehmer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kleinunternehmer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Datenschutz-DSGVO/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Datenschutz (DSGVO)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Journal/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Journal
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Rechnung-stornieren/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rechnung stornieren
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Ist-Yabs-GoBD-konforme-Software/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GoBD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SEPA-Lastschrift/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SEPA-Lastschrift
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Kontaktliste/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kontaktliste
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../QR-Code/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    QR-Code
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Dateinamengrundeinstellung/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dateinamen
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Shopify/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shopify
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Kasse-und-TSE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kasse und TSE
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Vorlagen/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vorlagen
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Spaltendefinition/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spaltendefinition
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Skripte/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Skripte
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins (DE)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Plugins (DE)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Plugins/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins (Übersicht)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DATEV-Export/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DATEV-Export
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GoBD-Plugin
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GoBD-Plugin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#funktionen-im-überblick" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Funktionen im Überblick
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Installation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#einstellungen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Einstellungen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lebenszyklus-einer-rechnung" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lebenszyklus einer Rechnung
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Lebenszyklus einer Rechnung">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-entwurf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Entwurf
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-festschreibung" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Festschreibung
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-nach-der-festschreibung" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Nach der Festschreibung
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#archivierter-originalbeleg-statt-neuer-datei" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Archivierter Originalbeleg statt neuer Datei
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nummern-von-stornorechnungen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nummern von Stornorechnungen
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ausgaben-und-eingangsbelege-gobd-rz-6164" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ausgaben und Eingangsbelege (GoBD Rz. 61–64)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#einnahmen-aus-e-rechnungen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Einnahmen aus E-Rechnungen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bestand-plugin-später-aktiviert-oder-zwischendurch-aus" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bestand: Plugin später aktiviert oder zwischendurch aus
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#befehle-und-suche" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Befehle und Suche
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#z3-export-idea--gdpdu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Z3-Export (IDEA / GDPdU)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#datenbanktabellen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Datenbanktabellen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#organisatorische-hinweise" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Organisatorische Hinweise
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Heilpraktiker-Plugin/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Heilpraktiker-Plugin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Kfz-Werkstatt-Plugin/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kfz-Werkstatt-Plugin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Vereinsverwaltung-Plugin/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vereinsverwaltung-Plugin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ScriptOnSavePlugin/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ScriptOnSavePlugin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Plugins-schreiben/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins schreiben
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    English
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    English
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Openyabs-documentation-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation (EN)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Notes-and-changes-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notes and changes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Database-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Database
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Journal-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Journal
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Cancelling-an-invoice-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cancelling an invoice
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Small-business-VAT-exemption-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Small business VAT exemption
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Data-protection-GDPR-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data protection (GDPR)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SEPA-direct-debit-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SEPA direct debit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Contact-list-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contact list
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../QR-code-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    QR code
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../File-name-defaults-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    File name defaults
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Shopify-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shopify
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Cash-register-and-TSE-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cash register and TSE
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Templates-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Templates
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Scripts-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scripts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins (EN)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Plugins (EN)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Plugins-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins (Overview)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Association-plugin-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Association plugin (e.V.)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Car-repair-shop-plugin-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Car repair shop plugin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DATEV-export-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DATEV export
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GoBD-plugin-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GoBD plugin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Heilpraktiker-plugin-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Heilpraktiker plugin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Writing-plugins-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Writing plugins
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#funktionen-im-überblick" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Funktionen im Überblick
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Installation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#einstellungen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Einstellungen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#lebenszyklus-einer-rechnung" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lebenszyklus einer Rechnung
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Lebenszyklus einer Rechnung">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-entwurf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Entwurf
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-festschreibung" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Festschreibung
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-nach-der-festschreibung" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Nach der Festschreibung
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#archivierter-originalbeleg-statt-neuer-datei" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Archivierter Originalbeleg statt neuer Datei
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nummern-von-stornorechnungen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Nummern von Stornorechnungen
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ausgaben-und-eingangsbelege-gobd-rz-6164" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ausgaben und Eingangsbelege (GoBD Rz. 61–64)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#einnahmen-aus-e-rechnungen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Einnahmen aus E-Rechnungen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bestand-plugin-später-aktiviert-oder-zwischendurch-aus" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bestand: Plugin später aktiviert oder zwischendurch aus
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#befehle-und-suche" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Befehle und Suche
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#z3-export-idea--gdpdu" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Z3-Export (IDEA / GDPdU)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#datenbanktabellen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Datenbanktabellen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#organisatorische-hinweise" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Organisatorische Hinweise
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<p><em>English: <a href="../GoBD-plugin-%28EN%29/">GoBD plugin</a></em> · Hintergrund: <a href="../Ist-Yabs-GoBD-konforme-Software/">Ist YaBS GoBD-konforme Software?</a></p>
+<h1 id="gobd-konformitäts-plugin">GoBD-Konformitäts-Plugin<a class="headerlink" href="#gobd-konformitäts-plugin" title="Permanent link">&para;</a></h1>
+<p>Das GoBD-Plugin (ID <code>groovy.gobd-compliance</code>, Version 2.0) ergänzt YaBS um technische Schutzmechanismen für die <strong>GoBD</strong> (<em>Grundsätze zur ordnungsmäßigen Führung und Aufbewahrung von Büchern, Aufzeichnungen und Unterlagen in elektronischer Form sowie zum Datenzugriff</em>). Es ist ein Java-Plugin und liegt YaBS als <strong><code>plugins/gobd-compliance.jar</code></strong> bei (<a href="https://github.com/anti43/openyabs/tree/master/plugins/gobd">Quelltext</a>).</p>
+<blockquote>
+<p>Ein Plugin allein macht die Buchführung nicht GoBD-konform: Dazu gehören auch Datensicherung, Zugriffsschutz und die betriebliche Verfahrensdokumentation (siehe <a href="#organisatorische-hinweise">Organisatorische Hinweise</a>). Diese Seite ersetzt keine steuerliche oder rechtliche Beratung.</p>
+</blockquote>
+<h2 id="funktionen-im-überblick">Funktionen im Überblick<a class="headerlink" href="#funktionen-im-überblick" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Festschreibung beim Export:</strong> Wird eine Rechnung, Gutschrift, Anzahlungs- oder Abschlagsrechnung als <strong>PDF</strong>, <strong>ZUGFeRD</strong> oder <strong>XRechnung</strong> erzeugt, schreibt das Plugin sie automatisch fest (abschaltbar). Aufträge, Angebote und Bestätigungen sind nie betroffen.</li>
+<li><strong>Unveränderbarkeit:</strong> Festgeschriebene Belege und ihre Positionen sind gegen Änderungen steuerrelevanter Felder sowie gegen Löschen und Papierkorb gesperrt – in der Oberfläche und beim Speichern.</li>
+<li><strong>Offene-Posten-Workflow:</strong> Zahlungsstatus, Teilzahlungen und Mahnstufen bleiben änderbar und werden protokolliert.</li>
+<li><strong>Kein neuer Ausdruck festgeschriebener Belege:</strong> Drucken, PDF, Vorschau und E-Rechnung öffnen bei festgeschriebenen Rechnungen die archivierte Datei, statt eine neue zu erzeugen.</li>
+<li><strong>Stammdaten- und Positions-Snapshots</strong> zum Zeitpunkt der Festschreibung.</li>
+<li><strong>SHA-256-Hash-Ketten</strong> über Festschreibungen, Einnahmen, Eingangsbelege und das Audit-Log: <code>SHA256(Datensatz ‖ "\n" ‖ vorheriger Hash)</code>, Startwert 64 Nullen. Der Datensatz enthält den SHA-256 der Archivdatei <strong>und</strong> die steuerrelevanten Daten (Nummer, Datum, Kontakt, Beträge, Steuer, Positionen); die Prüfung findet so auch Änderungen direkt in der Datenbank. Ältere Festschreibungen (vor Version 2 der Kette) bleiben mit <code>SHA256(Datei-Bytes ‖ vorheriger Hash)</code> prüfbar.</li>
+<li><strong>Stornorechnungen statt Bearbeitung</strong> – Nummer im eigenen Nummernformat <em>Stornorechnung</em> (siehe unten; Schritt für Schritt: <a href="../Rechnung-stornieren/">Rechnung stornieren</a>).</li>
+<li><strong>Eingangsbelege zu Ausgaben</strong> und <strong>E-Rechnungen als Einnahmen</strong> (ZUGFeRD / XRechnung), byte-identisch archiviert mit <code>SHA256SUMS</code>.</li>
+<li><strong>Prüferzugriff:</strong> Z1-Prüferansicht in YaBS (nur lesend) und Z3-Export für IDEA (GDPdU).</li>
+</ul>
+<h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong><code>gobd-compliance.jar</code></strong> besorgen: Es liegt im Zip von YaBS im Ordner <code>openyabs/plugins/</code> und ist ein eigener Download jedes <a href="https://github.com/anti43/openyabs/releases">Releases</a> (für die Installationspakete .deb, .rpm, .msi, .dmg).</li>
+<li><em>Einstellungen › Plugin-Manager › Java-Plugin importieren...</em> und die Datei wählen – oder sie auf den Plugin-Manager ziehen. (Nicht über <em>Klassische Plugins (Datenbank)</em>: dort erkennt YaBS das Jar und installiert es ebenfalls in der Plugin-Liste.)</li>
+<li>Nach dem Start meldet die Statuszeile: <code>GoBD-Konformitaets-Plugin (v2.0.0) vollstaendig geladen.</code></li>
+</ol>
+<p>Die Datenbanktabellen (<code>gobd_document_lock</code>, <code>gobd_audit_log</code>, <code>gobd_receipt</code>, <code>gobd_income_lock</code>) legt das Plugin beim Start an bzw. erweitert sie.</p>
+<p><strong>Umstieg vom Groovy-Skript <code>gobd_compliance.groovy</code>:</strong> Das Jar hat dieselbe ID. Einstellungen, Archivordner und Datenbanktabellen bleiben erhalten. Beim Installieren des Jars wird das laufende Skript ersetzt und als <code>gobd_compliance.groovy.replaced</code> aufbewahrt; es wird nicht mehr geladen.</p>
+<p>Benötigt YaBS <strong>2.0.10</strong> oder neuer.</p>
+<h2 id="einstellungen">Einstellungen<a class="headerlink" href="#einstellungen" title="Permanent link">&para;</a></h2>
+<p><em>Einstellungen › Plugins › GoBD-Konformitaet</em>:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Einstellung</th>
+<th style="text-align: left;">Standard</th>
+<th style="text-align: left;">Beschreibung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Rechnungen beim Export automatisch festschreiben</td>
+<td style="text-align: left;">an</td>
+<td style="text-align: left;">Schreibt Rechnungen beim Erzeugen von PDF / ZUGFeRD / XRechnung fest. Aus: Festschreiben nur über den Befehl oder die Schaltfläche im Banner.</td>
+</tr>
+<tr>
+<td style="text-align: left;">Revisionssicherer GoBD-Archivordner</td>
+<td style="text-align: left;"><code>&lt;Plugin-Datenordner&gt;/gobd-archive</code></td>
+<td style="text-align: left;">Ziel aller archivierten Originalbelege (nach Jahren) und der Z3-Exporte.</td>
+</tr>
+<tr>
+<td style="text-align: left;">E-Rechnungen aus Überwachungsordner automatisch importieren</td>
+<td style="text-align: left;">aus</td>
+<td style="text-align: left;">Prüft alle 15 Sekunden den Überwachungsordner und importiert neue ZUGFeRD-PDFs / XRechnung-XMLs als festgeschriebene Einnahmen.</td>
+</tr>
+<tr>
+<td style="text-align: left;">Überwachungsordner</td>
+<td style="text-align: left;">leer</td>
+<td style="text-align: left;">Ordner für den automatischen Einnahmen-Import.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="lebenszyklus-einer-rechnung">Lebenszyklus einer Rechnung<a class="headerlink" href="#lebenszyklus-einer-rechnung" title="Permanent link">&para;</a></h2>
+<h3 id="1-entwurf">1. Entwurf<a class="headerlink" href="#1-entwurf" title="Permanent link">&para;</a></h3>
+<p>Solange eine Rechnung nicht festgeschrieben ist, kann sie beliebig bearbeitet oder gelöscht werden. Die Ansicht zeigt das Badge <code>GoBD: Entwurf (offen)</code> und ein Banner mit <strong>„Jetzt GoBD-festschreiben“</strong>. Neue Entwürfe werden als <code>DRAFT_CREATED</code> protokolliert.</p>
+<h3 id="2-festschreibung">2. Festschreibung<a class="headerlink" href="#2-festschreibung" title="Permanent link">&para;</a></h3>
+<p>Automatisch beim Export, über <em>Plugins › GoBD: 1. Beleg festschreiben</em> oder die Schaltfläche im Banner:</p>
+<ol>
+<li><strong>Nummer:</strong> Ohne endgültige Nummer (leer, <code>ENTWURF…</code>, <code>DRAFT…</code>) vergibt das Plugin die nächste Nummer im Nummernformat der Belegart (<em>Systemsteuerung › Formate</em>); ist dort keines festgelegt, <code>RE-JJJJ-NNNNN</code> (Gutschriften <code>ST-JJJJ-NNNNN</code>). Das Jahr ist das des Rechnungsdatums.</li>
+<li><strong>Status</strong> wird auf <em>erledigt</em> gesetzt, das Enddatum gesetzt, falls leer.</li>
+<li><strong>Pflichtangaben (§ 14 Abs. 4 UStG):</strong> Nummer, Ausstellungsdatum, Leistungsdatum, Kontakt mit Straße und Ort, Beträge, mindestens eine Position. Fehlt etwas, wird nicht festgeschrieben.</li>
+<li><strong>Archiv:</strong> Die zuletzt erzeugte Datei (ZUGFeRD-PDF oder XRechnung-XML) wird schreibgeschützt nach <code>&lt;Archivordner&gt;/&lt;Jahr&gt;/</code> kopiert; ohne Datei schreibt das Plugin ein XML mit den Belegdaten.</li>
+<li><strong>Hash-Kette</strong> und Snapshots werden in <code>gobd_document_lock</code> gespeichert, der Vorgang als <code>FINALIZED</code> protokolliert, der geöffnete Beleg sofort gesperrt angezeigt.</li>
+</ol>
+<h3 id="3-nach-der-festschreibung">3. Nach der Festschreibung<a class="headerlink" href="#3-nach-der-festschreibung" title="Permanent link">&para;</a></h3>
+<p>Die Ansicht zeigt <code>GoBD FESTGESCHRIEBEN</code> (bzw. <code>GoBD STORNIERT</code>), ein Banner mit <strong>„Originalbeleg öffnen“</strong> und <strong>„Stornorechnung erstellen“</strong>, und sperrt Kunde, Anschrift, Nummer, Datum, Beschreibung und Positionen.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Bereich</th>
+<th style="text-align: left;">Verhalten</th>
+<th style="text-align: left;">Audit-Log</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Steuerrelevante Daten (Beträge, Steuern, Rabatte, Datum, Nummer, Beschreibung, Kunde, Positionen)</td>
+<td style="text-align: left;">gesperrt</td>
+<td style="text-align: left;"><code>BLOCKED_EDIT</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">Löschen / Papierkorb (Beleg oder Position)</td>
+<td style="text-align: left;">gesperrt</td>
+<td style="text-align: left;"><code>BLOCKED_DELETE</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">Manuell auf „Storniert“ setzen</td>
+<td style="text-align: left;">gesperrt (Hinweis auf Stornorechnung)</td>
+<td style="text-align: left;"><code>BLOCKED_MANUAL_CANCEL</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">Zahlungsstatus, Teilzahlungen</td>
+<td style="text-align: left;">erlaubt</td>
+<td style="text-align: left;"><code>PAYMENT_STATUS_CHANGED</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">Mahnstufe</td>
+<td style="text-align: left;">erlaubt</td>
+<td style="text-align: left;"><code>DUNNING_CHANGED</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">Kundenstammdaten</td>
+<td style="text-align: left;">erlaubt, mit Alt-/Neu-Werten</td>
+<td style="text-align: left;"><code>MASTERDATA_CHANGED</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">Drucken, PDF, Vorschau, ODT, E-Rechnung</td>
+<td style="text-align: left;">öffnen die archivierte Datei (siehe unten)</td>
+<td style="text-align: left;">–</td>
+</tr>
+</tbody>
+</table>
+<h3 id="archivierter-originalbeleg-statt-neuer-datei">Archivierter Originalbeleg statt neuer Datei<a class="headerlink" href="#archivierter-originalbeleg-statt-neuer-datei" title="Permanent link">&para;</a></h3>
+<p><strong>So verhält sich YaBS</strong></p>
+<ul>
+<li>Nach der Festschreibung öffnen <strong>Drucken, PDF, Vorschau, ODT und E-Rechnung</strong> die archivierte Datei; es wird keine neue Datei erzeugt. <strong>E-Mail</strong> (einzeln und als Serienmail) hängt die archivierte Datei an; fehlt sie, wird nichts gesendet. Die Statuszeile zeigt „Die archivierte Datei wird geöffnet: …“ mit dem Pfad. Drucken öffnet die Datei im PDF-Programm, gedruckt wird dort.</li>
+<li>YaBS fragt das Plugin bei jedem Klick, ob der Beleg festgeschrieben ist. Das gilt auch, wenn beim Festschreiben ein anderer Tab oder das Fortschrittsfenster im Vordergrund war und die Ansicht des Belegs noch nicht neu angezeigt wurde.</li>
+<li>Archiviert ist die zuletzt erzeugte Datei des Belegs (ZUGFeRD-PDF, PDF oder XRechnung-XML), wenn sie die endgültige Nummer zeigt; sonst ein XML mit den Belegdaten (siehe <em>Festschreibung</em>, Schritt 4).</li>
+</ul>
+<p><strong>Die Archivdatei fehlt (z. B. versehentlich gelöscht)</strong></p>
+<ol>
+<li>YaBS meldet, dass das Original fehlt, mit dem Pfad, und rät, es <strong>aus der Datensicherung wiederherzustellen</strong>. Ein neu erzeugtes Original gibt es nicht.</li>
+<li>Stattdessen kann ein <strong>Duplikat</strong> erstellt werden. Vorher prüft das Plugin:</li>
+<li>Weichen die Belegdaten oder Positionen in der Datenbank vom festgeschriebenen Stand ab, wird das Duplikat <strong>abgelehnt</strong> (es würde einen anderen Inhalt zeigen als das Original). Audit-Log: <code>DUPLICATE_REFUSED</code>.</li>
+<li>Wurden die Kundendaten seit der Festschreibung geändert, zeigt YaBS die Abweichung (bei Festschreibung / jetzt); das Duplikat zeigt die aktuelle Anschrift und wird nur nach Bestätigung erstellt.</li>
+<li>Das Duplikat ist ein <strong>einfaches PDF aus der Vorlage, nie eine E-Rechnung</strong> (es soll keine zweite maschinenlesbare Rechnung entstehen). Jede Seite trägt oben „DUPLIKAT - Kopie, nicht das Original - erstellt am TT.MM.JJJJ“ und quer über die Seite „DUPLIKAT“; auch der Dokumenttitel nennt es. Es wird im Speicherordner des Belegs als <code>&lt;Name&gt;-DUPLIKAT.pdf</code> gespeichert, <strong>nicht archiviert</strong> und ersetzt das Original nicht. Audit-Log: <code>DUPLICATE_CREATED</code> mit fehlendem Pfad, Pfad des Duplikats und SHA-256.</li>
+<li>Die Archivprüfung des Plugins meldet die fehlende Datei weiter, bis das Original wiederhergestellt ist. Das ist gewollt: der Verlust ist ein Vorfall, den die Prüfung zeigen muss.</li>
+</ol>
+<p><strong>Rechtlicher Hintergrund</strong> (allgemeine Information, keine Rechtsberatung)</p>
+<ul>
+<li><strong>Aufbewahrung:</strong> Rechnungen und Buchungsbelege 8 Jahre (§ 14b UStG, § 147 AO, seit 2025), Bücher und Jahresabschlüsse 10 Jahre; unveränderbar (§ 146 Abs. 4 AO, GoBD).</li>
+<li><strong>Elektronisch versandte Rechnungen</strong> (PDF per E-Mail, E-Rechnung): Die versandte Datei ist das Original und in ihrem Format aufzubewahren. Bei der E-Rechnung ist der strukturierte XML-Teil das Original (BMF, Änderung der GoBD vom 14.07.2025). Eine später neu erzeugte Datei ist eine Wiedergabe, nicht dieses Original.</li>
+<li><strong>Neu erzeugt heißt nicht inhaltsgleich:</strong> Eine neue Datei entsteht aus der <em>aktuellen</em> Vorlage, den <em>aktuellen</em> Firmendaten und der <em>aktuellen</em> Anschrift des Kunden. Weicht sie vom Original ab, gibt es zwei verschiedene Belege mit derselben Nummer. Erhält der Kunde eine Fassung mit anderem Steuerausweis, kann die Steuer zusätzlich geschuldet werden (§ 14c UStG). Inhaltsgleiche Kopien und Duplikate lösen § 14c UStG nicht aus; sie als Kopie zu kennzeichnen, ist gute Praxis.</li>
+<li><strong>Prüfsumme:</strong> Jedes PDF enthält Erstellungszeit und eine Dokument-ID. Zwei Exporte desselben, unveränderten Belegs unterscheiden sich daher in den Bytes und im SHA-256. Die Prüfsumme der Archivdatei kann eine neu erzeugte Datei nie bestätigen, sie sieht für das Plugin aus wie eine veränderte. Reproduzierbar ist der Hash der <strong>Belegdaten</strong> in <code>gobd_document_lock</code>; mit ihm prüft das Plugin vor einem Duplikat, ob die Daten noch dem festgeschriebenen Stand entsprechen.</li>
+<li><strong>Papierrechnungen:</strong> Aufzubewahren ist ein Doppel. Ob die Möglichkeit, es aus den Daten der Software inhaltsgleich zu reproduzieren, im eigenen Fall genügt, bitte mit der Steuerberatung klären.</li>
+</ul>
+<p><strong>Grenzen</strong></p>
+<ul>
+<li><strong>Vorlage und Firmendaten</strong> werden bei der Festschreibung nicht eingefroren, nur Belegdaten, Positionen und Kundendaten. Ein Duplikat zeigt deshalb Vorlage und Firmendaten von heute; darum der Stempel.</li>
+<li><strong>Nur eine Datei wird archiviert:</strong> die zuletzt erzeugte mit der endgültigen Nummer. Wurde z. B. erst ein PDF versandt und danach eine XRechnung erzeugt, ist nur die XRechnung archiviert. Am sichersten: erst festschreiben, dann die archivierte Datei versenden.</li>
+<li><strong>Löschen auf der Festplatte</strong> kann YaBS nicht verhindern; die Archivdateien sind nur schreibgeschützt. Archivordner sichern und Zugriffe beschränken (siehe <em>Organisatorische Hinweise</em>).</li>
+<li><strong>Ohne das Plugin</strong> gibt es keine Festschreibung: jeder Klick erzeugt eine neue Datei.</li>
+</ul>
+<h3 id="nummern-von-stornorechnungen">Nummern von Stornorechnungen<a class="headerlink" href="#nummern-von-stornorechnungen" title="Permanent link">&para;</a></h3>
+<p>Stornorechnungen haben in <em>Systemsteuerung › Formate</em> ein eigenes Nummernformat <strong>Stornorechnung</strong> – frei wählbar wie jedes andere (z. B. <code>ST-[YEAR]-00001</code>, <code>STORNO-2026-001</code> oder ein eigener Nummernkreis je Benutzer). Gesetzlich spricht nichts dagegen: § 14 Abs. 4 Nr. 4 UStG verlangt nur eine fortlaufende Nummer aus einer oder mehreren Zahlenreihen, die die Rechnung einmalig kennzeichnet; das Format ist frei. Gezählt wird ab der letzten Stornorechnung, vergebene Nummern werden übersprungen. Ohne eigenes Format erhalten Stornorechnungen <code>ST-JJJJ-NNNNN</code>.</p>
+<h2 id="ausgaben-und-eingangsbelege-gobd-rz-6164">Ausgaben und Eingangsbelege (GoBD Rz. 61–64)<a class="headerlink" href="#ausgaben-und-eingangsbelege-gobd-rz-6164" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Eingangsbelege werden in der Ausgaben-Ansicht verknüpft (Schaltfläche, Drag &amp; Drop oder E-Rechnungs-Import) und byte-identisch mit <code>SHA256SUMS</code> im Belegordner abgelegt – nicht als BLOB in der Datenbank. Prüfen auch außerhalb von YaBS: <code>sha256sum -c SHA256SUMS</code>.</li>
+<li>Ausgaben mit Beleg: Badge <code>GoBD BELEGABLAGE (n)</code>; Beträge, Steuer, Konto und Belegentfernung sind gesperrt, Zahlungsstatus und Zahlungsdatum bleiben buchbar. Ohne Beleg: <code>GoBD: OHNE BELEG</code> mit <strong>„Beleg verknüpfen &amp; festschreiben“</strong>.</li>
+<li>Ausgaben mit archivierten Belegen dürfen nicht gelöscht werden.</li>
+</ul>
+<h2 id="einnahmen-aus-e-rechnungen">Einnahmen aus E-Rechnungen<a class="headerlink" href="#einnahmen-aus-e-rechnungen" title="Permanent link">&para;</a></h2>
+<ul>
+<li><em>Plugins › GoBD: 7. ZUGFeRD / XRechnung als Einnahme importieren</em> (oder der Überwachungsordner) liest Rechnungsnummer (BT-1), Ausstellungsdatum (BT-2), Fälligkeit (BT-9), Partner, Netto (BT-109), Brutto (BT-112) und Steuersatz (BT-119) und legt eine festgeschriebene Einnahme an. Fehlen Pflichtfelder, wird abgelehnt.</li>
+<li>Die Originaldatei wird nach <code>&lt;Archivordner&gt;/einnahmen/&lt;Jahr&gt;/</code> mit <code>SHA256SUMS</code> und eigener Hash-Kette (<code>gobd_income_lock</code>) archiviert.</li>
+<li>Dubletten (gleiche Datei oder gleiche Belegnummer) werden abgelehnt.</li>
+<li>In der Einnahmen-Ansicht ohne Beleg verknüpft <strong>„ZUGFeRD / Beleg verknüpfen“</strong> eine Datei mit der vorhandenen Einnahme.</li>
+</ul>
+<h2 id="bestand-plugin-später-aktiviert-oder-zwischendurch-aus">Bestand: Plugin später aktiviert oder zwischendurch aus<a class="headerlink" href="#bestand-plugin-später-aktiviert-oder-zwischendurch-aus" title="Permanent link">&para;</a></h2>
+<p>YaBS wird oft jahrelang ohne das Plugin genutzt, oder das Plugin wird ausgeschaltet und wieder eingeschaltet. Für die Zeit, in der es nicht lief, kann das Plugin nichts nachträglich absichern – es behauptet das auch nicht. Stattdessen <strong>versiegelt</strong> es bei jedem Start den Bestand und dokumentiert alles, was ohne das Plugin geschah:</p>
+<ul>
+<li>Beim Start berechnet das Plugin im Hintergrund für jeden steuerrelevanten Datensatz einen SHA-256-Hash: Rechnungen, Gutschriften, Anzahlungs- und Abschlagsrechnungen mit Positionen, Einnahmen, Ausgaben, Belege zu Ausgaben und Einnahmen, ältere Audit-Log-Einträge ohne Hash und ältere Festschreibungen. Es vergleicht sie mit dem zuletzt bekannten Stand (<code>gobd_seal_state</code>).</li>
+<li><strong>Erste Aktivierung:</strong> Der gesamte Bestand wird mit dem heutigen Datum versiegelt. Die Versiegelung sagt ausdrücklich, dass der Schutz ab diesem Zeitpunkt gilt; nichts wird rückdatiert.</li>
+<li><strong>Neustart nach einer Pause</strong> (Plugin aus, andere Arbeitsplätze ohne Plugin, Änderungen per SQL): Jeder seitdem <strong>geänderte oder gelöschte</strong> Datensatz wird mit <strong>altem und neuem Inhalt</strong> in <code>gobd_seal_item</code> und in der Hash-Kette des Audit-Logs festgehalten (<code>CHANGED_WITHOUT_PLUGIN</code>, <code>DELETED_WITHOUT_PLUGIN</code>). Der ursprüngliche Inhalt bleibt feststellbar (GoBD Rz. 58). YaBS zeigt das beim Start als Meldung an. Neu hinzugekommene Datensätze werden versiegelt.</li>
+<li><strong>Während das Plugin läuft</strong>, folgt es jedem Speichern. Ändert jemand einen versiegelten Altbestand-Datensatz (z. B. eine alte, nie festgeschriebene Rechnung), wird das nicht verhindert, aber mit altem Inhalt protokolliert (<code>SEALED_RECORD_CHANGED</code>). Für neue Belege gilt die Festschreibung.</li>
+<li>Jede Versiegelung ist ein Glied einer eigenen Hash-Kette (<code>gobd_seal</code>) und ein Eintrag im Audit-Log, mit Zeitraum ohne Plugin, Anzahlen und einem Hash über den gesamten Bestand. Das geschieht bei jedem Start erneut, beliebig oft.</li>
+<li>Start und Stopp des Plugins stehen im Audit-Log: <code>PLUGIN_STARTED</code> mit Version, Benutzer und Einstellungen (Archivordner, Festschreibung beim Export, Einnahmen-Import), <code>PLUGIN_STOPPED</code>. Endete die vorige Sitzung ohne Stopp (Absturz), vermerkt der nächste Start das.</li>
+<li><strong>GoBD: 3. Archiv-Integritaet pruefen</strong> prüft auch die Kette der Versiegelungen und meldet Datensätze, die seit der letzten Versiegelung außerhalb des Plugins geändert wurden. <strong>GoBD: 9. Bestand jetzt versiegeln</strong> versiegelt sofort.</li>
+</ul>
+<p>In der Verfahrensdokumentation festhalten: seit wann das Plugin aktiv ist (erste Versiegelung) und dass Datensätze aus der Zeit davor ab diesem Zeitpunkt geschützt sind. Ohne Gewähr – im Zweifel mit der Steuerberatung abstimmen.</p>
+<h2 id="befehle-und-suche">Befehle und Suche<a class="headerlink" href="#befehle-und-suche" title="Permanent link">&para;</a></h2>
+<p>Im Menü <strong>Plugins</strong> und in <strong>Alles durchsuchen</strong> (<code>Umschalt Umschalt</code>):</p>
+<ol>
+<li><strong>GoBD: 1. Beleg festschreiben</strong> – wählt eine noch nicht festgeschriebene Rechnung.</li>
+<li><strong>GoBD: 2. Beleg stornieren (Stornorechnung)</strong> – erzeugt eine festgeschriebene Stornorechnung (Gutschrift mit denselben, positiven Beträgen; die Art mindert), setzt den Originalbeleg auf <code>CANCELLED</code> und verweist über <code>cancels_document_id</code> darauf. Die stornierte Rechnung ist auch der Bezug der Stornorechnung auf dem Beleg (<code>&lt;item.correctedinvoice&gt;</code>) und in der E-Rechnung (Typ 381, BT-25/BT-26).</li>
+<li><strong>GoBD: 3. Archiv-Integritaet pruefen</strong> – prüft im Hintergrund alle Archivdateien, die Hash-Ketten der Rechnungen und Einnahmen gegen Archiv <strong>und</strong> Datenbank sowie die Kette des Audit-Logs; gemeldet werden alle Probleme, nicht nur das erste.</li>
+<li><strong>GoBD: 4. Betriebspruefer-Export (Z3 / IDEA ZIP)</strong> – siehe unten.</li>
+<li><strong>GoBD: 5. Pruefer-Ansicht oeffnen (Z1 Read-Only Tab)</strong> – vier Tabs (Ausgangsrechnungen &amp; Stornos, importierte Einnahmen, Ausgaben &amp; Eingangsbelege, Audit-Protokoll) mit Jahresfilter; ein Doppelklick öffnet den Originalbeleg.</li>
+<li><strong>GoBD: 6. Eingangsbelege pruefen (SHA256SUMS)</strong> – nimmt noch nicht verkettete Belege zu Ausgaben und Einnahmen in die Ketten <code>gobd_receipt</code> / <code>gobd_revenue_receipt</code> auf und prüft Eingangs- und Einnahmenbelege gegen Datenbank, Hash-Kette und <code>SHA256SUMS</code>.</li>
+<li><strong>GoBD: 7. ZUGFeRD / XRechnung als Einnahme importieren</strong>.</li>
+<li><strong>GoBD: 8. Audit-Log als Textdatei oeffnen</strong> – schreibt das vollständige Audit-Log (alle Jahre) als UTF-8-Textdatei nach <code>&lt;Archivordner&gt;/audit-log/</code> und öffnet sie im Texteditor des Systems (auch über die Schaltfläche „Audit-Log als Textdatei“ in der Prüfer-Ansicht). Eine Zeile je Eintrag (<code>;</code>-getrennt) mit <code>prev_hash</code> / <code>row_hash</code>; Kopfzeilen erklären die Berechnung, am Ende stehen Kettenende und Prüfergebnis. So lässt sich die Kette auch außerhalb von YaBS nachrechnen.</li>
+<li><strong>GoBD: 9. Bestand jetzt versiegeln</strong> – versiegelt den Bestand sofort und meldet, was ohne das Plugin geändert oder gelöscht wurde (siehe oben).</li>
+</ol>
+<p>Die Suche findet festgeschriebene Belege und Einnahmen über ihre Nummer; ein Klick öffnet den Originalbeleg.</p>
+<h2 id="z3-export-idea--gdpdu">Z3-Export (IDEA / GDPdU)<a class="headerlink" href="#z3-export-idea--gdpdu" title="Permanent link">&para;</a></h2>
+<p><code>YaBS_GoBD_Z3_Export_&lt;Jahr&gt;_&lt;Zeitstempel&gt;.zip</code> im Archivordner, für ein wählbares Prüfungsjahr:</p>
+<ul>
+<li><code>index.xml</code> und <code>gdpdu-01-09-2004.dtd</code> – Beschreibung für den Import in IDEA,</li>
+<li><code>rechnungen.csv</code>, <code>rechnungspositionen.csv</code>, <code>kunden.csv</code>, <code>audit_log.csv</code>,</li>
+<li><code>ausgaben.csv</code>, <code>eingangsbelege.csv</code>, <code>einnahmen.csv</code>,</li>
+<li><code>belege/</code>, <code>belege/eingangsbelege/</code>, <code>belege/einnahmen/</code> – die Originalbelege,</li>
+<li><code>VERFAHRENSDOKUMENTATION_TECHNIK.txt</code> – die technischen Sperr-, Snapshot- und Hash-Mechanismen.</li>
+</ul>
+<h2 id="datenbanktabellen">Datenbanktabellen<a class="headerlink" href="#datenbanktabellen" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong><code>gobd_document_lock</code></strong> – je festgeschriebenem Beleg: <code>document_id</code>, <code>chain_seq</code>, <code>document_number</code>, <code>status</code> (<code>FINALIZED</code> / <code>CANCELLED</code>), <code>finalized_at</code>, <code>finalized_by</code>, <code>customer_snapshot</code>, <code>positions_snapshot</code>, <code>archive_path</code>, <code>artifact_format</code>, <code>sha256_hash</code>, <code>prev_sha256_hash</code>, <code>cancels_document_id</code>, <code>hash_version</code>, <code>file_sha256</code>, <code>record_data</code> (der gehashte Datensatz). <code>chain_seq</code> ist eindeutig: zwei Arbeitsplätze können die Kette nicht verzweigen.</li>
+<li><strong><code>gobd_income_lock</code></strong> – je importierter Einnahme: Originaldatei, Archivpfad, Datei-SHA-256, Ketten-Hash, Finanz-Snapshot, <code>hash_version</code>, <code>record_data</code>.</li>
+<li><strong><code>gobd_receipt</code></strong> – Hash-Kette der Eingangsbelege zu Ausgaben (aus <code>expense_receipts</code>), mit dem gehashten Datensatz in <code>record_data</code>.</li>
+<li><strong><code>gobd_revenue_receipt</code></strong> – ebenso die Hash-Kette der Belege, die in YaBS mit Einnahmen verknüpft sind (aus <code>revenue_receipts</code>); sie stehen im Z3-Export unter <code>belege/einnahmen/</code>.</li>
+<li><strong><code>gobd_audit_log</code></strong> – fortlaufendes Protokoll mit Zeit, Benutzer, Objekt, Aktion, Alt-/Neuwert, Datei-Hash; jeder Eintrag ist über <code>prev_hash</code> / <code>row_hash</code> verkettet (gelöschte oder geänderte Einträge fallen bei der Prüfung auf).</li>
+<li><strong><code>gobd_seal</code></strong>, <strong><code>gobd_seal_state</code></strong>, <strong><code>gobd_seal_item</code></strong> – die Bestandsversiegelungen (Hash-Kette), der zuletzt bekannte Hash je Datensatz mit Inhalt, und die ohne Plugin geänderten oder gelöschten Datensätze mit altem und neuem Inhalt.</li>
+</ul>
+<p>Grenze der Hash-Ketten: Wer Datenbank <strong>und</strong> Archiv kontrolliert, kann eine Kette vollständig neu berechnen. Dagegen hilft nur, den letzten Hash außerhalb festzuhalten (z. B. im Z3-Export an den Steuerberater oder per qualifiziertem Zeitstempel).</p>
+<h2 id="organisatorische-hinweise">Organisatorische Hinweise<a class="headerlink" href="#organisatorische-hinweise" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Datensicherung:</strong> Archivordner, Belegordner und Datenbank regelmäßig sichern und über die Aufbewahrungsfristen (§ 147 Abs. 3 AO, § 14b UStG) aufbewahren.</li>
+<li><strong>Zugriffsschutz:</strong> Direkte Schreibrechte auf die Datenbank außerhalb von YaBS (besonders auf die <code>gobd_*</code>-Tabellen und <code>items</code>) sperren oder überwachen.</li>
+<li><strong>Verfahrensdokumentation:</strong> <code>VERFAHRENSDOKUMENTATION_TECHNIK.txt</code> beschreibt nur den technischen Teil; sie muss um die eigenen Abläufe, Verantwortlichkeiten und Freigaben ergänzt werden.</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://anti43.github.io/openyabs/" target="_blank" rel="noopener" title="OpenYaBS Website" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M351.9 280H161c2.9 64.5 17.2 123.9 37.5 167.4 11.4 24.5 23.7 41.8 35.1 52.4 11.2 10.5 18.9 12.2 22.9 12.2s11.7-1.7 22.9-12.2c11.4-10.6 23.7-28 35.1-52.4 20.3-43.5 34.6-102.9 37.5-167.4zm-191-48h190.9c-2.8-64.5-17.1-123.9-37.4-167.4-11.4-24.4-23.7-41.8-35.1-52.4C268.1 1.7 260.4 0 256.4 0s-11.7 1.7-22.9 12.2c-11.4 10.6-23.7 28-35.1 52.4-20.3 43.5-34.6 102.9-37.5 167.4m-48 0c3.5-85.6 25.6-165.1 57.9-217.3C78.7 47.3 10.9 131.2 1.5 232zM1.5 280c9.4 100.8 77.2 184.7 169.3 217.3-32.3-52.2-54.4-131.7-57.9-217.3zm398.4 0c-3.5 85.6-25.6 165.1-57.9 217.3 92.1-32.7 159.9-116.5 169.3-217.3zm111.4-48C501.9 131.2 434.1 47.3 342 14.7c32.3 52.2 54.4 131.7 57.9 217.3z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://github.com/anti43/openyabs" target="_blank" rel="noopener" title="GitHub Repository" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://github.com/anti43/openyabs/wiki" target="_blank" rel="noopener" title="GitHub Wiki (source)" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M384 512H96c-53 0-96-43-96-96V96C0 43 43 0 96 0h304c26.5 0 48 21.5 48 48v288c0 20.9-13.4 38.7-32 45.3V448c17.7 0 32 14.3 32 32s-14.3 32-32 32zM96 384c-17.7 0-32 14.3-32 32s14.3 32 32 32h256v-64zm32-232c0 13.3 10.7 24 24 24h176c13.3 0 24-10.7 24-24s-10.7-24-24-24H152c-13.3 0-24 10.7-24 24m24 72c-13.3 0-24 10.7-24 24s10.7 24 24 24h176c13.3 0 24-10.7 24-24s-10.7-24-24-24z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://github.com/anti43/openyabs/releases" target="_blank" rel="noopener" title="Download Releases" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M256 32c0-17.7-14.3-32-32-32s-32 14.3-32 32v210.7l-41.4-41.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l96 96c12.5 12.5 32.8 12.5 45.3 0l96-96c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 242.7zM64 320c-35.3 0-64 28.7-64 64v32c0 35.3 28.7 64 64 64h320c35.3 0 64-28.7 64-64v-32c0-35.3-28.7-64-64-64h-46.9l-56.6 56.6c-31.2 31.2-81.9 31.2-113.1 0L110.9 320zm304 56a24 24 0 1 1 0 48 24 24 0 1 1 0-48"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.sections", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "toc.follow"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.a5f9d56c.min.js"></script>
+      
+    
+  </body>
+</html>
