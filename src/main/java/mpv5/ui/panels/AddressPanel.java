@@ -375,10 +375,10 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
             Log.Debug(this, ex.getMessage());
         }
         try {
-            countryselect.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(country_, countryselect.getModel()));
+            countryselect.setSelectedIndex(mpv5.i18n.LanguageManager.countryIndex(country_, countryselect.getModel()));
         } catch (Exception e) {
             try {
-                countryselect.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(dataParent.__getCountry(), countryselect.getModel()));
+                countryselect.setSelectedIndex(mpv5.i18n.LanguageManager.countryIndex(dataParent.__getCountry(), countryselect.getModel()));
             } catch (Exception ex) {
             }
         }

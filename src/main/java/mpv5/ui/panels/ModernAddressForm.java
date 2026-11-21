@@ -258,10 +258,10 @@ public class ModernAddressForm extends JPanel implements DataPanel {
             }
         }
         try {
-            countryselect.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(country_, countryselect.getModel()));
+            countryselect.setSelectedIndex(mpv5.i18n.LanguageManager.countryIndex(country_, countryselect.getModel()));
         } catch (Exception e) {
             try {
-                countryselect.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(dataParent.__getCountry(), countryselect.getModel()));
+                countryselect.setSelectedIndex(mpv5.i18n.LanguageManager.countryIndex(dataParent.__getCountry(), countryselect.getModel()));
             } catch (Exception ex) {
                 Log.Debug(this, ex.getMessage());
             }

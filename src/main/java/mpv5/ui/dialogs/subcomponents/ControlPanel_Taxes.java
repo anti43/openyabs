@@ -150,6 +150,7 @@ public class ControlPanel_Taxes extends JPanel implements ControlApplet, DataPan
         cname.setText("");
         value.setText(FormatNumber.formatDezimal(0d));
         category.setSelectedItem(mpv5.utils.export.VatCategory.S);
+        selectCountry("");
         reasonCode.setText("");
         note.setText("");
         title.setText(Messages.TAXES_NEW.toString());
@@ -246,7 +247,11 @@ public class ControlPanel_Taxes extends JPanel implements ControlApplet, DataPan
 
     @Override
     public void refresh() {
+        //the list is built again: keep the country shown (it went back to the first one, Austria,
+        //and was saved with the next change of the rate)
+        Object shown = countries.getSelectedItem();
         countries.setModel(new javax.swing.DefaultComboBoxModel<Object>(toArray(LanguageManager.getCountriesAsComboBoxModel())));
+        selectCountry(shown == null ? "" : shown.toString());
         Object sel = dataOwner;
         listing = true;
         try {
@@ -263,7 +268,7 @@ public class ControlPanel_Taxes extends JPanel implements ControlApplet, DataPan
                 r.badge = "%";
                 r.color = RichList.GREEN;
                 r.title = t.__getCname();
-                r.detail = t.__getCountry() + (t.category() == mpv5.utils.export.VatCategory.S ? "" : " \u00b7 " + t.category());
+                r.detail = LanguageManager.localizedCountryName(null, t.__getCountry() == null ? "" : t.__getCountry()) + (t.category() == mpv5.utils.export.VatCategory.S ? "" : " \u00b7 " + t.category());
                 r.right = FormatNumber.formatDezimal(t.__getTaxvalue()) + " %";
                 r.strong = true;
                 r.data = t;
@@ -277,12 +282,45 @@ public class ControlPanel_Taxes extends JPanel implements ControlApplet, DataPan
         }
     }
 
+    /**
+     * @return the countries, first an empty entry: a rate without a country
+     */
     private static Object[] toArray(javax.swing.ComboBoxModel<?> m) {
-        Object[] a = new Object[m.getSize()];
-        for (int i = 0; i < a.length; i++) {
-            a[i] = m.getElementAt(i);
+        Object[] a = new Object[m.getSize() + 1];
+        a[0] = NO_COUNTRY;
+        for (int i = 0; i < m.getSize(); i++) {
+            a[i + 1] = m.getElementAt(i);
         }
         return a;
+    }
+
+    private static final String NO_COUNTRY = " ";
+
+    /**
+     * Selects the country as stored: its name in any language ("Germany" of the
+     * bundled rates, "Deutschland") or code; empty selects no country. A country
+     * not in the list is added, so that it is saved unchanged.
+     */
+    private void selectCountry(String stored) {
+        String c = stored == null ? "" : stored.trim();
+        if (c.isEmpty()) {
+            countries.setSelectedItem(NO_COUNTRY);
+            return;
+        }
+        for (int i = 0; i < countries.getItemCount(); i++) {
+            if (String.valueOf(countries.getItemAt(i)).trim().equalsIgnoreCase(c)) {
+                countries.setSelectedIndex(i);
+                return;
+            }
+        }
+        for (int i = 0; i < countries.getItemCount(); i++) {
+            if (LanguageManager.sameCountry(String.valueOf(countries.getItemAt(i)), c)) {
+                countries.setSelectedIndex(i);
+                return;
+            }
+        }
+        countries.addItem(c);
+        countries.setSelectedItem(c);
     }
 
     @Override
@@ -295,7 +333,7 @@ public class ControlPanel_Taxes extends JPanel implements ControlApplet, DataPan
         try {
             cname_ = cname.getText();
             taxvalue_ = FormatNumber.parseDezimal(value.getText().trim().isEmpty() ? "0" : value.getText());
-            country_ = countries.getSelectedItem() == null ? "" : countries.getSelectedItem().toString();
+            country_ = countries.getSelectedItem() == null ? "" : countries.getSelectedItem().toString().trim();
             mpv5.utils.export.VatCategory c = (mpv5.utils.export.VatCategory) category.getSelectedItem();
             //the category must fit the rate (0 % or not); S/E as before is stored as empty
             mpv5.utils.export.VatCategory fitting = mpv5.utils.export.VatCategory.of(c == null ? null : c.code(), taxvalue_);
@@ -335,11 +373,9 @@ public class ControlPanel_Taxes extends JPanel implements ControlApplet, DataPan
     public void exposeData() {
         cname.setText(cname_);
         value.setText(taxvalue_ == null ? "0" : FormatNumber.formatDezimal(taxvalue_));
-        for (int i = 0; i < countries.getItemCount(); i++) {
-            if (String.valueOf(countries.getItemAt(i)).equals(country_)) {
-                countries.setSelectedIndex(i);
-            }
-        }
+        //no match (a rate without country, a name of another language) left the
+        //previous selection - often the first country, Austria - which was then saved
+        selectCountry(country_);
         category.setSelectedItem(mpv5.utils.export.VatCategory.of(categorycode_, taxvalue_));
         reasonCode.setText(exemptioncode_ == null ? "" : exemptioncode_);
         note.setText(exemptionnote_ == null ? "" : exemptionnote_);
