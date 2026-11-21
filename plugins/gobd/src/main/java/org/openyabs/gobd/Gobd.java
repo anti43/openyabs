@@ -1798,8 +1798,9 @@ public final class Gobd {
             if (yabs.settings().getBoolean(S_AUTOLOCK, true)) {
                 if (requiresEInvoice(doc) && !isEInvoiceFile(entry.file.toPath())) {
                     //the customer gets e-invoices: not finalized with a plain PDF
-                    status("GoBD: Beleg " + doc.__getCnumber() + " nicht festgeschrieben: fuer den Kunden ist eine E-Rechnung eingestellt, "
-                            + entry.file.getName() + " ist keine E-Rechnung.");
+                    //a plain PDF (e.g. a copy, a printout without the e-invoice): the e-invoice is the document
+                    status("GoBD: " + doc.__getCnumber() + " noch nicht festgeschrieben - der Kunde erhaelt E-Rechnungen,"
+                            + " festgeschrieben wird mit der E-Rechnung (\"E-Rechnung\", \"Drucken\" oder aus der Vorschau).");
                     return;
                 }
                 finalizeDocument(doc, null);
