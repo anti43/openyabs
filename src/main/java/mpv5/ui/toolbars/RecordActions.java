@@ -131,6 +131,10 @@ public final class RecordActions {
     }
 
     private static final String COPY_OF = "yabs.copyOf";
+    /**
+     * the copy was opened in its own tab
+     */
+    private static final String COPY_TAB = "yabs.copyTab";
 
     /**
      * Turns the shown record into a copy: a new record, not saved yet. Saving
@@ -192,6 +196,8 @@ public final class RecordActions {
         final DataPanel target = copy;
         javax.swing.SwingUtilities.invokeLater(() -> {
             if (createCopy(target)) {
+                //the copy has its own tab: discarding it closes the tab
+                ((javax.swing.JComponent) target).putClientProperty(COPY_TAB, Boolean.TRUE);
                 tabTitle((java.awt.Component) target, String.format(mpv5.globals.Messages.COPY_TAB.toString(), dato.__getCname()));
             }
         });
@@ -268,9 +274,15 @@ public final class RecordActions {
     public static void revert(DataPanel view) {
         DatabaseObject dato = view.getDataOwner();
         if (isPendingCopy(view)) {
-            //discard the copy: the original again
             Object[] o = (Object[]) ((javax.swing.JComponent) view).getClientProperty(COPY_OF);
             ((javax.swing.JComponent) view).putClientProperty(COPY_OF, null);
+            if (Boolean.TRUE.equals(((javax.swing.JComponent) view).getClientProperty(COPY_TAB))) {
+                //a copy in its own tab: discarding closes the tab (the original is open in its tab)
+                ((javax.swing.JComponent) view).putClientProperty(COPY_TAB, null);
+                mpv5.YabsViewProxy.instance().removeTab(view);
+                return;
+            }
+            //a copy in place: the original again
             try {
                 view.setDataOwner(DatabaseObject.getObject(dato.getContext(), (Integer) o[0]), true);
             } catch (Exception e) {
@@ -291,6 +303,10 @@ public final class RecordActions {
      * @param view
      */
     public static void delete(DataPanel view) {
+        if (isPendingCopy(view)) {
+            //nothing saved to delete (also the shortcut): discard it instead
+            return;
+        }
         DatabaseObject dato = view.getDataOwner();
         if (dato instanceof mpv5.db.objects.Contact && dato.isExisting()) {
             //a contact with documents which must be kept is blocked instead (GDPR, retention)

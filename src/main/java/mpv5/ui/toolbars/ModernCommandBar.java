@@ -162,6 +162,10 @@ public class ModernCommandBar extends JPanel {
     public void updateCopyBanner() {
         String original = RecordActions.copyOf(view);
         copyBanner.setVisible(original != null);
+        //a copy not saved yet can not be deleted
+        if (delete != null) {
+            delete.setEnabled(editable && !view.isContentLocked() && original == null);
+        }
         if (original != null) {
             copyText.setText("<html>" + String.format(Messages.COPY_PENDING.toString(),
                     original.replace("&", "&amp;").replace("<", "&lt;")) + "</html>");
@@ -291,10 +295,10 @@ public class ModernCommandBar extends JPanel {
                 RecordActions.addFavourite(view);
             }
         });
-        setFavourite(false);
         delete = button(text("MPV5View.jButton26.toolTipText"), "/images/22/edittrash.png", tip(text("MPV5View.jButton26.toolTipText"), DELETE));
         delete.setForeground(new java.awt.Color(190, 40, 40));
         delete.addActionListener(e -> RecordActions.delete(view));
+        setFavourite(false);
 
         JPanel right = new JPanel(new FlowLayout(FlowLayout.RIGHT, ModernTheme.px(4), ModernTheme.px(4)));
         right.setOpaque(false);
@@ -627,7 +631,7 @@ public class ModernCommandBar extends JPanel {
         editable = on;
         boolean contentLocked = view.isContentLocked();
         save.setEnabled(on);
-        delete.setEnabled(on && !contentLocked);
+        delete.setEnabled(on && !contentLocked && !RecordActions.isPendingCopy(view));
         lock.setEnabled(on && !contentLocked && !DatabaseObject.isAutoLockEnabled());
     }
 

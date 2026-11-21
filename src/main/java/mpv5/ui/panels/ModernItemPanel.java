@@ -262,6 +262,8 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         add(tb, BorderLayout.NORTH);
         createActions();
         addPropertyChangeListener(PROPERTY_CONTENT_LOCKED, e -> applyContentLock());
+        //a copy made or saved: the actions that need a saved record
+        addPropertyChangeListener("yabs.copyOf", e -> javax.swing.SwingUtilities.invokeLater(this::updateTypeControls));
 
         intaddedby_ = User.getCurrentUser().__getIDS();
         dateadded_ = new Date();
@@ -632,7 +634,8 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         boolean partialAllowed = t != Item.TYPE_INVOICE && t != Item.TYPE_DEPOSIT && t != Item.TYPE_PART_PAYMENT;
         toDeposit.setEnabled(partialAllowed);
         toPartPayment.setEnabled(partialAllowed);
-        toCredit.setEnabled(t == Item.TYPE_INVOICE);
+        //a credit note refers to a saved invoice (not to a copy not saved yet)
+        toCredit.setEnabled(t == Item.TYPE_INVOICE && dataOwner != null && dataOwner.isExisting());
         if (paymentsCard != null) {
             paymentsCard.setVisible(bill);
         }
