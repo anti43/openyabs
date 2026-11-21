@@ -73,6 +73,9 @@ public final class RecurringInvoiceDialog extends JDialog {
     private final LabeledDateChooser end = ModernTheme.plain(new LabeledDateChooser());
     private final JButton delete = new JButton(Messages.RECURRING_DELETE.toString());
     private final PrimaryButton save = new PrimaryButton(Messages.RECURRING_SAVE.toString(), null);
+    //what the form does: add a new schedule, or change the one selected in the list
+    private final JLabel formTitle = ModernTheme.heading("");
+    private final JButton cancelEdit = new JButton(Messages.RECURRING_CANCEL_EDIT.toString());
     private Schedule selected;
 
     /**
@@ -141,19 +144,23 @@ public final class RecurringInvoiceDialog extends JDialog {
         g.insets = new Insets(0, 0, ModernTheme.px(2), 0);
         form.add(end, g);
 
-        JPanel center = new JPanel(new BorderLayout(0, ModernTheme.px(10)));
+        JPanel formCard = new JPanel(new BorderLayout(0, ModernTheme.px(6)));
+        formCard.setOpaque(false);
+        formCard.add(formTitle, BorderLayout.NORTH);
+        formCard.add(form, BorderLayout.CENTER);
+        JPanel center = new JPanel(new BorderLayout(0, ModernTheme.px(12)));
         center.setOpaque(false);
         center.add(scroll, BorderLayout.CENTER);
-        center.add(form, BorderLayout.SOUTH);
+        center.add(formCard, BorderLayout.SOUTH);
         content.add(center, BorderLayout.CENTER);
 
-        JButton newOne = new JButton(Messages.RECURRING_NEW.toString());
-        newOne.addActionListener(e -> table.clearSelection());
+        //back to adding a new one (the selection in the list is the one being changed)
+        cancelEdit.addActionListener(e -> table.clearSelection());
         delete.addActionListener(e -> deleteSelected());
         save.addActionListener(e -> save());
         JButton close = new JButton(Messages.RECURRING_CLOSE.toString());
         close.addActionListener(e -> dispose());
-        content.add(Applets.actionBar(new JComponent[]{newOne, delete}, new JComponent[]{close, save}), BorderLayout.SOUTH);
+        content.add(Applets.actionBar(new JComponent[]{delete}, new JComponent[]{close, cancelEdit, save}), BorderLayout.SOUTH);
 
         setContentPane(content);
         getRootPane().setDefaultButton(save);
@@ -198,7 +205,10 @@ public final class RecurringInvoiceDialog extends JDialog {
             start.setDate(new Date());
             end.setDate(DateConverter.addYear(new Date()));
         }
-        delete.setEnabled(selected != null);
+        //delete and cancel only for the selected schedule
+        delete.setVisible(selected != null);
+        cancelEdit.setVisible(selected != null);
+        formTitle.setText(selected != null ? Messages.RECURRING_FORM_EDIT.toString() : Messages.RECURRING_FORM_NEW.toString());
         save.setText(selected != null ? Messages.RECURRING_SAVE.toString() : Messages.RECURRING_ADD.toString());
     }
 
