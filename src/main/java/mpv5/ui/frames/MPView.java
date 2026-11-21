@@ -555,9 +555,27 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
      */
     @Override
     public void addToClipBoard(DatabaseObject obj) {
-        getClipboardMenu().add(new ClipboardMenuItem(obj));
-        getCurrentList().add(obj);
+        if (obj != null && !getCurrentList().contains(obj)) {
+            getCurrentList().add(obj);
+        }
+        syncClipboardMenu();
+        clistview.refresh();
         setClipBoardVisible(true);
+    }
+
+    /**
+     * The clipboard menu shows the records of the clipboard list (one list:
+     * removing or clearing in the window changes the menu too)
+     */
+    private void syncClipboardMenu() {
+        if (getClipboardMenu() == null) {
+            return;
+        }
+        getClipboardMenu().removeAll();
+        getClipboardMenu().add(jMenu6);
+        for (DatabaseObject o : getCurrentList()) {
+            getClipboardMenu().add(new ClipboardMenuItem(o));
+        }
     }
 
     public MPView(SingleFrameApplication app) {
@@ -2697,9 +2715,9 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
 
     private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
 
-        getClipboardMenu().removeAll();
-        getClipboardMenu().add(jMenu6);
-
+        getCurrentList().clear();
+        syncClipboardMenu();
+        clistview.refresh();
     }//GEN-LAST:event_jMenuItem7ActionPerformed
 
     private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
@@ -2709,7 +2727,7 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
     private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem9ActionPerformed
 
         if (getCurrentTab() != null && getCurrentTab().getDataOwner() != null && getCurrentTab().getDataOwner().isExisting()) {
-            getClipboardMenu().add(new ClipboardMenuItem(getCurrentTab().getDataOwner()));
+            addToClipBoard(getCurrentTab().getDataOwner());
         }
 
     }//GEN-LAST:event_jMenuItem9ActionPerformed
@@ -3782,21 +3800,8 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
      */
     @Override
     public DatabaseObject[] getClipboardItems() {
-
-        List<DatabaseObject> list = new ArrayList<DatabaseObject>();
-
-        for (int i = 1; i < getClipboardMenu().getItemCount(); i++) {
-            try {
-                if (getClipboardMenu().getItemCount() > 1) {
-                    ClipboardMenuItem item = (ClipboardMenuItem) getClipboardMenu().getItem(i);
-                    list.add(item.getItem());
-                }
-            } catch (Exception ignore) {
-//            Log.Debug(ignore);
-            }
-        }
-
-        return list.toArray(new DatabaseObject[]{});
+        //the records of the clipboard list (the menu shows the same)
+        return getCurrentList().toArray(new DatabaseObject[]{});
     }
 
     @Override
@@ -3841,6 +3846,7 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
             }
             if (currentList != null) {
                 currentList.clear();
+                clistview.refresh();
             }
             try {
                 MPControlPanel.resetToOverview();
@@ -3878,18 +3884,26 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     @Override
     public synchronized void setClipBoardVisible(boolean show) {
         if (clipboard == null) {
-            clipboard = new JFrame(Messages.YABS.getValue());
+            clipboard = new JFrame(Messages.CLIPBOARD_TITLE + " \u2013 " + Messages.YABS.getValue());
+            try {
+                clipboard.setIconImage(getFrame().getIconImage());
+            } catch (Exception e) {
+                Log.Debug(this, e.getMessage());
+            }
             clipboard.setLayout(new BorderLayout());
             clipboard.add(clistview, BorderLayout.CENTER);
+            clistview.setOnChange(this::syncClipboardMenu);
             clipboard.pack();
+            clipboard.setMinimumSize(clipboard.getSize());
             clipboard.setLocationRelativeTo(YabsViewProxy.instance().getIdentifierFrame());
             clipboard.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
             clipboard.setAlwaysOnTop(User.getCurrentUser().getProperty("org.openyabs.uiproperty", "clipboardontop"));
         }
         try {
-            clistview.validate();
+            clistview.refresh();
+            clistview.setOnChange(this::syncClipboardMenu);
             if (User.getCurrentUser().getProperty("org.openyabs.uiproperty", "clipboardtab")) {
-                addOrShowTab(clistview, "Clipboard");
+                addOrShowTab(clistview, Messages.CLIPBOARD_TITLE.toString());
             } else {
                 clipboard.setVisible(show);
             }

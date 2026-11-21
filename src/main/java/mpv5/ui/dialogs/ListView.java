@@ -14,22 +14,37 @@
  *  You should have received a copy of the GNU General Public License
  *  along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- * ListView.java
- *
- * Created on 08.11.2009, 20:13:52
- */
 package mpv5.ui.dialogs;
 
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import javax.swing.ListModel;
+import java.util.List;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.KeyStroke;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import mpv5.data.MPList;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
+import mpv5.ui.modern.Applets;
+import mpv5.ui.modern.ModernTheme;
+import mpv5.ui.modern.PrimaryButton;
 import mpv5.ui.panels.DataPanel;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.date.DateConverter;
@@ -37,279 +52,260 @@ import mpv5.utils.xml.XMLReader;
 import mpv5.utils.xml.XMLWriter;
 
 /**
- *
- * @author andreasw
+ * The clipboard of records ("Zwischenablage"): records copied with Ctrl+C
+ * (outside text fields) or "Copy". Open with a double click or Enter, paste
+ * all (or the selected) into the current view, remove, clear, export and
+ * import as XML. The list is the one of the clipboard menu too.
  */
-public class ListView extends javax.swing.JPanel {
+public class ListView extends JPanel {
 
+    private static final long serialVersionUID = 1L;
     private final MPList list;
+    private final JList<Object> view = new JList<Object>();
+    private final JLabel count = new JLabel();
+    private final JPanel cards = new JPanel(new CardLayout());
+    private final JButton remove = new JButton(Messages.CLIPBOARD_REMOVE.toString());
+    private final JButton clear = new JButton(Messages.CLIPBOARD_CLEAR.toString());
+    private final JButton pasteAndClear = new JButton(Messages.CLIPBOARD_PASTE_AND_CLEAR.toString());
+    private final PrimaryButton paste = new PrimaryButton(Messages.CLIPBOARD_PASTE.toString(), null);
+    private Runnable onChange;
 
-    public void addElement(DatabaseObject obj) {
-        list.add(obj);
-        validate();
-    }
-
-    /** Creates new form ListView
-     * @param list
+    /**
+     * @param list the records of the clipboard
      */
     public ListView(MPList list) {
-        initComponents();
-        jList1.setCellRenderer(MPList.getDBORenderer());
+        super(new BorderLayout(0, ModernTheme.px(10)));
         this.list = list;
-        validate();
+        setBackground(ModernTheme.background());
+        setBorder(ModernTheme.padding(12, 14));
+
+        JPanel top = new JPanel(new BorderLayout(0, ModernTheme.px(4)));
+        top.setOpaque(false);
+        JPanel title = new JPanel(new BorderLayout(ModernTheme.px(8), 0));
+        title.setOpaque(false);
+        title.add(ModernTheme.heading(Messages.CLIPBOARD_TITLE.toString()), BorderLayout.WEST);
+        count.setForeground(ModernTheme.muted());
+        title.add(count, BorderLayout.CENTER);
+        top.add(title, BorderLayout.NORTH);
+        JLabel info = new JLabel("<html><div style='width:" + ModernTheme.px(340) + "px'>"
+                + Messages.CLIPBOARD_INFO.toString().replace("&", "&amp;").replace("<", "&lt;") + "</div></html>");
+        info.setForeground(ModernTheme.muted());
+        top.add(info, BorderLayout.CENTER);
+        add(top, BorderLayout.NORTH);
+
+        view.setCellRenderer(MPList.getDBORenderer());
+        view.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        view.setFixedCellHeight(Math.max(ModernTheme.px(24), 22));
+        view.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() > 1) {
+                    openSelected();
+                }
+            }
+        });
+        view.addListSelectionListener(e -> updateButtons());
+        view.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "yabs.open");
+        view.getActionMap().put("yabs.open", action(this::openSelected));
+        view.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "yabs.remove");
+        view.getActionMap().put("yabs.remove", action(this::removeSelected));
+        JScrollPane scroll = new JScrollPane(view);
+        scroll.setPreferredSize(new Dimension(ModernTheme.px(380), ModernTheme.px(260)));
+
+        JLabel empty = new JLabel("<html><div style='text-align:center;width:" + ModernTheme.px(260) + "px'>"
+                + Messages.CLIPBOARD_EMPTY.toString().replace("&", "&amp;").replace("<", "&lt;") + "</div></html>", SwingConstants.CENTER);
+        empty.setForeground(ModernTheme.muted());
+        JPanel emptyPanel = new JPanel(new BorderLayout());
+        emptyPanel.setBackground(ModernTheme.cardBackground());
+        emptyPanel.setBorder(javax.swing.BorderFactory.createLineBorder(ModernTheme.border()));
+        emptyPanel.add(empty, BorderLayout.CENTER);
+        cards.setOpaque(false);
+        cards.add(scroll, "list");
+        cards.add(emptyPanel, "empty");
+        add(cards, BorderLayout.CENTER);
+
+        remove.addActionListener(e -> removeSelected());
+        clear.addActionListener(e -> clearAll());
+        JButton more = new JButton(Messages.MORE_ACTIONS + " ▾");
+        JPopupMenu menu = new JPopupMenu();
+        JMenuItem export = new JMenuItem(Messages.CLIPBOARD_EXPORT.toString());
+        export.addActionListener(e -> exportXml());
+        JMenuItem imp = new JMenuItem(Messages.CLIPBOARD_IMPORT.toString());
+        imp.addActionListener(e -> importXml());
+        menu.add(export);
+        menu.add(imp);
+        more.addActionListener(e -> {
+            export.setEnabled(!list.isEmpty());
+            menu.show(more, 0, more.getHeight());
+        });
+        paste.addActionListener(e -> pasteInto(false));
+        pasteAndClear.addActionListener(e -> pasteInto(true));
+        paste.setToolTipText(Messages.CLIPBOARD_PASTE_TIP.toString());
+        add(Applets.actionBar(new JComponent[]{remove, clear, more}, new JComponent[]{pasteAndClear, paste}), BorderLayout.SOUTH);
+        refresh();
     }
 
-    @Override
-    public void validate() {
-        jList1.setModel(list.getListModel());
-        Log.Debug(this, "Having content: " + list.size());
-        super.validate();
-    }
-
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
-     */
-    @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
-
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList();
-        jToolBar1 = new javax.swing.JToolBar();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
-
-        setName("Form"); // NOI18N
-
-        jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        jScrollPane1.setName("jScrollPane1"); // NOI18N
-
-        jList1.setName("jList1"); // NOI18N
-        jList1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jList1MouseClicked(evt);
-            }
-        });
-        jScrollPane1.setViewportView(jList1);
-
-        jToolBar1.setFloatable(false);
-        jToolBar1.setRollover(true);
-        jToolBar1.setName("jToolBar1"); // NOI18N
-
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
-        jButton1.setText(bundle.getString("ListView.jButton1.text_1")); // NOI18N
-        jButton1.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 3, 3, 3));
-        jButton1.setName("jButton1"); // NOI18N
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(jButton1);
-
-        jButton2.setText(bundle.getString("ListView.jButton2.text_1")); // NOI18N
-        jButton2.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 3, 3, 3));
-        jButton2.setName("jButton2"); // NOI18N
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(jButton2);
-
-        jButton3.setText(bundle.getString("ListView.jButton3.text_1")); // NOI18N
-        jButton3.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 3, 3, 3));
-        jButton3.setName("jButton3"); // NOI18N
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(jButton3);
-
-        jButton6.setText(bundle.getString("ListView.jButton6.text")); // NOI18N
-        jButton6.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 3, 3, 3));
-        jButton6.setFocusable(false);
-        jButton6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton6.setName("jButton6"); // NOI18N
-        jButton6.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(jButton6);
-
-        jButton4.setText(bundle.getString("ListView.jButton4.text")); // NOI18N
-        jButton4.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 3, 3, 3));
-        jButton4.setFocusable(false);
-        jButton4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton4.setName("jButton4"); // NOI18N
-        jButton4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(jButton4);
-
-        jButton5.setText(bundle.getString("ListView.jButton5.text")); // NOI18N
-        jButton5.setBorder(javax.swing.BorderFactory.createEmptyBorder(3, 3, 3, 3));
-        jButton5.setFocusable(false);
-        jButton5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton5.setName("jButton5"); // NOI18N
-        jButton5.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(jButton5);
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 418, Short.MAX_VALUE)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 418, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE))
-        );
-    }// </editor-fold>//GEN-END:initComponents
-
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        try {
-            list.remove((DatabaseObject) jList1.getSelectedValue());
-            validate();
-        } catch (Exception e) {
-            Log.Debug(this, e);
-        }
-    }//GEN-LAST:event_jButton2ActionPerformed
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        list.clear();
-        validate();
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        DataPanel view = mpv5.YabsViewProxy.instance().getIdentifierView().getCurrentTab();
-        if (view != null) {
-            view.paste(list.toArray());
-            try {
-                BigPopup.hide(this);
-            } catch (Exception exception) {
-            }
-        }
-    }//GEN-LAST:event_jButton3ActionPerformed
-
-    private void jList1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jList1MouseClicked
-        if (evt.getClickCount() > 1) {
-            try {
-                if (jList1.getSelectedValue() != null) {
-                    mpv5.YabsViewProxy.instance().getIdentifierView().addTab((DatabaseObject) jList1.getSelectedValue());
-                }
-            } catch (Exception e) {
-                Log.Debug(e);
-            }
-        }
-    }//GEN-LAST:event_jList1MouseClicked
-
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        ListModel data;
-
-        if (mpv5.usermanagement.MPSecurityManager.check(Context.getContact(), MPSecurityManager.EXPORT)
-                && mpv5.usermanagement.MPSecurityManager.check(Context.getInvoice(), MPSecurityManager.EXPORT)
-                && mpv5.usermanagement.MPSecurityManager.check(Context.getProduct(), MPSecurityManager.EXPORT)) {
-
-            XMLWriter xmlw = new XMLWriter();
-            xmlw.newDoc(true);
-            String name = Messages.ACTION_EXPORT.toString() + "-" + DateConverter.getTodayFileDate();
-            data = jList1.getModel();
-            ArrayList<Context> exportable = Context.getImportableContexts();
-            for (int i = 0; i < exportable.size(); i++) {
-                Context context = exportable.get(i);
-                ArrayList<DatabaseObject> d = new ArrayList<DatabaseObject>();
-                for (int j = 0; j < data.getSize(); j++) {
-                    if (((DatabaseObject) data.getElementAt(j)).getContext().equals(context)) {
-                        d.add((DatabaseObject) data.getElementAt(j));
-                    }
-                }
-                xmlw.add(d);
-            }
-            mpv5.YabsViewProxy.instance().showFilesaveDialogFor(xmlw.createFile(name));
-        }
-    }//GEN-LAST:event_jButton4ActionPerformed
-
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-
-        final ListView v = this;
-        Runnable runnable = new Runnable() {
+    private static javax.swing.AbstractAction action(final Runnable r) {
+        return new javax.swing.AbstractAction() {
+            private static final long serialVersionUID = 1L;
 
             @Override
-            public void run() {
-                try {
-                    v.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-                    mpv5.YabsViewProxy.instance().setWaiting(true);
-                    DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY);
-                    d.setFileFilter(DialogForFile.XML_FILES);
-                    XMLReader x;
-                    ArrayList<ArrayList<DatabaseObject>> objs = null;
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                r.run();
+            }
+        };
+    }
 
-                    if (d.chooseFile()) {
-                        x = new XMLReader();
+    /**
+     * @param onChange runs when the view changed the list (e.g. to rebuild
+     * the clipboard menu)
+     */
+    public void setOnChange(Runnable onChange) {
+        this.onChange = onChange;
+    }
 
-                        x.newDoc(d.getFile(), false);
-                        x.setOverwriteExisting(true);
-                        objs = x.getObjects();
+    public void addElement(DatabaseObject obj) {
+        if (obj != null && !list.contains(obj)) {
+            list.add(obj);
+        }
+        changed();
+    }
 
-                    }
+    /**
+     * Shows the records of the list again
+     */
+    public void refresh() {
+        List<Object> keep = view.getSelectedValuesList();
+        view.setModel(list.getListModel());
+        List<Integer> indices = new ArrayList<Integer>();
+        for (int i = 0; i < view.getModel().getSize(); i++) {
+            if (keep.contains(view.getModel().getElementAt(i))) {
+                indices.add(i);
+            }
+        }
+        view.setSelectedIndices(indices.stream().mapToInt(Integer::intValue).toArray());
+        int n = list.size();
+        count.setText(n == 0 ? "" : String.format(Messages.CLIPBOARD_COUNT.toString(), n));
+        ((CardLayout) cards.getLayout()).show(cards, n == 0 ? "empty" : "list");
+        updateButtons();
+    }
 
-                    if (objs != null && objs.size() > 0) {
-                        for (int i = 0; i < objs.size(); i++) {
-                            ArrayList<DatabaseObject> arrayList = objs.get(i);
-                            for (int j = 0; j < arrayList.size(); j++) {
-                                DatabaseObject databaseObject = arrayList.get(j);
-                                Log.Debug(this, "Parsing " + databaseObject.getDbIdentity() + " : " + databaseObject.__getCname() + " from file: " + d.getFile());
-                                addElement(databaseObject);
+    private void changed() {
+        refresh();
+        if (onChange != null) {
+            onChange.run();
+        }
+    }
+
+    private void updateButtons() {
+        boolean any = !list.isEmpty();
+        remove.setEnabled(!view.isSelectionEmpty());
+        clear.setEnabled(any);
+        paste.setEnabled(any);
+        pasteAndClear.setEnabled(any);
+        paste.setText(view.isSelectionEmpty() || view.getSelectedIndices().length == list.size()
+                ? Messages.CLIPBOARD_PASTE.toString() : Messages.CLIPBOARD_PASTE_SELECTED.toString());
+    }
+
+    private void openSelected() {
+        for (Object o : view.getSelectedValuesList()) {
+            try {
+                mpv5.YabsViewProxy.instance().getIdentifierView().addTab((DatabaseObject) o);
+            } catch (Exception e) {
+                Log.Debug(this, e);
+            }
+        }
+    }
+
+    private void removeSelected() {
+        for (Object o : view.getSelectedValuesList()) {
+            list.remove((DatabaseObject) o);
+        }
+        changed();
+    }
+
+    private void clearAll() {
+        list.clear();
+        changed();
+    }
+
+    /**
+     * Pastes the selected records (all if none is selected) into the current
+     * view
+     */
+    private void pasteInto(boolean andClear) {
+        DataPanel target = mpv5.YabsViewProxy.instance().getIdentifierView().getCurrentTab();
+        if (target == null) {
+            Popup.notice(this, Messages.CLIPBOARD_NO_VIEW);
+            return;
+        }
+        List<Object> sel = view.getSelectedValuesList();
+        DatabaseObject[] items = sel.isEmpty() ? list.toArray() : sel.toArray(new DatabaseObject[0]);
+        target.paste(items);
+        if (andClear) {
+            for (DatabaseObject o : items) {
+                list.remove(o);
+            }
+            changed();
+        }
+        try {
+            BigPopup.hide(this);
+        } catch (Exception e) {
+            //not in a popup
+        }
+    }
+
+    private void exportXml() {
+        if (!(MPSecurityManager.check(Context.getContact(), MPSecurityManager.EXPORT)
+                && MPSecurityManager.check(Context.getInvoice(), MPSecurityManager.EXPORT)
+                && MPSecurityManager.check(Context.getProduct(), MPSecurityManager.EXPORT))) {
+            return;
+        }
+        XMLWriter xmlw = new XMLWriter();
+        xmlw.newDoc(true);
+        String name = Messages.ACTION_EXPORT.toString() + "-" + DateConverter.getTodayFileDate();
+        for (Context context : Context.getImportableContexts()) {
+            ArrayList<DatabaseObject> d = new ArrayList<DatabaseObject>();
+            for (DatabaseObject o : list) {
+                if (o.getContext().equals(context)) {
+                    d.add(o);
+                }
+            }
+            xmlw.add(d);
+        }
+        mpv5.YabsViewProxy.instance().showFilesaveDialogFor(xmlw.createFile(name));
+    }
+
+    private void importXml() {
+        SwingUtilities.invokeLater(() -> {
+            try {
+                setCursor(new Cursor(Cursor.WAIT_CURSOR));
+                mpv5.YabsViewProxy.instance().setWaiting(true);
+                DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY);
+                d.setFileFilter(DialogForFile.XML_FILES);
+                if (d.chooseFile()) {
+                    XMLReader x = new XMLReader();
+                    x.newDoc(d.getFile(), false);
+                    x.setOverwriteExisting(true);
+                    ArrayList<ArrayList<DatabaseObject>> objs = x.getObjects();
+                    if (objs != null) {
+                        for (ArrayList<DatabaseObject> l : objs) {
+                            for (DatabaseObject o : l) {
+                                if (!list.contains(o)) {
+                                    list.add(o);
+                                }
                             }
                         }
                     }
-                } catch (Exception e) {
-                    Popup.error(e);
-                    Log.Debug(e);
-                } finally {
-                    v.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-                    mpv5.YabsViewProxy.instance().setWaiting(false);
+                    changed();
                 }
+            } catch (Exception e) {
+                Popup.error(e);
+                Log.Debug(e);
+            } finally {
+                setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                mpv5.YabsViewProxy.instance().setWaiting(false);
             }
-        };
-        SwingUtilities.invokeLater(runnable);
-    }//GEN-LAST:event_jButton5ActionPerformed
-
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        jButton3ActionPerformed(evt);
-        jButton1ActionPerformed(evt);
-    }//GEN-LAST:event_jButton6ActionPerformed
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JList jList1;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JToolBar jToolBar1;
-    // End of variables declaration//GEN-END:variables
+        });
+    }
 }
