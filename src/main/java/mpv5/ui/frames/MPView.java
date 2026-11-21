@@ -596,6 +596,7 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
             statusPanel.add(mpv5.ui.misc.ActivityButton.create(), at);
         }
         modernizeFrame();
+        initFlowButtons();
 
         favMenu = favouritesMenu;
         reloadFavorites();
@@ -1046,7 +1047,9 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
                 for (int i = 0; i < count; i++) {
                     if (getTabAt(i) != null) {
                         DataPanel panel = getTabAt(i);
+                        //a new record of the same kind is shown there; never a copy not saved yet
                         if (panel.getDataOwner() != null && !panel.getDataOwner().isExisting()
+                                && !mpv5.ui.toolbars.RecordActions.isPendingCopy(panel)
                                 && panel.getDataOwner().getContext().equals(item.getContext())
                                 && panel.getClass() == item.getView().getClass()) {
 //                        if (!panel.getDataOwner().isExisting() && panel.getDataOwner().getContext().equals(item.getContext())) {
@@ -3894,26 +3897,66 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
             Log.Debug(ex);
         }
     }
-    private static LinkedList<DatabaseObject> FLOW = new LinkedList<DatabaseObject>();
+    /**
+     * One step of back / forward: a record in a tab. Unsaved records (a new
+     * record, a copy not saved yet) all have the same id, so the tab tells
+     * them apart; a saved record can be opened again when its tab is gone.
+     */
+    private static final class FlowEntry {
+
+        final java.lang.ref.WeakReference<DataPanel> panel;
+        final DatabaseObject record;
+
+        FlowEntry(DataPanel panel, DatabaseObject record) {
+            this.panel = new java.lang.ref.WeakReference<DataPanel>(panel);
+            this.record = record;
+        }
+
+        /**
+         * @return true if the tab is the one of this step and still shows the
+         * record
+         */
+        boolean showsIn(DataPanel p) {
+            if (p == null || p != panel.get()) {
+                return false;
+            }
+            DatabaseObject o = p.getDataOwner();
+            return o == record || sameRecord(o, record);
+        }
+
+        boolean matches(DataPanel p, DatabaseObject d) {
+            return p != null && p == panel.get() && (d == record || sameRecord(d, record));
+        }
+    }
+    private static final LinkedList<FlowEntry> FLOW = new LinkedList<FlowEntry>();
     private int pif = 0;
 
     public int getPointInFlow() {
         return pif;
     }
 
+    /**
+     * Notes the record shown in the current tab
+     *
+     * @param d
+     * @return its index
+     */
     public int addToFlow(DatabaseObject d) {
-        if (!FLOW.contains(d)) {
-            FLOW.addLast(d);
-        } else {
-            FLOW.set(FLOW.lastIndexOf(d), d);
+        DataPanel p = getCurrentTab();
+        for (int i = FLOW.size() - 1; i >= 0; i--) {
+            if (FLOW.get(i).matches(p, d)) {
+                return i;
+            }
         }
-        return FLOW.lastIndexOf(d);
+        FLOW.addLast(new FlowEntry(p, d));
+        return FLOW.size() - 1;
     }
 
     @Override
     public void showPreviousDatabaseObject() {
-        if (hasPreviousDatabaseObject()) {
-            showInFlow(pif - 1);
+        int i = reachable(pif - 1, -1);
+        if (i >= 0) {
+            showInFlow(i);
         }
     }
 
@@ -3928,46 +3971,152 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     }
 
     /**
+     * @return the open tab of the step, null if there is none
+     */
+    private DataPanel tabOf(FlowEntry e) {
+        for (int i = 0; i < getTabPane().getTabCount(); i++) {
+            DataPanel p = getTabAt(i);
+            if (e.showsIn(p)) {
+                return p;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @return true if the step can be shown: its tab is open, or the record
+     * is saved (then it is opened again)
+     */
+    private boolean canShow(FlowEntry e) {
+        return tabOf(e) != null || (e.record != null && e.record.isExisting());
+    }
+
+    /**
+     * @param from the first index to try
+     * @param step -1 back, +1 forward
+     * @return the next step that can be shown, -1 if none (steps of closed,
+     * unsaved records are skipped)
+     */
+    private int reachable(int from, int step) {
+        for (int i = from; i >= 0 && i < FLOW.size(); i += step) {
+            if (canShow(FLOW.get(i))) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
      * Back / forward: shows the record of the history, in its open tab if
      * there is one (instead of opening it again)
      */
     private void showInFlow(int index) {
-        DatabaseObject d = FLOW.get(index);
-        for (int i = 0; i < getTabPane().getTabCount(); i++) {
-            DataPanel p = getTabAt(i);
-            if (p != null && sameRecord(d, p.getDataOwner())) {
-                getTabPane().setSelectedIndex(i);
-                setPointInFlow(index);
-                return;
+        FlowEntry e = FLOW.get(index);
+        DataPanel open = tabOf(e);
+        if (open != null) {
+            for (int i = 0; i < getTabPane().getTabCount(); i++) {
+                if (getTabAt(i) == open) {
+                    getTabPane().setSelectedIndex(i);
+                    break;
+                }
+            }
+            setPointInFlow(index);
+            return;
+        }
+        addOrShowTab(e.record);
+        //the record opened again: this step (not a new one at the end)
+        DataPanel now = getCurrentTab();
+        FLOW.set(index, new FlowEntry(now, e.record));
+        for (int i = FLOW.size() - 1; i > index; i--) {
+            if (FLOW.get(i).matches(now, e.record)) {
+                FLOW.remove(i);
             }
         }
-        addOrShowTab(d);
+        setPointInFlow(index);
     }
 
     @Override
     public boolean hasPreviousDatabaseObject() {
-        return !FLOW.isEmpty() && pif > 0;
+        return reachable(pif - 1, -1) >= 0;
     }
 
     @Override
     public void showNextDatabaseObject() {
-        if (hasNextDatabaseObject()) {
-            showInFlow(pif + 1);
+        int i = reachable(pif + 1, 1);
+        if (i >= 0) {
+            showInFlow(i);
         }
     }
 
     @Override
     public boolean hasNextDatabaseObject() {
-        return pif + 1 < FLOW.size();
+        return reachable(pif + 1, 1) >= 0;
     }
 
     @Override
     public DatabaseObject getCurrentDatabaseObject() {
-        return FLOW.get(pif);
+        return FLOW.isEmpty() ? null : FLOW.get(Math.min(pif, FLOW.size() - 1)).record;
     }
 
     private void setPointInFlow(int npif) {
         pif = npif;
+        updateFlowButtons();
+    }
+
+    /**
+     * Back / forward enabled only if there is a step; tooltips and the
+     * shortcuts Ctrl+Left / Ctrl+Right (outside text fields, where they move
+     * the cursor by words)
+     */
+    private void initFlowButtons() {
+        closeButton1.setToolTipText(Messages.FLOW_BACK.toString());
+        closeButton2.setToolTipText(Messages.FLOW_FORWARD.toString());
+        javax.swing.JRootPane root = getFrame().getRootPane();
+        root.getInputMap(javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+                javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_LEFT, java.awt.event.InputEvent.CTRL_DOWN_MASK), "yabs.flowBack");
+        root.getInputMap(javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+                javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_RIGHT, java.awt.event.InputEvent.CTRL_DOWN_MASK), "yabs.flowForward");
+        root.getActionMap().put("yabs.flowBack", new AbstractAction() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showPreviousDatabaseObject();
+            }
+        });
+        root.getActionMap().put("yabs.flowForward", new AbstractAction() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showNextDatabaseObject();
+            }
+        });
+        //a tab selected or closed: the steps that can be reached change
+        getTabPane().addChangeListener(e -> {
+            DataPanel p = getCurrentTab();
+            for (int i = FLOW.size() - 1; i >= 0; i--) {
+                if (FLOW.get(i).showsIn(p)) {
+                    pif = i;
+                    break;
+                }
+            }
+            updateFlowButtons();
+        });
+        getTabPane().addContainerListener(new java.awt.event.ContainerAdapter() {
+            @Override
+            public void componentRemoved(java.awt.event.ContainerEvent e) {
+                SwingUtilities.invokeLater(() -> updateFlowButtons());
+            }
+        });
+        updateFlowButtons();
+    }
+
+    private void updateFlowButtons() {
+        if (closeButton1 != null) {
+            closeButton1.setEnabled(hasPreviousDatabaseObject());
+            closeButton2.setEnabled(hasNextDatabaseObject());
+        }
     }
 
     public void enhanceToolbars() {//FIXME handle more nicely, and somewhere else
