@@ -1939,15 +1939,42 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
                 throw new ChangeNotApprovedException(dataOwner);
             }
         }
-        if (dataOwner.isExisting()) {
-            boolean done = dataOwner.__getIntstatus() == Item.STATUS_PAID || dataOwner.__getIntstatus() == Item.STATUS_CANCELLED;
-            if (done && !Popup.Y_N_dialog(Messages.REALLY_CHANGE_DONE_ITEM)) {
+        //a saved document: ask only if something was changed (saving without a change asked as
+        //well, so the question came "sometimes"), and only once
+        if (dataOwner.isExisting() && (hasUnsavedChanges() || hasLockedStatusChange())) {
+            //the status as saved (the form is read after this)
+            int saved = dataOwner.__getIntstatus();
+            boolean done = saved == Item.STATUS_PAID || saved == Item.STATUS_CANCELLED;
+            String label = dataOwner.__getCname();
+            if (label == null || label.trim().isEmpty()) {
+                label = dataOwner.__getCnumber();
+            }
+            if (done) {
+                //always: a paid or cancelled document is not changed by accident
+                if (!Popup.Y_N_dialog(String.format(Messages.ITEM_SAVE_DONE.toString(), label, Item.getStatusString(saved)),
+                        Messages.ITEM_SAVE_TITLE)) {
+                    throw new ChangeNotApprovedException(dataOwner);
+                }
+            } else if (User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "dowarnings")
+                    && !Popup.Y_N_dialog(String.format(Messages.ITEM_SAVE_CONFIRM.toString(), label), Messages.ITEM_SAVE_TITLE)) {
+                //the setting "ask before changing": the open document, not "the selected dataset"
                 throw new ChangeNotApprovedException(dataOwner);
             }
-            if (User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "dowarnings")
-                    && !Popup.Y_N_dialog(Messages.REALLY_CHANGE)) {
-                throw new ChangeNotApprovedException(dataOwner);
-            }
+        }
+    }
+
+    private boolean hasLockedStatusChange() {
+        if (dataOwner == null || (!isContentLocked() && getLockedDocument() == null)) {
+            return false;
+        }
+        MPComboBoxModelItem sel = status.getSelectedItem();
+        if (sel == null || !sel.isValid()) {
+            return false;
+        }
+        try {
+            return Integer.parseInt(String.valueOf(sel.getId())) != dataOwner.__getIntstatus();
+        } catch (NumberFormatException e) {
+            return false;
         }
     }
 
