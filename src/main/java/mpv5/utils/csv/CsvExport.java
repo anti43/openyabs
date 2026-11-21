@@ -78,11 +78,9 @@ public final class CsvExport {
      */
     public static boolean isGerman() {
         try {
-            if (mpv5.db.objects.User.getCurrentUser() != null) {
-                String lang = mpv5.db.objects.User.getCurrentUser().__getLanguage();
-                if (lang != null && (lang.toLowerCase().contains("de") || lang.toLowerCase().contains("ger"))) {
-                    return true;
-                }
+            //the id of the language is a random text (it may contain "de"): the language pack decides
+            if (mpv5.i18n.LanguageManager.isGerman()) {
+                return true;
             }
         } catch (Exception e) {
             // ignore

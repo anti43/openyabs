@@ -79,8 +79,9 @@ public class LanguageManager {
     /**
      * Flushes the Language Cache so that it contains no Languages.
      */
-    public static void flushLanguageCache() {
+    public static synchronized void flushLanguageCache() {
         cachedLanguages.clear();
+        germanLanguages.clear();
     }
 
     /**
@@ -696,7 +697,11 @@ public class LanguageManager {
         synchronized (LanguageManager.class) {
             try {
                 java.util.SortedMap<String, String> missing = missingKeys(file);
-                boolean isDe = file.getName().toLowerCase().contains("de") || isGerman();
+                //the cached file is named after the id of the language (a random text):
+                //German by the name of the pack, not by letters in the file name
+                String fname = file.getName();
+                String langid = fname.endsWith(".properties") ? fname.substring(0, fname.length() - ".properties".length()) : fname;
+                boolean isDe = isGermanLanguage(langid) || isGermanName(fname);
                 StringBuilder add = new StringBuilder("\n");
                 for (java.util.Map.Entry<String, String> e : missing.entrySet()) {
                     Log.Debug(LanguageManager.class, "Key '" + e.getKey() + "' added to file " + file);
@@ -883,41 +888,66 @@ public class LanguageManager {
     }
 
     private static java.util.Properties bundledGerman;
+    private static final java.util.Map<String, Boolean> germanLanguages = new java.util.HashMap<String, Boolean>();
 
     /**
-     * @return true if the active language is German: the locale of the user
-     * in YaBS (settings), else the language of the system. Before the main
-     * window exists (login, first start) the system language decides. A user
-     * with the built-in English stays English everywhere (no German messages
-     * next to English forms), also on a German system.
+     * @return true if the active language is German: the language pack the
+     * user has selected (not the locale or the system: a French pack stays
+     * French on a German system). Before the main window exists (login, first
+     * start) there is no pack yet: the system language decides.
      */
     public static synchronized boolean isGerman() {
         if (!Main.INSTANTIATED) {
             return isGermanUser(null);
         }
         try {
-            ResourceBundle b = getBundle();
-            if (b == null || b == defLanguageBundle) {
-                return false;
-            }
-            return isGermanLocale(mpv5.db.objects.User.getCurrentUser());
+            User u = User.getCurrentUser();
+            return u != null && isGermanLanguage(u.__getLanguage());
         } catch (Exception e) {
             return false;
         }
     }
 
     /**
-     * @param u the user, may be null
-     * @return true if the locale of the user in YaBS is German, or (none set)
-     * the language of the system
+     * @param langid the id of an imported language (a random text), or
+     * "buildin_en"
+     * @return true if the language pack is German, by its name (as the
+     * language selection: "DE-...", "language-de...", "Deutsch", "German")
      */
-    static boolean isGermanLocale(User u) {
-        String locale = u == null ? null : u.__getLocale();
-        if (locale != null && !locale.trim().isEmpty() && !"null".equals(locale.trim())) {
-            return locale.trim().toLowerCase().startsWith("de");
+    public static synchronized boolean isGermanLanguage(String langid) {
+        if (langid == null || langid.trim().isEmpty() || "null".equals(langid) || "buildin_en".equals(langid)) {
+            return false;
         }
-        String system = System.getProperty("user.language");
-        return system != null && system.toLowerCase().startsWith("de");
+        Boolean known = germanLanguages.get(langid);
+        if (known != null) {
+            return known;
+        }
+        boolean german = false;
+        try {
+            Object[] data = QueryHandler.instanceOf().clone(Context.getLanguage())
+                    .selectFirst("longname", new String[]{Context.SEARCH_NAME, langid, "'"});
+            german = data != null && data.length > 0 && isGermanName(String.valueOf(data[0]));
+        } catch (Exception e) {
+            Log.Debug(LanguageManager.class, e.getMessage());
+            return false;
+        }
+        germanLanguages.put(langid, german);
+        return german;
+    }
+
+    /**
+     * @param name the name of a language pack, e.g. "de-2.0.10.properties
+     * (...)" (imported from YaBS) or a name given at the import
+     * @return true for a German pack: the name starts with "de" as the
+     * language code, or with "language-de", "deutsch", "german"
+     */
+    static boolean isGermanName(String name) {
+        if (name == null) {
+            return false;
+        }
+        String n = name.trim().toLowerCase(java.util.Locale.ROOT);
+        return n.equals("de") || n.matches("de[-_. (].*") || n.startsWith("language-de")
+                || n.startsWith("deutsch") || n.startsWith("german");
     }
 
     /**
@@ -1167,7 +1197,7 @@ public class LanguageManager {
             for (Object[] d : data == null ? new Object[0][] : data) {
                 String id = String.valueOf(d[0]);
                 String name = String.valueOf(d[1]);
-                if (name.toLowerCase().startsWith("de-") || name.toLowerCase().startsWith("language-de")) {
+                if (isGermanName(name)) {
                     german = id;//the last one is the newest
                 } else {
                     others.add(new String[]{id, name});
