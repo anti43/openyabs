@@ -1261,6 +1261,8 @@ public enum Messages {
     SHORTCUTS_TEXT("Text fields and tables"),
     SHORTCUTS_GENERAL("Everywhere"),
     SHORTCUT_ESCAPE("Close the dialog / popup"),
+    SHORTCUT_FLOW_BACK("Back to the record shown before (anywhere, also in text fields)"),
+    SHORTCUT_FLOW_FORWARD("Forward to the next record"),
     SHORTCUTS_POSITIONS("Positions of a document"),
     SHORTCUT_POSITIONS_FIND("Go to the positions"),
     SHORTCUT_POSITIONS_TAB("In the first / last cell: to the previous / next field"),

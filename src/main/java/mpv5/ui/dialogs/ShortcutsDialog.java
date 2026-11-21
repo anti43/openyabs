@@ -117,6 +117,10 @@ public final class ShortcutsDialog {
         general.add(new Object[]{keys(k(KeyEvent.VK_MINUS, ctrl0), k(KeyEvent.VK_SUBTRACT, ctrl0)), Messages.ZOOM_OUT.toString()});
         general.add(new Object[]{keys(k(KeyEvent.VK_0, ctrl0), k(KeyEvent.VK_NUMPAD0, ctrl0)), Messages.ZOOM_RESET.toString()});
         general.add(new Object[]{keys(k(KeyEvent.VK_ESCAPE, 0)), Messages.SHORTCUT_ESCAPE.toString()});
+        //back / forward in the history of the shown records (MPView)
+        int ctrlShift = InputEvent.CTRL_DOWN_MASK | InputEvent.SHIFT_DOWN_MASK;
+        general.add(new Object[]{keys(k(KeyEvent.VK_LEFT, ctrlShift)), Messages.SHORTCUT_FLOW_BACK.toString()});
+        general.add(new Object[]{keys(k(KeyEvent.VK_RIGHT, ctrlShift)), Messages.SHORTCUT_FLOW_FORWARD.toString()});
         add(p, Messages.SHORTCUTS_GENERAL.toString(), general);
         add(p, Messages.SHORTCUTS_RECORD.toString(), ModernCommandBar.shortcuts());
         List<Object[]> positions = new ArrayList<Object[]>();
