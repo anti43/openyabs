@@ -558,7 +558,12 @@ public class ModernCommandBar extends JPanel {
             hasExtras = true;
         }
         if (c instanceof AbstractButton) {
-            ModernTheme.actionButton((AbstractButton) c, null);
+            if (!(c instanceof javax.swing.JCheckBox)) {
+                //a check box stays a check box
+                ModernTheme.actionButton((AbstractButton) c, null);
+            } else {
+                c.setOpaque(false);
+            }
             final AbstractButton b = (AbstractButton) c;
             if (key != null) {
                 b.setToolTipText(tip(b.getToolTipText() != null ? b.getToolTipText() : b.getText(), key));

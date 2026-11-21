@@ -192,7 +192,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
     private final JButton previewButton = new JButton(Messages.ACTION_PREVIEW.toString());
     private final JMenuItem deliveryNote = new JMenuItem(text("ItemPanel2.button_deliverynote.text"));
     private final JMenuItem orderConfirmation = new JMenuItem(text("ItemPanel2.button_orderconf.text"));
-    private final JCheckBoxMenuItem printWithConfirmation = new JCheckBoxMenuItem(text("ItemPanel2.checkb_pront_oc.text"));
+    private final javax.swing.JCheckBox printWithConfirmation = new javax.swing.JCheckBox(text("ItemPanel2.checkb_pront_oc.text"));
     /**
      * The user property of "print with order confirmation" (as the
      * {@link mpv5.ui.beans.UserCheckbox} of the classic view stores it)
@@ -298,6 +298,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
                         setContactData(dbo);
                         setEnddate(dbo);
                         updateHeader();
+                        updateEInvoiceButton(dbo);
                         BigDecimal rate = ContactService.customerTaxRate(dbo);
                         positions.setCustomerTaxRate(rate);
                         if (rate != null) {
@@ -519,25 +520,26 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
      */
     private void createActions() {
         //a locked document with an archived file: show that file, do not create a new one
+        //(the preview is in the bar at the top: not here again)
         previewButton.addActionListener(e -> {
             if (!mpv5.ui.toolbars.RecordActions.openLockedDocument(this, true)) {
                 preview(dataOwner.__getInttype());
             }
         });
-        positions.addAction(previewButton);
 
         JPopupMenu docs = new JPopupMenu();
         deliveryNote.addActionListener(e -> preview(Constants.TYPE_DELIVERY_NOTE));
         orderConfirmation.addActionListener(e -> preview(Constants.TYPE_ORDER_CONFIRMATION));
         docs.add(deliveryNote);
         docs.add(orderConfirmation);
-        docs.addSeparator();
-        docs.add(printWithConfirmation);
         //remembered per user, the same setting as in the classic view
         printWithConfirmation.setSelected(User.getCurrentUser().getProperties().getProperty(OC_PROPERTY_PREFIX, OC_PROPERTY));
         printWithConfirmation.setToolTipText(Messages.PRINT_WITH_OC_TIP.toString());
         printWithConfirmation.addActionListener(e -> User.getCurrentUser().setPropertyAndSave(
                 OC_PROPERTY_PREFIX + "$" + OC_PROPERTY, String.valueOf(printWithConfirmation.isSelected())));
+        //a setting of print / PDF: next to them in the bar at the top
+        printWithConfirmation.setFocusable(false);
+        tb.addAction(printWithConfirmation, null);
         positions.addAction(menuButton(documentsButton, docs));
 
         JPopupMenu einvoice = new JPopupMenu();
@@ -610,6 +612,28 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
 
     // <editor-fold defaultstate="collapsed" desc="State of the controls">
     /**
+     * The e-invoice menu: not if PDF and print create the e-invoice anyway
+     * (ZUGFeRD for the customer, also as the default)
+     *
+     * @param contact the customer, null: the one of the document
+     */
+    private void updateEInvoiceButton(Contact contact) {
+        boolean supported = ZugpferdFile.supports(dataOwner);
+        boolean zugferdAnyway = false;
+        if (supported) {
+            try {
+                Contact c = contact != null ? contact
+                        : dataOwner.__getContactsids() > 0 ? dataOwner.getContact() : null;
+                zugferdAnyway = mpv5.utils.export.EInvoiceDelivery.effectiveFor(c, dataOwner)
+                        == mpv5.utils.export.EInvoiceDelivery.ZUGFERD;
+            } catch (Exception e) {
+                Log.Debug(this, e.getMessage());
+            }
+        }
+        einvoiceButton.setVisible(supported && !zugferdAnyway);
+    }
+
+    /**
      * Shows the actions and fields which belong to the type of the document
      */
     private void updateTypeControls() {
@@ -639,7 +663,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         if (paymentsCard != null) {
             paymentsCard.setVisible(bill);
         }
-        einvoiceButton.setVisible(ZugpferdFile.supports(dataOwner));
+        updateEInvoiceButton(null);
         number.setContext(ItemService.contextOf(t < 0 ? Item.TYPE_INVOICE : t));
     }
 

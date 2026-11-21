@@ -239,6 +239,17 @@ public class OverflowBar extends JPanel {
             }
             return 0;
         }
+        if (comp instanceof javax.swing.JCheckBox) {
+            //a setting in the bar: a check box item in the menu
+            final javax.swing.JCheckBox cb = (javax.swing.JCheckBox) comp;
+            javax.swing.JCheckBoxMenuItem mi = new javax.swing.JCheckBoxMenuItem(cb.getText(), cb.isSelected());
+            mi.setFont(ModernTheme.font(1, Font.PLAIN));
+            mi.setEnabled(cb.isEnabled());
+            mi.setToolTipText(cb.getToolTipText());
+            mi.addActionListener(ev -> cb.doClick());
+            menu.add(mi);
+            return 1;
+        }
         if (comp instanceof AbstractButton) {
             AbstractButton b = (AbstractButton) comp;
             Object popupObj = b.getClientProperty(PROPERTY_POPUP_MENU);
