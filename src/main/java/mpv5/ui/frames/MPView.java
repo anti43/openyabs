@@ -550,6 +550,9 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
 //                Log.Debug(this, ex.getMessage());
             }
         }
+        if (clistview != null && clistview.isShowing()) {
+            clistview.refresh();
+        }
     }
 
     /**
@@ -3891,7 +3894,9 @@ private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
             clistview.refresh();
             clistview.setOnChange(this::syncClipboardMenu);
             if (User.getCurrentUser().getProperty("org.openyabs.uiproperty", "clipboardtab")) {
-                addOrShowTab(clistview, Messages.CLIPBOARD_TITLE.toString());
+                if (show) {
+                    addOrShowTab(clistview, Messages.CLIPBOARD_TITLE.toString());
+                }
             } else {
                 if (clipboard == null) {
                     //floating like "Search anything": moved by its title, pinned stays on top

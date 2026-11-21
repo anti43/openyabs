@@ -115,9 +115,14 @@ public final class ClipboardWindow extends JDialog {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowDeactivated(WindowEvent e) {
-                if (!pin.isSelected()) {
-                    setVisible(false);
+                if (pin.isSelected()) {
+                    return;
                 }
+                java.awt.Window opposite = e.getOppositeWindow();
+                if (opposite != null && opposite.getOwner() == ClipboardWindow.this) {
+                    return;
+                }
+                setVisible(false);
             }
         });
         boolean pinned = false;
@@ -155,6 +160,7 @@ public final class ClipboardWindow extends JDialog {
         if (remember) {
             try {
                 mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", PROPERTY, on);
+                mpv5.db.objects.User.getCurrentUser().saveProperties();
             } catch (Exception e) {
                 Log.Debug(this, e.getMessage());
             }

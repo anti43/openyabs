@@ -18,13 +18,19 @@ package mpv5.ui.dialogs;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -33,13 +39,18 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import mpv5.data.MPList;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
+import mpv5.db.objects.Favourite;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.modern.Applets;
@@ -52,79 +63,176 @@ import mpv5.utils.xml.XMLReader;
 import mpv5.utils.xml.XMLWriter;
 
 /**
- * The clipboard of records ("Zwischenablage"): records copied with Ctrl+C
- * (outside text fields) or "Copy". Open with a double click or Enter, paste
- * all (or the selected) into the current view, remove, clear, export and
- * import as XML. The list is the one of the clipboard menu too.
+ * The "Ablage": the favourites (kept) and the clipboard (records copied with
+ * Ctrl+C or "Copy", until YaBS is closed) in one list. The star of a row
+ * makes it a favourite or not; a filter searches both. Open (double click,
+ * Enter), paste the selection or the whole clipboard into the current view,
+ * remove, export / import the clipboard as XML. The clipboard list is the
+ * one of the clipboard menu, the favourites the ones of the favourites menu.
  */
 public class ListView extends JPanel {
 
     private static final long serialVersionUID = 1L;
+    private static final Color STAR = new Color(0xE8A317);
+    /**
+     * the width of the star at the left of a row (a click there toggles)
+     */
+    private static final int STAR_WIDTH = 28;
     private final MPList list;
-    private final JList<Object> view = new JList<Object>();
-    private final JLabel count = new JLabel();
+    private final List<DatabaseObject> favourites = new ArrayList<DatabaseObject>();
+    private final DefaultListModel<Object> rows = new DefaultListModel<Object>();
+    private final JList<Object> view = new JList<Object>(rows);
+    private final JTextField filter = new JTextField();
     private final JPanel cards = new JPanel(new CardLayout());
     private final JButton remove = new JButton(Messages.CLIPBOARD_REMOVE.toString());
     private final JButton clear = new JButton(Messages.CLIPBOARD_CLEAR.toString());
     private final JButton pasteAndClear = new JButton(Messages.CLIPBOARD_PASTE_AND_CLEAR.toString());
     private final PrimaryButton paste = new PrimaryButton(Messages.CLIPBOARD_PASTE.toString(), null);
-    private Runnable onChange;
     private final JPanel titleBar = new JPanel(new BorderLayout(ModernTheme.px(8), 0));
+    private Runnable onChange;
+
+    /**
+     * A row: a record of the favourites or the clipboard
+     */
+    private static final class Row {
+
+        final DatabaseObject record;
+        final boolean favourite;
+
+        Row(DatabaseObject record, boolean favourite) {
+            this.record = record;
+            this.favourite = favourite;
+        }
+    }
+
+    /**
+     * The title of a section, with a hint when it is empty
+     */
+    private static final class Section {
+
+        final String text;
+        final String hint;
+
+        Section(String text, String hint) {
+            this.text = text;
+            this.hint = hint;
+        }
+    }
 
     /**
      * @param list the records of the clipboard
      */
     public ListView(MPList list) {
-        super(new BorderLayout(0, ModernTheme.px(10)));
+        super(new BorderLayout(0, ModernTheme.px(8)));
         this.list = list;
         setBackground(ModernTheme.background());
         setBorder(ModernTheme.padding(12, 14));
 
-        JPanel top = new JPanel(new BorderLayout(0, ModernTheme.px(4)));
+        JPanel top = new JPanel(new BorderLayout(0, ModernTheme.px(6)));
         top.setOpaque(false);
         titleBar.setOpaque(false);
         titleBar.add(ModernTheme.heading(Messages.CLIPBOARD_TITLE.toString()), BorderLayout.WEST);
-        count.setForeground(ModernTheme.muted());
-        titleBar.add(count, BorderLayout.CENTER);
         top.add(titleBar, BorderLayout.NORTH);
-        JLabel info = new JLabel("<html><div style='width:" + ModernTheme.px(340) + "px'>"
-                + Messages.CLIPBOARD_INFO.toString().replace("&", "&amp;").replace("<", "&lt;") + "</div></html>");
-        info.setForeground(ModernTheme.muted());
-        top.add(info, BorderLayout.CENTER);
+        filter.putClientProperty("JTextField.placeholderText", Messages.CLIPBOARD_FILTER.toString());
+        filter.putClientProperty("JTextField.showClearButton", Boolean.TRUE);
+        filter.setToolTipText(Messages.CLIPBOARD_INFO.toString());
+        filter.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                fill();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                fill();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                fill();
+            }
+        });
+        filter.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "yabs.list");
+        filter.getActionMap().put("yabs.list", action(() -> {
+            int first = nextRow(-1, 1);
+            if (first >= 0) {
+                view.setSelectedIndex(first);
+                view.requestFocusInWindow();
+            }
+        }));
+        top.add(filter, BorderLayout.CENTER);
         add(top, BorderLayout.NORTH);
 
-        view.setCellRenderer(MPList.getDBORenderer());
+        view.setCellRenderer(new Renderer());
         view.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        view.setFixedCellHeight(Math.max(ModernTheme.px(24), 22));
-        view.addMouseListener(new MouseAdapter() {
+        view.setBackground(ModernTheme.cardBackground());
+        MouseAdapter mouse = new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() > 1) {
+                int i = view.locationToIndex(e.getPoint());
+                Rectangle cell = i >= 0 ? view.getCellBounds(i, i) : null;
+                if (i < 0 || i >= rows.size() || !(rows.get(i) instanceof Row) || cell == null || !cell.contains(e.getPoint())) {
+                    return;
+                }
+                if (e.getX() - cell.x < ModernTheme.px(STAR_WIDTH)) {
+                    toggleFavourite((Row) rows.get(i));
+                } else if (e.getClickCount() > 1) {
                     openSelected();
                 }
             }
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                int i = view.locationToIndex(e.getPoint());
+                Rectangle cell = i >= 0 ? view.getCellBounds(i, i) : null;
+                boolean onStar = i >= 0 && i < rows.size() && rows.get(i) instanceof Row && cell != null && cell.contains(e.getPoint())
+                        && e.getX() - cell.x < ModernTheme.px(STAR_WIDTH);
+                view.setCursor(Cursor.getPredefinedCursor(onStar ? Cursor.HAND_CURSOR : Cursor.DEFAULT_CURSOR));
+                view.setToolTipText(onStar ? (((Row) rows.get(i)).favourite || isFavourite(((Row) rows.get(i)).record)
+                        ? Messages.CLIPBOARD_UNSTAR.toString() : Messages.CLIPBOARD_STAR.toString()) : null);
+            }
+        };
+        view.addMouseListener(mouse);
+        view.addMouseMotionListener(mouse);
+        //sections are no rows to select
+        view.addListSelectionListener(e -> {
+            for (int i : view.getSelectedIndices()) {
+                if (i >= 0 && i < rows.size() && !(rows.get(i) instanceof Row)) {
+                    view.removeSelectionInterval(i, i);
+                }
+            }
+            updateButtons();
         });
-        view.addListSelectionListener(e -> updateButtons());
         view.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "yabs.open");
         view.getActionMap().put("yabs.open", action(this::openSelected));
         view.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "yabs.remove");
         view.getActionMap().put("yabs.remove", action(this::removeSelected));
+        view.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "yabs.star");
+        view.getActionMap().put("yabs.star", action(() -> {
+            for (Object o : view.getSelectedValuesList()) {
+                if (o instanceof Row) {
+                    toggleFavourite((Row) o);
+                }
+            }
+        }));
         JScrollPane scroll = new JScrollPane(view);
-        scroll.setPreferredSize(new Dimension(ModernTheme.px(380), ModernTheme.px(260)));
+        scroll.setPreferredSize(new Dimension(ModernTheme.px(400), ModernTheme.px(320)));
 
-        JLabel empty = new JLabel("<html><div style='text-align:center;width:" + ModernTheme.px(260) + "px'>"
-                + Messages.CLIPBOARD_EMPTY.toString().replace("&", "&amp;").replace("<", "&lt;") + "</div></html>", SwingConstants.CENTER);
+        JLabel empty = new JLabel("<html><div style='text-align:center;width:" + ModernTheme.px(280) + "px'>"
+                + escape(Messages.CLIPBOARD_EMPTY.toString()) + "</div></html>", SwingConstants.CENTER);
         empty.setForeground(ModernTheme.muted());
         JPanel emptyPanel = new JPanel(new BorderLayout());
         emptyPanel.setBackground(ModernTheme.cardBackground());
-        emptyPanel.setBorder(javax.swing.BorderFactory.createLineBorder(ModernTheme.border()));
+        emptyPanel.setBorder(BorderFactory.createLineBorder(ModernTheme.border()));
         emptyPanel.add(empty, BorderLayout.CENTER);
         cards.setOpaque(false);
         cards.add(scroll, "list");
         cards.add(emptyPanel, "empty");
         add(cards, BorderLayout.CENTER);
 
+        remove.setToolTipText(Messages.CLIPBOARD_REMOVE_TIP.toString());
         remove.addActionListener(e -> removeSelected());
+        clear.setToolTipText(Messages.CLIPBOARD_CLEAR_TIP.toString());
         clear.addActionListener(e -> clearAll());
         JButton more = new JButton(Messages.MORE_ACTIONS + " ▾");
         JPopupMenu menu = new JPopupMenu();
@@ -143,6 +251,10 @@ public class ListView extends JPanel {
         paste.setToolTipText(Messages.CLIPBOARD_PASTE_TIP.toString());
         add(Applets.actionBar(new JComponent[]{remove, clear, more}, new JComponent[]{pasteAndClear, paste}), BorderLayout.SOUTH);
         refresh();
+    }
+
+    private static String escape(String s) {
+        return s.replace("&", "&amp;").replace("<", "&lt;");
     }
 
     private static javax.swing.AbstractAction action(final Runnable r) {
@@ -165,8 +277,8 @@ public class ListView extends JPanel {
     }
 
     /**
-     * @param onChange runs when the view changed the list (e.g. to rebuild
-     * the clipboard menu)
+     * @param onChange runs when the view changed the clipboard (e.g. to
+     * rebuild the clipboard menu)
      */
     public void setOnChange(Runnable onChange) {
         this.onChange = onChange;
@@ -180,54 +292,166 @@ public class ListView extends JPanel {
     }
 
     /**
-     * Shows the records of the list again
+     * Reads the favourites again and shows both lists
      */
     public void refresh() {
-        List<Object> keep = view.getSelectedValuesList();
-        view.setModel(list.getListModel());
-        List<Integer> indices = new ArrayList<Integer>();
-        for (int i = 0; i < view.getModel().getSize(); i++) {
-            if (keep.contains(view.getModel().getElementAt(i))) {
-                indices.add(i);
+        favourites.clear();
+        try {
+            //only when logged in (the favourites of the user, from the database)
+            for (Favourite f : !mpv5.Main.INSTANTIATED ? new Favourite[0] : Favourite.getUserFavourites()) {
+                try {
+                    favourites.add(DatabaseObject.getObject(f.getFavContext(), f.__getItemsids()));
+                } catch (Exception e) {
+                    //deleted meanwhile
+                }
+            }
+        } catch (Exception e) {
+            Log.Debug(this, e.getMessage());
+        }
+        fill();
+    }
+
+    /**
+     * The rows: favourites, then the clipboard, as filtered; keeps the
+     * selection
+     */
+    private void fill() {
+        List<DatabaseObject> keepRecords = new ArrayList<DatabaseObject>();
+        List<Boolean> keepFav = new ArrayList<Boolean>();
+        for (Object o : view.getSelectedValuesList()) {
+            if (o instanceof Row) {
+                keepRecords.add(((Row) o).record);
+                keepFav.add(((Row) o).favourite);
             }
         }
-        view.setSelectedIndices(indices.stream().mapToInt(Integer::intValue).toArray());
-        int n = list.size();
-        count.setText(n == 0 ? "" : String.format(Messages.CLIPBOARD_COUNT.toString(), n));
-        ((CardLayout) cards.getLayout()).show(cards, n == 0 ? "empty" : "list");
+        String needle = filter.getText().trim().toLowerCase();
+        rows.clear();
+        List<DatabaseObject> favs = matching(favourites, needle);
+        List<DatabaseObject> clip = matching(list, needle);
+        rows.addElement(new Section(String.format(Messages.CLIPBOARD_SECTION_FAVOURITES.toString(), favourites.size()),
+                favourites.isEmpty() ? Messages.CLIPBOARD_FAVOURITES_EMPTY.toString() : favs.isEmpty() ? Messages.CLIPBOARD_NO_MATCH.toString() : null));
+        for (DatabaseObject o : favs) {
+            rows.addElement(new Row(o, true));
+        }
+        rows.addElement(new Section(String.format(Messages.CLIPBOARD_SECTION_CLIPBOARD.toString(), list.size()),
+                list.isEmpty() ? Messages.CLIPBOARD_CLIPBOARD_EMPTY.toString() : clip.isEmpty() ? Messages.CLIPBOARD_NO_MATCH.toString() : null));
+        for (DatabaseObject o : clip) {
+            rows.addElement(new Row(o, false));
+        }
+        List<Integer> sel = new ArrayList<Integer>();
+        for (int i = 0; i < rows.size(); i++) {
+            if (rows.get(i) instanceof Row) {
+                Row r = (Row) rows.get(i);
+                for (int k = 0; k < keepRecords.size(); k++) {
+                    if (keepRecords.get(k).equals(r.record) && keepFav.get(k) == r.favourite) {
+                        sel.add(i);
+                    }
+                }
+            }
+        }
+        view.setSelectedIndices(sel.stream().mapToInt(Integer::intValue).toArray());
+        ((CardLayout) cards.getLayout()).show(cards, favourites.isEmpty() && list.isEmpty() ? "empty" : "list");
         updateButtons();
     }
 
+    private static List<DatabaseObject> matching(List<DatabaseObject> from, String needle) {
+        List<DatabaseObject> l = new ArrayList<DatabaseObject>();
+        for (DatabaseObject o : from) {
+            if (needle.isEmpty() || (String.valueOf(o.__getCname()) + " " + mpv5.handler.Activity.typeName(o)).toLowerCase().contains(needle)) {
+                l.add(o);
+            }
+        }
+        return l;
+    }
+
+    private int nextRow(int from, int step) {
+        for (int i = from + step; i >= 0 && i < rows.size(); i += step) {
+            if (rows.get(i) instanceof Row) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private boolean isFavourite(DatabaseObject o) {
+        return favourites.contains(o);
+    }
+
     private void changed() {
-        refresh();
+        fill();
         if (onChange != null) {
             onChange.run();
         }
     }
 
+    private List<Row> selectedRows() {
+        List<Row> l = new ArrayList<Row>();
+        for (Object o : view.getSelectedValuesList()) {
+            if (o instanceof Row) {
+                l.add((Row) o);
+            }
+        }
+        return l;
+    }
+
     private void updateButtons() {
-        boolean any = !list.isEmpty();
-        remove.setEnabled(!view.isSelectionEmpty());
-        clear.setEnabled(any);
-        paste.setEnabled(any);
-        pasteAndClear.setEnabled(any);
-        paste.setText(view.isSelectionEmpty() || view.getSelectedIndices().length == list.size()
-                ? Messages.CLIPBOARD_PASTE.toString() : Messages.CLIPBOARD_PASTE_SELECTED.toString());
+        List<Row> sel = selectedRows();
+        remove.setEnabled(!sel.isEmpty());
+        clear.setEnabled(!list.isEmpty());
+        paste.setEnabled(!sel.isEmpty() || !list.isEmpty());
+        pasteAndClear.setEnabled(!list.isEmpty());
+        paste.setText(sel.isEmpty() ? Messages.CLIPBOARD_PASTE.toString() : Messages.CLIPBOARD_PASTE_SELECTED.toString());
+    }
+
+    /**
+     * Makes the record a favourite or not (the favourites menu follows)
+     */
+    private void toggleFavourite(Row r) {
+        DatabaseObject o = r.record;
+        try {
+            if (mpv5.db.objects.User.getCurrentUser().isDefault()) {
+                Popup.notice(this, Messages.DEFAULT_USER);
+                return;
+            }
+            if (isFavourite(o)) {
+                Favourite.removeFavourite(o);
+            } else if (o.isExisting()) {
+                new Favourite(o).save();
+            }
+            mpv5.YabsViewProxy.instance().reloadFavorites();
+        } catch (Exception e) {
+            Log.Debug(this, e);
+        }
+        refresh();
     }
 
     private void openSelected() {
-        for (Object o : view.getSelectedValuesList()) {
+        for (Row r : selectedRows()) {
             try {
-                mpv5.YabsViewProxy.instance().getIdentifierView().addTab((DatabaseObject) o);
+                mpv5.YabsViewProxy.instance().getIdentifierView().addTab(r.record);
             } catch (Exception e) {
                 Log.Debug(this, e);
             }
         }
     }
 
+    /**
+     * Selected clipboard rows leave the clipboard, selected favourites stop
+     * being favourites
+     */
     private void removeSelected() {
-        for (Object o : view.getSelectedValuesList()) {
-            list.remove((DatabaseObject) o);
+        boolean favs = false;
+        for (Row r : selectedRows()) {
+            if (r.favourite) {
+                Favourite.removeFavourite(r.record);
+                favs = true;
+            } else {
+                list.remove(r.record);
+            }
+        }
+        if (favs) {
+            mpv5.YabsViewProxy.instance().reloadFavorites();
+            refresh();
         }
         changed();
     }
@@ -238,8 +462,8 @@ public class ListView extends JPanel {
     }
 
     /**
-     * Pastes the selected records (all if none is selected) into the current
-     * view
+     * Pastes the selected records (the whole clipboard if none is selected)
+     * into the current view
      */
     private void pasteInto(boolean andClear) {
         DataPanel target = mpv5.YabsViewProxy.instance().getIdentifierView().getCurrentTab();
@@ -247,13 +471,20 @@ public class ListView extends JPanel {
             Popup.notice(this, Messages.CLIPBOARD_NO_VIEW);
             return;
         }
-        List<Object> sel = view.getSelectedValuesList();
-        DatabaseObject[] items = sel.isEmpty() ? list.toArray() : sel.toArray(new DatabaseObject[0]);
-        target.paste(items);
-        if (andClear) {
-            for (DatabaseObject o : items) {
-                list.remove(o);
+        List<Row> sel = selectedRows();
+        List<DatabaseObject> items = new ArrayList<DatabaseObject>();
+        if (sel.isEmpty() || andClear) {
+            items.addAll(list);
+        } else {
+            for (Row r : sel) {
+                if (!items.contains(r.record)) {
+                    items.add(r.record);
+                }
             }
+        }
+        target.paste(items.toArray(new DatabaseObject[0]));
+        if (andClear) {
+            list.clear();
             changed();
         }
         try {
@@ -315,5 +546,62 @@ public class ListView extends JPanel {
                 mpv5.YabsViewProxy.instance().setWaiting(false);
             }
         });
+    }
+
+    /**
+     * A row: star, icon and name, the kind of record at the right; a section:
+     * its title and a hint if empty
+     */
+    private final class Renderer implements ListCellRenderer<Object> {
+
+        private final JPanel row = new JPanel(new BorderLayout(ModernTheme.px(6), 0));
+        private final JLabel star = new JLabel("", SwingConstants.CENTER);
+        private final JLabel name = new JLabel();
+        private final JLabel kind = new JLabel();
+        private final JPanel section = new JPanel(new BorderLayout());
+        private final JLabel sectionTitle = new JLabel();
+        private final JLabel sectionHint = new JLabel();
+
+        Renderer() {
+            star.setPreferredSize(new Dimension(ModernTheme.px(STAR_WIDTH), ModernTheme.px(22)));
+            star.setFont(ModernTheme.font(2, Font.PLAIN));
+            name.setFont(ModernTheme.font(0, Font.PLAIN));
+            kind.setFont(ModernTheme.font(-1, Font.PLAIN));
+            row.setBorder(BorderFactory.createEmptyBorder(ModernTheme.px(2), 0, ModernTheme.px(2), ModernTheme.px(10)));
+            row.add(star, BorderLayout.WEST);
+            row.add(name, BorderLayout.CENTER);
+            row.add(kind, BorderLayout.EAST);
+            sectionTitle.setFont(ModernTheme.font(-1, Font.BOLD));
+            sectionTitle.setForeground(ModernTheme.muted());
+            sectionHint.setFont(ModernTheme.font(-1, Font.ITALIC));
+            sectionHint.setForeground(ModernTheme.muted());
+            section.setOpaque(false);
+            section.setBorder(BorderFactory.createEmptyBorder(ModernTheme.px(8), ModernTheme.px(8), ModernTheme.px(3), ModernTheme.px(8)));
+            section.add(sectionTitle, BorderLayout.NORTH);
+            section.add(sectionHint, BorderLayout.CENTER);
+        }
+
+        @Override
+        public Component getListCellRendererComponent(JList<?> l, Object value, int index, boolean selected, boolean focus) {
+            if (value instanceof Section) {
+                Section s = (Section) value;
+                sectionTitle.setText(s.text.toUpperCase());
+                sectionHint.setText(s.hint == null ? "" : s.hint);
+                sectionHint.setVisible(s.hint != null);
+                return section;
+            }
+            Row r = (Row) value;
+            boolean fav = r.favourite || isFavourite(r.record);
+            star.setText(fav ? "★" : "☆");
+            star.setForeground(fav ? STAR : ModernTheme.muted());
+            name.setText(String.valueOf(r.record.__getCname()));
+            name.setIcon(r.record.getIcon());
+            kind.setText(mpv5.handler.Activity.typeName(r.record));
+            row.setOpaque(true);
+            row.setBackground(selected ? l.getSelectionBackground() : l.getBackground());
+            name.setForeground(selected ? l.getSelectionForeground() : l.getForeground());
+            kind.setForeground(selected ? l.getSelectionForeground() : ModernTheme.muted());
+            return row;
+        }
     }
 }
