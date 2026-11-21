@@ -306,9 +306,13 @@ public class ModernCommandBar extends JPanel {
 
         //a copy which is not saved yet: say so, with a way back
         copyBanner.setOpaque(true);
-        copyBanner.setBackground(new java.awt.Color(0xFFF4CE));
-        copyBanner.setBorder(BorderFactory.createEmptyBorder(ModernTheme.px(6), ModernTheme.px(10), ModernTheme.px(6), ModernTheme.px(10)));
-        copyText.setForeground(new java.awt.Color(0x5C4400));
+        //green: a new record, nothing is wrong (not a warning)
+        boolean dark = ModernTheme.isDark();
+        copyBanner.setBackground(dark ? new java.awt.Color(0x1E3A26) : new java.awt.Color(0xE3F4E6));
+        copyBanner.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(1, 0, 0, 0, dark ? new java.awt.Color(0x2E6B3E) : new java.awt.Color(0xA8D5B0)),
+                BorderFactory.createEmptyBorder(ModernTheme.px(6), ModernTheme.px(10), ModernTheme.px(6), ModernTheme.px(10))));
+        copyText.setForeground(dark ? new java.awt.Color(0xB9E6C2) : new java.awt.Color(0x1E5C2B));
         JButton discard = new JButton(Messages.COPY_DISCARD.toString());
         discard.setFocusable(false);
         discard.addActionListener(e -> {
