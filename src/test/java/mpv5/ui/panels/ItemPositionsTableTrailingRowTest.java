@@ -78,4 +78,33 @@ class ItemPositionsTableTrailingRowTest {
         model.setValueAt("Ignored while read-only", 6, 4);
         assertEquals(7, model.getRowCount());
     }
+
+    @Test
+    void syncTrailingEmptyRowDropsEmptyRowsWhenReadOnlyAndRestoresOnUnlock() {
+        mpv5.db.objects.SubItem existing = new mpv5.db.objects.SubItem();
+        existing.setIDS(42);
+        existing.setDescription("Beratung");
+        existing.setQuantityvalue(BigDecimal.ONE);
+        existing.setExternalvalue(new BigDecimal("100.00"));
+        existing.setTaxpercentvalue(new BigDecimal("19.00"));
+
+        ItemPositionsTable table = new ItemPositionsTable();
+        table.setPositions(new mpv5.db.objects.SubItem[]{existing});
+        assertEquals(2, table.getModel().getRowCount(), "Editable table shows saved row plus trailing empty row");
+
+        // Locking drops the trailing unsaved empty row
+        table.setEditable(false);
+        table.syncTrailingEmptyRow();
+        assertEquals(1, table.getModel().getRowCount(), "Locked table drops trailing empty row");
+        assertEquals("Beratung", table.getModel().getValueAt(0, 4));
+
+        // Reloading positions while already read-only does not add an empty row
+        table.setPositions(new mpv5.db.objects.SubItem[]{existing});
+        assertEquals(1, table.getModel().getRowCount(), "Read-only setPositions must not add empty row");
+
+        // Unlocking (e.g. Copy) restores a trailing empty row
+        table.setEditable(true);
+        table.syncTrailingEmptyRow();
+        assertEquals(2, table.getModel().getRowCount(), "Unlocking restores a trailing empty row");
+    }
 }

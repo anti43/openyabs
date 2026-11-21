@@ -732,7 +732,8 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
                 showRequiredFields();
             }
         }
-        if (paid && !User.getCurrentUser().getProperties().getProperty("org.openyabs.itemproperty", "keepmodifiedenddate")) {
+        if (paid && !isContentLocked() && getLockedDocument() == null
+                && !User.getCurrentUser().getProperties().getProperty("org.openyabs.itemproperty", "keepmodifiedenddate")) {
             date3.setDate(new Date());
         }
     }
@@ -1394,7 +1395,11 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         if (removeFileButton != null) {
             removeFileButton.setEnabled(editable);
         }
+        if (!editable && dateend_ != null) {
+            date3.setDate(dateend_);
+        }
         positions.setEditable(editable);
+        positions.syncTrailingEmptyRow();
     }
 
     @Override
@@ -1697,7 +1702,9 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         date2.setDate(datetodo_);
         lastUpdated.setText(datelastupdated_ == null || datelastupdated_.getTime() <= 0 ? "\u2013"
                 : DateConverter.getDefDateString(datelastupdated_) + " " + new java.text.SimpleDateFormat("HH:mm").format(datelastupdated_));
-        date3.setDate(User.getCurrentUser().getProperties().getProperty("org.openyabs.itemproperty", "keepmodifiedenddate") ? dateend_ : new Date());
+        boolean keepEndDate = ((isContentLocked() || getLockedDocument() != null) && dateend_ != null)
+                || User.getCurrentUser().getProperties().getProperty("org.openyabs.itemproperty", "keepmodifiedenddate");
+        date3.setDate(keepEndDate ? dateend_ : new Date());
         notes.setText(description_);
         notes.setCaretPosition(0);
         remindButton.setToolTipText(Messages.REMINDERS + String.valueOf(intreminders_));
@@ -1844,8 +1851,10 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
 
     @Override
     public void actionAfterSave() {
-        positions.prepareSave();
-        ItemService.savePositions(dataOwner, positions.getModel(), true, positions.getUsedOrders());
+        if (!isContentLocked() && getLockedDocument() == null) {
+            positions.prepareSave();
+            ItemService.savePositions(dataOwner, positions.getModel(), true, positions.getUsedOrders());
+        }
         setTabTitle(dataOwner.__getCname());
         for (Runnable r : new ArrayList<Runnable>(afterSaveRunnables)) {
             r.run();

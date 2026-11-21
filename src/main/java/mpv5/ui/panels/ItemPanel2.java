@@ -310,7 +310,8 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                 }
 
                 if (!loading && dataOwner.isExisting()
-                        && Integer.valueOf(status.getSelectedItem().getId()) == Item.STATUS_PAID) {
+                        && Integer.valueOf(status.getSelectedItem().getId()) == Item.STATUS_PAID
+                        && !isContentLocked() && getLockedDocument() == null) {
                     //set dateend
                     if (!User.getCurrentUser().getProperties().getProperty("org.openyabs.itemproperty", "keepmodifiedenddate")) {
                         date3.setDate(new Date());
@@ -2603,7 +2604,8 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         date1.setDate(dateadded_);
         //the service date (Leistungsdatum) as saved
         date2.setDate(datetodo_);
-        if (User.getCurrentUser().getProperties().getProperty("org.openyabs.itemproperty", "keepmodifiedenddate")) {
+        if (((isContentLocked() || getLockedDocument() != null) && dateend_ != null)
+                || User.getCurrentUser().getProperties().getProperty("org.openyabs.itemproperty", "keepmodifiedenddate")) {
             date3.setDate(dateend_);
         } else {
             date3.setDate(new Date());
@@ -2925,7 +2927,9 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
 
     @Override
     public void actionAfterSave() {
-        saveSubItems(true);
+        if (!isContentLocked() && getLockedDocument() == null) {
+            saveSubItems(true);
+        }
         omodel = (MPTableModel) itemtable.getModel();
         setTitle();
         for (int i = 0; i < afterSaveRunnables.size(); i++) {

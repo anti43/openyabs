@@ -166,6 +166,49 @@ class LockedDocumentGobdTest {
         assertTrue(archived.isFile());
         assertEquals(archived.getCanonicalFile(), view.getLockedDocument().getCanonicalFile());
 
+        //opening a locked invoice in ModernItemPanel drops the trailing empty row and allows saving payment status
+        //without triggering GoBD's locked-position error
+        ModernItemPanel lockedView = EInvoiceRoundTripTest.onEdt(() -> new ModernItemPanel(Context.getInvoice(), Item.TYPE_INVOICE));
+        Item lockedInvoice = (Item) DatabaseObject.getObject(Context.getInvoice(), invoice.__getIDS());
+        int savedSubCount = lockedInvoice.getSubitems().length;
+        EInvoiceRoundTripTest.onEdt(() -> {
+            lockedView.setDataOwner(lockedInvoice, true);
+            return null;
+        });
+        flushUi();
+        assertTrue(EInvoiceRoundTripTest.onEdt(lockedView::isContentLocked), "GoBD locks content on view open");
+        java.lang.reflect.Field posField = ModernItemPanel.class.getDeclaredField("positions");
+        posField.setAccessible(true);
+        mpv5.ui.panels.ItemPositionsTable posTable = (mpv5.ui.panels.ItemPositionsTable) posField.get(lockedView);
+        assertEquals(savedSubCount, EInvoiceRoundTripTest.onEdt(() -> posTable.getModel().getRowCount()),
+                "Locked invoice must not display a trailing empty position row");
+
+        //change payment status to PAID and save via RecordActions (no position write, no GoBD error)
+        int blockedBefore = Integer.parseInt(String.valueOf(one("SELECT COUNT(*) FROM gobd_audit_log WHERE entity_type = 'SUBITEM' AND action = 'BLOCKED_EDIT'")));
+        EInvoiceRoundTripTest.onEdt(() -> {
+            lockedView.setItemStatus(Item.STATUS_PAID);
+            mpv5.ui.dialogs.Popup.silently(() -> {
+                RecordActions.save(lockedView);
+                return null;
+            });
+            return null;
+        });
+        flushUi();
+        Item afterStatusSave = (Item) DatabaseObject.getObject(Context.getInvoice(), invoice.__getIDS());
+        assertEquals(Item.STATUS_PAID, afterStatusSave.__getIntstatus(), "Payment status update must be saved");
+        assertEquals(savedSubCount, afterStatusSave.getSubitems().length, "Positions remain untouched");
+        assertEquals(blockedBefore, Integer.parseInt(String.valueOf(one("SELECT COUNT(*) FROM gobd_audit_log WHERE entity_type = 'SUBITEM' AND action = 'BLOCKED_EDIT'"))),
+                "Saving payment status on a locked invoice must not trigger GoBD blocked-position errors");
+        assertTrue(Integer.parseInt(String.valueOf(one("SELECT COUNT(*) FROM gobd_audit_log WHERE action = 'PAYMENT_STATUS_CHANGED'"))) >= 1,
+                "Payment status change is audited");
+
+        //a real attempt to modify a SubItem of a locked invoice is still blocked by GoBD
+        mpv5.db.objects.SubItem realPos = afterStatusSave.getSubitems()[0];
+        realPos.setDescription("Manipulated");
+        assertFalse(mpv5.ui.dialogs.Popup.silently(() -> realPos.save(true)), "Real SubItem edits on locked invoices must stay blocked");
+        assertEquals(blockedBefore + 1, Integer.parseInt(String.valueOf(one("SELECT COUNT(*) FROM gobd_audit_log WHERE entity_type = 'SUBITEM' AND action = 'BLOCKED_EDIT'"))),
+                "Real SubItem edit attempt must be audited as BLOCKED_EDIT");
+
         //the plugin stopped: nothing is locked any more
         EInvoiceRoundTripTest.onEdt(() -> {
             m[0].stop(gobd[0]);

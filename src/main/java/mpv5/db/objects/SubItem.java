@@ -60,8 +60,19 @@ public final class SubItem extends DatabaseObject implements Triggerable {
     public static final int TYPE_NORMAL = 0;
     private static final long serialVersionUID = 1L;
 
+    private static List<Object[]> nonBlankRows(MPTableModel model) {
+        List<Object[]> valid = model.getValidRows(new int[]{4});
+        List<Object[]> result = new ArrayList<Object[]>(valid.size());
+        for (Object[] row : valid) {
+            if (row != null && row.length > 4 && row[4] != null && !row[4].toString().trim().isEmpty()) {
+                result.add(row);
+            }
+        }
+        return result;
+    }
+
     public static LinkedList<SubItem> saveModel(Item dataOwner, MPTableModel model, boolean deleteRemovedSubitems, boolean cloneSubitems) {
-        List<Object[]> rowsl = model.getValidRows(new int[]{4});
+        List<Object[]> rowsl = nonBlankRows(model);
         LinkedList<SubItem> items = new LinkedList<SubItem>();
         Log.Debug(SubItem.class, "Rows found: " + rowsl.size());
         for (int i = 0; i < rowsl.size(); i++) {
@@ -137,7 +148,7 @@ public final class SubItem extends DatabaseObject implements Triggerable {
      * already saved)
      */
     public static LinkedList<SubItem> saveModelMinus(Item dataOwner, MPTableModel model, boolean deleteRemovedSubitems, boolean cloneSubitems, Item item, int firstOrdernr) {
-        List<Object[]> rowsl = model.getValidRows(new int[]{4});
+        List<Object[]> rowsl = nonBlankRows(model);
         LinkedList<SubItem> items = new LinkedList<SubItem>();
         Log.Debug(SubItem.class, "Rows found: " + rowsl.size());
         for (int i = 0; i < rowsl.size(); i++) {

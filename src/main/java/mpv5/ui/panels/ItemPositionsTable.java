@@ -322,7 +322,7 @@ public class ItemPositionsTable extends JPanel {
      */
     public void setPositions(SubItem[] items) {
         itemtable.setModel(SubItem.toModel(items));
-        if (getModel().getEmptyRows(new int[]{4}) < 2) {
+        if (editable && getModel().getEmptyRows(new int[]{4}) < 2) {
             getModel().addRow(1);
         }
         formatTable();
@@ -408,6 +408,64 @@ public class ItemPositionsTable extends JPanel {
      */
     public boolean isEditable() {
         return editable;
+    }
+
+    /**
+     * Aligns the trailing empty row with the current editability: read-only
+     * documents drop trailing unsaved empty rows so no phantom empty position
+     * is shown; editable documents ensure a free row at the bottom.
+     */
+    public void syncTrailingEmptyRow() {
+        if (!(itemtable.getModel() instanceof MPTableModel)) {
+            return;
+        }
+        MPTableModel model = getModel();
+        if (!editable) {
+            while (model.getRowCount() > 0 && isTrailingEmptyRow(model, model.getRowCount() - 1)) {
+                model.removeRow(model.getRowCount() - 1);
+            }
+        } else if (model.getRowCount() == 0 || !isTrailingEmptyRow(model, model.getRowCount() - 1)) {
+            model.addRow(1);
+            if (customerTaxRate != null) {
+                model.setValueAt(customerTaxRate, model.getRowCount() - 1, 6);
+            }
+        }
+    }
+
+    private static boolean isTrailingEmptyRow(MPTableModel model, int row) {
+        Object id = model.getValueAt(row, 0);
+        if (id instanceof Number && ((Number) id).intValue() > 0) {
+            return false;
+        }
+        if (id != null && !(id instanceof Number)) {
+            try {
+                if (Integer.parseInt(id.toString().trim()) > 0) {
+                    return false;
+                }
+            } catch (NumberFormatException ignored) {
+            }
+        }
+        Object desc = model.getValueAt(row, 4);
+        if (desc != null && !desc.toString().trim().isEmpty()) {
+            return false;
+        }
+        Object price = model.getValueAt(row, 5);
+        if (price != null && !price.toString().trim().isEmpty()) {
+            try {
+                BigDecimal p = price instanceof Number
+                        ? FormatNumber.getBigDecimal(price)
+                        : FormatNumber.parseDezimal(price.toString());
+                if (p != null && p.signum() != 0) {
+                    return false;
+                }
+            } catch (Exception ignored) {
+            }
+        }
+        if (SubItem.productIdOf(model.getValueAt(row, 10)) > 0) {
+            return false;
+        }
+        Object opt = model.getValueAt(row, 14);
+        return opt == null || opt.toString().trim().isEmpty();
     }
 
     private void applyCanEdits() {
