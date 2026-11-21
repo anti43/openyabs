@@ -1303,6 +1303,7 @@ public enum Messages {
     ITEM_SECTION_POSITIONS("Positions"),
     ITEM_SECTION_FILES("Files"),
     ITEM_CREATE("Create"),
+    ITEM_CREATE_REMINDER("Reminder"),
     ITEM_MORE_DOCUMENTS("Documents"),
     ITEM_NEW("New document"),
     LAF_MODERN("Modern look"),

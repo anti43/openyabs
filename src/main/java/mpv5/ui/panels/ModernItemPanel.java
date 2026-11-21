@@ -207,7 +207,8 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
     private final JMenuItem toDeposit = new JMenuItem(Messages.CREATE_DEPOSIT.toString());
     private final JMenuItem toPartPayment = new JMenuItem(Messages.CREATE_PART_PAYMENT.toString());
     private final JMenuItem toCredit = new JMenuItem(text("ItemPanel2.tocredit.text"));
-    private final JButton remindButton = new JButton(text("ItemPanel2.button_reminders.text"));
+    //a dunning letter (Mahnung) for the invoice: in the "Create" menu
+    private final JMenuItem remindButton = new JMenuItem(Messages.ITEM_CREATE_REMINDER.toString());
     private final JButton scheduleButton = new JButton(text("ItemPanel2.button_schedule.text"));
     private final JButton compareButton = new JButton(text("ItemPanel2.button_compare.text"));
     private final JButton referencesButton = new JButton(text("ItemPanel2.button_references.text"));
@@ -591,6 +592,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         create.add(toPartPayment);
         create.addSeparator();
         create.add(toCredit);
+        create.add(remindButton);
         positions.addAction(menuButton(createButton, create));
 
         remindButton.addActionListener(e -> {
@@ -605,7 +607,6 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         });
         compareButton.addActionListener(e -> compareToOrder());
         referencesButton.addActionListener(e -> showReferences());
-        positions.addAction(remindButton);
         positions.addAction(scheduleButton);
         positions.addAction(compareButton);
         positions.addAction(referencesButton);
