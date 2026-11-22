@@ -306,6 +306,7 @@
           <li><a href="#fakturama"><span class="lang-en">Switching from Fakturama 2</span><span class="lang-de" style="display:none;">Umstieg von Fakturama 2</span></a></li>
           <li><a href="#features"><span class="lang-en">Features Matrix</span><span class="lang-de" style="display:none;">Funktionsübersicht</span></a></li>
           <li><a href="#einvoicing"><span class="lang-en">E-Invoicing (XRechnung)</span><span class="lang-de" style="display:none;">E-Rechnung (EN 16931)</span></a></li>
+          <li><a href="#gobd"><span class="lang-en">GoBD Compliance Plugin</span><span class="lang-de" style="display:none;">GoBD-Plugin</span></a></li>
           <li><a href="#pos"><span class="lang-en">POS Cash Register</span><span class="lang-de" style="display:none;">Kassenmodul (POS)</span></a></li>
           <li><a href="#installation"><span class="lang-en">Installation</span><span class="lang-de" style="display:none;">Installation</span></a></li>
           <li><a href="#plugins"><span class="lang-en">Groovy Plugins</span><span class="lang-de" style="display:none;">Groovy Plugins</span></a></li>
@@ -328,6 +329,7 @@
           <span>Windows · Linux · macOS</span> · 
           <span>No Cloud / 100% Offline</span> · 
           <span>XRechnung &amp; ZUGFeRD</span> · 
+          <a href="#gobd">GoBD Plugin</a> · 
           <a href="#fakturama">Fakturama 2 Import</a>
         </div>
         <div class="hero-actions">
@@ -497,6 +499,35 @@
         </div>
       </section>
 
+      <section id="gobd" class="doc-section">
+        <h2>
+          <span class="lang-en">GoBD Compliance Plugin</span>
+          <span class="lang-de" style="display:none;">GoBD-Konformitäts-Plugin</span>
+        </h2>
+        <div class="lang-en">
+          <p>YaBS ships with an official Java plugin (<code>plugins/gobd-compliance.jar</code>, also available as a standalone asset on every <a href="https://github.com/anti43/openyabs/releases" target="_blank" rel="noreferrer">release</a>) that adds technical safeguards for German <strong>GoBD</strong> compliance:</p>
+          <ul>
+            <li><strong>Finalizing on export:</strong> Automatically locks invoices, credit notes, deposit and part-payment invoices when exported as PDF, ZUGFeRD, or XRechnung (optional; quotes and orders stay editable).</li>
+            <li><strong>Immutability &amp; open-items workflow:</strong> Blocks edits to tax-relevant fields and deletion/trash while keeping payment status, partial payments, and dunning levels editable and logged.</li>
+            <li><strong>Archived originals &amp; cancellation invoices:</strong> Print, PDF, preview, and e-invoice reopen the archived original instead of regenerating it; corrections are issued as numbered cancellation invoices (<em>Stornorechnungen</em>).</li>
+            <li><strong>SHA-256 hash chains &amp; snapshots:</strong> Tamper-evident hash chains across finalized documents, imported e-invoices, expense receipts (<code>SHA256SUMS</code>), and the audit log, including customer and line-item snapshots.</li>
+            <li><strong>Auditor access (Z1 &amp; Z3):</strong> Read-only Z1 auditor tab inside YaBS and Z3 IDEA/GDPdU export packages.</li>
+          </ul>
+          <p style="font-size: 0.875rem; color: var(--text-muted);">Note: Software safeguards alone do not make bookkeeping GoBD compliant — regular backups, access control, and a procedure documentation (<em>Verfahrensdokumentation</em>) are also required. Read the <a href="https://anti43.github.io/openyabs/wiki/GoBD-plugin-(EN)">full GoBD plugin documentation</a>.</p>
+        </div>
+        <div class="lang-de" style="display:none;">
+          <p>YaBS liefert ein offizielles Java-Plugin (<code>plugins/gobd-compliance.jar</code>, außerdem als eigener Download in jedem <a href="https://github.com/anti43/openyabs/releases" target="_blank" rel="noreferrer">Release</a>) für technische Schutzmechanismen nach <strong>GoBD</strong> mit:</p>
+          <ul>
+            <li><strong>Festschreibung beim Export:</strong> Schreibt Rechnungen, Gutschriften, Anzahlungs- und Abschlagsrechnungen beim Erzeugen von PDF, ZUGFeRD oder XRechnung automatisch fest (abschaltbar; Angebote und Aufträge bleiben unverändert).</li>
+            <li><strong>Unveränderbarkeit &amp; Offene-Posten-Workflow:</strong> Sperrt steuerrelevante Felder sowie Löschen und Papierkorb, während Zahlungsstatus, Teilzahlungen und Mahnstufen protokolliert änderbar bleiben.</li>
+            <li><strong>Archivierte Originalbelege &amp; Stornorechnungen:</strong> Drucken, PDF, Vorschau und E-Rechnung öffnen das archivierte Original statt einer Neuerzeugung; Korrekturen erfolgen über nummerierte Stornorechnungen.</li>
+            <li><strong>SHA-256-Hash-Ketten &amp; Snapshots:</strong> Manipulationssichere Hash-Ketten über Festschreibungen, E-Rechnungs-Einnahmen, Eingangsbelege (<code>SHA256SUMS</code>) und Audit-Log samt Stammdaten- und Positions-Snapshots.</li>
+            <li><strong>Prüferzugriff (Z1 &amp; Z3):</strong> Schreibgeschützte Z1-Prüferansicht direkt in YaBS sowie Z3-Exportpakete für IDEA (GDPdU).</li>
+          </ul>
+          <p style="font-size: 0.875rem; color: var(--text-muted);">Hinweis: Ein Plugin allein macht die Buchführung nicht GoBD-konform – Datensicherung, Zugriffsschutz und Verfahrensdokumentation gehören ebenfalls dazu. Weitere Details in der <a href="https://anti43.github.io/openyabs/wiki/GoBD-Plugin">GoBD-Plugin-Dokumentation</a> und unter <a href="https://anti43.github.io/openyabs/wiki/Ist-Yabs-GoBD-konforme-Software">Ist YaBS GoBD-konforme Software?</a>.</p>
+        </div>
+      </section>
+
       <section id="pos" class="doc-section">
         <h2>
           <span class="lang-en">POS Cash Register for Touch Screens</span>
@@ -624,6 +655,7 @@ plugin.onInvoiceCreated { invoice -&gt;
             <li><a href="https://anti43.github.io/openyabs/wiki/Database-(EN)">Database: H2 and Derby, developer mode, Connection Manager, zip backup and restore</a></li>
             <li><a href="https://anti43.github.io/openyabs/wiki/Templates-(EN)">Templates: the demo templates and all template fields</a></li>
             <li><a href="https://anti43.github.io/openyabs/wiki/E-Rechnung">E-invoicing: XRechnung and ZUGFeRD (German)</a></li>
+            <li><a href="https://anti43.github.io/openyabs/wiki/GoBD-plugin-(EN)">GoBD compliance plugin: finalizing, hash chains, Z1/Z3 auditor access</a></li>
             <li><a href="https://anti43.github.io/openyabs/wiki/SEPA-direct-debit-(EN)">SEPA direct debit: requirements and how to</a></li>
             <li><a href="https://anti43.github.io/openyabs/wiki/QR-code-(EN)">EPC QR code (GiroCode) on invoices and in templates</a></li>
             <li><a href="https://anti43.github.io/openyabs/wiki/File-name-defaults-(EN)">File name defaults: folders, names and all variables</a></li>
@@ -641,13 +673,14 @@ plugin.onInvoiceCreated { invoice -&gt;
             <li><a href="https://anti43.github.io/openyabs/wiki/Datenbank">Datenbank: H2 und Derby, Entwicklermodus, Verbindungs-Manager, Zip-Sicherung</a></li>
             <li><a href="https://anti43.github.io/openyabs/wiki/Vorlagen">Vorlagen: Demo-Vorlagen und alle Vorlagenfelder</a></li>
             <li><a href="https://anti43.github.io/openyabs/wiki/E-Rechnung">E-Rechnung: XRechnung und ZUGFeRD</a></li>
+            <li><a href="https://anti43.github.io/openyabs/wiki/GoBD-Plugin">GoBD-Plugin: Festschreibung, Hash-Ketten, Z1-/Z3-Prüferzugriff</a> (<a href="https://anti43.github.io/openyabs/wiki/Ist-Yabs-GoBD-konforme-Software">GoBD-Hintergrund</a>)</li>
             <li><a href="https://anti43.github.io/openyabs/wiki/SEPA-Lastschrift">SEPA-Lastschrift: Voraussetzungen und Ablauf</a></li>
             <li><a href="https://anti43.github.io/openyabs/wiki/QR-Code">EPC-QR-Code (GiroCode) auf Rechnungen und in Vorlagen</a></li>
             <li><a href="https://anti43.github.io/openyabs/wiki/Dateinamengrundeinstellung">Dateinamengrundeinstellung: Ordner, Namen und alle Variablen</a></li>
             <li><a href="https://anti43.github.io/openyabs/wiki/Shopify">Shopify: Bestellungen Ihres Shops übernehmen</a></li>
             <li><a href="https://anti43.github.io/openyabs/wiki/Kasse-und-TSE">Kasse und TSE (KassenSichV): Stand und Felder</a></li>
             <li><a href="https://anti43.github.io/openyabs/wiki/Skripte">Skripte: Vorlagenfelder, Aktionen beim Speichern, Werkzeugleisten-Schaltflächen</a></li>
-            <li><a href="https://anti43.github.io/openyabs/wiki/Writing-plugins-(EN)">Plugins schreiben (Groovy und Java, englisch)</a></li>
+            <li><a href="https://anti43.github.io/openyabs/wiki/Plugins-schreiben">Plugins schreiben (Groovy und Java)</a></li>
             <li><a href="https://anti43.github.io/openyabs/wiki" target="_blank" rel="noreferrer">Wiki: alle Seiten (Deutsch und Englisch)</a></li>
           </ul>
         </div>
