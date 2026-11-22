@@ -2085,7 +2085,10 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             @Override
             public void run() {
                 try {
-                    groupnameselect.setModel(DatabaseObject.getObject(Context.getGroup(), mpv5.db.objects.User.getCurrentUser().__getGroupsids()));
+                    int gid = (dataOwner != null && dataOwner.isExisting() && dataOwner.__getGroupsids() > 0)
+                            ? dataOwner.__getGroupsids()
+                            : mpv5.db.objects.User.getCurrentUser().__getGroupsids();
+                    groupnameselect.setModel(DatabaseObject.getObject(Context.getGroup(), gid));
                     sp.refresh();
                     fillFiles();
                 } catch (Exception e) {

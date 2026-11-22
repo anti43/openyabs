@@ -155,7 +155,7 @@ public class ModernContactPanel extends ModernDataPanel {
     private final LabeledTextField mailaddress = field();
     private final LabeledTextField website = field();
     private final LabeledCombobox companyselect = ModernTheme.plain(new LabeledCombobox());
-    private final LabeledCombobox groupnameselect = ModernTheme.plain(new LabeledCombobox());
+    private final JComboBox<Group> groupnameselect = new JComboBox<Group>();
     private final LabeledTextField taxnumber = field();
     private final LabeledTextField payterm = field();
     private final LabeledTextField bankaccount = field();
@@ -327,6 +327,7 @@ public class ModernContactPanel extends ModernDataPanel {
         } else if (context.equals(Context.getManufacturer())) {
             manufacturer.setSelected(true);
         }
+        loadGroupOptions(User.getCurrentUser().__getGroupsids());
         updateHeader();
         updateRoleControls();
         refresh();
@@ -355,8 +356,26 @@ public class ModernContactPanel extends ModernDataPanel {
         mpv5.utils.ui.FieldCheck.attach(taxnumber, mpv5.utils.export.ZugpferdFile::isValidVatId,
                 Messages.CONTACT_VATID_TOOLTIP.toString(), Messages.CONTACT_VATID_INVALID.toString());
 
-        groupnameselect.setSearchEnabled(true);
-        groupnameselect.setContext(Context.getGroup());
+        groupnameselect.setName("groupnameselect");
+        groupnameselect.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
+            @Override
+            public void popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent e) {
+                loadGroupOptions(selectedGroupId());
+            }
+
+            @Override
+            public void popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent e) {
+            }
+
+            @Override
+            public void popupMenuCanceled(javax.swing.event.PopupMenuEvent e) {
+            }
+        });
+        groupnameselect.addActionListener(e -> {
+            if (!loading) {
+                updateHeader();
+            }
+        });
         companyselect.setSearchEnabled(true);
         companyselect.setContext(Context.getContactsCompanies());
         companyselect.getComboBox().setEditable(true);
@@ -718,6 +737,10 @@ public class ModernContactPanel extends ModernDataPanel {
         StringBuilder m = new StringBuilder();
         if (number.getTextField().getText().length() > 0) {
             m.append(text("ContactPanel.number._Label")).append(' ').append(number.getTextField().getText()).append("   ·   ");
+        }
+        Object selectedGroup = groupnameselect.getSelectedItem();
+        if (selectedGroup instanceof Group && ((Group) selectedGroup).__getIDS() > 1) {
+            m.append(((Group) selectedGroup).__getCname()).append("   ·   ");
         }
         if (dateadded_ != null) {
             m.append(DateConverter.getDefDateString(dateadded_));
@@ -1122,11 +1145,10 @@ public class ModernContactPanel extends ModernDataPanel {
         city_ = city.get_Text();
         taxnumber_ = taxnumber.get_Text();
 
-        if (groupnameselect.getSelectedItem() != null) {
-            Group g = ContactService.getGroup(groupnameselect.getSelectedItem().getId());
-            if (g != null) {
-                group_ = g;
-            }
+        Object selectedGroup = groupnameselect.getSelectedItem();
+        if (selectedGroup instanceof Group) {
+            group_ = (Group) selectedGroup;
+            dataOwner.setGroupsids(group_.__getIDS());
         }
         if (countryselect.getSelectedItem() != null) {
             country_ = String.valueOf(((MPComboBoxModelItem) countryselect.getSelectedItem()).getId());
@@ -1182,7 +1204,12 @@ public class ModernContactPanel extends ModernDataPanel {
             Log.Debug(e);
         }
         try {
-            groupnameselect.setModel(group_);
+            int gid = group_ != null && group_.__getIDS() > 0
+                    ? group_.__getIDS()
+                    : (dataOwner != null && dataOwner.__getGroupsids() > 0
+                            ? dataOwner.__getGroupsids()
+                            : User.getCurrentUser().__getGroupsids());
+            loadGroupOptions(gid);
         } catch (Exception e) {
             Log.Debug(e);
         }
@@ -1223,11 +1250,41 @@ public class ModernContactPanel extends ModernDataPanel {
         updateHeader();
     }
 
+    private int selectedGroupId() {
+        Object sel = groupnameselect.getSelectedItem();
+        if (sel instanceof Group && ((Group) sel).__getIDS() > 0) {
+            return ((Group) sel).__getIDS();
+        }
+        if (group_ != null && group_.__getIDS() > 0) {
+            return group_.__getIDS();
+        }
+        if (dataOwner != null && dataOwner.__getGroupsids() > 0) {
+            return dataOwner.__getGroupsids();
+        }
+        return User.getCurrentUser().__getGroupsids();
+    }
+
+    private void loadGroupOptions(int selectedId) {
+        List<Group> groups = ContactService.groupOptions();
+        boolean prevLoading = loading;
+        loading = true;
+        try {
+            groupnameselect.setModel(new DefaultComboBoxModel<Group>(groups.toArray(new Group[0])));
+            groupnameselect.setSelectedItem(ContactService.groupOption(groups, selectedId));
+        } finally {
+            loading = prevLoading;
+        }
+    }
+
     @Override
     public void refresh() {
         SwingUtilities.invokeLater(() -> {
             try {
-                groupnameselect.setModel(DatabaseObject.getObject(Context.getGroup(), User.getCurrentUser().__getGroupsids()));
+                int gid = (dataOwner != null && dataOwner.isExisting() && dataOwner.__getGroupsids() > 0)
+                        ? dataOwner.__getGroupsids()
+                        : selectedGroupId();
+                loadGroupOptions(gid);
+                updateHeader();
                 fillFiles();
             } catch (Exception e) {
                 Log.Debug(ModernContactPanel.this, e);

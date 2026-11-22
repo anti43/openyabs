@@ -663,6 +663,74 @@ public final class ContactService {
     }
 
     /**
+     * @return all groups in the database (at least the default group), never empty
+     */
+    public static List<Group> groupOptions() {
+        List<Group> options = new java.util.ArrayList<Group>();
+        try {
+            for (DatabaseObject o : DatabaseObject.getObjects(Context.getGroup())) {
+                if (o instanceof Group) {
+                    options.add((Group) o);
+                }
+            }
+        } catch (Exception ex) {
+            Log.Debug(ContactService.class, ex);
+        }
+        if (options.isEmpty()) {
+            options.add(Group.getDefault());
+        }
+        return options;
+    }
+
+    /**
+     * @param options from {@link #groupOptions()}
+     * @param id group id
+     * @return the matching group, or the first option if unknown
+     */
+    public static Group groupOption(List<Group> options, int id) {
+        for (Group g : options) {
+            if (g.__getIDS() == id) {
+                return g;
+            }
+        }
+        return options.isEmpty() ? Group.getDefault() : options.get(0);
+    }
+
+    /**
+     * @param options from {@link #groupOptions()}
+     * @param groupId group id (may be null)
+     * @return display name of the group
+     */
+    public static String groupLabel(List<Group> options, Integer groupId) {
+        int id = groupId != null && groupId > 0 ? groupId : 1;
+        Group g = groupOption(options, id);
+        return g == null ? "" : g.__getCname();
+    }
+
+    /**
+     * @return map of contact id (as string) to its groupsids for all contacts
+     */
+    public static java.util.Map<String, Integer> contactGroups() {
+        java.util.Map<String, Integer> result = new java.util.HashMap<String, Integer>();
+        try {
+            Object[][] rows = QueryHandler.instanceOf().clone(Context.getContact())
+                    .freeSelectQuery("SELECT ids, groupsids FROM %%tablename%%",
+                            mpv5.usermanagement.MPSecurityManager.VIEW, null).getData();
+            if (rows != null) {
+                for (Object[] r : rows) {
+                    if (r.length >= 2 && r[0] != null) {
+                        Integer gid = toId(r[1]);
+                        result.put(String.valueOf(r[0]).trim(), gid != null && gid > 0 ? gid : 1);
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            Log.Debug(ContactService.class, ex);
+        }
+        return result;
+    }
+
+    /**
      * Company and name of a contact as stored: a company without company
      * name takes the name, and the other way round.
      *

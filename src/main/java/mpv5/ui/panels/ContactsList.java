@@ -204,17 +204,26 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel, DataP
          COL_WORKPHONE = 12, COL_COMPANY = 13, COL_MAIL = 14, COL_WEBSITE = 15, COL_NOTES = 16, COL_TAXNUMBER = 17,
          COL_IBAN = 18,
          /**
+          * the group of the contact (groupsids)
+          */
+         COL_GROUP = 19,
+         /**
           * not a column of the contacts table: the own account the contact pays to (value property)
           */
-         COL_ACCOUNT = 19,
+         COL_ACCOUNT = 20,
          /**
           * the tax rate of the contact (value property)
           */
-         COL_TAX = 20,
+         COL_TAX = 21,
          /**
           * the result of the e-invoice check, to sort by
           */
-         COL_VALID = 21, COLUMNS = 22;
+         COL_VALID = 22, COLUMNS = 23;
+   /**
+    * The group id by contact id
+    */
+   private final java.util.Map<String, Integer> contactGroups = new java.util.HashMap<String, Integer>();
+   private java.util.List<mpv5.db.objects.Group> groupOptions = new java.util.ArrayList<mpv5.db.objects.Group>();
    /**
     * The id of the tax rate by contact id
     */
@@ -325,6 +334,9 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel, DataP
       checks.clear();
       mpv5.i18n.LanguageManager.getCountriesAsComboBoxModel();//loads the country names
       homeCountry = mpv5.utils.export.ZugpferdFile.toCountryCode(mpv5.utils.export.ZugpferdFile.companySettings().apply("country"));
+      contactGroups.clear();
+      contactGroups.putAll(mpv5.handler.ContactService.contactGroups());
+      groupOptions = mpv5.handler.ContactService.groupOptions();
       accounts.clear();
       for (java.util.Map.Entry<Integer, String> e : mpv5.utils.export.ContactProperty.all(mpv5.utils.export.BankAccount.KEY_CONTACT).entrySet()) {
          accounts.put(String.valueOf(e.getKey()), mpv5.utils.text.Iban.normalize(e.getValue()));
@@ -337,14 +349,17 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel, DataP
       java.util.List<mpv5.utils.export.BankAccount> own = mpv5.utils.export.BankAccount.companyAccounts(mpv5.utils.export.ZugpferdFile.companySettings());
       for (int i = 0; i < data.length; i++) {
          Object[] row = java.util.Arrays.copyOf(data[i], COLUMNS);
+         String id = String.valueOf(row[COL_ID]);
          String country = row[COL_COUNTRY] == null ? "" : String.valueOf(row[COL_COUNTRY]);
-         countries.put(String.valueOf(row[COL_ID]), country);
+         countries.put(id, country);
          row[COL_COUNTRY] = mpv5.db.objects.Address.countryName(country);
-         row[COL_ACCOUNT] = accountLabel(own, accounts.get(String.valueOf(row[COL_ID])));
-         row[COL_TAX] = taxLabel(taxes.get(String.valueOf(row[COL_ID])));
+         row[COL_GROUP] = mpv5.handler.ContactService.groupLabel(groupOptions, contactGroups.get(id));
+         row[COL_ACCOUNT] = accountLabel(own, accounts.get(id));
+         row[COL_TAX] = taxLabel(taxes.get(id));
          data[i] = row;
       }
       String[] header = java.util.Arrays.copyOf(Headers.CONTACT_DETAILS.getValue(), COLUMNS);
+      header[COL_GROUP] = Messages.LIST_COL_GROUP.toString();
       header[COL_ACCOUNT] = Messages.EINVOICE_ACCOUNT.toString();
       header[COL_TAX] = Messages.CONTACT_TAXRATE.toString();
       header[COL_VALID] = Messages.CONTACTLIST_EINVOICE.toString();
@@ -442,6 +457,23 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel, DataP
             };
             editor.setClickCountToStart(2);
             column.setCellEditor(editor);
+         } else if (column.getModelIndex() == COL_GROUP) {
+            final javax.swing.JComboBox<mpv5.db.objects.Group> box = new javax.swing.JComboBox<mpv5.db.objects.Group>();
+            javax.swing.DefaultCellEditor editor = new javax.swing.DefaultCellEditor(box) {
+               private static final long serialVersionUID = 1L;
+
+               @Override
+               public Component getTableCellEditorComponent(javax.swing.JTable table, Object value, boolean isSelected, int row, int col) {
+                  String id = String.valueOf(table.getModel().getValueAt(table.convertRowIndexToModel(row), COL_ID));
+                  groupOptions = mpv5.handler.ContactService.groupOptions();
+                  box.setModel(new javax.swing.DefaultComboBoxModel<mpv5.db.objects.Group>(groupOptions.toArray(new mpv5.db.objects.Group[0])));
+                  Integer gid = contactGroups.get(id);
+                  box.setSelectedItem(mpv5.handler.ContactService.groupOption(groupOptions, gid != null && gid > 0 ? gid : 1));
+                  return box;
+               }
+            };
+            editor.setClickCountToStart(2);
+            column.setCellEditor(editor);
          } else if (column.getModelIndex() == COL_TAX) {
             final javax.swing.JComboBox<Object> box = new javax.swing.JComboBox<Object>(taxOptions.toArray());
             javax.swing.DefaultCellEditor editor = new javax.swing.DefaultCellEditor(box) {
@@ -509,6 +541,29 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel, DataP
       String id = String.valueOf(model.getValueAt(row, COL_ID));
       String text = value == null ? "" : String.valueOf(value).trim();
       String country = null;
+      if (column == COL_GROUP) {
+         if (!(value instanceof mpv5.db.objects.Group)) {
+            return null;//nothing selected
+         }
+         mpv5.db.objects.Group selected = (mpv5.db.objects.Group) value;
+         Integer before = contactGroups.get(id);
+         if (before != null && before == selected.__getIDS()) {
+            return null;
+         }
+         try {
+            Contact c = (Contact) DatabaseObject.getObject(Context.getContact(), Integer.parseInt(id));
+            c.setGroupsids(selected.__getIDS());
+            if (!c.save()) {
+               return null;
+            }
+            saved(row);
+            contactGroups.put(id, selected.__getIDS());
+            return selected.__getCname();
+         } catch (Exception ex) {
+            Log.Debug(ex);
+            return null;
+         }
+      }
       if (column == COL_ACCOUNT) {
          if (!(value instanceof mpv5.handler.ContactService.AccountOption)) {
             return null;//nothing selected
