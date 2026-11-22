@@ -206,6 +206,8 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
     private final JMenuItem toDeposit = new JMenuItem(Messages.CREATE_DEPOSIT.toString());
     private final JMenuItem toPartPayment = new JMenuItem(Messages.CREATE_PART_PAYMENT.toString());
     private final JMenuItem toCredit = new JMenuItem(text("ItemPanel2.tocredit.text"));
+    //cancel: a cancellation (credit note) and the status "cancelled" - also without the GoBD plugin
+    private final JMenuItem toCancel = new JMenuItem(Messages.ITEM_CANCEL.toString());
     //a dunning letter (Mahnung) for the invoice: in the "Create" menu
     private final JMenuItem remindButton = new JMenuItem(Messages.ITEM_CREATE_REMINDER.toString());
     //the invoice due again every n months: in the "Create" menu
@@ -598,6 +600,9 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         create.add(toPartPayment);
         create.addSeparator();
         create.add(toCredit);
+        toCancel.addActionListener(e -> cancelInvoice());
+        toCancel.setToolTipText(Messages.ITEM_CANCEL_TIP.toString());
+        create.add(toCancel);
         create.add(remindButton);
         create.add(scheduleButton);
         positions.addAction(menuButton(createButton, create));
@@ -670,6 +675,16 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         toPartPayment.setEnabled(partialAllowed);
         //a credit note refers to a saved invoice (not to a copy not saved yet)
         toCredit.setEnabled(t == Item.TYPE_INVOICE && dataOwner != null && dataOwner.isExisting());
+        //cancel a saved invoice not cancelled yet; with a finalizing plugin (GoBD) its own action
+        boolean locking = false;
+        try {
+            mpv5.plugin.ExtensionManager em = mpv5.plugin.ExtensionManager.instanceOrNull();
+            locking = em != null && em.locksDocuments();
+        } catch (Throwable ex) {
+            locking = false;
+        }
+        toCancel.setVisible(bill && !locking);
+        toCancel.setEnabled(dataOwner != null && dataOwner.isExisting() && dataOwner.__getIntstatus() != Item.STATUS_CANCELLED);
         if (paymentsCard != null) {
             paymentsCard.setVisible(bill);
         }
@@ -885,6 +900,28 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         //the order in a new tab, this one keeps the offer (issue #58)
         mpv5.YabsViewProxy.instance().addTab(i2, true);
         Popup.notice(i2 + Messages.INSERTED.getValue());
+    }
+
+    /**
+     * Cancels the invoice after a question; a running plugin that finalizes
+     * documents (GoBD) has its own action for this (and finalizes the
+     * cancellation)
+     */
+    private void cancelInvoice() {
+        if (dataOwner == null || !dataOwner.isExisting() || !ensureSavedForExport()) {
+            return;
+        }
+        if (!Popup.Y_N_dialog(String.format(Messages.ITEM_CANCEL_ASK.toString(), dataOwner.__getCnumber()), Messages.ITEM_CANCEL)) {
+            return;
+        }
+        dataOwner.getPanelData(this);
+        positions.stopEditing();
+        Item storno = ItemService.cancel(dataOwner, positions.getModel());
+        if (storno != null) {
+            setDataOwner(dataOwner, true);
+            mpv5.YabsViewProxy.instance().addTab(storno, true);
+            mpv5.YabsViewProxy.instance().addMessage(String.format(Messages.ITEM_CANCELLED_BY.toString(), dataOwner.__getCnumber(), storno.__getCnumber()));
+        }
     }
 
     private void convertToInvoice(int itemType) {

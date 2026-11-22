@@ -506,6 +506,34 @@ public final class ItemService {
     }
 
     /**
+     * Cancels an invoice (also a deposit or part payment invoice): a
+     * cancellation - a credit note over the full amount that refers to it -
+     * is created, the invoice gets the status "cancelled". The invoice itself
+     * is not changed or deleted otherwise.
+     *
+     * @param invoice the saved invoice, with the data of the view
+     * @param positions the positions of the view
+     * @return the cancellation (saved), null if not possible
+     */
+    public static Item cancel(Item invoice, MPTableModel positions) {
+        if (invoice == null || !invoice.isExisting() || !isBill(invoice.__getInttype())
+                || invoice.__getIntstatus() == Item.STATUS_CANCELLED) {
+            return null;
+        }
+        //no questions (activity lists, deductions): the cancellation is the invoice as it is
+        Item storno = toInvoice(invoice, Item.TYPE_CREDIT, positions, q -> false);
+        if (storno == null) {
+            return null;
+        }
+        storno.setDateadded(new java.util.Date());
+        storno.setDescription(String.format(Messages.ITEM_CANCELLATION_OF.toString(), invoice.__getCnumber()));
+        storno.save();
+        invoice.setIntstatus(Item.STATUS_CANCELLED);
+        invoice.save();
+        return storno;
+    }
+
+    /**
      * Deducts a deposit / part payment invoice in a final invoice (§ 14 Abs. 5
      * Satz 2 UStG, #221): one position per VAT rate with the net after
      * discount, named with the kind, number and date of the deposit ("Less
