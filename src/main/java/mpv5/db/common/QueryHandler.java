@@ -2035,7 +2035,9 @@ public class QueryHandler implements Cloneable {
         if (where != null) {
             for (int i = 0; i < where.length; i++) {
                 try {
-                    delete(where[i], jobmessage);
+                    if (!delete(where[i], jobmessage)) {
+                        ret = false;
+                    }
                 } catch (Exception ex) {
                     Log.Debug(ex);
                     ret = false;
@@ -2102,7 +2104,7 @@ public class QueryHandler implements Cloneable {
         synchronized (dbo) {
             String query = "DELETE FROM " + dbo.IDENTITY.getKey().getDbIdentity() + " WHERE ids = " + dbo.IDENTITY.getValue();
 
-            ReturnValue retval = instanceOf().freeQuery(query, mpv5.usermanagement.MPSecurityManager.CREATE_OR_DELETE, null);
+            ReturnValue retval = instanceOf().clone(dbo.getContext()).freeQuery(query, mpv5.usermanagement.MPSecurityManager.CREATE_OR_DELETE, null);
 
             if (retval == null) {
                 return false;
