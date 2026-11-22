@@ -445,9 +445,14 @@ class HandwerkPluginTest {
         assertEquals("83", doc.exchangePhase);
         assertEquals("Schule Nord", doc.projectName);
         assertEquals("Sanitär", doc.boqLabel);
-        assertEquals(2, doc.positions.size());
+        assertEquals(3, doc.positions.size());
 
-        BoqPosition p1 = doc.positions.get(0);
+        BoqPosition header = doc.positions.get(0);
+        assertEquals("01", header.ordinalNo);
+        assertEquals(PositionType.TEXT, header.positionType);
+        assertEquals("Rohinstallation", header.shortText);
+
+        BoqPosition p1 = doc.positions.get(1);
         assertEquals("01.0010", p1.ordinalNo);
         assertEquals(PositionType.NORMAL, p1.positionType);
         assertEquals(0, new BigDecimal("25").compareTo(p1.quantity));
@@ -455,7 +460,7 @@ class HandwerkPluginTest {
         assertTrue(p1.shortText.contains("Kupferrohr DN 22"));
         assertTrue(p1.longText.contains("Schellen"));
 
-        BoqPosition p2 = doc.positions.get(1);
+        BoqPosition p2 = doc.positions.get(2);
         assertEquals("01.0020", p2.ordinalNo);
         assertEquals(PositionType.OPTIONAL, p2.positionType);
         assertFalse(p2.isCountedInTotal());
@@ -477,7 +482,7 @@ class HandwerkPluginTest {
         // Re-parse exported X84 to confirm valid GAEB DA XML
         BoqDocument reparsed = codec.read("angebot.X84", x84);
         assertEquals("84", reparsed.exchangePhase);
-        assertEquals(0, new BigDecimal("42.50").compareTo(reparsed.positions.get(0).unitPrice));
+        assertEquals(0, new BigDecimal("42.50").compareTo(reparsed.positions.get(1).unitPrice));
         assertEquals(0, new BigDecimal("1062.50").compareTo(reparsed.totalNet()),
                 "Optional position must not be included in BoQ net total");
     }
