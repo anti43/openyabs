@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<office:document xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0"
+                 xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0"
+                 xmlns:table="urn:oasis:names:tc:opendocument:xmlns:table:1.0"
+                 office:version="1.2"
+                 office:mimetype="application/vnd.oasis.opendocument.text">
+  <office:body>
+    <office:text>
+      <text:p>[companyinfo.name] – [companyinfo.street], [companyinfo.zip] [companyinfo.city]</text:p>
+      <text:h text:outline-level="1">Abnahmeprotokoll (§ 640 BGB / § 12 VOB/B)</text:h>
+      <text:p>Auftraggeber: [contact.cname], [contact.street], [contact.zip] [contact.city]</text:p>
+      <text:p>Baustelle / Projekt: [hw.siteProjectNo] [hw.siteName] – [hw.siteAddress]</text:p>
+      <text:p>Beleg-Referenz: [item.cnumber] | Vertragsart: [hw.contractType]</text:p>
+      <text:p>Datum der Abnahme: [hw.acceptanceDate]</text:p>
+      <text:p>Gewährleistungsfrist: [hw.warrantyYears] Jahre (Ende der Mängelansprüche: [hw.warrantyUntil])</text:p>
+      <text:p>Nächster empfohlener Wartungstermin: [hw.maintenanceDue]</text:p>
+      <text:p>Festgestellte Mängel / Vorbehalte:</text:p>
+      <text:p>________________________________________________________________________</text:p>
+      <text:p>Unterschrift Auftragnehmer: ______________________   Unterschrift Auftraggeber: ______________________</text:p>
+    </office:text>
+  </office:body>
+</office:document>

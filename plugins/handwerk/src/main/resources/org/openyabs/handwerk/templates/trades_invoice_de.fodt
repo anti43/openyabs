@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<office:document xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0"
+                 xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0"
+                 xmlns:table="urn:oasis:names:tc:opendocument:xmlns:table:1.0"
+                 office:version="1.2"
+                 office:mimetype="application/vnd.oasis.opendocument.text">
+  <office:body>
+    <office:text>
+      <text:p>[companyinfo.name] – [companyinfo.street], [companyinfo.zip] [companyinfo.city]</text:p>
+      <text:p>Handwerkskammer: [hw.chamberName] | Betriebsnummer: [hw.chamberNumber]</text:p>
+      <text:p>[contact.cname]</text:p>
+      <text:p>[contact.street], [contact.zip] [contact.city]</text:p>
+      <text:h text:outline-level="1">Handwerkerrechnung [item.cnumber]</text:h>
+      <text:p>Rechnungsdatum: [item.dateadded] | Vertragsart: [hw.contractType]</text:p>
+      <text:p>Baustelle / Objekt: [hw.siteProjectNo] [hw.siteName] – [hw.siteAddress]</text:p>
+      <text:p>LV / GAEB: [hw.boqProject] [hw.boqLabel] ([hw.boqSummary])</text:p>
+      <text:p>[xtable1]</text:p>
+      <text:p>Netto: [item.netvalue] | USt: [item.taxvalue] | Gesamtbetrag: [item.totalvalue]</text:p>
+      <text:p>Sicherheitseinbehalt ([hw.retentionPercent], Basis [hw.retentionBasis]): [hw.retentionAmount] | Zahlbetrag nach Einbehalt: [hw.payableAfterRetention]</text:p>
+      <text:p>[hw.notice35a]</text:p>
+      <text:p>[hw.notice14b]</text:p>
+      <text:p>[hw.notice13b]</text:p>
+      <text:p>[hw.freistellungNotice]</text:p>
+    </office:text>
+  </office:body>
+</office:document>

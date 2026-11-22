@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<office:document xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0"
+                 xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0"
+                 xmlns:table="urn:oasis:names:tc:opendocument:xmlns:table:1.0"
+                 office:version="1.2"
+                 office:mimetype="application/vnd.oasis.opendocument.text">
+  <office:body>
+    <office:text>
+      <text:p>[companyinfo.name] – [companyinfo.street], [companyinfo.zip] [companyinfo.city]</text:p>
+      <text:h text:outline-level="1">Regiebericht / Stundennachweis – [item.cnumber]</text:h>
+      <text:p>Auftraggeber: [contact.cname]</text:p>
+      <text:p>Baustelle / Objekt: [hw.siteProjectNo] [hw.siteName] – [hw.siteAddress]</text:p>
+      <text:p>Gesamtstunden: [hw.totalHours] Std.</text:p>
+      <text:p>Ausgeführte Stundenlohnarbeiten:</text:p>
+      <text:p>[hw.timeSheetsSummary]</text:p>
+      <text:p>Aufmaß-Nachweise:</text:p>
+      <text:p>[hw.measurementsSummary]</text:p>
+      <text:p>Leistungen anerkannt – Datum / Unterschrift Bauleitung / Auftraggeber: ______________________________</text:p>
+    </office:text>
+  </office:body>
+</office:document>
