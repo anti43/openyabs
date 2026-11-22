@@ -1321,7 +1321,7 @@ public class ModernContactPanel extends ModernDataPanel {
     public void actionAfterSave() {
         saveEInvoiceSettings();
         saveProperties();
-        YabsViewProxy.instance().refreshOpenTabsForContact(dataOwner);
+        mpv5.YabsViewProxy.instance().refreshOpenTabsForContact(dataOwner);
     }
 
     @Override
