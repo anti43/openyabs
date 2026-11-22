@@ -204,6 +204,8 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
     private final JScrollPane tableScroll;
     private final JTextField find = new JTextField(18);
     private final JLabel count = new JLabel(" ");
+    private final JLabel filterBadge = new JLabel();
+    private final JButton showAllStatus = new JButton(Messages.JOURNAL_SHOW_ALL_STATUS.toString());
     private final JButton loadButton = new mpv5.ui.modern.PrimaryButton(Messages.JOURNAL_RELOAD.toString(), null);
     private final JButton exportButton = new JButton(Messages.JOURNAL_EXPORT_BUTTON.toString());
     //sums
@@ -556,10 +558,13 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
                 adjusting = true;
                 applyView(view.getSelectedIndex());
                 adjusting = false;
+                updateEnabled();
+                updateFilterSummary();
                 remember();
                 scheduleReload();
             }
         });
+        showAllStatus.addActionListener(e -> showAllStatuses());
         for (AbstractButton b : new AbstractButton[]{incInvoices, incCredits, incDeposits, incPartPayments, incRevenues,
             incExpenses, incomeByDoc, incomeByPay, expenseByDoc, expenseByPay}) {
             b.setOpaque(false);
@@ -598,6 +603,7 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
             }
         });
         updateEnabled();
+        updateFilterSummary();
     }
 
     /**
@@ -703,6 +709,7 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
             adjusting = false;
         }
         updateEnabled();
+        updateFilterSummary();
         remember();
         scheduleReload();
     }
@@ -717,6 +724,83 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         expenseByDoc.setEnabled(incExpenses.isSelected());
         expenseByPay.setEnabled(incExpenses.isSelected());
         othersOpenOnly.setEnabled(incOrders.isSelected() || incOffers.isSelected());
+    }
+
+    /**
+     * Shows the active status and date basis in the header so it remains clear
+     * even when the view preset switches to "Custom" or the filter cards are collapsed
+     */
+    private void updateFilterSummary() {
+        boolean hasIncome = incInvoices.isSelected() || incCredits.isSelected() || incDeposits.isSelected()
+                || incPartPayments.isSelected() || (dataOwner == null && incRevenues.isSelected());
+        boolean hasExpense = dataOwner == null && incExpenses.isSelected();
+        if (!hasIncome && !hasExpense) {
+            filterBadge.setVisible(false);
+            showAllStatus.setVisible(false);
+            return;
+        }
+        String incStat = String.valueOf(incomeStatus.getSelectedItem());
+        String incDate = (incomeByPay.isSelected() ? Messages.JOURNAL_BY_PAYDATE : Messages.JOURNAL_BY_DOCDATE).toString();
+        String expStat = String.valueOf(expenseStatus.getSelectedItem());
+        String expDate = (expenseByPay.isSelected() ? Messages.JOURNAL_BY_PAYDATE : Messages.JOURNAL_BY_DOCDATE).toString();
+
+        boolean incRestricted = hasIncome && (incomeStatus.getSelectedIndex() != STATUS_ALL || incomeByPay.isSelected());
+        boolean expRestricted = hasExpense && (expenseStatus.getSelectedIndex() != STATUS_ALL || expenseByPay.isSelected());
+        boolean restricted = incRestricted || expRestricted;
+
+        String summary;
+        if (hasIncome && hasExpense
+                && (incomeStatus.getSelectedIndex() != expenseStatus.getSelectedIndex()
+                || incomeByPay.isSelected() != expenseByPay.isSelected())) {
+            summary = String.format(Messages.JOURNAL_FILTER_STATUS_DATE.toString(), incStat, incDate)
+                    + " / " + Messages.JOURNAL_SHOW_EXPENSES + ": " + expStat + " \u00b7 " + expDate;
+        } else {
+            summary = String.format(Messages.JOURNAL_FILTER_STATUS_DATE.toString(),
+                    hasIncome ? incStat : expStat,
+                    hasIncome ? incDate : expDate);
+        }
+        filterBadge.setText(summary);
+        filterBadge.setVisible(true);
+        if (restricted) {
+            boolean dark = ModernTheme.isDark();
+            Color bg = dark ? new Color(80, 56, 12) : new Color(254, 243, 199);
+            Color fg = dark ? new Color(253, 224, 71) : new Color(146, 64, 14);
+            Color border = dark ? new Color(180, 120, 20) : new Color(245, 158, 11);
+            filterBadge.setOpaque(true);
+            filterBadge.setBackground(bg);
+            filterBadge.setForeground(fg);
+            filterBadge.setFont(ModernTheme.font(-1, Font.BOLD));
+            filterBadge.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(border),
+                    BorderFactory.createEmptyBorder(ModernTheme.px(2), ModernTheme.px(8), ModernTheme.px(2), ModernTheme.px(8))));
+        } else {
+            filterBadge.setOpaque(false);
+            filterBadge.setForeground(ModernTheme.muted());
+            filterBadge.setFont(ModernTheme.font(-1, Font.PLAIN));
+            filterBadge.setBorder(BorderFactory.createEmptyBorder(ModernTheme.px(2), ModernTheme.px(4), ModernTheme.px(2), ModernTheme.px(4)));
+        }
+        showAllStatus.setVisible(restricted);
+    }
+
+    /**
+     * Switches status to "All" and date basis to document date while keeping
+     * the user's selected document types
+     */
+    private void showAllStatuses() {
+        adjusting = true;
+        incomeStatus.setSelectedIndex(STATUS_ALL);
+        expenseStatus.setSelectedIndex(STATUS_ALL);
+        incomeByDoc.setSelected(true);
+        expenseByDoc.setSelected(true);
+        boolean allStandard = incInvoices.isSelected() && incCredits.isSelected()
+                && incDeposits.isSelected() && incPartPayments.isSelected()
+                && (dataOwner != null || (incRevenues.isSelected() && incExpenses.isSelected()));
+        view.setSelectedIndex(allStandard ? VIEW_ALL : VIEW_CUSTOM);
+        adjusting = false;
+        updateEnabled();
+        updateFilterSummary();
+        remember();
+        setData();
     }
 
     private void remember() {
@@ -772,15 +856,22 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         setBorder(ModernTheme.padding(12, 14));
         setBackground(ModernTheme.background());
 
-        //header: title and count
+        //header: title, count and active status/date filter indicator
         JLabel title = new JLabel(dataOwner == null ? Messages.JOURNAL_TITLE.toString()
                 : String.format(Messages.JOURNAL_TITLE_CONTACT.toString(), dataOwner.__getCname()));
         title.setFont(ModernTheme.font(9, Font.BOLD));
         count.setForeground(ModernTheme.muted());
+        filterBadge.setName("filterBadge"); //NOI18N
+        showAllStatus.setName("showAllStatus"); //NOI18N
+        showAllStatus.setFont(ModernTheme.font(-1, Font.PLAIN));
+        showAllStatus.setMargin(new Insets(ModernTheme.px(2), ModernTheme.px(8), ModernTheme.px(2), ModernTheme.px(8)));
+        showAllStatus.setFocusable(false);
         JPanel left = new JPanel(new FlowLayout(FlowLayout.LEFT, gap, 0));
         left.setOpaque(false);
         left.add(title);
         left.add(count);
+        left.add(filterBadge);
+        left.add(showAllStatus);
         exportButton.addActionListener(e -> exportMenu().show(exportButton, 0, exportButton.getHeight()));
         JPanel header = new JPanel(new BorderLayout());
         header.setOpaque(false);
@@ -847,6 +938,7 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
             incRevenues.setVisible(false);
             incExpenses.setSelected(false);
         }
+        updateFilterSummary();
         columns.add(groupsCard);
         columns.add(accountsCard);
         for (int i = 0; i < columns.size(); i++) {

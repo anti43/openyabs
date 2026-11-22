@@ -116,9 +116,32 @@ public class ReceiptLookup extends javax.swing.JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //search.setText("");
+                updateHideCancelledEnabled();
                 generalListPanel1.setData((Context) type.getSelectedItem().getIdObject(), getStatusQuery());
             }
         });
+        hideCancelled.setOpaque(false);
+        hideCancelled.setName("hideCancelled"); //NOI18N
+        try {
+            hideCancelled.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties()
+                    .getProperty(ReceiptLookup.class.getSimpleName(), HIDE_CANCELLED));
+        } catch (Exception ex) {
+            hideCancelled.setSelected(false);
+        }
+        hideCancelled.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    mpv5.db.objects.User.getCurrentUser().getProperties()
+                            .changeProperty(ReceiptLookup.class.getSimpleName(), HIDE_CANCELLED, hideCancelled.isSelected());
+                } catch (Exception ex) {
+                    Logger.getLogger(ReceiptLookup.class.getName()).log(Level.FINE, null, ex);
+                }
+                generalListPanel1.setData((Context) type.getSelectedItem().getIdObject(), getStatusQuery());
+            }
+        });
+        updateHideCancelledEnabled();
         SwingUtilities.invokeLater(new Runnable() {
 
             @Override
@@ -154,7 +177,13 @@ public class ReceiptLookup extends javax.swing.JPanel {
         });
     }
 
-    private QueryCriteria2 getStatusQuery() {
+    private void updateHideCancelledEnabled() {
+        MPComboBoxModelItem s = status.getSelectedItem();
+        boolean allStatus = s == null || ((int) s.getIdObject()) < 0;
+        hideCancelled.setEnabled(allStatus);
+    }
+
+    QueryCriteria2 getStatusQuery() {
         MPComboBoxModelItem s = status.getSelectedItem();
         if (s != null) {
             int id = (int) s.getIdObject();
@@ -169,6 +198,11 @@ public class ReceiptLookup extends javax.swing.JPanel {
                 }
                 return q;
             }
+        }
+        if (hideCancelled.isSelected()) {
+            QueryCriteria2 q = new QueryCriteria2();
+            q.and(new QueryParameter(Context.getInvoice(), "intstatus", Item.STATUS_CANCELLED, QueryParameter.NOTEQUAL));
+            return q;
         }
         return null;
     }
@@ -216,6 +250,8 @@ public class ReceiptLookup extends javax.swing.JPanel {
         }
     }
 
+    private static final String HIDE_CANCELLED = "hidecancelled"; //NOI18N
+    private final javax.swing.JCheckBox hideCancelled = new javax.swing.JCheckBox(mpv5.globals.Messages.RECEIPT_HIDE_CANCELLED.toString());
     private final javax.swing.JButton merge = new javax.swing.JButton(mpv5.globals.Messages.RECEIPT_ADD_TO_NEW_INVOICE.toString());
 
     /**
@@ -245,12 +281,16 @@ public class ReceiptLookup extends javax.swing.JPanel {
         javax.swing.JPanel filterRow = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
         filterRow.setOpaque(false);
         filterRow.add(generalListPanel1.getFilterButton());
+        javax.swing.JPanel optionsRow = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
+        optionsRow.setOpaque(false);
+        optionsRow.add(hideCancelled);
         mpv5.ui.modern.Card filters = new mpv5.ui.modern.Card(null)
                 .row(mpv5.ui.modern.Card.field(mpv5.globals.Messages.RECEIPT_TYPE.toString(), type.getComboBox()),
                         mpv5.ui.modern.Card.field(mpv5.globals.Messages.RECEIPT_STATUS.toString(), status.getComboBox()),
                         mpv5.ui.modern.Card.field(mpv5.globals.Messages.RECEIPT_PERIOD.toString(), generalListPanel1.getTimeframeChooser(), 2),
                         mpv5.ui.modern.Card.field(mpv5.globals.Messages.RECEIPT_GROUP.toString(), generalListPanel1.getGroupChoice().getComboBox()),
-                        mpv5.ui.modern.Card.field(" ", filterRow));
+                        mpv5.ui.modern.Card.field(" ", filterRow))
+                .addFull(optionsRow);
 
         javax.swing.JScrollPane sp = generalListPanel1.getListScroll();
         sp.setBorder(javax.swing.BorderFactory.createLineBorder(mpv5.ui.modern.ModernTheme.border()));
