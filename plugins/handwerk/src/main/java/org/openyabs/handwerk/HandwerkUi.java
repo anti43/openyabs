@@ -934,8 +934,8 @@ final class HandwerkUi {
                     boqHolder[0].positions.get(lastRow[0]).bidderText = bidderTextArea.getText().trim();
                 }
                 try {
-                    HandwerkPlugin.applyBoqPricesToSubItems(boqHolder[0], item);
                     HandwerkStore.saveBoqDocument(HandwerkStore.connection(), boqHolder[0]);
+                    HandwerkPlugin.applyBoqPricesToSubItems(boqHolder[0], item);
                 } catch (Exception ex) {
                     Log.Debug(HandwerkUi.class, ex);
                 }
@@ -953,8 +953,8 @@ final class HandwerkUi {
                     boqHolder[0].positions.get(lastRow[0]).bidderText = bidderTextArea.getText().trim();
                 }
                 try {
-                    HandwerkPlugin.applyBoqPricesToSubItems(boqHolder[0], item);
                     HandwerkStore.saveBoqDocument(HandwerkStore.connection(), boqHolder[0]);
+                    HandwerkPlugin.applyBoqPricesToSubItems(boqHolder[0], item);
                     yabs.refreshView(item);
                     yabs.notify(yabs.tr("boq.saved"));
                 } catch (Exception ex) {

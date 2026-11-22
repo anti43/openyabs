@@ -429,8 +429,8 @@ class HandwerkWorkflowIntegrationTest {
         // Price position via BoQ and push back to OpenYaBS SubItem + recalculate totals
         imported.positions.get(1).unitPrice = new BigDecimal("35.00");
         imported.positions.get(1).bidderText = "OBO Bettermann RKS 620";
-        HandwerkPlugin.applyBoqPricesToSubItems(imported, offer);
         HandwerkStore.saveBoqDocument(HandwerkStore.connection(), imported);
+        HandwerkPlugin.applyBoqPricesToSubItems(imported, offer);
 
         offer = (Item) DatabaseObject.getObject(Context.getOffer(), offer.__getIDS());
         assertEquals(0, new BigDecimal("1750.00").compareTo(offer.getNetAfterDiscount()),

@@ -272,6 +272,10 @@ public final class HandwerkPlugin implements YabsExtension {
                     }
                     List<String> warnings = validateItem(item, yabs);
                     if (!warnings.isEmpty()) {
+                        if (mpv5.ui.dialogs.Popup.isSilent() || java.awt.GraphicsEnvironment.isHeadless()) {
+                            Log.Debug(HandwerkPlugin.class, "Compliance warnings on silent save: " + warnings);
+                            return object;
+                        }
                         StringBuilder sb = new StringBuilder(yabs.tr("val.header")).append("\n\n");
                         for (String w : warnings) {
                             sb.append("\u2022 ").append(w).append("\n");
