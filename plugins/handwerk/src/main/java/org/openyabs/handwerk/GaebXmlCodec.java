@@ -117,6 +117,12 @@ public final class GaebXmlCodec implements BoqCodec {
         doc.projectName = !lblPrj.isEmpty() ? lblPrj : (!prjName.isEmpty() ? prjName : stripExt(fileName));
 
         String lblBoq = firstChildTextDeep(root, "LblBoQ");
+        if (lblBoq.isEmpty()) {
+            Element boqInfo = firstElementDeep(root, "BoQInfo");
+            if (boqInfo != null) {
+                lblBoq = directChildText(boqInfo, "Name");
+            }
+        }
         doc.boqLabel = !lblBoq.isEmpty() ? lblBoq : doc.projectName;
 
         String cur = firstChildTextDeep(root, "Cur");
