@@ -102,7 +102,8 @@ class HandwerkPluginTest {
 
         assertTrue(mgr.start(inst), "HandwerkPlugin must start cleanly without a database");
         assertEquals(7, mgr.commands().size(), "Expected 7 registered commands");
-        assertEquals(1, mgr.settingsPages().size(), "Expected 1 settings page");
+        assertEquals(1, mgr.pages().size(), "Expected 1 settings page");
+        assertEquals(1, mgr.privacyContributors().size(), "Expected 1 privacy contributor");
         assertEquals("Handwerksbetriebe & Bau",
                 mgr.translateForLocale(HandwerkPlugin.ID, "de_DE", "plugin.name", null));
         assertEquals("Skilled Trades & Construction",
@@ -110,7 +111,8 @@ class HandwerkPluginTest {
 
         mgr.stop(inst);
         assertTrue(mgr.commands().isEmpty(), "Commands must be cleaned up on stop");
-        assertTrue(mgr.settingsPages().isEmpty(), "Settings pages must be cleaned up on stop");
+        assertTrue(mgr.pages().isEmpty(), "Settings pages must be cleaned up on stop");
+        assertTrue(mgr.privacyContributors().isEmpty(), "Privacy contributors must be cleaned up on stop");
     }
 
     @Test
