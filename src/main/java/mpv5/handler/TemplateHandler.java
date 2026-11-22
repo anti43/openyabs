@@ -809,7 +809,6 @@ public class TemplateHandler {
             MULTI_TEMPLATE_KEYS.clear();
             TEMPLATE_MISSING_NOTIFICATIONS.clear();
         }
-        DatabaseObject.clearCache(Context.getTemplate());
     }
 
     public static boolean importTemplateAndAssign(File file, FutureCallback<Template> f) {

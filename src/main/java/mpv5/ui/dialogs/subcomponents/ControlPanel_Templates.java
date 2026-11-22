@@ -1098,6 +1098,7 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
             c.add("cname", dataOwner.__getIDS() + "@" + user + "@" + group);
             QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).insert(c, null);
         }
+        DatabaseObject.uncacheObject(Context.getTemplate(), dataOwner.__getIDS());
         TemplateHandler.clearCache();
         mpv5.YabsViewProxy.instance().refreshOpenTabsTemplates();
     }
