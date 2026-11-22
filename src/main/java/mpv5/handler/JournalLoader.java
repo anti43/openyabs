@@ -325,9 +325,31 @@ public final class JournalLoader {
             case STATUS_OPEN:
                 return e.status != Item.STATUS_PAID && e.status != Item.STATUS_CANCELLED;
             case STATUS_CANCELLED:
-                return e.status == Item.STATUS_CANCELLED;
+                //also the cancellation (credit note) of a cancelled invoice: it has the status "finished"
+                return e.status == Item.STATUS_CANCELLED || isCancellationOfCancelled(e);
             default:
                 return true;
+        }
+    }
+
+    /**
+     * @param e
+     * @return true for a credit note which corrects a cancelled invoice (its
+     * cancellation)
+     */
+    static boolean isCancellationOfCancelled(Entry e) {
+        if (e.type != Constants.TYPE_CREDIT || !(e.obj instanceof Item)) {
+            return false;
+        }
+        Integer ref = ((Item) e.obj).__getRefinvoiceids();
+        if (ref == null || ref <= 0) {
+            return false;
+        }
+        try {
+            DatabaseObject o = DatabaseObject.getObject(Context.getInvoice(), ref);
+            return o instanceof Item && ((Item) o).__getIntstatus() == Item.STATUS_CANCELLED;
+        } catch (Exception ex) {
+            return false;
         }
     }
 

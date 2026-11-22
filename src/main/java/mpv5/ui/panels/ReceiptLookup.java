@@ -160,7 +160,13 @@ public class ReceiptLookup extends javax.swing.JPanel {
             int id = (int) s.getIdObject();
             if (id >= 0) {
                 QueryCriteria2 q = new QueryCriteria2();
-                q.and(new QueryParameter(Context.getInvoice(), "intstatus", id, QueryParameter.EQUALS));
+                Object t = type.getSelectedItem() == null ? null : type.getSelectedItem().getIdObject();
+                if (id == Item.STATUS_CANCELLED && Context.getCredit().equals(t)) {
+                    //credit notes "cancelled": the cancellations (they correct an invoice, status finished)
+                    q.and(new QueryParameter(Context.getCredit(), "refinvoiceids", 1, QueryParameter.GREATEREQUALS));
+                } else {
+                    q.and(new QueryParameter(Context.getInvoice(), "intstatus", id, QueryParameter.EQUALS));
+                }
                 return q;
             }
         }
