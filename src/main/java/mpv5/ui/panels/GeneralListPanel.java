@@ -174,6 +174,70 @@ public final class GeneralListPanel extends javax.swing.JPanel {
         odata = list;
         rend.setGroupingRows(b.groupingRows);
         listtable.setModel(b.model);
+        if (documentColumns) {
+            arrangeDocumentColumns();
+        }
+    }
+
+    /**
+     * Documents (search of documents): with a header and the columns status
+     * (model 6) after the name; the record stays in model column 1
+     */
+    private boolean documentColumns;
+
+    /**
+     * @param on the columns of documents (status ...), with a header
+     */
+    public void setDocumentColumns(boolean on) {
+        this.documentColumns = on;
+    }
+
+    private int columnCount() {
+        return documentColumns ? 8 : 6;
+    }
+
+    private static String[] documentHeaders() {
+        return new String[]{"", Messages.LIST_COL_DOCUMENT.toString(), Messages.LIST_COL_USER.toString(),
+            Messages.LIST_COL_DATE.toString(), Messages.LIST_COL_GROUP.toString(), "", Messages.LIST_COL_STATUS.toString(),
+            Messages.LIST_COL_NUMBER.toString()};
+    }
+
+    /**
+     * The extra columns of a document (empty for other records and grouping
+     * rows)
+     */
+    private void fillDocumentColumns(Object[] row, DatabaseObject o) {
+        if (!documentColumns) {
+            return;
+        }
+        row[6] = o instanceof mpv5.db.objects.Item ? mpv5.db.objects.Item.getStatusString(((mpv5.db.objects.Item) o).__getIntstatus()) : "";
+        //the number only (the name shows customer, number and amount)
+        row[7] = o instanceof mpv5.db.objects.Item ? String.valueOf(((mpv5.db.objects.Item) o).__getCnumber()) : "";
+    }
+
+    /**
+     * The order of the columns shown and a readable header
+     */
+    private void arrangeDocumentColumns() {
+        //the number first, the status after the name
+        moveToView(7, 0);
+        moveToView(6, 3);
+        //the date of the document after the status
+        moveToView(3, 4);
+        listtable.putClientProperty(TableFormat.SHOW_HEADER, Boolean.TRUE);
+        listtable.getTableHeader().setPreferredSize(null);
+        listtable.getTableHeader().setFont(listtable.getFont().deriveFont(java.awt.Font.BOLD));
+        listtable.getTableHeader().revalidate();
+    }
+
+    /**
+     * Moves the column of the model index to the view position
+     */
+    private void moveToView(int modelIndex, int viewIndex) {
+        int from = listtable.convertColumnIndexToView(modelIndex);
+        if (from >= 0 && viewIndex < listtable.getColumnCount() && from != viewIndex) {
+            listtable.moveColumn(from, viewIndex);
+        }
     }
 
     private <T extends DatabaseObject> Built build(List<T> list) {
@@ -202,7 +266,7 @@ public final class GeneralListPanel extends javax.swing.JPanel {
                 DatabaseObject key = en.getKey();
                 List<DatabaseObject> val = en.getValue();
 
-                Object[] data0 = new Object[6];
+                Object[] data0 = new Object[columnCount()];
                 datalist.add(data0);
 
                 data0[0] = "<html><b>" + groupBy.getIdentityClass().getSimpleName() + "</b></html>";
@@ -231,7 +295,7 @@ public final class GeneralListPanel extends javax.swing.JPanel {
                     DatabaseObject databaseObject = val.get(i);
                     databaseObject.defineColor(lastColor);
 
-                    Object[] data1 = new Object[6];
+                    Object[] data1 = new Object[columnCount()];
                     datalist.add(data1);
 
                     data1[0] = i + 1;
@@ -246,19 +310,20 @@ public final class GeneralListPanel extends javax.swing.JPanel {
 
 //            data[i][4] = databaseObject.getColor();
                     data1[5] = databaseObject.getIcon();
+                    fillDocumentColumns(data1, databaseObject);
                     //data[overallindex][6] = Item.getTypeString(key.getContext().getItemType());
 
                     overallindex++;
                 }
             }
 
-            model = new Object[overallindex][6];
+            model = new Object[overallindex][columnCount()];
             for (int i = 0; i < datalist.size(); i++) {
                 Object[] objects = datalist.get(i);
                 model[i] = objects;
             }
         } else {
-            Object[][] data = new Object[list.size()][6];
+            Object[][] data = new Object[list.size()][columnCount()];
             for (int i = 0; i < list.size(); i++) {
                 DatabaseObject databaseObject = list.get(i);
                 data[i][0] = i + 1;
@@ -273,13 +338,15 @@ public final class GeneralListPanel extends javax.swing.JPanel {
 
 //            data[i][4] = databaseObject.getColor();
                 data[i][5] = databaseObject.getIcon();
-                //data[i][6] = Item.getTypeString(databaseObject.getContext().getItemType());
+                fillDocumentColumns(data[i], databaseObject);
             }
             model = data;
         }
 
-        MPTableModel m = new MPTableModel(model);
-        m.setTypes(new Class[]{Object.class, DatabaseObject.class, String.class, Date.class, DatabaseObject.class, ImageIcon.class});
+        MPTableModel m = documentColumns ? new MPTableModel(model, documentHeaders()) : new MPTableModel(model);
+        m.setTypes(documentColumns
+                ? new Class[]{Object.class, DatabaseObject.class, String.class, Date.class, DatabaseObject.class, ImageIcon.class, String.class, String.class}
+                : new Class[]{Object.class, DatabaseObject.class, String.class, Date.class, DatabaseObject.class, ImageIcon.class});
         Built b = new Built();
         b.model = m;
         b.groupingRows = groupingRows;

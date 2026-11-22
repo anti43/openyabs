@@ -51,6 +51,8 @@ public class ReceiptLookup extends javax.swing.JPanel {
         initComponents();
 
         generalListPanel1.setGroupBy(Context.getContact());
+        //status (number, date of the document) in own columns, with a header
+        generalListPanel1.setDocumentColumns(true);
         generalListPanel1.setSortable(false);
 
         final Object[][] typeModel = new Object[][]{

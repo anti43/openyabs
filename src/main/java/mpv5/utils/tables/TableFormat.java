@@ -395,6 +395,12 @@ public class TableFormat {
     *
     * @param table
     */
+   /**
+    * client property of a table whose header is shown again after
+    * {@link #hideHeader(JTable)}
+    */
+   public static final String SHOW_HEADER = "yabs.showHeader";
+
    public static void hideHeader(JTable table) {
       table.getTableHeader().setPreferredSize(new Dimension(table.getColumnModel().getTotalColumnWidth(), 15));
       table.getTableHeader().setFont(new Font(LocalSettings.getProperty(LocalSettings.DEFAULT_FONT), Font.PLAIN, 1));
@@ -408,24 +414,36 @@ public class TableFormat {
 
          @Override
          public void columnAdded(TableColumnModelEvent e) {
+            if (Boolean.TRUE.equals(table.getClientProperty(SHOW_HEADER))) {
+               return;
+            }
             table.getTableHeader().setPreferredSize(new Dimension(table.getColumnModel().getTotalColumnWidth(),
                     15));
          }
 
          @Override
          public void columnRemoved(TableColumnModelEvent e) {
+            if (Boolean.TRUE.equals(table.getClientProperty(SHOW_HEADER))) {
+               return;
+            }
             table.getTableHeader().setPreferredSize(new Dimension(table.getColumnModel().getTotalColumnWidth(),
                     15));
          }
 
          @Override
          public void columnMoved(TableColumnModelEvent e) {
+            if (Boolean.TRUE.equals(table.getClientProperty(SHOW_HEADER))) {
+               return;
+            }
             table.getTableHeader().setPreferredSize(new Dimension(table.getColumnModel().getTotalColumnWidth(),
                     15));
          }
 
          @Override
          public void columnMarginChanged(ChangeEvent e) {
+            if (Boolean.TRUE.equals(table.getClientProperty(SHOW_HEADER))) {
+               return;
+            }
             table.getTableHeader().setPreferredSize(new Dimension(table.getColumnModel().getTotalColumnWidth(),
                     15));
          }

@@ -1319,6 +1319,7 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         jTable1.setModel(new MPTableModel(d, Headers.JOURNAL.getValue(),
                 new Class[]{DatabaseObject.class, String.class, String.class, String.class, String.class, String.class, Date.class, String.class,
                     String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class}));
+        arrangeColumns();
         applyFind();
 
         Totals t = totals;
@@ -1348,6 +1349,25 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
         }
         taxRates.setText(rates(Messages.JOURNAL_TAX_RATES_INCOME.toString(), t.incomeByRate, l.labels)
                 + "     " + rates(Messages.JOURNAL_TAX_RATES_EXPENSES.toString(), t.expensesByRate, l.labels));
+    }
+
+    /**
+     * The order of the columns shown (the model keeps the order of
+     * {@link Headers#JOURNAL}): the number first, status after the name
+     */
+    private void arrangeColumns() {
+        moveToView(9, 0);
+        moveToView(11, 3);
+    }
+
+    /**
+     * Moves the column of the model index to the view position
+     */
+    private void moveToView(int modelIndex, int viewIndex) {
+        int from = jTable1.convertColumnIndexToView(modelIndex);
+        if (from >= 0 && viewIndex < jTable1.getColumnCount() && from != viewIndex) {
+            jTable1.moveColumn(from, viewIndex);
+        }
     }
 
     private static String rates(String label, Map<BigDecimal, BigDecimal[]> m, Map<BigDecimal, String> labels) {

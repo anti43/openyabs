@@ -35,10 +35,12 @@ public class TableCellRendererForDatabaseObjects extends DefaultTableCellRendere
         if (value instanceof Context) {
             setText(((Context) value).getIdentityClass().getSimpleName());
         }
+        //a date as date (the raw value showed "2026-11-21 19:37:22.645" or "... 00:00:00.0")
+        String text = value instanceof java.util.Date ? mpv5.utils.date.DateConverter.getDefDateString((java.util.Date) value) : adaptee.getText();
         if (groupingRows.contains(row)) {
-            setText("<html><b>" + adaptee.getText() + "</b></html>");
+            setText("<html><b>" + text + "</b></html>");
         } else {
-            setText(adaptee.getText());
+            setText(text);
         }
         if (hasFocus) {
             setBackground(Color.BLUE);
