@@ -3089,7 +3089,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         TextAreaCellRenderer textAreaCellRenderer = new TextAreaCellRenderer(itemtable);
         textAreaCellRenderer.setRendererTo(4);
         TextAreaCellEditor r = new TextAreaCellEditor(itemtable);
-        ItemTextAreaDialog itemTextAreaDialog = new ItemTextAreaDialog(mpv5.YabsViewProxy.instance().getIdentifierFrame(), true);
+        ItemTextAreaDialog itemTextAreaDialog = new ItemTextAreaDialog(mpv5.YabsViewProxy.instance().getIdentifierFrame(), false);
         itemTextAreaDialog.setParentTable(itemtable);
         itemTextAreaDialog.okButton.addActionListener(r);
         itemTextAreaDialog.cancelButton.addActionListener(r);
@@ -3408,6 +3408,10 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
     }
 
     private void preloadTemplates() {
+        refreshTemplates();
+    }
+
+    public void refreshTemplates() {
         Runnable runnable = new Runnable() {
 
             @Override
@@ -3425,6 +3429,19 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
             }
         };
         new Thread(runnable).start();
+    }
+
+    public void refreshContact(Contact updated) {
+        if (updated == null || updated.__getIDS() <= 0) {
+            return;
+        }
+        int currentId = contactsids_;
+        if (currentId <= 0 && dataOwner != null) {
+            currentId = dataOwner.__getContactsids();
+        }
+        if (currentId == updated.__getIDS()) {
+            contactname.setModel(updated);
+        }
     }
 
     @Override

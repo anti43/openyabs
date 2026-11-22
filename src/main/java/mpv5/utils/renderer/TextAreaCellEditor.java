@@ -189,10 +189,13 @@ public class TextAreaCellEditor extends DefaultCellEditor implements ActionListe
                     ((ActivityTextAreaDialog) dialog).setSelectedProduct(
                             Integer.valueOf(table.getValueAt(row, 9).toString()), table.getValueAt(row, column).toString());
                 }
-                if (dialog instanceof ItemTextAreaDialog && !table.getValueAt(row, 2).equals(0)) {
-                    Log.Debug(this, "ItemTextDialog");
-                    ((ItemTextAreaDialog) dialog).setQuantity(
-                            Double.parseDouble(table.getValueAt(row, 2).toString()));
+                if (dialog instanceof ItemTextAreaDialog) {
+                    ItemTextAreaDialog itemDialog = (ItemTextAreaDialog) dialog;
+                    itemDialog.setEditedRow(row);
+                    if (!table.getValueAt(row, 2).equals(0)) {
+                        Log.Debug(this, "ItemTextDialog");
+                        itemDialog.setQuantity(Double.parseDouble(table.getValueAt(row, 2).toString()));
+                    }
                 }
                 dialog.setVisible(true);
             }
@@ -219,6 +222,9 @@ public class TextAreaCellEditor extends DefaultCellEditor implements ActionListe
     @Override
     public boolean stopCellEditing() {
         if (dialog != null) {
+            if (dialog.isVisible() && dialogsTextComponent != null) {
+                textArea.setText(dialogsTextComponent.getText());
+            }
             dialog.setVisible(false);
         }
 
@@ -233,8 +239,13 @@ public class TextAreaCellEditor extends DefaultCellEditor implements ActionListe
         super.cancelCellEditing();
     }
 
+    public static final String OK_KEEP_FOCUS = "OK_KEEP_FOCUS";
+
     public void actionPerformed(ActionEvent e) {
-        if (OK.equals(e.getActionCommand())) {
+        String cmd = e.getActionCommand();
+        boolean restoreFocus = true;
+        if (OK.equals(cmd) || OK_KEEP_FOCUS.equals(cmd)) {
+            restoreFocus = !OK_KEEP_FOCUS.equals(cmd);
             dialog.setVisible(false);
 
             if (dialogsTextComponent != null) {
@@ -242,19 +253,24 @@ public class TextAreaCellEditor extends DefaultCellEditor implements ActionListe
             } else {
                 Log.Debug(this, "dialogsTextArea is null error");
             }
-        } else if (CANCEL.equals(e.getActionCommand())) {
+        } else if (CANCEL.equals(cmd)) {
             dialog.setVisible(false);
         }
 
         fireEditingStopped();    // Make the renderer reappear
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                table.requestFocusInWindow();
-            }
-        });
+        if (restoreFocus) {
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    table.requestFocusInWindow();
+                }
+            });
+        }
     }
 
     protected void setDialogLocation(Component c, JDialog dialog) {
+        if (dialog instanceof ItemTextAreaDialog && ((ItemTextAreaDialog) dialog).isUserMoved()) {
+            return;
+        }
         Container root = null;
 
         if ((c instanceof Window) || (c instanceof Applet)) {
@@ -271,47 +287,46 @@ public class TextAreaCellEditor extends DefaultCellEditor implements ActionListe
             }
         }
 
-        Dimension invokerSize           = c.getSize();
         Point invokerScreenLocation = new Point(0, 0);
         try {
             invokerScreenLocation = c.getLocationOnScreen();
         } catch (Exception e) {
             Log.Debug(e);
         }
-        Rectangle windowBounds          = dialog.getBounds();
-        int       dx                    = invokerScreenLocation.x;
-        int       dy                    = invokerScreenLocation.y;
-        //the editor may no longer be in a window (editing ended before this ran):
-        //then the screen of the dialog or the default screen
+        Rectangle windowBounds = dialog.getBounds();
         java.awt.GraphicsConfiguration gc = root != null ? root.getGraphicsConfiguration() : dialog.getGraphicsConfiguration();
         Rectangle ss = gc != null ? gc.getBounds()
                 : java.awt.GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().getBounds();
 
+        Point loc = computeDialogLocation(invokerScreenLocation, windowBounds.getSize(), ss);
+        dialog.setLocation(loc.x, loc.y);
+    }
+
+    /**
+     * Computes a stable on-screen location for the editor popup aligned with
+     * the edited cell without jumping left or right when near the bottom edge.
+     */
+    public static Point computeDialogLocation(Point invokerScreenLocation, Dimension dialogSize, Rectangle screenBounds) {
+        Rectangle ss = new Rectangle(screenBounds);
         ss.grow(-32, -32);
+        int dx = invokerScreenLocation.x;
+        int dy = invokerScreenLocation.y;
+        int w = dialogSize == null ? 0 : dialogSize.width;
+        int h = dialogSize == null ? 0 : dialogSize.height;
 
-        if (dy + windowBounds.height > ss.y + ss.height) {
-            dy = ss.y + ss.height - windowBounds.height;
-
-            if (invokerScreenLocation.x - ss.x + invokerSize.width / 2 < ss.width / 2) {
-                dx = invokerScreenLocation.x + invokerSize.width;
-            } else {
-                dx = invokerScreenLocation.x - windowBounds.width;
-            }
+        if (dy + h > ss.y + ss.height) {
+            dy = ss.y + ss.height - h;
         }
-
-        if (dx + windowBounds.width > ss.x + ss.width) {
-            dx = ss.x + ss.width - windowBounds.width;
+        if (dx + w > ss.x + ss.width) {
+            dx = ss.x + ss.width - w;
         }
-
         if (dx < ss.x) {
             dx = ss.x;
         }
-
         if (dy < ss.y) {
             dy = ss.y;
         }
-
-        dialog.setLocation(dx, dy);
+        return new Point(dx, dy);
     }
 }
 

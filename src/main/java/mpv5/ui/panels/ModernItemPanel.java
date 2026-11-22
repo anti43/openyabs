@@ -1325,13 +1325,49 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
     }
 
     private void preloadTemplates() {
+        refreshTemplates();
+    }
+
+    /**
+     * Re-checks available templates for this document (called after changes in
+     * the template manager so export/preview buttons update without restarting).
+     */
+    public void refreshTemplates() {
         final Item d = dataOwner;
+        if (d == null) {
+            return;
+        }
         new Thread(() -> {
             TemplateHandler.loadTemplateFor(previewButton, d.templateGroupIds(), d.__getInttype());
             TemplateHandler.loadTemplateFor(deliveryNote, d.templateGroupIds(), Constants.TYPE_DELIVERY_NOTE);
             TemplateHandler.loadTemplateFor(new JComponent[]{orderConfirmation, printWithConfirmation}, d.templateGroupIds(), Constants.TYPE_ORDER_CONFIRMATION);
             TemplateHandler.loadTemplateFor(remindButton, d.templateGroupIds(), Constants.TYPE_REMINDER);
         }).start();
+    }
+
+    /**
+     * Updates the displayed contact in this open document tab when that contact
+     * was edited and saved in another tab, without discarding unsaved edits.
+     */
+    public void refreshContact(Contact updated) {
+        if (updated == null || updated.__getIDS() <= 0) {
+            return;
+        }
+        int currentId = contactsids_;
+        if (currentId <= 0 && dataOwner != null) {
+            currentId = dataOwner.__getContactsids();
+        }
+        if (currentId != updated.__getIDS()) {
+            return;
+        }
+        boolean prevLoading = loading;
+        loading = true;
+        try {
+            contactname.setModel(updated);
+            updateHeader();
+        } finally {
+            loading = prevLoading;
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="E-invoice (as in ItemPanel2)">
@@ -2012,7 +2048,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
             SubItem[] subs = ItemService.copyPositions(dbo);
             o.setIDS(-1);
             setDataOwner(o, true);
-            positions.setModel(SubItem.toModel(subs, true));
+            positions.setPositions(subs);
         }
     }
 
@@ -2042,10 +2078,9 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
 
     @Override
     public void actionAfterCreate() {
-        //the positions are new as well
-        ArrayUtilities.replaceColumn(positions.getTable(), 0, null);
+        //the positions are new as well: commit active edits first, then clone all rows
         positions.prepareSave();
-        ItemService.savePositions(dataOwner, positions.getModel(), false, positions.getUsedOrders());
+        ItemService.savePositions(dataOwner, positions.getModel(), false, positions.getUsedOrders(), true);
         setTabTitle(dataOwner.__getCname());
     }
 

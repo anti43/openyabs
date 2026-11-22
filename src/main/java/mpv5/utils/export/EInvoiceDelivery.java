@@ -83,10 +83,7 @@ public enum EInvoiceDelivery {
      */
     public static boolean isZugpferdDefault() {
         try {
-            String v = mpv5.db.objects.User.getCurrentUser().getProperty(KEY_DEFAULT_ZUGFERD);
-            if (v == null || v.trim().isEmpty()) {
-                v = mpv5.globals.GlobalSettings.getProperty(KEY_DEFAULT_ZUGFERD);
-            }
+            String v = mpv5.globals.CompanyInfo.getProperty(KEY_DEFAULT_ZUGFERD);
             return Boolean.parseBoolean(v);
         } catch (Exception e) {
             return false;
@@ -98,8 +95,8 @@ public enum EInvoiceDelivery {
      */
     public static void setZugpferdDefault(boolean enabled) {
         try {
-            mpv5.db.objects.User.getCurrentUser().setProperty(KEY_DEFAULT_ZUGFERD, String.valueOf(enabled));
-            mpv5.globals.GlobalSettings.setProperty(KEY_DEFAULT_ZUGFERD, String.valueOf(enabled));
+            mpv5.globals.CompanyInfo.setProperty(KEY_DEFAULT_ZUGFERD, String.valueOf(enabled));
+            mpv5.globals.CompanyInfo.save();
         } catch (Exception e) {
             Log.Debug(EInvoiceDelivery.class, e);
         }

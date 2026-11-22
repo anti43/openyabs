@@ -2041,7 +2041,9 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             if (country_.length() == 0) {
                 country_ = mpv5.db.objects.User.getCurrentUser().__getDefcountry();
             }
-            countryselect.setSelectedIndex(MPComboBoxModelItem.getItemID(country_, countryselect.getModel()));
+            if (countryselect.getModel().getSize() > 0) {
+                countryselect.setSelectedIndex(LanguageManager.countryIndex(country_, countryselect.getModel()));
+            }
         } catch (Exception e) {
             Log.Debug(e);
         }
@@ -2200,6 +2202,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     @Override
     public void actionAfterSave() {
         saveEInvoiceSettings();
+        mpv5.YabsViewProxy.instance().refreshOpenTabsForContact(dataOwner);
     }
 
     private final javax.swing.JComboBox<mpv5.utils.export.EInvoiceDelivery> einvoiceDelivery

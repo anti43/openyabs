@@ -95,6 +95,10 @@ public final class FirstStartSetup {
      */
     public static boolean isSmallBusiness(User user) {
         try {
+            String global = mpv5.globals.CompanyInfo.getProperty(mpv5.utils.export.SmallBusiness.KEY_ENABLED);
+            if (!global.isEmpty()) {
+                return "true".equalsIgnoreCase(global.trim());
+            }
             return user != null && "true".equalsIgnoreCase(String.valueOf(
                     user.getProperty("companyinfo." + mpv5.utils.export.SmallBusiness.KEY_ENABLED)).trim());
         } catch (Exception e) {
@@ -352,17 +356,17 @@ public final class FirstStartSetup {
      * null for none
      */
     public static void saveCompany(User admin, java.util.Map<String, String> company) {
-        if (admin == null || company == null || company.isEmpty()) {
+        if (company == null || company.isEmpty()) {
             return;
         }
         try {
             for (java.util.Map.Entry<String, String> e : company.entrySet()) {
                 String v = e.getValue() == null ? "" : e.getValue().trim();
                 if (!v.isEmpty()) {
-                    admin.setProperty("companyinfo." + e.getKey(), v);
+                    mpv5.globals.CompanyInfo.setProperty(e.getKey(), v);
                 }
             }
-            admin.saveProperties();
+            mpv5.globals.CompanyInfo.save();
         } catch (Exception e) {
             Log.Debug(FirstStartSetup.class, e);
         }

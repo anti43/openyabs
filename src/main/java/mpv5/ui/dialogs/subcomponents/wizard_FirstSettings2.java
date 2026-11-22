@@ -211,7 +211,7 @@ public class wizard_FirstSettings2 extends javax.swing.JPanel implements Wizarda
    }
 
    private void setModels() {
-      setValues(User.getCurrentUser().getProperties().getProperties("companyinfo."));
+      setValues(mpv5.globals.CompanyInfo.getProperties());
    }
 
    private void setSettings() {
@@ -219,8 +219,9 @@ public class wizard_FirstSettings2 extends javax.swing.JPanel implements Wizarda
       Iterator<Map.Entry<String, String>> i = m.entrySet().iterator();
       while (i.hasNext()) {
          Map.Entry<String, String> it = i.next();
-         User.getCurrentUser().setProperty("companyinfo." + it.getKey(), it.getValue());
+         mpv5.globals.CompanyInfo.setProperty(it.getKey(), it.getValue());
       }
+      mpv5.globals.CompanyInfo.save();
    }
 
    public void setValues(PropertyStore values) {

@@ -209,7 +209,7 @@ public final class CashRegister implements YabsExtension {
         applyTse();
         server = new PosServer(service, port());
         try {
-            String shop = mpv5.db.objects.User.getCurrentUser().getProperty("companyinfo.business");
+            String shop = mpv5.globals.CompanyInfo.getProperty("business");
             server.setShopName(shop == null || shop.equals("null") ? "YaBS" : shop);
             server.setDefaultUser(ctx.settings().get("user", USER));
             server.setReceipts(new PosServer.ReceiptSource() {

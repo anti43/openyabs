@@ -409,7 +409,7 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
             Runnable runnable = new Runnable() {
 
                 public void run() {
-                    countryselect.setSelectedIndex(MPComboBoxModelItem.getItemID(mpv5.db.objects.User.getCurrentUser().__getDefcountry(), countryselect.getModel()));
+                    countryselect.setSelectedIndex(LanguageManager.countryIndex(mpv5.db.objects.User.getCurrentUser().__getDefcountry(), countryselect.getModel()));
                 }
             };
             SwingUtilities.invokeLater(runnable);

@@ -1217,7 +1217,9 @@ public class ModernContactPanel extends ModernDataPanel {
             if (country_ == null || country_.length() == 0) {
                 country_ = User.getCurrentUser().__getDefcountry();
             }
-            countryselect.setSelectedIndex(MPComboBoxModelItem.getItemID(country_, countryselect.getModel()));
+            if (countryselect.getModel().getSize() > 0) {
+                countryselect.setSelectedIndex(LanguageManager.countryIndex(country_, countryselect.getModel()));
+            }
         } catch (Exception e) {
             Log.Debug(e);
         }
@@ -1319,6 +1321,7 @@ public class ModernContactPanel extends ModernDataPanel {
     public void actionAfterSave() {
         saveEInvoiceSettings();
         saveProperties();
+        YabsViewProxy.instance().refreshOpenTabsForContact(dataOwner);
     }
 
     @Override

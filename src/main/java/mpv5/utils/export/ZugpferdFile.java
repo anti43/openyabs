@@ -929,7 +929,7 @@ public class ZugpferdFile implements Waitable {
         return new Function<String, String>() {
             @Override
             public String apply(String key) {
-                return User.getCurrentUser().getProperty(COMPANY_PREFIX + key);
+                return mpv5.globals.CompanyInfo.getProperty(key);
             }
         };
     }

@@ -401,8 +401,9 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
         if (dataOwner != null && dataOwner.isExisting()
                 && Popup.Y_N_dialog(String.format(Messages.TEMPLATES_DELETE_CONFIRM.toString(), dataOwner.__getCname()))) {
             mpv5.handler.TemplateEditing.stop(dataOwner);
-            TemplateHandler.clearCache();
             dataOwner.delete();
+            TemplateHandler.clearCache();
+            mpv5.YabsViewProxy.instance().refreshOpenTabsTemplates();
             dataOwner = null;
             refresh();
         }
@@ -1083,32 +1084,22 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
         for (User u : selectedUsers()) {
             wanted.add(u.__getIDS());
         }
-        Set<Integer> present = new HashSet<Integer>();
         try {
-            Object[][] data = QueryHandler.instanceOf().clone(Context.getTemplatesToUsers())
-                    .select("usersids, cname", new QueryCriteria("templatesids", dataOwner.__getIDS()));
-            for (Object[] d : data) {
-                int user = Integer.parseInt(String.valueOf(d[0]));
-                if (wanted.contains(user)) {
-                    present.add(user);
-                } else {
-                    QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).delete(new QueryCriteria("cname", String.valueOf(d[1])));
-                }
-            }
+            QueryHandler.instanceOf().clone(Context.getTemplatesToUsers())
+                    .delete(new QueryCriteria("templatesids", dataOwner.__getIDS()));
         } catch (Exception ex) {
             Log.Debug(this, ex);
         }
         for (Integer user : wanted) {
-            if (!present.contains(user)) {
-                QueryData c = new QueryData();
-                c.add("usersids", user);
-                c.add("templatesids", dataOwner.__getIDS());
-                c.add("groupsids", group);
-                c.add("cname", dataOwner.__getIDS() + "@" + user + "@" + group);
-                QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).insert(c, null);
-            }
+            QueryData c = new QueryData();
+            c.add("usersids", user);
+            c.add("templatesids", dataOwner.__getIDS());
+            c.add("groupsids", group);
+            c.add("cname", dataOwner.__getIDS() + "@" + user + "@" + group);
+            QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).insert(c, null);
         }
         TemplateHandler.clearCache();
+        mpv5.YabsViewProxy.instance().refreshOpenTabsTemplates();
     }
 
     @Override

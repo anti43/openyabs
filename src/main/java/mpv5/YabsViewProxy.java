@@ -591,5 +591,64 @@ public class YabsViewProxy implements YabsView {
             views.get(i).removeTab(b);
         }
     }
+
+    /**
+     * Notifies all open invoice/document tabs referencing {@code updated} so
+     * contact edits are immediately reflected without closing or reopening tabs.
+     */
+    public void refreshOpenTabsForContact(final mpv5.db.objects.Contact updated) {
+        if (updated == null || updated.__getIDS() <= 0) {
+            return;
+        }
+        Runnable task = () -> {
+            for (int v = 0; v < views.size(); v++) {
+                if (views.get(v) instanceof mpv5.ui.frames.MPView) {
+                    mpv5.ui.frames.MPView view = (mpv5.ui.frames.MPView) views.get(v);
+                    int count = view.getTabPane().getTabCount();
+                    for (int i = 0; i < count; i++) {
+                        DataPanel panel = view.getTabAt(i);
+                        if (panel instanceof mpv5.ui.panels.ModernItemPanel) {
+                            ((mpv5.ui.panels.ModernItemPanel) panel).refreshContact(updated);
+                        } else if (panel instanceof mpv5.ui.panels.ItemPanel2) {
+                            ((mpv5.ui.panels.ItemPanel2) panel).refreshContact(updated);
+                        }
+                    }
+                }
+            }
+        };
+        if (javax.swing.SwingUtilities.isEventDispatchThread()) {
+            task.run();
+        } else {
+            javax.swing.SwingUtilities.invokeLater(task);
+        }
+    }
+
+    /**
+     * Re-checks template availability on all open document tabs (called after
+     * template manager changes so no restart is needed).
+     */
+    public void refreshOpenTabsTemplates() {
+        Runnable task = () -> {
+            for (int v = 0; v < views.size(); v++) {
+                if (views.get(v) instanceof mpv5.ui.frames.MPView) {
+                    mpv5.ui.frames.MPView view = (mpv5.ui.frames.MPView) views.get(v);
+                    int count = view.getTabPane().getTabCount();
+                    for (int i = 0; i < count; i++) {
+                        DataPanel panel = view.getTabAt(i);
+                        if (panel instanceof mpv5.ui.panels.ModernItemPanel) {
+                            ((mpv5.ui.panels.ModernItemPanel) panel).refreshTemplates();
+                        } else if (panel instanceof mpv5.ui.panels.ItemPanel2) {
+                            ((mpv5.ui.panels.ItemPanel2) panel).refreshTemplates();
+                        }
+                    }
+                }
+            }
+        };
+        if (javax.swing.SwingUtilities.isEventDispatchThread()) {
+            task.run();
+        } else {
+            javax.swing.SwingUtilities.invokeLater(task);
+        }
+    }
     
 }

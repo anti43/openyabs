@@ -40,6 +40,8 @@ public class TemplateHandler {
      * @param type
      * @return
      */
+    private static final java.util.Set<String> MULTI_TEMPLATE_KEYS = new java.util.HashSet<String>();
+
     public static synchronized boolean isLoaded(Long group, int type) {
         String key;
 
@@ -49,7 +51,7 @@ public class TemplateHandler {
             key = mpv5.db.objects.User.getCurrentUser() + "@" + type + "@" + 1;
         }
 
-        return TEMPLATE_CACHE.containsKey(key);
+        return TEMPLATE_CACHE.containsKey(key) || MULTI_TEMPLATE_KEYS.contains(key);
     }
 
     /**
@@ -66,31 +68,67 @@ public class TemplateHandler {
 
         key = mpv5.db.objects.User.getCurrentUser() + "@" + target.templateType() + "@" + target.templateGroupIds();
 
-        return TEMPLATE_CACHE.containsKey(key);
+        return TEMPLATE_CACHE.containsKey(key) || MULTI_TEMPLATE_KEYS.contains(key);
     }
 
     /**
-     * Ensures the template for the current user, group and type is loaded in
-     * cache, loading it synchronously if background preloading has not finished
-     * yet.
+     * Ensures the template for the current user, group and type is available,
+     * preloading it if unique without prompting when multiple templates exist.
      *
      * @param group
      * @param type
-     * @return true if a template is loaded and ready
+     * @return true if at least one template is available
      */
     public static boolean ensureLoaded(Long group, int type) {
-        return isLoaded(group, type) || loadTemplate(group == null ? 1L : group, type) != null;
+        return isLoaded(group, type) || preloadTemplate(group == null ? 1L : group, type);
     }
 
     /**
-     * Ensures the template for the given target is loaded in cache, loading it
-     * synchronously if background preloading has not finished yet.
+     * Ensures the template for the given target is available without prompting
+     * when multiple templates exist.
      *
      * @param target
-     * @return true if a template is loaded and ready
+     * @return true if at least one template is available
      */
     public static boolean ensureLoaded(Templateable target) {
-        return target != null && (isLoaded(target) || loadTemplate(target) != null);
+        return target != null && (isLoaded(target) || preloadTemplate(target.templateGroupIds(), target.templateType()));
+    }
+
+    /**
+     * Checks template availability for background preloading: loads and caches
+     * a single template immediately, or marks the key as multi-template so the
+     * user is asked on each actual export/print.
+     */
+    public static boolean preloadTemplate(long groupsids, int typ) {
+        if (!(LocalSettings.getBooleanProperty(LocalSettings.OFFICE_USE)
+                || LocalSettings.getBooleanProperty(LocalSettings.OFFICE_ALT))) {
+            return false;
+        }
+        if (groupsids < 0) {
+            groupsids = 1;
+        }
+        String key = mpv5.db.objects.User.getCurrentUser() + "@" + typ + "@" + groupsids;
+        synchronized (TemplateHandler.class) {
+            if (LocalSettings.isCachingEnabled() && (TEMPLATE_CACHE.containsKey(key) || MULTI_TEMPLATE_KEYS.contains(key))) {
+                return true;
+            }
+        }
+        ReturnValue data = TemplateHandler.getDefinedTemplatesFor(groupsids, typ);
+        if (!data.hasData()) {
+            return false;
+        }
+        java.util.LinkedHashSet<Integer> ids = new java.util.LinkedHashSet<>();
+        for (Object[] row : data.getData()) {
+            ids.add(Integer.valueOf(row[0].toString()));
+        }
+        if (ids.size() > 1) {
+            synchronized (TemplateHandler.class) {
+                TEMPLATE_CACHE.remove(key);
+                MULTI_TEMPLATE_KEYS.add(key);
+            }
+            return true;
+        }
+        return loadTemplate(groupsids, typ) != null;
     }
 
     /**
@@ -129,7 +167,9 @@ public class TemplateHandler {
     }
 
     /**
-     * Loads a template including necessary files
+     * Loads a template including necessary files. If multiple templates are
+     * assigned for this user, group and type, the user is prompted every time
+     * to choose which one to use.
      *
      * @param groupsids
      * @param typ
@@ -145,11 +185,9 @@ public class TemplateHandler {
             groupsids = 1;
         }
         String key = mpv5.db.objects.User.getCurrentUser() + "@" + type + "@" + groupsids;
-        //caching switched off (local settings): the template is loaded again; it is still
-        //kept in TEMPLATE_CACHE, the export asks there whether it is loaded (isLoaded)
         final boolean caching = LocalSettings.isCachingEnabled();
         synchronized (TemplateHandler.class) {
-            if (caching && TEMPLATE_CACHE.containsKey(key)) {
+            if (caching && !MULTI_TEMPLATE_KEYS.contains(key) && TEMPLATE_CACHE.containsKey(key)) {
                 return TEMPLATE_CACHE.get(key);
             }
         }
@@ -166,15 +204,19 @@ public class TemplateHandler {
             }
             return null;
         }
-        //several templates of the type assigned to the user (for the group): the user chooses
+        //several templates of the type assigned to the user (for the group): ask every time
         java.util.LinkedHashSet<Integer> ids = new java.util.LinkedHashSet<>();
         for (Object[] row : data.getData()) {
             ids.add(Integer.valueOf(row[0].toString()));
         }
-        int id = ids.size() == 1 ? ids.iterator().next() : choose(key, new java.util.ArrayList<>(ids), type);
+        boolean multiple = ids.size() > 1;
+        int id = multiple ? choose(new java.util.ArrayList<>(ids), type) : ids.iterator().next();
+        if (id <= 0) {
+            return null;
+        }
 
         synchronized (TemplateHandler.class) {
-            if (caching && TEMPLATE_CACHE.containsKey(key)) {
+            if (!multiple && caching && TEMPLATE_CACHE.containsKey(key)) {
                 return TEMPLATE_CACHE.get(key);
             }
             Template preloadedTemplate;
@@ -188,16 +230,20 @@ public class TemplateHandler {
                     Log.Debug(Template.class, "Loaded template: " + preloadedTemplate);
                     mpv5.YabsViewProxy.instance().addMessage(preloadedTemplate + Messages.LOADED.toString(), Color.GREEN);
                 }
-                TEMPLATE_CACHE.put(key, preloadedTemplate);
+                if (multiple) {
+                    TEMPLATE_CACHE.remove(key);
+                    MULTI_TEMPLATE_KEYS.add(key);
+                } else {
+                    MULTI_TEMPLATE_KEYS.remove(key);
+                    TEMPLATE_CACHE.put(key, preloadedTemplate);
+                }
             } catch (Exception ex) {
                 Log.Debug(ex);
                 Log.Debug(Template.class, "Possibly invalid template: " + id);
-                //say which template is broken (not just "no template")
                 String name = "#" + id;
                 try {
                     name = DatabaseObject.getObject(Context.getTemplate(), id).__getCname();
                 } catch (Exception ignored) {
-                    //the id
                 }
                 mpv5.YabsViewProxy.instance().addMessage(String.format(Messages.TEMPLATE_BROKEN.toString(), name, ex.getMessage()), Color.RED);
                 return null;
@@ -206,10 +252,6 @@ public class TemplateHandler {
         }
     }
 
-    /**
-     * The template the user chose (per user, type and group), for this session
-     */
-    private static final HashMap<String, Integer> CHOSEN = new HashMap<String, Integer>();
     private static final Object ASK_LOCK = new Object();
     /**
      * Answers the question in tests: gets the candidates, returns the chosen one (or null for the default)
@@ -217,26 +259,19 @@ public class TemplateHandler {
     static java.util.function.Function<java.util.List<Template>, Template> chooser;
 
     /**
-     * Several templates of the type are assigned: ask which one (once per
-     * session). Without an answer (cancelled, no screen) the last one, as before.
+     * Several templates of the type are assigned: ask the user every time which
+     * one to use. In headless/silent mode returns the last one. If the user
+     * cancels the interactive dialog, returns {@code -1}.
      *
-     * @param key user@type@group
      * @param ids the assigned templates
      * @param type
-     * @return the id of the template to use
+     * @return the id of the chosen template, or {@code -1} if cancelled
      */
-    private static int choose(String key, java.util.List<Integer> ids, int type) {
+    private static int choose(java.util.List<Integer> ids, int type) {
         int fallback = ids.get(ids.size() - 1);
-        //not on the EDT: one question at a time (the EDT never waits for this lock)
         boolean edt = javax.swing.SwingUtilities.isEventDispatchThread();
         Object lock = edt ? new Object() : ASK_LOCK;
         synchronized (lock) {
-            synchronized (CHOSEN) {
-                Integer c = CHOSEN.get(key);
-                if (c != null && ids.contains(c)) {
-                    return c;
-                }
-            }
             final java.util.List<Template> candidates = new java.util.ArrayList<Template>();
             for (Integer i : ids) {
                 try {
@@ -249,7 +284,7 @@ public class TemplateHandler {
                 return candidates.isEmpty() ? fallback : candidates.get(0).__getIDS();
             }
             final Template[] answer = new Template[1];
-            //no question without somebody to answer it (as without a display: the last template)
+            final boolean[] askedInteractive = {false};
             final boolean mayAsk = !mpv5.ui.dialogs.Popup.isSilent();
             final String question = String.format(Messages.TEMPLATE_CHOOSE.toString(), getName(type));
             Runnable ask = new Runnable() {
@@ -258,6 +293,7 @@ public class TemplateHandler {
                     if (chooser != null) {
                         answer[0] = chooser.apply(candidates);
                     } else if (mayAsk && !java.awt.GraphicsEnvironment.isHeadless()) {
+                        askedInteractive[0] = true;
                         Object o = javax.swing.JOptionPane.showInputDialog(mpv5.ui.dialogs.Popup.identifier, question,
                                 Messages.TEMPLATE_CHOOSE_TITLE.toString(), javax.swing.JOptionPane.QUESTION_MESSAGE, null,
                                 candidates.toArray(), candidates.get(candidates.size() - 1));
@@ -274,11 +310,10 @@ public class TemplateHandler {
             } catch (Exception e) {
                 Log.Debug(TemplateHandler.class, e);
             }
-            int chosen = answer[0] == null ? fallback : answer[0].__getIDS();
-            synchronized (CHOSEN) {
-                CHOSEN.put(key, chosen);
+            if (answer[0] != null) {
+                return answer[0].__getIDS();
             }
-            return chosen;
+            return askedInteractive[0] ? -1 : fallback;
         }
     }
 
@@ -619,7 +654,9 @@ public class TemplateHandler {
      * @param dataOwner
      */
     public static void loadTemplateFor(final JComponent button, final Templateable dataOwner) {
-        loadTemplate(dataOwner.templateGroupIds(), dataOwner.templateType());
+        if (dataOwner != null) {
+            preloadTemplate(dataOwner.templateGroupIds(), dataOwner.templateType());
+        }
     }
 
     /**
@@ -635,8 +672,9 @@ public class TemplateHandler {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                loadTemplate(groupsids, typ);
-                button.setEnabled(isLoaded(groupsids, typ));
+                preloadTemplate(groupsids, typ);
+                final boolean ready = isLoaded(groupsids, typ);
+                javax.swing.SwingUtilities.invokeLater(() -> button.setEnabled(ready));
             }
         };
         new Thread(runnable).start();
@@ -671,10 +709,15 @@ public class TemplateHandler {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                loadTemplate(dataOwner);
-                for (JComponent jComponent1 : jComponent) {
-                    jComponent1.setEnabled(isLoaded(dataOwner));
+                if (dataOwner != null) {
+                    preloadTemplate(dataOwner.templateGroupIds(), dataOwner.templateType());
                 }
+                final boolean ready = isLoaded(dataOwner);
+                javax.swing.SwingUtilities.invokeLater(() -> {
+                    for (JComponent jComponent1 : jComponent) {
+                        jComponent1.setEnabled(ready);
+                    }
+                });
             }
         };
         new Thread(runnable).start();
@@ -694,10 +737,13 @@ public class TemplateHandler {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                loadTemplate(groupsids, typ);
-                for (JComponent jComponent1 : jComponent) {
-                    jComponent1.setEnabled(isLoaded(groupsids, typ));
-                }
+                preloadTemplate(groupsids, typ);
+                final boolean ready = isLoaded(groupsids, typ);
+                javax.swing.SwingUtilities.invokeLater(() -> {
+                    for (JComponent jComponent1 : jComponent) {
+                        jComponent1.setEnabled(ready);
+                    }
+                });
             }
         };
         new Thread(runnable).start();
@@ -760,10 +806,10 @@ public class TemplateHandler {
     public static void clearCache() {
         synchronized (TemplateHandler.class) {
             TEMPLATE_CACHE.clear();
+            MULTI_TEMPLATE_KEYS.clear();
+            TEMPLATE_MISSING_NOTIFICATIONS.clear();
         }
-        synchronized (CHOSEN) {
-            CHOSEN.clear();
-        }
+        DatabaseObject.clearCache(Context.getTemplate());
     }
 
     public static boolean importTemplateAndAssign(File file, FutureCallback<Template> f) {

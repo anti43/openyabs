@@ -1045,28 +1045,13 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
 
         if (proceed) {
             if (item.hasView() && (forceNew || mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "norecycletabs"))) {
+                final DataPanel p = ((DataPanel) item.getView());
                 if (tabTitle == null) {
-                    final DataPanel p = ((DataPanel) item.getView());
                     addTab((JComponent) p, item.__getCname());
-                    Runnable runnable = new Runnable() {
-                        @Override
-                        public void run() {
-                            p.setDataOwner(item, true);
-                        }
-                    };
-                    SwingUtilities.invokeLater(runnable);
                 } else {
-                    final DataPanel p = ((DataPanel) item.getView());
                     addTab((JComponent) p, tabTitle + ": " + item.__getCname());
-                    Runnable runnable = new Runnable() {
-                        @Override
-                        public void run() {
-                            p.setDataOwner(item, true);
-                        }
-                    };
-                    SwingUtilities.invokeLater(runnable);
                 }
-                getCurrentTab().setDataOwner(item, true);
+                p.setDataOwner(item, true);
             } else if (item.hasView()) {
                 int count = getTabPane().getTabCount();
                 for (int i = 0; i < count; i++) {

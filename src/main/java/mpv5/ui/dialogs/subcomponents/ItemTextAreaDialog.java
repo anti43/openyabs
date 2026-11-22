@@ -37,6 +37,9 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
 
     private JTable parentTable;
     private mpv5.db.objects.Product product;
+    private boolean userMoved;
+    private int editedRow = -1;
+    private boolean closing;
 
     /**
      * Creates new form ItemTextAreaDialog
@@ -47,7 +50,6 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
         setUndecorated(true);
         initComponents();
         textArea.addKeyListener(this);
-        bindKeys();
         cancelButton.setToolTipText("Esc");
         labeledCombobox1.setContext(Context.getProduct());
         labeledCombobox1.setSearchOnEnterEnabled(true);
@@ -56,7 +58,17 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
         setupProductGroups();
 
         labeledSpinner1.setValue(1);
+        bindKeys();
+        installFocusLossHandler();
         makeMovable();
+    }
+
+    public boolean isUserMoved() {
+        return userMoved;
+    }
+
+    public void setEditedRow(int row) {
+        this.editedRow = row;
     }
 
     /**
@@ -250,6 +262,7 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
                 if (offset != null) {
                     java.awt.Point p = e.getLocationOnScreen();
                     setLocation(p.x - offset.x, p.y - offset.y);
+                    userMoved = true;
                 }
             }
         };
@@ -274,7 +287,8 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
     /**
      * As in a spreadsheet: Enter (or Ctrl+Enter) applies the text and closes
      * the dialog, Shift+Enter is a new line in the text, Tab moves focus out
-     * of the text area to the dropdowns and controls, Esc cancels
+     * of the text area to the dropdowns and controls, Esc cancels from any
+     * field (including the quantity spinner and product search).
      */
     private void bindKeys() {
         //the cell editor (TextAreaCellEditor) applies the text on the command "OK",
@@ -284,9 +298,8 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
         textArea.setToolTipText(Messages.ITEM_TEXT_KEYS.toString());
         bindEnter(textArea, this::apply);
         bindTab(textArea);
-        getRootPane().getInputMap(javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW)
-                .put(javax.swing.KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "yabs.cancel");
-        getRootPane().getActionMap().put("yabs.cancel", new javax.swing.AbstractAction() {
+
+        javax.swing.Action cancelAction = new javax.swing.AbstractAction() {
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -299,7 +312,93 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
                     cancel();
                 }
             }
+        };
+        javax.swing.Action applyAction = new javax.swing.AbstractAction() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                apply();
+            }
+        };
+
+        javax.swing.InputMap rootIm = getRootPane().getInputMap(javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW);
+        javax.swing.ActionMap rootAm = getRootPane().getActionMap();
+        rootIm.put(javax.swing.KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "yabs.cancel");
+        rootIm.put(javax.swing.KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, java.awt.event.InputEvent.CTRL_DOWN_MASK), "yabs.apply");
+        rootIm.put(javax.swing.KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, java.awt.event.InputEvent.META_DOWN_MASK), "yabs.apply");
+        rootAm.put("yabs.cancel", cancelAction);
+        rootAm.put("yabs.apply", applyAction);
+
+        // JFormattedTextField inside JSpinner consumes ESCAPE (reset-field-edit) in WHEN_FOCUSED,
+        // and JComboBox editors may also intercept keys: bind directly on them so Esc and Ctrl+Enter always work.
+        javax.swing.JComponent spinnerEditor = labeledSpinner1.getSpinner().getEditor();
+        if (spinnerEditor instanceof javax.swing.JSpinner.DefaultEditor) {
+            bindDialogShortcuts(((javax.swing.JSpinner.DefaultEditor) spinnerEditor).getTextField(), applyAction, cancelAction);
+        }
+        bindComboEditorShortcuts(labeledCombobox1.getComboBox(), applyAction, cancelAction);
+        bindComboEditorShortcuts(groupselect.getComboBox(), applyAction, cancelAction);
+    }
+
+    static void bindDialogShortcuts(javax.swing.JComponent comp, javax.swing.Action applyAction, javax.swing.Action cancelAction) {
+        if (comp == null) {
+            return;
+        }
+        javax.swing.InputMap im = comp.getInputMap(javax.swing.JComponent.WHEN_FOCUSED);
+        javax.swing.ActionMap am = comp.getActionMap();
+        im.put(javax.swing.KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "yabs.cancel");
+        im.put(javax.swing.KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, java.awt.event.InputEvent.CTRL_DOWN_MASK), "yabs.apply");
+        im.put(javax.swing.KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, java.awt.event.InputEvent.META_DOWN_MASK), "yabs.apply");
+        am.put("yabs.cancel", cancelAction);
+        am.put("yabs.apply", applyAction);
+    }
+
+    private static void bindComboEditorShortcuts(javax.swing.JComboBox<?> combo, javax.swing.Action applyAction, javax.swing.Action cancelAction) {
+        if (combo == null) {
+            return;
+        }
+        bindDialogShortcuts(combo, applyAction, cancelAction);
+        if (combo.getEditor() != null && combo.getEditor().getEditorComponent() instanceof javax.swing.JComponent) {
+            bindDialogShortcuts((javax.swing.JComponent) combo.getEditor().getEditorComponent(), applyAction, cancelAction);
+        }
+    }
+
+    /**
+     * Clicking outside the non-modal popup (e.g. into another field of the
+     * invoice) commits the edited text/quantity and closes the popup without
+     * stealing focus back from the clicked field.
+     */
+    private void installFocusLossHandler() {
+        addWindowFocusListener(new java.awt.event.WindowFocusListener() {
+            @Override
+            public void windowGainedFocus(java.awt.event.WindowEvent e) {
+            }
+
+            @Override
+            public void windowLostFocus(java.awt.event.WindowEvent e) {
+                if (!isVisible() || closing) {
+                    return;
+                }
+                if (groupselect.getComboBox().isPopupVisible() || labeledCombobox1.getComboBox().isPopupVisible()) {
+                    return;
+                }
+                java.awt.Window opposite = e.getOppositeWindow();
+                if (isOwnedByThis(opposite)) {
+                    return;
+                }
+                apply(false);
+            }
         });
+    }
+
+    private boolean isOwnedByThis(java.awt.Window w) {
+        while (w != null) {
+            if (w == this) {
+                return true;
+            }
+            w = w.getOwner();
+        }
+        return false;
     }
 
     /**
@@ -324,6 +423,7 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
         javax.swing.InputMap im = area.getInputMap(javax.swing.JComponent.WHEN_FOCUSED);
         im.put(javax.swing.KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "yabs.apply");
         im.put(javax.swing.KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, java.awt.event.InputEvent.CTRL_DOWN_MASK), "yabs.apply");
+        im.put(javax.swing.KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, java.awt.event.InputEvent.META_DOWN_MASK), "yabs.apply");
         im.put(javax.swing.KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, java.awt.event.InputEvent.SHIFT_DOWN_MASK), javax.swing.text.DefaultEditorKit.insertBreakAction);
         area.getActionMap().put("yabs.apply", new javax.swing.AbstractAction() {
             private static final long serialVersionUID = 1L;
@@ -340,9 +440,31 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
      * button)
      */
     void apply() {
-        ActionEvent actionEvent = new ActionEvent(okButton, ActionEvent.ACTION_PERFORMED, okButton.getActionCommand());
-        for (ActionListener l : okButton.getActionListeners()) {
-            l.actionPerformed(actionEvent);
+        apply(true);
+    }
+
+    void apply(boolean restoreTableFocus) {
+        if (closing) {
+            return;
+        }
+        closing = true;
+        try {
+            commitSpinnerEdit();
+            String cmd = restoreTableFocus ? okButton.getActionCommand() : mpv5.utils.renderer.TextAreaCellEditor.OK_KEEP_FOCUS;
+            ActionEvent actionEvent = new ActionEvent(okButton, ActionEvent.ACTION_PERFORMED, cmd);
+            for (ActionListener l : okButton.getActionListeners()) {
+                l.actionPerformed(actionEvent);
+            }
+        } finally {
+            closing = false;
+        }
+    }
+
+    private void commitSpinnerEdit() {
+        try {
+            labeledSpinner1.getSpinner().commitEdit();
+        } catch (java.text.ParseException ignored) {
+            // keep last valid spinner value
         }
     }
 
@@ -350,10 +472,18 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
      * Cancels editing and closes the dialog (as the Cancel button)
      */
     void cancel() {
-        ActionListener[] listeners = cancelButton.getActionListeners();
-        ActionEvent actionEvent = new ActionEvent(cancelButton, ActionEvent.ACTION_PERFORMED, cancelButton.getActionCommand());
-        for (int i = 0; i < listeners.length; i++) {
-            listeners[i].actionPerformed(actionEvent);
+        if (closing) {
+            return;
+        }
+        closing = true;
+        try {
+            ActionListener[] listeners = cancelButton.getActionListeners();
+            ActionEvent actionEvent = new ActionEvent(cancelButton, ActionEvent.ACTION_PERFORMED, cancelButton.getActionCommand());
+            for (int i = 0; i < listeners.length; i++) {
+                listeners[i].actionPerformed(actionEvent);
+            }
+        } finally {
+            closing = false;
         }
     }
 
@@ -496,10 +626,21 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
     }
 
     private synchronized void setRow() {
+        commitSpinnerEdit();
+        JTable table = getParentTable();
+        if (table == null) {
+            setVisible(false);
+            return;
+        }
+        int row = editedRow >= 0 && editedRow < table.getRowCount() ? editedRow : table.getSelectedRow();
+        if (row < 0) {
+            setVisible(false);
+            return;
+        }
         SubItem p;
-        MPTableModel m = (MPTableModel) getParentTable().getModel();
+        MPTableModel m = (MPTableModel) table.getModel();
         if (product == null) {
-            p = SubItem.getFromModel(m, getParentTable().getSelectedRow());
+            p = SubItem.getFromModel(m, row);
         } else {
             p = new SubItem(product);
         }
@@ -511,7 +652,7 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
         p.setDescription(textArea.getText());
         p.setQuantityvalue(quantity);
 
-        m.setRowAt(p.getRowData(getParentTable().getSelectedRow()), getParentTable().getSelectedRow(), 1, 14);
+        m.setRowAt(p.getRowData(row), row, 1, 14);
         labeledCombobox1.setSelectedIndex(-1);
         product = null;
         setVisible(false);
