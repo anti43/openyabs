@@ -299,6 +299,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
                         Contact dbo = (Contact) DatabaseObject.getObject(Context.getContact(), Integer.valueOf(item.getId()));
                         setContactData(dbo);
                         setEnddate(dbo);
+                        applyContactGroup(dbo);
                         updateHeader();
                         updateEInvoiceButton(dbo);
                         BigDecimal rate = ContactService.customerTaxRate(dbo);
@@ -794,6 +795,31 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         Date d = ItemService.dueDate(dbo, dataOwner.isExisting());
         if (d != null) {
             date3.setDate(d);
+        }
+    }
+
+    /**
+     * On a new (unsaved) document, adopt the selected customer's group so
+     * templates and grouping match the customer automatically.
+     */
+    private void applyContactGroup(Contact dbo) {
+        if (dbo == null || (dataOwner != null && dataOwner.isExisting())) {
+            return;
+        }
+        int gid = dbo.__getGroupsids();
+        if (gid <= 0) {
+            return;
+        }
+        try {
+            Group g = (Group) DatabaseObject.getObject(Context.getGroup(), gid);
+            group_ = g;
+            groupnameselect.setModel(g);
+            if (dataOwner != null) {
+                dataOwner.setGroupsids(gid);
+                preloadTemplates();
+            }
+        } catch (Exception ex) {
+            Log.Debug(this, ex.getMessage());
         }
     }
 
@@ -1557,6 +1583,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         dropPendingCustomer();
         contactname.setModel(c);
         setContactData(c);
+        applyContactGroup(c);
         updateHeader();
         if (saveDocument) {
             mpv5.ui.toolbars.RecordActions.save(this);
@@ -1650,6 +1677,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
             }
             contactname.setModel(owner);
             setContactData(owner);
+            applyContactGroup(owner);
             contactsids_ = owner.__getIDS();
         }
         if (contactsids_ <= 0) {
@@ -1775,9 +1803,13 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
                     || dbo.getContext().equals(Context.getOrder())) {
                 pasteItem((Item) dbo);
             } else if (dbo.getContext().equals(Context.getContact())) {
-                dataOwner.setContactsids(((Contact) dbo).__getIDS());
+                Contact contact = (Contact) dbo;
+                dataOwner.setContactsids(contact.__getIDS());
+                if (!dataOwner.isExisting() && contact.__getGroupsids() > 0) {
+                    dataOwner.setGroupsids(contact.__getGroupsids());
+                }
                 setDataOwner(dataOwner, true);
-                BigDecimal rate = ContactService.customerTaxRate((Contact) dbo);
+                BigDecimal rate = ContactService.customerTaxRate(contact);
                 positions.setCustomerTaxRate(rate);
                 if (rate != null) {
                     positions.applyCustomerTaxRate(rate);

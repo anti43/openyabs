@@ -181,6 +181,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                                 Contact dbo = (Contact) DatabaseObject.getObject(Context.getContact(), Integer.valueOf(item.getId()));
                                 setContactData(dbo);
                                 setEnddate(dbo);
+                                applyContactGroup(dbo);
                             } catch (Exception ex) {
                                 Log.Debug(this, ex.getMessage());
                             }
@@ -580,6 +581,27 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                 text.append("\n ... (").append(problems.size() - max).append(")");
             }
             Popup.warn(text.toString());
+        }
+    }
+
+    private void applyContactGroup(Contact dbo) {
+        if (dbo == null || (dataOwner != null && dataOwner.isExisting())) {
+            return;
+        }
+        int gid = dbo.__getGroupsids();
+        if (gid <= 0) {
+            return;
+        }
+        try {
+            Group g = (Group) DatabaseObject.getObject(Context.getGroup(), gid);
+            group_ = g;
+            groupnameselect.setModel(g);
+            if (dataOwner != null) {
+                dataOwner.setGroupsids(gid);
+                preloadTemplates();
+            }
+        } catch (Exception ex) {
+            Log.Debug(this, ex.getMessage());
         }
     }
 
@@ -2536,6 +2558,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                 Contact owner = (Contact) DatabaseObject.getObject(Context.getContact(), c.__getIDS(), true);
                 contactname.setModel(owner);
                 setContactData(owner);
+                applyContactGroup(owner);
                 contactsids_ = owner.__getIDS();
             } catch (Exception ex) {
                 Notificator.raiseNotification(ex, false);
@@ -2857,7 +2880,11 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                     ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
                 }
             } else if (dbo.getContext().equals(Context.getContact())) {
-                dataOwner.setContactsids(((Contact) dbo).__getIDS());
+                Contact contact = (Contact) dbo;
+                dataOwner.setContactsids(contact.__getIDS());
+                if (!dataOwner.isExisting() && contact.__getGroupsids() > 0) {
+                    dataOwner.setGroupsids(contact.__getGroupsids());
+                }
                 setDataOwner(dataOwner, true);
             } else if (dbo.getContext().equals(Context.getProduct())) {
                 java.math.BigDecimal rate = mpv5.handler.ContactService.customerTaxRate(dataOwner != null ? dataOwner.__getContactsids() : 0);
