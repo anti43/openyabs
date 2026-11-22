@@ -597,7 +597,7 @@ final class Audit {
                     "Pruefungsjahr: " + year,
                     "Export-Zeitpunkt: " + ts,
                     "",
-                    "1. Unveraenderbarkeit (§ 146 Abs. 4 AO):",
+                    "1. Unveraenderbarkeit:",
                     "   Festgeschriebene Belege (gobd_document_lock, gobd_income_lock) und deren",
                     "   Positionen sind durch den DatabaseObjectModifier gegen steuerrelevante",
                     "   Aenderungen sowie gegen Loeschen und Papierkorb gesperrt. Reine Zahlungs-",

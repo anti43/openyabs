@@ -153,7 +153,7 @@ final class Pages {
     JComponent auditorView() {
         JPanel root = new JPanel(new BorderLayout(8, 8));
         root.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        JLabel summary = new JLabel("GoBD Z1-Prueferansicht (§ 147 Abs. 6 AO – Unmittelbarer schreibgeschuetzter Datenzugriff)");
+        JLabel summary = new JLabel("GoBD Z1-Prueferansicht – unmittelbarer schreibgeschuetzter Datenzugriff");
         summary.setFont(ModernTheme.font(1, Font.BOLD));
         JComboBox<String> yearCombo = new JComboBox<String>(new String[]{ALL_YEARS});
         JButton refresh = ModernTheme.actionButton(new JButton("Aktualisieren"), null);
@@ -281,7 +281,7 @@ final class Pages {
                     if (!has) {
                         missing++;
                     }
-                    exp.addRow(new Object[]{r[0], str(r[1]), str(r[2]), fmtDate(r[3]), fmtDec(r[4]), has ? "Archiviert" : "Fehlt (Rz. 61)",
+                    exp.addRow(new Object[]{r[0], str(r[1]), str(r[2]), fmtDate(r[3]), fmtDec(r[4]), has ? "Archiviert" : "Fehlt",
                         orig, str(r[6]).trim(), arch});
                 }
             }
@@ -295,7 +295,7 @@ final class Pages {
             tabs.setTitleAt(1, "2. Importierte Einnahmen / ZUGFeRD (" + inc.getRowCount() + ")");
             tabs.setTitleAt(2, "3. Ausgaben & Eingangsbelege (" + exp.getRowCount() + (missing > 0 ? " | " + missing + " ohne Beleg" : "") + ")");
             tabs.setTitleAt(3, "4. GoBD Audit-Protokoll (" + aud.getRowCount() + ")");
-            summary.setText("GoBD Z1-Prueferansicht (§ 147 Abs. 6 AO) – " + inv.getRowCount() + " Ausgangsbelege | " + inc.getRowCount()
+            summary.setText("GoBD Z1-Prueferansicht – " + inv.getRowCount() + " Ausgangsbelege | " + inc.getRowCount()
                     + " ZUGFeRD-Einnahmen | " + exp.getRowCount() + " Ausgaben | " + aud.getRowCount() + " Audit-Eintraege");
         };
         yearCombo.addActionListener(e -> {

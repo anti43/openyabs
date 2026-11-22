@@ -864,32 +864,32 @@ public final class Gobd {
         List<String> errors = new ArrayList<String>();
         String num = str(doc.__getCnumber()).trim();
         if (withNumber && GobdUtil.isDraftNumber(num)) {
-            errors.add("Endgueltige fortlaufende Rechnungsnummer fehlt (aktuell: '" + num + "') (§ 14 Abs. 4 Nr. 4 UStG)");
+            errors.add("Endgueltige fortlaufende Rechnungsnummer fehlt (aktuell: '" + num + "')");
         }
         if (doc.__getDateadded() == null) {
-            errors.add("Ausstellungsdatum fehlt (§ 14 Abs. 4 Nr. 3 UStG)");
+            errors.add("Ausstellungsdatum fehlt");
         }
         //the service date (datetodo); empty means the document date (core, #208)
         if (serviceDate(doc) == null) {
-            errors.add("Leistungs-/Lieferdatum fehlt (§ 14 Abs. 4 Nr. 6 UStG)");
+            errors.add("Leistungs-/Lieferdatum fehlt");
         }
         if (doc.__getContactsids() <= 0) {
-            errors.add("Leistungsempfaenger/Kontakt fehlt (§ 14 Abs. 4 Nr. 1 UStG)");
+            errors.add("Leistungsempfaenger/Kontakt fehlt");
         } else {
             try {
                 Contact c = (Contact) DatabaseObject.getObject(Context.getContact(), doc.__getContactsids());
                 if (c != null && (blank(c.__getStreet()) || blank(c.__getCity()))) {
-                    errors.add("Vollstaendige Anschrift (Strasse/Ort) des Leistungsempfaengers fehlt (§ 14 Abs. 4 Nr. 1 UStG)");
+                    errors.add("Vollstaendige Anschrift (Strasse/Ort) des Leistungsempfaengers fehlt");
                 }
             } catch (Exception ignored) {
                 //no contact
             }
         }
         if (doc.__getNetvalue() == null || doc.getGrossAmount() == null) {
-            errors.add("Entgelt / Bruttobetrag fehlt (§ 14 Abs. 4 Nr. 7 UStG)");
+            errors.add("Entgelt / Bruttobetrag fehlt");
         }
         if (subItems(doc).isEmpty()) {
-            errors.add("Mindestens eine Rechnungsposition ist erforderlich (§ 14 Abs. 4 Nr. 5 UStG)");
+            errors.add("Mindestens eine Rechnungsposition ist erforderlich");
         }
         return errors;
     }
@@ -1025,7 +1025,7 @@ public final class Gobd {
             //check first: a failed check uses up no number
             List<String> problems = validateMandatoryFields(doc, false);
             if (!problems.isEmpty()) {
-                error("GoBD-Festschreibung abgebrochen (§ 14 Abs. 4 UStG):\n- " + String.join("\n- ", problems));
+                error("GoBD-Festschreibung abgebrochen:\n- " + String.join("\n- ", problems));
                 return false;
             }
             //the year of the invoice (issue date), not of the day of finalizing
@@ -1041,7 +1041,7 @@ public final class Gobd {
             }
             problems = validateMandatoryFields(doc, true);
             if (!problems.isEmpty()) {
-                throw new GobdException("Pflichtangaben fehlen (§ 14 Abs. 4 UStG):\n- " + String.join("\n- ", problems));
+                throw new GobdException("Pflichtangaben fehlen:\n- " + String.join("\n- ", problems));
             }
             //what is frozen: the invoice as it is in the database now
             final String core = itemCoreInDb(docId);
@@ -1112,7 +1112,7 @@ public final class Gobd {
     static String duplicateNumberMessage(String number, long otherId) {
         return "Die Nummer " + number + " ist bereits für einen anderen festgeschriebenen Beleg (ID " + otherId + ") vergeben."
                 + " Rechnungen, Gutschriften, Anzahlungs- und Abschlagsrechnungen brauchen Nummern, die unter allen eindeutig sind"
-                + " (§ 14 Abs. 4 Nr. 4 UStG). Bitte vergeben Sie dem Beleg eine eigene Nummer (Nummer ändern) und legen Sie in"
+                + ". Bitte vergeben Sie dem Beleg eine eigene Nummer (Nummer ändern) und legen Sie in"
                 + " Systemsteuerung › Formate je Belegart ein eigenes Präfix fest (z. B. RE-, GS-, AZ-, AR-).";
     }
 
@@ -1520,7 +1520,7 @@ public final class Gobd {
         if (isDelete || isMovedToTrash(doc)) {
             logAudit("INVOICE", doc.__getIDS(), "BLOCKED_DELETE", str(lock[5]), "Delete/Trash=true", hash,
                     "Loesch- oder Papierkorb-Versuch an festgeschriebenem Beleg " + lock[1] + ".");
-            error("GoBD-Loeschschutz (§§ 146, 147 AO):\nBeleg " + lock[1] + " ist festgeschrieben und darf weder geloescht noch in den Papierkorb verschoben werden!\n"
+            error("GoBD-Loeschschutz:\nBeleg " + lock[1] + " ist festgeschrieben und darf weder geloescht noch in den Papierkorb verschoben werden!\n"
                     + "Bitte erstellen Sie stattdessen eine Stornorechnung.");
             return false;
         }
@@ -1560,7 +1560,7 @@ public final class Gobd {
         }
         logAudit("INVOICE", doc.__getIDS(), "BLOCKED_EDIT", str(lock[5]), financialCore(doc), hash,
                 "Unzulaessige Aenderung steuerrelevanter Felder an Beleg " + lock[1] + ".");
-        error("GoBD-Schutz (§ 146 Abs. 4 AO):\nBeleg " + lock[1] + " ist festgeschrieben! Betraege, Steuern, Datum, Positionen und Empfaenger duerfen nicht mehr geaendert werden.\n"
+        error("GoBD-Schutz:\nBeleg " + lock[1] + " ist festgeschrieben! Betraege, Steuern, Datum, Positionen und Empfaenger duerfen nicht mehr geaendert werden.\n"
                 + "(Hinweis: Nur Zahlungsstatus-/Mahnstufen-Aenderungen werden protokolliert.)");
         return false;
     }
@@ -1577,7 +1577,7 @@ public final class Gobd {
         if (isDelete || isMovedToTrash(rev)) {
             logAudit("REVENUE", rev.__getIDS(), "BLOCKED_DELETE", lockInfo, "Delete/Trash=true", lockHash,
                     "Loesch- oder Papierkorb-Versuch an GoBD-gesperrter Einnahme " + docNum + ".");
-            error("GoBD-Loeschschutz (§§ 146, 147 AO):\nEinnahme " + docNum + " ist durch einen archivierten Originalbeleg festgeschrieben"
+            error("GoBD-Loeschschutz:\nEinnahme " + docNum + " ist durch einen archivierten Originalbeleg festgeschrieben"
                     + " und darf weder geloescht noch in den Papierkorb verschoben werden!");
             return false;
         }
@@ -1601,7 +1601,7 @@ public final class Gobd {
         }
         logAudit("REVENUE", rev.__getIDS(), "BLOCKED_EDIT", lockInfo, revenueSnapshot(rev), lockHash,
                 "Unzulaessige Aenderung steuerrelevanter Felder an Einnahme " + docNum + ".");
-        error("GoBD-Schutz (§ 146 Abs. 4 AO):\nEinnahme " + docNum + " ist festgeschrieben! Betraege, Steuersatz, Leistungsdatum, Konto, Nummer und Beschreibung"
+        error("GoBD-Schutz:\nEinnahme " + docNum + " ist festgeschrieben! Betraege, Steuersatz, Leistungsdatum, Konto, Nummer und Beschreibung"
                 + " duerfen nicht mehr geaendert werden.\n(Hinweis: Nur Zahlungsstatus und Zahlungsdatum bleiben aenderbar.)");
         return false;
     }
@@ -1616,7 +1616,7 @@ public final class Gobd {
         if (isDelete || isMovedToTrash(exp)) {
             logAudit("EXPENSE", exp.__getIDS(), "BLOCKED_DELETE", "Receipts=" + receipts.length, "Delete/Trash=true", hash,
                     "Loeschung einer Ausgabe mit archivierten Belegen verhindert.");
-            error("GoBD-Schutz (Rz. 61-64 AO):\nAusgabe #" + exp.__getIDS() + " besitzt " + receipts.length + " archivierte Eingangsbelege und darf nicht geloescht werden!");
+            error("GoBD-Schutz:\nAusgabe #" + exp.__getIDS() + " besitzt " + receipts.length + " archivierte Eingangsbelege und darf nicht geloescht werden!");
             return false;
         }
         Object[] db = row("SELECT cnumber, dateadded, accountsids, netvalue, taxpercentvalue, brutvalue, description, ispaid, dateend FROM expenses WHERE ids = " + exp.__getIDS());
@@ -1638,7 +1638,7 @@ public final class Gobd {
             return true;
         }
         logAudit("EXPENSE", exp.__getIDS(), "BLOCKED_EDIT", dbCore, newCore, hash, "Unzulaessige Aenderung steuerrelevanter Felder an Ausgabe " + name + ".");
-        error("GoBD-Schutz (§ 146 Abs. 4 AO):\nAusgabe " + name + " ist mit " + receipts.length + " archivierten Originalbeleg(en) verknuepft und festgeschrieben!\n"
+        error("GoBD-Schutz:\nAusgabe " + name + " ist mit " + receipts.length + " archivierten Originalbeleg(en) verknuepft und festgeschrieben!\n"
                 + "Betraege, Steuersatz, Belegdatum, Konto, Nummer und Beschreibung duerfen nicht mehr geaendert werden.\n"
                 + "(Hinweis: Nur Zahlungsstatus und Zahlungsdatum bleiben aenderbar.)");
         return false;
@@ -1918,7 +1918,7 @@ public final class Gobd {
      */
     void openArchived(String archivePath) {
         if (blank(archivePath)) {
-            error("GoBD-Pruefung (Rz. 61): Zu diesem Datensatz ist kein archivierter Originalbeleg hinterlegt!");
+            error("GoBD-Pruefung: Zu diesem Datensatz ist kein archivierter Originalbeleg hinterlegt!");
             return;
         }
         File f = new File(archivePath.trim());

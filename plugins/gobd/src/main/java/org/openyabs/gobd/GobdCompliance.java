@@ -99,7 +99,7 @@ public final class GobdCompliance implements YabsExtension {
         yabs.addLockedDocumentProvider(g.lockedDocuments());
 
         yabs.addCommand("GoBD: 1. Beleg festschreiben", "Schreibt eine Rechnung unveraenderbar nach GoBD fest (inkl. Stammdaten-Snapshot & SHA-256 Hash-Kette)", () -> {
-            Item doc = g.selectInvoice("GoBD-Festschreibung (§ 146 Abs. 4 AO)", false);
+            Item doc = g.selectInvoice("GoBD-Festschreibung", false);
             if (doc != null) {
                 g.finalizeDocument(doc, null);
             }
@@ -137,7 +137,7 @@ public final class GobdCompliance implements YabsExtension {
                         yabs.openFile(zip.getParent().toFile());
                     });
                 });
-        yabs.addCommand("GoBD: 5. Pruefer-Ansicht oeffnen (Z1 Read-Only Tab)", "Oeffnet die schreibgeschuetzte 4-Tab GoBD-Z1-Prueferansicht (§ 147 Abs. 6 AO)",
+        yabs.addCommand("GoBD: 5. Pruefer-Ansicht oeffnen (Z1 Read-Only Tab)", "Oeffnet die schreibgeschuetzte 4-Tab GoBD-Z1-Prueferansicht",
                 () -> yabs.openTab("GoBD Z1-Prueferjournal", pages.auditorView()));
         yabs.addCommand("GoBD: 6. Eingangsbelege pruefen (SHA256SUMS)",
                 "Prueft alle archivierten Eingangsbelege und Einnahmenbelege gegen die Datenbank und die SHA256SUMS-Dateien",

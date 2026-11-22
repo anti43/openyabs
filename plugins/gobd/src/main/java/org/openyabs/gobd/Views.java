@@ -151,19 +151,19 @@ final class Views {
             String sha = str(receipts[0][3]);
             //amounts, tax, account and removing the receipt are locked
             panel.setContentLocked(true);
-            panel.setPluginBadge(badge("GoBD BELEGABLAGE (" + receipts.length + ")", GREEN_BG, GREEN_FG, GREEN_LINE,
-                    "GoBD Rz. 61–64 & § 146 Abs. 4 AO | " + receipts.length + " Beleg(e) revisionssicher archiviert | SHA-256: " + sha));
-            panel.setPluginBanner(banner("GoBD-Festschreibung: Ausgabe besitzt " + receipts.length + " verknuepfte(n) Originalbeleg(e) im Jahresarchiv"
+            panel.setPluginBadge(badge("BELEG ARCHIVIERT (" + receipts.length + ")", GREEN_BG, GREEN_FG, GREEN_LINE,
+                    receipts.length + " Beleg(e) revisionssicher archiviert | SHA-256: " + sha));
+            panel.setPluginBanner(banner("Ausgabe besitzt " + receipts.length + " verknuepfte(n) Originalbeleg(e) im Jahresarchiv"
                     + " (SHA-256: " + shortHash(sha) + "…). Betraege, Steuer, Konto & Belegentfernung sind gesperrt; Zahlungsstatus und Zahlungsdatum bleiben buchbar.",
                     true, GREEN_BG, GREEN_FG, GREEN_LINE, 5, openButton(path)));
             return;
         }
         panel.setContentLocked(false);
-        panel.setPluginBadge(badge("GoBD: OHNE BELEG", AMBER_BG, AMBER_FG, AMBER_LINE,
-                "GoBD Rz. 61–64: Keine Buchung ohne Beleg! Bitte scannen oder fuegen Sie den Eingangsbeleg an."));
+        panel.setPluginBadge(badge("OHNE BELEG", AMBER_BG, AMBER_FG, AMBER_LINE,
+                "Keine Buchung ohne Beleg: bitte den Eingangsbeleg scannen oder anfuegen."));
         JButton attach = button("Beleg verknuepfen & festschreiben", () -> attachExpenseReceipt(panel, exp));
-        panel.setPluginBanner(banner("GoBD-Hinweis: Zu dieser Ausgabe ist noch kein Eingangsbeleg hinterlegt"
-                + " (Grundsatz: „Keine Buchung ohne Beleg“, GoBD Rz. 61–64).", false, AMBER_BG, AMBER_FG, AMBER_LINE, 5, attach));
+        panel.setPluginBanner(banner("Zu dieser Ausgabe ist noch kein Eingangsbeleg hinterlegt"
+                + " (Grundsatz: „Keine Buchung ohne Beleg“).", false, AMBER_BG, AMBER_FG, AMBER_LINE, 5, attach));
     }
 
     private void attachExpenseReceipt(DataPanel panel, Expense exp) {
@@ -211,19 +211,19 @@ final class Views {
             String format = lock != null ? (blank(str(lock[9])) ? "ZUGFERD_PDFA3" : str(lock[9])) : "RECEIPT_FILE";
             String sha = lock != null ? str(lock[10]) : str(receipts[0][3]);
             panel.setContentLocked(true);
-            panel.setPluginBadge(badge(lock != null ? "GoBD E-RECHNUNG" : "GoBD BELEG-ARCHIV", GREEN_BG, GREEN_FG, GREEN_LINE,
-                    "GoBD § 146 Abs. 4 AO | Einnahme " + docNum + " (" + format + ") | SHA-256: " + sha));
+            panel.setPluginBadge(badge(lock != null ? "E-RECHNUNG ARCHIVIERT" : "BELEG ARCHIVIERT", GREEN_BG, GREEN_FG, GREEN_LINE,
+                    "Einnahme " + docNum + " (" + format + ") | SHA-256: " + sha));
             String text = lock != null
-                    ? "GoBD-Festschreibung: Einnahme " + docNum + " (" + format + ", SHA-256: " + shortHash(sha) + "…) ist mit einem Originalbeleg im Jahresarchiv"
+                    ? "Einnahme " + docNum + " (" + format + ", SHA-256: " + shortHash(sha) + "…) ist mit einem Originalbeleg im Jahresarchiv"
                     + " verknuepft. Betraege, Steuer, Konto & Datum sind gesperrt; Zahlungsstatus und Zahlungsdatum bleiben buchbar."
-                    : "GoBD-Festschreibung: Einnahme " + docNum + " ist mit " + receipts.length + " archivierten Beleg(en) verknuepft."
+                    : "Einnahme " + docNum + " ist mit " + receipts.length + " archivierten Beleg(en) verknuepft."
                     + " Betraege, Steuer, Konto & Datum sind gesperrt; Zahlungsstatus und Zahlungsdatum bleiben buchbar.";
             panel.setPluginBanner(banner(text, true, GREEN_BG, GREEN_FG, GREEN_LINE, 6, openButton(path)));
             return;
         }
         panel.setContentLocked(false);
-        panel.setPluginBadge(badge("GoBD: OHNE BELEG", AMBER_BG, AMBER_FG, AMBER_LINE,
-                "GoBD Rz. 61–64: Keine Buchung ohne Beleg! Bitte verknuepfen Sie eine ZUGFeRD-/XRechnung-Datei oder einen Beleg."));
+        panel.setPluginBadge(badge("OHNE BELEG", AMBER_BG, AMBER_FG, AMBER_LINE,
+                "Keine Buchung ohne Beleg: bitte eine ZUGFeRD-/XRechnung-Datei oder einen Beleg verknuepfen."));
         JButton link = button("ZUGFeRD / Beleg verknuepfen", () -> {
             JFileChooser chooser = new JFileChooser();
             chooser.setDialogTitle("ZUGFeRD / XRechnung / Beleg fuer Einnahme auswaehlen");
@@ -232,8 +232,8 @@ final class Views {
                 g.importIncomeFile(chooser.getSelectedFile().toPath(), rev, false);
             }
         });
-        panel.setPluginBanner(banner("GoBD-Hinweis: Zu dieser Einnahme ist noch kein Originalbeleg hinterlegt"
-                + " (Grundsatz: „Keine Buchung ohne Beleg“, GoBD Rz. 61–64).", false, AMBER_BG, AMBER_FG, AMBER_LINE, 6, link));
+        panel.setPluginBanner(banner("Zu dieser Einnahme ist noch kein Originalbeleg hinterlegt"
+                + " (Grundsatz: „Keine Buchung ohne Beleg“).", false, AMBER_BG, AMBER_FG, AMBER_LINE, 6, link));
     }
 
     // ---------------------------------------------------------------- invoices
@@ -250,7 +250,7 @@ final class Views {
         if (lock == null) {
             //a saved draft
             panel.setContentLocked(false);
-            JLabel draft = new JLabel("GoBD: Entwurf (offen)");
+            JLabel draft = new JLabel("ENTWURF");
             draft.setOpaque(true);
             draft.setBackground(ModernTheme.accentSoft());
             draft.setForeground(ModernTheme.accent());
@@ -258,9 +258,9 @@ final class Views {
             draft.setBorder(BorderFactory.createEmptyBorder(ModernTheme.px(2), ModernTheme.px(8), ModernTheme.px(2), ModernTheme.px(8)));
             draft.setToolTipText("Dieser Beleg ist noch nicht nach GoBD festgeschrieben und wird beim Export automatisch gesichert.");
             panel.setPluginBadge(draft);
-            JPanel b = banner("GoBD-Hinweis: Dieser Beleg ist noch ein bearbeitbarer Entwurf und wird beim PDF-/E-Rechnungs-Export automatisch festgeschrieben.",
+            JPanel b = banner("Entwurf: wird beim Ausstellen (PDF, E-Rechnung, Drucken) automatisch festgeschrieben.",
                     false, ModernTheme.accentSoft(), ModernTheme.foreground(), ModernTheme.border(), 5,
-                    button("Jetzt GoBD-festschreiben", () -> {
+                    button("Jetzt festschreiben", () -> {
                         if (!mpv5.ui.toolbars.RecordActions.saveBeforeExport(panel)) {
                             return;
                         }
@@ -288,19 +288,19 @@ final class Views {
         Color bg = cancelled ? RED_BG : AMBER_BG;
         Color fg = cancelled ? RED_FG : AMBER_FG;
         Color line = cancelled ? RED_LINE : AMBER_LINE;
-        panel.setPluginBadge(badge(cancelled ? "GoBD STORNIERT" : "GoBD FESTGESCHRIEBEN", bg, fg, line,
-                "GoBD § 146 Abs. 4 AO | Festgeschrieben am " + str(lock[3]) + " von " + str(lock[4]) + " | Format: " + format + " | SHA-256: " + sha));
+        panel.setPluginBadge(badge(cancelled ? "STORNIERT" : "FESTGESCHRIEBEN", bg, fg, line,
+                "Festgeschrieben am " + str(lock[3]) + " von " + str(lock[4]) + " | Format: " + format + " | SHA-256: " + sha));
         JButton open = openButton(path);
         //short; the details (format, checksum, what stays free) in the tooltip and the badge
         String text = "Beleg " + docNum + " wurde von " + str(lock[4]) + " am " + germanTime(lock[3]) + " festgeschrieben"
                 + (cancelled ? " (storniert)." : ".");
-        String details = "GoBD § 146 Abs. 4 AO: unveraenderbar archiviert (" + format + ", SHA-256: " + shortHash(sha)
+        String details = "Unveraenderbar archiviert (" + format + ", SHA-256: " + shortHash(sha)
                 + "…). Steuerrelevante Felder und Positionen sind gesperrt; Zahlungsstatus, Teilzahlungen und Mahnungen bleiben buchbar.";
         if (!cancelled && doc.__getInttype() != Item.TYPE_CREDIT) {
-            JButton storno = button("Stornorechnung erstellen", () -> {
+            JButton storno = button("Beleg jetzt stornieren", () -> {
                 int ok = javax.swing.JOptionPane.showConfirmDialog(parent(panel),
-                        "Soll fuer den festgeschriebenen Beleg " + docNum + " jetzt eine GoBD-konforme Stornorechnung erstellt werden?",
-                        "GoBD-Stornorechnung (§ 146 Abs. 4 AO)", javax.swing.JOptionPane.YES_NO_OPTION, javax.swing.JOptionPane.WARNING_MESSAGE);
+                        "Beleg " + docNum + " jetzt stornieren?\nDazu wird eine Stornorechnung (Gutschrift) erstellt, der Beleg selbst bleibt unveraendert.",
+                        "Beleg stornieren", javax.swing.JOptionPane.YES_NO_OPTION, javax.swing.JOptionPane.WARNING_MESSAGE);
                 if (ok == javax.swing.JOptionPane.YES_OPTION) {
                     g.stornoDocument(doc);
                 }
