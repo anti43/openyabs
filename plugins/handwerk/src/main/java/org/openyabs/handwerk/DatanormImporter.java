@@ -363,7 +363,11 @@ public final class DatanormImporter {
             if (digits.isEmpty() || "-".equals(digits)) {
                 return BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP);
             }
-            base = new BigDecimal(digits).movePointLeft(2);
+            try {
+                base = new BigDecimal(digits).movePointLeft(2);
+            } catch (NumberFormatException e) {
+                return BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP);
+            }
         }
         BigDecimal divisor;
         switch (priceUnit) {
