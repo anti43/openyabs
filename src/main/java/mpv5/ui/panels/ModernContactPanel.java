@@ -780,11 +780,13 @@ public class ModernContactPanel extends ModernDataPanel {
         }
         //a blocked contact (GDPR) is kept for the retention of its documents only: no new documents
         boolean blocked = mpv5.handler.Privacy.isBlocked(dataOwner);
-        newOffer.setVisible(isCustomer && !blocked);
-        newOrder.setVisible(isCustomer && !blocked);
-        newInvoice.setVisible(isCustomer && !blocked);
-        newCredit.setVisible(isCustomer && !blocked);
-        newProduct.setVisible(hasProducts);
+        boolean canCreateItem = mpv5.usermanagement.MPSecurityManager.check(Context.getInvoice(), mpv5.usermanagement.MPSecurityManager.CREATE_OR_DELETE);
+        boolean canCreateProduct = mpv5.usermanagement.MPSecurityManager.check(Context.getProduct(), mpv5.usermanagement.MPSecurityManager.CREATE_OR_DELETE);
+        newOffer.setVisible(isCustomer && !blocked && canCreateItem);
+        newOrder.setVisible(isCustomer && !blocked && canCreateItem);
+        newInvoice.setVisible(isCustomer && !blocked && canCreateItem);
+        newCredit.setVisible(isCustomer && !blocked && canCreateItem);
+        newProduct.setVisible(hasProducts && !blocked && canCreateProduct);
         //the roles changed which lists exist: keep a list on screen, prefer the one chosen last
         Related wanted = pickRelated(isCustomer, hasProducts);
         if (loading) {
@@ -979,7 +981,8 @@ public class ModernContactPanel extends ModernDataPanel {
         }
         addressSelector.add(addAddressButton);
         //additional addresses can be saved for saved contacts only
-        addAddressButton.setEnabled(dataOwner == null || dataOwner.isExisting());
+        boolean canEditAddress = mpv5.usermanagement.MPSecurityManager.check(Context.getAddress(), mpv5.usermanagement.MPSecurityManager.EDIT);
+        addAddressButton.setEnabled((dataOwner == null || dataOwner.isExisting()) && canEditAddress);
         addressSelector.revalidate();
         addressSelector.repaint();
     }
@@ -1359,8 +1362,12 @@ public class ModernContactPanel extends ModernDataPanel {
             sendMail();
             return;
         }
+        String addr = dataOwner != null ? dataOwner.__getMailaddress() : null;
+        if (addr == null || addr.trim().isEmpty()) {
+            return;
+        }
         try {
-            Desktop.getDesktop().mail(new URI("mailto:" + dataOwner.__getMailaddress()));
+            Desktop.getDesktop().mail(new URI("mailto:" + addr.trim()));
         } catch (Exception ex) {
             Log.Debug(this, ex.getMessage());
             Popup.error(ex);

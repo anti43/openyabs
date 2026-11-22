@@ -667,10 +667,16 @@ public final class ContactService {
      */
     public static List<Group> groupOptions() {
         List<Group> options = new java.util.ArrayList<Group>();
+        mpv5.db.objects.User u = mpv5.db.objects.User.getCurrentUser();
+        boolean restricted = u != null && u.isGroupRestricted();
+        int userGroupId = restricted ? u.__getGroupsids() : -1;
         try {
             for (DatabaseObject o : DatabaseObject.getObjects(Context.getGroup())) {
                 if (o instanceof Group) {
-                    options.add((Group) o);
+                    Group g = (Group) o;
+                    if (!restricted || g.__getIDS() == userGroupId) {
+                        options.add(g);
+                    }
                 }
             }
         } catch (Exception ex) {

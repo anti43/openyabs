@@ -337,6 +337,7 @@ public class ItemPositionsTable extends JPanel {
     public void setModel(MPTableModel model) {
         itemtable.setModel(model);
         keepTrailingEmptyRow(model);
+        formatTable();
         fireUpdate();
     }
 

@@ -90,6 +90,7 @@ import mpv5.ui.modern.ResponsiveGrid;
 import mpv5.ui.modern.WrapLayout;
 import mpv5.ui.popups.FileTablePopUp;
 import mpv5.ui.toolbars.ModernCommandBar;
+import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.export.Export;
 import mpv5.utils.files.FileDirectoryHandler;
@@ -420,13 +421,15 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
                 .addFull(tiers)
                 .addFull(tierButtons));
 
-        JButton groupAdmin = link("+", null);
-        groupAdmin.setToolTipText(text("ProductPanel.jLabel4.text"));
-        groupAdmin.addActionListener(e -> BigPopup.showPopup(this, new ControlPanel_Groups(), null));
         JPanel group = new JPanel(new BorderLayout(ModernTheme.px(4), 0));
         group.setOpaque(false);
         group.add(groupnameselect, BorderLayout.CENTER);
-        group.add(groupAdmin, BorderLayout.EAST);
+        if (MPSecurityManager.isAdmin()) {
+            JButton groupAdmin = link("+", null);
+            groupAdmin.setToolTipText(text("ProductPanel.jLabel4.text"));
+            groupAdmin.addActionListener(e -> BigPopup.showPopup(this, new ControlPanel_Groups(), null));
+            group.add(groupAdmin, BorderLayout.EAST);
+        }
         //groups and stock in one card
         grid.add(new Card(Messages.PRODUCT_SECTION_CLASSIFICATION.toString())
                 .row(Card.field(text("ProductPanel.familyselect._Label"), familyselect))
@@ -926,6 +929,9 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
     }
 
     private void removeAllTiers() {
+        if ((dataOwner != null && dataOwner.isReadOnly()) || !MPSecurityManager.check(Context.getProduct(), MPSecurityManager.EDIT)) {
+            return;
+        }
         ProductService.deleteTiers(dataOwner);
         tiers.removeAll();
         relayout(tiers);
@@ -1199,14 +1205,16 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
         }
         if (!known && firstImage != null && dataOwner.isExisting()) {
             defaultimage_ = firstImage;
-            //store it right away, without touching the other (maybe edited) fields
-            try {
-                Product p = (Product) DatabaseObject.getObject(Context.getProduct(), dataOwner.__getIDS());
-                p.setDefaultimage(firstImage);
-                p.save(true);
-                dataOwner.setDefaultimage(firstImage);
-            } catch (Exception e) {
-                Log.Debug(this, e.getMessage());
+            if (!dataOwner.isReadOnly() && MPSecurityManager.check(Context.getProduct(), MPSecurityManager.EDIT)) {
+                //store it right away, without touching the other (maybe edited) fields
+                try {
+                    Product p = (Product) DatabaseObject.getObject(Context.getProduct(), dataOwner.__getIDS());
+                    p.setDefaultimage(firstImage);
+                    p.save(true);
+                    dataOwner.setDefaultimage(firstImage);
+                } catch (Exception e) {
+                    Log.Debug(this, e.getMessage());
+                }
             }
             updateImage();
         }
@@ -1460,8 +1468,8 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
                 if (!dataOwner.isExisting()) {
                     groupnameselect.setModel(DatabaseObject.getObject(Context.getGroup(), User.getCurrentUser().__getGroupsids()));
                     try {
-                        familyselect.setModel(DatabaseObject.getObject(Context.getProductGroup(), User.getCurrentUser().__getIntdefaultaccount()));
-                    } catch (NodataFoundException e) {
+                        familyselect.setModel(ProductGroup.getDefault());
+                    } catch (Exception e) {
                         Log.Debug(ModernProductPanel.this, e.getMessage());
                     }
                     updatePath();

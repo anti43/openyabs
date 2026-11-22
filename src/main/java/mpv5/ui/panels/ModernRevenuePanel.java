@@ -1166,7 +1166,9 @@ public class ModernRevenuePanel extends ModernDataPanel {
                     dataOwner.setAccountsids(accountsids_ > 0 ? accountsids_ : defaultIncomeAccountId());
                 }
                 if (dataOwner.__getGroupsids() <= 0) {
-                    dataOwner.setGroupsids(1);
+                    int userGroup = User.getCurrentUser() != null && User.getCurrentUser().__getGroupsids() > 0
+                            ? User.getCurrentUser().__getGroupsids() : 1;
+                    dataOwner.setGroupsids(userGroup);
                 }
                 if (dataOwner.save(true) && dataOwner.__getIDS() > 0) {
                     ids_ = dataOwner.__getIDS();
@@ -1529,6 +1531,8 @@ public class ModernRevenuePanel extends ModernDataPanel {
                 selectRecordRow(revenueTable, dataOwner);
             } catch (NodataFoundException e) {
                 Log.Debug(ModernRevenuePanel.class, e.getMessage());
+                revenueTable.setModel(new MPTableModel(new Object[0][], Headers.REVENUE));
+                applyRevenueFilter();
             }
             try {
                 accountObjects = DatabaseObject.getObjects(Context.getAccounts(), new QueryCriteria("intaccounttype", Account.INCOME));
