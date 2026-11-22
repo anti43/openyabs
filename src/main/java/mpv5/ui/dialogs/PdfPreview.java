@@ -100,6 +100,20 @@ public final class PdfPreview extends JFrame {
      * @param appended may be null
      */
     public static void show(File file, mpv5.db.common.DatabaseObject owner, mpv5.db.objects.Template[] appended) {
+        show(file, owner, appended, null);
+    }
+
+    /**
+     * As {@link #show(File, DatabaseObject, Template[])}, with a stamp over
+     * the pages (e.g. "STORNIERT" on a cancelled original): only on the
+     * screen, the file stays as it is (print, save and open use the file)
+     *
+     * @param file
+     * @param owner
+     * @param appended may be null
+     * @param stamp may be null
+     */
+    public static void show(File file, mpv5.db.common.DatabaseObject owner, mpv5.db.objects.Template[] appended, String stamp) {
         //one preview per record (or file): a second request (double click, two buttons, a
         //preview finished late) replaces the open window instead of opening another one
         for (java.awt.Window w : java.awt.Window.getWindows()) {
@@ -109,6 +123,7 @@ public final class PdfPreview extends JFrame {
         }
         PdfPreview p = new PdfPreview(file, owner);
         p.appended = appended;
+        p.stamp = stamp;
         p.setVisible(true);
     }
 
@@ -129,6 +144,10 @@ public final class PdfPreview extends JFrame {
      * null
      */
     private mpv5.db.objects.Template[] appended;
+    /**
+     * shown over the pages (not in the file), may be null
+     */
+    private String stamp;
 
     private PdfPreview(File file, mpv5.db.common.DatabaseObject owner) {
         super(file.getName() + " – " + Messages.ACTION_PREVIEW);
@@ -216,6 +235,11 @@ public final class PdfPreview extends JFrame {
             protected void done() {
                 try {
                     rendered.addAll(get());
+                    if (stamp != null && !stamp.trim().isEmpty()) {
+                        for (BufferedImage img : rendered) {
+                            stamp(img, stamp);
+                        }
+                    }
                     layoutPages();
                 } catch (Exception e) {
                     //not readable by PDFBox: the system viewer
@@ -225,6 +249,32 @@ public final class PdfPreview extends JFrame {
                 }
             }
         }.execute();
+    }
+
+    /**
+     * Paints the text diagonally in red over the page (the image shown)
+     */
+    private static void stamp(BufferedImage img, String text) {
+        java.awt.Graphics2D g = img.createGraphics();
+        try {
+            g.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
+            g.setRenderingHint(java.awt.RenderingHints.KEY_TEXT_ANTIALIASING, java.awt.RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+            int w = img.getWidth();
+            int h = img.getHeight();
+            java.awt.Font font = new java.awt.Font(java.awt.Font.SANS_SERIF, java.awt.Font.BOLD, Math.max(24, w / 9));
+            g.setFont(font);
+            java.awt.FontMetrics fm = g.getFontMetrics();
+            int tw = fm.stringWidth(text);
+            g.translate(w / 2, h / 2);
+            g.rotate(-Math.atan2(h, w));
+            g.setColor(new Color(200, 30, 30, 90));
+            int pad = fm.getHeight() / 4;
+            g.setStroke(new java.awt.BasicStroke(Math.max(3, w / 300f)));
+            g.drawRect(-tw / 2 - pad, -fm.getAscent() - pad / 2, tw + 2 * pad, fm.getAscent() + fm.getDescent() + pad);
+            g.drawString(text, -tw / 2, 0);
+        } finally {
+            g.dispose();
+        }
     }
 
     private void zoom(float z) {

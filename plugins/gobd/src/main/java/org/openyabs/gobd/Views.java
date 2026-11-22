@@ -32,6 +32,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.objects.Expense;
 import mpv5.db.objects.Item;
@@ -125,6 +126,58 @@ final class Views {
     private JButton openButton(String archivePath) {
         JButton b = button("Originalbeleg oeffnen", () -> g.openArchived(archivePath));
         b.setToolTipText(archivePath);
+        return b;
+    }
+
+    /**
+     * The archived original of a cancelled invoice, in the preview with the
+     * stamp "STORNIERT" (only on the screen: the archived file is not
+     * changed)
+     */
+    private JButton openStamped(Item doc, String archivePath) {
+        JButton b = button("Originalbeleg oeffnen", () -> showArchived(doc, archivePath, "STORNIERT"));
+        b.setToolTipText(archivePath);
+        return b;
+    }
+
+    /**
+     * A PDF in the preview of YaBS (with the stamp, if any), else the file
+     * in the system
+     */
+    private void showArchived(DatabaseObject owner, String archivePath, String stamp) {
+        File f = blank(archivePath) ? null : new File(archivePath.trim());
+        if (f != null && f.isFile() && f.getName().toLowerCase().endsWith(".pdf")) {
+            mpv5.ui.dialogs.PdfPreview.show(f, owner, null, stamp);
+        } else {
+            g.openArchived(archivePath);
+        }
+    }
+
+    /**
+     * A button for another finalized document: its archived file, else the
+     * record
+     */
+    private JButton openDocumentButton(String label, long id, String archivePath, String stamp, String tooltip) {
+        JButton b = button(label, () -> {
+            DatabaseObject other = null;
+            try {
+                other = DatabaseObject.getObject(Context.getInvoice(), (int) id);
+                if (other instanceof Item) {
+                    Context actual = mpv5.handler.ItemService.contextOf(((Item) other).__getInttype());
+                    if (!actual.equals(other.getContext())) {
+                        other = DatabaseObject.getObject(actual, (int) id);
+                    }
+                }
+            } catch (Exception e) {
+                //missing
+            }
+            if (!blank(archivePath)) {
+                showArchived(other, archivePath, stamp);
+            } else if (other != null) {
+                mpv5.YabsViewProxy.instance().addOrShowTab(other);
+            }
+        });
+        b.setToolTipText(tooltip);
         return b;
     }
 
@@ -290,7 +343,23 @@ final class Views {
         Color line = cancelled ? RED_LINE : AMBER_LINE;
         panel.setPluginBadge(badge(cancelled ? "STORNIERT" : "FESTGESCHRIEBEN", bg, fg, line,
                 "Festgeschrieben am " + str(lock[3]) + " von " + str(lock[4]) + " | Format: " + format + " | SHA-256: " + sha));
-        JButton open = openButton(path);
+        JButton open = cancelled ? openStamped(doc, path) : openButton(path);
+        //a cancelled invoice: its cancellation (credit note); a cancellation: the invoice it cancels
+        JButton related = null;
+        if (cancelled) {
+            Object[] st = g.q1("SELECT document_id, document_number, archive_path FROM gobd_document_lock WHERE cancels_document_id = ?",
+                    (long) doc.__getIDS());
+            if (st != null) {
+                related = openDocumentButton("Stornobeleg oeffnen", ((Number) st[0]).longValue(), str(st[2]), null,
+                        "Die Stornorechnung (Gutschrift) " + str(st[1]));
+            }
+        } else if (lock[11] instanceof Number && ((Number) lock[11]).longValue() > 0) {
+            Object[] orig = g.lockRecord(((Number) lock[11]).longValue());
+            if (orig != null) {
+                related = openDocumentButton("Stornierten Beleg oeffnen", ((Number) lock[11]).longValue(), str(orig[7]), "STORNIERT",
+                        "Der mit diesem Beleg stornierte Beleg " + str(orig[1]));
+            }
+        }
         //short; the details (format, checksum, what stays free) in the tooltip and the badge
         String text = "Beleg " + docNum + " wurde von " + str(lock[4]) + " am " + germanTime(lock[3]) + " festgeschrieben"
                 + (cancelled ? " (storniert)." : ".");
@@ -306,6 +375,8 @@ final class Views {
                 }
             });
             panel.setPluginBanner(withTooltip(banner(text, true, bg, fg, line, 6, open, storno), details));
+        } else if (related != null) {
+            panel.setPluginBanner(withTooltip(banner(text, true, bg, fg, line, 6, open, related), details));
         } else {
             panel.setPluginBanner(withTooltip(banner(text, true, bg, fg, line, 6, open), details));
         }
