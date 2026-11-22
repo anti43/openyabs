@@ -348,7 +348,6 @@ public class ControlPanel_Translate extends JPanel implements ControlApplet {
         }
         String own = User.getCurrentUser().getProperties().getProperty(OWN_LANGUAGE);
         if (!id.equals(own) && !MPSecurityManager.checkAdminAccess()) {
-            Popup.notice(Messages.ADMIN_ACCESS);
             return;
         }
         if (Popup.Y_N_dialog(Messages.REALLY_WIPE + ": " + base.getSelectedItem())) {

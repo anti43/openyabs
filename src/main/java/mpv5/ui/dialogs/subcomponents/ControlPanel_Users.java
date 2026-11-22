@@ -598,7 +598,7 @@ public class ControlPanel_Users extends JPanel implements ControlApplet, DataPan
 
     @Override
     public Component getAndRemoveActionPanel() {
-        return MPSecurityManager.checkAdminAccess() ? actions : null;
+        return MPSecurityManager.isAdmin() ? actions : null;
     }
 
     @Override

@@ -53,6 +53,8 @@ import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Accounts;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_AdvancedGlobalProperties;
+import mpv5.ui.dialogs.subcomponents.ControlPanel_AdvancedLocalProperties;
+import mpv5.ui.dialogs.subcomponents.ControlPanel_ClassicPlugins;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Company;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_External;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Fonts;
@@ -63,10 +65,12 @@ import mpv5.ui.dialogs.subcomponents.ControlPanel_Local;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Locale;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_MailTemplates;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Massprint;
+import mpv5.ui.dialogs.subcomponents.ControlPanel_NumberFormats;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Plugins;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_ProductGroups;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Reminder;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Schedule;
+import mpv5.ui.dialogs.subcomponents.ControlPanel_Shopify;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Taxes;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Templates;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Userproperties;
@@ -603,6 +607,29 @@ public class MPControlPanel extends JPanel {
         cards.show(right, "overview");
     }
 
+    private static boolean isAdminOnly(Class<?> panelClass) {
+        if (panelClass == null) {
+            return false;
+        }
+        return panelClass == ControlPanel_Accounts.class
+                || panelClass == ControlPanel_AdvancedGlobalProperties.class
+                || panelClass == ControlPanel_AdvancedLocalProperties.class
+                || panelClass == ControlPanel_ClassicPlugins.class
+                || panelClass == ControlPanel_Formats.class
+                || panelClass == ControlPanel_Groups.class
+                || panelClass == ControlPanel_Konsole.class
+                || panelClass == ControlPanel_MailTemplates.class
+                || panelClass == ControlPanel_Massprint.class
+                || panelClass == ControlPanel_NumberFormats.class
+                || panelClass == ControlPanel_Plugins.class
+                || panelClass == ControlPanel_ProductGroups.class
+                || panelClass == ControlPanel_Shopify.class
+                || panelClass == ControlPanel_Taxes.class
+                || panelClass == ControlPanel_Templates.class
+                || panelClass == ControlPanel_Users.class
+                || panelClass == ControlPanel_ValueProps.class;
+    }
+
     /**
      * Opens a setting
      *
@@ -613,6 +640,9 @@ public class MPControlPanel extends JPanel {
             if (e.action != null) {
                 e.action.run();
             }
+            return;
+        }
+        if (isAdminOnly(e.panelClass) && !MPSecurityManager.checkAdminAccess()) {
             return;
         }
         if (e.panelClass == PluginPage.class) {
