@@ -528,6 +528,68 @@ public final class HandwerkPlugin implements YabsExtension {
         importBoqIntoItem((Item) view.getDataOwner(), yabs);
     }
 
+    static BoqDocument importBoqContentIntoItem(final Item item, final String fileName, final String content) throws Exception {
+        BoqCodec codec = BoqCodec.findReader(fileName, content);
+        if (codec == null) {
+            throw new IllegalArgumentException("Unsupported BoQ file format: " + fileName);
+        }
+        BoqDocument boq = codec.read(fileName, content);
+        boq.itemId = item.__getIDS();
+        boq.importedAt = LocalDate.now().toString();
+
+        ItemMeta im = HandwerkStore.loadItemMetaSafe(item.__getIDS());
+        BigDecimal defaultTax = im.reverseChargeEnabled ? BigDecimal.ZERO : new BigDecimal("19.00");
+
+        SubItem[] existing = item.getSubitems();
+        int orderNr = existing == null ? 0 : existing.length;
+
+        for (BoqPosition pos : boq.positions) {
+            SubItem si = new SubItem();
+            si.setItemsids(item.__getIDS());
+            si.setOrdernr(orderNr++);
+            si.setCountvalue(BigDecimal.ONE);
+            si.setDateadded(new Date());
+            si.setGroupsids(item.__getGroupsids());
+            si.setCname(pos.ordinalNo);
+
+            StringBuilder desc = new StringBuilder();
+            if (!pos.ordinalNo.isEmpty()) {
+                desc.append("OZ ").append(pos.ordinalNo).append(" ");
+            }
+            if (pos.positionType == PositionType.OPTIONAL) {
+                desc.append("[EP/Bedarf] ");
+            } else if (pos.positionType == PositionType.ALTERNATIVE) {
+                desc.append("[Alt] ");
+            }
+            desc.append(pos.shortText);
+            si.setDescription(desc.toString().trim());
+
+            if (pos.positionType == PositionType.TEXT || !pos.isCountedInTotal()) {
+                si.setInttype(pos.positionType == PositionType.TEXT ? SubItem.TYPE_TEXT : SubItem.TYPE_NORMAL);
+                si.setQuantityvalue(pos.isCountedInTotal() ? pos.quantity : BigDecimal.ZERO);
+            } else {
+                si.setInttype(SubItem.TYPE_NORMAL);
+                si.setQuantityvalue(pos.quantity);
+            }
+            si.setMeasure(pos.unit.isEmpty() ? "Stk" : pos.unit);
+            si.setExternalvalue(pos.unitPrice);
+            si.setInternalvalue(pos.unitPrice);
+            si.setTaxpercentvalue(defaultTax);
+            SubItem.calculate(si);
+            if (si.save(true)) {
+                pos.subItemId = si.__getIDS();
+            }
+        }
+
+        ItemService.updateTotals(item);
+        item.save(true);
+
+        HandwerkStore.saveBoqDocument(HandwerkStore.connection(), boq);
+        im.boqId = boq.id;
+        HandwerkStore.saveItemMeta(HandwerkStore.connection(), im);
+        return boq;
+    }
+
     static void importBoqIntoItem(final Item item, final ExtensionContext yabs) {
         JFileChooser chooser = new JFileChooser();
         chooser.setDialogTitle(yabs.tr("cmd.importBoq.title"));
@@ -539,65 +601,10 @@ public final class HandwerkPlugin implements YabsExtension {
             try {
                 byte[] bytes = Files.readAllBytes(file.toPath());
                 String content = DatanormImporter.decodeBytes(bytes);
-                BoqCodec codec = BoqCodec.findReader(file.getName(), content);
-                if (codec == null) {
+                if (BoqCodec.findReader(file.getName(), content) == null) {
                     return yabs.tr("cmd.importBoq.unsupported", file.getName());
                 }
-                BoqDocument boq = codec.read(file.getName(), content);
-                boq.itemId = item.__getIDS();
-                boq.importedAt = LocalDate.now().toString();
-
-                ItemMeta im = HandwerkStore.loadItemMetaSafe(item.__getIDS());
-                BigDecimal defaultTax = im.reverseChargeEnabled ? BigDecimal.ZERO : new BigDecimal("19.00");
-
-                SubItem[] existing = item.getSubitems();
-                int orderNr = existing == null ? 0 : existing.length;
-
-                for (BoqPosition pos : boq.positions) {
-                    SubItem si = new SubItem();
-                    si.setItemsids(item.__getIDS());
-                    si.setOrdernr(orderNr++);
-                    si.setCountvalue(BigDecimal.ONE);
-                    si.setDateadded(new Date());
-                    si.setGroupsids(item.__getGroupsids());
-                    si.setCname(pos.ordinalNo);
-
-                    StringBuilder desc = new StringBuilder();
-                    if (!pos.ordinalNo.isEmpty()) {
-                        desc.append("OZ ").append(pos.ordinalNo).append(" ");
-                    }
-                    if (pos.positionType == PositionType.OPTIONAL) {
-                        desc.append("[EP/Bedarf] ");
-                    } else if (pos.positionType == PositionType.ALTERNATIVE) {
-                        desc.append("[Alt] ");
-                    }
-                    desc.append(pos.shortText);
-                    si.setDescription(desc.toString().trim());
-
-                    if (pos.positionType == PositionType.TEXT || !pos.isCountedInTotal()) {
-                        si.setInttype(pos.positionType == PositionType.TEXT ? SubItem.TYPE_TEXT : SubItem.TYPE_NORMAL);
-                        si.setQuantityvalue(pos.isCountedInTotal() ? pos.quantity : BigDecimal.ZERO);
-                    } else {
-                        si.setInttype(SubItem.TYPE_NORMAL);
-                        si.setQuantityvalue(pos.quantity);
-                    }
-                    si.setMeasure(pos.unit.isEmpty() ? "Stk" : pos.unit);
-                    si.setExternalvalue(pos.unitPrice);
-                    si.setInternalvalue(pos.unitPrice);
-                    si.setTaxpercentvalue(defaultTax);
-                    SubItem.calculate(si);
-                    if (si.save(true)) {
-                        pos.subItemId = si.__getIDS();
-                    }
-                }
-
-                ItemService.updateTotals(item);
-                item.save(true);
-
-                HandwerkStore.saveBoqDocument(HandwerkStore.connection(), boq);
-                im.boqId = boq.id;
-                HandwerkStore.saveItemMeta(HandwerkStore.connection(), im);
-
+                BoqDocument boq = importBoqContentIntoItem(item, file.getName(), content);
                 yabs.refreshView(item);
                 return yabs.tr("cmd.importBoq.done", boq.positions.size(), boq.formatCode, boq.projectName);
             } catch (Exception ex) {
@@ -616,13 +623,37 @@ public final class HandwerkPlugin implements YabsExtension {
         exportBoqFromItem((Item) view.getDataOwner(), yabs);
     }
 
+    static byte[] exportBoqBytesFromItem(final Item item, final String producerVersion) throws Exception {
+        BoqDocument boq = HandwerkStore.loadBoqForItemSafe(item.__getIDS());
+        if (boq == null) {
+            throw new IllegalStateException("No BoQ linked to item " + item.__getIDS());
+        }
+        syncBoqPricesFromSubItems(boq, item);
+        BoqCodec codec = BoqCodec.findExporter(boq.formatCode);
+        if (codec == null) {
+            codec = new CsvBoqCodec();
+        }
+        Map<String, BigDecimal> prices = new LinkedHashMap<String, BigDecimal>();
+        Map<String, String> bidderTexts = new LinkedHashMap<String, String>();
+        for (BoqPosition p : boq.positions) {
+            if (!p.ordinalNo.isEmpty()) {
+                prices.put(p.ordinalNo, p.unitPrice == null ? BigDecimal.ZERO : p.unitPrice);
+                if (p.bidderText != null && !p.bidderText.isEmpty()) {
+                    bidderTexts.put(p.ordinalNo, p.bidderText);
+                }
+            }
+        }
+        byte[] data = codec.exportBid(boq, prices, bidderTexts, producerVersion);
+        HandwerkStore.saveBoqDocument(HandwerkStore.connection(), boq);
+        return data;
+    }
+
     static void exportBoqFromItem(final Item item, final ExtensionContext yabs) {
         BoqDocument boq = HandwerkStore.loadBoqForItemSafe(item.__getIDS());
         if (boq == null) {
             yabs.popup(yabs.tr("cmd.exportBoq.noBoq"));
             return;
         }
-        syncBoqPricesFromSubItems(boq, item);
         BoqCodec codec = BoqCodec.findExporter(boq.formatCode);
         if (codec == null) {
             codec = new CsvBoqCodec();
@@ -640,19 +671,8 @@ public final class HandwerkPlugin implements YabsExtension {
             return;
         }
         try {
-            Map<String, BigDecimal> prices = new LinkedHashMap<String, BigDecimal>();
-            Map<String, String> bidderTexts = new LinkedHashMap<String, String>();
-            for (BoqPosition p : boq.positions) {
-                if (!p.ordinalNo.isEmpty()) {
-                    prices.put(p.ordinalNo, p.unitPrice == null ? BigDecimal.ZERO : p.unitPrice);
-                    if (p.bidderText != null && !p.bidderText.isEmpty()) {
-                        bidderTexts.put(p.ordinalNo, p.bidderText);
-                    }
-                }
-            }
-            byte[] data = codec.exportBid(boq, prices, bidderTexts, yabs.yabsVersion());
+            byte[] data = exportBoqBytesFromItem(item, yabs.yabsVersion());
             Files.write(target.toPath(), data);
-            HandwerkStore.saveBoqDocument(HandwerkStore.connection(), boq);
             yabs.notify(yabs.tr("cmd.exportBoq.done", target.getAbsolutePath()));
         } catch (Exception ex) {
             Log.Debug(HandwerkPlugin.class, ex);
@@ -825,7 +845,9 @@ public final class HandwerkPlugin implements YabsExtension {
         if (added > 0) {
             ItemService.updateTotals(item);
             item.save(true);
-            yabs.refreshView(item);
+            if (yabs != null) {
+                yabs.refreshView(item);
+            }
         }
         return added;
     }
@@ -842,7 +864,7 @@ public final class HandwerkPlugin implements YabsExtension {
 
     // ----------------------------------------- starter catalog & § 13b tax
 
-    private String importStarterCatalog(ExtensionContext yabs) {
+    String importStarterCatalog(ExtensionContext yabs) {
         try {
             boolean taxCreated = ensureReverseChargeTax(yabs);
 
@@ -960,6 +982,10 @@ public final class HandwerkPlugin implements YabsExtension {
             Log.Debug(HandwerkPlugin.class, e);
             yabs.error(yabs.tr("cmd.exportTemplates.failed", e.getMessage()));
         }
+    }
+
+    ExtensionContext context() {
+        return ctx;
     }
 
     @Override

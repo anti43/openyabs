@@ -89,6 +89,16 @@ class HandwerkPluginTest {
         Properties de = loadUtf8Props(HandwerkPlugin.I18N_DE);
         assertEquals(en.stringPropertyNames(), de.stringPropertyNames(),
                 "English and German translation bundles must have identical keys");
+        for (String key : en.stringPropertyNames()) {
+            String ev = en.getProperty(key);
+            String dv = de.getProperty(key);
+            assertFalse(ev.trim().isEmpty(), "Empty EN translation for " + key);
+            assertFalse(dv.trim().isEmpty(), "Empty DE translation for " + key);
+            java.text.MessageFormat ef = new java.text.MessageFormat(ev);
+            java.text.MessageFormat df = new java.text.MessageFormat(dv);
+            assertEquals(ef.getFormatsByArgumentIndex().length, df.getFormatsByArgumentIndex().length,
+                    "Mismatched MessageFormat argument count for key: " + key);
+        }
         assertTrue(de.getProperty("plugin.name").contains("Handwerk"));
         assertTrue(en.getProperty("plugin.name").contains("Skilled Trades"));
     }
