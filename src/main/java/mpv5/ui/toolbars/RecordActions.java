@@ -70,6 +70,11 @@ public final class RecordActions {
         }
         if (dato instanceof mpv5.db.objects.Item
                 && (!dato.isExisting() || isPendingCopy(view) || view.hasUnsavedChanges())) {
+            if (dato.isExisting() && !isPendingCopy(view)
+                    && User.getCurrentUser() != null && !User.getCurrentUser().isDefault()
+                    && !mpv5.usermanagement.MPSecurityManager.check(dato.getContext(), mpv5.usermanagement.MPSecurityManager.EDIT)) {
+                return true;
+            }
             return saveInternal(view) && view.getDataOwner() != null && view.getDataOwner().isExisting();
         }
         return dato.isExisting();
@@ -113,6 +118,12 @@ public final class RecordActions {
      */
     public static void saveAsNew(DataPanel view) {
         DatabaseObject dato = view.getDataOwner();
+        if (dato == null || !mpv5.usermanagement.MPSecurityManager.check(dato.getContext(), mpv5.usermanagement.MPSecurityManager.CREATE_OR_DELETE)) {
+            mpv5.YabsViewProxy.instance().addMessage(Messages.SECURITYMANAGER_DENIED.toString(), Color.RED);
+            return;
+        }
+        int oldId = dato.__getIDS();
+        boolean oldReadOnly = dato.isReadOnly();
         boolean d = dato.getPanelData(view);
         dato.setIDS(-1);
         dato.ReadOnly(false);
@@ -126,6 +137,8 @@ public final class RecordActions {
                 Log.Debug(RecordActions.class, e);
             }
         } else {
+            dato.setIDS(oldId);
+            dato.ReadOnly(oldReadOnly);
             view.showRequiredFields();
         }
     }
@@ -329,9 +342,10 @@ public final class RecordActions {
         if (dato.isExisting() && mpv5.ui.dialogs.DeleteConfirmDialog.confirm(
                 view instanceof java.awt.Component ? (java.awt.Component) view : null, dato)) {
             dato.getPanelData(view);
-            dato.delete();
-            view.refresh();
-            view.setDataOwner(dato.getObject(dato.getContext()), true);
+            if (dato.delete()) {
+                view.refresh();
+                view.setDataOwner(dato.getObject(dato.getContext()), true);
+            }
         }
     }
 
@@ -459,35 +473,25 @@ public final class RecordActions {
         DatabaseObject dato = view.getDataOwner();
         if (User.getCurrentUser().isDefault()) {
             Popup.notice(Messages.DEFAULT_USER);
-        } else if (dato.isExisting()) {
-            dato.getPanelData(view);
-            if (dato.save()) {
-                new Favourite(dato).save();
-                mpv5.YabsViewProxy.instance().reloadFavorites();
-                mpv5.YabsViewProxy.instance().addMessage(Messages.ADDED_TO_FAVOURITES + dato.__getCname(), Color.GREEN);
-                view.setDataOwner(dato, true);
-            } else {
-                view.showRequiredFields();
-            }
+        } else if (dato != null && dato.isExisting()) {
+            new Favourite(dato).save();
+            mpv5.YabsViewProxy.instance().reloadFavorites();
+            mpv5.YabsViewProxy.instance().addMessage(Messages.ADDED_TO_FAVOURITES + dato.__getCname(), Color.GREEN);
+            view.setDataOwner(dato, true);
         }
     }
 
     /**
-     * Saves the record and removes it from the favourites
+     * Removes the record from the favourites
      *
      * @param view
      */
     public static void removeFavourite(DataPanel view) {
         DatabaseObject dato = view.getDataOwner();
-        if (!User.getCurrentUser().isDefault() && dato.isExisting()) {
-            dato.getPanelData(view);
-            if (dato.save()) {
-                Favourite.removeFavourite(dato);
-                mpv5.YabsViewProxy.instance().reloadFavorites();
-                view.setDataOwner(dato, true);
-            } else {
-                view.showRequiredFields();
-            }
+        if (!User.getCurrentUser().isDefault() && dato != null && dato.isExisting()) {
+            Favourite.removeFavourite(dato);
+            mpv5.YabsViewProxy.instance().reloadFavorites();
+            view.setDataOwner(dato, true);
         }
     }
 

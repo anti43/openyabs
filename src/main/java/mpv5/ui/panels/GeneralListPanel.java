@@ -548,10 +548,10 @@ public final class GeneralListPanel extends javax.swing.JPanel {
     }
 
     private void listtableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listtableMouseClicked
-        if (evt.getClickCount() > 1) {
+        if (evt.getClickCount() > 1 && listtable.getSelectedRow() >= 0) {
             try {
-                //System.err.println(mpv5.YabsViewProxy.instance().getIdentifierView());
-                mpv5.YabsViewProxy.instance().getIdentifierView().addTab(((DatabaseObject) listtable.getModel().getValueAt(listtable.getSelectedRow(), 1)));
+                int modelRow = listtable.convertRowIndexToModel(listtable.getSelectedRow());
+                mpv5.YabsViewProxy.instance().getIdentifierView().addTab(((DatabaseObject) listtable.getModel().getValueAt(modelRow, 1)));
             } catch (Exception e) {
                 Log.Debug(e);
             }

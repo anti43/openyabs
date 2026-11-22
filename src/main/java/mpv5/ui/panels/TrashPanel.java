@@ -299,14 +299,26 @@ public class TrashPanel extends JPanel {
         }
         status.setText(items.isEmpty() ? Messages.TRASH_NOTHING.toString()
                 : String.format(Messages.TRASH_COUNT.toString(), shown, items.size()) + "  ·  " + Messages.TRASH_TIP);
-        empty.setEnabled(!items.isEmpty());
+        boolean canEmpty = mpv5.usermanagement.MPSecurityManager.check(Context.getContact(), mpv5.usermanagement.MPSecurityManager.CREATE_OR_DELETE);
+        empty.setEnabled(!items.isEmpty() && canEmpty);
         buttons();
     }
 
     private void buttons() {
-        boolean any = !selected().isEmpty();
-        restore.setEnabled(any);
-        delete.setEnabled(any);
+        List<Trashed> sel = selected();
+        boolean canRestore = !sel.isEmpty();
+        boolean canDelete = !sel.isEmpty();
+        for (Trashed t : sel) {
+            Context ctx = t.context != null ? t.context : Context.getContact();
+            if (!mpv5.usermanagement.MPSecurityManager.check(ctx, mpv5.usermanagement.MPSecurityManager.EDIT)) {
+                canRestore = false;
+            }
+            if (!mpv5.usermanagement.MPSecurityManager.check(ctx, mpv5.usermanagement.MPSecurityManager.CREATE_OR_DELETE)) {
+                canDelete = false;
+            }
+        }
+        restore.setEnabled(canRestore);
+        delete.setEnabled(canDelete);
     }
 
     private List<Trashed> selected() {

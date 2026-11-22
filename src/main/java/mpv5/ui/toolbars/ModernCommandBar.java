@@ -627,8 +627,9 @@ public class ModernCommandBar extends JPanel {
             this.favourite.setIcon(new javax.swing.ImageIcon(url));
         }
         this.favourite.setToolTipText(tip(text("MPV5View.jButton24.toolTipText"), FAVOURITE));
-        //another record shown: no note about a copy
+        //another record shown: no note about a copy, and refresh RBAC button states
         updateCopyBanner();
+        setEditable(editable);
     }
 
     /**
@@ -637,9 +638,18 @@ public class ModernCommandBar extends JPanel {
     public void setEditable(boolean on) {
         editable = on;
         boolean contentLocked = view.isContentLocked();
-        save.setEnabled(on);
-        delete.setEnabled(on && !contentLocked && !RecordActions.isPendingCopy(view));
-        lock.setEnabled(on && !contentLocked && !DatabaseObject.isAutoLockEnabled());
+        DatabaseObject owner = view.getDataOwner();
+        mpv5.db.common.Context ctx = owner != null ? owner.getContext() : null;
+        boolean canSave = ctx == null
+                || (owner.isExisting()
+                        ? mpv5.usermanagement.MPSecurityManager.check(ctx, mpv5.usermanagement.MPSecurityManager.EDIT)
+                        : mpv5.usermanagement.MPSecurityManager.check(ctx, mpv5.usermanagement.MPSecurityManager.CREATE_OR_DELETE));
+        boolean canCreateOrDelete = ctx == null
+                || mpv5.usermanagement.MPSecurityManager.check(ctx, mpv5.usermanagement.MPSecurityManager.CREATE_OR_DELETE);
+        save.setEnabled(on && canSave);
+        delete.setEnabled(on && canCreateOrDelete && !contentLocked && !RecordActions.isPendingCopy(view));
+        saveAsNewItem.setEnabled(canCreateOrDelete);
+        lock.setEnabled(on && canSave && !contentLocked && !DatabaseObject.isAutoLockEnabled());
     }
 
     /**
