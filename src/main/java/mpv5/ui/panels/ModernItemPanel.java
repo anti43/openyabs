@@ -137,6 +137,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
     private final Avatar avatar = new Avatar();
     private final JLabel displayname = new JLabel();
     private final StatusPill statusPill = new StatusPill();
+    private final MarkPaidButton markPaidButton = new MarkPaidButton();
     private final JLabel meta = new JLabel();
     //customer
     private final LabeledCombobox contactname = ModernTheme.plain(new LabeledCombobox());
@@ -400,15 +401,24 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         meta.setFont(ModernTheme.font(2, Font.PLAIN));
         meta.setBorder(BorderFactory.createEmptyBorder(0, ModernTheme.px(12), 0, 0));
         meta.setForeground(ModernTheme.muted());
-        JPanel leftRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        leftRow.setOpaque(false);
-        leftRow.add(displayname);
-        leftRow.add(statusPill);
-        leftRow.add(createPluginBadgeSlot());
-        JPanel row = new JPanel(new BorderLayout(ModernTheme.px(10), 0));
+        meta.setMinimumSize(new java.awt.Dimension(0, 0));
+        JPanel row = new JPanel(new java.awt.GridBagLayout());
         row.setOpaque(false);
-        row.add(leftRow, BorderLayout.WEST);
-        row.add(meta, BorderLayout.CENTER);
+        java.awt.GridBagConstraints gc = new java.awt.GridBagConstraints();
+        gc.gridy = 0;
+        gc.anchor = java.awt.GridBagConstraints.WEST;
+        gc.fill = java.awt.GridBagConstraints.NONE;
+        gc.weightx = 0;
+        gc.gridx = 0;
+        row.add(displayname, gc);
+        gc.gridx = 1;
+        row.add(statusPill, gc);
+        gc.gridx = 2;
+        row.add(createPluginBadgeSlot(), gc);
+        gc.gridx = 3;
+        gc.weightx = 1;
+        gc.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        row.add(meta, gc);
         header.add(row, BorderLayout.CENTER);
         return header;
     }
@@ -549,6 +559,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         printWithConfirmation.addActionListener(e -> User.getCurrentUser().setPropertyAndSave(
                 OC_PROPERTY_PREFIX + "$" + OC_PROPERTY, String.valueOf(printWithConfirmation.isSelected())));
         //a setting of print / PDF: next to them in the bar at the top
+        tb.addAction(markPaidButton, null);
         printWithConfirmation.setFocusable(false);
         tb.addAction(printWithConfirmation, null);
         positions.addAction(menuButton(documentsButton, docs));
@@ -619,6 +630,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         });
         compareButton.addActionListener(e -> compareToOrder());
         referencesButton.addActionListener(e -> showReferences());
+        markPaidButton.addActionListener(e -> markAsPaid());
         positions.addAction(compareButton);
         positions.addAction(referencesButton);
     }
@@ -689,6 +701,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
             paymentsCard.setVisible(bill);
         }
         updateEInvoiceButton(null);
+        updateMarkPaidButton();
         number.setContext(ItemService.contextOf(t < 0 ? Item.TYPE_INVOICE : t));
     }
 
@@ -723,6 +736,83 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
             statusPill.setStatus(s == null ? -1 : Integer.parseInt(String.valueOf(s.getId())));
         } catch (NumberFormatException e) {
             statusPill.setStatus(-1);
+        }
+        updateMarkPaidButton();
+    }
+
+    /**
+     * Shows the "Mark as paid" button on payable documents (invoices, deposits,
+     * part payments, credit notes) unless cancelled; turns green, labeled
+     * "Paid" and inactive once paid.
+     */
+    private void updateMarkPaidButton() {
+        int t = inttype_;
+        boolean payable = ItemService.isBill(t) || t == Item.TYPE_CREDIT;
+        int currentStatus = -1;
+        MPComboBoxModelItem s = status.getSelectedItem();
+        if (s != null) {
+            try {
+                currentStatus = Integer.parseInt(String.valueOf(s.getId()));
+            } catch (NumberFormatException ignored) {
+            }
+        }
+        if (currentStatus < 0 && dataOwner != null) {
+            currentStatus = dataOwner.__getIntstatus();
+        }
+        boolean visible = payable && currentStatus != Item.STATUS_CANCELLED;
+        markPaidButton.setVisible(visible);
+        if (visible) {
+            boolean paid = currentStatus == Item.STATUS_PAID;
+            boolean canMarkPaid = dataOwner == null || !dataOwner.isReadOnly();
+            markPaidButton.setPaid(paid, canMarkPaid);
+        }
+        if (tb != null) {
+            tb.revalidate();
+            tb.repaint();
+        }
+    }
+
+    /**
+     * Marks the current document as paid and saves it. If partial payments are
+     * recorded, books the remaining open amount as a payment first.
+     */
+    private void markAsPaid() {
+        if (dataOwner == null || dataOwner.isReadOnly()
+                || dataOwner.__getIntstatus() == Item.STATUS_PAID
+                || dataOwner.__getIntstatus() == Item.STATUS_CANCELLED) {
+            return;
+        }
+        if (!dataOwner.isExisting() || mpv5.ui.toolbars.RecordActions.isPendingCopy(this)) {
+            if (!ensureSavedForExport()) {
+                return;
+            }
+        }
+        if (ItemService.isBill(dataOwner.__getInttype()) && mpv5.handler.Payments.hasPayments(dataOwner)) {
+            BigDecimal open = mpv5.handler.Payments.open(dataOwner);
+            if (open.signum() > 0) {
+                int before = dataOwner.__getIntstatus();
+                if (mpv5.handler.Payments.add(dataOwner, open, new Date(), Messages.MARK_PAID_PAYMENT_NOTE.toString())) {
+                    afterPaymentChange(before);
+                }
+                return;
+            }
+        }
+        status.setSelectedItem(Item.STATUS_PAID);
+        intstatus_ = Item.STATUS_PAID;
+        if (isContentLocked() || getLockedDocument() != null) {
+            dataOwner.setIntstatus(Item.STATUS_PAID);
+            if (dataOwner.save(true)) {
+                setDataOwner(dataOwner, true);
+                YabsViewProxy.instance().addMessage(dataOwner + ": " + Messages.STATUS_PAID, Color.GREEN);
+            }
+        } else {
+            if (dataOwner.getPanelData(this) && dataOwner.save(true)) {
+                actionAfterSave();
+                setDataOwner(dataOwner, true);
+                YabsViewProxy.instance().addMessage(dataOwner + ": " + Messages.STATUS_PAID, Color.GREEN);
+            } else {
+                showRequiredFields();
+            }
         }
     }
 
@@ -2229,6 +2319,111 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
             g2.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, getHeight(), getHeight());
             g2.dispose();
             super.paintComponent(g);
+        }
+    }
+
+    /**
+     * Command-bar button to mark a payable document as paid: uses the same
+     * layout, height, font and padding as the other command-bar buttons, in
+     * light orange while unpaid and turning green, labeled "Paid" and inactive
+     * once paid.
+     */
+    private static final class MarkPaidButton extends JButton {
+
+        private static final long serialVersionUID = 1L;
+        private boolean paid;
+        private Color fillColor;
+        private Color borderColor;
+        private Color textColor;
+
+        MarkPaidButton() {
+            setName("markPaidButton"); //NOI18N
+            ModernTheme.actionButton(this, null);
+            setFocusPainted(false);
+            setContentAreaFilled(false);
+            setBorderPainted(false);
+            setOpaque(false);
+            setRolloverEnabled(true);
+            setBorder(BorderFactory.createEmptyBorder(ModernTheme.px(6), ModernTheme.px(14), ModernTheme.px(6), ModernTheme.px(14)));
+            setPaid(false, true);
+        }
+
+        void setPaid(boolean paid, boolean canMarkPaid) {
+            this.paid = paid;
+            boolean dark = ModernTheme.isDark();
+            if (paid) {
+                setText(Messages.STATUS_PAID.toString());
+                fillColor = new Color(40, 150, 80);
+                borderColor = new Color(28, 120, 62);
+                textColor = Color.WHITE;
+                setEnabled(false);
+                setCursor(java.awt.Cursor.getDefaultCursor());
+            } else {
+                setText(Messages.MARK_PAID_TITLE.toString());
+                fillColor = dark ? new Color(154, 88, 22) : new Color(255, 224, 178);
+                borderColor = dark ? new Color(234, 150, 40) : new Color(245, 158, 11);
+                textColor = dark ? new Color(255, 243, 224) : new Color(146, 64, 14);
+                setEnabled(canMarkPaid);
+                setCursor(canMarkPaid ? java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR)
+                        : java.awt.Cursor.getDefaultCursor());
+            }
+            setForeground(textColor);
+            setBackground(fillColor);
+            int h = ModernCommandBar.barHeight();
+            setPreferredSize(null);
+            java.awt.Dimension d = getPreferredSize();
+            java.awt.Dimension size = new java.awt.Dimension(d.width, h);
+            setPreferredSize(size);
+            setMinimumSize(new java.awt.Dimension(Math.min(size.width, ModernTheme.px(24)), h));
+            setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, h));
+            revalidate();
+            repaint();
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+            Color fill = fillColor;
+            Color border = borderColor;
+            Color fg = textColor;
+            if (!paid) {
+                if (!isEnabled()) {
+                    fill = ModernTheme.blend(fill, ModernTheme.background(), 0.45f);
+                    fg = ModernTheme.muted();
+                    border = ModernTheme.border();
+                } else if (getModel().isPressed()) {
+                    fill = ModernTheme.blend(fill, border, 0.35f);
+                } else if (getModel().isRollover()) {
+                    fill = ModernTheme.blend(fill, border, 0.18f);
+                }
+            }
+            int arc = javax.swing.UIManager.getInt("Button.arc");
+            if (arc <= 0) {
+                arc = ModernTheme.px(6);
+            }
+            int insetX = ModernTheme.px(1);
+            int insetTop = ModernTheme.px(2);
+            int insetBottom = ModernTheme.px(1);
+            int rx = insetX;
+            int ry = insetTop;
+            int rw = Math.max(0, getWidth() - 1 - 2 * insetX);
+            int rh = Math.max(0, getHeight() - 1 - insetTop - insetBottom);
+            g2.setColor(fill);
+            g2.fillRoundRect(rx, ry, rw, rh, arc, arc);
+            g2.setColor(border);
+            g2.drawRoundRect(rx, ry, rw, rh, arc, arc);
+            g2.setFont(getFont());
+            g2.setColor(fg);
+            java.awt.FontMetrics fm = g2.getFontMetrics();
+            String t = getText();
+            if (t != null) {
+                int x = rx + (rw + 1 - fm.stringWidth(t)) / 2;
+                int y = ry + (rh + 1 - fm.getHeight()) / 2 + fm.getAscent();
+                g2.drawString(t, x, y);
+            }
+            g2.dispose();
         }
     }
 }
