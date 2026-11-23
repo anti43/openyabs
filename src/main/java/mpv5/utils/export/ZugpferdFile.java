@@ -47,6 +47,7 @@ import mpv5.utils.jobs.Waitable;
 import mpv5.utils.text.Iban;
 import org.mustangproject.BankDetails;
 import org.mustangproject.Invoice;
+import org.mustangproject.SchemedID;
 import org.mustangproject.TradeParty;
 import org.mustangproject.ZUGFeRD.IZUGFeRDExportableItem;
 import org.mustangproject.ZUGFeRD.Profiles;
@@ -66,8 +67,12 @@ import org.mustangproject.ZUGFeRD.ZUGFeRDExporterFromA3;
  * <code>companyinfo.*</code>), buyer data from the invoice contact. The buyer
  * reference (Leitweg-ID) is read from a value property named
  * {@value #KEY_BUYER_REFERENCE} on the invoice or the contact; if none exists
- * the customer number is used. The due date is the invoice date plus the
- * payment term of the contact ({@value #DEFAULT_PAYTERM_DAYS} days if the
+ * the customer number is used. The buyer electronic address (Peppol-ID, BT-49)
+ * is read from {@value #KEY_PEPPOL_ID} on the invoice or contact (falling back
+ * to the contact email with scheme {@code EM}); the seller electronic address
+ * (BT-34) is read from {@code companyinfo.peppolid} (falling back to the
+ * company email with scheme {@code EM}). The due date is the invoice date plus
+ * the payment term of the contact ({@value #DEFAULT_PAYTERM_DAYS} days if the
  * contact has none).
  * <p>
  * After writing, the file is checked with the official validator (see
@@ -101,6 +106,21 @@ public class ZugpferdFile implements Waitable {
      * Leitweg-ID (BT-10)
      */
     public static final String KEY_BUYER_REFERENCE = "leitweg-id";
+    /**
+     * Value property (on invoice or contact) holding the buyer Peppol-ID /
+     * electronic address (BT-49) in the form {@code <EAS-scheme>:<id>}
+     */
+    public static final String KEY_PEPPOL_ID = "peppol-id";
+    /**
+     * Company setting ({@code companyinfo.peppolid}) holding the seller
+     * Peppol-ID / electronic address (BT-34) in the form {@code <EAS-scheme>:<id>}
+     */
+    public static final String KEY_COMPANY_PEPPOL_ID = "peppolid";
+    /**
+     * Contact value property and company setting ({@code companyinfo.eori})
+     * holding the EU customs EORI number
+     */
+    public static final String KEY_EORI = "eori";
     /**
      * Company setting holding the VAT exemption reason used for 0% VAT lines
      * of category E whose tax rate has no note (else the default note of the
@@ -272,11 +292,14 @@ public class ZugpferdFile implements Waitable {
         }
         //account, payment term and Skonto: contact, else defaults (template, company info)
         PaymentTerms terms = PaymentTerms.forContact(contact, contact.__getPayterm(), paytermOf(template), company);
+        TradeParty recipient = contact.asZugpferdTradeparty();
+        applyPeppolId(recipient, findBuyerPeppolId(item, contact));
         Invoice invoice = createInvoice(item, item.getSubitems(), createSender(company, terms.getAccount()),
-                contact.asZugpferdTradeparty(), findBuyerReference(item, contact), terms.getDays(),
+                recipient, findBuyerReference(item, contact), terms.getDays(),
                 company.apply(KEY_TAX_EXEMPTION_REASON), SmallBusiness.note(company), format,
                 taxRates(contact, mpv5.db.objects.Tax.all()));
         applySkonto(invoice, terms);
+        applyEoriNotes(invoice, company.apply(KEY_EORI), ContactProperty.get(contact, KEY_EORI));
         Item corrected = item.__getInttype() == Item.TYPE_CREDIT ? item.getCorrectedInvoice() : null;
         if (corrected != null) {
             applyPrecedingInvoice(invoice, corrected.__getCnumber(), corrected.__getDateadded());
@@ -694,6 +717,8 @@ public class ZugpferdFile implements Waitable {
         if (!email.isEmpty()) {
             sender.setEmail(email);
         }
+        //Peppol-ID (BT-34) overrides email (scheme EM) as SellerElectronicAddress; email stays in DefinedTradeContact (BT-43)
+        applyPeppolId(sender, company.apply(KEY_COMPANY_PEPPOL_ID));
         //no empty phone / mail element: invalid in XRechnung (PEPPOL-EN16931-R008)
         sender.setContact(new org.mustangproject.Contact(firstNonEmpty(person, name),
                 phone.trim().isEmpty() ? null : phone, email.isEmpty() ? null : email));
@@ -753,7 +778,7 @@ public class ZugpferdFile implements Waitable {
         } else if (!isEmpty(s.getVATID()) && !isValidVatId(s.getVATID())) {
             problems.add(seller + Messages.ZUGFERD_INVALID_VATID + " '" + s.getVATID() + "'");
         }
-        check(problems, seller, Messages.ZUGFERD_FIELD_EMAIL, s.getUriUniversalCommunicationID());
+        checkEndpoint(problems, seller, s);
         if (s.getContact() == null || isEmpty(s.getContact().getPhone())) {
             problems.add(seller + Messages.ZUGFERD_FIELD_PHONE);
         }
@@ -780,7 +805,178 @@ public class ZugpferdFile implements Waitable {
         check(problems, buyer, Messages.ZUGFERD_FIELD_ZIP, r.getZIP());
         check(problems, buyer, Messages.ZUGFERD_FIELD_CITY, r.getLocation());
         checkCountry(problems, buyer, r.getCountry());
-        check(problems, buyer, Messages.ZUGFERD_FIELD_EMAIL, r.getUriUniversalCommunicationID());
+        checkEndpoint(problems, buyer, r);
+    }
+
+    private static void checkEndpoint(List<String> problems, String prefix, TradeParty party) {
+        String id = party.getUriUniversalCommunicationID();
+        String scheme = party.getUriUniversalCommunicationIDScheme();
+        if (isEmpty(id)) {
+            problems.add(prefix + Messages.ZUGFERD_FIELD_EMAIL);
+        } else if (!isValidEasScheme(scheme) || id.trim().matches(".*\\s.*")) {
+            String value = isEmpty(scheme) ? id.trim() : scheme.trim() + ":" + id.trim();
+            problems.add(prefix + Messages.ZUGFERD_INVALID_PEPPOL_ID + " '" + value + "'");
+        }
+    }
+
+    /**
+     * CEF Electronic Address Scheme (EAS) codes allowed for BT-34 / BT-49
+     * (EN 16931 rule BR-CL-25)
+     */
+    private static final Set<String> EAS_SCHEMES = new HashSet<String>(Arrays.asList(
+            "0002", "0007", "0009", "0037", "0060", "0088", "0096", "0097", "0106", "0130", "0135", "0142",
+            "0147", "0151", "0154", "0158", "0170", "0177", "0183", "0184", "0188", "0190", "0191", "0192",
+            "0193", "0194", "0195", "0196", "0198", "0199", "0200", "0201", "0202", "0203", "0204", "0205",
+            "0208", "0209", "0210", "0211", "0212", "0213", "0215", "0216", "0217", "0218", "0219", "0220",
+            "0221", "0225", "0230", "0235", "0240", "0242", "0244", "0245", "0246", "0248",
+            "9910", "9913", "9914", "9915", "9918", "9919", "9920", "9922", "9923", "9924", "9925", "9926",
+            "9927", "9928", "9929", "9930", "9931", "9932", "9933", "9934", "9935", "9936", "9937", "9938",
+            "9939", "9940", "9941", "9942", "9943", "9944", "9945", "9946", "9947", "9948", "9949", "9950",
+            "9951", "9952", "9953", "9957", "9959",
+            "AN", "AQ", "AS", "AU", "EM"));
+
+    private static final String PEPPOL_UPIS_PREFIX = "iso6523-actorid-upis::";
+
+    private static String stripPeppolPrefix(String peppolId) {
+        if (peppolId == null) {
+            return "";
+        }
+        String trimmed = peppolId.trim();
+        if (trimmed.length() > PEPPOL_UPIS_PREFIX.length()
+                && trimmed.substring(0, PEPPOL_UPIS_PREFIX.length()).equalsIgnoreCase(PEPPOL_UPIS_PREFIX)) {
+            return trimmed.substring(PEPPOL_UPIS_PREFIX.length()).trim();
+        }
+        return trimmed;
+    }
+
+    /**
+     * @param scheme EAS scheme identifier (e.g. {@code 0204}, {@code 9930}, {@code EM})
+     * @return true if the scheme is part of the EN 16931 EAS code list (BR-CL-25)
+     */
+    public static boolean isValidEasScheme(String scheme) {
+        return !isEmpty(scheme) && EAS_SCHEMES.contains(scheme.trim().toUpperCase(Locale.ROOT));
+    }
+
+    /**
+     * Parse a Peppol-ID / electronic address in the form {@code <scheme>:<id>}
+     * (optionally prefixed with {@code iso6523-actorid-upis::}).
+     *
+     * @param peppolId
+     * @return the parsed {@link SchemedID} (scheme uppercased, id trimmed), or
+     * {@code null} if empty or invalid
+     */
+    public static SchemedID parsePeppolId(String peppolId) {
+        String cleaned = stripPeppolPrefix(peppolId);
+        int colon = cleaned.indexOf(':');
+        if (colon <= 0 || colon >= cleaned.length() - 1) {
+            return null;
+        }
+        String scheme = cleaned.substring(0, colon).trim().toUpperCase(Locale.ROOT);
+        String id = cleaned.substring(colon + 1).trim();
+        if (!EAS_SCHEMES.contains(scheme) || id.isEmpty() || id.matches(".*\\s.*")) {
+            return null;
+        }
+        return new SchemedID(scheme, id);
+    }
+
+    /**
+     * @param peppolId
+     * @return true if the value is a valid {@code <EAS-scheme>:<id>} electronic address
+     */
+    public static boolean isValidPeppolId(String peppolId) {
+        return parsePeppolId(peppolId) != null;
+    }
+
+    /**
+     * Normalize a Peppol-ID (strips optional {@code iso6523-actorid-upis::}
+     * prefix and whitespace around scheme/id, uppercases scheme).
+     *
+     * @param peppolId
+     * @return normalized string or {@code ""} if null/empty
+     */
+    public static String normalizePeppolId(String peppolId) {
+        SchemedID parsed = parsePeppolId(peppolId);
+        return parsed != null ? parsed.getScheme() + ":" + parsed.getID() : stripPeppolPrefix(peppolId);
+    }
+
+    /**
+     * Apply a Peppol-ID as the electronic address ({@code URIUniversalCommunication},
+     * BT-34 for seller or BT-49 for buyer) of a {@link TradeParty}, overriding any
+     * {@code EM} email endpoint set earlier. Empty values are ignored.
+     *
+     * @param party
+     * @param peppolId
+     */
+    public static void applyPeppolId(TradeParty party, String peppolId) {
+        if (party == null || isEmpty(peppolId)) {
+            return;
+        }
+        SchemedID parsed = parsePeppolId(peppolId);
+        if (parsed != null) {
+            party.addUriUniversalCommunicationID(parsed);
+        } else {
+            //keep invalid value so validate() reports what is wrong instead of silently falling back
+            String cleaned = stripPeppolPrefix(peppolId);
+            int colon = cleaned.indexOf(':');
+            if (colon > 0 && colon < cleaned.length() - 1) {
+                party.addUriUniversalCommunicationID(new SchemedID(
+                        cleaned.substring(0, colon).trim().toUpperCase(Locale.ROOT),
+                        cleaned.substring(colon + 1).trim()));
+            } else {
+                party.addUriUniversalCommunicationID(new SchemedID("", cleaned));
+            }
+        }
+    }
+
+    /**
+     * Remove spaces, dots and dashes from an EORI number, upper case.
+     *
+     * @param eori
+     * @return
+     */
+    public static String normalizeEori(String eori) {
+        return eori == null ? "" : eori.replaceAll("[\\s.\\-]", "").toUpperCase(Locale.ROOT);
+    }
+
+    /**
+     * Check the form of an EU/UK EORI number (Union Customs Code Annex 12-01):
+     * 2-letter ISO 3166 country code (plus {@code EL} for Greece, {@code XI} for
+     * Northern Ireland) followed by 1 to 15 alphanumeric characters (max 17 chars
+     * total, e.g. {@code DE123456789012345}, {@code DE1234567}, {@code GB123456789000}).
+     *
+     * @param eori
+     * @return
+     */
+    public static boolean isValidEori(String eori) {
+        String v = normalizeEori(eori);
+        if (!v.matches("[A-Z]{2}[A-Z0-9]{1,15}")) {
+            return false;
+        }
+        String prefix = v.substring(0, 2);
+        return "EL".equals(prefix) || "XI".equals(prefix) || ISO_COUNTRIES.contains(prefix);
+    }
+
+    /**
+     * Add Seller and/or Buyer EORI numbers to an e-invoice as EN 16931 customs
+     * notes (BG-1 / BT-21 = {@code CUS}, BT-22). EN 16931 and ISO 6523 ICD have
+     * no dedicated EORI field.
+     *
+     * @param invoice
+     * @param sellerEori may be null or empty
+     * @param buyerEori may be null or empty
+     */
+    public static void applyEoriNotes(Invoice invoice, String sellerEori, String buyerEori) {
+        if (invoice == null) {
+            return;
+        }
+        String seller = normalizeEori(sellerEori);
+        if (!seller.isEmpty()) {
+            invoice.addCustomsNote("Seller EORI: " + seller);
+        }
+        String buyer = normalizeEori(buyerEori);
+        if (!buyer.isEmpty()) {
+            invoice.addCustomsNote("Buyer EORI: " + buyer);
+        }
     }
 
     /**
@@ -951,6 +1147,22 @@ public class ZugpferdFile implements Waitable {
             ref = contact.__getCNumber();
         }
         return ref;
+    }
+
+    /**
+     * Find the buyer Peppol-ID (BT-49) of an invoice: value property on the
+     * invoice or value property on the contact, or {@code null} if none is set.
+     *
+     * @param item
+     * @param contact
+     * @return
+     */
+    public static String findBuyerPeppolId(Item item, Contact contact) {
+        String id = valueProperty(item, KEY_PEPPOL_ID);
+        if (isEmpty(id)) {
+            id = ContactProperty.get(contact, KEY_PEPPOL_ID);
+        }
+        return isEmpty(id) ? null : id.trim();
     }
 
     private static String valueProperty(mpv5.db.common.DatabaseObject owner, String key) {

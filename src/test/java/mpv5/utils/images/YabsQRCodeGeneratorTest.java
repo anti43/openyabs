@@ -206,6 +206,7 @@ class YabsQRCodeGeneratorTest {
             ctx.put("item.discountnetdifferencef", "");
             ctx.put("item.taxnotes", "");
             ctx.put("item.contact.cnumber", "KD000415");
+            ctx.put("item.contact.eori", "DE987654321098765");
             ctx.put("item.contact.title", "DARC OV-L23");
             ctx.put("item.contact.fullname", "Michael Punsmann");
             ctx.put("item.contact.invoiceaddress.street", "Kardinal-von-Galen Str. 6");
@@ -224,6 +225,7 @@ class YabsQRCodeGeneratorTest {
             ctx.put("companyinfo.email", "aaa@fff.dee");
             ctx.put("companyinfo.taxnumber", "");
             ctx.put("companyinfo.vatid", "DE435345435");
+            ctx.put("companyinfo.eori", "DE123456789012345");
             ctx.put("companyinfo.bankname", "");
             ctx.put("companyinfo.banknumber", "");
             ctx.put("companyinfo.account", "DE02500105170137075030");

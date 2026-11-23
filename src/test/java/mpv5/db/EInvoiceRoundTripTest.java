@@ -132,7 +132,8 @@ class EInvoiceRoundTripTest {
         User admin = User.getCurrentUser();
         String[][] company = {{"business", "Wir GmbH"}, {"street", "Hauptstr. 1"}, {"zip", "50667"}, {"city", "Köln"},
             {"country", "DE"}, {"vatid", "DE 999 999 999"}, {"taxnumber", "214/5678/9012"}, {"email", "info@wir.example"},
-            {"phone", "0221 123"}, {"iban", "DE02120300000000202051"}, {"bic", "BYLADEM1001"}, {"bankname", "Bank"}};
+            {"phone", "0221 123"}, {"iban", "DE02120300000000202051"}, {"bic", "BYLADEM1001"}, {"bankname", "Bank"},
+            {"eori", "DE123456789012345"}, {"peppolid", "9930:DE999999999"}};
         for (String[] kv : company) {
             admin.changeProperty("companyinfo." + kv[0], kv[1]);
         }
@@ -191,6 +192,8 @@ class EInvoiceRoundTripTest {
         c.setisCustomer(true);
         c.setDateadded(new java.util.Date());
         assertTrue(c.save(true));
+        mpv5.handler.ContactService.savePeppolId(c, "0204:04011000-12345-34");
+        mpv5.handler.ContactService.saveEori(c, "DE987654321098765");
         mpv5.db.objects.Item inv = (mpv5.db.objects.Item) DatabaseObject.getObject(Context.getInvoice());
         inv.setContactsids(c.__getIDS());
         inv.setCname("Beratung");
@@ -214,6 +217,11 @@ class EInvoiceRoundTripTest {
         }
         mpv5.handler.ItemService.updateTotals(inv);
         inv = (mpv5.db.objects.Item) DatabaseObject.getObject(Context.getInvoice(), inv.__getIDS());
+        java.util.Map<String, Object> fields = inv.getFormFields();
+        assertEquals("DE123456789012345", fields.get("companyinfo.eori"));
+        assertEquals("9930:DE999999999", fields.get("companyinfo.peppolid"));
+        assertEquals("DE987654321098765", fields.get("item.contact.eori"));
+        assertEquals("0204:04011000-12345-34", fields.get("item.contact.peppolid"));
         Path out = tmp.resolve("out");
         Files.createDirectories(out);
         File xml = out.resolve(inv.__getCnumber() + ".xml").toFile();
@@ -227,6 +235,11 @@ class EInvoiceRoundTripTest {
             assertNotNull(z.getValidation(), "validated");
             assertTrue(z.getValidation().isValid(), f[1] + ": " + z.getValidation());
         }
+        String exportedXml = new String(Files.readAllBytes(xml.toPath()), StandardCharsets.UTF_8);
+        assertTrue(exportedXml.contains("<ram:URIID schemeID=\"9930\">DE999999999</ram:URIID>"), exportedXml);
+        assertTrue(exportedXml.contains("<ram:URIID schemeID=\"0204\">04011000-12345-34</ram:URIID>"), exportedXml);
+        assertTrue(exportedXml.contains("<ram:Content>Seller EORI: DE123456789012345</ram:Content>"), exportedXml);
+        assertTrue(exportedXml.contains("<ram:Content>Buyer EORI: DE987654321098765</ram:Content>"), exportedXml);
         //the checksums of both files are recorded and verified
         java.util.List<mpv5.handler.DocumentFiles.Entry> files = mpv5.handler.DocumentFiles.verify(inv);
         assertEquals(2, files.size(), String.valueOf(files));

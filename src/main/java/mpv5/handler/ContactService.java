@@ -988,6 +988,40 @@ public final class ContactService {
     }
 
     /**
+     * @param contact
+     * @return the buyer Peppol-ID (BT-49), "" if not set
+     */
+    public static String peppolId(Contact contact) {
+        String v = mpv5.utils.export.ContactProperty.get(contact, mpv5.utils.export.ZugpferdFile.KEY_PEPPOL_ID);
+        return v == null ? "" : v;
+    }
+
+    /**
+     * @param contact the (saved) contact
+     * @param peppolId buyer Peppol-ID, null or "" removes it
+     */
+    public static void savePeppolId(Contact contact, String peppolId) {
+        mpv5.utils.export.ContactProperty.set(contact, mpv5.utils.export.ZugpferdFile.KEY_PEPPOL_ID, peppolId);
+    }
+
+    /**
+     * @param contact
+     * @return the EORI number of the contact, "" if not set
+     */
+    public static String eori(Contact contact) {
+        String v = mpv5.utils.export.ContactProperty.get(contact, mpv5.utils.export.ZugpferdFile.KEY_EORI);
+        return v == null ? "" : v;
+    }
+
+    /**
+     * @param contact the (saved) contact
+     * @param eori EORI number, null or "" removes it
+     */
+    public static void saveEori(Contact contact, String eori) {
+        mpv5.utils.export.ContactProperty.set(contact, mpv5.utils.export.ZugpferdFile.KEY_EORI, eori);
+    }
+
+    /**
      * Prints the contact sheet (template type "Contact") of the saved
      * contact, named e.g. "Kontaktdatenblatt-000001-Muster GmbH"; without
      * such a template the view itself is printed (fallback, on the Swing

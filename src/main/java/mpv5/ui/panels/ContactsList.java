@@ -260,6 +260,7 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel, DataP
     * the name
     */
    private final java.util.Map<String, String> countries = new java.util.HashMap<String, String>();
+   private final java.util.Map<String, String> peppolIds = new java.util.HashMap<String, String>();
    /**
     * The e-invoice check by row of the model
     */
@@ -345,6 +346,10 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel, DataP
       taxes.clear();
       for (java.util.Map.Entry<Integer, String> e : mpv5.utils.export.ContactProperty.all(mpv5.handler.ContactService.KEY_TAX).entrySet()) {
          taxes.put(String.valueOf(e.getKey()), e.getValue().trim());
+      }
+      peppolIds.clear();
+      for (java.util.Map.Entry<Integer, String> e : mpv5.utils.export.ContactProperty.all(mpv5.utils.export.ZugpferdFile.KEY_PEPPOL_ID).entrySet()) {
+         peppolIds.put(String.valueOf(e.getKey()), e.getValue().trim());
       }
       taxOptions = mpv5.handler.ContactService.taxOptions();
       java.util.List<mpv5.utils.export.BankAccount> own = mpv5.utils.export.BankAccount.companyAccounts(mpv5.utils.export.ZugpferdFile.companySettings());
@@ -706,11 +711,12 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel, DataP
       EInvoiceContactCheck.Result r = checks.get(row);
       if (r == null) {
          javax.swing.table.TableModel m = listTable.getModel();
+         String id = text(m, row, COL_ID);
          r = EInvoiceContactCheck.check(
                text(m, row, COL_PRENAME) + text(m, row, COL_NAME), text(m, row, COL_COMPANY),
                text(m, row, COL_STREET), text(m, row, COL_ZIP), text(m, row, COL_CITY),
-               countries.get(text(m, row, COL_ID)), text(m, row, COL_MAIL), text(m, row, COL_TAXNUMBER),
-               text(m, row, COL_IBAN), homeCountry);
+               countries.get(id), text(m, row, COL_MAIL), text(m, row, COL_TAXNUMBER),
+               text(m, row, COL_IBAN), homeCountry, peppolIds.get(id));
          checks.put(row, r);
       }
       return r;

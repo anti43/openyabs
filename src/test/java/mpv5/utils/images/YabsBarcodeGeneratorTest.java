@@ -209,6 +209,7 @@ class YabsBarcodeGeneratorTest {
         fields.put("item.discountnetdifferencef", "");
         fields.put("item.taxnotes", "");
         fields.put("item.contact.cnumber", "KD000415");
+        fields.put("item.contact.eori", "DE987654321098765");
         fields.put("item.contact.title", "DARC OV-L23");
         fields.put("item.contact.fullname", "Michael Punsmann");
         fields.put("item.contact.invoiceaddress.street", "Kardinal-von-Galen Str. 6");
@@ -227,6 +228,7 @@ class YabsBarcodeGeneratorTest {
         fields.put("companyinfo.email", "aaa@fff.dee");
         fields.put("companyinfo.taxnumber", "");
         fields.put("companyinfo.vatid", "DE435345435");
+        fields.put("companyinfo.eori", "DE123456789012345");
         fields.put("companyinfo.bankname", "");
         fields.put("companyinfo.banknumber", "");
         fields.put("companyinfo.account", "DE02500105170137075030");

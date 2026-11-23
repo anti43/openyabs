@@ -42,7 +42,17 @@ public final class FieldCheck {
      */
     public static void attach(LabeledTextField field, final Predicate<String> valid, final String tooltip,
             final String invalidHint) {
-        final JTextField text = field.getTextField();
+        attach(field.getTextField(), valid, tooltip, invalidHint);
+    }
+
+    /**
+     * @param text
+     * @param valid check for non empty values
+     * @param tooltip shown while the value is valid or empty
+     * @param invalidHint shown while the value is invalid
+     */
+    public static void attach(final JTextField text, final Predicate<String> valid, final String tooltip,
+            final String invalidHint) {
         final Color normal = text.getBackground();
         text.setToolTipText(tooltip);
         final Runnable update = new Runnable() {

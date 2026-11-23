@@ -2208,6 +2208,8 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     private final javax.swing.JComboBox<mpv5.utils.export.EInvoiceDelivery> einvoiceDelivery
             = new javax.swing.JComboBox<mpv5.utils.export.EInvoiceDelivery>(mpv5.utils.export.EInvoiceDelivery.values());
     private final javax.swing.JTextField einvoiceLeitweg = new javax.swing.JTextField(25);
+    private final javax.swing.JTextField einvoicePeppolId = new javax.swing.JTextField(25);
+    private final javax.swing.JTextField contactEori = new javax.swing.JTextField(25);
     /**
      * the account the contact pays to: "" = account of the company info
      */
@@ -2244,8 +2246,8 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     }
 
     /**
-     * Tab "E-Invoice": how invoices are sent to this contact by email and the
-     * Leitweg-ID (both stored as value properties of the contact)
+     * Tab "E-Invoice": how invoices are sent to this contact by email,
+     * Leitweg-ID, Peppol-ID and EORI (all stored as value properties of the contact)
      */
     private void initEInvoiceTab() {
         javax.swing.JPanel p = new javax.swing.JPanel(new java.awt.GridBagLayout());
@@ -2276,11 +2278,17 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         info.setFocusable(false);
         //otherwise the preferred width is the whole text in one line, which widens the form
         info.setColumns(45);
-        addEInvoiceRow(p, c, 2, Messages.EINVOICE_ACCOUNT.toString(), einvoiceAccount);
-        addEInvoiceRow(p, c, 3, Messages.EINVOICE_PAYTERM.toString(), einvoicePayterm);
-        addEInvoiceRow(p, c, 4, Messages.EINVOICE_PAY_IMMEDIATELY.toString(), einvoiceImmediate);
-        addEInvoiceRow(p, c, 5, Messages.COMPANY_SKONTO_PERCENT.toString(), einvoiceSkontoPercent);
-        addEInvoiceRow(p, c, 6, Messages.COMPANY_SKONTO_DAYS.toString(), einvoiceSkontoDays);
+        addEInvoiceRow(p, c, 2, Messages.EINVOICE_PEPPOL_ID.toString(), einvoicePeppolId);
+        addEInvoiceRow(p, c, 3, Messages.CONTACT_EORI.toString(), contactEori);
+        addEInvoiceRow(p, c, 4, Messages.EINVOICE_ACCOUNT.toString(), einvoiceAccount);
+        addEInvoiceRow(p, c, 5, Messages.EINVOICE_PAYTERM.toString(), einvoicePayterm);
+        addEInvoiceRow(p, c, 6, Messages.EINVOICE_PAY_IMMEDIATELY.toString(), einvoiceImmediate);
+        addEInvoiceRow(p, c, 7, Messages.COMPANY_SKONTO_PERCENT.toString(), einvoiceSkontoPercent);
+        addEInvoiceRow(p, c, 8, Messages.COMPANY_SKONTO_DAYS.toString(), einvoiceSkontoDays);
+        mpv5.utils.ui.FieldCheck.attach(einvoicePeppolId, mpv5.utils.export.ZugpferdFile::isValidPeppolId,
+                Messages.EINVOICE_PEPPOL_ID_TOOLTIP.toString(), Messages.EINVOICE_PEPPOL_ID_INVALID.toString());
+        mpv5.utils.ui.FieldCheck.attach(contactEori, mpv5.utils.export.ZugpferdFile::isValidEori,
+                Messages.CONTACT_EORI_TOOLTIP.toString(), Messages.CONTACT_EORI_INVALID.toString());
         einvoiceImmediate.setToolTipText(Messages.EINVOICE_PAY_IMMEDIATELY_TOOLTIP.toString());
         einvoiceImmediate.addActionListener(e -> updateImmediate());
         einvoiceAccount.setToolTipText(Messages.EINVOICE_ACCOUNT_TOOLTIP.toString());
@@ -2291,7 +2299,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         syncPayterm(payterm.getTextField(), einvoicePayterm);
 
         c.gridx = 0;
-        c.gridy = 7;
+        c.gridy = 9;
         c.gridwidth = 2;
         c.weightx = 1;
         c.weighty = 1;
@@ -2404,6 +2412,8 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             leitweg = "";
         }
         einvoiceLeitweg.setText(leitweg);
+        einvoicePeppolId.setText(mpv5.handler.ContactService.peppolId(dataOwner));
+        contactEori.setText(mpv5.handler.ContactService.eori(dataOwner));
     }
 
     /**
@@ -2425,6 +2435,8 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                     einvoiceSkontoDays.getText());
             mpv5.utils.export.ContactProperty.set(dataOwner, mpv5.utils.export.ZugpferdFile.KEY_BUYER_REFERENCE,
                     einvoiceLeitweg.getText());
+            mpv5.handler.ContactService.savePeppolId(dataOwner, einvoicePeppolId.getText());
+            mpv5.handler.ContactService.saveEori(dataOwner, contactEori.getText());
         } catch (Exception e) {
             Log.Debug(this, e);
         }

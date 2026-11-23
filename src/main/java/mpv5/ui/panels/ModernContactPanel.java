@@ -157,6 +157,7 @@ public class ModernContactPanel extends ModernDataPanel {
     private final LabeledCombobox companyselect = ModernTheme.plain(new LabeledCombobox());
     private final JComboBox<Group> groupnameselect = new JComboBox<Group>();
     private final LabeledTextField taxnumber = field();
+    private final LabeledTextField contactEori = field();
     private final LabeledTextField payterm = field();
     private final LabeledTextField bankaccount = field();
     private final LabeledTextField bankid = field();
@@ -167,6 +168,7 @@ public class ModernContactPanel extends ModernDataPanel {
     //payment / e-invoice (value properties of the contact)
     private final JComboBox<EInvoiceDelivery> einvoiceDelivery = new JComboBox<EInvoiceDelivery>(EInvoiceDelivery.values());
     private final JTextField einvoiceLeitweg = new JTextField(20);
+    private final JTextField einvoicePeppolId = new JTextField(20);
     private final JComboBox<Object> einvoiceAccount = new JComboBox<Object>();
     private final JComboBox<Object> contactTax = new JComboBox<Object>();
     private final JCheckBox einvoiceImmediate = new JCheckBox(Messages.EINVOICE_PAY_IMMEDIATELY.toString());
@@ -355,6 +357,8 @@ public class ModernContactPanel extends ModernDataPanel {
         payterm.getTextField().setColumns(4);
         mpv5.utils.ui.FieldCheck.attach(taxnumber, mpv5.utils.export.ZugpferdFile::isValidVatId,
                 Messages.CONTACT_VATID_TOOLTIP.toString(), Messages.CONTACT_VATID_INVALID.toString());
+        mpv5.utils.ui.FieldCheck.attach(contactEori, mpv5.utils.export.ZugpferdFile::isValidEori,
+                Messages.CONTACT_EORI_TOOLTIP.toString(), Messages.CONTACT_EORI_INVALID.toString());
 
         groupnameselect.setName("groupnameselect");
         groupnameselect.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
@@ -390,6 +394,7 @@ public class ModernContactPanel extends ModernDataPanel {
 
         ModernTheme.roomy(notes);
         ModernTheme.roomy(einvoiceLeitweg);
+        ModernTheme.roomy(einvoicePeppolId);
         ModernTheme.roomy(einvoiceSkontoPercent);
         ModernTheme.roomy(einvoiceSkontoDays);
         notes.setLineWrap(true);
@@ -415,6 +420,8 @@ public class ModernContactPanel extends ModernDataPanel {
         String einvoiceInfo = "<html><div style='width:360px'>" + Messages.EINVOICE_TAB_INFO + "</div></html>";
         einvoiceDelivery.setToolTipText(einvoiceInfo);
         einvoiceLeitweg.setToolTipText(einvoiceInfo);
+        mpv5.utils.ui.FieldCheck.attach(einvoicePeppolId, mpv5.utils.export.ZugpferdFile::isValidPeppolId,
+                Messages.EINVOICE_PEPPOL_ID_TOOLTIP.toString(), Messages.EINVOICE_PEPPOL_ID_INVALID.toString());
 
         DocumentListener nameChanged = new DocumentListener() {
             @Override
@@ -524,7 +531,8 @@ public class ModernContactPanel extends ModernDataPanel {
         grid.add(new Card(Messages.CONTACT_SECTION_BUSINESS.toString())
                 .row(Card.field(text("ContactPanel.number._Label"), number, 1),
                         Card.field(text("ContactPanel.groupnameselect._Label"), groupnameselect, 2))
-                .row(Card.field(text("ContactPanel.taxnumber._Label"), taxnumber))
+                .row(Card.field(text("ContactPanel.taxnumber._Label"), taxnumber),
+                        Card.field(Messages.CONTACT_EORI.toString(), contactEori))
                 .section(Messages.CONTACT_SECTION_OWN_BANK.toString())
                 .addFull(mpv5.ui.modern.Applets.hint(Messages.CONTACT_OWN_BANK_HINT.toString()))
                 .row(Card.field(text("ContactPanel.bankaccount._Label"), bankaccount))
@@ -542,7 +550,8 @@ public class ModernContactPanel extends ModernDataPanel {
                 .row(Card.field(Messages.COMPANY_SKONTO_PERCENT.toString(), einvoiceSkontoPercent),
                         Card.field(Messages.COMPANY_SKONTO_DAYS.toString(), einvoiceSkontoDays))
                 .row(Card.field(Messages.EINVOICE_DELIVERY.toString(), einvoiceDelivery))
-                .row(Card.field(Messages.EINVOICE_LEITWEG.toString(), einvoiceLeitweg)));
+                .row(Card.field(Messages.EINVOICE_LEITWEG.toString(), einvoiceLeitweg))
+                .row(Card.field(Messages.EINVOICE_PEPPOL_ID.toString(), einvoicePeppolId)));
 
         JScrollPane notesScroll = new JScrollPane(notes);
         grid.add(new Card(text("ContactPanel.jPanel4.TabConstraints.tabTitle")).addFull(notesScroll, 1));
@@ -1066,6 +1075,8 @@ public class ModernContactPanel extends ModernDataPanel {
         einvoiceSkontoDays.setText(ContactService.paymentValue(dataOwner, PaymentTerms.KEY_SKONTO_DAYS));
         einvoiceDelivery.setSelectedItem(EInvoiceDelivery.forContact(dataOwner));
         einvoiceLeitweg.setText(ContactService.leitweg(dataOwner));
+        einvoicePeppolId.setText(ContactService.peppolId(dataOwner));
+        contactEori.set_Text(ContactService.eori(dataOwner));
     }
 
     private void saveEInvoiceSettings() {
@@ -1080,6 +1091,8 @@ public class ModernContactPanel extends ModernDataPanel {
         Object tax = contactTax.getSelectedItem();
         if (dataOwner != null && dataOwner.isExisting()) {
             ContactService.saveContactTax(dataOwner, tax instanceof ContactService.TaxOption ? ((ContactService.TaxOption) tax).id : "");
+            ContactService.savePeppolId(dataOwner, einvoicePeppolId.getText());
+            ContactService.saveEori(dataOwner, contactEori.get_Text());
         }
     }
 
@@ -1345,7 +1358,7 @@ public class ModernContactPanel extends ModernDataPanel {
             collectData();
             mpv5.utils.export.EInvoiceContactCheck.Result check = mpv5.utils.export.EInvoiceContactCheck.check(
                     (prename_ == null ? "" : prename_ + " ") + (cname_ == null ? "" : cname_), company_, street_, zip_, city_, country_,
-                    mailaddress_, taxnumber_, "", null);
+                    mailaddress_, taxnumber_, "", null, einvoicePeppolId.getText());
             if (check.hasErrors()) {
                 Popup.warn(Messages.EINVOICE_CUSTOMER_INCOMPLETE + "\n - " + String.join("\n - ", check.getMessages()));
                 throw new ChangeNotApprovedException(dataOwner);

@@ -481,6 +481,8 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
                 mpv5.handler.ContactService.taxOptions(), mpv5.handler.ContactService.contactTax(this));
         map.put("taxrate", tax.percent);
         map.put("taxname", tax.name);
+        map.put("eori", mpv5.handler.ContactService.eori(this));
+        map.put("peppolid", mpv5.handler.ContactService.peppolId(this));
 
         if (ismale) {
             map.put("gender", Messages.CONTACT_TYPE_MALE.toString());
@@ -794,6 +796,20 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
      * @return
      */
     public TradeParty asZugpferdTradeparty(Address address) {
+        return asZugpferdTradeparty(address, isExisting()
+                ? mpv5.utils.export.ContactProperty.get(this, ZugpferdFile.KEY_PEPPOL_ID) : null);
+    }
+
+    /**
+     * Create the buyer of an electronic invoice using the given address and
+     * optional Peppol-ID (BT-49, overriding the email address as electronic
+     * endpoint while keeping email in {@code DefinedTradeContact}).
+     *
+     * @param address
+     * @param peppolId optional Peppol-ID ({@code <EAS-scheme>:<id>})
+     * @return
+     */
+    public TradeParty asZugpferdTradeparty(Address address, String peppolId) {
         Address a = address == null ? getDefaultaddress() : address;
         String person = ZugpferdFile.join(" ", a.__getPrename(), a.__getCname());
         String company = ZugpferdFile.firstNonEmpty(a.__getCompany(), __getCompany());
@@ -822,6 +838,7 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
         if (!mail.isEmpty()) {
             party.setEmail(mail);
         }
+        ZugpferdFile.applyPeppolId(party, peppolId);
         String phone = ZugpferdFile.firstNonEmpty(__getWorkphone(), __getMainphone(), __getMobilephone());
         if (!company.isEmpty() && !person.isEmpty() || !phone.isEmpty() || !mail.isEmpty()) {
             //no empty phone / mail element: invalid in XRechnung (PEPPOL-EN16931-R008)

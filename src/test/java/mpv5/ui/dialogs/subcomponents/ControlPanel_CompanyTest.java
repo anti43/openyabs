@@ -71,4 +71,19 @@ class ControlPanel_CompanyTest {
         panel.reset();
         assertEquals("Austria", panel.getSelectedCountry());
     }
+
+    @Test
+    void eoriAndPeppolIdFieldsLoadAndReset() {
+        assumeFalse(GraphicsEnvironment.isHeadless());
+        ControlPanel_Company panel = new ControlPanel_Company();
+        assertNotNull(panel.getEoriField());
+        assertNotNull(panel.getPeppolIdField());
+
+        PropertyStore store = new PropertyStore();
+        store.addProperty("eori", "DE123456789012345");
+        store.addProperty("peppolid", "9930:DE123456789");
+        panel.setValues(store);
+        assertEquals("DE123456789012345", panel.getEoriField().getText());
+        assertEquals("9930:DE123456789", panel.getPeppolIdField().getText());
+    }
 }
