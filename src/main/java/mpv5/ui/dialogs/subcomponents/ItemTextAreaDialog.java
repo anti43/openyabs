@@ -40,7 +40,7 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
     private boolean userMoved;
     private int editedRow = -1;
     private boolean closing;
-    private java.awt.AWTEventListener outsidePressListener;
+    private java.awt.event.AWTEventListener outsidePressListener;
     private boolean outsideListenerInstalled;
 
     /**
