@@ -222,10 +222,14 @@ public final class ItemService {
      * @param usedOrders orders taken over as positions: set to finished
      */
     public static void savePositions(Item item, MPTableModel positions, boolean deleteRemoved, List<Item> usedOrders) {
+        savePositions(item, positions, deleteRemoved, usedOrders, false);
+    }
+
+    public static void savePositions(Item item, MPTableModel positions, boolean deleteRemoved, List<Item> usedOrders, boolean cloneSubitems) {
         if (item.__getInttype() != Item.TYPE_INVOICE) {
-            Product.createProducts(SubItem.saveModel(item, positions, deleteRemoved), item);
+            Product.createProducts(SubItem.saveModel(item, positions, deleteRemoved, cloneSubitems), item);
         } else {
-            SubItem.saveModel(item, positions, deleteRemoved);
+            SubItem.saveModel(item, positions, deleteRemoved, cloneSubitems);
         }
         if (usedOrders != null) {
             for (Item o : usedOrders) {

@@ -796,7 +796,7 @@ public class ItemPositionsTable extends JPanel {
         TextAreaCellEditor r = new TextAreaCellEditor(itemtable);
         //created when the text cell is edited the first time
         r.setDialog(() -> {
-            ItemTextAreaDialog itemTextAreaDialog = new ItemTextAreaDialog(mpv5.YabsViewProxy.instance().getIdentifierFrame(), true);
+            ItemTextAreaDialog itemTextAreaDialog = new ItemTextAreaDialog(mpv5.YabsViewProxy.instance().getIdentifierFrame(), false);
             itemTextAreaDialog.setParentTable(itemtable);
             itemTextAreaDialog.okButton.addActionListener(r);
             itemTextAreaDialog.cancelButton.addActionListener(r);

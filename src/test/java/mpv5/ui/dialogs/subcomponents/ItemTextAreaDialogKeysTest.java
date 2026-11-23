@@ -109,6 +109,55 @@ class ItemTextAreaDialogKeysTest {
         }
     }
 
+    @Test
+    void spinnerEscAndCtrlEnterAlwaysWork() {
+        javax.swing.JSpinner spinner = new javax.swing.JSpinner(new javax.swing.SpinnerNumberModel(1.0, 0.0, 100.0, 1.0));
+        javax.swing.JFormattedTextField field = ((javax.swing.JSpinner.DefaultEditor) spinner.getEditor()).getTextField();
+        AtomicInteger applied = new AtomicInteger();
+        AtomicInteger cancelled = new AtomicInteger();
+        javax.swing.Action applyAction = new javax.swing.AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                applied.incrementAndGet();
+            }
+        };
+        javax.swing.Action cancelAction = new javax.swing.AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                cancelled.incrementAndGet();
+            }
+        };
+        ItemTextAreaDialog.bindDialogShortcuts(field, applyAction, cancelAction);
+
+        Object escKey = field.getInputMap(JComponent.WHEN_FOCUSED).get(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0));
+        assertNotNull(escKey, "Escape must be bound on spinner text field");
+        field.getActionMap().get(escKey).actionPerformed(new ActionEvent(field, ActionEvent.ACTION_PERFORMED, ""));
+        assertEquals(1, cancelled.get(), "Escape in spinner field cancels dialog");
+
+        Object ctrlEnterKey = field.getInputMap(JComponent.WHEN_FOCUSED).get(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.CTRL_DOWN_MASK));
+        assertNotNull(ctrlEnterKey, "Ctrl+Enter must be bound on spinner text field");
+        field.getActionMap().get(ctrlEnterKey).actionPerformed(new ActionEvent(field, ActionEvent.ACTION_PERFORMED, ""));
+        assertEquals(1, applied.get(), "Ctrl+Enter in spinner field applies dialog");
+    }
+
+    @Test
+    void dialogLocationDoesNotJumpHorizontallyNearBottomEdge() {
+        java.awt.Rectangle screen = new java.awt.Rectangle(0, 0, 1920, 1080);
+        java.awt.Dimension dialogSize = new java.awt.Dimension(480, 300);
+
+        // Near top: aligned directly with cell
+        java.awt.Point topCell = new java.awt.Point(400, 200);
+        java.awt.Point topLoc = mpv5.utils.renderer.TextAreaCellEditor.computeDialogLocation(topCell, dialogSize, screen);
+        assertEquals(400, topLoc.x);
+        assertEquals(200, topLoc.y);
+
+        // Near bottom: shifted up vertically, but X stays aligned at 400 (no left/right jump!)
+        java.awt.Point bottomCell = new java.awt.Point(400, 920);
+        java.awt.Point bottomLoc = mpv5.utils.renderer.TextAreaCellEditor.computeDialogLocation(bottomCell, dialogSize, screen);
+        assertEquals(400, bottomLoc.x, "Popup must not jump horizontally when near the bottom edge");
+        assertEquals(1080 - 32 - 300, bottomLoc.y);
+    }
+
     private static mpv5.db.objects.ProductGroup group(int id) {
         mpv5.db.objects.ProductGroup g = new mpv5.db.objects.ProductGroup();
         g.setIDS(id);

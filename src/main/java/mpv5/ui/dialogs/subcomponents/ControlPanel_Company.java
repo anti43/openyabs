@@ -193,7 +193,7 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
         actions = Applets.actionBar(new javax.swing.JComponent[]{}, new javax.swing.JComponent[]{reset, save});
         add(actions, BorderLayout.SOUTH);
 
-        setValues(User.getCurrentUser().getProperties().getProperties("companyinfo."));
+        setValues(mpv5.globals.CompanyInfo.getProperties());
     }
 
     private LabeledTextField field(String key, String label, boolean required) {
@@ -232,7 +232,7 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
             return;
         }
         setSettings();
-        User.getCurrentUser().saveProperties();
+        mpv5.globals.CompanyInfo.save();
         mpv5.YabsViewProxy.instance().addMessage(Messages.COMPANY_SAVED.toString());
     }
 
@@ -241,9 +241,9 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
      * fields IBAN / BIC / Bankname); stored as companyinfo.bankaccounts
      */
     private void editBankAccounts() {
-        String key = "companyinfo." + mpv5.utils.export.BankAccount.KEY_ACCOUNTS;
+        String key = mpv5.utils.export.BankAccount.KEY_ACCOUNTS;
         java.util.List<mpv5.utils.export.BankAccount> current
-                = mpv5.utils.export.BankAccount.fromJson(User.getCurrentUser().getProperty(key));
+                = mpv5.utils.export.BankAccount.fromJson(mpv5.globals.CompanyInfo.getProperty(key));
         javax.swing.table.DefaultTableModel model = new javax.swing.table.DefaultTableModel(new Object[]{
             Messages.BANKACCOUNT_NAME.toString(), "IBAN", "BIC", Messages.BANKACCOUNT_BANK.toString()}, 0);
         for (mpv5.utils.export.BankAccount a : current) {
@@ -289,8 +289,8 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
             list.add(new mpv5.utils.export.BankAccount(String.valueOf(model.getValueAt(r, 0)), iban, bic,
                     String.valueOf(model.getValueAt(r, 3))));
         }
-        User.getCurrentUser().setProperty(key, mpv5.utils.export.BankAccount.toJson(list));
-        User.getCurrentUser().saveProperties();
+        mpv5.globals.CompanyInfo.setProperty(key, mpv5.utils.export.BankAccount.toJson(list));
+        mpv5.globals.CompanyInfo.save();
         if (invalid.length() > 0) {
             Popup.warn(Messages.COMPANY_CHECK_DATA + "\n" + invalid);
         }
@@ -325,10 +325,10 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
 
     private void setSettings() {
         for (LabeledTextField f : fields) {
-            User.getCurrentUser().setProperty("companyinfo." + f.getName(), f.getText() == null ? "" : f.getText());
+            mpv5.globals.CompanyInfo.setProperty(f.getName(), f.getText() == null ? "" : f.getText());
         }
-        User.getCurrentUser().setProperty("companyinfo.country", getSelectedCountry());
-        User.getCurrentUser().setProperty("companyinfo." + mpv5.utils.export.SmallBusiness.KEY_ENABLED,
+        mpv5.globals.CompanyInfo.setProperty("country", getSelectedCountry());
+        mpv5.globals.CompanyInfo.setProperty(mpv5.utils.export.SmallBusiness.KEY_ENABLED,
                 String.valueOf(smallBusiness.isSelected()));
         mpv5.utils.export.EInvoiceDelivery.setZugpferdDefault(defaultZugpferd.isSelected());
         mpv5.globals.LocalSettings.save();

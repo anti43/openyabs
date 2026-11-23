@@ -145,27 +145,63 @@ public class LanguageManager {
      * @return the index, 0 (the first country, as before) if the country is not in the list
      */
     public static int countryIndex(String stored, ComboBoxModel model) {
-        if (stored == null || stored.trim().isEmpty()) {
-            return 0;
+        int idx = findCountryIndex(stored, model);
+        return idx >= 0 ? idx : 0;
+    }
+
+    /**
+     * Finds the index of {@code stored} in {@code model}, or {@code -1} if not found.
+     */
+    public static int findCountryIndex(String stored, ComboBoxModel model) {
+        if (stored == null || stored.trim().isEmpty() || model == null) {
+            return -1;
         }
         String c = stored.trim();
         for (int i = 0; i < model.getSize(); i++) {
-            if (c.equals(String.valueOf(model.getElementAt(i)))) {
+            if (c.equalsIgnoreCase(String.valueOf(model.getElementAt(i)).trim())) {
                 return i;
             }
         }
         for (int i = 0; i < model.getSize(); i++) {
             Object o = model.getElementAt(i);
-            if (o instanceof MPComboBoxModelItem && c.equals(((MPComboBoxModelItem) o).getId())) {
+            if (o instanceof MPComboBoxModelItem && c.equalsIgnoreCase(((MPComboBoxModelItem) o).getId())) {
                 return i;
             }
         }
         for (int i = 0; i < model.getSize(); i++) {
-            if (sameCountry(String.valueOf(model.getElementAt(i)), c)) {
+            Object o = model.getElementAt(i);
+            if (sameCountry(String.valueOf(o), c)
+                    || (o instanceof MPComboBoxModelItem && sameCountry(((MPComboBoxModelItem) o).getId(), c))) {
                 return i;
             }
         }
-        return 0;
+        return -1;
+    }
+
+    /**
+     * Resolves a country string (name in any language, alpha-2 code like "DE",
+     * or numeric ISO code like "276") to the numeric ISO ID used in the
+     * countries combo box model, or returns {@code stored.trim()} unchanged if
+     * no matching country is loaded.
+     */
+    public static String resolveCountryId(String stored) {
+        if (stored == null || stored.trim().isEmpty()) {
+            return "";
+        }
+        String trimmed = stored.trim();
+        try {
+            ComboBoxModel model = getCountriesAsComboBoxModel();
+            int idx = findCountryIndex(trimmed, model);
+            if (idx >= 0) {
+                Object o = model.getElementAt(idx);
+                if (o instanceof MPComboBoxModelItem) {
+                    return ((MPComboBoxModelItem) o).getId();
+                }
+            }
+        } catch (Throwable t) {
+            Log.Debug(LanguageManager.class, t);
+        }
+        return trimmed;
     }
 
     /**
@@ -408,19 +444,35 @@ public class LanguageManager {
      * @return A ComboBoxModel reflecting the available Countries
      */
     public static synchronized mpv5.utils.models.MPComboboxModel getCountriesAsComboBoxModel() {
-        if (COUNTRIES == null) {
-            COUNTRIES = new Vector<MPComboBoxModelItem>();
+        if (COUNTRIES == null || COUNTRIES.isEmpty()) {
+            Vector<MPComboBoxModelItem> loaded = new Vector<MPComboBoxModelItem>();
             try {
                 QueryCriteria2 q = new QueryCriteria2();
                 q.and(new QueryParameter(Context.getCountries(), "groupsids", User.getCurrentUser().__getGroupsids(), QueryParameter.EQUALS));
                 Object[][] data = QueryHandler.instanceOf().clone(Context.getCountries()).getColumns(new String[]{"iso", "cname"}, 0, q);
                 for (int i = 0; i < data.length; i++) {
                     Object[] objects = data[i];
-                    COUNTRIES.add(new MPComboBoxModelItem(objects[0].toString(), objects[1].toString()));
+                    loaded.add(new MPComboBoxModelItem(objects[0].toString(), objects[1].toString()));
                 }
-                Log.Debug(LanguageManager.class, "Cached countries: " + COUNTRIES.size());
             } catch (NodataFoundException ex) {
-                Log.Debug(LanguageManager.class, ex.getMessage());
+                // Fall back to default group 1 if the user's group has no own country rows
+                try {
+                    QueryCriteria2 q1 = new QueryCriteria2();
+                    q1.and(new QueryParameter(Context.getCountries(), "groupsids", 1, QueryParameter.EQUALS));
+                    Object[][] data = QueryHandler.instanceOf().clone(Context.getCountries()).getColumns(new String[]{"iso", "cname"}, 0, q1);
+                    for (int i = 0; i < data.length; i++) {
+                        Object[] objects = data[i];
+                        loaded.add(new MPComboBoxModelItem(objects[0].toString(), objects[1].toString()));
+                    }
+                } catch (NodataFoundException ex2) {
+                    Log.Debug(LanguageManager.class, ex2.getMessage());
+                    return new MPComboboxModel(new MPComboBoxModelItem[]{});
+                }
+            }
+            if (!loaded.isEmpty()) {
+                COUNTRIES = loaded;
+                Log.Debug(LanguageManager.class, "Cached countries: " + COUNTRIES.size());
+            } else {
                 return new MPComboboxModel(new MPComboBoxModelItem[]{});
             }
         }

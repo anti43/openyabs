@@ -794,7 +794,11 @@ public final class CsvImport {
                     o.setGroupsids(group(v));
                     break;
                 default:
-                    setters.get(f.key).invoke(o, v);
+                    if ("country".equals(f.key) && o instanceof Contact) {
+                        ((Contact) o).setCountry(mpv5.i18n.LanguageManager.resolveCountryId(v));
+                    } else {
+                        setters.get(f.key).invoke(o, v);
+                    }
             }
         }
         if (o instanceof Contact) {

@@ -106,7 +106,7 @@ public class ModernAddressForm extends JPanel implements DataPanel {
         dataOwner.setCountry(User.getCurrentUser().__getDefcountry());
         countryselect.setModel(LanguageManager.getCountriesAsComboBoxModel());
         try {
-            countryselect.setSelectedIndex(MPComboBoxModelItem.getItemID(User.getCurrentUser().__getDefcountry(), countryselect.getModel()));
+            countryselect.setSelectedIndex(LanguageManager.countryIndex(User.getCurrentUser().__getDefcountry(), countryselect.getModel()));
         } catch (Exception e) {
             Log.Debug(this, e);
         }

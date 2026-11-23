@@ -108,7 +108,7 @@ public class FormFieldsHandler {
                 maps.put(skey, o);
             }
         }
-        List<String[]> mapi = User.getCurrentUser().getProperties().getProperties("companyinfo.").getList();
+        List<String[]> mapi = mpv5.globals.CompanyInfo.getProperties().getList();
         for (String[] strings : mapi) {
             if (strings[1] != null) {
                 maps.put("companyinfo." + strings[0], resolve(strings[0], strings[1], obj));

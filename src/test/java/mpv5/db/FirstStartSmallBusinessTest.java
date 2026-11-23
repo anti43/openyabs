@@ -77,7 +77,7 @@ class FirstStartSmallBusinessTest {
 
     private static String stored(User admin, String key) throws Exception {
         Object[][] d = QueryHandler.getConnection().freeQuery(
-                "SELECT value FROM userproperties WHERE usersids = " + admin.__getIDS() + " AND cname = '" + key + "'",
+                "SELECT value FROM globalsettings WHERE cname = '" + key + "'",
                 mpv5.usermanagement.MPSecurityManager.VIEW, null).getData();
         return d == null || d.length == 0 ? null : String.valueOf(d[0][0]);
     }

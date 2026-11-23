@@ -85,8 +85,19 @@ import org.codehaus.groovy.runtime.MethodClosure;
  */
 public abstract class DatabaseObject implements Comparable<DatabaseObject>, Serializable, Cloneable, Constants {
 
+    private static final java.util.concurrent.atomic.AtomicLong formFieldsVersion = new java.util.concurrent.atomic.AtomicLong();
     private Map<String, Map<String, Object>> cachedFormFieldsByKey = new HashMap<String, Map<String, Object>>();
+    private long cachedFormFieldsVersion = -1L;
     private static InlineObjectModifier inlineObjectModifier = new InlineObjectModifier();
+
+    /**
+     * Invalidates cached form fields across all in-memory {@link DatabaseObject}
+     * instances (e.g. after a contact, address or global company info changed
+     * while invoices are already open).
+     */
+    public static void invalidateFormFieldsCache() {
+        formFieldsVersion.incrementAndGet();
+    }
 
     /**
      * @return the cname
@@ -935,6 +946,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      */
     public boolean save(boolean silent) {
         cachedFormFieldsByKey.clear();
+        if (this instanceof mpv5.db.objects.Contact || this instanceof mpv5.db.objects.Address) {
+            invalidateFormFieldsCache();
+        }
         if (!this.isReadOnly()) {
             String message = null;
             uncacheObject(this);
@@ -2834,7 +2848,12 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         return getFormFields(null);
     }
 
-    public Map<String, Object> getFormFields(String key) {
+    public synchronized Map<String, Object> getFormFields(String key) {
+        long v = formFieldsVersion.get();
+        if (cachedFormFieldsVersion != v) {
+            cachedFormFieldsByKey.clear();
+            cachedFormFieldsVersion = v;
+        }
         if (!cachedFormFieldsByKey.containsKey(key)) {
             cachedFormFieldsByKey.put(key, new FormFieldsHandler(this).getFormattedFormFields(key));
         }

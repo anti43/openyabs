@@ -85,7 +85,7 @@ public final class SmallBusiness {
      */
     public static Boolean configured() {
         try {
-            String v = trim(mpv5.db.objects.User.getCurrentUser().getProperty("companyinfo." + KEY_ENABLED));
+            String v = trim(mpv5.globals.CompanyInfo.getProperty(KEY_ENABLED));
             return v.isEmpty() || "null".equals(v) ? null : Boolean.valueOf("true".equalsIgnoreCase(v));
         } catch (Throwable t) {
             return null;
@@ -93,15 +93,14 @@ public final class SmallBusiness {
     }
 
     /**
-     * Switch the exemption on or off for the current user's company (saved)
+     * Switch the exemption on or off for the company (saved globally for all users)
      *
      * @param enabled
      */
     public static void setEnabled(boolean enabled) {
         try {
-            mpv5.db.objects.User u = mpv5.db.objects.User.getCurrentUser();
-            u.setProperty("companyinfo." + KEY_ENABLED, String.valueOf(enabled));
-            u.saveProperties();
+            mpv5.globals.CompanyInfo.setProperty(KEY_ENABLED, String.valueOf(enabled));
+            mpv5.globals.CompanyInfo.save();
         } catch (Throwable t) {
             Log.Debug(SmallBusiness.class, t);
         }
