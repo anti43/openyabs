@@ -429,6 +429,11 @@ public class Product extends DatabaseObject implements Formattable, Templateable
       //gross = net * (1 + rate / 100), not net * rate
       map.put("externalbrutvalue", FormatNumber.formatDezimal(__getExternalnetvalue().multiply(Tax.getCalculationValue(__getTaxids()))));
       map.put("taxpercentvalue", FormatNumber.formatPercent(Tax.getTaxValue(__getTaxids())));
+      map.put(mpv5.handler.ProductService.HS_CODE, mpv5.handler.ProductService.normalizeHsCode(
+              mpv5.handler.ProductService.value(this, mpv5.handler.ProductService.HS_CODE)));
+      String origin = mpv5.handler.ProductService.value(this, mpv5.handler.ProductService.ORIGIN_COUNTRY);
+      map.put(mpv5.handler.ProductService.ORIGIN_COUNTRY, origin.isEmpty() ? "" : mpv5.utils.export.ZugpferdFile.toCountryCode(origin));
+      map.put(mpv5.handler.ProductService.NET_WEIGHT, mpv5.handler.ProductService.value(this, mpv5.handler.ProductService.NET_WEIGHT));
 
       return super.resolveReferences(map);
    }

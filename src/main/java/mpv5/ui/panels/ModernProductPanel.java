@@ -136,6 +136,9 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
     private final LabeledTextField unit = field();
     private final LabeledTextField ean = field();
     private final LabeledTextField reference = field();
+    private final LabeledTextField hsCode = field();
+    private final LabeledTextField originCountry = field();
+    private final LabeledTextField netWeight = field();
     private final LabeledTextField url = field();
     private final LabeledTextField datasheet = field();
     //prices
@@ -268,6 +271,15 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
         grossvalue.setEnabled(false);
         stack.set_ValueClass(BigDecimal.class);
         threshold.set_ValueClass(BigDecimal.class);
+        hsCode.setName(ProductService.HS_CODE);
+        originCountry.setName(ProductService.ORIGIN_COUNTRY);
+        netWeight.setName(ProductService.NET_WEIGHT);
+        mpv5.utils.ui.FieldCheck.attach(hsCode, ProductService::isValidHsCode,
+                Messages.PRODUCT_HSCODE_TOOLTIP.toString(), Messages.PRODUCT_HSCODE_INVALID.toString());
+        mpv5.utils.ui.FieldCheck.attach(originCountry, ProductService::isValidOriginCountry,
+                Messages.PRODUCT_ORIGIN_COUNTRY_TOOLTIP.toString(), Messages.PRODUCT_ORIGIN_COUNTRY_INVALID.toString());
+        mpv5.utils.ui.FieldCheck.attach(netWeight, ProductService::isValidWeightKg,
+                Messages.PRODUCT_NET_WEIGHT_TOOLTIP.toString(), Messages.PRODUCT_NET_WEIGHT_INVALID.toString());
 
         selecttax.setSearchEnabled(true);
         selecttax.setContext(Context.getTaxes());
@@ -1298,6 +1310,11 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
             }
         }
         ProductService.setValue(dataOwner, ProductService.DATASHEET, datasheet.getText());
+        ProductService.setValue(dataOwner, ProductService.HS_CODE, ProductService.normalizeHsCode(hsCode.getText()));
+        String originText = originCountry.getText() == null ? "" : originCountry.getText().trim();
+        String originIso = originText.isEmpty() ? "" : mpv5.utils.export.ZugpferdFile.toCountryCode(originText);
+        ProductService.setValue(dataOwner, ProductService.ORIGIN_COUNTRY, originIso.isEmpty() ? originText : originIso);
+        ProductService.setValue(dataOwner, ProductService.NET_WEIGHT, netWeight.getText());
         List<Tier> list = new ArrayList<Tier>();
         for (Component c : tiers.getComponents()) {
             list.add(((TierRow) c).getTier());
@@ -1416,6 +1433,9 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
             unit.setText(measure_);
             url.setText(url_);
             datasheet.setText(ProductService.value(dataOwner, ProductService.DATASHEET));
+            hsCode.setText(ProductService.value(dataOwner, ProductService.HS_CODE));
+            originCountry.setText(ProductService.value(dataOwner, ProductService.ORIGIN_COUNTRY));
+            netWeight.setText(ProductService.value(dataOwner, ProductService.NET_WEIGHT));
             ean.setText(ean_);
             reference.setText(reference_);
             netvalue.setText(FormatNumber.formatDezimal(internalnetvalue_ == null ? BigDecimal.ZERO : internalnetvalue_));

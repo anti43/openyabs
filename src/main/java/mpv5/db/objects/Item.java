@@ -915,6 +915,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
         putDeductedDeposits(map, __getInttype() == TYPE_INVOICE ? mpv5.handler.ItemService.deductedIn(this)
                 : new ArrayList<Item>(), df);
         putPaymentFields(map, df);
+        putCustomsFields(map, subitems, taxContact);
 
         return super.resolveReferences(map);
     }
@@ -1125,6 +1126,64 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
         } catch (Exception e) {
             Log.Debug(this, "Payment fields: " + e.getMessage());
         }
+    }
+
+    /**
+     * Template fields for cross-border trade and customs commercial invoices:
+     * {@code item.currency}, {@code item.incoterms}, {@code item.netweight},
+     * {@code item.grossweight}, {@code item.packages}.
+     */
+    private void putCustomsFields(Map<String, Object> map, SubItem[] subitems, Contact contact) {
+        map.put("currency", mpv5.utils.export.ZugpferdFile.findCurrency(this, contact));
+        map.put("incoterms", mpv5.utils.export.ZugpferdFile.findIncoterms(this, contact));
+        String netOverride = "";
+        String grossOverride = "";
+        String packages = "";
+        try {
+            if (isExisting()) {
+                if (ValueProperty.hasProperty(this, mpv5.utils.export.ZugpferdFile.KEY_NET_WEIGHT)) {
+                    Object v = ValueProperty.getProperty(this, mpv5.utils.export.ZugpferdFile.KEY_NET_WEIGHT).getValue();
+                    netOverride = v == null ? "" : String.valueOf(v).trim();
+                }
+                if (ValueProperty.hasProperty(this, mpv5.utils.export.ZugpferdFile.KEY_GROSS_WEIGHT)) {
+                    Object v = ValueProperty.getProperty(this, mpv5.utils.export.ZugpferdFile.KEY_GROSS_WEIGHT).getValue();
+                    grossOverride = v == null ? "" : String.valueOf(v).trim();
+                }
+                if (ValueProperty.hasProperty(this, mpv5.utils.export.ZugpferdFile.KEY_PACKAGES)) {
+                    Object v = ValueProperty.getProperty(this, mpv5.utils.export.ZugpferdFile.KEY_PACKAGES).getValue();
+                    packages = v == null ? "" : String.valueOf(v).trim();
+                }
+            }
+        } catch (Exception e) {
+            Log.Debug(this, e.getMessage());
+        }
+        String computedNet = "";
+        if (netOverride.isEmpty() && subitems != null) {
+            BigDecimal sumKg = BigDecimal.ZERO;
+            boolean hasAnyWeight = false;
+            for (SubItem s : subitems) {
+                if (s == null || s.getInttype() == SubItem.TYPE_TEXT || s.__getOriginalproductsids() <= 0) {
+                    continue;
+                }
+                try {
+                    Product p = (Product) DatabaseObject.getObject(Context.getProduct(), s.__getOriginalproductsids());
+                    BigDecimal unitW = mpv5.handler.ProductService.parseWeightKg(
+                            mpv5.handler.ProductService.value(p, mpv5.handler.ProductService.NET_WEIGHT));
+                    if (unitW != null) {
+                        sumKg = sumKg.add(unitW.multiply(s.effectiveQuantity()));
+                        hasAnyWeight = true;
+                    }
+                } catch (Exception ex) {
+                    // ignore
+                }
+            }
+            if (hasAnyWeight) {
+                computedNet = FormatNumber.formatDezimal(sumKg.setScale(2, BigDecimal.ROUND_HALF_UP));
+            }
+        }
+        map.put("netweight", !netOverride.isEmpty() ? netOverride : computedNet);
+        map.put("grossweight", grossOverride);
+        map.put("packages", packages);
     }
 
     @Override

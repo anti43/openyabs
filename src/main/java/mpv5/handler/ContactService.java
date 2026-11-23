@@ -1022,6 +1022,74 @@ public final class ContactService {
     }
 
     /**
+     * A currency option for the contact's {@code bankcurrency} dropdown.
+     */
+    public static final class CurrencyOption {
+
+        public final String code;
+        public final mpv5.utils.export.CurrencyCode currency;
+        public final String label;
+
+        CurrencyOption(String code, mpv5.utils.export.CurrencyCode currency, String label) {
+            this.code = code == null ? "" : code;
+            this.currency = currency;
+            this.label = label;
+        }
+
+        @Override
+        public String toString() {
+            return label;
+        }
+    }
+
+    /**
+     * @return the selectable currencies (empty default + all {@link mpv5.utils.export.CurrencyCode} values)
+     */
+    public static List<CurrencyOption> currencyOptions() {
+        return currencyOptions(null);
+    }
+
+    /**
+     * @param currentCode optional currently stored currency code; if non-empty
+     * and not in {@link mpv5.utils.export.CurrencyCode}, appended so it is not lost
+     * @return the selectable currencies, never empty
+     */
+    public static List<CurrencyOption> currencyOptions(String currentCode) {
+        List<CurrencyOption> list = new java.util.ArrayList<CurrencyOption>();
+        list.add(new CurrencyOption("", null, "\u2013"));
+        for (mpv5.utils.export.CurrencyCode c : mpv5.utils.export.CurrencyCode.values()) {
+            list.add(new CurrencyOption(c.code(), c, c.toString()));
+        }
+        String raw = currentCode == null ? "" : currentCode.trim();
+        if (!raw.isEmpty() && mpv5.utils.export.CurrencyCode.parse(raw) == null) {
+            list.add(new CurrencyOption(raw, null, raw));
+        }
+        return list;
+    }
+
+    /**
+     * @param options from {@link #currencyOptions(String)}
+     * @param code stored currency code or symbol
+     * @return the matching option, or the first (empty) option if none matches
+     */
+    public static CurrencyOption currencyOption(List<CurrencyOption> options, String code) {
+        if (options == null || options.isEmpty()) {
+            return new CurrencyOption("", null, "\u2013");
+        }
+        String raw = code == null ? "" : code.trim();
+        if (raw.isEmpty()) {
+            return options.get(0);
+        }
+        mpv5.utils.export.CurrencyCode parsed = mpv5.utils.export.CurrencyCode.parse(raw);
+        for (CurrencyOption o : options) {
+            if ((parsed != null && parsed == o.currency) || o.code.equalsIgnoreCase(raw)) {
+                return o;
+            }
+        }
+        return options.get(0);
+    }
+
+    /**
      * Prints the contact sheet (template type "Contact") of the saved
      * contact, named e.g. "Kontaktdatenblatt-000001-Muster GmbH"; without
      * such a template the view itself is printed (fallback, on the Swing

@@ -51,13 +51,16 @@ def fields(table, prefix):
 ITEM_EXTRA = ['item.servicedate', 'item.netvaluef', 'item.taxvaluef', 'item.grosvaluef', 'item.discountvaluef', 'item.discountnetdifferencef',
               'item.contact.fullname', 'item.contact.invoiceaddress.street', 'item.contact.invoiceaddress.zip',
               'item.contact.invoiceaddress.city', 'item.contact.invoiceaddress.country',
+              'item.contact.deliveryaddress.company', 'item.contact.deliveryaddress.cname', 'item.contact.deliveryaddress.street',
+              'item.contact.deliveryaddress.zip', 'item.contact.deliveryaddress.city', 'item.contact.deliveryaddress.country',
               'item.paymentiban', 'item.paymentbic', 'item.paymentbank', 'item.paymentaccountname', 'item.paymentdays',
               'item.paymentduedate', 'item.paymentterms', 'item.skontopercent', 'item.skontodays', 'item.skontodate',
               'item.skontoamount', 'item.skontopayamount', 'group', 'addedby', 'addedbyfull',
               'item.vatgroupcount', 'item.hasmultipletaxrates', 'item.vatgroup1.rate', 'item.vatgroup1.ratevalue',
               'item.vatgroup1.name', 'item.vatgroup1.netf', 'item.vatgroup1.vatf', 'item.vatgroup1.grossf',
               'item.vatgroup1.category', 'item.vatgroup1.note', 'item.taxnotes',
-              'item.correctedinvoice', 'item.correctedinvoicenumber', 'item.correctedinvoicedate']
+              'item.correctedinvoice', 'item.correctedinvoicenumber', 'item.correctedinvoicedate',
+              'item.currency', 'item.incoterms', 'item.netweight', 'item.grossweight', 'item.packages']
 COMPANY = ['companyinfo.' + k for k in ['business', 'firstname', 'name', 'street', 'zip', 'city', 'country', 'phoneprefix', 'phone',
            'fax', 'email', 'account', 'banknumber', 'bankname', 'account1', 'taxnumber', 'taxauthority', 'taxmandant',
            'taxadvsior', 'taxadvjob', 'payterm', 'sepacreditorid', 'vatid', 'eori', 'peppolid']]
@@ -197,9 +200,9 @@ def vat_id(c):
                  '<table:table-cell table:style-name="Tabelle2.A1" office:value-type="string"><text:p text:style-name="P11">' + ph('companyinfo.eori') + '</text:p></table:table-cell></table:table-row>')
     c = c.replace(EMPTY_ROW + TAXNO_ROW + EMPTY_ROW, TAXNO_ROW.replace('>Ust-Nr:<', '>St.-Nr.:<') + vatid + comp_eori, 1)
     assert c.count(CUSTNO_ROW) == 1, 'customer number row'
-    cust_eori = ('<table:table-row table:style-name="Tabelle4.1"><table:table-cell table:style-name="Tabelle4.A1" office:value-type="string"><text:p text:style-name="P4">EORI: </text:p></table:table-cell>'
-                 '<table:table-cell table:style-name="Tabelle4.B1" office:value-type="string"><text:p text:style-name="P3">' + ph('item.contact.eori') + '</text:p></table:table-cell></table:table-row>')
-    c = c.replace(CUSTNO_ROW + '</table:table><text:p text:style-name="P3"/>', CUSTNO_ROW + cust_eori + '</table:table>', 1)
+    cust_vat_eori = ('<table:table-row table:style-name="Tabelle4.1"><table:table-cell table:style-name="Tabelle4.A1" office:value-type="string"><text:p text:style-name="P4">USt-IdNr. / EORI: </text:p></table:table-cell>'
+                     '<table:table-cell table:style-name="Tabelle4.B1" office:value-type="string"><text:p text:style-name="P3">' + ph('item.contact.taxnumber') + ' ' + ph('item.contact.eori') + '</text:p></table:table-cell></table:table-row>')
+    c = c.replace(CUSTNO_ROW + '</table:table><text:p text:style-name="P3"/>', CUSTNO_ROW + cust_vat_eori + '</table:table>', 1)
     return c
 
 # ---- the invoice of a small business (Kleinunternehmer, § 19 UStG): no VAT column, no VAT
@@ -521,6 +524,7 @@ def make(fname, title, kind, groups, prefix=None, cprefix=None, blocks=None, tot
 
 item = fields('items', 'item.') + ITEM_EXTRA
 contact_of = lambda p: fields('contacts', p) + [p + 'eori', p + 'peppolid']
+product_fields = fields('products', 'product.') + ['product.hscode', 'product.origincountry', 'product.netweight']
 positions = ['item.xtable1 (Positionstabelle: Tabelle mit dem Namen xtable1)']
 # type, title, label of the total
 TYPES = [
@@ -553,6 +557,7 @@ CONTACT = [('t', [('Kundennummer', '{contact.cnumber}'), ('Firma', '{contact.com
 PRODUCT = [('t', [('Artikelnummer', '{product.cnumber}'), ('Bezeichnung', '{product.cname}'), ('Beschreibung', '{product.description}'),
                   ('Einheit', '{product.measure}'), ('Preis netto', '{product.externalnetvalue}'), ('Steuersatz', '{product.taxpercentvalue}'),
                   ('Preis brutto', '{product.externalbrutvalue}'), ('EAN', '{product.ean}'), ('Referenz', '{product.reference}'),
+                  ('Zolltarifnr. (HS-Code)', '{product.hscode}'), ('Ursprungsland', '{product.origincountry}'), ('Eigenmasse (kg)', '{product.netweight}'),
                   ('Warengruppe', '{product.productgroup.cname}'), ('Hersteller', '{product.manufacturer}'), ('Lieferant', '{product.supplier}'),
                   ('Link', '{product.url}')])]
 SERVICE = [('t', [('Leistungsnummer', '{product.cnumber}'), ('Bezeichnung', '{product.cname}'), ('Einheit', '{product.measure}'),
@@ -572,8 +577,8 @@ OTHERS = [
     (7, 'Mahnung zu Rechnung', 'other', [('Mahnung', reminder_fields), ('Rechnung', fields('items', R) + [R + 'grosvaluef', R + 'paymentduedate', R + 'paymentiban']), ('Firma', COMPANY)],
      dict(prefix=R, cprefix=R + 'contact.', blocks=REMINDER, date_field='reminder.dateadded')),
     (8, 'Kontaktdatenblatt', 'other', [('Kontakt', contact_of('contact.')), ('Firma', COMPANY)], dict(prefix='contact.', cprefix='contact.', blocks=CONTACT)),
-    (5, 'Artikeldatenblatt', 'other', [('Artikel', fields('products', 'product.')), ('Firma', COMPANY)], dict(prefix='product.', cprefix='product.', blocks=PRODUCT, addressee=False)),
-    (6, 'Leistungsbeschreibung', 'other', [('Dienstleistung', fields('products', 'product.')), ('Firma', COMPANY)], dict(prefix='product.', cprefix='product.', blocks=SERVICE, addressee=False)),
+    (5, 'Artikeldatenblatt', 'other', [('Artikel', product_fields), ('Firma', COMPANY)], dict(prefix='product.', cprefix='product.', blocks=PRODUCT, addressee=False)),
+    (6, 'Leistungsbeschreibung', 'other', [('Dienstleistung', product_fields), ('Firma', COMPANY)], dict(prefix='product.', cprefix='product.', blocks=SERVICE, addressee=False)),
     (10, 'Bestellung', 'positions', [('Bestellung', fields('productorders', 'productorder.') + ['productorder.xtable1']), ('Lieferant', contact_of('productorder.contact.')), ('Firma', COMPANY)],
      dict(prefix='productorder.', cprefix='productorder.contact.', total_label='Bestellsumme')),
     (12, 'Gesprächsnotiz', 'other', [('Gespräch', fields('conversations', 'conversation.')), ('Kontakt', contact_of('conversation.contact.')), ('Firma', COMPANY)],
@@ -591,6 +596,23 @@ KU_COMPANY = COMPANY + ['companyinfo.smallbusinessnote', 'companyinfo.smallbusin
 g = [('Beleg', item + positions), ('Kontakt des Belegs', contact_of('item.contact.')), ('Firma', KU_COMPANY)]
 made.append((0, 'Rechnung Kleinunternehmer', 'demo-00-ku.odt',
              make('demo-00-ku.odt', 'Rechnung', 'smallbusiness', g, total_label='Rechnungsbetrag', tid=0)))
+
+# ---- Customs Commercial Invoice (Handelsrechnung / Commercial Invoice, Type 0, format 1,2,4,14,15,16,5,6):
+# extra downloadable template for extra-EU export / customs clearance with Seller & Buyer EORI, VAT ID,
+# Consignee / Delivery Address, Incoterms, Net/Gross Weight, Packages, HS code, Country of origin, and signature block
+COMMERCIAL_BLOCKS = [
+    ('h', 'Customs & Export Details / Zoll- und Ausfuhrangaben'),
+    ('t', [('Exporter EORI / USt-IdNr.', '{companyinfo.eori} / {companyinfo.vatid}'),
+           ('Importer EORI / VAT ID', '{item.contact.eori} / {item.contact.taxnumber}'),
+           ('Consignee / Lieferadresse', '{item.contact.deliveryaddress.company} {item.contact.deliveryaddress.cname}, {item.contact.deliveryaddress.street}, {item.contact.deliveryaddress.zip} {item.contact.deliveryaddress.city}, {item.contact.deliveryaddress.country}'),
+           ('Incoterms® / Currency', '{item.incoterms} · {item.currency}'),
+           ('Net / Gross weight (kg) · Packages', 'Net: {item.netweight} kg · Gross: {item.grossweight} kg · Packages: {item.packages}')]),
+    ('p', 'The exporter of the products covered by this document declares that, except where otherwise clearly indicated, these products are of preferential origin. We declare that the particulars given in this invoice are true and correct.'),
+]
+made.append((0, 'Handelsrechnung Export', 'demo-00-commercial.odt',
+             make('demo-00-commercial.odt', 'Handelsrechnung / Commercial Invoice', 'item', g,
+                  blocks=COMMERCIAL_BLOCKS, total_label='Total / Rechnungsbetrag', tid=0)))
+
 # the regular invoice template (imported on first start): the base with the sender line from the
 # company information and the name only once
 def write_odt(fname, c):

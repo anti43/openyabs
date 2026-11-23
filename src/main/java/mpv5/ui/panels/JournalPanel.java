@@ -1725,6 +1725,37 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
     }
 
     /**
+     * EC Sales List (Zusammenfassende Meldung, ZM, § 18a UStG): CSV of
+     * intra-community supplies (category K) and EU reverse-charge services
+     * (category AE) grouped by customer EU VAT ID.
+     */
+    private void exportEcSalesList() {
+        try {
+            vTimeframe t = timeframeChooser1.getTime();
+            String name = "zm-" + new java.text.SimpleDateFormat("yyyyMMdd").format(t.getStart()) + "-" //NOI18N
+                    + new java.text.SimpleDateFormat("yyyyMMdd").format(t.getEnd()) + ".csv"; //NOI18N
+            DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY, name);
+            if (!d.saveFile()) {
+                return;
+            }
+            File f = d.getFile();
+            File target = f.getName().toLowerCase().endsWith(".csv") ? f : new File(f.getParentFile(), f.getName() + ".csv"); //NOI18N
+            mpv5.utils.export.EcSalesListExport.Result res = mpv5.utils.export.EcSalesListExport.build(new ArrayList<Entry>(entries));
+            mpv5.utils.export.EcSalesListExport.writeCsv(res, target);
+            showExported(target);
+            String msg = String.format(Messages.JOURNAL_ZM_DONE.toString(),
+                    res.lines.size(), FormatNumber.formatLokalCurrency(res.totalNet()));
+            if (!res.problems.isEmpty()) {
+                Popup.notice(res.problems, msg);
+            } else {
+                YabsViewProxy.instance().addMessage(msg);
+            }
+        } catch (Exception e) {
+            failed(e);
+        }
+    }
+
+    /**
      * Show the link to the saved file below the totals
      *
      * @param f

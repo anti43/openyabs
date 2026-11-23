@@ -162,7 +162,7 @@ public class ModernContactPanel extends ModernDataPanel {
     private final LabeledTextField bankaccount = field();
     private final LabeledTextField bankid = field();
     private final LabeledTextField bankname = field();
-    private final LabeledTextField bankcurrency = field();
+    private final JComboBox<ContactService.CurrencyOption> bankcurrency = new JComboBox<ContactService.CurrencyOption>();
     private final LabeledTextField bankcountry = field();
     private final JTextArea notes = new JTextArea(6, 20);
     //payment / e-invoice (value properties of the contact)
@@ -1190,7 +1190,10 @@ public class ModernContactPanel extends ModernDataPanel {
         zip_ = zip.get_Text();
         bankaccount_ = bankaccount.getText();
         bankcountry_ = bankcountry.getText();
-        bankcurrency_ = bankcurrency.getText();
+        Object selCurrency = bankcurrency.getSelectedItem();
+        bankcurrency_ = selCurrency instanceof ContactService.CurrencyOption
+                ? ((ContactService.CurrencyOption) selCurrency).code
+                : (selCurrency == null ? "" : mpv5.utils.export.CurrencyCode.normalizeCode(String.valueOf(selCurrency)));
         bankid_ = bankid.getText();
         bankname_ = bankname.getText();
         payterm_ = payterm.getValue(0);
@@ -1260,7 +1263,10 @@ public class ModernContactPanel extends ModernDataPanel {
         department.set_Text(department_);
         bankaccount.setText(bankaccount_);
         bankcountry.setText(bankcountry_);
-        bankcurrency.setText(bankcurrency_);
+        List<ContactService.CurrencyOption> currencies = ContactService.currencyOptions(bankcurrency_);
+        bankcurrency.setModel(new DefaultComboBoxModel<ContactService.CurrencyOption>(
+                currencies.toArray(new ContactService.CurrencyOption[0])));
+        bankcurrency.setSelectedItem(ContactService.currencyOption(currencies, bankcurrency_));
         bankid.setText(bankid_);
         bankname.setText(bankname_);
         payterm.setText(payterm_);

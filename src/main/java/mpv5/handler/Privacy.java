@@ -97,6 +97,8 @@ public final class Privacy {
             mpv5.utils.export.ZugpferdFile.KEY_BUYER_REFERENCE,
             mpv5.utils.export.ZugpferdFile.KEY_PEPPOL_ID,
             mpv5.utils.export.ZugpferdFile.KEY_EORI,
+            mpv5.utils.export.ZugpferdFile.KEY_INCOTERMS,
+            mpv5.utils.export.ZugpferdFile.KEY_CURRENCY,
             mpv5.utils.export.PaymentTerms.KEY_SKONTO_PERCENT,
             mpv5.utils.export.PaymentTerms.KEY_SKONTO_DAYS,
             mpv5.utils.export.PaymentTerms.KEY_IMMEDIATE,

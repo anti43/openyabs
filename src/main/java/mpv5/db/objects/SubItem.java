@@ -1231,6 +1231,24 @@ public final class SubItem extends DatabaseObject implements Triggerable {
 
         org.mustangproject.Product product = new org.mustangproject.Product(
                 name, text.equals(name) ? "" : text, ZugpferdFile.toUnitCode(measure), tax);
+        if (__getOriginalproductsids() > 0) {
+            try {
+                Product dbProd = (Product) DatabaseObject.getObject(Context.getProduct(), __getOriginalproductsids());
+                String hs = mpv5.handler.ProductService.normalizeHsCode(
+                        mpv5.handler.ProductService.value(dbProd, mpv5.handler.ProductService.HS_CODE));
+                if (mpv5.handler.ProductService.isValidHsCode(hs)) {
+                    product.addClassification(new org.mustangproject.DesignatedProductClassification(
+                            new org.mustangproject.ClassCode("HS", hs)));
+                }
+                String origin = mpv5.handler.ProductService.value(dbProd, mpv5.handler.ProductService.ORIGIN_COUNTRY);
+                String originIso = ZugpferdFile.toCountryCode(origin);
+                if (!originIso.isEmpty() && !origin.trim().isEmpty()) {
+                    product.setCountryOfOrigin(originIso);
+                }
+            } catch (Exception e) {
+                Log.Debug(this, e.getMessage());
+            }
+        }
         mpv5.utils.export.VatCategory category = vatCategory(taxRate, tax);
         if (category != mpv5.utils.export.VatCategory.S) {
             product.setTaxCategoryCode(category.code());

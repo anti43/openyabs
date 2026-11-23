@@ -297,6 +297,15 @@ public final class JournalAdviserPackage {
             put(zip, names, "journal.csv", concat(new byte[]{(byte) 0xEF, (byte) 0xBB, (byte) 0xBF}, csv));
             put(zip, names, "journal_tax_rates.csv", concat(new byte[]{(byte) 0xEF, (byte) 0xBB, (byte) 0xBF},
                     csvByRate().getBytes(StandardCharsets.UTF_8)));
+            EcSalesListExport.Result zm = EcSalesListExport.build(entries);
+            if (!zm.lines.isEmpty()) {
+                put(zip, names, "zm.csv", concat(new byte[]{(byte) 0xEF, (byte) 0xBB, (byte) 0xBF},
+                        EcSalesListExport.toCsv(zm).getBytes(StandardCharsets.UTF_8)));
+                pluginFiles.add("zm.csv");
+            }
+            for (String p : zm.problems) {
+                problems.add(p);
+            }
             receipts(zip, names);
             eInvoices(zip, names, tmp);
             pluginEntries(zip, names);

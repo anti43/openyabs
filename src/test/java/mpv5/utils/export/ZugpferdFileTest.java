@@ -884,6 +884,50 @@ class ZugpferdFileTest {
         assertValid(pdf);
     }
 
+    @Test
+    void currencyCodeAndDeliveryAddressAndCustomsProductFieldsInXRechnung() throws Exception {
+        assertEquals(CurrencyCode.CHF, CurrencyCode.parse("CHF"));
+        assertEquals(CurrencyCode.CHF, CurrencyCode.parse("chf (CHF) – Swiss Franc"));
+        assertEquals(CurrencyCode.EUR, CurrencyCode.parse("€"));
+        assertEquals("CHF", CurrencyCode.normalizeCode("chf"));
+        assertEquals("", CurrencyCode.normalizeCode("invalid"));
+        assertTrue(CurrencyCode.isValidCode("CHF"));
+        assertTrue(CurrencyCode.isValidCode("USD"));
+        assertFalse(CurrencyCode.isValidCode("XX1"));
+
+        Contact chBuyer = new Contact();
+        chBuyer.setCname("Alpen AG");
+        chBuyer.setCompany("Alpen AG");
+        chBuyer.setStreet("Bahnhofstrasse 10");
+        chBuyer.setZip("8001");
+        chBuyer.setCity("Zürich");
+        chBuyer.setCountry("CH");
+        chBuyer.setBankcurrency("CHF");
+        assertEquals("CHF", ZugpferdFile.findCurrency(new Item(), chBuyer));
+        assertEquals("EUR", ZugpferdFile.findCurrency(new Item(), new Contact()));
+
+        Invoice inv = build();
+        inv.setCurrency("CHF");
+        inv.setDeliveryAddress(new TradeParty("Alpen Lager AG", "Industriestrasse 5", "4053", "Basel", "CH"));
+        inv.addCustomsNote("Incoterms: DAP Basel");
+        inv.addCustomsNote("Net weight: 12.5 kg, Gross weight: 14.0 kg, Packages: 2 boxes");
+        org.mustangproject.Product p = (org.mustangproject.Product) inv.getZFItems()[0].getProduct();
+        p.addClassification(new org.mustangproject.DesignatedProductClassification(
+                new org.mustangproject.ClassCode("HS", "84713000")));
+        p.setCountryOfOrigin("DE");
+
+        File xml = tmp.resolve("customs-chf.xml").toFile();
+        ZugpferdFile.writeXml(inv, xml);
+        String xmlText = new String(Files.readAllBytes(xml.toPath()), StandardCharsets.UTF_8);
+        assertTrue(xmlText.contains("<ram:InvoiceCurrencyCode>CHF</ram:InvoiceCurrencyCode>"), xmlText);
+        assertTrue(xmlText.contains("<ram:ShipToTradeParty>"), xmlText);
+        assertTrue(xmlText.contains("<ram:Name>Alpen Lager AG</ram:Name>"), xmlText);
+        assertTrue(xmlText.contains("<ram:ClassCode listID=\"HS\">84713000</ram:ClassCode>"), xmlText);
+        assertTrue(xmlText.contains("<ram:OriginTradeCountry><ram:ID>DE</ram:ID></ram:OriginTradeCountry>"), xmlText);
+        assertTrue(xmlText.contains("<ram:Content>Incoterms: DAP Basel</ram:Content>"), xmlText);
+        assertValid(xml);
+    }
+
     /**
      * Runs the official validator (schema, EN16931 + XRechnung schematron,
      * PDF/A-3)
