@@ -114,6 +114,27 @@ public final class EInvoiceContactCheck {
      */
     public static Result check(String name, String company, String street, String zip, String city, String country,
             String email, String vatId, String iban, String homeCountry) {
+        return check(name, company, street, zip, city, country, email, vatId, iban, homeCountry, null);
+    }
+
+    /**
+     * Check the data of a contact, including an optional Peppol-ID (BT-49).
+     *
+     * @param name name of the person
+     * @param company
+     * @param street
+     * @param zip
+     * @param city
+     * @param country as stored in YaBS (numeric code, ISO code or name)
+     * @param email
+     * @param vatId the content of the VAT ID / tax number field
+     * @param iban the IBAN of the contact, may be empty
+     * @param homeCountry ISO 3166 alpha 2 code of the own company
+     * @param peppolId optional Peppol-ID ({@code <EAS-scheme>:<id>})
+     * @return the result
+     */
+    public static Result check(String name, String company, String street, String zip, String city, String country,
+            String email, String vatId, String iban, String homeCountry, String peppolId) {
         Result r = new Result();
         if (ZugpferdFile.isEmpty(name) && ZugpferdFile.isEmpty(company)) {
             r.error(Field.NAME, Messages.EINVOICE_CHECK_MISSING + " " + Messages.ZUGFERD_FIELD_NAME);
@@ -131,7 +152,11 @@ public final class EInvoiceContactCheck {
         if (code.isEmpty()) {
             r.error(Field.COUNTRY, Messages.EINVOICE_CHECK_MISSING + " " + Messages.ZUGFERD_FIELD_COUNTRY);
         }
-        if (ZugpferdFile.isEmpty(email)) {
+        if (!ZugpferdFile.isEmpty(peppolId)) {
+            if (!ZugpferdFile.isValidPeppolId(peppolId)) {
+                r.error(Field.EMAIL, Messages.ZUGFERD_INVALID_PEPPOL_ID + " '" + peppolId.trim() + "'");
+            }
+        } else if (ZugpferdFile.isEmpty(email)) {
             r.error(Field.EMAIL, Messages.EINVOICE_CHECK_MISSING + " " + Messages.ZUGFERD_FIELD_EMAIL);
         }
         if (!ZugpferdFile.isEmpty(iban) && !Iban.isValid(iban)) {

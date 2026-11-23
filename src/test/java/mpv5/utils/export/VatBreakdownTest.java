@@ -240,6 +240,19 @@ class VatBreakdownTest {
         assertFalse(content("/extra/templates/demo-02.odt").contains(">Leistungsdatum<"));
     }
 
+    @Test
+    void invoiceAndDemoTemplatesContainEoriFields() throws Exception {
+        for (String t : new String[]{"/extra/templates/invoice.odt", "/extra/templates/demo-00.odt", "/extra/templates/demo-00-ku.odt",
+            "/extra/templates/demo-20.odt", "/extra/templates/demo-21.odt", "/extra/templates/demo-22.odt"}) {
+            String c = content(t);
+            assertTrue(c.contains("&lt;companyinfo.eori&gt;"), t + " missing companyinfo.eori");
+            assertTrue(c.contains("&lt;item.contact.eori&gt;"), t + " missing item.contact.eori");
+        }
+        String contactSheet = content("/extra/templates/demo-08.odt");
+        assertTrue(contactSheet.contains("&lt;contact.eori&gt;"), "demo-08.odt missing contact.eori");
+        assertTrue(contactSheet.contains("&lt;contact.peppolid&gt;"), "demo-08.odt missing contact.peppolid");
+    }
+
     private static String content(String resource) throws Exception {
         try (ZipInputStream z = new ZipInputStream(VatBreakdownTest.class.getResourceAsStream(resource))) {
             for (ZipEntry e; (e = z.getNextEntry()) != null;) {

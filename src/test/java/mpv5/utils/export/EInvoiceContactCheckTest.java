@@ -55,4 +55,16 @@ public class EInvoiceContactCheckTest {
         //a tax number does not help: both reasons
         assertEquals(2, check("40", "12/345/67890", "").getMessages().size());
     }
+
+    @Test
+    public void peppolIdSatisfiesBuyerElectronicAddressAndRejectsInvalid() {
+        Result valid = EInvoiceContactCheck.check("Erika Muster", "Muster GmbH", "Weg 1", "12345", "Berlin", "276",
+                "", "DE123456789", "", "DE", "0204:04011000-12345-34");
+        assertTrue(valid.isOk(), valid.getMessages().toString());
+
+        Result invalid = EInvoiceContactCheck.check("Erika Muster", "Muster GmbH", "Weg 1", "12345", "Berlin", "276",
+                "erika@example.org", "DE123456789", "", "DE", "invalid-peppol");
+        assertTrue(invalid.hasErrors());
+        assertEquals(EnumSet.of(Field.EMAIL), invalid.getErrors());
+    }
 }

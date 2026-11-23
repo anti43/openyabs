@@ -72,6 +72,14 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
     private final LabeledTextField skontopercent = new LabeledTextField();
     private final LabeledTextField skontodays = new LabeledTextField();
     /**
+     * EU customs EORI number, stored as companyinfo.eori
+     */
+    private final LabeledTextField eori = new LabeledTextField();
+    /**
+     * Seller Peppol-ID (BT-34), stored as companyinfo.peppolid
+     */
+    private final LabeledTextField peppolid = new LabeledTextField();
+    /**
      * SEPA creditor ID (for direct debits), stored as companyinfo.sepacreditorid
      */
     private final LabeledTextField creditorid = new LabeledTextField();
@@ -104,6 +112,12 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
         creditorid.set_Label(Messages.COMPANY_CREDITOR_ID.toString());
         creditorid.setName(mpv5.utils.export.SepaDirectDebit.KEY_CREDITOR_ID);
         fields.add(creditorid);
+        eori.set_Label(Messages.COMPANY_EORI.toString());
+        eori.setName(ZugpferdFile.KEY_EORI);
+        fields.add(eori);
+        peppolid.set_Label(Messages.COMPANY_PEPPOL_ID.toString());
+        peppolid.setName(ZugpferdFile.KEY_COMPANY_PEPPOL_ID);
+        fields.add(peppolid);
 
         smallBusinessNote.set_Label(Messages.COMPANY_SMALLBUSINESS_NOTE.toString());
         smallBusinessNote.setName(mpv5.utils.export.SmallBusiness.KEY_NOTE);
@@ -150,7 +164,7 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
                 .addFull(Applets.hint(Messages.COMPANY_BANK_HINT.toString()))
                 .addFull(accountsRow);
         Card tax = new Card(Messages.COMPANY_CARD_TAX.toString())
-                .row(Applets.field(account1))
+                .row(Applets.field(account1), Applets.field(eori))
                 .row(Applets.field(taxnumber), Applets.field(taxauthority))
                 .row(Applets.field(taxmandant))
                 .row(Applets.field(taxadvsior), Applets.field(taxadvjob));
@@ -168,6 +182,7 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
         foldersRow.setOpaque(false);
         foldersRow.add(foldersBtn);
         Card einvoice = new Card(Messages.COMPANY_CARD_EINVOICE.toString())
+                .row(Applets.field(peppolid))
                 .addFull(defaultZugpferd)
                 .addFull(Applets.hint(Messages.COMPANY_DEFAULT_ZUGFERD_HINT.toString()))
                 .addFull(foldersRow);
@@ -177,6 +192,10 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
         //mark invalid values while typing
         FieldCheck.attach(account1, ZugpferdFile::isValidVatId, Messages.COMPANY_VATID_TOOLTIP.toString(),
                 Messages.COMPANY_VATID_INVALID.toString());
+        FieldCheck.attach(eori, ZugpferdFile::isValidEori, Messages.COMPANY_EORI_TOOLTIP.toString(),
+                Messages.COMPANY_EORI_INVALID.toString());
+        FieldCheck.attach(peppolid, ZugpferdFile::isValidPeppolId, Messages.COMPANY_PEPPOL_ID_TOOLTIP.toString(),
+                Messages.COMPANY_PEPPOL_ID_INVALID.toString());
         FieldCheck.attach(taxnumber, v -> !ZugpferdFile.isValidVatId(v), Messages.COMPANY_TAXNUMBER_TOOLTIP.toString(),
                 Messages.COMPANY_TAXNUMBER_IS_VATID.toString());
         FieldCheck.attach(account, Iban::isValid, Messages.COMPANY_IBAN_TOOLTIP.toString(),
@@ -319,6 +338,14 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
         String bicValue = banknumber.getText();
         if (bicValue != null && !bicValue.trim().isEmpty() && !Iban.isValidBic(bicValue)) {
             problems.append("\n - ").append(Messages.ZUGFERD_INVALID_BIC).append(": ").append(bicValue);
+        }
+        String eoriValue = eori.getText();
+        if (eoriValue != null && !eoriValue.trim().isEmpty() && !ZugpferdFile.isValidEori(eoriValue)) {
+            problems.append("\n - ").append(Messages.COMPANY_EORI_INVALID).append(": ").append(eoriValue.trim());
+        }
+        String peppolValue = peppolid.getText();
+        if (peppolValue != null && !peppolValue.trim().isEmpty() && !ZugpferdFile.isValidPeppolId(peppolValue)) {
+            problems.append("\n - ").append(Messages.COMPANY_PEPPOL_ID_INVALID).append(": ").append(peppolValue.trim());
         }
         return problems.toString();
     }
@@ -493,6 +520,14 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
 
     public JComboBox getCountryComboBox() {
         return country;
+    }
+
+    public LabeledTextField getEoriField() {
+        return eori;
+    }
+
+    public LabeledTextField getPeppolIdField() {
+        return peppolid;
     }
 
     @Override

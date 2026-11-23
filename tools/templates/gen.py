@@ -60,7 +60,7 @@ ITEM_EXTRA = ['item.servicedate', 'item.netvaluef', 'item.taxvaluef', 'item.gros
               'item.correctedinvoice', 'item.correctedinvoicenumber', 'item.correctedinvoicedate']
 COMPANY = ['companyinfo.' + k for k in ['business', 'firstname', 'name', 'street', 'zip', 'city', 'country', 'phoneprefix', 'phone',
            'fax', 'email', 'account', 'banknumber', 'bankname', 'account1', 'taxnumber', 'taxauthority', 'taxmandant',
-           'taxadvsior', 'taxadvjob', 'payterm', 'sepacreditorid', 'vatid']]
+           'taxadvsior', 'taxadvjob', 'payterm', 'sepacreditorid', 'vatid', 'eori', 'peppolid']]
 
 # ---- the base template
 z = zipfile.ZipFile(os.path.join(REPO, 'src/main/resources/extra/DE-Yabs-2.0.odt'))
@@ -186,11 +186,21 @@ TAXNO_ROW = ('<table:table-row><table:covered-table-cell/><table:table-cell tabl
 EMPTY_ROW = ('<table:table-row><table:covered-table-cell/><table:table-cell table:style-name="Tabelle2.A1" office:value-type="string"><text:p text:style-name="P9"/></table:table-cell>'
              '<table:table-cell table:style-name="Tabelle2.A1" office:value-type="string"><text:p text:style-name="P17"/></table:table-cell></table:table-row>')
 
+CUSTNO_ROW = ('<table:table-row table:style-name="Tabelle4.1"><table:table-cell table:style-name="Tabelle4.A1" office:value-type="string"><text:p text:style-name="P4">Kundennummer: </text:p></table:table-cell>'
+              '<table:table-cell table:style-name="Tabelle4.B1" office:value-type="string"><text:p text:style-name="P3">' + ph('item.contact.cnumber') + '</text:p></table:table-cell></table:table-row>')
+
 def vat_id(c):
-    assert c.count(TAXNO_ROW + EMPTY_ROW) == 1, 'tax number row'
+    assert c.count(EMPTY_ROW + TAXNO_ROW + EMPTY_ROW) == 1, 'tax number row'
     vatid = ('<table:table-row><table:covered-table-cell/><table:table-cell table:style-name="Tabelle2.A1" office:value-type="string"><text:p text:style-name="P17">USt-IdNr.:</text:p></table:table-cell>'
              '<table:table-cell table:style-name="Tabelle2.A1" office:value-type="string"><text:p text:style-name="P11">' + ph('companyinfo.vatid') + '</text:p></table:table-cell></table:table-row>')
-    return c.replace(TAXNO_ROW + EMPTY_ROW, TAXNO_ROW.replace('>Ust-Nr:<', '>St.-Nr.:<') + vatid, 1)
+    comp_eori = ('<table:table-row><table:covered-table-cell/><table:table-cell table:style-name="Tabelle2.A1" office:value-type="string"><text:p text:style-name="P17">EORI:</text:p></table:table-cell>'
+                 '<table:table-cell table:style-name="Tabelle2.A1" office:value-type="string"><text:p text:style-name="P11">' + ph('companyinfo.eori') + '</text:p></table:table-cell></table:table-row>')
+    c = c.replace(EMPTY_ROW + TAXNO_ROW + EMPTY_ROW, TAXNO_ROW.replace('>Ust-Nr:<', '>St.-Nr.:<') + vatid + comp_eori, 1)
+    assert c.count(CUSTNO_ROW) == 1, 'customer number row'
+    cust_eori = ('<table:table-row table:style-name="Tabelle4.1"><table:table-cell table:style-name="Tabelle4.A1" office:value-type="string"><text:p text:style-name="P4">EORI: </text:p></table:table-cell>'
+                 '<table:table-cell table:style-name="Tabelle4.B1" office:value-type="string"><text:p text:style-name="P3">' + ph('item.contact.eori') + '</text:p></table:table-cell></table:table-row>')
+    c = c.replace(CUSTNO_ROW + '</table:table><text:p text:style-name="P3"/>', CUSTNO_ROW + cust_eori + '</table:table>', 1)
+    return c
 
 # ---- the invoice of a small business (Kleinunternehmer, § 19 UStG): no VAT column, no VAT
 # table, no VAT row in the totals, the note of the exemption below the totals (companyinfo.smallbusinessnote:
@@ -510,7 +520,7 @@ def make(fname, title, kind, groups, prefix=None, cprefix=None, blocks=None, tot
     return len(data)
 
 item = fields('items', 'item.') + ITEM_EXTRA
-contact_of = lambda p: fields('contacts', p)
+contact_of = lambda p: fields('contacts', p) + [p + 'eori', p + 'peppolid']
 positions = ['item.xtable1 (Positionstabelle: Tabelle mit dem Namen xtable1)']
 # type, title, label of the total
 TYPES = [
@@ -536,7 +546,8 @@ CONTACT = [('t', [('Kundennummer', '{contact.cnumber}'), ('Firma', '{contact.com
                   ('Vorname', '{contact.prename}'), ('Name', '{contact.cname}'), ('Straße', '{contact.street}'),
                   ('PLZ / Ort', '{contact.zip} {contact.city}'), ('Land', '{contact.country}'), ('Telefon', '{contact.mainphone}'),
                   ('Mobil', '{contact.mobilephone}'), ('Fax', '{contact.fax}'), ('E-Mail', '{contact.mailaddress}'),
-                  ('Website', '{contact.website}'), ('Steuernummer', '{contact.taxnumber}'), ('Bank', '{contact.bankname}'),
+                  ('Website', '{contact.website}'), ('Steuernummer', '{contact.taxnumber}'),
+                  ('EORI', '{contact.eori}'), ('Peppol-ID', '{contact.peppolid}'), ('Bank', '{contact.bankname}'),
                   ('IBAN', '{contact.bankaccount}'), ('BIC', '{contact.bankid}')]),
            ('h', 'Notizen'), ('p', '{contact.notes}')]
 PRODUCT = [('t', [('Artikelnummer', '{product.cnumber}'), ('Bezeichnung', '{product.cname}'), ('Beschreibung', '{product.description}'),

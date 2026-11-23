@@ -95,6 +95,8 @@ public final class Privacy {
      */
     static final Set<String> KEPT_PROPERTIES = new HashSet<String>(Arrays.asList(
             mpv5.utils.export.ZugpferdFile.KEY_BUYER_REFERENCE,
+            mpv5.utils.export.ZugpferdFile.KEY_PEPPOL_ID,
+            mpv5.utils.export.ZugpferdFile.KEY_EORI,
             mpv5.utils.export.PaymentTerms.KEY_SKONTO_PERCENT,
             mpv5.utils.export.PaymentTerms.KEY_SKONTO_DAYS,
             mpv5.utils.export.PaymentTerms.KEY_IMMEDIATE,

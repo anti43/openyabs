@@ -67,6 +67,7 @@ public class EInvoiceValidator implements Waitable {
         hint(Messages.ZUGFERD_HINT_IBAN, "BR-DE-1", "BR-DE-23-a", "BR-DE-19", "BR-50", "BR-61");
         hint(Messages.ZUGFERD_HINT_PAYTERM, "BR-CO-25");
         hint(Messages.ZUGFERD_HINT_BUYER_EMAIL, "PEPPOL-EN16931-R010");
+        hint(Messages.ZUGFERD_HINT_PEPPOL_ID, "BR-CL-25", "BR-62", "BR-63", "PEPPOL-EN16931-R020");
         hint(Messages.ZUGFERD_HINT_EMPTY, "PEPPOL-EN16931-R008");
     }
 

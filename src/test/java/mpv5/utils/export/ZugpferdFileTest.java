@@ -713,6 +713,177 @@ class ZugpferdFileTest {
         assertValid(xml);
     }
 
+    @Test
+    void peppolIdParsingAndValidation() {
+        assertTrue(ZugpferdFile.isValidPeppolId("0204:04011000-12345-34"));
+        assertTrue(ZugpferdFile.isValidPeppolId("9930:DE123456789"));
+        assertTrue(ZugpferdFile.isValidPeppolId("0088:4012345000018"));
+        assertTrue(ZugpferdFile.isValidPeppolId("0208:0123456789"));
+        assertTrue(ZugpferdFile.isValidPeppolId("em:billing@example.org"));
+        assertTrue(ZugpferdFile.isValidPeppolId("iso6523-actorid-upis::0204:04011000-12345-34"));
+        assertEquals("0204:04011000-12345-34", ZugpferdFile.normalizePeppolId(" iso6523-actorid-upis::0204:04011000-12345-34 "));
+        assertEquals("EM:billing@example.org", ZugpferdFile.normalizePeppolId("em:billing@example.org"));
+
+        assertFalse(ZugpferdFile.isValidPeppolId(null));
+        assertFalse(ZugpferdFile.isValidPeppolId(""));
+        assertFalse(ZugpferdFile.isValidPeppolId("04011000-12345-34"), "missing scheme");
+        assertFalse(ZugpferdFile.isValidPeppolId("9999:DE123456789"), "unknown EAS scheme");
+        assertFalse(ZugpferdFile.isValidPeppolId("9930:"), "missing id");
+        assertFalse(ZugpferdFile.isValidPeppolId(":DE123456789"), "missing scheme");
+        assertFalse(ZugpferdFile.isValidPeppolId("9930:DE 123456789"), "whitespace in id");
+    }
+
+    @Test
+    void peppolIdAssignedToSellerAndBuyerInXRechnungAndZugferd() throws Exception {
+        Map<String, String> c = company();
+        c.put(ZugpferdFile.KEY_COMPANY_PEPPOL_ID, "9930:DE123456789");
+        TradeParty sender = ZugpferdFile.createSender(c::get);
+        assertEquals("9930", sender.getUriUniversalCommunicationIDScheme());
+        assertEquals("DE123456789", sender.getUriUniversalCommunicationID());
+        assertEquals("rechnung@muster.example", sender.getContact().getEMail(), "seller contact email (BT-43) stays");
+
+        Contact buyerContact = new Contact();
+        buyerContact.setCNumber("K-1001");
+        buyerContact.setMailaddress("einkauf@kunde.example");
+        buyerContact.setMainphone("+49 89 987654");
+        Address a = new Address();
+        a.setCompany("Kunde AG");
+        a.setPrename("Max");
+        a.setCname("Kunde");
+        a.setStreet("Marienplatz 2");
+        a.setZip("80331");
+        a.setCity("München");
+        a.setCountry("276");
+        a.setTaxnumber("DE987654321");
+        TradeParty recipient = buyerContact.asZugpferdTradeparty(a, "0204:04011000-12345-34");
+        assertEquals("0204", recipient.getUriUniversalCommunicationIDScheme());
+        assertEquals("04011000-12345-34", recipient.getUriUniversalCommunicationID());
+        assertEquals("einkauf@kunde.example", recipient.getContact().getEMail(), "buyer contact email (BT-58) stays");
+
+        SubItem[] lines = {line("Beratung", "", "2", "Std.", "100", "19", "0")};
+        Invoice xrechnung = ZugpferdFile.createInvoice(invoice(), lines, sender, recipient,
+                "04011000-12345-34", ZugpferdFile.PAYTERM_UNSET, null, ZugpferdFile.Format.XRECHNUNG);
+        assertTrue(ZugpferdFile.validate(xrechnung).isEmpty(), ZugpferdFile.validate(xrechnung).toString());
+
+        File xml = tmp.resolve("peppol-xr.xml").toFile();
+        ZugpferdFile.writeXml(xrechnung, xml);
+        String xmlText = new String(Files.readAllBytes(xml.toPath()), StandardCharsets.UTF_8);
+        String sellerXml = xmlText.substring(xmlText.indexOf("<ram:SellerTradeParty>"), xmlText.indexOf("</ram:SellerTradeParty>"));
+        String buyerXml = xmlText.substring(xmlText.indexOf("<ram:BuyerTradeParty>"), xmlText.indexOf("</ram:BuyerTradeParty>"));
+        assertTrue(sellerXml.contains("<ram:URIID schemeID=\"9930\">DE123456789</ram:URIID>"), sellerXml);
+        assertTrue(buyerXml.contains("<ram:URIID schemeID=\"0204\">04011000-12345-34</ram:URIID>"), buyerXml);
+        assertTrue(xmlText.contains("<ram:BuyerReference>04011000-12345-34</ram:BuyerReference>"), xmlText);
+        assertValid(xml);
+
+        //ZUGFeRD PDF with the same Peppol-IDs
+        Invoice zugferd = ZugpferdFile.createInvoice(invoice(), lines, sender, recipient,
+                "04011000-12345-34", ZugpferdFile.PAYTERM_UNSET, null, ZugpferdFile.Format.ZUGFERD);
+        File plain = tmp.resolve("peppol-plain.pdf").toFile();
+        try (PDDocument doc = new PDDocument()) {
+            PDPage page = new PDPage();
+            page.setResources(new org.apache.pdfbox.pdmodel.PDResources());
+            doc.addPage(page);
+            doc.save(plain);
+        }
+        File pdf = tmp.resolve("peppol-zf.pdf").toFile();
+        ZugpferdFile.writePdf(zugferd, plain, pdf);
+        String embedded = new String(new ZUGFeRDImporter(pdf.getAbsolutePath()).getRawXML(), StandardCharsets.UTF_8);
+        assertTrue(embedded.contains("<ram:URIID schemeID=\"9930\">DE123456789</ram:URIID>"), embedded);
+        assertTrue(embedded.contains("<ram:URIID schemeID=\"0204\">04011000-12345-34</ram:URIID>"), embedded);
+        assertValid(pdf);
+    }
+
+    @Test
+    void buyerWithPeppolIdNeedsNoEmail() throws Exception {
+        Contact buyerContact = new Contact();
+        buyerContact.setCNumber("K-2002");
+        Address a = new Address();
+        a.setCompany("Belgian Partner NV");
+        a.setStreet("Wetstraat 16");
+        a.setZip("1000");
+        a.setCity("Brussels");
+        a.setCountry("BE");
+        a.setTaxnumber("BE0123456789");
+        TradeParty recipient = buyerContact.asZugpferdTradeparty(a, "0208:0123456789");
+
+        Invoice inv = ZugpferdFile.createInvoice(invoice(),
+                new SubItem[]{line("Beratung", "", "1", "Std.", "100", "19", "0")},
+                ZugpferdFile.createSender(company()::get), recipient, "REF-BE-1", ZugpferdFile.PAYTERM_UNSET, null);
+        assertTrue(ZugpferdFile.validate(inv).isEmpty(), ZugpferdFile.validate(inv).toString());
+
+        File xml = tmp.resolve("peppol-noemail.xml").toFile();
+        ZugpferdFile.writeXml(inv, xml);
+        String s = new String(Files.readAllBytes(xml.toPath()), StandardCharsets.UTF_8);
+        assertTrue(s.contains("<ram:URIID schemeID=\"0208\">0123456789</ram:URIID>"), s);
+        assertValid(xml);
+    }
+
+    @Test
+    void invalidPeppolIdIsRejectedByValidation() {
+        Map<String, String> c = company();
+        c.put(ZugpferdFile.KEY_COMPANY_PEPPOL_ID, "DE123456789");
+        TradeParty badSeller = ZugpferdFile.createSender(c::get);
+        List<String> sellerErrs = ZugpferdFile.sellerProblems(badSeller);
+        assertTrue(sellerErrs.toString().contains(Messages.ZUGFERD_INVALID_PEPPOL_ID.toString()), sellerErrs.toString());
+
+        TradeParty badBuyer = buyer();
+        ZugpferdFile.applyPeppolId(badBuyer, "9999:unknown");
+        Invoice inv = ZugpferdFile.createInvoice(invoice(),
+                new SubItem[]{line("a", "", "1", "Stk", "10", "19", "0")},
+                ZugpferdFile.createSender(company()::get), badBuyer, "ref", ZugpferdFile.PAYTERM_UNSET, null);
+        List<String> buyerErrs = ZugpferdFile.validate(inv);
+        assertTrue(buyerErrs.toString().contains(Messages.ZUGFERD_INVALID_PEPPOL_ID.toString()), buyerErrs.toString());
+        assertTrue(buyerErrs.toString().contains("9999:unknown"), buyerErrs.toString());
+    }
+
+    @Test
+    void eoriValidationAndCustomsNotesInXRechnungAndZugferd() throws Exception {
+        assertTrue(ZugpferdFile.isValidEori("DE123456789012345"));
+        assertTrue(ZugpferdFile.isValidEori("DE1234567"));
+        assertTrue(ZugpferdFile.isValidEori("fr 12345678901234"));
+        assertTrue(ZugpferdFile.isValidEori("NL820646660B01"));
+        assertTrue(ZugpferdFile.isValidEori("GB123456789000"));
+        assertTrue(ZugpferdFile.isValidEori("XI123456789000"));
+        assertEquals("DE123456789012345", ZugpferdFile.normalizeEori("de 1234-5678.9012345"));
+
+        assertFalse(ZugpferdFile.isValidEori(null));
+        assertFalse(ZugpferdFile.isValidEori(""));
+        assertFalse(ZugpferdFile.isValidEori("123456789"), "missing country prefix");
+        assertFalse(ZugpferdFile.isValidEori("DE"), "missing identifier");
+        assertFalse(ZugpferdFile.isValidEori("DE1234567890123456"), "exceeds 15 chars after country code");
+        assertFalse(ZugpferdFile.isValidEori("XX123456789"), "invalid country code");
+
+        Invoice xr = build();
+        ZugpferdFile.applyEoriNotes(xr, "DE 123456789012345", "GB123456789000");
+        File xml = tmp.resolve("eori-xr.xml").toFile();
+        ZugpferdFile.writeXml(xr, xml);
+        String xmlText = new String(Files.readAllBytes(xml.toPath()), StandardCharsets.UTF_8);
+        assertTrue(xmlText.contains("<ram:Content>Seller EORI: DE123456789012345</ram:Content>"), xmlText);
+        assertTrue(xmlText.contains("<ram:Content>Buyer EORI: GB123456789000</ram:Content>"), xmlText);
+        assertTrue(xmlText.contains("<ram:SubjectCode>CUS</ram:SubjectCode>"), xmlText);
+        assertValid(xml);
+
+        Invoice zf = ZugpferdFile.createInvoice(invoice(),
+                new SubItem[]{line("Exportware", "", "1", "Stk", "100", "19", "0")},
+                ZugpferdFile.createSender(company()::get), buyer(), "ref", ZugpferdFile.PAYTERM_UNSET, null,
+                ZugpferdFile.Format.ZUGFERD);
+        ZugpferdFile.applyEoriNotes(zf, "DE123456789012345", "GB123456789000");
+        File plain = tmp.resolve("eori-plain.pdf").toFile();
+        try (PDDocument doc = new PDDocument()) {
+            PDPage page = new PDPage();
+            page.setResources(new org.apache.pdfbox.pdmodel.PDResources());
+            doc.addPage(page);
+            doc.save(plain);
+        }
+        File pdf = tmp.resolve("eori-zf.pdf").toFile();
+        ZugpferdFile.writePdf(zf, plain, pdf);
+        String embedded = new String(new ZUGFeRDImporter(pdf.getAbsolutePath()).getRawXML(), StandardCharsets.UTF_8);
+        assertTrue(embedded.contains("<ram:Content>Seller EORI: DE123456789012345</ram:Content>"), embedded);
+        assertTrue(embedded.contains("<ram:Content>Buyer EORI: GB123456789000</ram:Content>"), embedded);
+        assertTrue(embedded.contains("<ram:SubjectCode>CUS</ram:SubjectCode>"), embedded);
+        assertValid(pdf);
+    }
+
     /**
      * Runs the official validator (schema, EN16931 + XRechnung schematron,
      * PDF/A-3)

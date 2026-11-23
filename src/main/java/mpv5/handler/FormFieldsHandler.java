@@ -118,6 +118,10 @@ public class FormFieldsHandler {
         //reverse charge or intra-community supplies (§ 14a UStG)
         Object vatId = maps.get("companyinfo.account1");
         maps.put("companyinfo.vatid", vatId == null ? "" : vatId);
+        Object eori = maps.get("companyinfo." + mpv5.utils.export.ZugpferdFile.KEY_EORI);
+        maps.put("companyinfo." + mpv5.utils.export.ZugpferdFile.KEY_EORI, eori == null ? "" : eori);
+        Object peppolId = maps.get("companyinfo." + mpv5.utils.export.ZugpferdFile.KEY_COMPANY_PEPPOL_ID);
+        maps.put("companyinfo." + mpv5.utils.export.ZugpferdFile.KEY_COMPANY_PEPPOL_ID, peppolId == null ? "" : peppolId);
 
         //small business exemption: the note to print (the legal wording if none is set), empty without it
         try {
