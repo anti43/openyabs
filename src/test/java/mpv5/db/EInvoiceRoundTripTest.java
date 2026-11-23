@@ -188,7 +188,7 @@ class EInvoiceRoundTripTest {
         c.setZip("10115");
         c.setCity("Berlin");
         c.setCountry("DE");
-        c.setTaxnumber("DE222222222");
+        c.settaxnumber("DE222222222");
         c.setMailaddress("buchhaltung@kunde.example");
         c.setisCustomer(true);
         c.setDateadded(new java.util.Date());
