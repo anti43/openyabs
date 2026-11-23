@@ -249,13 +249,16 @@ public final class Payments {
         if (i == null || !i.isExisting() || amount == null || amount.signum() <= 0 || !mpv5.db.common.DatabaseUpdater.hasTable("payments")) {
             return false;
         }
+        if (!MPSecurityManager.check(Context.getInvoice(), MPSecurityManager.RIGHT_TO_CREATE_OR_DELETE)) {
+            return false;
+        }
         String now = q(DateConverter.getSQLDateString(new Date()));
         ReturnValue rv = db().freeUpdateQuery("INSERT INTO payments (itemsids, amount, datepaid, description, intaddedby, dateadded) VALUES ("
                 + i.__getIDS() + ", " + amount.setScale(2, RoundingMode.HALF_UP).toPlainString() + ", "
                 + q(DateConverter.getSQLDateString(date == null ? new Date() : date)) + ", " + q(description == null ? "" : description) + ", "
                 + mpv5.db.objects.User.getCurrentUser().__getIDS() + ", " + now + ")",
                 MPSecurityManager.RIGHT_TO_CREATE_OR_DELETE, null);
-        if (rv == null) {
+        if (rv == null || rv.getId() < 0) {
             return false;
         }
         updateStatus(i);
@@ -269,6 +272,9 @@ public final class Payments {
      * @param paymentId
      */
     public static void remove(Item i, int paymentId) {
+        if (i == null || !MPSecurityManager.check(Context.getInvoice(), MPSecurityManager.RIGHT_TO_CREATE_OR_DELETE)) {
+            return;
+        }
         db().freeUpdateQuery("DELETE FROM payments WHERE ids = " + paymentId + " AND itemsids = " + i.__getIDS(),
                 MPSecurityManager.RIGHT_TO_CREATE_OR_DELETE, null);
         updateStatus(i);

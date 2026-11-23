@@ -103,10 +103,28 @@ public class TrashHandler {
      */
     public static Object[][] getData() {
         Object[][] data = QueryHandler.instanceOf().clone("trashbin").select("cname, rowid, description", new String[]{"deleteme", "1", ""});
+        mpv5.db.objects.User u = mpv5.db.objects.User.getCurrentUser();
+        boolean restricted = u != null && u.isGroupRestricted();
+        int userGroupId = restricted ? u.__getGroupsids() : -1;
+        java.util.List<Object[]> filtered = new java.util.ArrayList<Object[]>(data.length);
         for (int i = 0; i < data.length; i++) {
-            data[i][0] = data[i][0].toString().toUpperCase();
+            String type = data[i][0].toString().toUpperCase();
+            if (restricted) {
+                try {
+                    Context ctx = Context.getMatchingContext(type);
+                    int rowId = Integer.parseInt(String.valueOf(data[i][1]));
+                    DatabaseObject dbo = DatabaseObject.getObject(ctx, rowId, true);
+                    if (dbo.__getGroupsids() != userGroupId) {
+                        continue;
+                    }
+                } catch (Exception ex) {
+                    continue;
+                }
+            }
+            data[i][0] = type;
+            filtered.add(data[i]);
         }
-        return data;
+        return filtered.toArray(new Object[0][]);
     }
 
     /**

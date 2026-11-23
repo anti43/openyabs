@@ -64,6 +64,7 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel, DataP
       left.add(count);
       //the switch for the edit mode and its legend
       editToggle.setToolTipText(Messages.CONTACTLIST_EDITMODE_TIP.toString());
+      editToggle.setEnabled(mpv5.usermanagement.MPSecurityManager.check(Context.getContact(), mpv5.usermanagement.MPSecurityManager.EDIT));
       editToggle.addActionListener(e -> setEditMode(editToggle.isSelected()));
       editLegend.setForeground(mpv5.ui.modern.ModernTheme.muted());
       editLegend.setVisible(false);
@@ -518,6 +519,10 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel, DataP
    }
 
    private void setEditMode(boolean edit) {
+      if (edit && !mpv5.usermanagement.MPSecurityManager.check(Context.getContact(), mpv5.usermanagement.MPSecurityManager.EDIT)) {
+         editToggle.setSelected(false);
+         return;
+      }
       if (listTable.isEditing()) {
          listTable.getCellEditor().stopCellEditing();
       }
@@ -536,6 +541,9 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel, DataP
     * @return the value to show in the table, null if nothing was saved
     */
    private Object saveCell(int row, int column, Object value) {
+      if (!mpv5.usermanagement.MPSecurityManager.check(Context.getContact(), mpv5.usermanagement.MPSecurityManager.EDIT)) {
+         return null;
+      }
       javax.swing.table.TableModel model = listTable.getModel();
       Object old = model.getValueAt(row, column);
       String id = String.valueOf(model.getValueAt(row, COL_ID));
@@ -1206,7 +1214,7 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel, DataP
    }
 
    public void flush() {
-      listTable.setModel(null);
+      listTable.setModel(new MPTableModel());
    }
 
    public void showType(Contact d) {

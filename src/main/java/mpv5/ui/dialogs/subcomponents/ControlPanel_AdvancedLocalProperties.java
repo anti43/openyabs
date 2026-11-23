@@ -168,6 +168,9 @@ public class ControlPanel_AdvancedLocalProperties extends javax.swing.JPanel imp
 
     @Override
     public Component getAndRemoveActionPanel() {
+        if (jPanel1 == null) {
+            return null;
+        }
         remove(jPanel1);
         validate();
         return jPanel1;

@@ -775,7 +775,9 @@ public class ModernExpensePanel extends ModernDataPanel {
         actions.add(addReceiptBtn);
         actions.add(openReceiptBtn);
         actions.add(verifyReceiptsBtn);
-        actions.add(folderBtn);
+        if (mpv5.usermanagement.MPSecurityManager.isAdmin()) {
+            actions.add(folderBtn);
+        }
 
         card.addFull(actions);
 
@@ -1158,7 +1160,9 @@ public class ModernExpensePanel extends ModernDataPanel {
                     dataOwner.setAccountsids(accountsids_ > 0 ? accountsids_ : 1);
                 }
                 if (dataOwner.__getGroupsids() <= 0) {
-                    dataOwner.setGroupsids(1);
+                    int userGroup = User.getCurrentUser() != null && User.getCurrentUser().__getGroupsids() > 0
+                            ? User.getCurrentUser().__getGroupsids() : 1;
+                    dataOwner.setGroupsids(userGroup);
                 }
                 if (dataOwner.save(true) && dataOwner.__getIDS() > 0) {
                     ids_ = dataOwner.__getIDS();
@@ -1462,6 +1466,10 @@ public class ModernExpensePanel extends ModernDataPanel {
                 selectRecordRow(expenseTable, dataOwner);
             } catch (NodataFoundException e) {
                 Log.Debug(ModernExpensePanel.class, e.getMessage());
+                MPTableModel empty = new MPTableModel(new Object[0][], Headers.EXPENSE);
+                empty.setTypes(Expense.class, String.class, Account.class, String.class, String.class, Boolean.class, Date.class, Date.class);
+                expenseTable.setModel(empty);
+                applyExpenseFilter();
             }
             try {
                 accountObjects = DatabaseObject.getObjects(Context.getAccounts(), new QueryCriteria("intaccounttype", Account.EXPENSE));

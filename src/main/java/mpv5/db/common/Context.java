@@ -398,6 +398,8 @@ public class Context implements Serializable, Comparable<Context> {
         list.add(getProductPrice());
         list.add(getConversation());
         list.add(getFonts());
+        list.add(getExpense());
+        list.add(getRevenue());
         return list;
     }
 
@@ -533,7 +535,6 @@ public class Context implements Serializable, Comparable<Context> {
         list.add(getMessage());
         list.add(getProductListItems());
         list.add(getSearchIndex());
-        list.add(getGlobalSettings());
         list.add(getCompany());
         list.add(getWebShop());
         list.add(getTemplate());

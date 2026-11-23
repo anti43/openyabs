@@ -443,7 +443,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         JPanel numberRow = new JPanel(new BorderLayout(ModernTheme.px(4), 0));
         numberRow.setOpaque(false);
         numberRow.add(number, BorderLayout.CENTER);
-        if (MPSecurityManager.checkAdminAccess()) {
+        if (MPSecurityManager.isAdmin()) {
             //change the number (administrators)
             JButton edit = action("…");
             edit.setToolTipText(text("ItemPanel2.number._Label"));
@@ -942,7 +942,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
             }
             status.setModel(Item.getStatusStrings(), MPComboBoxModelItem.COMPARE_BY_ID, ItemService.statusesToSkip(inttype_, false));
             try {
-                status.setSelectedIndex(User.getCurrentUser().__getIntdefaultstatus());
+                status.setSelectedItem(User.getCurrentUser().__getIntdefaultstatus());
             } catch (Exception e) {
                 Log.Debug(this, e.getMessage());
             }
@@ -1405,15 +1405,17 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
                 chosen = new File(chosen.getPath() + "." + format.getExtension());
             }
             final File target = chosen;
-            ItemService.ensureFinishedAndEndDate(dataOwner);
-            loading = true;
-            try {
-                dataOwner.setPanelData(this);
-                exposeData();
-                updateHeader();
-                savedSnapshot = captureSnapshot();
-            } finally {
-                loading = false;
+            if (MPSecurityManager.check(dataOwner.getContext(), MPSecurityManager.EDIT)) {
+                ItemService.ensureFinishedAndEndDate(dataOwner);
+                loading = true;
+                try {
+                    dataOwner.setPanelData(this);
+                    exposeData();
+                    updateHeader();
+                    savedSnapshot = captureSnapshot();
+                } finally {
+                    loading = false;
+                }
             }
             final mpv5.db.objects.Item item = dataOwner;
             mpv5.utils.export.ExportProgress.execute(Messages.EXPORT_EINVOICE + " " + target.getName(), null, () -> new Job(new ZugpferdFile(item, invoice, target, format), new Waiter() {
@@ -1840,7 +1842,10 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         //the service date (Leistungsdatum): the document date if empty
         datetodo_ = date2.getDate() != null ? date2.getDate() : dateadded_;
         dateend_ = date3.getDate();
-        intstatus_ = Integer.parseInt(String.valueOf(status.getSelectedItem().getId()));
+        MPComboBoxModelItem selectedStatus = status.getSelectedItem();
+        intstatus_ = selectedStatus != null && selectedStatus.isValid()
+                ? Integer.parseInt(String.valueOf(selectedStatus.getId()))
+                : Item.STATUS_IN_PROGRESS;
         try {
             reforderids_ = Integer.valueOf(String.valueOf(refOrder.getSelectedItem().getId()));
         } catch (Exception e) {
@@ -2067,7 +2072,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
 
     @Override
     public void actionBeforeCreate() {
-        status.setSelectedIndex(Item.STATUS_IN_PROGRESS);
+        status.setSelectedItem(Item.STATUS_IN_PROGRESS);
         date1.setDate(new Date());
         date2.setDate(null);
         lastUpdated.setText("\u2013");

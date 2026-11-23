@@ -243,13 +243,15 @@ public final class ItemService {
      * @return the new, saved order
      */
     public static Item toOrder(Item source, MPTableModel positions) {
-        source.setIntstatus(Item.STATUS_FINISHED);
-        source.save();
         Item i2 = (Item) source.clone(Context.getOrder());
         i2.setInttype(Item.TYPE_ORDER);
         i2.setIDS(-1);
         i2.defineFormatHandler(new FormatHandler(i2));
-        i2.save();
+        if (!i2.save()) {
+            return null;
+        }
+        source.setIntstatus(Item.STATUS_FINISHED);
+        source.save();
         SubItem.saveModel(i2, positions, true, true);
         return i2;
     }
@@ -398,8 +400,6 @@ public final class ItemService {
      * @return the new, saved document, null for other types
      */
     public static Item toInvoice(Item source, int itemType, MPTableModel positions, Predicate<String> ask) {
-        source.setIntstatus(Item.STATUS_FINISHED);
-        source.save();
         Item i2;
         switch (itemType) {
             case Item.TYPE_INVOICE:
@@ -417,7 +417,11 @@ public final class ItemService {
         i2.setRefinvoiceids(itemType == Item.TYPE_CREDIT && isBill(source.__getInttype()) ? source.__getIDS() : 0);
         i2.setIDS(-1);
         i2.defineFormatHandler(new FormatHandler(i2));
-        i2.save();
+        if (!i2.save()) {
+            return null;
+        }
+        source.setIntstatus(Item.STATUS_FINISHED);
+        source.save();
         try {
             ArrayList<ActivityList> data = mpv5.globals.Features.activityLists()
                     ? DatabaseObject.getObjects(Context.getActivityList(), new QueryCriteria("orderids", source.__getIDS()))

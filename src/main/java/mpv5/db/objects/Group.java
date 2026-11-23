@@ -165,9 +165,10 @@ public class Group extends DatabaseObject {
         boolean notUsed = used.add(intp);
         while (intp > 0 && notUsed) {
             try {
-                ProductGroup p = (ProductGroup) getObject(Context.getProductGroup(), intp);
-                hierarchypath = p + Group.GROUPSEPARATOR + hierarchypath;
-                intp = p.__getProductgroupsids();
+                Group g = (Group) getObject(Context.getGroup(), intp);
+                hierarchypath = g + Group.GROUPSEPARATOR + hierarchypath;
+                intp = g.__getGroupsids();
+                notUsed = used.add(intp);
             } catch (NodataFoundException ex) {
                 break;
             }

@@ -65,6 +65,9 @@ public class MPSecurityManager {
      * the right to do requested action
      */
     public static Boolean check(Context context, int action) {
+        if (context == null) {
+            return false;
+        }
         for (Context item : securedContexts) {
             if (item.getDbIdentity().equals(context.getDbIdentity())) {
                 if (mpv5.db.objects.User.getCurrentUser().__getInthighestright() <= action) {
@@ -78,11 +81,22 @@ public class MPSecurityManager {
     }
 
     /**
+     * Checks whether the currently logged in user is an administrator without
+     * showing a popup dialog.
+     *
+     * @return {@code true} if the current user has {@link #RIGHT_TO_ADMINISTRATE}
+     */
+    public static boolean isAdmin() {
+        User u = mpv5.db.objects.User.getCurrentUser();
+        return u != null && u.__getInthighestright() <= RIGHT_TO_ADMINISTRATE;
+    }
+
+    /**
      * Checks whether the currently logged in user has to right to do admin tasks
      * @return
      */
     public static boolean checkAdminAccess() {
-        if (mpv5.db.objects.User.getCurrentUser().__getInthighestright() <= RIGHT_TO_ADMINISTRATE) {
+        if (isAdmin()) {
             return true;
         } else {
             Popup.notice(Messages.ADMIN_ACCESS);

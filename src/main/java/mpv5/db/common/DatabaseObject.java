@@ -1006,6 +1006,11 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                         }
                     }
                 } else {
+                    if (!mpv5.usermanagement.MPSecurityManager.check(getContext(), mpv5.usermanagement.MPSecurityManager.EDIT)) {
+                        mpv5.YabsViewProxy.instance().addMessage(Messages.SECURITYMANAGER_DENIED.toString(), Color.RED);
+                        Log.Debug(this, "Update denied by MPSecurityManager for " + getContext() + " id=" + ids);
+                        return false;
+                    }
                     Log.Debug(this, "Updating dataset: " + ids + " within context '" + getContext() + "'");
                     if (!silent) {
                         message = this.__getCname() + Messages.UPDATED;
@@ -1145,6 +1150,11 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             message = this.__getCname() + Messages.TRASHED;
         }
         if (ids > 0) {
+            if (!mpv5.usermanagement.MPSecurityManager.check(getContext(), mpv5.usermanagement.MPSecurityManager.CREATE_OR_DELETE)) {
+                mpv5.YabsViewProxy.instance().addMessage(Messages.SECURITYMANAGER_DENIED.toString(), Color.RED);
+                Log.Debug(this, "Delete denied by MPSecurityManager for " + getContext() + " id=" + ids);
+                return false;
+            }
             if (Context.getTrashableContexts().contains(getContext())) {
                 Log.Debug(this, "Moving to trash:");
                 QueryData d = new QueryData();
@@ -1161,35 +1171,39 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                 Log.Debug(this, "The deleted row had id: " + ids);
             }
 
-            if (this instanceof Triggerable) {
-                ((Triggerable) this).triggerOnDelete();
-            }
+            if (result) {
+                if (this instanceof Triggerable) {
+                    ((Triggerable) this).triggerOnDelete();
+                }
 
-            //in the trash the record keeps its properties (restored with it); they are deleted
-            //when the trash is emptied (TrashHandler.delete)
-            if (!Context.getTrashableContexts().contains(getContext())) {
-                ValueProperty.deleteProperty(this, null);
-            }
-            if (result && message != null) {
-                mpv5.handler.Activity.record(this, mpv5.handler.Activity.Kind.DELETED, message);
-            }
+                //in the trash the record keeps its properties (restored with it); they are deleted
+                //when the trash is emptied (TrashHandler.delete)
+                if (!Context.getTrashableContexts().contains(getContext())) {
+                    ValueProperty.deleteProperty(this, null);
+                }
+                if (message != null) {
+                    mpv5.handler.Activity.record(this, mpv5.handler.Activity.Kind.DELETED, message);
+                }
 
-            final String fmessage = message;
-            final String fdbid = this.getDbIdentity();
-            final int fids = this.ids;
-            final int fgids = this.groupsids;
-            if (!this.getType().equals(new HistoryItem().getType())) {
-                Runnable runnable = new Runnable() {
+                final String fmessage = message;
+                final String fdbid = this.getDbIdentity();
+                final int fids = this.ids;
+                final int fgids = this.groupsids;
+                if (!this.getType().equals(new HistoryItem().getType())) {
+                    Runnable runnable = new Runnable() {
 
-                    @Override
-                    public void run() {
-                        QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, mpv5.db.objects.User.getCurrentUser().__getCname(), fdbid, fids, fgids);
-                    }
-                };
-                SwingUtilities.invokeLater(runnable);
+                        @Override
+                        public void run() {
+                            QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, mpv5.db.objects.User.getCurrentUser().__getCname(), fdbid, fids, fgids);
+                        }
+                    };
+                    SwingUtilities.invokeLater(runnable);
+                }
             }
         }
-        setIDS(-1);
+        if (result) {
+            setIDS(-1);
+        }
         return result;
     }
 

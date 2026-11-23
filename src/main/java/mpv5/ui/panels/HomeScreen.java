@@ -728,7 +728,9 @@ public class HomeScreen extends JPanel {
             item.setIntreminders(0);
             item.setIntstatus(Item.STATUS_IN_PROGRESS);
             item.setDescription(item.__getDescription() + "\n" + Messages.SCHEDULE_GENERATED + "\n" + item.__getCname());
-            item.save();
+            if (!item.save()) {
+                return;
+            }
             for (SubItem subItem : subs) {
                 subItem.setItemsids(item.__getIDS());
                 subItem.setIDS(-1);
