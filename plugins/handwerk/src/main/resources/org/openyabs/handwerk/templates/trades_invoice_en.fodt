@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<office:document xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0"
+                 xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0"
+                 xmlns:table="urn:oasis:names:tc:opendocument:xmlns:table:1.0"
+                 office:version="1.2"
+                 office:mimetype="application/vnd.oasis.opendocument.text">
+  <office:body>
+    <office:text>
+      <text:p>[companyinfo.name] – [companyinfo.street], [companyinfo.zip] [companyinfo.city]</text:p>
+      <text:p>Trade Chamber: [hw.chamberName] | Reg. No.: [hw.chamberNumber]</text:p>
+      <text:p>[contact.cname]</text:p>
+      <text:p>[contact.street], [contact.zip] [contact.city]</text:p>
+      <text:h text:outline-level="1">Skilled Trades Invoice [item.cnumber]</text:h>
+      <text:p>Invoice Date: [item.dateadded] | Contract Type: [hw.contractType]</text:p>
+      <text:p>Construction Site: [hw.siteProjectNo] [hw.siteName] – [hw.siteAddress]</text:p>
+      <text:p>BoQ Reference: [hw.boqProject] [hw.boqLabel] ([hw.boqSummary])</text:p>
+      <text:p>[xtable1]</text:p>
+      <text:p>Net: [item.netvalue] | VAT: [item.taxvalue] | Gross Total: [item.totalvalue]</text:p>
+      <text:p>Retention ([hw.retentionPercent], basis [hw.retentionBasis]): [hw.retentionAmount] | Payable After Retention: [hw.payableAfterRetention]</text:p>
+      <text:p>[hw.notice35a]</text:p>
+      <text:p>[hw.notice14b]</text:p>
+      <text:p>[hw.notice13b]</text:p>
+      <text:p>[hw.freistellungNotice]</text:p>
+    </office:text>
+  </office:body>
+</office:document>

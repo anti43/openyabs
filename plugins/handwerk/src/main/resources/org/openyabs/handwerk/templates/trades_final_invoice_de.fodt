@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<office:document xmlns:office="urn:oasis:names:tc:opendocument:xmlns:office:1.0"
+                 xmlns:text="urn:oasis:names:tc:opendocument:xmlns:text:1.0"
+                 xmlns:table="urn:oasis:names:tc:opendocument:xmlns:table:1.0"
+                 office:version="1.2"
+                 office:mimetype="application/vnd.oasis.opendocument.text">
+  <office:body>
+    <office:text>
+      <text:p>[companyinfo.name] – [companyinfo.street], [companyinfo.zip] [companyinfo.city]</text:p>
+      <text:p>[contact.cname]</text:p>
+      <text:p>[contact.street], [contact.zip] [contact.city]</text:p>
+      <text:h text:outline-level="1">Schlussrechnung [item.cnumber]</text:h>
+      <text:p>Rechnungsdatum: [item.dateadded] | Vertragsart: [hw.contractType] | Abnahmedatum: [hw.acceptanceDate]</text:p>
+      <text:p>Baustelle / Objekt: [hw.siteProjectNo] [hw.siteName] – [hw.siteAddress]</text:p>
+      <text:p>Gewährleistungsfrist: [hw.warrantyYears] Jahre (bis [hw.warrantyUntil])</text:p>
+      <text:p>[xtable1]</text:p>
+      <text:p>Gesamtleistung Netto: [item.netvalue] | USt: [item.taxvalue] | Brutto: [item.totalvalue]</text:p>
+      <text:p>Sicherheitseinbehalt ([hw.retentionPercent], Basis [hw.retentionBasis]): [hw.retentionAmount] | Freigabe: [hw.retentionReleaseDate] | Bürgschaft: [hw.retentionBondRef]</text:p>
+      <text:p>Restzahlung nach Sicherheitseinbehalt: [hw.payableAfterRetention]</text:p>
+      <text:p>Aufmaß-Übersicht:</text:p>
+      <text:p>[hw.measurementsSummary]</text:p>
+      <text:p>[hw.notice35a]</text:p>
+      <text:p>[hw.notice14b]</text:p>
+      <text:p>[hw.notice13b]</text:p>
+      <text:p>[hw.freistellungNotice]</text:p>
+    </office:text>
+  </office:body>
+</office:document>
