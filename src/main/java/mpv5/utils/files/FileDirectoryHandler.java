@@ -215,7 +215,7 @@ public abstract class FileDirectoryHandler {
             outp.deleteOnExit();
         }
 
-        if (!silent) {
+        if (!silent && !mpv5.handler.DocumentFiles.isTemporary(outp)) {
             Notificator.raiseNotification(Messages.FILE_SAVED + " " + outp.getPath(), false);
         }
 
@@ -692,7 +692,7 @@ public abstract class FileDirectoryHandler {
         in.close();
         out.close();
 
-        if (!silent) {
+        if (!silent && !mpv5.handler.DocumentFiles.isTemporary(outp)) {
             Notificator.raiseNotification(Messages.FILE_SAVED + " " + outp.getPath(), false);
         }
 

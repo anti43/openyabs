@@ -173,19 +173,19 @@ public final class Activity {
     }
 
     /**
-     * A draft file: a preview, or the intermediate PDF of an e-invoice. Shown
-     * as a file, but not an issued document (no checksum, plugins do not
-     * finalize the record on it)
+     * A draft file (e.g. a preview or the intermediate PDF of an e-invoice):
+     * written to the cache/temp folder and not recorded in the activity/history
+     * log.
      *
      * @param f
      * @param owner
      */
     public static void draftFile(File f, DatabaseObject owner) {
-        file(f, owner, true);
+        // Previews and temporary cache files must not appear in the activity/history log
     }
 
     private static void file(File f, DatabaseObject owner, boolean draft) {
-        if (f == null) {
+        if (f == null || draft || DocumentFiles.isTemporary(f)) {
             return;
         }
         String detail = "";
@@ -201,14 +201,12 @@ public final class Activity {
             Log.Debug(Activity.class, e);
         }
         //invoices: the checksum of the written file (verify it later)
-        if (!draft) {
-            DocumentFiles.record(owner, f);
-        }
+        DocumentFiles.record(owner, f);
         synchronized (entries) {
-            //the same file again (a new preview, saved again): only the newest
+            //the same file again (saved again): only the newest
             entries.removeIf(e -> e.file != null && e.file.equals(f));
         }
-        add(new Entry(Kind.FILE, f.getName(), detail, f, c, id, draft));
+        add(new Entry(Kind.FILE, f.getName(), detail, f, c, id, false));
     }
 
     /**

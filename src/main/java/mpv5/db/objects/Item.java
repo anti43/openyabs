@@ -1328,14 +1328,17 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     }
 
     private void buildCname() {
+        boolean blank = getCname() == null || getCname().trim().isEmpty() || "<not set>".equals(getCname());
         if (cnumber == null) {
-            setCname("<not set>");
+            if (blank) {
+                setCname("<not set>");
+            }
         } else {
             //the label script of the script manager (all documents or the type, see ScriptScope)
             String script = mpv5.db.common.ScriptScope.script(this, "IntItemLabel");
             if (script != null) {
                 setCname(this.evaluateAll(script));
-            } else {
+            } else if (blank) {
                 setCname(cnumber);
             }
         }

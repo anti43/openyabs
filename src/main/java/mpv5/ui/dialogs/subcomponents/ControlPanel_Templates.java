@@ -17,6 +17,7 @@
 package mpv5.ui.dialogs.subcomponents;
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Desktop;
@@ -46,6 +47,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import mpv5.data.PropertyStore;
@@ -56,7 +58,6 @@ import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryData;
 import mpv5.db.common.QueryHandler;
-import mpv5.db.common.SaveString;
 import mpv5.db.objects.Contact;
 import mpv5.db.objects.Group;
 import mpv5.db.objects.Item;
@@ -67,6 +68,7 @@ import mpv5.globals.Constants;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.handler.TemplateHandler;
+import mpv5.handler.TemplateImportService;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.DialogForFile;
@@ -87,12 +89,15 @@ import mpv5.utils.ui.TextFieldUtils;
 
 /**
  * Template manager: the templates on the left (name, document type, group,
- * users), the selected one in cards on the right: what it is for, who uses
- * it, printing and the template file.
+ * users), the selected one in cards on the right (or bulk edit controls when
+ * multiple templates are selected): what it is for, who uses it, printing and
+ * the template file.
  */
 public final class ControlPanel_Templates extends JPanel implements ControlApplet, DataPanel {
 
-    private static final long serialVersionUID = 2L;
+    private static final long serialVersionUID = 3L;
+    private static final String CARD_SINGLE = "single";
+    private static final String CARD_BULK = "bulk";
     /**
      * This unique name identifies this control applet
      */
@@ -102,6 +107,8 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
 
     private final JTable templates = new JTable();
     private final List<Template> rows = new ArrayList<Template>();
+    private final CardLayout rightCards = new CardLayout();
+    private final JPanel rightPanel = new JPanel(rightCards);
     private final JLabel title = new JLabel();
     private final JTextField fullname = new JTextField();
     private final JComboBox<MPComboBoxModelItem> type = new JComboBox<MPComboBoxModelItem>();
@@ -126,12 +133,35 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
      */
     private DatabaseObject previewDoc;
     private File previewPdf;
-    private int previewRun;
+    private volatile int previewRun;
     private final JPanel actions = new JPanel(new BorderLayout());
+    private JButton deleteButton;
+    private PrimaryButton saveButton;
     private final List<JComponent> needsTemplate = new ArrayList<JComponent>();
+
+    // Bulk edit controls (shown when 2+ templates are selected)
+    private final JLabel bulkTitle = new JLabel();
+    private final JLabel bulkNames = new JLabel();
+    private final JCheckBox bulkApplyType = new JCheckBox(Messages.TEMPLATES_BULK_CHANGE.toString());
+    private final JComboBox<MPComboBoxModelItem> bulkType = new JComboBox<MPComboBoxModelItem>();
+    private final JCheckBox bulkApplyGroup = new JCheckBox(Messages.TEMPLATES_BULK_CHANGE.toString());
+    private final JComboBox bulkGroup = new JComboBox();
+    private final JCheckBox bulkApplyUsers = new JCheckBox(Messages.TEMPLATES_BULK_CHANGE.toString());
+    private final JPanel bulkUserBoxes = new JPanel(new GridLayout(0, 2, ModernTheme.px(8), ModernTheme.px(2)));
+    private final List<JCheckBox> bulkUserChecks = new ArrayList<JCheckBox>();
+    private final List<User> bulkAllUsers = new ArrayList<User>();
+    private final JCheckBox bulkApplyFormat = new JCheckBox(Messages.TEMPLATES_BULK_CHANGE.toString());
+    private String bulkFormatValue = Template.DEFAULT_FORMAT;
+    private final JLabel bulkFormatLabel = new JLabel();
+    private final JCheckBox bulkApplyPayterm = new JCheckBox(Messages.TEMPLATES_BULK_CHANGE.toString());
+    private final JTextField bulkPayterm = new JTextField();
+    private final JCheckBox bulkApplyPrinter = new JCheckBox(Messages.TEMPLATES_BULK_CHANGE.toString());
+    private final JComboBox<String> bulkPrinter = new JComboBox<String>();
+    private boolean bulkMode;
+
     private final mpv5.handler.TemplateEditing.Listener editListener = (tpl, when) -> javax.swing.SwingUtilities.invokeLater(() -> {
         mpv5.YabsViewProxy.instance().addMessage(String.format(Messages.TEMPLATES_FILE_CHANGED.toString(), tpl.__getCname()));
-        if (dataOwner != null && dataOwner.isExisting() && dataOwner.__getIDS().intValue() == tpl.__getIDS().intValue()) {
+        if (!bulkMode && dataOwner != null && dataOwner.isExisting() && dataOwner.__getIDS().intValue() == tpl.__getIDS().intValue()) {
             dataOwner.forgetFile();
             showFileState();
             refreshPreview();
@@ -143,9 +173,13 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
         putClientProperty(mpv5.ui.misc.Help.PROPERTY_HELP_PAGE, "Vorlagen|Templates-(EN)");
         if (MPSecurityManager.checkAdminAccess()) {
             build();
-            type.setModel(new DefaultComboBoxModel<MPComboBoxModelItem>(MPComboBoxModelItem.toItems(TemplateHandler.getTypes())));
-            groupname.setModel(new DefaultComboBoxModel(
-                    MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID()))));
+            MPComboBoxModelItem[] typeItems = MPComboBoxModelItem.toItems(TemplateHandler.getTypes());
+            type.setModel(new DefaultComboBoxModel<MPComboBoxModelItem>(typeItems));
+            bulkType.setModel(new DefaultComboBoxModel<MPComboBoxModelItem>(typeItems.clone()));
+            MPComboBoxModelItem[] groupItems = MPComboBoxModelItem.toItems(
+                    new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID()));
+            groupname.setModel(new DefaultComboBoxModel(groupItems));
+            bulkGroup.setModel(new DefaultComboBoxModel(groupItems.clone()));
             mpv5.handler.TemplateEditing.addListener(editListener);
             refresh();
             setVisible(true);
@@ -158,30 +192,68 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
         setBackground(ModernTheme.background());
         setBorder(ModernTheme.padding(10, 10));
 
-        //left: the templates
-        templates.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        //left: the templates (supports multi-select for bulk edit and multi-delete)
+        templates.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        templates.setName("templatesTable");
         templates.getSelectionModel().addListSelectionListener(e -> {
-            int r = templates.getSelectedRow();
-            if (!e.getValueIsAdjusting() && !loading && r >= 0) {
-                setDataOwner(rows.get(templates.convertRowIndexToModel(r)), true);
+            if (!e.getValueIsAdjusting() && !loading) {
+                onSelectionChanged();
+            }
+        });
+        templates.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+                .put(KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DELETE, 0), "deleteTemplates");
+        templates.getActionMap().put("deleteTemplates", new javax.swing.AbstractAction() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                delete();
             }
         });
         ModernTheme.style(templates);
         JButton add = new JButton("+ " + Messages.TEMPLATES_IMPORT);
+        add.setName("importTemplatesButton");
         ModernTheme.actionButton(add, null);
-        add.setToolTipText(Messages.TEMPLATES_IMPORT_TIP.toString());
+        add.setToolTipText(Messages.TEMPLATES_IMPORT_MULTI_TIP.toString());
         add.addActionListener(e -> importTemplate());
         Card left = new Card(Messages.TEMPLATES_LIST.toString()).headerAction(add);
         JScrollPane st = new JScrollPane(templates);
         st.setBorder(BorderFactory.createLineBorder(ModernTheme.border()));
         left.addFull(st, 1);
+        left.addFull(hint(Messages.TEMPLATES_MULTI_HINT.toString()));
         left.setPreferredSize(new Dimension(ModernTheme.px(430), ModernTheme.px(420)));
         add(left, BorderLayout.WEST);
 
-        //right: the template
+        //right: CardLayout switching between single-template editor and bulk-edit panel
+        rightPanel.setOpaque(false);
+        rightPanel.add(buildSinglePanel(), CARD_SINGLE);
+        rightPanel.add(buildBulkPanel(), CARD_BULK);
+        add(rightPanel, BorderLayout.CENTER);
+
+        deleteButton = new JButton(Messages.TEMPLATES_DELETE.toString());
+        deleteButton.setName("deleteTemplatesButton");
+        deleteButton.setForeground(new Color(185, 28, 28));
+        deleteButton.addActionListener(e -> delete());
+        needsTemplate.add(deleteButton);
+        saveButton = new PrimaryButton(Messages.USERS_SAVE.toString(), "/images/16/filesave.png");
+        saveButton.setName("saveTemplatesButton");
+        saveButton.addActionListener(e -> saveOrApplyBulk());
+        needsTemplate.add(saveButton);
+        JPanel l = new JPanel(new FlowLayout(FlowLayout.LEFT, ModernTheme.px(8), ModernTheme.px(6)));
+        l.setOpaque(false);
+        l.add(deleteButton);
+        JPanel r = new JPanel(new FlowLayout(FlowLayout.RIGHT, ModernTheme.px(8), ModernTheme.px(6)));
+        r.setOpaque(false);
+        r.add(saveButton);
+        actions.setOpaque(false);
+        actions.add(l, BorderLayout.WEST);
+        actions.add(r, BorderLayout.EAST);
+    }
+
+    private JPanel buildSinglePanel() {
         title.setFont(ModernTheme.font(8, Font.BOLD));
         title.setBorder(BorderFactory.createEmptyBorder(0, ModernTheme.px(4), ModernTheme.px(6), 0));
-        for (JTextField t : new JTextField[]{fullname, einvoicePayterm}) {
+        for (JTextField t : new JTextField[]{fullname, einvoicePayterm, bulkPayterm}) {
             ModernTheme.roomy(t);
         }
         descr.setLineWrap(true);
@@ -295,24 +367,144 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
         right.setOpaque(false);
         right.add(title, BorderLayout.NORTH);
         right.add(grid, BorderLayout.CENTER);
-        add(right, BorderLayout.CENTER);
+        return right;
+    }
 
-        JButton delete = new JButton(Messages.TEMPLATES_DELETE.toString());
-        delete.setForeground(new Color(185, 28, 28));
-        delete.addActionListener(e -> delete());
-        needsTemplate.add(delete);
-        PrimaryButton save = new PrimaryButton(Messages.USERS_SAVE.toString(), "/images/16/filesave.png");
-        save.addActionListener(e -> save());
-        needsTemplate.add(save);
-        JPanel l = new JPanel(new FlowLayout(FlowLayout.LEFT, ModernTheme.px(8), ModernTheme.px(6)));
-        l.setOpaque(false);
-        l.add(delete);
-        JPanel r = new JPanel(new FlowLayout(FlowLayout.RIGHT, ModernTheme.px(8), ModernTheme.px(6)));
-        r.setOpaque(false);
-        r.add(save);
-        actions.setOpaque(false);
-        actions.add(l, BorderLayout.WEST);
-        actions.add(r, BorderLayout.EAST);
+    private JPanel buildBulkPanel() {
+        bulkTitle.setFont(ModernTheme.font(8, Font.BOLD));
+        bulkNames.setFont(ModernTheme.font(-1, Font.PLAIN));
+        bulkNames.setForeground(ModernTheme.muted());
+        JPanel header = new JPanel();
+        header.setOpaque(false);
+        header.setLayout(new javax.swing.BoxLayout(header, javax.swing.BoxLayout.PAGE_AXIS));
+        header.setBorder(BorderFactory.createEmptyBorder(0, ModernTheme.px(4), ModernTheme.px(8), 0));
+        header.add(bulkTitle);
+        header.add(bulkNames);
+        header.add(hint(Messages.TEMPLATES_BULK_HINT.toString()));
+
+        for (JCheckBox cb : new JCheckBox[]{bulkApplyType, bulkApplyGroup, bulkApplyUsers, bulkApplyFormat, bulkApplyPayterm, bulkApplyPrinter}) {
+            cb.setOpaque(false);
+            cb.setFont(ModernTheme.font(0, Font.BOLD));
+        }
+        bulkApplyType.setName("bulkApplyType");
+        bulkApplyGroup.setName("bulkApplyGroup");
+        bulkApplyUsers.setName("bulkApplyUsers");
+        bulkApplyFormat.setName("bulkApplyFormat");
+        bulkApplyPayterm.setName("bulkApplyPayterm");
+        bulkApplyPrinter.setName("bulkApplyPrinter");
+
+        // Auto-check the corresponding "Change" box when the user interacts with a bulk control
+        bulkType.addActionListener(e -> {
+            if (!loading) {
+                bulkApplyType.setSelected(true);
+            }
+        });
+        bulkGroup.addActionListener(e -> {
+            if (!loading) {
+                bulkApplyGroup.setSelected(true);
+            }
+        });
+        bulkPrinter.addActionListener(e -> {
+            if (!loading) {
+                bulkApplyPrinter.setSelected(true);
+            }
+        });
+        bulkPayterm.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            @Override
+            public void insertUpdate(javax.swing.event.DocumentEvent e) {
+                if (!loading) {
+                    bulkApplyPayterm.setSelected(true);
+                }
+            }
+
+            @Override
+            public void removeUpdate(javax.swing.event.DocumentEvent e) {
+                if (!loading) {
+                    bulkApplyPayterm.setSelected(true);
+                }
+            }
+
+            @Override
+            public void changedUpdate(javax.swing.event.DocumentEvent e) {
+            }
+        });
+
+        ResponsiveGrid grid = new ResponsiveGrid(ModernTheme.px(360), 2);
+
+        // Card 1: Document type & group
+        JPanel typeRow = new JPanel(new BorderLayout(ModernTheme.px(8), 0));
+        typeRow.setOpaque(false);
+        typeRow.add(bulkApplyType, BorderLayout.WEST);
+        typeRow.add(bulkType, BorderLayout.CENTER);
+        JPanel groupRow = new JPanel(new BorderLayout(ModernTheme.px(8), 0));
+        groupRow.setOpaque(false);
+        groupRow.add(bulkApplyGroup, BorderLayout.WEST);
+        groupRow.add(bulkGroup, BorderLayout.CENTER);
+        grid.add(new Card(Messages.TEMPLATES_WHAT.toString())
+                .row(Card.field(Messages.TEMPLATES_TYPE.toString(), typeRow))
+                .row(Card.field(Messages.TEMPLATES_GROUP.toString(), groupRow))
+                .addFull(hint(Messages.TEMPLATES_GROUP_HINT.toString())));
+
+        // Card 2: Users
+        bulkUserBoxes.setOpaque(false);
+        JButton bAll = link(Messages.TEMPLATES_ALL.toString(), () -> {
+            bulkApplyUsers.setSelected(true);
+            for (JCheckBox c : bulkUserChecks) {
+                c.setSelected(true);
+            }
+        });
+        JButton bNone = link(Messages.TEMPLATES_NONE.toString(), () -> {
+            bulkApplyUsers.setSelected(true);
+            for (JCheckBox c : bulkUserChecks) {
+                c.setSelected(false);
+            }
+        });
+        JPanel bHeader = new JPanel(new FlowLayout(FlowLayout.RIGHT, ModernTheme.px(4), 0));
+        bHeader.setOpaque(false);
+        bHeader.add(bulkApplyUsers);
+        bHeader.add(bAll);
+        bHeader.add(bNone);
+        grid.add(new Card(Messages.TEMPLATES_USERS.toString()).headerAction(bHeader)
+                .addFull(hint(Messages.TEMPLATES_USERS_HINT.toString()))
+                .addFull(bulkUserBoxes));
+
+        // Card 3: Position table columns
+        bulkFormatLabel.setFont(ModernTheme.font(0, Font.PLAIN));
+        JButton bColumns = new JButton(Messages.TEMPLATES_CHOOSE_COLUMNS.toString());
+        bColumns.setName("bulkChooseColumnsButton");
+        bColumns.addActionListener(e -> chooseBulkColumns());
+        JPanel bColRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, ModernTheme.px(4)));
+        bColRow.setOpaque(false);
+        bColRow.add(bColumns);
+        grid.add(new Card(Messages.TEMPLATES_POSITIONS.toString()).headerAction(bulkApplyFormat)
+                .addFull(hint(Messages.TEMPLATES_FORMAT_HINT.toString()))
+                .addFull(bulkFormatLabel)
+                .addFull(bColRow));
+
+        // Card 4: Payment term
+        JPanel payRow = new JPanel(new BorderLayout(ModernTheme.px(8), 0));
+        payRow.setOpaque(false);
+        payRow.add(bulkApplyPayterm, BorderLayout.WEST);
+        payRow.add(bulkPayterm, BorderLayout.CENTER);
+        grid.add(new Card(Messages.TEMPLATES_PAYTERM_CARD.toString())
+                .row(Card.field(Messages.TEMPLATE_EINVOICE_PAYTERM.toString(), payRow))
+                .addFull(hint(Messages.TEMPLATES_PAYTERM_HINT.toString())));
+
+        // Card 5: Printer
+        JPanel printRow = new JPanel(new BorderLayout(ModernTheme.px(8), 0));
+        printRow.setOpaque(false);
+        printRow.add(bulkApplyPrinter, BorderLayout.WEST);
+        printRow.add(bulkPrinter, BorderLayout.CENTER);
+        grid.add(new Card(Messages.TEMPLATES_PRINTING.toString())
+                .row(Card.field(Messages.TEMPLATES_PRINTER.toString(), printRow))
+                .addFull(hint(Messages.TEMPLATES_PRINTER_HINT.toString())));
+
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setName("bulkEditPanel");
+        panel.setOpaque(false);
+        panel.add(header, BorderLayout.NORTH);
+        panel.add(grid, BorderLayout.CENTER);
+        return panel;
     }
 
     private static JLabel hint(String text) {
@@ -353,27 +545,257 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Actions">
+    /**
+     * @return all templates currently selected in the table (in view order)
+     */
+    public List<Template> getSelectedTemplates() {
+        List<Template> selected = new ArrayList<Template>();
+        for (int viewRow : templates.getSelectedRows()) {
+            int modelRow = templates.convertRowIndexToModel(viewRow);
+            if (modelRow >= 0 && modelRow < rows.size()) {
+                selected.add(rows.get(modelRow));
+            }
+        }
+        return selected;
+    }
+
+    private void onSelectionChanged() {
+        List<Template> selected = getSelectedTemplates();
+        if (selected.isEmpty()) {
+            bulkMode = false;
+            rightCards.show(rightPanel, CARD_SINGLE);
+            updateActionButtons(0);
+            empty();
+            return;
+        }
+        if (selected.size() == 1) {
+            bulkMode = false;
+            rightCards.show(rightPanel, CARD_SINGLE);
+            updateActionButtons(1);
+            setDataOwner(selected.get(0), true);
+        } else {
+            bulkMode = true;
+            dataOwner = selected.get(0);
+            showBulkEditor(selected);
+            rightCards.show(rightPanel, CARD_BULK);
+            updateActionButtons(selected.size());
+        }
+    }
+
+    private void updateActionButtons(int selectedCount) {
+        if (deleteButton == null || saveButton == null) {
+            return;
+        }
+        boolean any = selectedCount > 0;
+        deleteButton.setEnabled(any);
+        saveButton.setEnabled(any);
+        if (selectedCount > 1) {
+            deleteButton.setText(String.format(Messages.TEMPLATES_DELETE_MANY.toString(), selectedCount));
+            saveButton.setText(String.format(Messages.TEMPLATES_BULK_APPLY.toString(), selectedCount));
+        } else {
+            deleteButton.setText(Messages.TEMPLATES_DELETE.toString());
+            saveButton.setText(Messages.USERS_SAVE.toString());
+        }
+    }
+
+    private void showBulkEditor(List<Template> selected) {
+        loading = true;
+        try {
+            bulkTitle.setText(String.format(Messages.TEMPLATES_BULK_TITLE.toString(), selected.size()));
+            List<String> names = new ArrayList<String>();
+            for (int i = 0; i < Math.min(selected.size(), 5); i++) {
+                names.add(selected.get(i).__getCname());
+            }
+            String summary = String.join(", ", names);
+            if (selected.size() > 5) {
+                summary += " \u2026 (+" + (selected.size() - 5) + ")";
+            }
+            bulkNames.setText(summary);
+
+            bulkApplyType.setSelected(false);
+            bulkApplyGroup.setSelected(false);
+            bulkApplyUsers.setSelected(false);
+            bulkApplyFormat.setSelected(false);
+            bulkApplyPayterm.setSelected(false);
+            bulkApplyPrinter.setSelected(false);
+
+            // Pre-populate controls from the first selected template as a sensible starting point
+            Template first = selected.get(0);
+            for (int i = 0; i < bulkType.getItemCount(); i++) {
+                if (String.valueOf(bulkType.getItemAt(i).getId()).equals(first.__getMimetype())) {
+                    bulkType.setSelectedIndex(i);
+                    break;
+                }
+            }
+            if (first.__getGroupsids() > 0) {
+                int idx = MPComboBoxModelItem.getItemID(String.valueOf(first.__getGroupsids()), bulkGroup.getModel());
+                if (idx >= 0) {
+                    bulkGroup.setSelectedIndex(idx);
+                }
+            }
+            bulkFormatValue = first.__getFormat() == null || first.__getFormat().trim().isEmpty()
+                    ? Template.DEFAULT_FORMAT : first.__getFormat();
+            bulkFormatLabel.setText("<html>" + columnNames(bulkFormatValue) + "</html>");
+            int days = mpv5.utils.export.ZugpferdFile.paytermOf(first);
+            bulkPayterm.setText(days >= 0 ? String.valueOf(days) : "");
+            fillPrinters(bulkPrinter, first.__getPrinter());
+
+            // Populate user checkboxes (checked if all selected templates share the user)
+            Set<Integer> commonUsers = null;
+            for (Template t : selected) {
+                Set<Integer> assigned = new HashSet<Integer>();
+                for (User u : TemplateImportService.loadAssignedUsers(t)) {
+                    assigned.add(u.__getIDS());
+                }
+                if (commonUsers == null) {
+                    commonUsers = assigned;
+                } else {
+                    commonUsers.retainAll(assigned);
+                }
+            }
+            bulkUserBoxes.removeAll();
+            bulkUserChecks.clear();
+            bulkAllUsers.clear();
+            for (User u : TemplateImportService.loadAllUsers()) {
+                String name = u.__getFullname() == null || u.__getFullname().trim().isEmpty() ? u.__getCname() : u.__getFullname();
+                JCheckBox c = new JCheckBox(name, commonUsers != null && commonUsers.contains(u.__getIDS()));
+                c.setOpaque(false);
+                c.setToolTipText(u.__getCname());
+                c.addActionListener(e -> {
+                    if (!loading) {
+                        bulkApplyUsers.setSelected(true);
+                    }
+                });
+                bulkUserChecks.add(c);
+                bulkAllUsers.add(u);
+                bulkUserBoxes.add(c);
+            }
+            bulkUserBoxes.revalidate();
+            bulkUserBoxes.repaint();
+        } finally {
+            loading = false;
+        }
+    }
+
     private void importTemplate() {
         DialogForFile di = new DialogForFile(DialogForFile.FILES_ONLY);
-        di.setFileFilter(DialogForFile.TEMPLATE_FILES);
-        if (di.chooseFile()) {
-            final File fi = di.getFile();
-            Template t = new Template();
-            //when the file is stored: select the new template, the user assigns it
-            QueryHandler.instanceOf().clone(Context.getFiles(), this).insertFile(fi, t, new SaveString(fi.getName(), true),
-                    new mpv5.handler.FutureCallback<Object>() {
-                @Override
-                public void call(Object created) {
-                    javax.swing.SwingUtilities.invokeLater(() -> {
-                        refresh();
-                        if (created instanceof Template) {
-                            select((Template) created);
-                        }
-                        Popup.notice(Messages.TEMPLATES_IMPORTED.toString());
-                    });
-                }
-            });
+        di.setFileFilter(DialogForFile.TEMPLATE_IMPORT_FILES);
+        if (di.chooseFiles()) {
+            importFiles(di.getFiles());
         }
+    }
+
+    /**
+     * Imports one or more {@code .odt} or {@code .zip} files in the background,
+     * guesses each template's document type from its filename, assigns every
+     * user by default, and refreshes the table.
+     */
+    void importFiles(final File[] chosenFiles) {
+        if (chosenFiles == null || chosenFiles.length == 0) {
+            return;
+        }
+        final int defaultGroupId = User.getCurrentUser() != null && User.getCurrentUser().__getGroupsids() > 0
+                ? User.getCurrentUser().__getGroupsids() : 1;
+        setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.WAIT_CURSOR));
+        new javax.swing.SwingWorker<List<Template>, Void>() {
+            @Override
+            protected List<Template> doInBackground() throws Exception {
+                return TemplateImportService.importFiles(chosenFiles, defaultGroupId);
+            }
+
+            @Override
+            protected void done() {
+                setCursor(java.awt.Cursor.getDefaultCursor());
+                try {
+                    List<Template> imported = get();
+                    if (imported.isEmpty()) {
+                        Popup.notice(Messages.TEMPLATES_IMPORT_NONE.toString());
+                        return;
+                    }
+                    mpv5.YabsViewProxy.instance().refreshOpenTabsTemplates();
+                    refresh();
+                    selectMany(imported);
+                    if (imported.size() == 1) {
+                        mpv5.YabsViewProxy.instance().addMessage(Messages.TEMPLATES_IMPORTED + ": " + imported.get(0).__getCname());
+                    } else {
+                        Popup.notice(String.format(Messages.TEMPLATES_IMPORTED_MANY.toString(), imported.size()));
+                    }
+                } catch (Exception ex) {
+                    Log.Debug(ControlPanel_Templates.this, ex);
+                    Popup.error(ex);
+                }
+            }
+        }.execute();
+    }
+
+    private void saveOrApplyBulk() {
+        if (bulkMode) {
+            applyBulkEdit();
+        } else {
+            save();
+        }
+    }
+
+    private void applyBulkEdit() {
+        List<Template> selected = getSelectedTemplates();
+        if (selected.isEmpty()) {
+            return;
+        }
+        TemplateImportService.BulkEditSpec spec = new TemplateImportService.BulkEditSpec();
+        if (bulkApplyType.isSelected() && bulkType.getSelectedItem() != null) {
+            spec.applyType = true;
+            spec.mimetype = String.valueOf(((MPComboBoxModelItem) bulkType.getSelectedItem()).getId());
+        }
+        if (bulkApplyGroup.isSelected() && bulkGroup.getSelectedItem() != null) {
+            spec.applyGroup = true;
+            spec.groupId = Integer.parseInt(((MPComboBoxModelItem) bulkGroup.getSelectedItem()).getId());
+        }
+        if (bulkApplyUsers.isSelected()) {
+            List<User> chosen = new ArrayList<User>();
+            for (int i = 0; i < bulkUserChecks.size(); i++) {
+                if (bulkUserChecks.get(i).isSelected()) {
+                    chosen.add(bulkAllUsers.get(i));
+                }
+            }
+            if (chosen.isEmpty() && !Popup.Y_N_dialog(Messages.TEMPLATES_NO_USERS.toString())) {
+                return;
+            }
+            spec.applyUsers = true;
+            spec.users = chosen;
+        }
+        if (bulkApplyFormat.isSelected()) {
+            spec.applyFormat = true;
+            spec.format = bulkFormatValue;
+        }
+        if (bulkApplyPrinter.isSelected()) {
+            spec.applyPrinter = true;
+            spec.printer = bulkPrinter.getSelectedIndex() <= 0 || bulkPrinter.getSelectedItem() == null
+                    ? Template.PRINTER_UNDEFINED : String.valueOf(bulkPrinter.getSelectedItem());
+        }
+        if (bulkApplyPayterm.isSelected()) {
+            String v = bulkPayterm.getText() == null ? "" : bulkPayterm.getText().trim();
+            int days;
+            try {
+                days = v.isEmpty() ? mpv5.utils.export.ZugpferdFile.PAYTERM_UNSET : Integer.parseInt(v);
+                if (!v.isEmpty() && days < 0) {
+                    throw new NumberFormatException(v);
+                }
+            } catch (NumberFormatException e) {
+                Popup.warn(Messages.TEMPLATE_EINVOICE_PAYTERM + ": " + v);
+                return;
+            }
+            spec.applyPayterm = true;
+            spec.paytermDays = days;
+        }
+        if (!spec.hasAnyChange()) {
+            Popup.notice(Messages.TEMPLATES_BULK_NONE_CHECKED.toString());
+            return;
+        }
+        int updated = TemplateImportService.applyBulkEdit(selected, spec);
+        mpv5.YabsViewProxy.instance().refreshOpenTabsTemplates();
+        refresh();
+        selectMany(selected);
+        mpv5.YabsViewProxy.instance().addMessage(String.format(Messages.TEMPLATES_BULK_SAVED.toString(), updated));
     }
 
     private void save() {
@@ -398,14 +820,24 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
     }
 
     private void delete() {
-        if (dataOwner != null && dataOwner.isExisting()
-                && Popup.Y_N_dialog(String.format(Messages.TEMPLATES_DELETE_CONFIRM.toString(), dataOwner.__getCname()))) {
-            mpv5.handler.TemplateEditing.stop(dataOwner);
-            dataOwner.delete();
-            TemplateHandler.clearCache();
+        List<Template> selected = getSelectedTemplates();
+        if (selected.isEmpty() && dataOwner != null && dataOwner.isExisting()) {
+            selected = java.util.Collections.singletonList(dataOwner);
+        }
+        if (selected.isEmpty()) {
+            return;
+        }
+        String confirm = selected.size() == 1
+                ? String.format(Messages.TEMPLATES_DELETE_CONFIRM.toString(), selected.get(0).__getCname())
+                : String.format(Messages.TEMPLATES_DELETE_MANY_CONFIRM.toString(), selected.size());
+        if (Popup.Y_N_dialog(confirm)) {
+            int count = TemplateImportService.deleteTemplates(selected);
             mpv5.YabsViewProxy.instance().refreshOpenTabsTemplates();
             dataOwner = null;
             refresh();
+            if (count > 1) {
+                mpv5.YabsViewProxy.instance().addMessage(String.format(Messages.TEMPLATES_DELETED_MANY.toString(), count));
+            }
         }
     }
 
@@ -571,9 +1003,26 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
      * The columns of the position table: tick them and put them in order
      */
     private void chooseColumns() {
+        String chosen = showColumnsDialog(formatValue);
+        if (chosen != null) {
+            formatValue = chosen;
+            showFormat();
+        }
+    }
+
+    private void chooseBulkColumns() {
+        String chosen = showColumnsDialog(bulkFormatValue);
+        if (chosen != null) {
+            bulkFormatValue = chosen;
+            bulkFormatLabel.setText("<html>" + columnNames(bulkFormatValue) + "</html>");
+            bulkApplyFormat.setSelected(true);
+        }
+    }
+
+    private String showColumnsDialog(String initialFormat) {
         String[] names = Messages.TEMPLATES_COLUMNS.toString().split("\\|");
         final javax.swing.DefaultListModel<JCheckBox> model = new javax.swing.DefaultListModel<JCheckBox>();
-        List<Integer> chosen = columns(formatValue);
+        List<Integer> chosen = columns(initialFormat);
         List<Integer> order = new ArrayList<Integer>(chosen);
         for (int c = 1; c <= names.length; c++) {
             if (!order.contains(c)) {
@@ -637,9 +1086,9 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
                     f.add(String.valueOf(model.get(i).getClientProperty("column")));
                 }
             }
-            formatValue = String.join(",", f);
-            showFormat();
+            return String.join(",", f);
         }
+        return null;
     }
 
     private static void move(javax.swing.JList<JCheckBox> list, javax.swing.DefaultListModel<JCheckBox> model, int by) {
@@ -657,6 +1106,10 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
      * The printers of the system, the first entry is the default printer
      */
     private void fillPrinters(String current) {
+        fillPrinters(printern, current);
+    }
+
+    private void fillPrinters(JComboBox<String> target, String current) {
         DefaultComboBoxModel<String> m = new DefaultComboBoxModel<String>();
         m.addElement(Messages.TEMPLATES_PRINTER_DEFAULT.toString());
         try {
@@ -671,8 +1124,8 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
             //a printer not on this computer: keep it
             m.addElement(current);
         }
-        printern.setModel(m);
-        printern.setSelectedIndex(set ? m.getIndexOf(current) : 0);
+        target.setModel(m);
+        target.setSelectedIndex(set ? m.getIndexOf(current) : 0);
     }
 
     /**
@@ -720,10 +1173,46 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
         return f2;
     }
 
+    private volatile javax.swing.SwingWorker<Object[], Void> previewWorker;
+    private final Object previewLock = new Object();
+    private int runningPreviews;
+
     /**
-     * Makes the preview again in the background (selection, new file)
+     * Cancels any pending or in-flight background preview rendering.
+     */
+    public void cancelPreview() {
+        previewRun++;
+        javax.swing.SwingWorker<Object[], Void> w = previewWorker;
+        if (w != null && !w.isDone()) {
+            w.cancel(true);
+        }
+    }
+
+    /**
+     * Waits up to {@code timeoutMs} milliseconds for any already-running
+     * background preview worker to finish.
+     */
+    public void awaitPreviews(long timeoutMs) throws InterruptedException {
+        long deadline = System.currentTimeMillis() + Math.max(0L, timeoutMs);
+        synchronized (previewLock) {
+            while (runningPreviews > 0) {
+                long remaining = deadline - System.currentTimeMillis();
+                if (remaining <= 0L) {
+                    break;
+                }
+                previewLock.wait(remaining);
+            }
+        }
+    }
+
+    /**
+     * Makes the preview again in the background (selection, new file).
+     * Execution is coalesced via {@code SwingUtilities.invokeLater} so rapid
+     * selection changes or multi-selection gestures do not spawn redundant
+     * export jobs.
      */
     private void refreshPreview() {
+        cancelPreview();
         final int run = ++previewRun;
         previewPdf = null;
         if (dataOwner == null || !dataOwner.isExisting()) {
@@ -740,25 +1229,44 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
         previewImage.setText(Messages.TEMPLATES_PREVIEW_LOADING.toString());
         previewImage.setPreferredSize(new Dimension(width, (int) (width * 1.414)));
         previewCaption.setText(" ");
-        new javax.swing.SwingWorker<Object[], Void>() {
+        javax.swing.SwingWorker<Object[], Void> worker = new javax.swing.SwingWorker<Object[], Void>() {
             @Override
             protected Object[] doInBackground() throws Exception {
-                File pdf = previewPdf(tpl, doc);
-                try (org.apache.pdfbox.pdmodel.PDDocument d = org.apache.pdfbox.Loader.loadPDF(pdf)) {
-                    float pageWidth = d.getPage(0).getMediaBox().getWidth();
-                    java.awt.image.BufferedImage img = new org.apache.pdfbox.rendering.PDFRenderer(d)
-                            .renderImage(0, width / pageWidth);
-                    return new Object[]{pdf, img, d.getNumberOfPages()};
+                synchronized (previewLock) {
+                    runningPreviews++;
+                }
+                try {
+                    if (isCancelled() || run != previewRun) {
+                        return null;
+                    }
+                    File pdf = previewPdf(tpl, doc);
+                    if (isCancelled() || run != previewRun) {
+                        return null;
+                    }
+                    try (org.apache.pdfbox.pdmodel.PDDocument d = org.apache.pdfbox.Loader.loadPDF(pdf)) {
+                        float pageWidth = d.getPage(0).getMediaBox().getWidth();
+                        java.awt.image.BufferedImage img = new org.apache.pdfbox.rendering.PDFRenderer(d)
+                                .renderImage(0, width / pageWidth);
+                        return new Object[]{pdf, img, d.getNumberOfPages()};
+                    }
+                } finally {
+                    synchronized (previewLock) {
+                        runningPreviews--;
+                        previewLock.notifyAll();
+                    }
                 }
             }
 
             @Override
             protected void done() {
-                if (run != previewRun) {
+                if (run != previewRun || isCancelled()) {
                     return;
                 }
                 try {
                     Object[] r = get();
+                    if (r == null) {
+                        return;
+                    }
                     previewPdf = (File) r[0];
                     java.awt.image.BufferedImage img = (java.awt.image.BufferedImage) r[1];
                     previewImage.setText(null);
@@ -776,7 +1284,14 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
                 }
                 previewImage.revalidate();
             }
-        }.execute();
+        };
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            if (run != previewRun) {
+                return;
+            }
+            previewWorker = worker;
+            worker.execute();
+        });
     }
 
     private void showLarger() {
@@ -812,6 +1327,51 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
         }
     }
 
+    private void selectMany(List<Template> toSelect) {
+        if (toSelect == null || toSelect.isEmpty()) {
+            select(null);
+            return;
+        }
+        Set<Integer> ids = new HashSet<Integer>();
+        for (Template t : toSelect) {
+            if (t != null && t.__getIDS() != null) {
+                ids.add(t.__getIDS());
+            }
+        }
+        loading = true;
+        int firstView = -1;
+        try {
+            templates.clearSelection();
+            for (int i = 0; i < rows.size(); i++) {
+                if (ids.contains(rows.get(i).__getIDS())) {
+                    int v = templates.convertRowIndexToView(i);
+                    if (v >= 0) {
+                        templates.addRowSelectionInterval(v, v);
+                        if (firstView < 0) {
+                            firstView = v;
+                        }
+                    }
+                }
+            }
+        } finally {
+            loading = false;
+        }
+        if (firstView >= 0) {
+            templates.scrollRectToVisible(templates.getCellRect(firstView, 0, true));
+            onSelectionChanged();
+        } else {
+            select(null);
+        }
+    }
+
+    public boolean isBulkMode() {
+        return bulkMode;
+    }
+
+    public JTable getTemplatesTable() {
+        return templates;
+    }
+
     /**
      * No template yet: explain what to do
      */
@@ -826,6 +1386,7 @@ public final class ControlPanel_Templates extends JPanel implements ControlApple
         for (JComponent c : needsTemplate) {
             c.setEnabled(false);
         }
+        updateActionButtons(0);
     }
     // </editor-fold>
 

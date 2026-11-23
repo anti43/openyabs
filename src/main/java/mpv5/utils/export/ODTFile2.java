@@ -166,6 +166,13 @@ public class ODTFile2 extends Exportable {
                 target.delete();
             }
         } finally {
+            if (document != null) {
+                try {
+                    document.close();
+                } catch (Exception ignored) {
+                }
+                document = null;
+            }
             mpv5.YabsViewProxy.instance().setWaiting(false);
         }
     }

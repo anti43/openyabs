@@ -51,6 +51,7 @@ import mpv5.ui.toolbars.ModernCommandBar;
 public final class NavigationMenu {
 
     public static final String MENU_NAME = "navigationMenu";
+    public static final String NAV_BELEG_WIZARD_BUTTON = "navBelegWizard";
     public static final String NAV_INVOICE_BUTTON = "navInvoice";
     public static final String NAV_PART_PAYMENT_BUTTON = "navPartPayment";
     private static final String BASE_TIP_KEY = "yabs.navBaseTip";
@@ -64,6 +65,7 @@ public final class NavigationMenu {
         keys.put("jButton1", KeyEvent.VK_L);            // Lieferanten / Suppliers
         keys.put("jButton18", KeyEvent.VK_M);           // Hersteller / Manufacturers
         // Sales & accounting
+        keys.put(NAV_BELEG_WIZARD_BUTTON, KeyEvent.VK_Z); // Beleg-Wizard / Document Wizard
         keys.put("jButton10", KeyEvent.VK_A);           // Neues Angebot / New offer
         keys.put("jButton11", KeyEvent.VK_O);           // Neuer Auftrag / New order
         keys.put(NAV_INVOICE_BUTTON, KeyEvent.VK_R);    // Neue Rechnung / New invoice
@@ -82,6 +84,22 @@ public final class NavigationMenu {
     }
 
     private NavigationMenu() {
+    }
+
+    /**
+     * Adds the "Beleg-Wizard" button at the top of {@code navAccounting} so it
+     * is reachable from the sidebar, the Navigation menu (with shortcut), and
+     * Search Anything.
+     */
+    public static void addBelegWizardButton(JPanel navAccounting, JButton template, ActionListener onWizard) {
+        if (navAccounting == null) {
+            return;
+        }
+        JButton wizard = createNavButton(template, NAV_BELEG_WIZARD_BUTTON,
+                Messages.BELEG_WIZARD_TITLE.toString(), Messages.BELEG_WIZARD_TIP.toString(),
+                "/images/32/kwrite.png", onWizard);
+        navAccounting.add(wizard, 0);
+        navAccounting.revalidate();
     }
 
     /**

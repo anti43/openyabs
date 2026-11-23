@@ -58,4 +58,25 @@ class ExportWaitActivityTest {
         assertEquals(invoice.getContext(), entry.context);
         assertEquals(77, entry.id);
     }
+
+    @Test
+    void cacheWritesAndDraftFilesDoNotAppearInActivityHistoryLog() throws Exception {
+        File cacheDir = tmp.resolve("cache").toFile();
+        cacheDir.mkdirs();
+        mpv5.globals.LocalSettings.setProperty(mpv5.globals.LocalSettings.CACHE_DIR, cacheDir.getAbsolutePath());
+
+        Item invoice = (Item) mpv5.db.common.DatabaseObject.getObject(mpv5.db.common.Context.getInvoice());
+        invoice.setIDS(88);
+        invoice.setCnumber("RE-2026-0088");
+
+        File cachedPreview = new File(cacheDir, "preview-temp.pdf");
+        Files.write(cachedPreview.toPath(), "preview-bytes".getBytes(StandardCharsets.UTF_8));
+
+        Activity.file(cachedPreview, invoice);
+        Activity.draftFile(cachedPreview, invoice);
+        Activity.draftFile(tmp.resolve("non-cache-draft.pdf").toFile(), invoice);
+
+        assertTrue(Activity.entries().isEmpty(),
+                "Cache/preview files must not end up in the activity/history log: " + Activity.entries());
+    }
 }

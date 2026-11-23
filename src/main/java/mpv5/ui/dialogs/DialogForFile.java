@@ -76,7 +76,17 @@ public class DialogForFile extends JFileChooser implements Waiter {
       }
 
       public String getDescription() {
-         return "Templates";
+         return "Templates (*.odt)";
+      }
+   };
+   public static FileFilter TEMPLATE_IMPORT_FILES = new FileFilter() {
+      public boolean accept(File f) {
+         String n = f.getName().toLowerCase();
+         return n.endsWith(".odt") || n.endsWith(".zip") || f.isDirectory();
+      }
+
+      public String getDescription() {
+         return "Templates (*.odt, *.zip)";
       }
    };
    public static FileFilter HTML_FILES = new FileFilter() {
@@ -143,6 +153,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
       }
    };
    private File file = null;
+   private File[] files = null;
    /**
     * The folder chosen last (see {@link LastDirectory}, which keeps it across
     * restarts)
@@ -309,8 +320,38 @@ public class DialogForFile extends JFileChooser implements Waiter {
       try {
          if (this.showOpenDialog(parentWindow()) == JFileChooser.APPROVE_OPTION) {
             this.file = this.getSelectedFile();
+            this.files = this.file == null ? null : new File[]{this.file};
             setCurrentDir(file);
             return true;
+         }
+      } catch (Exception n) {
+         Log.Debug(this, n);
+      }
+      return false;
+   }
+
+   /**
+    * Show a multi-file selection dialog
+    *
+    * @return true if one or more files were selected
+    */
+   public boolean chooseFiles() {
+      setMultiSelectionEnabled(true);
+      try {
+         if (this.showOpenDialog(parentWindow()) == JFileChooser.APPROVE_OPTION) {
+            File[] selected = this.getSelectedFiles();
+            if (selected == null || selected.length == 0) {
+               File single = this.getSelectedFile();
+               if (single != null) {
+                  selected = new File[]{single};
+               }
+            }
+            if (selected != null && selected.length > 0) {
+               this.files = selected;
+               this.file = selected[0];
+               setCurrentDir(this.file);
+               return true;
+            }
          }
       } catch (Exception n) {
          Log.Debug(this, n);
@@ -372,6 +413,14 @@ public class DialogForFile extends JFileChooser implements Waiter {
     */
    public File getFile() {
       return file;
+   }
+
+   /**
+    *
+    * @return The selected files
+    */
+   public File[] getFiles() {
+      return files == null ? new File[0] : files;
    }
 
    /**

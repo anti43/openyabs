@@ -182,6 +182,9 @@ public class HomeScreen extends JPanel {
         left.add(title);
         left.add(dateLabel);
 
+        mpv5.ui.modern.PrimaryButton wizardBtn = new mpv5.ui.modern.PrimaryButton(Messages.BELEG_WIZARD_TITLE.toString(), null);
+        wizardBtn.setToolTipText(Messages.BELEG_WIZARD_TIP.toString());
+        wizardBtn.addActionListener(e -> mpv5.ui.dialogs.belegwizard.BelegWizard.showWizard());
         JButton reload = new JButton(Messages.DASH_REFRESH.toString());
         reload.addActionListener(e -> refresh());
         JButton settings = new JButton(Messages.DASH_SETTINGS.toString());
@@ -189,6 +192,7 @@ public class HomeScreen extends JPanel {
         settings.addActionListener(e -> openSettings());
         JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT, ModernTheme.px(6), 0));
         buttons.setOpaque(false);
+        buttons.add(wizardBtn);
         buttons.add(reload);
         buttons.add(settings);
 

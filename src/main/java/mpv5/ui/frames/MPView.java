@@ -3151,6 +3151,8 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
         NavigationMenu.replaceInvoiceDropDown(nav_accounting, ddb1, jButton10,
                 e -> addTab(mpv5.YabsViewProxy.instance().newItemView(Item.TYPE_INVOICE), Messages.NEW_INVOICE),
                 e -> addTab(mpv5.YabsViewProxy.instance().newItemView(Item.TYPE_PART_PAYMENT), Messages.NEW_PART_PAYMENT));
+        NavigationMenu.addBelegWizardButton(nav_accounting, jButton10,
+                e -> mpv5.ui.dialogs.belegwizard.BelegWizard.showWizard());
     }
 
     private void jMenuItem48ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem48ActionPerformed

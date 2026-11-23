@@ -87,14 +87,21 @@ public final class DocumentFiles {
      * @return true if the file lies in the cache or temp folder (a preview, a
      * file before it is copied to its place)
      */
-    static boolean isTemporary(File f) {
+    public static boolean isTemporary(File f) {
+        if (f == null) {
+            return false;
+        }
         try {
             String p = f.getCanonicalPath();
-            for (String dir : new String[]{System.getProperty("java.io.tmpdir"),
-                LocalSettings.hasProperty(LocalSettings.CACHE_DIR) ? LocalSettings.getProperty(LocalSettings.CACHE_DIR) : null}) {
-                if (dir != null && !dir.trim().isEmpty() && !"null".equals(dir.trim())
-                        && p.startsWith(new File(dir.trim()).getCanonicalPath() + File.separator)) {
-                    return true;
+            String cacheDir = LocalSettings.hasProperty(LocalSettings.CACHE_DIR)
+                    ? LocalSettings.getProperty(LocalSettings.CACHE_DIR)
+                    : Constants.FALLBACK_CACHE_DIR;
+            for (String dir : new String[]{cacheDir, Constants.FALLBACK_CACHE_DIR}) {
+                if (dir != null && !dir.trim().isEmpty() && !"null".equals(dir.trim())) {
+                    String cp = new File(dir.trim()).getCanonicalPath();
+                    if (p.equals(cp) || p.startsWith(cp + File.separator)) {
+                        return true;
+                    }
                 }
             }
         } catch (Exception e) {
