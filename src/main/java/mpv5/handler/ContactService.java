@@ -683,9 +683,20 @@ public final class ContactService {
             Log.Debug(ContactService.class, ex);
         }
         if (options.isEmpty()) {
-            options.add(Group.getDefault());
+            options.add(fallbackGroup());
         }
         return options;
+    }
+
+    private static Group fallbackGroup() {
+        try {
+            return Group.getDefault();
+        } catch (Exception ex) {
+            Group g = new Group();
+            g.setIDS(1);
+            g.setCname("All Group");
+            return g;
+        }
     }
 
     /**
@@ -699,7 +710,7 @@ public final class ContactService {
                 return g;
             }
         }
-        return options.isEmpty() ? Group.getDefault() : options.get(0);
+        return options.isEmpty() ? fallbackGroup() : options.get(0);
     }
 
     /**
