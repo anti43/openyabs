@@ -40,6 +40,8 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
     private boolean userMoved;
     private int editedRow = -1;
     private boolean closing;
+    private java.awt.AWTEventListener outsidePressListener;
+    private boolean outsideListenerInstalled;
 
     /**
      * Creates new form ItemTextAreaDialog
@@ -364,39 +366,67 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
     }
 
     /**
-     * Clicking outside the non-modal popup (e.g. into another field of the
-     * invoice) commits the edited text/quantity and closes the popup without
-     * stealing focus back from the clicked field.
+     * Dismiss the popup only when the user presses the mouse outside this
+     * dialog and its owned windows. This avoids closing it just because focus
+     * changes during popup initialization or when moving between fields.
      */
     private void installFocusLossHandler() {
-        addWindowFocusListener(new java.awt.event.WindowFocusListener() {
-            @Override
-            public void windowGainedFocus(java.awt.event.WindowEvent e) {
+        outsidePressListener = event -> {
+            if (!(event instanceof java.awt.event.MouseEvent)) {
+                return;
+            }
+            java.awt.event.MouseEvent mouseEvent = (java.awt.event.MouseEvent) event;
+            if (mouseEvent.getID() != java.awt.event.MouseEvent.MOUSE_PRESSED
+                    || !isVisible() || closing) {
+                return;
             }
 
-            @Override
-            public void windowLostFocus(java.awt.event.WindowEvent e) {
-                if (!isVisible() || closing) {
-                    return;
-                }
-                if (groupselect.getComboBox().isPopupVisible() || labeledCombobox1.getComboBox().isPopupVisible()) {
-                    return;
-                }
-                java.awt.Window opposite = e.getOppositeWindow();
-                if (isOwnedByThis(opposite)) {
-                    return;
-                }
-                apply(false);
+            if (groupselect.getComboBox().isPopupVisible()
+                    || labeledCombobox1.getComboBox().isPopupVisible()) {
+                return;
             }
-        });
+
+            java.awt.Component source = mouseEvent.getComponent();
+            if (source == null) {
+                return;
+            }
+
+            java.awt.Window window = javax.swing.SwingUtilities.getWindowAncestor(source);
+            if (isOwnedByThis(window) || javax.swing.SwingUtilities.isDescendingFrom(source, this)) {
+                return;
+            }
+
+            javax.swing.SwingUtilities.invokeLater(() -> {
+                if (isVisible() && !closing) {
+                    apply(false);
+                }
+            });
+        };
     }
 
-    private boolean isOwnedByThis(java.awt.Window w) {
-        while (w != null) {
-            if (w == this) {
+    private void installOutsidePressListener() {
+        if (outsideListenerInstalled) {
+            return;
+        }
+        java.awt.Toolkit.getDefaultToolkit().addAWTEventListener(
+                outsidePressListener,
+                java.awt.AWTEvent.MOUSE_EVENT_MASK);
+        outsideListenerInstalled = true;
+    }
+
+    private void removeOutsidePressListener() {
+        if (!outsideListenerInstalled) {
+            return;
+        }
+        java.awt.Toolkit.getDefaultToolkit().removeAWTEventListener(outsidePressListener);
+        outsideListenerInstalled = false;
+    }
+
+    private boolean isOwnedByThis(java.awt.Window window) {
+        for (java.awt.Window current = window; current != null; current = current.getOwner()) {
+            if (current == this) {
                 return true;
             }
-            w = w.getOwner();
         }
         return false;
     }
@@ -489,10 +519,23 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
 
     @Override
     public void setVisible(boolean visible) {
-        super.setVisible(visible);
         if (visible) {
-            textArea.grabFocus();
+            installOutsidePressListener();
+        } else {
+            removeOutsidePressListener();
         }
+
+        super.setVisible(visible);
+
+        if (visible) {
+            javax.swing.SwingUtilities.invokeLater(textArea::grabFocus);
+        }
+    }
+
+    @Override
+    public void dispose() {
+        removeOutsidePressListener();
+        super.dispose();
     }
 
     /**
@@ -518,7 +561,7 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel1.setName("jPanel1"); // NOI18N
 
-        jScrollPane1.setName("jScrollPane1"); // NOI18N
+        jScrollPane1.setName("jScrollPane1"); // NOI18N;
 
         textArea.setColumns(20);
         textArea.setRows(5);
