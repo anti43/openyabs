@@ -207,6 +207,13 @@ public final class Activity {
             entries.removeIf(e -> e.file != null && e.file.equals(f));
         }
         add(new Entry(Kind.FILE, f.getName(), detail, f, c, id, false));
+        if (owner instanceof mpv5.db.objects.Item) {
+            try {
+                mpv5.utils.export.InvoiceMailArchive.onExported((mpv5.db.objects.Item) owner, f);
+            } catch (Throwable t) {
+                Log.Debug(Activity.class, t.getMessage());
+            }
+        }
     }
 
     /**

@@ -91,6 +91,14 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
     private final LabeledTextField smallBusinessNote = new LabeledTextField();
     private final LabeledTextField smallBusinessId = new LabeledTextField();
     private final javax.swing.JCheckBox defaultZugpferd = new javax.swing.JCheckBox(Messages.COMPANY_DEFAULT_ZUGFERD.toString());
+    /**
+     * Invoice email archive (companyinfo.mailarchive.*), see
+     * {@link mpv5.utils.export.InvoiceMailArchive}
+     */
+    private final LabeledTextField mailArchiveAddress = new LabeledTextField();
+    private final LabeledTextField mailArchiveSubject = new LabeledTextField();
+    private final javax.swing.JTextArea mailArchiveBody = new javax.swing.JTextArea(4, 30);
+    private final JButton smtpSettingsBtn = new JButton(Messages.COMPANY_MAILARCHIVE_SMTP_BUTTON.toString() + " \u2026");
     private final JPanel actions;
 
     public ControlPanel_Company() {
@@ -128,6 +136,21 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
         smallBusiness.setOpaque(false);
         smallBusiness.setToolTipText(Messages.COMPANY_SMALLBUSINESS_HINT.toString());
         smallBusiness.addActionListener(e -> showDefaultNote());
+
+        mailArchiveAddress.set_Label(Messages.COMPANY_MAILARCHIVE_ADDRESS.toString());
+        mailArchiveAddress.setName(mpv5.utils.export.InvoiceMailArchive.KEY_ADDRESS);
+        mailArchiveAddress.getTextField().setToolTipText(Messages.COMPANY_MAILARCHIVE_ADDRESS_TOOLTIP.toString());
+        mailArchiveSubject.set_Label(Messages.COMPANY_MAILARCHIVE_SUBJECT.toString());
+        mailArchiveSubject.setName(mpv5.utils.export.InvoiceMailArchive.KEY_SUBJECT);
+        mailArchiveSubject.getTextField().setToolTipText(mpv5.utils.export.InvoiceMailArchive.DEFAULT_SUBJECT);
+        fields.add(mailArchiveAddress);
+        fields.add(mailArchiveSubject);
+        mailArchiveBody.setName(mpv5.utils.export.InvoiceMailArchive.KEY_BODY);
+        mailArchiveBody.setLineWrap(true);
+        mailArchiveBody.setWrapStyleWord(true);
+        mailArchiveBody.setToolTipText(mpv5.utils.export.InvoiceMailArchive.DEFAULT_BODY);
+        javax.swing.JScrollPane mailArchiveBodyScroll = new javax.swing.JScrollPane(mailArchiveBody);
+        mailArchiveBodyScroll.setPreferredSize(new java.awt.Dimension(280, 76));
 
         ModernTheme.roomyCombo(country);
         loadCountries();
@@ -186,8 +209,19 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
                 .addFull(defaultZugpferd)
                 .addFull(Applets.hint(Messages.COMPANY_DEFAULT_ZUGFERD_HINT.toString()))
                 .addFull(foldersRow);
+        smtpSettingsBtn.setIcon(new mpv5.utils.images.MPIcon("/images/22/kontact_mail.png").getIcon(16));
+        smtpSettingsBtn.addActionListener(e -> ControlPanel_Userproperties.openSmtpSettings());
+        JPanel smtpRow = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 0, 0));
+        smtpRow.setOpaque(false);
+        smtpRow.add(smtpSettingsBtn);
+        Card mailArchiveCard = new Card(Messages.COMPANY_CARD_MAILARCHIVE.toString())
+                .row(Applets.field(mailArchiveAddress))
+                .row(Applets.field(mailArchiveSubject))
+                .row(Card.field(Messages.COMPANY_MAILARCHIVE_BODY.toString(), mailArchiveBodyScroll))
+                .addFull(Applets.hint(Messages.COMPANY_MAILARCHIVE_HINT.toString()))
+                .addFull(smtpRow);
         String info = "* " + Messages.COMPANY_REQUIRED_LEGEND + "  \u00b7  " + bundle.getString("ControlPanel_Company.jTextArea1.text");
-        add(Applets.page(info, 380, company, contact, bank, tax, smallBusinessCard, einvoice), BorderLayout.CENTER);
+        add(Applets.page(info, 380, company, contact, bank, tax, smallBusinessCard, einvoice, mailArchiveCard), BorderLayout.CENTER);
 
         //mark invalid values while typing
         FieldCheck.attach(account1, ZugpferdFile::isValidVatId, Messages.COMPANY_VATID_TOOLTIP.toString(),
@@ -204,6 +238,8 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
                 Messages.COMPANY_CREDITOR_ID_TOOLTIP.toString(), Messages.COMPANY_CREDITOR_ID_INVALID.toString());
         FieldCheck.attach(banknumber, Iban::isValidBic, Messages.COMPANY_BIC_TOOLTIP.toString(),
                 Messages.COMPANY_BIC_INVALID_HINT.toString());
+        FieldCheck.attach(mailArchiveAddress, mpv5.utils.text.TypeConversion::isMailList,
+                Messages.COMPANY_MAILARCHIVE_ADDRESS_TOOLTIP.toString(), Messages.MAIL_COPY_INVALID.toString());
 
         JButton reset = new JButton(bundle.getString("ControlPanel_Company.jButton3.text"));
         reset.addActionListener(e -> reset());
@@ -347,6 +383,11 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
         if (peppolValue != null && !peppolValue.trim().isEmpty() && !ZugpferdFile.isValidPeppolId(peppolValue)) {
             problems.append("\n - ").append(Messages.COMPANY_PEPPOL_ID_INVALID).append(": ").append(peppolValue.trim());
         }
+        String archiveMailValue = mailArchiveAddress.getText();
+        if (archiveMailValue != null && !archiveMailValue.trim().isEmpty()
+                && !mpv5.utils.text.TypeConversion.isMailList(archiveMailValue)) {
+            problems.append("\n - ").append(Messages.MAIL_COPY_INVALID).append(": ").append(archiveMailValue.trim());
+        }
         return problems.toString();
     }
 
@@ -357,6 +398,8 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
         mpv5.globals.CompanyInfo.setProperty("country", getSelectedCountry());
         mpv5.globals.CompanyInfo.setProperty(mpv5.utils.export.SmallBusiness.KEY_ENABLED,
                 String.valueOf(smallBusiness.isSelected()));
+        mpv5.globals.CompanyInfo.setProperty(mpv5.utils.export.InvoiceMailArchive.KEY_BODY,
+                mailArchiveBody.getText() == null ? "" : mailArchiveBody.getText());
         mpv5.utils.export.EInvoiceDelivery.setZugpferdDefault(defaultZugpferd.isSelected());
         mpv5.globals.LocalSettings.save();
     }
@@ -373,21 +416,27 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
         oldvalues = values;
         try {
             for (LabeledTextField f : fields) {
-                for (String[] v : values.getList()) {
-                    if (f.getName().equalsIgnoreCase(v[0])) {
-                        f.setText(v[1]);
+                f.setText("");
+                if (values != null && values.getList() != null) {
+                    for (String[] v : values.getList()) {
+                        if (f.getName().equalsIgnoreCase(v[0])) {
+                            f.setText(v[1]);
+                        }
                     }
                 }
             }
+            String bodyVal = "";
             String countryVal = null;
             if (values != null && values.getList() != null) {
                 for (String[] v : values.getList()) {
                     if ("country".equalsIgnoreCase(v[0])) {
                         countryVal = v[1];
-                        break;
+                    } else if (mpv5.utils.export.InvoiceMailArchive.KEY_BODY.equalsIgnoreCase(v[0])) {
+                        bodyVal = v[1] == null ? "" : v[1];
                     }
                 }
             }
+            mailArchiveBody.setText(bodyVal);
             selectCountry(countryVal);
             boolean small = false;
             if (values != null && values.getList() != null) {
@@ -528,6 +577,22 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
 
     public LabeledTextField getPeppolIdField() {
         return peppolid;
+    }
+
+    public LabeledTextField getMailArchiveAddressField() {
+        return mailArchiveAddress;
+    }
+
+    public LabeledTextField getMailArchiveSubjectField() {
+        return mailArchiveSubject;
+    }
+
+    public javax.swing.JTextArea getMailArchiveBodyArea() {
+        return mailArchiveBody;
+    }
+
+    public JButton getSmtpSettingsButton() {
+        return smtpSettingsBtn;
     }
 
     @Override

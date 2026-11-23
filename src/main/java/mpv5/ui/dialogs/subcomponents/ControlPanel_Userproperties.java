@@ -1392,4 +1392,28 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         }
         format.setText(h);
     }
+
+    /**
+     * Opens the User Properties control applet in {@link mpv5.ui.panels.MPControlPanel}
+     * and scrolls to / focuses the SMTP mail configuration card.
+     */
+    public static ControlPanel_Userproperties openSmtpSettings() {
+        ControlPanel_Userproperties panel = new ControlPanel_Userproperties();
+        mpv5.ui.panels.MPControlPanel.instanceOf().openDetails(panel);
+        SwingUtilities.invokeLater(panel::focusSmtpSettings);
+        return panel;
+    }
+
+    /**
+     * Scrolls the SMTP settings card into view and focuses the SMTP host field.
+     */
+    public void focusSmtpSettings() {
+        if (jPanel9 != null) {
+            jPanel9.scrollRectToVisible(new java.awt.Rectangle(0, 0,
+                    Math.max(1, jPanel9.getWidth()), Math.max(1, jPanel9.getHeight())));
+        }
+        if (smtphost != null && smtphost.getTextField() != null) {
+            smtphost.getTextField().requestFocusInWindow();
+        }
+    }
 }
