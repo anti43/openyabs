@@ -923,7 +923,7 @@ class ZugpferdFileTest {
         assertTrue(xmlText.contains("<ram:ShipToTradeParty>"), xmlText);
         assertTrue(xmlText.contains("<ram:Name>Alpen Lager AG</ram:Name>"), xmlText);
         assertTrue(xmlText.contains("<ram:ClassCode listID=\"HS\">84713000</ram:ClassCode>"), xmlText);
-        assertTrue(xmlText.contains("<ram:OriginTradeCountry><ram:ID>DE</ram:ID></ram:OriginTradeCountry>"), xmlText);
+        assertTrue(xmlText.replaceAll("\\s+", "").contains("<ram:OriginTradeCountry><ram:ID>DE</ram:ID></ram:OriginTradeCountry>"), xmlText);
         assertTrue(xmlText.contains("<ram:Content>Incoterms: DAP Basel</ram:Content>"), xmlText);
         assertValid(xml);
     }

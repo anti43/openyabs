@@ -454,7 +454,7 @@ public class LanguageManager {
                     Object[] objects = data[i];
                     loaded.add(new MPComboBoxModelItem(objects[0].toString(), objects[1].toString()));
                 }
-            } catch (NodataFoundException ex) {
+            } catch (Exception ex) {
                 // Fall back to default group 1 if the user's group has no own country rows
                 try {
                     QueryCriteria2 q1 = new QueryCriteria2();
@@ -464,7 +464,7 @@ public class LanguageManager {
                         Object[] objects = data[i];
                         loaded.add(new MPComboBoxModelItem(objects[0].toString(), objects[1].toString()));
                     }
-                } catch (NodataFoundException ex2) {
+                } catch (Exception ex2) {
                     Log.Debug(LanguageManager.class, ex2.getMessage());
                     return new MPComboboxModel(new MPComboBoxModelItem[]{});
                 }

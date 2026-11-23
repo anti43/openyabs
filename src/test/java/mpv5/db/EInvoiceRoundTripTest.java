@@ -269,7 +269,7 @@ class EInvoiceRoundTripTest {
         assertTrue(exportedXml.contains("<ram:Content>Incoterms: DAP Hamburg</ram:Content>"), exportedXml);
         assertTrue(exportedXml.contains("<ram:ShipToTradeParty>"), exportedXml);
         assertTrue(exportedXml.contains("<ram:ClassCode listID=\"HS\">84713000</ram:ClassCode>"), exportedXml);
-        assertTrue(exportedXml.contains("<ram:OriginTradeCountry><ram:ID>DE</ram:ID></ram:OriginTradeCountry>"), exportedXml);
+        assertTrue(exportedXml.replaceAll("\\s+", "").contains("<ram:OriginTradeCountry><ram:ID>DE</ram:ID></ram:OriginTradeCountry>"), exportedXml);
         //the checksums of both files are recorded and verified
         java.util.List<mpv5.handler.DocumentFiles.Entry> files = mpv5.handler.DocumentFiles.verify(inv);
         assertEquals(2, files.size(), String.valueOf(files));

@@ -442,7 +442,7 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
             groupAdmin.addActionListener(e -> BigPopup.showPopup(this, new ControlPanel_Groups(), null));
             group.add(groupAdmin, BorderLayout.EAST);
         }
-        //groups and stock in one card
+        //groups, stock and customs in one card
         grid.add(new Card(Messages.PRODUCT_SECTION_CLASSIFICATION.toString())
                 .row(Card.field(text("ProductPanel.familyselect._Label"), familyselect))
                 .addFull(path)
@@ -450,7 +450,11 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
                 .section(Messages.PRODUCT_SECTION_STOCK.toString())
                 .row(Card.field(text("ProductPanel.stack._Label_1"), stack),
                         Card.field(text("ProductPanel.threshold._Label_1"), threshold))
-                .row(Card.field(null, inventoryDisabled)));
+                .row(Card.field(null, inventoryDisabled))
+                .section(Messages.PRODUCT_SECTION_CUSTOMS.toString())
+                .row(Card.field(Messages.PRODUCT_HSCODE.toString(), hsCode, 1),
+                        Card.field(Messages.PRODUCT_ORIGIN_COUNTRY.toString(), originCountry, 1))
+                .row(Card.field(Messages.PRODUCT_NET_WEIGHT.toString(), netWeight)));
 
         grid.add(new Card(Messages.PRODUCT_SECTION_DESCRIPTION.toString())
                 .addFull(new JScrollPane(description), 1));
