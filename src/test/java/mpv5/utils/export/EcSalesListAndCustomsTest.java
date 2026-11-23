@@ -175,7 +175,7 @@ class EcSalesListAndCustomsTest {
         c.setisCompany(true);
         c.setBankcurrency("CHF");
         c.setPanelData(panel);
-        panel.setUI();
+        panel.exposeData();
 
         Object selected = combo.getSelectedItem();
         assertTrue(selected instanceof ContactService.CurrencyOption);
