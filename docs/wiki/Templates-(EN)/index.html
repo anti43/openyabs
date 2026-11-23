@@ -1735,6 +1735,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#peppol-id-and-eori-number" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Peppol-ID and EORI number
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#vat-per-tax-rate--14-abs-4-nr-8-ustg" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2182,6 +2193,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#peppol-id-and-eori-number" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Peppol-ID and EORI number
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#vat-per-tax-rate--14-abs-4-nr-8-ustg" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2507,6 +2529,40 @@
 </table>
 <p>The demo templates of invoice, credit note, part payment and deposit invoice (also the small business invoice) show "Leistungsdatum" below "Datum".</p>
 <p><strong>Credit note / invoice correction:</strong> <code>&lt;item.correctedinvoice&gt;</code> is the reference to the corrected invoice ("Invoice R-0042 of 04.11.2026", empty without one), separately <code>&lt;item.correctedinvoicenumber&gt;</code> and <code>&lt;item.correctedinvoicedate&gt;</code>. The demo credit note has the heading "Rechnungskorrektur" (in German VAT law a "Gutschrift" is a self-billed invoice, § 14 Abs. 2 Satz 2 UStG) and shows "Zu Rechnung" below the service date. Unchanged demo templates of older versions are replaced at login; changed templates stay – add <code>&lt;item.servicedate&gt;</code> there yourself.</p>
+<h2 id="peppol-id-and-eori-number">Peppol-ID and EORI number<a class="headerlink" href="#peppol-id-and-eori-number" title="Permanent link">&para;</a></h2>
+<p>For e-invoices (EN 16931 <code>BT-34</code> / <code>BT-49</code>) and EU customs clearance, the Peppol-ID and EORI number of your company and the contact are available as template fields:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Meaning</th>
+<th>Where to enter</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;companyinfo.peppolid&gt;</code></td>
+<td>Seller Peppol-ID (<code>BT-34</code>, format <code>&lt;EAS-scheme&gt;:&lt;id&gt;</code>, validated against CEF EAS <code>BR-CL-25</code>)</td>
+<td><em>Company Info › E-Invoice</em> (<code>companyinfo.peppolid</code>)</td>
+</tr>
+<tr>
+<td><code>&lt;companyinfo.eori&gt;</code></td>
+<td>Seller EORI number (Union Customs Code Annex 12-01 <code>a2 + an..15</code>, e.g. <code>DE123456789012345</code>)</td>
+<td><em>Company Info › Tax</em> next to VAT ID (<code>companyinfo.eori</code>)</td>
+</tr>
+<tr>
+<td><code>&lt;item.contact.peppolid&gt;</code> / <code>&lt;contact.peppolid&gt;</code></td>
+<td>Buyer Peppol-ID (<code>BT-49</code>, in documents / contact sheet)</td>
+<td>Contact › <em>E-Invoice</em> tab / <em>Payment</em> card (property <code>peppol-id</code>, with optional per-invoice <code>peppol-id</code> override)</td>
+</tr>
+<tr>
+<td><code>&lt;item.contact.eori&gt;</code> / <code>&lt;contact.eori&gt;</code></td>
+<td>Buyer EORI number (in documents / contact sheet)</td>
+<td>Contact › <em>EORI number</em> next to VAT ID (property <code>eori</code>)</td>
+</tr>
+</tbody>
+</table>
+<p>The default and demo invoice templates display the company EORI (<code>Tabelle2</code>) and customer EORI (<code>Tabelle4</code>). In XRechnung XML and ZUGFeRD PDF, Peppol-IDs are written to <code>&lt;ram:URIUniversalCommunication&gt;&lt;ram:URIID schemeID="..."&gt;</code> (falling back to <code>schemeID="EM"</code> + email when empty, while preserving the contact email in <code>DefinedTradeContact</code>), and EORI numbers are emitted as EN 16931 customs notes (<code>BG-1</code> / <code>BT-21 = CUS</code>, <code>BT-22</code>).</p>
 <h2 id="vat-per-tax-rate--14-abs-4-nr-8-ustg">VAT per tax rate (§ 14 Abs. 4 Nr. 8 UStG)<a class="headerlink" href="#vat-per-tax-rate--14-abs-4-nr-8-ustg" title="Permanent link">&para;</a></h2>
 <p>If an invoice has positions with different tax rates (e.g. 19 % and 7 %), the net and the tax amount must be stated <strong>per rate</strong>. YaBS calculates the tax per rate on the sum of the net amounts and rounds once – exactly like the e-invoice (ZUGFeRD / XRechnung, <code>ApplicableTradeTax</code>), so the PDF and the XML match to the cent. The document demo templates show this table below the totals.</p>
 <p><strong>A table with one row per rate:</strong> a table row with <code>vatgroups.*</code> placeholders is repeated for each rate (highest first):</p>

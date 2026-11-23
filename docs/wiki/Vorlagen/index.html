@@ -878,6 +878,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#peppol-id-und-eori-nummer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Peppol-ID und EORI-Nummer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#mwst-je-steuersatz--14-abs-4-nr-8-ustg" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2165,6 +2176,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#peppol-id-und-eori-nummer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Peppol-ID und EORI-Nummer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#mwst-je-steuersatz--14-abs-4-nr-8-ustg" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2529,6 +2551,40 @@
 </table>
 <p>Die Demo-Vorlagen für Rechnung, Gutschrift, Abschlags- und Anzahlungsrechnung (auch die Kleinunternehmer-Rechnung) zeigen „Leistungsdatum“ unter „Datum“.</p>
 <p><strong>Gutschrift / Rechnungskorrektur:</strong> <code>&lt;item.correctedinvoice&gt;</code> ist der Bezug auf die korrigierte Rechnung („Rechnung Nr. R-0042 vom 04.11.2026“, leer ohne Bezug), einzeln <code>&lt;item.correctedinvoicenumber&gt;</code> und <code>&lt;item.correctedinvoicedate&gt;</code>. Die Demo-Gutschrift trägt die Überschrift „Rechnungskorrektur“ (eine „Gutschrift“ im Sinne des UStG ist die Abrechnung durch den Leistungsempfänger, § 14 Abs. 2 Satz 2 UStG) und zeigt „Zu Rechnung“ unter dem Leistungsdatum. Unveränderte Demo-Vorlagen älterer Versionen werden beim Anmelden ersetzt; geänderte Vorlagen bleiben, dort <code>&lt;item.servicedate&gt;</code> selbst einfügen.</p>
+<h2 id="peppol-id-und-eori-nummer">Peppol-ID und EORI-Nummer<a class="headerlink" href="#peppol-id-und-eori-nummer" title="Permanent link">&para;</a></h2>
+<p>Für E-Rechnungen (EN 16931 <code>BT-34</code> / <code>BT-49</code>) und die Zollabwicklung mit Drittländern stehen die Peppol-ID und die EORI-Nummer der eigenen Firma sowie des Kontakts auch als feste Vorlagenfelder zur Verfügung:</p>
+<table>
+<thead>
+<tr>
+<th>Feld</th>
+<th>Bedeutung</th>
+<th>Wo einzutragen</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;companyinfo.peppolid&gt;</code></td>
+<td>Peppol-ID des Verkäufers (<code>BT-34</code>, Format <code>&lt;EAS&gt;:&lt;Kennung&gt;</code>)</td>
+<td><em>Firmeninformation › E-Rechnung</em> (<code>companyinfo.peppolid</code>)</td>
+</tr>
+<tr>
+<td><code>&lt;companyinfo.eori&gt;</code></td>
+<td>EORI-Nummer des Verkäufers (Format <code>a2 + an..15</code>, z. B. <code>DE123456789012345</code>)</td>
+<td><em>Firmeninformation › Steuern</em> (<code>companyinfo.eori</code>)</td>
+</tr>
+<tr>
+<td><code>&lt;item.contact.peppolid&gt;</code> / <code>&lt;contact.peppolid&gt;</code></td>
+<td>Peppol-ID des Käufers (<code>BT-49</code>, in Belegen bzw. im Kontaktdatenblatt)</td>
+<td>Kontakt › Reiter <em>E-Rechnung</em> / Karte <em>Zahlung</em> (Eigenschaft <code>peppol-id</code>, optional am Beleg überschreibbar)</td>
+</tr>
+<tr>
+<td><code>&lt;item.contact.eori&gt;</code> / <code>&lt;contact.eori&gt;</code></td>
+<td>EORI-Nummer des Kunden (in Belegen bzw. im Kontaktdatenblatt)</td>
+<td>Kontakt › Feld <em>EORI-Nummer</em> neben der USt-IdNr. (Eigenschaft <code>eori</code>)</td>
+</tr>
+</tbody>
+</table>
+<p>Die Standard- und Demo-Rechnungsvorlagen zeigen die EORI-Nummer der Firma (<code>Tabelle2</code>) und des Kunden (<code>Tabelle4</code>) automatisch an. In E-Rechnungen (XRechnung / ZUGFeRD) werden die Peppol-IDs als elektronische Adressen (<code>URIUniversalCommunication</code> mit <code>schemeID</code>) und vorhandene EORI-Nummern als EN-16931-Zollvermerk (<code>BG-1</code> / <code>BT-21 = CUS</code>) ausgegeben; siehe <a href="../E-Rechnung/">E-Rechnung</a>.</p>
 <h2 id="mwst-je-steuersatz--14-abs-4-nr-8-ustg">MwSt. je Steuersatz (§ 14 Abs. 4 Nr. 8 UStG)<a class="headerlink" href="#mwst-je-steuersatz--14-abs-4-nr-8-ustg" title="Permanent link">&para;</a></h2>
 <p>Enthält eine Rechnung Positionen mit verschiedenen Steuersätzen (z. B. 19 % und 7 %), müssen Nettobetrag und Steuerbetrag <strong>je Steuersatz</strong> ausgewiesen werden. Die Steuer wird je Satz auf die Summe der Nettobeträge gerechnet und einmal gerundet – genau wie in der E-Rechnung (ZUGFeRD / XRechnung, <code>ApplicableTradeTax</code>), so stimmen PDF und XML auf den Cent überein.</p>
 <p><strong>Tabelle mit einer Zeile je Steuersatz:</strong> eine Tabellenzeile mit Platzhaltern <code>vatgroups.*</code> wird für jeden Steuersatz wiederholt (höchster Satz zuerst):</p>
