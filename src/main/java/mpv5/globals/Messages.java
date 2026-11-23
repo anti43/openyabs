@@ -2462,6 +2462,10 @@ public enum Messages {
     }
     
     public String rawMessage() {
-        return this.message;
+        if (message == null) {
+            return super.toString();
+        } else {
+            return message;
+        }
     } 
 }

@@ -966,25 +966,39 @@ public class LanguageManager {
      * @return true if the language pack is German, by its name (as the
      * language selection: "DE-...", "language-de...", "Deutsch", "German")
      */
+    private static final ThreadLocal<Boolean> checkingGerman =
+            ThreadLocal.withInitial(() -> false);
     public static synchronized boolean isGermanLanguage(String langid) {
-        if (langid == null || langid.trim().isEmpty() || "null".equals(langid) || "buildin_en".equals(langid)) {
+        if (langid == null || langid.trim().isEmpty()
+                || "null".equals(langid) || "buildin_en".equals(langid)) {
             return false;
         }
+
         Boolean known = germanLanguages.get(langid);
         if (known != null) {
             return known;
         }
-        boolean german = false;
-        try {
-            Object[] data = QueryHandler.instanceOf().clone(Context.getLanguage())
-                    .selectFirst("longname", new String[]{Context.SEARCH_NAME, langid, "'"});
-            german = data != null && data.length > 0 && isGermanName(String.valueOf(data[0]));
-        } catch (Exception e) {
-            Log.Debug(LanguageManager.class, e.getMessage());
+
+        // Break the cycle if exception-message localization calls back here.
+        if (checkingGerman.get()) {
             return false;
         }
-        germanLanguages.put(langid, german);
-        return german;
+
+        checkingGerman.set(true);
+        try {
+            Object[] data = QueryHandler.instanceOf().clone(Context.getLanguage())
+                    .selectFirst("longname",
+                            new String[]{Context.SEARCH_NAME, langid, "'"});
+
+            boolean german = data != null && data.length > 0
+                    && isGermanName(String.valueOf(data[0]));
+            germanLanguages.put(langid, german);
+            return german;
+        } catch (Exception e) {
+            return false;
+        } finally {
+            checkingGerman.remove();
+        }
     }
 
     /**
