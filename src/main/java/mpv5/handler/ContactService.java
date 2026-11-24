@@ -362,7 +362,7 @@ public final class ContactService {
                 return null;
         }
         Item i = (Item) DatabaseObject.getObject(context);
-        i.setCname(name.getValue());
+        //i.setCname(name.getValue());
         i.setInttype(itemType);
         i.setContactsids(contact.__getIDS());
         i.setDateadded(new Date());
@@ -384,7 +384,7 @@ public final class ContactService {
         Product p = (Product) DatabaseObject.getObject(Context.getProduct());
         p.setSuppliersids(contact.__getIDS());
         p.setManufacturersids(contact.__getIDS());
-        p.setCname(Messages.NEW_PRODUCT.getValue());
+        //p.setCname(Messages.NEW_PRODUCT.getValue());
         p.setInttype(Product.TYPE_PRODUCT);
         p.setGroupsids(contact.__getGroupsids());
         return p;
