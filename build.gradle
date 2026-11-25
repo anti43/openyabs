@@ -37,6 +37,9 @@ test {
     systemProperty 'yabs.nomessageboxes', 'true'
     // the application keeps its database connection in static fields: one JVM per test class
     forkEvery = 1
+    // run test classes in parallel across available CPU cores (capped at 4 to keep memory
+    // usage modest); each test class already runs in its own JVM and @TempDir
+    maxParallelForks = Math.min(4, Math.max(1, Runtime.runtime.availableProcessors()))
 }
 
 dependencies {
