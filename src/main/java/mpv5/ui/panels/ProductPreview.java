@@ -154,8 +154,10 @@ public final class ProductPreview extends javax.swing.JPanel {
     }
 
     /**
-     * Purchase price, sales price and stock (the last three columns): local
-     * number format, right aligned
+     * Purchase price, sales price, stock and threshold (model columns 7..10 in
+     * Context.DETAILS_PRODUCTS): local number format, right aligned. Leaves the
+     * trailing Boolean column ("Not in inventory") using JTable's checkbox
+     * renderer.
      */
     private void formatNumbers() {
         javax.swing.table.DefaultTableCellRenderer r = new javax.swing.table.DefaultTableCellRenderer() {
@@ -171,9 +173,12 @@ public final class ProductPreview extends javax.swing.JPanel {
             }
         };
         r.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        int n = listtable.getColumnModel().getColumnCount();
-        for (int i = Math.max(0, n - 3); i < n; i++) {
-            listtable.getColumnModel().getColumn(i).setCellRenderer(r);
+        javax.swing.table.TableColumnModel cm = listtable.getColumnModel();
+        for (int i = 0; i < cm.getColumnCount(); i++) {
+            int modelCol = cm.getColumn(i).getModelIndex();
+            if (modelCol >= 7 && modelCol <= 10) {
+                cm.getColumn(i).setCellRenderer(r);
+            }
         }
     }
 
