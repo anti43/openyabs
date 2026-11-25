@@ -452,7 +452,7 @@
             <tbody>
               <tr><td><strong>Contacts</strong></td><td>Multi-role contacts (customer, supplier, maker), several addresses, bank data, communication notes, audit history.</td></tr>
               <tr><td><strong>Documents</strong></td><td>Quotes, orders, invoices, deposit invoices, credit notes, delivery notes, multi-level reminders.</td></tr>
-              <tr><td><strong>E-Invoice</strong></td><td>XRechnung (XML) &amp; ZUGFeRD (PDF/A-3 + XML), official EN 16931 schematron validation, Leitweg-ID support.</td></tr>
+              <tr><td><strong>E-Invoice</strong></td><td>XRechnung (XML) &amp; ZUGFeRD (PDF/A-3 + XML), EN 16931 / KoSIT validation, Leitweg-ID, Peppol-ID, EORI, customs (HS / origin / Incoterms), ISO 4217 currencies, EC Sales List (ZM).</td></tr>
               <tr><td><strong>Output</strong></td><td>Print, PDF, ODT, direct SMTP email with attachments, batch printing, GiroCode EPC QR codes.</td></tr>
               <tr><td><strong>Products &amp; Stock</strong></td><td>Items &amp; services, purchase/sales margins, tiered prices, images, stock alerts, supplier orders.</td></tr>
               <tr><td><strong>Finances &amp; Journal</strong></td><td>Exact decimal math, separate VAT rates, discounts, cash discount (Skonto), SEPA direct debits.</td></tr>
@@ -467,7 +467,7 @@
             <tbody>
               <tr><td><strong>Kontakte</strong></td><td>Rollen (Kunde, Lieferant, Hersteller), mehrere Anschriften, Bankdaten, Anrufnotizen, Historie.</td></tr>
               <tr><td><strong>Dokumente</strong></td><td>Angebote, Aufträge, Rechnungen, Abschlagsrechnungen, Gutschriften, Lieferscheine, Mahnwesen.</td></tr>
-              <tr><td><strong>E-Rechnung</strong></td><td>XRechnung (XML) &amp; ZUGFeRD (PDF/A-3), Schematron-Validierung nach EN 16931, Leitweg-ID.</td></tr>
+              <tr><td><strong>E-Rechnung</strong></td><td>XRechnung (XML) &amp; ZUGFeRD (PDF/A-3), EN-16931-/KoSIT-Validierung, Leitweg-ID, Peppol-ID, EORI, Zolldaten (HS/Ursprung/Incoterms), ISO-4217-Währungen, ZM (§ 18a UStG).</td></tr>
               <tr><td><strong>Ausgabe</strong></td><td>Druck, PDF, ODT-Vorlagen, direkter SMTP-Mailversand, Sammeldruck, GiroCode-EPC-QR-Code.</td></tr>
               <tr><td><strong>Artikel &amp; Lager</strong></td><td>Artikel &amp; Dienstleistungen, Margenberechnung, Staffelpreise, Bildvorschau, Mindestbestände.</td></tr>
               <tr><td><strong>Finanzen &amp; Journal</strong></td><td>Exakte Dezimalarithmetik, MwSt.-Aufschlüsselung, Rabatte, Skonto (Tage &amp; %), SEPA-Export.</td></tr>
@@ -478,24 +478,52 @@
 
       <section id="einvoicing" class="doc-section">
         <h2>
-          <span class="lang-en">E-Invoicing: XRechnung &amp; ZUGFeRD</span>
-          <span class="lang-de" style="display:none;">E-Rechnung: XRechnung &amp; ZUGFeRD</span>
+          <span class="lang-en">E-Invoicing, Standards &amp; Cross-Border Trade</span>
+          <span class="lang-de" style="display:none;">E-Rechnung, Standards &amp; Außenhandel</span>
         </h2>
         <div class="lang-en">
-          <p>YaBS generates fully compliant electronic invoices required by public administrations and business mandates under European standard <strong>EN 16931</strong>.</p>
+          <p>YaBS generates fully compliant electronic invoices for B2B, public administrations (B2G), and intra-EU / international trade under European standard <strong>EN 16931</strong>:</p>
+          <table>
+            <thead>
+              <tr><th>Standard / Spec</th><th>Support in YaBS</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>EN 16931 (UN/CEFACT CII)</strong></td><td><strong>XRechnung</strong> (XML) and <strong>ZUGFeRD 2.x / Factur-X</strong> (hybrid <strong>PDF/A-3</strong> + XML) for invoices (<code>380</code>), credit/cancellation notes (<code>381</code> with <code>BT-25</code>/<code>BT-26</code> reference), part payments (<code>326</code>), and deposits (<code>386</code>).</td></tr>
+              <tr><td><strong>KoSIT / Mustang &amp; veraPDF</strong></td><td>Automatic XML Schema, EN 16931 &amp; XRechnung Schematron, and PDF/A-3 validation before export or email delivery.</td></tr>
+              <tr><td><strong>Peppol &amp; Leitweg-ID</strong></td><td>Seller &amp; Buyer <strong>Peppol-ID</strong> (<code>BT-34</code> / <code>BT-49</code>, validated against CEF EAS <code>BR-CL-25</code>, written to <code>URIUniversalCommunication</code>) and <strong>Leitweg-ID</strong> / buyer reference (<code>BT-10</code>) for B2G.</td></tr>
+              <tr><td><strong>EU Customs &amp; EORI</strong></td><td>Seller &amp; Buyer <strong>EORI</strong> (UCC Annex 12-01), <strong>HS / CN tariff codes</strong> (<code>BT-158</code>, <code>listID="HS"</code>), <strong>Country of Origin</strong> (<code>BT-159</code>, ISO 3166-1 alpha-2), <strong>Ship-To address</strong> (<code>BG-13</code>), <strong>Incoterms®</strong>, net/gross weights &amp; packages (<code>BT-21 = CUS</code>), plus a bilingual <strong>Commercial Invoice</strong> template.</td></tr>
+              <tr><td><strong>EU VAT &amp; EC Sales List (ZM)</strong></td><td>UNTDID 5305 VAT categories (<code>S</code>, <code>E</code>, <code>K</code> intra-EU goods, <code>AE</code> reverse charge, <code>G</code> export, § 19 UStG small business), buyer VAT ID on invoices, and <strong>EC Sales List (ZM, § 18a UStG / Art. 262 EU VAT Directive)</strong> CSV export for BZSt / ELSTER.</td></tr>
+              <tr><td><strong>ISO 4217 &amp; UN/ECE Rec. 20</strong></td><td>Multi-currency invoices (<code>BT-5</code>, 18 ISO 4217 currencies in contact dropdown + per-invoice override) and automatic UN/ECE unit code mapping (<code>C62</code>, <code>HUR</code>, <code>LS</code>, …).</td></tr>
+              <tr><td><strong>EPC QR, SEPA &amp; Skonto</strong></td><td><strong>GiroCode (EPC QR)</strong> on invoice templates, <strong>SEPA Direct Debit</strong> (<code>pain.008</code>), IBAN validation, and XRechnung-compliant cash discount (<code>#SKONTO#…#</code>).</td></tr>
+            </tbody>
+          </table>
           <ul>
-            <li><strong>Automatic Schematron Validation:</strong> Checks for missing tax numbers, IBANs, or buyer references before finalizing.</li>
-            <li><strong>Customer Delivery Profiles:</strong> Set standard PDF, ZUGFeRD (hybrid), or XRechnung XML per client.</li>
-            <li><strong>GiroCode QR Integration:</strong> Customers can pay invoices by scanning the printed EPC QR code with their mobile banking app.</li>
+            <li><strong>Customer Delivery Profiles:</strong> Set standard PDF, ZUGFeRD (hybrid), XRechnung XML, or PDF + XRechnung per client.</li>
+            <li><strong>Pre-Export Checks:</strong> Warns about missing VAT IDs, IBANs, Leitweg-IDs, or cross-border invoices with free-text-only positions.</li>
           </ul>
+          <p style="font-size: 0.875rem; color: var(--text-muted);">Detailed setup &amp; legal checklist: <a href="https://anti43.github.io/openyabs/wiki/E-Rechnung">E-Rechnung wiki (German)</a> · <a href="https://anti43.github.io/openyabs/wiki/Templates-(EN)">Templates &amp; Customs fields (EN)</a> · <a href="https://anti43.github.io/openyabs/wiki/Journal-(EN)">Journal &amp; EC Sales List (EN)</a>.</p>
         </div>
         <div class="lang-de" style="display:none;">
-          <p>YaBS erzeugt gesetzeskonforme E-Rechnungen nach der europäischen Norm <strong>EN 16931</strong> für B2B- und Behördenkunden (B2G).</p>
+          <p>YaBS erzeugt gesetzeskonforme E-Rechnungen für B2B, Behörden (B2G) sowie den innergemeinschaftlichen und internationalen Handel nach der europäischen Norm <strong>EN 16931</strong>:</p>
+          <table>
+            <thead>
+              <tr><th>Standard / Spezifikation</th><th>Unterstützung in YaBS</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>EN 16931 (UN/CEFACT CII)</strong></td><td><strong>XRechnung</strong> (XML) und <strong>ZUGFeRD 2.x / Factur-X</strong> (hybrides <strong>PDF/A-3</strong> + XML) für Rechnungen (<code>380</code>), Gutschriften/Stornorechnungen (<code>381</code> mit Bezug <code>BT-25</code>/<code>BT-26</code>), Abschlags- (<code>326</code>) und Anzahlungsrechnungen (<code>386</code>).</td></tr>
+              <tr><td><strong>KoSIT / Mustang &amp; veraPDF</strong></td><td>Automatische Prüfung gegen XML-Schema, EN-16931-/XRechnung-Schematron und PDF/A-3 vor Export oder E-Mail-Versand.</td></tr>
+              <tr><td><strong>Peppol &amp; Leitweg-ID</strong></td><td>Verkäufer- und Käufer-<strong>Peppol-ID</strong> (<code>BT-34</code> / <code>BT-49</code>, geprüft gegen CEF EAS <code>BR-CL-25</code>, in <code>URIUniversalCommunication</code>) sowie <strong>Leitweg-ID</strong> / Käuferreferenz (<code>BT-10</code>) für öffentliche Auftraggeber.</td></tr>
+              <tr><td><strong>Zoll &amp; EORI (UZK)</strong></td><td>Verkäufer- und Käufer-<strong>EORI-Nummer</strong> (UZK Anhang 12-01), <strong>Zolltarifnr. / HS-Code</strong> (<code>BT-158</code>, <code>listID="HS"</code>), <strong>Ursprungsland</strong> (<code>BT-159</code>, ISO 3166-1 Alpha-2), abweichende <strong>Lieferadresse</strong> (<code>BG-13</code>), <strong>Incoterms®</strong>, Netto-/Bruttogewicht &amp; Packstücke (<code>BT-21 = CUS</code>) sowie zweisprachige <strong>Handelsrechnung</strong>.</td></tr>
+              <tr><td><strong>EU-USt. &amp; Zusammenfassende Meldung</strong></td><td>UNTDID-5305-Steuerkategorien (<code>S</code>, <code>E</code>, <code>K</code> innergem. Lieferung, <code>AE</code> Reverse Charge, <code>G</code> Ausfuhr, § 19 UStG Kleinunternehmer), Kunden-USt-IdNr. auf Rechnungsvorlagen sowie <strong>ZM-Export (§ 18a UStG)</strong> als CSV für BZSt / ELSTER.</td></tr>
+              <tr><td><strong>ISO 4217 &amp; UN/ECE Rec. 20</strong></td><td>Fremdwährungsrechnungen (<code>BT-5</code>, 18 ISO-4217-Währungen als Auswahl am Kontakt + Überschreibung je Beleg) und automatische UN/ECE-Einheitencodes (<code>C62</code>, <code>HUR</code>, <code>LS</code>, …).</td></tr>
+              <tr><td><strong>EPC-QR, SEPA &amp; Skonto</strong></td><td><strong>GiroCode (EPC-QR-Code)</strong> auf Rechnungsvorlagen, <strong>SEPA-Lastschrift</strong> (<code>pain.008</code>), IBAN-Prüfung und XRechnung-konformes Skonto (<code>#SKONTO#…#</code>).</td></tr>
+            </tbody>
+          </table>
           <ul>
-            <li><strong>Amtliche Schematron-Prüfung:</strong> Weist vor dem Speichern auf fehlende USt-IdNr., IBANs oder behördliche Leitweg-IDs hin.</li>
-            <li><strong>Kundenprofile:</strong> Festlegung, ob der Kunde Standard-PDF, ZUGFeRD (PDF/A-3 mit XML) oder reine XRechnung wünscht.</li>
-            <li><strong>EPC-GiroCode:</strong> Erzeugt automatisch den europäischen Zahlungs-QR-Code auf dem Rechnungsbeleg.</li>
+            <li><strong>Kundenprofile:</strong> Festlegung pro Kontakt, ob Standard-PDF, ZUGFeRD (PDF/A-3 mit XML), reine XRechnung oder PDF + XRechnung versendet wird.</li>
+            <li><strong>Vorabprüfung:</strong> Weist vor dem Speichern bzw. Versand auf fehlende USt-IdNr., IBANs, Leitweg-IDs oder Auslandsrechnungen mit reinen Freitext-Positionen hin.</li>
           </ul>
+          <p style="font-size: 0.875rem; color: var(--text-muted);">Ausführliche Dokumentation: <a href="https://anti43.github.io/openyabs/wiki/E-Rechnung">E-Rechnung</a> · <a href="https://anti43.github.io/openyabs/wiki/Vorlagen">Vorlagen &amp; Zolldaten</a> · <a href="https://anti43.github.io/openyabs/wiki/Journal">Journal &amp; Zusammenfassende Meldung (ZM)</a>.</p>
         </div>
       </section>
 
