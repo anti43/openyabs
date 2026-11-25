@@ -98,6 +98,49 @@ public final class ProductService {
         BigDecimal n = net == null ? BigDecimal.ZERO : net;
         return calculationValue == null ? n : n.multiply(calculationValue);
     }
+
+    /**
+     * @param gross
+     * @param calculationValue the factor of the tax, e.g. 1.19
+     * @return gross / factor with 4 decimals (so the gross price comes back
+     * exactly, e.g. 9,99 / 1,19 = 8,3950 -&gt; 9,99)
+     */
+    public static BigDecimal net(BigDecimal gross, BigDecimal calculationValue) {
+        BigDecimal g = gross == null ? BigDecimal.ZERO : gross;
+        if (calculationValue == null || calculationValue.signum() == 0) {
+            return g.setScale(4, RoundingMode.HALF_UP);
+        }
+        return g.divide(calculationValue, 4, RoundingMode.HALF_UP);
+    }
+
+    /**
+     * Rounding of the gross (shelf) price: none, to whole euros or to the
+     * given cents (x,99 / x,95 / x,90)
+     */
+    public static final String[] PRICE_ROUNDINGS = {"", "1.00", "0.99", "0.95", "0.90"};
+
+    /**
+     * @param gross
+     * @param rounding one of {@link #PRICE_ROUNDINGS}
+     * @return the nearest price with the rounding (a tie goes up), the price
+     * itself if not rounded or not positive
+     */
+    public static BigDecimal roundPrice(BigDecimal gross, String rounding) {
+        if (gross == null || rounding == null || rounding.isEmpty() || gross.signum() <= 0) {
+            return gross;
+        }
+        if ("1.00".equals(rounding)) {
+            BigDecimal r = gross.setScale(0, RoundingMode.HALF_UP);
+            return (r.signum() > 0 ? r : BigDecimal.ONE).setScale(2);
+        }
+        BigDecimal ending = new BigDecimal(rounding);
+        BigDecimal up = gross.subtract(ending).setScale(0, RoundingMode.CEILING).add(ending);
+        BigDecimal down = up.subtract(BigDecimal.ONE);
+        if (down.signum() > 0 && gross.subtract(down).compareTo(up.subtract(gross)) < 0) {
+            return down;
+        }
+        return up;
+    }
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Staggered prices">

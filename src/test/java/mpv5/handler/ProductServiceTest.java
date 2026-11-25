@@ -14,6 +14,25 @@ class ProductServiceTest {
     }
 
     @Test
+    void roundPriceGoesToTheNearestShelfPrice() {
+        assertAmount("9.99", ProductService.roundPrice(new BigDecimal("10.30"), "0.99"));
+        assertAmount("10.99", ProductService.roundPrice(new BigDecimal("10.60"), "0.99"));
+        assertAmount("9.99", ProductService.roundPrice(new BigDecimal("9.99"), "0.99"));
+        assertAmount("0.99", ProductService.roundPrice(new BigDecimal("0.20"), "0.99"));
+        assertAmount("169", ProductService.roundPrice(new BigDecimal("169.40"), "1.00"));
+        assertAmount("169.90", ProductService.roundPrice(new BigDecimal("169.40"), "0.90"));
+        assertAmount("169.40", ProductService.roundPrice(new BigDecimal("169.40"), ""));
+    }
+
+    @Test
+    void netFromGrossKeepsTheGrossPrice() {
+        BigDecimal f = new BigDecimal("1.19");
+        assertAmount("8.395", ProductService.net(new BigDecimal("9.99"), f));
+        assertAmount("9.99", ProductService.gross(ProductService.net(new BigDecimal("9.99"), f), f)
+                .setScale(2, java.math.RoundingMode.HALF_UP));
+    }
+
+    @Test
     void salePriceAddsTheMarkup() {
         assertAmount("30", ProductService.salePrice(new BigDecimal("20"), new BigDecimal("50")));
         assertAmount("29.9", ProductService.salePrice(new BigDecimal("18.4"), new BigDecimal("62.5")));

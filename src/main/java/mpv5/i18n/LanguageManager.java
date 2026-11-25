@@ -342,6 +342,7 @@ public class LanguageManager {
                                 ClasspathTools.addPath(new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR)));
                                 File newbundle = new File(newfileUri);
                                 if (hasNeededKeys(newbundle, false) || addNeededKeys(newbundle)) {
+                                    fixRedefinedKeys(newbundle);
                                     Log.Debug(LanguageManager.class, "File has needed keys for language: " + langid);
                                     Log.Debug(LanguageManager.class, "Created language file at: " + newfileUri);
                                     try {
@@ -851,6 +852,45 @@ public class LanguageManager {
                 failed = true;
                 return false;
             }
+        }
+    }
+
+    /**
+     * Texts whose meaning changed since old language files (YaBS 1.2): there
+     * the company fields IBAN/BIC were labelled "Konto"/"IBAN" and the VAT ID
+     * "Etwas". Such a file shows a wrong label above the field, so these texts
+     * always come from the bundled language (German) or English.
+     */
+    static final String[] REDEFINED_KEYS = {
+        "ControlPanel_Company.account._Label",
+        "ControlPanel_Company.banknumber._Label",
+        "ControlPanel_Company.bankname._Label",
+        "ControlPanel_Company.account1._Label",
+        "ControlPanel_Company.taxadvjob._Label",
+        "ControlPanel_Company.taxmandant._Label"
+    };
+
+    private static void fixRedefinedKeys(File file) {
+        try {
+            String fname = file.getName();
+            String langid = fname.endsWith(".properties") ? fname.substring(0, fname.length() - ".properties".length()) : fname;
+            boolean isDe = isGermanLanguage(langid) || isGermanName(fname);
+            ResourceBundle en = ResourceBundle.getBundle(defLanguageBundleName);
+            StringBuilder add = new StringBuilder("\n");
+            for (String k : REDEFINED_KEYS) {
+                String val = isDe ? bundledGerman().getProperty(k) : null;
+                if (val == null && en.containsKey(k)) {
+                    val = en.getString(k);
+                }
+                if (val != null) {
+                    //a later entry replaces the earlier one when the file is read
+                    add.append(escape(k, true)).append('=').append(escape(val, false)).append('\n');
+                }
+            }
+            java.nio.file.Files.write(file.toPath(), add.toString().getBytes(java.nio.charset.StandardCharsets.US_ASCII),
+                    java.nio.file.StandardOpenOption.APPEND);
+        } catch (Exception e) {
+            Log.Debug(LanguageManager.class, e);
         }
     }
 

@@ -1451,15 +1451,19 @@ public class ModernContactPanel extends ModernDataPanel {
 
     @Override
     public void actionAfterSave() {
-        saveEInvoiceSettings();
+        //the properties table first: it holds the values as loaded (also the bank account,
+        //payment terms ...) and would otherwise undo the e-invoice settings just stored
         saveProperties();
+        saveEInvoiceSettings();
+        properties();
         mpv5.YabsViewProxy.instance().refreshOpenTabsForContact(dataOwner, this);
     }
 
     @Override
     public void actionAfterCreate() {
-        saveEInvoiceSettings();
         saveProperties();
+        saveEInvoiceSettings();
+        properties();
         mpv5.YabsViewProxy.instance().refreshOpenTabsForContact(dataOwner, this);
     }
 

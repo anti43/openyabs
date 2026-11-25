@@ -150,6 +150,8 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
     private final LabeledCombobox selecttax = ModernTheme.plain(new LabeledCombobox());
     private final LabeledTextField grossvalue = field();
     private boolean calculating;
+    private final javax.swing.JComboBox<String> priceRounding = new javax.swing.JComboBox<String>();
+    private static final String ROUNDING_PROPERTY = "product.pricerounding";
     //classification
     private final LabeledCombobox familyselect = ModernTheme.plain(new LabeledCombobox());
     private final JLabel path = new JLabel();
@@ -272,7 +274,25 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
         extvalue.set_ValueClass(Double.class);
         markup.set_ValueClass(Double.class);
         grossvalue.set_ValueClass(Double.class);
-        grossvalue.setEnabled(false);
+        //the gross (shelf) price can be typed in: the sale price (net) follows
+        priceRounding.setModel(new javax.swing.DefaultComboBoxModel<String>(new String[]{
+            Messages.PRODUCT_ROUNDING_NONE.toString(), Messages.PRODUCT_ROUNDING_WHOLE.toString(), "x,99", "x,95", "x,90"}));
+        priceRounding.setToolTipText(Messages.PRODUCT_PRICE_ROUNDING_TOOLTIP.toString());
+        grossvalue.setToolTipText(Messages.PRODUCT_PRICE_ROUNDING_TOOLTIP.toString());
+        try {
+            int r = Integer.parseInt(String.valueOf(User.getCurrentUser().getProperties().getProperty(ROUNDING_PROPERTY)));
+            priceRounding.setSelectedIndex(r >= 0 && r < ProductService.PRICE_ROUNDINGS.length ? r : 0);
+        } catch (Exception e) {
+            priceRounding.setSelectedIndex(0);
+        }
+        priceRounding.addActionListener(e -> {
+            try {
+                User.getCurrentUser().getProperties().changeProperty(ROUNDING_PROPERTY, String.valueOf(priceRounding.getSelectedIndex()));
+            } catch (Exception ex) {
+                Log.Debug(this, ex);
+            }
+            applyMarkup();
+        });
         stack.set_ValueClass(BigDecimal.class);
         threshold.set_ValueClass(BigDecimal.class);
         hsCode.setName(ProductService.HS_CODE);
@@ -330,6 +350,7 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
             }
         });
         onChange(markup, this::applyMarkup);
+        onChange(grossvalue, this::applyGross);
         onChange(extvalue, () -> {
             updateMarkup();
             updateGross();
@@ -442,7 +463,8 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
                         Card.field(Messages.PRODUCT_MARKUP.toString(), markup, 1))
                 .row(Card.field(text("ProductPanel.extvalue._Label"), extvalue, 1),
                         Card.field(text("ProductPanel.selecttax._Label_1"), selecttax, 1))
-                .row(Card.field(Messages.PRODUCT_GROSS.toString(), grossvalue))
+                .row(Card.field(Messages.PRODUCT_GROSS.toString(), grossvalue, 1),
+                        Card.field(Messages.PRODUCT_PRICE_ROUNDING.toString(), priceRounding, 1))
                 .section(Messages.PRODUCT_SECTION_TIERS.toString())
                 .addFull(tiers)
                 .addFull(tierButtons));
@@ -1081,9 +1103,68 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
         BigDecimal m = number(markup);
         BigDecimal c = number(netvalue);
         if (m != null && c != null) {
-            setNumber(extvalue, ProductService.salePrice(c, m));
+            BigDecimal sale = ProductService.salePrice(c, m);
+            String rounding = ProductService.PRICE_ROUNDINGS[Math.max(0, priceRounding.getSelectedIndex())];
+            BigDecimal factor = taxFactor();
+            if (!rounding.isEmpty() && factor != null) {
+                //EK x markup x tax, rounded to the shelf price: the net sale price follows
+                sale = ProductService.net(ProductService.roundPrice(ProductService.gross(sale, factor), rounding), factor);
+            }
+            setPrice(extvalue, sale);
             updateGross();
         }
+    }
+
+    /**
+     * Gross price typed in: sale price (net) = gross / tax, the markup follows
+     */
+    private void applyGross() {
+        BigDecimal g = number(grossvalue);
+        BigDecimal factor = taxFactor();
+        if (g != null && factor != null) {
+            setPrice(extvalue, ProductService.net(g, factor));
+            updateMarkup();
+        }
+    }
+
+    private BigDecimal taxFactor() {
+        int tax = taxids_;
+        if (selecttax.getSelectedItem() != null) {
+            try {
+                tax = Integer.parseInt(String.valueOf(selecttax.getSelectedItem().getId()));
+            } catch (NumberFormatException e) {
+                Log.Debug(this, e.getMessage());
+            }
+        }
+        try {
+            return mpv5.db.objects.Tax.getCalculationValue(tax);
+        } catch (Exception e) {
+            //no tax rate loaded yet
+            return null;
+        }
+    }
+
+    /**
+     * A price with up to 4 decimals: a net price from a rounded gross price
+     * (9,99 / 1,19 = 8,3950) must keep them, else the gross price is 9,98
+     */
+    private void setPrice(LabeledTextField f, BigDecimal v) {
+        calculating = true;
+        try {
+            f.getTextField().setText(formatPrice(v));
+        } finally {
+            calculating = false;
+        }
+    }
+
+    private static String formatPrice(BigDecimal v) {
+        if (v == null) {
+            return "";
+        }
+        java.text.DecimalFormat n = (java.text.DecimalFormat) FormatNumber.getDefaultDecimalFormat();
+        n.setMinimumFractionDigits(2);
+        n.setMaximumFractionDigits(4);
+        return n.format(v.setScale(4, java.math.RoundingMode.HALF_UP).stripTrailingZeros());
     }
 
     /**
@@ -1540,6 +1621,12 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
             showRequiredFields();
             return false;
         }
+        //longer than the database column: saving would fail (and only the name blink)
+        if (tooLong(cname, "ProductPanel.cname._Label_1", 500) || tooLong(cnumber, "ProductPanel.cnumber._Label", 250)
+                || tooLong(unit, "ProductPanel.unit._Label", 250) || tooLong(ean, "ProductPanel.ean._Label_1", 25)
+                || tooLong(reference, "ProductPanel.reference._Label", 50) || tooLong(url, "ProductPanel.url._Label_1", 250)) {
+            return false;
+        }
         cnumber_ = cnumber.get_Text();
         suppliersids_ = -1;
         for (SupplierRow r : supplierRows()) {
@@ -1602,6 +1689,27 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
         return true;
     }
 
+    private boolean fieldsFit() {
+        return fits(cname, 500) && fits(cnumber, 250) && fits(unit, 250) && fits(ean, 25)
+                && fits(reference, 50) && fits(url, 250);
+    }
+
+    private static boolean fits(LabeledTextField f, int max) {
+        String t = f.getTextField().getText();
+        return t == null || t.length() <= max;
+    }
+
+    private boolean tooLong(LabeledTextField f, String label, int max) {
+        String t = f.getText();
+        if (t == null || t.length() <= max) {
+            return false;
+        }
+        TextFieldUtils.blinkerRed(f);
+        f.requestFocus();
+        Popup.notice(String.format(Messages.FIELD_TOO_LONG.toString(), text(label).replace(":", "").trim(), max));
+        return true;
+    }
+
     @Override
     public void exposeData() {
         calculating = true;
@@ -1620,7 +1728,7 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
             ean.setText(ean_);
             reference.setText(reference_);
             netvalue.setText(FormatNumber.formatDezimal(internalnetvalue_ == null ? BigDecimal.ZERO : internalnetvalue_));
-            extvalue.setText(FormatNumber.formatDezimal(externalnetvalue_ == null ? BigDecimal.ZERO : externalnetvalue_));
+            extvalue.setText(formatPrice(externalnetvalue_ == null ? BigDecimal.ZERO : externalnetvalue_));
             stack.setText(FormatNumber.formatDezimal(stockvalue_ == null ? BigDecimal.ZERO : stockvalue_));
             threshold.setText(FormatNumber.formatDezimal(thresholdvalue_ == null ? BigDecimal.ZERO : thresholdvalue_));
         } finally {
@@ -1723,7 +1831,9 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
         if (!MPSecurityManager.check(Context.getProduct(), action)) {
             return false;
         }
-        return cname.getText() != null && !cname.getText().trim().isEmpty();
+        //a field longer than its database column: no autosave (and no message every time);
+        //saving by hand shows the field
+        return cname.getText() != null && !cname.getText().trim().isEmpty() && fieldsFit();
     }
 
     @Override
