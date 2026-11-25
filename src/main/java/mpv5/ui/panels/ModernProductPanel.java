@@ -203,6 +203,8 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
     public int intinventorytype_;
     // </editor-fold>
 
+    private boolean loading;
+
     /**
      * @param context the product context
      * @param type Product.TYPE_PRODUCT or TYPE_SERVICE, -1 if not known yet
@@ -210,6 +212,7 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
     public ModernProductPanel(Context context, int type) {
         super(new BorderLayout());
         setName("productpanel");
+        enableAutosave();
         this.type = type;
         dataOwner = new Product();
         dataOwner.setInttype(type);
@@ -705,6 +708,7 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
             text("ContactPanel.button_bills.text"), text("ContactPanel.button_credits.text")};
         JPanel segments = new JPanel(new FlowLayout(FlowLayout.LEFT, ModernTheme.px(4), 0));
         segments.setOpaque(false);
+        segments.putClientProperty(mpv5.ui.misc.Autosave.IGNORE_PROPERTY, Boolean.TRUE);
         for (Usage u : Usage.values()) {
             final Usage us = u;
             ChipToggle b = new ChipToggle(labels[u.ordinal()]);
@@ -1297,6 +1301,10 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
     }
 
     private void saveRelations() {
+        saveRelations(true);
+    }
+
+    private void saveRelations(boolean reloadTiers) {
         List<Contact> further = new ArrayList<Contact>();
         for (SupplierRow r : supplierRows()) {
             Contact c = r.getContact();
@@ -1325,7 +1333,9 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
             list.add(((TierRow) c).getTier());
         }
         ProductService.saveTiers(dataOwner, list);
-        loadTiers();
+        if (reloadTiers) {
+            loadTiers();
+        }
     }
     // </editor-fold>
 
@@ -1341,21 +1351,26 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
         if (!populate) {
             return;
         }
-        dataOwner.setPanelData(this);
-        exposeData();
-        if (object.isExisting()) {
-            setTabTitle(cname_);
+        loading = true;
+        try {
+            dataOwner.setPanelData(this);
+            exposeData();
+            if (object.isExisting()) {
+                setTabTitle(cname_);
+            }
+            tb.setFavourite(Favourite.isFavourite(object));
+            tb.setEditable(!object.isReadOnly());
+            if (object.isReadOnly()) {
+                Popup.notice(Messages.LOCKED_BY);
+            }
+            previewButton.setEnabled(false);
+            orderButton.setEnabled(false);
+            preloadTemplate();
+            showUsage(dataOwner.isExisting() ? Usage.INVOICES : null);
+            notifyViewOpened();
+        } finally {
+            loading = false;
         }
-        tb.setFavourite(Favourite.isFavourite(object));
-        tb.setEditable(!object.isReadOnly());
-        if (object.isReadOnly()) {
-            Popup.notice(Messages.LOCKED_BY);
-        }
-        previewButton.setEnabled(false);
-        orderButton.setEnabled(false);
-        preloadTemplate();
-        showUsage(dataOwner.isExisting() ? Usage.INVOICES : null);
-        notifyViewOpened();
     }
 
     @Override
@@ -1532,13 +1547,110 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
     }
 
     @Override
+    public boolean isLoadingData() {
+        return loading || calculating;
+    }
+
+    @Override
+    protected boolean canAutosave() {
+        if (dataOwner == null || dataOwner.isReadOnly() || isContentLocked()) {
+            return false;
+        }
+        int action = dataOwner.isExisting()
+                ? MPSecurityManager.EDIT
+                : MPSecurityManager.CREATE_OR_DELETE;
+        if (!MPSecurityManager.check(Context.getProduct(), action)) {
+            return false;
+        }
+        return cname.getText() != null && !cname.getText().trim().isEmpty();
+    }
+
+    @Override
+    protected boolean saveInPlaceForAutosave() {
+        boolean wasNew = !dataOwner.isExisting();
+        if (!dataOwner.getPanelData(this) || !dataOwner.save(true)) {
+            return false;
+        }
+        saveRelations(false);
+        mpv5.YabsViewProxy.instance().refreshOpenTabsForProduct(dataOwner, this);
+        if ((wasNew || cnumber.get_Text().isEmpty()) && !cnumber.getTextField().isFocusOwner()) {
+            calculating = true;
+            try {
+                cnumber.setText(dataOwner.__getCnumber());
+                old_cnumber = dataOwner.__getCnumber() == null ? "" : dataOwner.__getCnumber();
+            } finally {
+                calculating = false;
+            }
+        }
+        setTabTitle(dataOwner.__getCname());
+        updateHeader();
+        return true;
+    }
+
+    /**
+     * Reloads this product tab when the same product was saved in another tab.
+     */
+    public void refreshProduct(Product updated) {
+        if (updated == null || updated.__getIDS() <= 0 || isAutosaving()) {
+            return;
+        }
+        if (dataOwner != null && dataOwner.isExisting() && dataOwner.__getIDS() == updated.__getIDS()) {
+            setDataOwner(updated, true);
+        }
+    }
+
+    /**
+     * Updates manufacturer, supplier rows, and usage table when a contact was
+     * saved in another tab.
+     */
+    public void refreshContact(Contact updated) {
+        if (updated == null || updated.__getIDS() <= 0 || isAutosaving()) {
+            return;
+        }
+        String targetId = String.valueOf(updated.__getIDS());
+        boolean prevLoading = loading;
+        loading = true;
+        try {
+            MPComboBoxModelItem mItem = manufacturer.getSelectedItem();
+            if (mItem != null && targetId.equals(String.valueOf(mItem.getId()))) {
+                manufacturer.setModel(updated);
+            }
+            for (SupplierRow r : supplierRows()) {
+                MPComboBoxModelItem sItem = r.contact.getSelectedItem();
+                if (sItem != null && targetId.equals(String.valueOf(sItem.getId()))) {
+                    r.contact.setModel(updated);
+                }
+            }
+        } finally {
+            loading = prevLoading;
+        }
+        if (dataOwner != null && dataOwner.isExisting() && usage != null) {
+            showUsage(usage);
+        }
+    }
+
+    /**
+     * Refreshes the usage table when a document was saved in another tab.
+     */
+    public void refreshItem(mpv5.db.objects.Item updated) {
+        if (updated == null || updated.__getIDS() <= 0 || isAutosaving()) {
+            return;
+        }
+        if (dataOwner != null && dataOwner.isExisting() && usage != null) {
+            showUsage(usage);
+        }
+    }
+
+    @Override
     public void actionAfterSave() {
         saveRelations();
+        mpv5.YabsViewProxy.instance().refreshOpenTabsForProduct(dataOwner, this);
     }
 
     @Override
     public void actionAfterCreate() {
         saveRelations();
+        mpv5.YabsViewProxy.instance().refreshOpenTabsForProduct(dataOwner, this);
     }
 
     @Override

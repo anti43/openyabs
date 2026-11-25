@@ -44,6 +44,14 @@ public class PrimaryButton extends JButton {
     }
 
     /**
+     * @return custom fill color (e.g. red for danger buttons), or null for the
+     * default accent color
+     */
+    public Color getColor() {
+        return color;
+    }
+
+    /**
      * @param text
      * @param icon resource path, may be null
      */

@@ -2964,6 +2964,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
             runnable.run();
         }
         afterSaveRunnables.clear();
+        mpv5.YabsViewProxy.instance().refreshOpenTabsForItem(dataOwner, this);
     }
 
     @Override
@@ -2974,6 +2975,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         saveSubItems(false);
         omodel = (MPTableModel) itemtable.getModel();
         setTitle();
+        mpv5.YabsViewProxy.instance().refreshOpenTabsForItem(dataOwner, this);
 
     }
 

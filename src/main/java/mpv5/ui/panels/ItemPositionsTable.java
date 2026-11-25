@@ -116,6 +116,7 @@ public class ItemPositionsTable extends JPanel {
     private boolean syncingDocked;
     private MPTableModel listenedModel;
     private final javax.swing.event.TableModelListener dockedModelListener = e -> onDockedModelChanged(e);
+    private Runnable onPositionsEdited;
 
     public ItemPositionsTable() {
         super(new BorderLayout(0, ModernTheme.px(6)));
@@ -141,6 +142,7 @@ public class ItemPositionsTable extends JPanel {
         downButton = button("/images/16/arrow-down.png", Messages.ITEM_MOVE_DOWN.toString());
         downButton.addActionListener(e -> move(1));
         pinButton = new javax.swing.JToggleButton(ItemTextAreaDialog.createPinIcon(false));
+        pinButton.putClientProperty(mpv5.ui.misc.Autosave.IGNORE_PROPERTY, Boolean.TRUE);
         pinButton.setSelectedIcon(ItemTextAreaDialog.createPinIcon(true));
         pinButton.setToolTipText(Messages.ITEM_TEXT_PIN.toString());
         pinButton.setFocusable(false);
@@ -539,6 +541,7 @@ public class ItemPositionsTable extends JPanel {
         if (dockedRow >= 0 && dockedRow < itemtable.getRowCount()) {
             loadDockedRow(dockedRow);
         }
+        notifyPositionsEdited();
         if (restoreTableFocus) {
             javax.swing.SwingUtilities.invokeLater(itemtable::requestFocusInWindow);
         }
@@ -802,6 +805,33 @@ public class ItemPositionsTable extends JPanel {
     }
 
     /**
+     * Registers a callback invoked when positions are modified via dialog or
+     * toolbar/context actions (used by optional autosave).
+     */
+    public void setOnPositionsEdited(Runnable onPositionsEdited) {
+        this.onPositionsEdited = onPositionsEdited;
+    }
+
+    private void notifyPositionsEdited() {
+        if (onPositionsEdited != null) {
+            onPositionsEdited.run();
+        }
+    }
+
+    /**
+     * @return true if a table cell editor is currently active and owns keyboard focus
+     */
+    public boolean isEditingFocusedCell() {
+        if (!itemtable.isEditing()) {
+            return false;
+        }
+        java.awt.Component editor = itemtable.getEditorComponent();
+        java.awt.Component focus = java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
+        return editor != null && focus != null
+                && (focus == editor || javax.swing.SwingUtilities.isDescendingFrom(focus, editor));
+    }
+
+    /**
      * Ends editing a cell, so its value is in the model
      */
     public void stopEditing() {
@@ -998,6 +1028,7 @@ public class ItemPositionsTable extends JPanel {
             }
             loadDockedRow(next);
         }
+        notifyPositionsEdited();
     }
 
     private void move(int direction) {
@@ -1015,6 +1046,7 @@ public class ItemPositionsTable extends JPanel {
         if (editorPinned) {
             loadDockedRow(target);
         }
+        notifyPositionsEdited();
     }
 
     /**
@@ -1217,6 +1249,7 @@ public class ItemPositionsTable extends JPanel {
         SubItem it = row < 0 ? null : getModel().getRowAt(row, SubItem.getDefaultItem());
         if (it != null) {
             insertCopy(it, row);
+            notifyPositionsEdited();
         }
     }
 
@@ -1233,10 +1266,15 @@ public class ItemPositionsTable extends JPanel {
      */
     private void paste() {
         int row = selectedRow() < 0 ? getModel().getRowCount() - 1 : selectedRow();
+        boolean pasted = false;
         for (mpv5.db.common.DatabaseObject o : mpv5.YabsViewProxy.instance().getClipboardItems()) {
             if (o instanceof SubItem) {
                 insertCopy((SubItem) o, row++);
+                pasted = true;
             }
+        }
+        if (pasted) {
+            notifyPositionsEdited();
         }
     }
 
@@ -1257,6 +1295,7 @@ public class ItemPositionsTable extends JPanel {
             if (editorPinned && row == dockedRow) {
                 loadDockedRow(row);
             }
+            notifyPositionsEdited();
         }
     }
 
@@ -1305,6 +1344,15 @@ public class ItemPositionsTable extends JPanel {
                     return false;
                 }
                 return true;
+            }
+
+            @Override
+            public boolean stopCellEditing() {
+                boolean stopped = super.stopCellEditing();
+                if (stopped && !editorPinned) {
+                    notifyPositionsEdited();
+                }
+                return stopped;
             }
         };
         r.setClickCountToStart(1);

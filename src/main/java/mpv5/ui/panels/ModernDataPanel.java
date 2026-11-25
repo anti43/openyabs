@@ -396,6 +396,7 @@ public abstract class ModernDataPanel extends JPanel implements DataPanel, Scrol
      */
     protected static void liveFilter(final JTable table, final JTextField filter) {
         ModernTheme.roomy(filter);
+        filter.putClientProperty(mpv5.ui.misc.Autosave.IGNORE_PROPERTY, Boolean.TRUE);
         filter.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
@@ -613,16 +614,118 @@ public abstract class ModernDataPanel extends JPanel implements DataPanel, Scrol
         }
     }
 
+    private boolean autosaveEnabledPanel;
+    private boolean autosaving;
+    private long saveGeneration;
+    private Class<?> lastOpenedClass;
+    private int lastOpenedId = Integer.MIN_VALUE;
+    private mpv5.db.common.DatabaseObject lastOpenedRef;
+
+    /**
+     * Enables optional focus-leave autosave and newly-opened statusbar logging
+     * for this modern view (contacts, products, documents).
+     */
+    protected final void enableAutosave() {
+        autosaveEnabledPanel = true;
+        mpv5.ui.misc.Autosave.ensureInstalled();
+    }
+
+    public final boolean isAutosaveEnabledPanel() {
+        return autosaveEnabledPanel;
+    }
+
+    public final boolean isAutosaving() {
+        return autosaving;
+    }
+
+    public boolean isLoadingData() {
+        return false;
+    }
+
+    public final long getSaveGeneration() {
+        return saveGeneration;
+    }
+
+    protected boolean canAutosave() {
+        return false;
+    }
+
+    protected boolean saveInPlaceForAutosave() {
+        return false;
+    }
+
+    /**
+     * Performs a silent in-place save when autosave is enabled and the current
+     * dataset is valid and editable.
+     *
+     * @return true if saved
+     */
+    public final boolean performAutosave() {
+        if (!autosaveEnabledPanel || !mpv5.ui.misc.Autosave.isEnabled()
+                || autosaving || isLoadingData() || !isShowing()
+                || mpv5.ui.toolbars.RecordActions.isPendingCopy(this)
+                || !canAutosave()) {
+            return false;
+        }
+        autosaving = true;
+        try {
+            if (saveInPlaceForAutosave()) {
+                saveGeneration++;
+                mpv5.db.common.DatabaseObject owner = getDataOwner();
+                if (owner != null) {
+                    lastOpenedClass = owner.getClass();
+                    lastOpenedId = owner.isExisting() ? owner.__getIDS() : Integer.MIN_VALUE;
+                    lastOpenedRef = owner;
+                    String label = owner.__getCname();
+                    if (label == null || label.trim().isEmpty()) {
+                        label = owner.toString();
+                    }
+                    mpv5.ui.frames.MPView.setStatusMessage(
+                            String.format(mpv5.globals.Messages.AUTOSAVE_SAVED.toString(), label));
+                }
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            mpv5.logging.Log.Debug(this, e);
+            return false;
+        } finally {
+            autosaving = false;
+        }
+    }
+
+    private boolean recordNewlyOpened(mpv5.db.common.DatabaseObject obj) {
+        if (obj == null) {
+            return false;
+        }
+        boolean same;
+        if (obj == lastOpenedRef) {
+            same = true;
+        } else if (obj.isExisting() && lastOpenedClass == obj.getClass() && lastOpenedId == obj.__getIDS()) {
+            same = true;
+        } else {
+            same = false;
+        }
+        lastOpenedClass = obj.getClass();
+        lastOpenedId = obj.isExisting() ? obj.__getIDS() : Integer.MIN_VALUE;
+        lastOpenedRef = obj;
+        return !same;
+    }
+
     /**
      * Resets plugin decorations from the previous record and notifies the
      * running plugins that this view now shows the current record
      */
     protected final void notifyViewOpened() {
+        saveGeneration++;
         setPluginBanner(null);
         setPluginBadge(null);
         setContentLocked(false);
         setLockedDocument(null);
         mpv5.plugin.ExtensionManager.instance().fireView(this);
+        if (autosaveEnabledPanel && recordNewlyOpened(getDataOwner())) {
+            mpv5.ui.misc.Autosave.logStatus();
+        }
         revalidate();
         repaint();
     }

@@ -593,29 +593,123 @@ public class YabsViewProxy implements YabsView {
     }
 
     /**
-     * Notifies all open invoice/document tabs referencing {@code updated} so
-     * contact edits are immediately reflected without closing or reopening tabs.
+     * Notifies all open tabs referencing {@code updated} so contact edits are
+     * immediately reflected without closing or reopening tabs.
      */
     public void refreshOpenTabsForContact(final mpv5.db.objects.Contact updated) {
+        refreshOpenTabsForContact(updated, null);
+    }
+
+    /**
+     * Notifies all other open tabs referencing {@code updated} so contact edits
+     * are immediately reflected across documents, products, duplicate contact
+     * tabs, and contact lists.
+     *
+     * @param updated saved contact
+     * @param source panel that triggered the save (skipped), may be null
+     */
+    public void refreshOpenTabsForContact(final mpv5.db.objects.Contact updated, final DataPanel source) {
         if (updated == null || updated.__getIDS() <= 0) {
             return;
         }
-        Runnable task = () -> {
+        runOnEdt(() -> {
             for (int v = 0; v < views.size(); v++) {
                 if (views.get(v) instanceof mpv5.ui.frames.MPView) {
                     mpv5.ui.frames.MPView view = (mpv5.ui.frames.MPView) views.get(v);
                     int count = view.getTabPane().getTabCount();
                     for (int i = 0; i < count; i++) {
-                        DataPanel panel = view.getTabAt(i);
-                        if (panel instanceof mpv5.ui.panels.ModernItemPanel) {
-                            ((mpv5.ui.panels.ModernItemPanel) panel).refreshContact(updated);
-                        } else if (panel instanceof mpv5.ui.panels.ItemPanel2) {
-                            ((mpv5.ui.panels.ItemPanel2) panel).refreshContact(updated);
+                        java.awt.Component comp = view.getTabContentAt(i);
+                        if (comp == null || comp == source) {
+                            continue;
+                        }
+                        if (comp instanceof mpv5.ui.panels.ModernItemPanel) {
+                            ((mpv5.ui.panels.ModernItemPanel) comp).refreshContact(updated);
+                        } else if (comp instanceof mpv5.ui.panels.ItemPanel2) {
+                            ((mpv5.ui.panels.ItemPanel2) comp).refreshContact(updated);
+                        } else if (comp instanceof mpv5.ui.panels.ModernContactPanel) {
+                            ((mpv5.ui.panels.ModernContactPanel) comp).refreshContact(updated);
+                        } else if (comp instanceof mpv5.ui.panels.ModernProductPanel) {
+                            ((mpv5.ui.panels.ModernProductPanel) comp).refreshContact(updated);
+                        } else if (comp instanceof mpv5.ui.panels.ContactsList) {
+                            ((mpv5.ui.panels.ContactsList) comp).refresh();
                         }
                     }
                 }
             }
-        };
+        });
+    }
+
+    /**
+     * Notifies all other open tabs sharing data with {@code updated} when a
+     * product is saved.
+     *
+     * @param updated saved product
+     * @param source panel that triggered the save (skipped), may be null
+     */
+    public void refreshOpenTabsForProduct(final mpv5.db.objects.Product updated, final DataPanel source) {
+        if (updated == null || updated.__getIDS() <= 0) {
+            return;
+        }
+        runOnEdt(() -> {
+            for (int v = 0; v < views.size(); v++) {
+                if (views.get(v) instanceof mpv5.ui.frames.MPView) {
+                    mpv5.ui.frames.MPView view = (mpv5.ui.frames.MPView) views.get(v);
+                    int count = view.getTabPane().getTabCount();
+                    for (int i = 0; i < count; i++) {
+                        java.awt.Component comp = view.getTabContentAt(i);
+                        if (comp == null || comp == source) {
+                            continue;
+                        }
+                        if (comp instanceof mpv5.ui.panels.ModernProductPanel) {
+                            ((mpv5.ui.panels.ModernProductPanel) comp).refreshProduct(updated);
+                        } else if (comp instanceof mpv5.ui.panels.ModernContactPanel) {
+                            ((mpv5.ui.panels.ModernContactPanel) comp).refreshProduct(updated);
+                        } else if (comp instanceof mpv5.ui.panels.ProductsOverview) {
+                            ((mpv5.ui.panels.ProductsOverview) comp).refresh();
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * Notifies all other open tabs sharing data with {@code updated} when an
+     * offer, order, invoice, or credit note is saved.
+     *
+     * @param updated saved item
+     * @param source panel that triggered the save (skipped), may be null
+     */
+    public void refreshOpenTabsForItem(final mpv5.db.objects.Item updated, final DataPanel source) {
+        if (updated == null || updated.__getIDS() <= 0) {
+            return;
+        }
+        runOnEdt(() -> {
+            for (int v = 0; v < views.size(); v++) {
+                if (views.get(v) instanceof mpv5.ui.frames.MPView) {
+                    mpv5.ui.frames.MPView view = (mpv5.ui.frames.MPView) views.get(v);
+                    int count = view.getTabPane().getTabCount();
+                    for (int i = 0; i < count; i++) {
+                        java.awt.Component comp = view.getTabContentAt(i);
+                        if (comp == null || comp == source) {
+                            continue;
+                        }
+                        if (comp instanceof mpv5.ui.panels.ModernItemPanel) {
+                            ((mpv5.ui.panels.ModernItemPanel) comp).refreshItem(updated);
+                        } else if (comp instanceof mpv5.ui.panels.ModernContactPanel) {
+                            ((mpv5.ui.panels.ModernContactPanel) comp).refreshItem(updated);
+                        } else if (comp instanceof mpv5.ui.panels.ModernProductPanel) {
+                            ((mpv5.ui.panels.ModernProductPanel) comp).refreshItem(updated);
+                        } else if (comp instanceof mpv5.ui.panels.HomeScreen) {
+                            ((mpv5.ui.panels.HomeScreen) comp).refresh();
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    private static void runOnEdt(Runnable task) {
         if (javax.swing.SwingUtilities.isEventDispatchThread()) {
             task.run();
         } else {

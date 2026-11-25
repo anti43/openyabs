@@ -2202,7 +2202,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     @Override
     public void actionAfterSave() {
         saveEInvoiceSettings();
-        mpv5.YabsViewProxy.instance().refreshOpenTabsForContact(dataOwner);
+        mpv5.YabsViewProxy.instance().refreshOpenTabsForContact(dataOwner, this);
     }
 
     private final javax.swing.JComboBox<mpv5.utils.export.EInvoiceDelivery> einvoiceDelivery
@@ -2445,6 +2445,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     @Override
     public void actionAfterCreate() {
         sp.refresh();
+        mpv5.YabsViewProxy.instance().refreshOpenTabsForContact(dataOwner, this);
     }
 
     @Override

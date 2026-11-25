@@ -1462,12 +1462,14 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
             Log.Debug(this, e.getMessage());
         }
         prizes.validate();
+        mpv5.YabsViewProxy.instance().refreshOpenTabsForProduct(dataOwner, this);
     }
 
     @Override
     public void actionAfterCreate() {
         getSuppliers();
         sp.refresh();
+        mpv5.YabsViewProxy.instance().refreshOpenTabsForProduct(dataOwner, this);
     }
 
     @Override

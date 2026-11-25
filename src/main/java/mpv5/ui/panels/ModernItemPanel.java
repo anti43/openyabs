@@ -276,6 +276,8 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         refreshSync();
         updateTypeControls();
         updateHeader();
+        enableAutosave();
+        positions.setOnPositionsEdited(() -> mpv5.ui.misc.Autosave.triggerLater(this));
         loading = false;
     }
 
@@ -1366,9 +1368,44 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         loading = true;
         try {
             contactname.setModel(updated);
+            mpv5.db.objects.Address addr = updated.getDefaultaddress();
+            if (addr != null) {
+                prename.setText(addr.__getPrename());
+                cname.setText(addr.__getCname());
+                zip.setText(addr.__getZip());
+                city.setText(addr.__getCity());
+                street.setText(addr.__getStreet());
+            }
             updateHeader();
         } finally {
             loading = prevLoading;
+        }
+    }
+
+    /**
+     * Updates this open document tab when a document was saved in another tab
+     * (reloading if it shows the same document, or invalidating cached customer
+     * order references if it belongs to the same customer).
+     */
+    public void refreshItem(Item updated) {
+        if (updated == null || updated.__getIDS() <= 0 || isAutosaving()) {
+            return;
+        }
+        if (dataOwner != null && dataOwner.isExisting() && dataOwner.__getIDS().equals(updated.__getIDS())) {
+            try {
+                Item fresh = (Item) DatabaseObject.getObject(updated.getContext(), updated.__getIDS());
+                setDataOwner(fresh, true);
+            } catch (Exception ex) {
+                Log.Debug(this, ex);
+            }
+            return;
+        }
+        int currentContact = contactsids_;
+        if (currentContact <= 0 && dataOwner != null) {
+            currentContact = dataOwner.__getContactsids();
+        }
+        if (currentContact > 0 && currentContact == updated.__getContactsids()) {
+            refChoicesContact = -1;
         }
     }
 
@@ -1870,7 +1907,9 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         dateadded_ = date1.getDate() != null ? date1.getDate() : new Date();
         cnumber_ = number.getText();
         cname_ = name.getText();
-        positions.stopEditing();
+        if (!isAutosaving() || !positions.isEditingFocusedCell()) {
+            positions.stopEditing();
+        }
         BigDecimal[] totals = positions.getTotals();
         netvalue_ = totals[0];
         taxvalue_ = totals[1];
@@ -2081,6 +2120,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
             r.run();
         }
         afterSaveRunnables.clear();
+        YabsViewProxy.instance().refreshOpenTabsForItem(dataOwner, this);
     }
 
     @Override
@@ -2089,6 +2129,103 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         positions.prepareSave();
         ItemService.savePositions(dataOwner, positions.getModel(), false, positions.getUsedOrders(), true);
         setTabTitle(dataOwner.__getCname());
+        YabsViewProxy.instance().refreshOpenTabsForItem(dataOwner, this);
+    }
+
+    @Override
+    public boolean isLoadingData() {
+        return loading;
+    }
+
+    @Override
+    protected boolean canAutosave() {
+        if (dataOwner == null || dataOwner.isReadOnly()
+                || isContentLocked() || getLockedDocument() != null
+                || pendingCustomerPanel != null) {
+            return false;
+        }
+        if (!MPSecurityManager.check(dataOwner.getContext(),
+                dataOwner.isExisting() ? MPSecurityManager.EDIT : MPSecurityManager.CREATE_OR_DELETE)) {
+            return false;
+        }
+        if (dataOwner.isExisting()) {
+            int saved = dataOwner.__getIntstatus();
+            if (saved == Item.STATUS_PAID || saved == Item.STATUS_CANCELLED) {
+                return false;
+            }
+        }
+        MPComboBoxModelItem sel = contactname.getSelectedItem();
+        if (sel == null || !sel.isValid()) {
+            return false;
+        }
+        int cid;
+        try {
+            cid = Integer.parseInt(String.valueOf(sel.getId()));
+        } catch (NumberFormatException e) {
+            return false;
+        }
+        if (cid <= 0) {
+            return false;
+        }
+        if (!dataOwner.isExisting()) {
+            try {
+                Contact c = (Contact) DatabaseObject.getObject(Context.getContact(), cid);
+                if (mpv5.handler.Privacy.isBlocked(c)) {
+                    return false;
+                }
+            } catch (Exception e) {
+                return false;
+            }
+        }
+        if (dataOwner.__getInttype() == Item.TYPE_INVOICE && mpv5.utils.export.SmallBusiness.isEnabled()) {
+            BigDecimal[] totals = positions.getTotals();
+            List<String> warnings = mpv5.utils.export.SmallBusiness.checkInvoice(
+                    date1.getDate() != null ? date1.getDate() : new Date(), totals[0], totals[1],
+                    !dataOwner.isExisting());
+            if (!warnings.isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    protected boolean saveInPlaceForAutosave() {
+        boolean wasNew = !dataOwner.isExisting();
+        if (!dataOwner.getPanelData(this) || !dataOwner.save(true)) {
+            return false;
+        }
+        if (!isContentLocked() && getLockedDocument() == null) {
+            ItemService.savePositions(dataOwner, positions.getModel(), !wasNew, positions.getUsedOrders());
+        }
+        setTabTitle(dataOwner.__getCname());
+        for (Runnable r : new ArrayList<Runnable>(afterSaveRunnables)) {
+            r.run();
+        }
+        afterSaveRunnables.clear();
+        if ((number.getText() == null || number.getText().trim().isEmpty())
+                && !number.getTextField().isFocusOwner()
+                && dataOwner.__getCnumber() != null && !dataOwner.__getCnumber().trim().isEmpty()) {
+            cnumber_ = dataOwner.__getCnumber();
+            number.setText(cnumber_);
+        }
+        if ((name.getText() == null || name.getText().trim().isEmpty())
+                && !name.getTextField().isFocusOwner()
+                && dataOwner.__getCname() != null && !dataOwner.__getCname().trim().isEmpty()) {
+            cname_ = dataOwner.__getCname();
+            name.setText(cname_);
+        }
+        datelastupdated_ = dataOwner.__getDatelastupdated();
+        lastUpdated.setText(datelastupdated_ == null || datelastupdated_.getTime() <= 0 ? "\u2013"
+                : DateConverter.getDefDateString(datelastupdated_) + " " + new java.text.SimpleDateFormat("HH:mm").format(datelastupdated_));
+        updateTypeControls();
+        updateHeader();
+        savedSnapshot = captureSnapshot();
+        if (wasNew) {
+            preloadTemplates();
+        }
+        YabsViewProxy.instance().refreshOpenTabsForItem(dataOwner, this);
+        return true;
     }
 
     @Override

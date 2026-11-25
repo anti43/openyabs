@@ -121,6 +121,19 @@ public final class SubItem extends DatabaseObject implements Triggerable {
             items.add(it.getOrdernr(), it);
         }
 
+        if (!cloneSubitems) {
+            int savedIdx = 0;
+            for (int r = 0; r < model.getRowCount() && savedIdx < items.size(); r++) {
+                Object desc = model.getValueAt(r, 4);
+                if (desc != null && !desc.toString().trim().isEmpty()) {
+                    int id = items.get(savedIdx++).__getIDS();
+                    if (id > 0 && !String.valueOf(id).equals(String.valueOf(model.getValueAt(r, 0)))) {
+                        model.setValueAt(id, r, 0, true);
+                    }
+                }
+            }
+        }
+
         if (deleteRemovedSubitems) {
             for (int i = 0; i < deletionQueue.size(); i++) {
                 try {

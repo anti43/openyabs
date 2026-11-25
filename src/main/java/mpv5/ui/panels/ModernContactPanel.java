@@ -265,6 +265,7 @@ public class ModernContactPanel extends ModernDataPanel {
     public ModernContactPanel(Context context) {
         super(new BorderLayout());
         setName("contactpanel");
+        enableAutosave();
 
         dataOwner = new Contact();
         dataOwner.setCountry(User.getCurrentUser().__getDefcountry());
@@ -509,6 +510,7 @@ public class ModernContactPanel extends ModernDataPanel {
                         Card.field(null, gender, 1)));
 
         addressSelector.setOpaque(false);
+        addressSelector.putClientProperty(mpv5.ui.misc.Autosave.IGNORE_PROPERTY, Boolean.TRUE);
         addressBody.setOpaque(false);
         mainAddressChip.addActionListener(e -> showAddress(MAIN_ADDRESS));
         addressGroup.add(mainAddressChip);
@@ -691,6 +693,7 @@ public class ModernContactPanel extends ModernDataPanel {
             text("ContactPanel.button_activitylists.text"), text("ContactPanel.button_products.text")};
         JPanel segments = new JPanel(new FlowLayout(FlowLayout.LEFT, ModernTheme.px(4), 0));
         segments.setOpaque(false);
+        segments.putClientProperty(mpv5.ui.misc.Autosave.IGNORE_PROPERTY, Boolean.TRUE);
         for (Related r : Related.values()) {
             final Related rel = r;
             ChipToggle b = new ChipToggle(labels[r.ordinal()]);
@@ -969,6 +972,7 @@ public class ModernContactPanel extends ModernDataPanel {
                     chip.setText(form.getLabel());
                     addressSelector.revalidate();
                 }
+                mpv5.YabsViewProxy.instance().refreshOpenTabsForContact(dataOwner, ModernContactPanel.this);
             }
 
             @Override
@@ -1354,16 +1358,109 @@ public class ModernContactPanel extends ModernDataPanel {
     }
 
     @Override
+    public boolean isLoadingData() {
+        return loading;
+    }
+
+    @Override
+    protected boolean canAutosave() {
+        if (dataOwner == null || dataOwner.isReadOnly() || isContentLocked()) {
+            return false;
+        }
+        int action = dataOwner.isExisting()
+                ? mpv5.usermanagement.MPSecurityManager.EDIT
+                : mpv5.usermanagement.MPSecurityManager.CREATE_OR_DELETE;
+        if (!mpv5.usermanagement.MPSecurityManager.check(Context.getContact(), action)) {
+            return false;
+        }
+        String[] companyAndName = ContactService.companyAndName(company.isSelected(),
+                companyselect.getText(), cname.get_Text());
+        if (companyAndName[0].isEmpty() && companyAndName[1].isEmpty()) {
+            return false;
+        }
+        Object delivery = einvoiceDelivery.getSelectedItem();
+        if (delivery instanceof EInvoiceDelivery && ((EInvoiceDelivery) delivery).resolve().isEInvoice() && customer.isSelected()) {
+            String countryCode = countryselect.getSelectedItem() != null
+                    ? String.valueOf(((MPComboBoxModelItem) countryselect.getSelectedItem()).getId()) : "";
+            mpv5.utils.export.EInvoiceContactCheck.Result check = mpv5.utils.export.EInvoiceContactCheck.check(
+                    (prename.get_Text() == null ? "" : prename.get_Text() + " ") + companyAndName[1],
+                    companyAndName[0], street.get_Text(), zip.get_Text(), city.get_Text(), countryCode,
+                    mailaddress.get_Text(), taxnumber.get_Text(), "", null, einvoicePeppolId.getText());
+            if (check.hasErrors()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    protected boolean saveInPlaceForAutosave() {
+        boolean wasNew = !dataOwner.isExisting();
+        if (!dataOwner.getPanelData(this) || !dataOwner.save(true)) {
+            return false;
+        }
+        actionAfterSave();
+        if ((wasNew || number.get_Text().isEmpty()) && !number.getTextField().isFocusOwner()
+                && dataOwner.__getCNumber() != null && !dataOwner.__getCNumber().isEmpty()) {
+            cnumber_ = dataOwner.__getCNumber();
+            number.set_Text(cnumber_);
+        }
+        setTabTitle(dataOwner.__getCname());
+        updateHeader();
+        if (wasNew) {
+            resetAddressSelector();
+        }
+        return true;
+    }
+
+    /**
+     * Reloads this contact tab when the same contact was saved in another tab.
+     */
+    public void refreshContact(Contact updated) {
+        if (updated == null || updated.__getIDS() <= 0 || isAutosaving()) {
+            return;
+        }
+        if (dataOwner != null && dataOwner.isExisting() && dataOwner.__getIDS() == updated.__getIDS()) {
+            setDataOwner(updated, true);
+        }
+    }
+
+    /**
+     * Refreshes the related documents table when an item was saved in another tab.
+     */
+    public void refreshItem(Item updated) {
+        if (updated == null || updated.__getIDS() <= 0 || isAutosaving()) {
+            return;
+        }
+        if (dataOwner != null && dataOwner.isExisting() && related != null && related.isItem()) {
+            showRelated(related);
+        }
+    }
+
+    /**
+     * Refreshes the related products table when a product was saved in another tab.
+     */
+    public void refreshProduct(mpv5.db.objects.Product updated) {
+        if (updated == null || updated.__getIDS() <= 0 || isAutosaving()) {
+            return;
+        }
+        if (dataOwner != null && dataOwner.isExisting() && related == Related.PRODUCTS) {
+            showRelated(related);
+        }
+    }
+
+    @Override
     public void actionAfterSave() {
         saveEInvoiceSettings();
         saveProperties();
-        mpv5.YabsViewProxy.instance().refreshOpenTabsForContact(dataOwner);
+        mpv5.YabsViewProxy.instance().refreshOpenTabsForContact(dataOwner, this);
     }
 
     @Override
     public void actionAfterCreate() {
         saveEInvoiceSettings();
         saveProperties();
+        mpv5.YabsViewProxy.instance().refreshOpenTabsForContact(dataOwner, this);
     }
 
     @Override

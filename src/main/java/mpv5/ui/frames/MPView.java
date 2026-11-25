@@ -206,6 +206,24 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
     }
 
     /**
+     * Displays a message in the status bar only (without adding an Activity
+     * entry or showing popups/notifications).
+     *
+     * @param message
+     */
+    public static synchronized void setStatusMessage(final String message) {
+        if (loaded && messagelabel != null) {
+            SwingUtilities.invokeLater(() -> {
+                messagelabel.setText(message);
+                messagelabel.invalidate();
+                getHistory().addItem(message);
+                getHistory().setSelectedItem(message);
+                messagelabel.repaint();
+            });
+        }
+    }
+
+    /**
      * Returns the currently selected tab on the main tab pane
      *
      * @return
@@ -520,19 +538,27 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
      * @return
      */
     public DataPanel getTabAt(int position) {
+        Component c = getTabContentAt(position);
+        return c instanceof DataPanel ? (DataPanel) c : null;
+    }
+
+    /**
+     * Returns the unwrapped content component of the tab at {@code position}.
+     *
+     * @param position
+     * @return tab content component or null
+     */
+    public Component getTabContentAt(int position) {
         //the content of the tab: with scrolling tabs the tab pane has further children
         //(arrows, viewport), so getComponent(i) is not the i-th tab
         if (position < 0 || position >= getTabPane().getTabCount()) {
             return null;
         }
         Component c = getTabPane().getComponentAt(position);
-        if (c instanceof DataPanel) {
-            return (DataPanel) c;
-        } else if (c instanceof JScrollPane) {
-            Component view = ((JScrollPane) c).getViewport().getView();
-            return view instanceof DataPanel ? (DataPanel) view : null;
+        if (c instanceof JScrollPane) {
+            return ((JScrollPane) c).getViewport().getView();
         }
-        return null;
+        return c;
     }
 
     @Override
@@ -635,6 +661,29 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
         helpmenu.add(shortcuts, 0);
         //F1 in every window: the wiki page of the view, else the entry page of the wiki
         mpv5.ui.misc.Help.install();
+        //Ctrl+S in settings and other non-DataPanel dialogs/tabs: trigger visible Save or Update button
+        mpv5.ui.misc.SaveShortcut.install();
+        //Extras > Autosave: optionally save modern contact/product/item views on field focus loss
+        final javax.swing.JCheckBoxMenuItem autosaveMenuItem = new javax.swing.JCheckBoxMenuItem(Messages.AUTOSAVE.toString());
+        autosaveMenuItem.setToolTipText(Messages.AUTOSAVE_TIP.toString());
+        autosaveMenuItem.setSelected(mpv5.ui.misc.Autosave.isEnabled());
+        autosaveMenuItem.addActionListener(e -> mpv5.ui.misc.Autosave.setEnabled(autosaveMenuItem.isSelected()));
+        jMenu1.addSeparator();
+        jMenu1.add(autosaveMenuItem);
+        jMenu1.addMenuListener(new javax.swing.event.MenuListener() {
+            @Override
+            public void menuSelected(javax.swing.event.MenuEvent e) {
+                autosaveMenuItem.setSelected(mpv5.ui.misc.Autosave.isEnabled());
+            }
+
+            @Override
+            public void menuDeselected(javax.swing.event.MenuEvent e) {
+            }
+
+            @Override
+            public void menuCanceled(javax.swing.event.MenuEvent e) {
+            }
+        });
         //View > Layout: only the look (modern or system); the checked one is the look in use.
         //The modern views of contacts, products and documents are a user setting (Control Panel)
         final javax.swing.JRadioButtonMenuItem modernLook = new javax.swing.JRadioButtonMenuItem(Messages.LAF_MODERN.toString());
@@ -2745,7 +2794,8 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
                 try {
                     DatabaseObject dato = (pane).getDataOwner();
                     if (dato == null) {
-                        return;//a list: nothing to save (a cell in edit is saved by actionBeforeSave)
+                        mpv5.ui.misc.SaveShortcut.triggerIn(getShowingTab());
+                        return;//a list or custom panel
                     }
                     dato.getPanelData((pane));
                     if (dato.save()) {
@@ -2757,6 +2807,8 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
                 } catch (Exception e) {
                     Log.Debug(this, e);
                 }
+            } else {
+                mpv5.ui.misc.SaveShortcut.triggerIn(getShowingTab());
             }
         } catch (ChangeNotApprovedException changeNotApprovedException) {
             Log.Debug(this, changeNotApprovedException.getMessage());

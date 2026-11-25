@@ -199,6 +199,7 @@ public class ModernCommandBar extends JPanel {
         super(new BorderLayout(ModernTheme.px(8), 0));
         this.view = view;
         this.viewComponent = (JComponent) view;
+        putClientProperty(mpv5.ui.misc.Autosave.IGNORE_PROPERTY, Boolean.TRUE);
         setBackground(ModernTheme.cardBackground());
         setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createMatteBorder(0, 0, 1, 0, ModernTheme.border()),
