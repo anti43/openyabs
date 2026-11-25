@@ -384,10 +384,36 @@ public class ProductsOverview extends JPanel implements ListPanel {
         if (belowThreshold.isSelected()) {
             data = filterByIds(data, belowThresholdIds);
         }
-        listtable.setModel(new MPTableModel(data, header));
+        int notInInventoryCol = header.length - 1;
+        for (Object[] row : data) {
+            if (row != null && row.length > notInInventoryCol) {
+                row[notInInventoryCol] = isNotInInventory(row[notInInventoryCol]);
+            }
+        }
+        Class<?>[] types = new Class<?>[header.length];
+        java.util.Arrays.fill(types, Object.class);
+        types[notInInventoryCol] = Boolean.class;
+        listtable.setModel(new MPTableModel(data, header, types));
         //the internal id is not shown
         TableFormat.stripColumn(listtable, 0);
         count.setText(String.format(Messages.PRODUCTS_COUNT.toString(), data.length));
+    }
+
+    /**
+     * @param intinventorytypeValue raw DB value of {@code products.intinventorytype}
+     * @return {@code true} when inventory tracking is disabled ("Not in inventory")
+     */
+    static boolean isNotInInventory(Object intinventorytypeValue) {
+        if (intinventorytypeValue == null) {
+            return true;
+        }
+        if (intinventorytypeValue instanceof Boolean) {
+            return !(Boolean) intinventorytypeValue;
+        }
+        if (intinventorytypeValue instanceof Number) {
+            return ((Number) intinventorytypeValue).intValue() != 1;
+        }
+        return !"1".equals(String.valueOf(intinventorytypeValue).trim());
     }
 
     /**

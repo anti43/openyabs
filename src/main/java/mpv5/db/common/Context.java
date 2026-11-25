@@ -226,7 +226,8 @@ public class Context implements Serializable, Comparable<Context> {
             + IDENTITY_PRODUCTS + "." + "internalnetvalue,"
             + IDENTITY_PRODUCTS + "." + "externalnetvalue,"
             + IDENTITY_PRODUCTS + "." + "stockvalue,"
-            + IDENTITY_PRODUCTS + "." + "thresholdvalue";
+            + IDENTITY_PRODUCTS + "." + "thresholdvalue,"
+            + IDENTITY_PRODUCTS + "." + "intinventorytype";
     public static String DETAILS_USERS = IDENTITY_USERS + "." + "IDS," + IDENTITY_USERS + "." + "CNAME,"
             + IDENTITY_USERS + "." + "fullname,"
             + IDENTITY_USERS + "." + "mail,"

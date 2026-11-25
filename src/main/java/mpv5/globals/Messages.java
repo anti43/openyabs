@@ -1122,6 +1122,7 @@ public enum Messages {
     PRODUCTS_GROSS("gross"),
     PRODUCTS_STOCK("Stock"),
     PRODUCTS_COL_THRESHOLD("Threshold"),
+    PRODUCTS_COL_NOT_IN_INVENTORY("Not in inventory"),
     PRODUCTS_COL_NUMBER("Number"),
     PRODUCTS_COL_NAME("Name"),
     PRODUCTS_COL_REFERENCE("Reference"),
