@@ -568,6 +568,7 @@ public class ModernContactPanel extends ModernDataPanel {
 
     private JComponent createPropertiesTab() {
         ModernTheme.style(proptable);
+        proptable.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
         ((MPTable) proptable).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) proptable, this));
         proptable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         JButton test = link(Messages.PROPERTIES_TEST.toString(), null);

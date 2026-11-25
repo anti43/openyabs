@@ -319,6 +319,9 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
                 });
             }
         });
+        for (LabeledTextField readOnlyContactField : new LabeledTextField[]{prename, cname, street, zip, city}) {
+            readOnlyContactField.getTextField().setEditable(false);
+        }
         accountselect.setContext(Context.getAccounts());
         accountselect.setSearchEnabled(true);
         groupnameselect.setContext(Context.getGroup());

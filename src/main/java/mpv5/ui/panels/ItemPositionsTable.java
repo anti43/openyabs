@@ -83,7 +83,32 @@ public class ItemPositionsTable extends JPanel {
     public static final String SPLIT_PROPERTY = "org.openyabs.layout.hsplit.positions.editor";
 
     private static final long serialVersionUID = 1L;
-    private final JTable itemtable = new JTable();
+    private final JTable itemtable = new JTable() {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public java.awt.Component prepareEditor(javax.swing.table.TableCellEditor editor, int row, int column) {
+            java.awt.Component comp = super.prepareEditor(editor, row, column);
+            if (comp != null && editor != currentTextEditor) {
+                attachInlineCommitOnFocusLost(comp);
+            }
+            return comp;
+        }
+
+        @Override
+        public void editingStopped(javax.swing.event.ChangeEvent e) {
+            int row = getEditingRow();
+            int col = getEditingColumn();
+            Object before = (row >= 0 && col >= 0 && row < getRowCount() && col < getColumnCount())
+                    ? getValueAt(row, col) : null;
+            super.editingStopped(e);
+            Object after = (row >= 0 && col >= 0 && row < getRowCount() && col < getColumnCount())
+                    ? getValueAt(row, col) : null;
+            if (!java.util.Objects.equals(String.valueOf(before), String.valueOf(after))) {
+                notifyPositionsEdited();
+            }
+        }
+    };
     private final JScrollPane scroll;
     private final JLabel netvalue = total();
     private final JLabel discount = total();
@@ -117,6 +142,8 @@ public class ItemPositionsTable extends JPanel {
     private MPTableModel listenedModel;
     private final javax.swing.event.TableModelListener dockedModelListener = e -> onDockedModelChanged(e);
     private Runnable onPositionsEdited;
+    private boolean dockedFocusListenerInstalled;
+    private final java.beans.PropertyChangeListener dockedFocusListener = evt -> onDockedFocusChanged(evt);
 
     public ItemPositionsTable() {
         super(new BorderLayout(0, ModernTheme.px(6)));
@@ -194,6 +221,11 @@ public class ItemPositionsTable extends JPanel {
     @Override
     public void addNotify() {
         super.addNotify();
+        if (!dockedFocusListenerInstalled) {
+            dockedFocusListenerInstalled = true;
+            java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager()
+                    .addPropertyChangeListener("permanentFocusOwner", dockedFocusListener);
+        }
         if (!restoredPinState) {
             restoredPinState = true;
             if (loadPinnedPreference() && !java.awt.GraphicsEnvironment.isHeadless()) {
@@ -204,10 +236,77 @@ public class ItemPositionsTable extends JPanel {
 
     @Override
     public void removeNotify() {
+        if (dockedFocusListenerInstalled) {
+            dockedFocusListenerInstalled = false;
+            java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager()
+                    .removePropertyChangeListener("permanentFocusOwner", dockedFocusListener);
+        }
         if (editorDialog != null && !editorPinned && editorDialog.isVisible()) {
             editorDialog.setVisible(false);
         }
         super.removeNotify();
+    }
+
+    private void attachInlineCommitOnFocusLost(java.awt.Component comp) {
+        if (!(comp instanceof JComponent)) {
+            return;
+        }
+        JComponent jc = (JComponent) comp;
+        if (Boolean.TRUE.equals(jc.getClientProperty("yabs.inlineCommitListener"))) {
+            return;
+        }
+        jc.putClientProperty("yabs.inlineCommitListener", Boolean.TRUE);
+        jc.addFocusListener(new java.awt.event.FocusAdapter() {
+            @Override
+            public void focusLost(java.awt.event.FocusEvent e) {
+                if (e.isTemporary()) {
+                    return;
+                }
+                javax.swing.SwingUtilities.invokeLater(() -> {
+                    if (itemtable.isEditing() && itemtable.getCellEditor() != currentTextEditor) {
+                        java.awt.Component ec = itemtable.getEditorComponent();
+                        java.awt.Component fo = java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
+                        if (ec != null && (fo == null || (fo != ec && !javax.swing.SwingUtilities.isDescendingFrom(fo, ec)))) {
+                            try {
+                                itemtable.getCellEditor().stopCellEditing();
+                            } catch (Exception ex) {
+                                Log.Debug(ItemPositionsTable.this, ex.getMessage());
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    private void onDockedFocusChanged(java.beans.PropertyChangeEvent evt) {
+        if (!editorPinned || syncingDocked || editorDialog == null || !editorDialog.isDirty() || dockedContainer == null) {
+            return;
+        }
+        if (editorDialog.isComboPopupVisible()) {
+            return;
+        }
+        Object oldVal = evt.getOldValue();
+        Object newVal = evt.getNewValue();
+        if (oldVal instanceof java.awt.Component
+                && isInsideDocked((java.awt.Component) oldVal)
+                && !(newVal instanceof java.awt.Component && isInsideDocked((java.awt.Component) newVal))) {
+            javax.swing.SwingUtilities.invokeLater(() -> {
+                if (!editorPinned || syncingDocked || editorDialog == null || !editorDialog.isDirty()
+                        || editorDialog.isComboPopupVisible()) {
+                    return;
+                }
+                java.awt.Component current = java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
+                if (current == null || !isInsideDocked(current)) {
+                    commitDockedIfDirty(false);
+                }
+            });
+        }
+    }
+
+    private boolean isInsideDocked(java.awt.Component comp) {
+        return dockedContainer != null && comp != null
+                && (comp == dockedContainer || javax.swing.SwingUtilities.isDescendingFrom(comp, dockedContainer));
     }
 
     /**
@@ -1347,9 +1446,21 @@ public class ItemPositionsTable extends JPanel {
             }
 
             @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                String cmd = e != null ? e.getActionCommand() : null;
+                boolean ok = OK.equals(cmd) || OK_KEEP_FOCUS.equals(cmd);
+                boolean wasDirty = editorDialog != null && editorDialog.isDirty();
+                super.actionPerformed(e);
+                if (ok && !editorPinned && wasDirty) {
+                    notifyPositionsEdited();
+                }
+            }
+
+            @Override
             public boolean stopCellEditing() {
+                boolean wasDirty = editorDialog != null && editorDialog.isDirty();
                 boolean stopped = super.stopCellEditing();
-                if (stopped && !editorPinned) {
+                if (stopped && !editorPinned && wasDirty) {
                     notifyPositionsEdited();
                 }
                 return stopped;

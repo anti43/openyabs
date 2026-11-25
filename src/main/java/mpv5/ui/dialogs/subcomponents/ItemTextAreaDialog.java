@@ -110,6 +110,11 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
         return dirty;
     }
 
+    public boolean isComboPopupVisible() {
+        return groupselect.getComboBox().isPopupVisible()
+                || labeledCombobox1.getComboBox().isPopupVisible();
+    }
+
     public void clearDirty() {
         dirty = false;
         quantityDirty = false;
