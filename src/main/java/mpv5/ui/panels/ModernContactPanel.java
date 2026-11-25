@@ -163,7 +163,6 @@ public class ModernContactPanel extends ModernDataPanel {
     private final LabeledTextField bankid = field();
     private final LabeledTextField bankname = field();
     private final JComboBox<ContactService.CurrencyOption> bankcurrency = new JComboBox<ContactService.CurrencyOption>();
-    private final LabeledTextField bankcountry = field();
     private final JTextArea notes = new JTextArea(6, 20);
     //payment / e-invoice (value properties of the contact)
     private final JComboBox<EInvoiceDelivery> einvoiceDelivery = new JComboBox<EInvoiceDelivery>(EInvoiceDelivery.values());
@@ -546,8 +545,7 @@ public class ModernContactPanel extends ModernDataPanel {
                 .row(Card.field(text("ContactPanel.bankaccount._Label"), bankaccount))
                 .row(Card.field(text("ContactPanel.bankid._Label"), bankid, 1),
                         Card.field(text("ContactPanel.bankname._Label"), bankname, 2))
-                .row(Card.field(text("ContactPanel.bankcurrency._Label"), bankcurrency),
-                        Card.field(text("ContactPanel.bankcountry._Label"), bankcountry)));
+                .row(Card.field(text("ContactPanel.bankcurrency._Label"), bankcurrency)));
 
         grid.add(new Card(Messages.CONTACT_SECTION_TERMS.toString())
                 .addFull(mpv5.ui.modern.Applets.hint(Messages.CONTACT_TERMS_HINT.toString()))
@@ -1208,7 +1206,9 @@ public class ModernContactPanel extends ModernDataPanel {
         workphone_ = workphone.get_Text();
         zip_ = zip.get_Text();
         bankaccount_ = bankaccount.getText();
-        bankcountry_ = bankcountry.getText();
+        if (bankcountry_ == null) {
+            bankcountry_ = "";
+        }
         Object selCurrency = bankcurrency.getSelectedItem();
         bankcurrency_ = selCurrency instanceof ContactService.CurrencyOption
                 ? ((ContactService.CurrencyOption) selCurrency).code
@@ -1281,7 +1281,6 @@ public class ModernContactPanel extends ModernDataPanel {
         zip.set_Text(zip_);
         department.set_Text(department_);
         bankaccount.setText(bankaccount_);
-        bankcountry.setText(bankcountry_);
         List<ContactService.CurrencyOption> currencies = ContactService.currencyOptions(bankcurrency_);
         bankcurrency.setModel(new DefaultComboBoxModel<ContactService.CurrencyOption>(
                 currencies.toArray(new ContactService.CurrencyOption[0])));
