@@ -122,6 +122,29 @@ public class ZugpferdFile implements Waitable {
      */
     public static final String KEY_EORI = "eori";
     /**
+     * Value property on invoice (or contact {@code bankcurrency}) holding the
+     * ISO 4217 currency code (BT-5, e.g. {@code EUR}, {@code CHF}, {@code USD})
+     */
+    public static final String KEY_CURRENCY = "currency";
+    /**
+     * Value property (on invoice or contact) holding Incoterms® + named place
+     * (e.g. {@code DAP Zürich}, {@code FCA München})
+     */
+    public static final String KEY_INCOTERMS = "incoterms";
+    /**
+     * Value property on invoice holding the total gross weight in kg
+     */
+    public static final String KEY_GROSS_WEIGHT = "grossweight";
+    /**
+     * Value property on invoice holding the total net weight in kg (overrides
+     * sum of product weights when set)
+     */
+    public static final String KEY_NET_WEIGHT = "netweight";
+    /**
+     * Value property on invoice holding the package count / description
+     */
+    public static final String KEY_PACKAGES = "packages";
+    /**
      * Company setting holding the VAT exemption reason used for 0% VAT lines
      * of category E whose tax rate has no note (else the default note of the
      * category, {@link VatCategory#defaultNote()})
@@ -298,8 +321,11 @@ public class ZugpferdFile implements Waitable {
                 recipient, findBuyerReference(item, contact), terms.getDays(),
                 company.apply(KEY_TAX_EXEMPTION_REASON), SmallBusiness.note(company), format,
                 taxRates(contact, mpv5.db.objects.Tax.all()));
+        invoice.setCurrency(findCurrency(item, contact));
+        applyDeliveryAddress(invoice, contact);
         applySkonto(invoice, terms);
         applyEoriNotes(invoice, company.apply(KEY_EORI), ContactProperty.get(contact, KEY_EORI));
+        applyCustomsNotes(invoice, item, contact);
         Item corrected = item.__getInttype() == Item.TYPE_CREDIT ? item.getCorrectedInvoice() : null;
         if (corrected != null) {
             applyPrecedingInvoice(invoice, corrected.__getCnumber(), corrected.__getDateadded());
@@ -976,6 +1002,143 @@ public class ZugpferdFile implements Waitable {
         String buyer = normalizeEori(buyerEori);
         if (!buyer.isEmpty()) {
             invoice.addCustomsNote("Buyer EORI: " + buyer);
+        }
+    }
+
+    /**
+     * Resolve the ISO 4217 currency code (BT-5) for an invoice:
+     * <ol>
+     * <li>value property {@value #KEY_CURRENCY} on the invoice,</li>
+     * <li>{@link Contact#__getBankcurrency()} on the contact,</li>
+     * <li>value property {@value #KEY_CURRENCY} on the contact,</li>
+     * <li>{@link #DEFAULT_CURRENCY} ({@code "EUR"}).</li>
+     * </ol>
+     *
+     * @param item may be null
+     * @param contact may be null
+     * @return valid 3-letter ISO 4217 currency code
+     */
+    public static String findCurrency(Item item, Contact contact) {
+        String itemCur = CurrencyCode.normalizeCode(valueProperty(item, KEY_CURRENCY));
+        if (CurrencyCode.isValidCode(itemCur)) {
+            return itemCur;
+        }
+        if (contact != null) {
+            String bankCur = CurrencyCode.normalizeCode(contact.__getBankcurrency());
+            if (CurrencyCode.isValidCode(bankCur)) {
+                return bankCur;
+            }
+            String contactCur = CurrencyCode.normalizeCode(ContactProperty.get(contact, KEY_CURRENCY));
+            if (CurrencyCode.isValidCode(contactCur)) {
+                return contactCur;
+            }
+        }
+        return DEFAULT_CURRENCY;
+    }
+
+    /**
+     * Find the Incoterms® (e.g. {@code DAP Zürich}) of an invoice: value
+     * property {@value #KEY_INCOTERMS} on the invoice or on the contact.
+     *
+     * @param item may be null
+     * @param contact may be null
+     * @return the Incoterms string, or {@code ""} if none
+     */
+    public static String findIncoterms(Item item, Contact contact) {
+        String v = valueProperty(item, KEY_INCOTERMS);
+        if (isEmpty(v) && contact != null) {
+            v = ContactProperty.get(contact, KEY_INCOTERMS);
+        }
+        return isEmpty(v) ? "" : v.trim();
+    }
+
+    /**
+     * Add the Ship-To / Consignee delivery address (EN 16931 BG-13) to the
+     * e-invoice when the contact has an explicit delivery address that differs
+     * from the invoice address.
+     *
+     * @param invoice
+     * @param contact
+     */
+    public static void applyDeliveryAddress(Invoice invoice, Contact contact) {
+        if (invoice == null || contact == null) {
+            return;
+        }
+        try {
+            List<mpv5.db.objects.Address> all = contact.getAdresses();
+            if (all == null || all.isEmpty()) {
+                return;
+            }
+            mpv5.db.objects.Address inv = contact.getInvoiceaddress(all);
+            mpv5.db.objects.Address del = null;
+            for (mpv5.db.objects.Address a : all) {
+                if (a.__getInttype() == 1 || a.__getInttype() == 2) {
+                    del = a;
+                    break;
+                }
+            }
+            if (del == null) {
+                return;
+            }
+            String name = firstNonEmpty(del.__getCompany(),
+                    join(" ", del.__getPrename(), del.__getCname()),
+                    contact.__getCompany(), contact.__getCname());
+            String street = nvl(del.__getStreet()).trim();
+            String zip = nvl(del.__getZip()).trim();
+            String city = nvl(del.__getCity()).trim();
+            String country = toCountryCode(firstNonEmpty(del.__getCountry(), contact.__getCountry()));
+            if (name.isEmpty() || city.isEmpty() || country.isEmpty()) {
+                return;
+            }
+            if (inv != null
+                    && street.equalsIgnoreCase(nvl(inv.__getStreet()).trim())
+                    && zip.equalsIgnoreCase(nvl(inv.__getZip()).trim())
+                    && city.equalsIgnoreCase(nvl(inv.__getCity()).trim())
+                    && country.equalsIgnoreCase(toCountryCode(firstNonEmpty(inv.__getCountry(), contact.__getCountry())))) {
+                return;
+            }
+            TradeParty shipTo = new TradeParty(name, street, zip, city, country);
+            if (!isEmpty(del.__getDepartment())) {
+                shipTo.setAdditionalAddress(del.__getDepartment().trim());
+            }
+            invoice.setDeliveryAddress(shipTo);
+        } catch (Exception e) {
+            Log.Debug(ZugpferdFile.class, e.getMessage());
+        }
+    }
+
+    /**
+     * Add customs commercial invoice metadata (Incoterms®, net/gross weight,
+     * package count) as EN 16931 customs notes (BG-1 / BT-21 = {@code CUS})
+     * when present on the invoice or contact.
+     *
+     * @param invoice
+     * @param item
+     * @param contact
+     */
+    public static void applyCustomsNotes(Invoice invoice, Item item, Contact contact) {
+        if (invoice == null) {
+            return;
+        }
+        String incoterms = findIncoterms(item, contact);
+        if (!incoterms.isEmpty()) {
+            invoice.addCustomsNote("Incoterms: " + incoterms);
+        }
+        String netW = valueProperty(item, KEY_NET_WEIGHT);
+        String grossW = valueProperty(item, KEY_GROSS_WEIGHT);
+        String pkgs = valueProperty(item, KEY_PACKAGES);
+        List<String> parts = new ArrayList<String>();
+        if (!isEmpty(netW)) {
+            parts.add("Net weight: " + netW.trim() + (netW.toLowerCase(Locale.ROOT).contains("kg") ? "" : " kg"));
+        }
+        if (!isEmpty(grossW)) {
+            parts.add("Gross weight: " + grossW.trim() + (grossW.toLowerCase(Locale.ROOT).contains("kg") ? "" : " kg"));
+        }
+        if (!isEmpty(pkgs)) {
+            parts.add("Packages: " + pkgs.trim());
+        }
+        if (!parts.isEmpty()) {
+            invoice.addCustomsNote(String.join(", ", parts));
         }
     }
 

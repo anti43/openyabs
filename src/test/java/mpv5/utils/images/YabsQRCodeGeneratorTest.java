@@ -206,6 +206,7 @@ class YabsQRCodeGeneratorTest {
             ctx.put("item.discountnetdifferencef", "");
             ctx.put("item.taxnotes", "");
             ctx.put("item.contact.cnumber", "KD000415");
+            ctx.put("item.contact.taxnumber", "ATU12345678");
             ctx.put("item.contact.eori", "DE987654321098765");
             ctx.put("item.contact.title", "DARC OV-L23");
             ctx.put("item.contact.fullname", "Michael Punsmann");

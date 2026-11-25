@@ -243,11 +243,22 @@ class VatBreakdownTest {
     @Test
     void invoiceAndDemoTemplatesContainEoriFields() throws Exception {
         for (String t : new String[]{"/extra/templates/invoice.odt", "/extra/templates/demo-00.odt", "/extra/templates/demo-00-ku.odt",
-            "/extra/templates/demo-20.odt", "/extra/templates/demo-21.odt", "/extra/templates/demo-22.odt"}) {
+            "/extra/templates/demo-00-commercial.odt", "/extra/templates/demo-20.odt", "/extra/templates/demo-21.odt", "/extra/templates/demo-22.odt"}) {
             String c = content(t);
             assertTrue(c.contains("&lt;companyinfo.eori&gt;"), t + " missing companyinfo.eori");
             assertTrue(c.contains("&lt;item.contact.eori&gt;"), t + " missing item.contact.eori");
+            assertTrue(c.contains("&lt;item.contact.taxnumber&gt;"), t + " missing item.contact.taxnumber (buyer VAT ID)");
         }
+        String commercial = content("/extra/templates/demo-00-commercial.odt");
+        assertTrue(commercial.contains("&lt;item.incoterms&gt;"), "demo-00-commercial.odt missing item.incoterms");
+        assertTrue(commercial.contains("&lt;item.netweight&gt;"), "demo-00-commercial.odt missing item.netweight");
+        assertTrue(commercial.contains("&lt;item.grossweight&gt;"), "demo-00-commercial.odt missing item.grossweight");
+        assertTrue(commercial.contains("&lt;item.packages&gt;"), "demo-00-commercial.odt missing item.packages");
+        assertTrue(commercial.contains("&lt;item.contact.deliveryaddress.street&gt;"), "demo-00-commercial.odt missing deliveryaddress");
+        String productSheet = content("/extra/templates/demo-05.odt");
+        assertTrue(productSheet.contains("&lt;product.hscode&gt;"), "demo-05.odt missing product.hscode");
+        assertTrue(productSheet.contains("&lt;product.origincountry&gt;"), "demo-05.odt missing product.origincountry");
+        assertTrue(productSheet.contains("&lt;product.netweight&gt;"), "demo-05.odt missing product.netweight");
         String contactSheet = content("/extra/templates/demo-08.odt");
         assertTrue(contactSheet.contains("&lt;contact.eori&gt;"), "demo-08.odt missing contact.eori");
         assertTrue(contactSheet.contains("&lt;contact.peppolid&gt;"), "demo-08.odt missing contact.peppolid");

@@ -188,12 +188,33 @@ class EInvoiceRoundTripTest {
         c.setZip("10115");
         c.setCity("Berlin");
         c.setCountry("DE");
+        c.settaxnumber("DE222222222");
         c.setMailaddress("buchhaltung@kunde.example");
         c.setisCustomer(true);
         c.setDateadded(new java.util.Date());
         assertTrue(c.save(true));
         mpv5.handler.ContactService.savePeppolId(c, "0204:04011000-12345-34");
         mpv5.handler.ContactService.saveEori(c, "DE987654321098765");
+        mpv5.db.objects.Address shipTo = new mpv5.db.objects.Address();
+        shipTo.setContactsids(c.__getIDS());
+        shipTo.setInttype(1); // delivery address
+        shipTo.setCompany("Kunde AG Logistikzentrum");
+        shipTo.setCname("Kunde AG");
+        shipTo.setStreet("Hafenstr. 9");
+        shipTo.setZip("20457");
+        shipTo.setCity("Hamburg");
+        shipTo.setCountry("DE");
+        assertTrue(shipTo.save(true));
+        mpv5.db.objects.Product prod = (mpv5.db.objects.Product) DatabaseObject.getObject(Context.getProduct());
+        prod.setCname("Server-Modul");
+        prod.setExternalnetvalue(new java.math.BigDecimal("50.00"));
+        prod.setInternalnetvalue(new java.math.BigDecimal("30.00"));
+        prod.setTaxids(1);
+        prod.setMeasure("Stk");
+        assertTrue(prod.save(true));
+        mpv5.handler.ProductService.setValue(prod, mpv5.handler.ProductService.HS_CODE, "84713000");
+        mpv5.handler.ProductService.setValue(prod, mpv5.handler.ProductService.ORIGIN_COUNTRY, "DE");
+        mpv5.handler.ProductService.setValue(prod, mpv5.handler.ProductService.NET_WEIGHT, "1.50");
         mpv5.db.objects.Item inv = (mpv5.db.objects.Item) DatabaseObject.getObject(Context.getInvoice());
         inv.setContactsids(c.__getIDS());
         inv.setCname("Beratung");
@@ -203,10 +224,12 @@ class EInvoiceRoundTripTest {
         inv.setDateadded(new java.util.Date());
         inv.setAccountsids(1);
         assertTrue(inv.save(true));
+        mpv5.db.objects.ValueProperty.addOrUpdateProperty(mpv5.utils.export.ZugpferdFile.KEY_INCOTERMS, "DAP Hamburg", inv);
         for (int i = 1; i <= 2; i++) {
             mpv5.db.objects.SubItem s = new mpv5.db.objects.SubItem();
             s.setItemsids(inv.__getIDS());
             s.setCname("Pos " + i);
+            s.setOriginalproductsids(prod.__getIDS());
             s.setQuantityvalue(new java.math.BigDecimal(i));
             s.setExternalvalue(new java.math.BigDecimal("50.00"));
             s.setInternalvalue(new java.math.BigDecimal("50.00"));
@@ -222,6 +245,18 @@ class EInvoiceRoundTripTest {
         assertEquals("9930:DE999999999", fields.get("companyinfo.peppolid"));
         assertEquals("DE987654321098765", fields.get("item.contact.eori"));
         assertEquals("0204:04011000-12345-34", fields.get("item.contact.peppolid"));
+        assertEquals("DAP Hamburg", fields.get("item.incoterms"));
+        assertEquals("EUR", fields.get("item.currency"));
+        assertEquals("4,5", String.valueOf(fields.get("item.netweight")).replace("4,50", "4,5").replace("4.50", "4,5").replace("4.5", "4,5"));
+        @SuppressWarnings("unchecked")
+        java.util.List<String[]> xtable1 = (java.util.List<String[]>) fields.get("item.xtable1");
+        assertNotNull(xtable1, "item.xtable1 must be populated");
+        assertEquals(2, xtable1.size());
+        assertTrue(xtable1.get(0).length >= 16, "SubItem.toStringArray() must provide columns 14-16");
+        assertEquals("84713000", xtable1.get(0)[13]);
+        assertEquals("DE", xtable1.get(0)[14]);
+        assertEquals("1,5", xtable1.get(0)[15].replace("1,50", "1,5").replace("1.50", "1,5").replace("1.5", "1,5"));
+        assertEquals("3", xtable1.get(1)[15].replace("3,00", "3").replace("3.00", "3").replace("3,0", "3").replace("3.0", "3"));
         Path out = tmp.resolve("out");
         Files.createDirectories(out);
         File xml = out.resolve(inv.__getCnumber() + ".xml").toFile();
@@ -240,6 +275,10 @@ class EInvoiceRoundTripTest {
         assertTrue(exportedXml.contains("<ram:URIID schemeID=\"0204\">04011000-12345-34</ram:URIID>"), exportedXml);
         assertTrue(exportedXml.contains("<ram:Content>Seller EORI: DE123456789012345</ram:Content>"), exportedXml);
         assertTrue(exportedXml.contains("<ram:Content>Buyer EORI: DE987654321098765</ram:Content>"), exportedXml);
+        assertTrue(exportedXml.contains("<ram:Content>Incoterms: DAP Hamburg</ram:Content>"), exportedXml);
+        assertTrue(exportedXml.contains("<ram:ShipToTradeParty>"), exportedXml);
+        assertTrue(exportedXml.contains("<ram:ClassCode listID=\"HS\">84713000</ram:ClassCode>"), exportedXml);
+        assertTrue(exportedXml.replaceAll("\\s+", "").contains("<ram:OriginTradeCountry><ram:ID>DE</ram:ID></ram:OriginTradeCountry>"), exportedXml);
         //the checksums of both files are recorded and verified
         java.util.List<mpv5.handler.DocumentFiles.Entry> files = mpv5.handler.DocumentFiles.verify(inv);
         assertEquals(2, files.size(), String.valueOf(files));

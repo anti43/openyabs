@@ -261,6 +261,18 @@ public final class ProductService {
      */
     public static final String DATASHEET = "product.datasheet";
     /**
+     * Property: HS / Combined Nomenclature (CN) customs tariff code (BT-158, 6-11 digits)
+     */
+    public static final String HS_CODE = "hscode";
+    /**
+     * Property: country of origin of the product (BT-159, ISO 3166 alpha-2 code)
+     */
+    public static final String ORIGIN_COUNTRY = "origincountry";
+    /**
+     * Property: net weight per unit in kg (e.g. "1.25")
+     */
+    public static final String NET_WEIGHT = "netweight";
+    /**
      * Property per supplier: link to the product at the supplier
      */
     public static final String SUPPLIER_URL = "url";
@@ -268,6 +280,73 @@ public final class ProductService {
      * Property per supplier: purchase price at the supplier
      */
     public static final String SUPPLIER_PRICE = "price";
+
+    /**
+     * Normalize an HS / CN customs tariff code (removes spaces and dots).
+     *
+     * @param hsCode
+     * @return digits only, or trimmed string
+     */
+    public static String normalizeHsCode(String hsCode) {
+        if (hsCode == null) {
+            return "";
+        }
+        return hsCode.replaceAll("[\\s.\\-]", "").trim();
+    }
+
+    /**
+     * Check whether an HS / Combined Nomenclature (CN) / TARIC code is well
+     * formed (4 to 11 digits, typically 6-digit HS or 8-digit CN).
+     *
+     * @param hsCode
+     * @return
+     */
+    public static boolean isValidHsCode(String hsCode) {
+        String norm = normalizeHsCode(hsCode);
+        return norm.matches("[0-9]{4,11}");
+    }
+
+    /**
+     * Check whether a country of origin value is a valid country (2-letter ISO
+     * 3166 alpha-2 code or country name convertible by
+     * {@link mpv5.utils.export.ZugpferdFile#toCountryCode(String)}).
+     *
+     * @param country
+     * @return
+     */
+    public static boolean isValidOriginCountry(String country) {
+        if (country == null || country.trim().isEmpty()) {
+            return false;
+        }
+        return !mpv5.utils.export.ZugpferdFile.toCountryCode(country).isEmpty();
+    }
+
+    /**
+     * Parse a weight in kg (accepts dot or comma decimal separator).
+     *
+     * @param weight
+     * @return the non-negative weight, or {@code null} if empty or invalid
+     */
+    public static BigDecimal parseWeightKg(String weight) {
+        if (weight == null || weight.trim().isEmpty()) {
+            return null;
+        }
+        String cleaned = weight.trim().replaceAll("(?i)\\s*kg$", "").trim().replace(',', '.');
+        try {
+            BigDecimal bd = new BigDecimal(cleaned);
+            return bd.signum() < 0 ? null : bd;
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    /**
+     * @param weight
+     * @return true if {@code weight} is a valid non-negative weight in kg
+     */
+    public static boolean isValidWeightKg(String weight) {
+        return parseWeightKg(weight) != null;
+    }
 
     /**
      * @param product

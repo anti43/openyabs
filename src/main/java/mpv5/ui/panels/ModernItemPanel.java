@@ -2157,6 +2157,49 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
                 throw new ChangeNotApprovedException(dataOwner);
             }
         }
+        //cross-border invoice with pure free-text positions: warn that product-level customs fields (HS, origin, weight) will be empty
+        if (ItemService.isInvoiceType(dataOwner.__getInttype()) && (!dataOwner.isExisting() || hasUnsavedChanges())) {
+            try {
+                MPComboBoxModelItem sel = contactname.getSelectedItem();
+                if (sel != null && sel.isValid()) {
+                    Contact c = (Contact) DatabaseObject.getObject(Context.getContact(), Integer.valueOf(sel.getId()));
+                    String sellerCountry = ZugpferdFile.companySettings().apply("country");
+                    if (sellerCountry == null || sellerCountry.trim().isEmpty()) {
+                        sellerCountry = User.getCurrentUser().__getDefcountry();
+                    }
+                    String buyerCountry = c.__getCountry();
+                    if (buyerCountry == null || buyerCountry.trim().isEmpty()) {
+                        mpv5.db.objects.Address del = c.getDeliveryaddress();
+                        if (del != null) {
+                            buyerCountry = del.__getCountry();
+                        }
+                    }
+                    mpv5.utils.export.VatCategory vatCat = null;
+                    String taxId = ContactService.contactTax(c);
+                    if (!taxId.isEmpty()) {
+                        try {
+                            mpv5.db.objects.Tax tax = (mpv5.db.objects.Tax) DatabaseObject.getObject(
+                                    Context.getTaxes(), Integer.parseInt(taxId));
+                            if (tax != null) {
+                                vatCat = tax.category();
+                            }
+                        } catch (Exception ignored) {
+                        }
+                    }
+                    positions.stopEditing();
+                    String customsWarn = ItemService.crossBorderFreeTextWarning(
+                            sellerCountry, buyerCountry, vatCat, positions.getModel());
+                    if (customsWarn != null && !Popup.Y_N_dialog(customsWarn + "\n\n"
+                            + Messages.CROSS_BORDER_FREETEXT_SAVE_ANYWAY)) {
+                        throw new ChangeNotApprovedException(dataOwner);
+                    }
+                }
+            } catch (ChangeNotApprovedException e) {
+                throw e;
+            } catch (Exception e) {
+                Log.Debug(this, e.getMessage());
+            }
+        }
         //a saved document: ask only if something was changed (saving without a change asked as
         //well, so the question came "sometimes"), and only once
         if (dataOwner.isExisting() && (hasUnsavedChanges() || hasLockedStatusChange())) {

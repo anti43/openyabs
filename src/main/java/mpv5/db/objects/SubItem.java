@@ -505,6 +505,28 @@ public final class SubItem extends DatabaseObject implements Triggerable {
         List<String> all = new LinkedList<String>();
 
         boolean textitem = getInttype() != TYPE_TEXT;
+        String hsCode = "";
+        String originCountry = "";
+        String lineNetWeight = "";
+        if (textitem && __getOriginalproductsids() > 0) {
+            try {
+                Product p = (Product) DatabaseObject.getObject(Context.getProduct(), __getOriginalproductsids());
+                hsCode = mpv5.handler.ProductService.normalizeHsCode(
+                        mpv5.handler.ProductService.value(p, mpv5.handler.ProductService.HS_CODE));
+                String origin = mpv5.handler.ProductService.value(p, mpv5.handler.ProductService.ORIGIN_COUNTRY);
+                if (!origin.trim().isEmpty()) {
+                    String iso = ZugpferdFile.toCountryCode(origin);
+                    originCountry = iso.isEmpty() ? origin.trim() : iso;
+                }
+                BigDecimal unitW = mpv5.handler.ProductService.parseWeightKg(
+                        mpv5.handler.ProductService.value(p, mpv5.handler.ProductService.NET_WEIGHT));
+                if (unitW != null) {
+                    lineNetWeight = formatDezimal(unitW.multiply(effectiveQuantity()).setScale(2, java.math.RoundingMode.HALF_UP));
+                }
+            } catch (Exception ex) {
+                Log.Debug(this, ex.getMessage());
+            }
+        }
         String[] possibleCols = new String[]{
             ////////////////// The exported columns///////////////////////////////////////
             /*1*/textitem ? String.valueOf(formatInteger(this.__getCountvalue())) : "",
@@ -519,7 +541,10 @@ public final class SubItem extends DatabaseObject implements Triggerable {
             /*10*/ __getLinkurl(),
             /*11*/ __getCname(),
             /*12*/ textitem ? String.valueOf(formatPercent(this.__getDiscount())) : "",
-            /*13*/ textitem ? String.valueOf(formatLokalCurrency(this.totalnetvalue.subtract(this.discvalue))) : ""
+            /*13*/ textitem ? String.valueOf(formatLokalCurrency(this.totalnetvalue.subtract(this.discvalue))) : "",
+            /*14*/ hsCode,
+            /*15*/ originCountry,
+            /*16*/ lineNetWeight
         ///////////////////////////////////////////////////////////////////////////////
         };
         List<String> l = Arrays.asList(possibleCols);
@@ -1231,6 +1256,24 @@ public final class SubItem extends DatabaseObject implements Triggerable {
 
         org.mustangproject.Product product = new org.mustangproject.Product(
                 name, text.equals(name) ? "" : text, ZugpferdFile.toUnitCode(measure), tax);
+        if (__getOriginalproductsids() > 0) {
+            try {
+                Product dbProd = (Product) DatabaseObject.getObject(Context.getProduct(), __getOriginalproductsids());
+                String hs = mpv5.handler.ProductService.normalizeHsCode(
+                        mpv5.handler.ProductService.value(dbProd, mpv5.handler.ProductService.HS_CODE));
+                if (mpv5.handler.ProductService.isValidHsCode(hs)) {
+                    product.addClassification(new org.mustangproject.DesignatedProductClassification(
+                            new org.mustangproject.ClassCode("HS", hs)));
+                }
+                String origin = mpv5.handler.ProductService.value(dbProd, mpv5.handler.ProductService.ORIGIN_COUNTRY);
+                String originIso = ZugpferdFile.toCountryCode(origin);
+                if (!originIso.isEmpty() && !origin.trim().isEmpty()) {
+                    product.setCountryOfOrigin(originIso);
+                }
+            } catch (Exception e) {
+                Log.Debug(this, e.getMessage());
+            }
+        }
         mpv5.utils.export.VatCategory category = vatCategory(taxRate, tax);
         if (category != mpv5.utils.export.VatCategory.S) {
             product.setTaxCategoryCode(category.code());

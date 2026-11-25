@@ -181,7 +181,7 @@ class YabsBarcodeGeneratorTest {
     @Test
     void allNonJournalDemoTemplatesContainBarcodePlaceholder() throws Exception {
         String[] withBarcode = {
-            "demo-00.odt", "demo-00-ku.odt", "demo-01.odt", "demo-02.odt", "demo-03.odt", "demo-04.odt",
+            "demo-00.odt", "demo-00-ku.odt", "demo-00-commercial.odt", "demo-01.odt", "demo-02.odt", "demo-03.odt", "demo-04.odt",
             "demo-05.odt", "demo-06.odt", "demo-07.odt", "demo-08.odt", "demo-10.odt", "demo-11.odt",
             "demo-12.odt", "demo-13.odt", "demo-14.odt", "demo-20.odt", "demo-21.odt", "demo-22.odt"
         };
@@ -209,6 +209,7 @@ class YabsBarcodeGeneratorTest {
         fields.put("item.discountnetdifferencef", "");
         fields.put("item.taxnotes", "");
         fields.put("item.contact.cnumber", "KD000415");
+        fields.put("item.contact.taxnumber", "ATU12345678");
         fields.put("item.contact.eori", "DE987654321098765");
         fields.put("item.contact.title", "DARC OV-L23");
         fields.put("item.contact.fullname", "Michael Punsmann");

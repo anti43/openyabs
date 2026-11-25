@@ -683,9 +683,20 @@ public final class ContactService {
             Log.Debug(ContactService.class, ex);
         }
         if (options.isEmpty()) {
-            options.add(Group.getDefault());
+            options.add(fallbackGroup());
         }
         return options;
+    }
+
+    private static Group fallbackGroup() {
+        try {
+            return Group.getDefault();
+        } catch (Exception ex) {
+            Group g = new Group();
+            g.setIDS(1);
+            g.setCname("All Group");
+            return g;
+        }
     }
 
     /**
@@ -699,7 +710,7 @@ public final class ContactService {
                 return g;
             }
         }
-        return options.isEmpty() ? Group.getDefault() : options.get(0);
+        return options.isEmpty() ? fallbackGroup() : options.get(0);
     }
 
     /**
@@ -1019,6 +1030,90 @@ public final class ContactService {
      */
     public static void saveEori(Contact contact, String eori) {
         mpv5.utils.export.ContactProperty.set(contact, mpv5.utils.export.ZugpferdFile.KEY_EORI, eori);
+    }
+
+    /**
+     * A currency option for the contact's {@code bankcurrency} dropdown.
+     */
+    public static final class CurrencyOption {
+
+        public final String code;
+        public final mpv5.utils.export.CurrencyCode currency;
+        public final String label;
+
+        CurrencyOption(String code, mpv5.utils.export.CurrencyCode currency, String label) {
+            this.code = code == null ? "" : code;
+            this.currency = currency;
+            this.label = label;
+        }
+
+        @Override
+        public String toString() {
+            return label;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (!(o instanceof CurrencyOption)) {
+                return false;
+            }
+            return code.equals(((CurrencyOption) o).code);
+        }
+
+        @Override
+        public int hashCode() {
+            return code.hashCode();
+        }
+    }
+
+    /**
+     * @return the selectable currencies (empty default + all {@link mpv5.utils.export.CurrencyCode} values)
+     */
+    public static List<CurrencyOption> currencyOptions() {
+        return currencyOptions(null);
+    }
+
+    /**
+     * @param currentCode optional currently stored currency code; if non-empty
+     * and not in {@link mpv5.utils.export.CurrencyCode}, appended so it is not lost
+     * @return the selectable currencies, never empty
+     */
+    public static List<CurrencyOption> currencyOptions(String currentCode) {
+        List<CurrencyOption> list = new java.util.ArrayList<CurrencyOption>();
+        list.add(new CurrencyOption("", null, "\u2013"));
+        for (mpv5.utils.export.CurrencyCode c : mpv5.utils.export.CurrencyCode.values()) {
+            list.add(new CurrencyOption(c.code(), c, c.toString()));
+        }
+        String raw = currentCode == null ? "" : currentCode.trim();
+        if (!raw.isEmpty() && mpv5.utils.export.CurrencyCode.parse(raw) == null) {
+            list.add(new CurrencyOption(raw, null, raw));
+        }
+        return list;
+    }
+
+    /**
+     * @param options from {@link #currencyOptions(String)}
+     * @param code stored currency code or symbol
+     * @return the matching option, or the first (empty) option if none matches
+     */
+    public static CurrencyOption currencyOption(List<CurrencyOption> options, String code) {
+        if (options == null || options.isEmpty()) {
+            return new CurrencyOption("", null, "\u2013");
+        }
+        String raw = code == null ? "" : code.trim();
+        if (raw.isEmpty()) {
+            return options.get(0);
+        }
+        mpv5.utils.export.CurrencyCode parsed = mpv5.utils.export.CurrencyCode.parse(raw);
+        for (CurrencyOption o : options) {
+            if ((parsed != null && parsed == o.currency) || o.code.equalsIgnoreCase(raw)) {
+                return o;
+            }
+        }
+        return options.get(0);
     }
 
     /**
