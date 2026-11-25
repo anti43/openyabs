@@ -381,6 +381,30 @@ class ZugpferdFileTest {
         }
     }
 
+    /**
+     * A negative line with a discount: the line net is the one of the printed
+     * invoice (InvoiceMath), not a 2-decimal unit price times the quantity
+     */
+    @Test
+    void negativeLineWithDiscountMatchesThePrintedTotal() throws Exception {
+        SubItem[] lines = {
+            line("Ware", "", "10", "Stk", "20", "19", "0"),
+            line("Abzug", "", "7", "Stk", "-1.13", "19", "5")
+        };
+        //7 x 1,13 = 7,91 - 5 % (0,40) = 7,51 (a unit price of 1,07 would give 7,49)
+        assertEquals(0, new BigDecimal("-7.51").compareTo(mpv5.utils.numberformat.InvoiceMath.lineNet(
+                new BigDecimal("7"), new BigDecimal("-1.13"), new BigDecimal("5"))));
+        Invoice invoice = ZugpferdFile.createInvoice(invoice(), lines, ZugpferdFile.createSender(company()::get), buyer(), "ref",
+                ZugpferdFile.PAYTERM_UNSET, null, ZugpferdFile.Format.values()[0]);
+        File xml = tmp.resolve("negdiscount.xml").toFile();
+        ZugpferdFile.writeXml(invoice, xml);
+        String x = new String(Files.readAllBytes(xml.toPath()), StandardCharsets.UTF_8);
+        //200 - 7,51 = 192,49; + 19 % (36,57) = 229,06
+        assertTrue(x.contains("<ram:TaxBasisTotalAmount>192.49</ram:TaxBasisTotalAmount>"), x);
+        assertTrue(x.contains("<ram:GrandTotalAmount>229.06</ram:GrandTotalAmount>"), x);
+        assertValid(xml);
+    }
+
     @Test
     void findsIbanAndBicWhateverFieldTheyAreIn() {
         //older German labels: "Konto" = account, "IBAN" = banknumber

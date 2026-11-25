@@ -88,8 +88,15 @@ public class YabsQRCodeGenerator {
         if (name.isEmpty()) {
             throw new IllegalStateException("No beneficiary name in the company info");
         }
-        text = payload(name, account.getIban(), account.getBic(), item.getGrossAmount(),
-                Item.getTypeString(item.__getInttype()) + " " + item.__getCname());
+        //EPC QR codes are EUR only: an invoice in another currency gets no amount (else the
+        //banking app would transfer the amount in EUR)
+        String currency = ZugpferdFile.findCurrency(item, contact instanceof mpv5.db.objects.Contact
+                ? (mpv5.db.objects.Contact) contact : null);
+        java.math.BigDecimal amount = "EUR".equals(currency) ? item.getGrossAmount() : null;
+        //the document number: the name is free text and may be empty
+        String number = ZugpferdFile.firstNonEmpty(item.__getCnumber(), item.__getCname());
+        text = payload(name, account.getIban(), account.getBic(), amount,
+                Item.getTypeString(item.__getInttype()) + " " + number);
     }
 
     YabsQRCodeGenerator(String text) {

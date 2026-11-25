@@ -1253,7 +1253,11 @@ public final class SubItem extends DatabaseObject implements Triggerable {
             quantity = quantity.negate();
             price = price.negate();
             if (lineDiscount != null && lineDiscount.signum() != 0) {
-                price = price.multiply(BD100.subtract(lineDiscount)).divide(BD100, 2, BigDecimal.ROUND_HALF_UP);
+                //the line net as on the printed invoice (InvoiceMath: line rounded once), as unit
+                //price with 4 decimals; a unit price rounded to 2 decimals times the quantity
+                //differed (7 x 1,13 - 5 %: 7,49 instead of 7,51)
+                BigDecimal net = mpv5.utils.numberformat.InvoiceMath.lineNet(quantity, price, lineDiscount);
+                price = net.divide(quantity, 4, BigDecimal.ROUND_HALF_UP);
                 lineDiscount = null;
             }
         }
