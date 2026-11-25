@@ -57,7 +57,8 @@ public final class ProductPreview extends javax.swing.JPanel {
      * @return the column names of Context.DETAILS_PRODUCTS (the first, the id, is hidden)
      */
     public static String[] productColumns() {
-        return new String[]{"ids", Messages.PRODUCTS_COL_NUMBER.toString(), Messages.PRODUCTS_COL_NAME.toString(), "EAN",
+        return new String[]{"ids", Messages.PRODUCTS_COL_NUMBER.toString(), Messages.PRODUCTS_COL_NAME.toString(),
+            Messages.PRODUCTS_KIND.toString(), "EAN",
             Messages.PRODUCTS_COL_REFERENCE.toString(), Messages.PRODUCTS_COL_SUPPLIER.toString(), Messages.PRODUCTS_COL_GROUP.toString(),
             Messages.PRODUCTS_COL_PURCHASE.toString(), Messages.PRODUCTS_COL_SALE.toString(), Messages.PRODUCTS_STOCK.toString(),
             Messages.PRODUCTS_COL_THRESHOLD.toString(), Messages.PRODUCTS_COL_NOT_IN_INVENTORY.toString()};
@@ -154,7 +155,7 @@ public final class ProductPreview extends javax.swing.JPanel {
     }
 
     /**
-     * Purchase price, sales price, stock and threshold (model columns 7..10 in
+     * Purchase price, sales price, stock and threshold (model columns 8..11 in
      * Context.DETAILS_PRODUCTS): local number format, right aligned. Leaves the
      * trailing Boolean column ("Not in inventory") using JTable's checkbox
      * renderer.
@@ -176,7 +177,7 @@ public final class ProductPreview extends javax.swing.JPanel {
         javax.swing.table.TableColumnModel cm = listtable.getColumnModel();
         for (int i = 0; i < cm.getColumnCount(); i++) {
             int modelCol = cm.getColumn(i).getModelIndex();
-            if (modelCol >= 7 && modelCol <= 10) {
+            if (modelCol >= 8 && modelCol <= 11) {
                 cm.getColumn(i).setCellRenderer(r);
             }
         }

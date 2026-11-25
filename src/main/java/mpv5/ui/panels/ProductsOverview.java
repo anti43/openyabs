@@ -384,10 +384,14 @@ public class ProductsOverview extends JPanel implements ListPanel {
         if (belowThreshold.isSelected()) {
             data = filterByIds(data, belowThresholdIds);
         }
+        int typeCol = 3;
         int notInInventoryCol = header.length - 1;
         for (Object[] row : data) {
             if (row != null && row.length > notInInventoryCol) {
-                row[notInInventoryCol] = isNotInInventory(row[notInInventoryCol]);
+                int type = parseProductType(row[typeCol]);
+                String label = Product.getTypeString(type);
+                row[typeCol] = label != null ? label : Product.getTypeString(Product.TYPE_PRODUCT);
+                row[notInInventoryCol] = isNotInInventory(type, row[notInInventoryCol]);
             }
         }
         Class<?>[] types = new Class<?>[header.length];
@@ -399,11 +403,29 @@ public class ProductsOverview extends JPanel implements ListPanel {
         count.setText(String.format(Messages.PRODUCTS_COUNT.toString(), data.length));
     }
 
+    private static int parseProductType(Object inttypeValue) {
+        if (inttypeValue instanceof Number) {
+            return ((Number) inttypeValue).intValue();
+        }
+        if (inttypeValue != null) {
+            try {
+                return Integer.parseInt(String.valueOf(inttypeValue).trim());
+            } catch (NumberFormatException ignore) {
+                // default to product
+            }
+        }
+        return Product.TYPE_PRODUCT;
+    }
+
     /**
+     * @param inttype product type ({@link Product#TYPE_PRODUCT} / {@link Product#TYPE_SERVICE})
      * @param intinventorytypeValue raw DB value of {@code products.intinventorytype}
-     * @return {@code true} when inventory tracking is disabled ("Not in inventory")
+     * @return {@code true} for services or when inventory tracking is disabled ("Not in inventory")
      */
-    static boolean isNotInInventory(Object intinventorytypeValue) {
+    static boolean isNotInInventory(int inttype, Object intinventorytypeValue) {
+        if (inttype == Product.TYPE_SERVICE) {
+            return true;
+        }
         if (intinventorytypeValue == null) {
             return true;
         }

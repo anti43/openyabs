@@ -219,6 +219,7 @@ public class Context implements Serializable, Comparable<Context> {
             = IDENTITY_PRODUCTS + "." + "ids,"
             + IDENTITY_PRODUCTS + "." + "cnumber,"
             + IDENTITY_PRODUCTS + "." + "cname,"
+            + IDENTITY_PRODUCTS + "." + "inttype,"
             + IDENTITY_PRODUCTS + "." + "ean,"
             + IDENTITY_PRODUCTS + "." + "reference,"
             + IDENTITY_CONTACTS + "." + "cname,"
