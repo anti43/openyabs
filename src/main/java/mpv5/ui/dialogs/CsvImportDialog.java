@@ -144,6 +144,35 @@ public final class CsvImportDialog extends JDialog {
     private java.util.Set<String> existing = new java.util.HashSet<String>();
     private int importable;
     private boolean updating;
+    /**
+     * stock mode: the rows go to the stock management (product found: stock
+     * topped up, else created) instead of being imported; null: normal import
+     */
+    private java.util.function.BiConsumer<CsvImport.Data, Field[]> stockTarget;
+
+    /**
+     * Opens the import as wizard of the stock management: products with a
+     * column of number, EAN, reference or name and optionally the quantity
+     * (stock column); the rows are handed to the target, nothing is saved here
+     *
+     * @param target gets the data and the column mapping
+     */
+    public static void openForStock(java.util.function.BiConsumer<CsvImport.Data, Field[]> target) {
+        Window owner = null;
+        try {
+            owner = mpv5.YabsViewProxy.instance().getIdentifierFrame();
+        } catch (Exception e) {
+            //no main window
+        }
+        CsvImportDialog d = new CsvImportDialog(owner);
+        d.stockTarget = target;
+        d.setTitle(Messages.STOCK_WIZARD_TITLE.toString());
+        d.kind.setSelectedItem(Kind.PRODUCTS);
+        d.kind.setEnabled(false);
+        d.setModalityType(ModalityType.APPLICATION_MODAL);
+        d.setLocationRelativeTo(owner);
+        d.setVisible(true);
+    }
 
     /**
      * Opens the import over the main window
@@ -541,7 +570,8 @@ public final class CsvImportDialog extends JDialog {
             if (CsvImport.isEmpty(row)) {
                 continue;
             }
-            List<String> p = CsvImport.check(row, mapping, k, taken);
+            List<String> p = stockTarget != null ? mpv5.handler.StockService.check(row, mapping)
+                    : CsvImport.check(row, mapping, k, taken);
             if (p.isEmpty()) {
                 importable++;
             } else {
@@ -578,7 +608,8 @@ public final class CsvImportDialog extends JDialog {
             preview.getColumnModel().getColumn(0).setPreferredWidth(ModernTheme.px(44));
             preview.getColumnModel().getColumn(preview.getColumnCount() - 1).setPreferredWidth(ModernTheme.px(320));
         }
-        String mappingProblem = CsvImport.checkMapping(mapping, k);
+        String mappingProblem = stockTarget != null ? mpv5.handler.StockService.checkMapping(mapping)
+                : CsvImport.checkMapping(mapping, k);
         mappingError.setText(mappingProblem == null ? " " : mappingProblem);
         if (mappingProblem != null) {
             importable = 0;
@@ -685,6 +716,11 @@ public final class CsvImportDialog extends JDialog {
             }
             go(1);
         } else if (step == 1) {
+            if (stockTarget != null) {
+                stockTarget.accept(data, mapping.clone());
+                dispose();
+                return;
+            }
             runImport();
         } else {
             dispose();
@@ -712,7 +748,7 @@ public final class CsvImportDialog extends JDialog {
             next.setText(Messages.CSV_NEXT.toString());
             next.setEnabled(true);
         } else if (step == 1) {
-            next.setText(String.format(Messages.CSV_IMPORT.toString(), importable));
+            next.setText(String.format((stockTarget != null ? Messages.STOCK_WIZARD_TAKE : Messages.CSV_IMPORT).toString(), importable));
             next.setEnabled(importable > 0);
         } else {
             next.setText(Messages.CSV_CLOSE.toString());

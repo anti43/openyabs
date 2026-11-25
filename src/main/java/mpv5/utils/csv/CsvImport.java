@@ -751,6 +751,16 @@ public final class CsvImport {
         return r;
     }
 
+    /**
+     * @param row
+     * @param mapping
+     * @return a new product with the values of the row (not saved)
+     * @throws Exception if a value cannot be set
+     */
+    public static Product createProduct(String[] row, Field[] mapping) throws Exception {
+        return (Product) create(row, mapping, Kind.PRODUCTS, new java.util.HashMap<String, Integer>());
+    }
+
     private static DatabaseObject create(String[] row, Field[] mapping, Kind kind, java.util.Map<String, Integer> taxes) throws Exception {
         DatabaseObject o;
         if (kind.isContact()) {
