@@ -569,6 +569,30 @@ public class Product extends DatabaseObject implements Formattable, Templateable
       this.productlistsids = productlistsids;
    }
 
+   /**
+    * @return true if this product uses inventory tracking and its stock has
+    *         reached or fallen below its warn threshold
+    */
+   public boolean isBelowThreshold() {
+      return isBelowThreshold(__getInttype(), __getIntinventorytype(), __getStockvalue(), __getThresholdvalue());
+   }
+
+   /**
+    * @param inttype product type ({@link #TYPE_PRODUCT} / {@link #TYPE_SERVICE})
+    * @param intinventorytype {@code 1} when inventory tracking is enabled
+    * @param stock current stock value
+    * @param threshold warn threshold value
+    * @return true if inventory tracking is enabled on a product and stock &lt;= threshold
+    */
+   public static boolean isBelowThreshold(int inttype, int intinventorytype, BigDecimal stock, BigDecimal threshold) {
+      if (inttype != TYPE_PRODUCT || intinventorytype != 1) {
+         return false;
+      }
+      BigDecimal s = stock != null ? stock : BigDecimal.ZERO;
+      BigDecimal t = threshold != null ? threshold : BigDecimal.ZERO;
+      return s.compareTo(t) <= 0;
+   }
+
    @Override
    public boolean save(boolean silent) {
 

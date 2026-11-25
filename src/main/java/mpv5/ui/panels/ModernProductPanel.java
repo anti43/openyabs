@@ -127,6 +127,7 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
     private final JLabel meta = new JLabel();
     private final ChipToggle productChip = new ChipToggle(Messages.TYPE_PRODUCT.toString());
     private final ChipToggle serviceChip = new ChipToggle(Messages.TYPE_SERVICE.toString());
+    private final ThresholdBadge thresholdBadge = new ThresholdBadge();
     private final JButton previewButton = action(text("ProductPanel.button_preview.text"));
     private final JButton orderButton = action(text("ProductPanel.button_order.text"));
     private final JButton listButton = action(text("ProductPanel.button_listedit.text"));
@@ -313,6 +314,7 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
         inventoryDisabled.addItemListener(e -> {
             stack.setEnabled(!inventoryDisabled.isSelected());
             threshold.setEnabled(!inventoryDisabled.isSelected());
+            updateThresholdBadge();
         });
 
         //prices: markup -> sale price, sale price -> markup, both -> gross
@@ -329,6 +331,8 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
             updateGross();
         });
         onChange(cname, this::updateHeader);
+        onChange(stack, this::updateThresholdBadge);
+        onChange(threshold, this::updateThresholdBadge);
 
         ButtonGroup types = new ButtonGroup();
         types.add(productChip);
@@ -390,6 +394,7 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
         chips.setOpaque(false);
         chips.add(productChip);
         chips.add(serviceChip);
+        chips.add(thresholdBadge);
         //name and the buttons in one line (the buttons go below the name if there is no room)
         JPanel titleRow = new JPanel(new WrapLayout(FlowLayout.LEFT, 0, ModernTheme.px(2)));
         titleRow.setOpaque(false);
@@ -998,6 +1003,25 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
             m.append(" · ").append(by);
         }
         meta.setText(m.toString());
+        updateThresholdBadge();
+    }
+
+    private void updateThresholdBadge() {
+        BigDecimal s = number(stack);
+        BigDecimal t = number(threshold);
+        boolean low = Product.isBelowThreshold(inttype_, inventoryDisabled.isSelected() ? 0 : 1, s, t);
+        boolean changed = thresholdBadge.isVisible() != low;
+        thresholdBadge.setVisible(low);
+        if (low) {
+            BigDecimal sv = s != null ? s : BigDecimal.ZERO;
+            BigDecimal tv = t != null ? t : BigDecimal.ZERO;
+            thresholdBadge.setToolTipText(Messages.PRODUCTS_STOCK + ": " + FormatNumber.formatDezimal(sv)
+                    + " / " + Messages.PRODUCTS_COL_THRESHOLD + ": " + FormatNumber.formatDezimal(tv));
+        }
+        if (changed && thresholdBadge.getParent() != null) {
+            thresholdBadge.getParent().revalidate();
+            thresholdBadge.getParent().repaint();
+        }
     }
 
     private void updatePath() {
@@ -1716,4 +1740,33 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
     public void changeSelection(MPComboBoxModelItem to, Context c) {
     }
     // </editor-fold>
+
+    /**
+     * Red pill shown in the header while a tracked product's stock is at or
+     * below its warn threshold.
+     */
+    private static final class ThresholdBadge extends JLabel {
+
+        private static final long serialVersionUID = 1L;
+
+        ThresholdBadge() {
+            super(Messages.PRODUCTS_BELOW_THRESHOLD.toString());
+            setName("thresholdBadge");
+            setFont(ModernTheme.font(-1, Font.BOLD));
+            setForeground(Color.WHITE);
+            setBorder(BorderFactory.createEmptyBorder(
+                    ModernTheme.px(3), ModernTheme.px(10), ModernTheme.px(3), ModernTheme.px(10)));
+            setVisible(false);
+        }
+
+        @Override
+        protected void paintComponent(java.awt.Graphics g) {
+            java.awt.Graphics2D g2 = (java.awt.Graphics2D) g.create();
+            g2.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.setColor(mpv5.ui.modern.Applets.DANGER);
+            g2.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, getHeight(), getHeight());
+            g2.dispose();
+            super.paintComponent(g);
+        }
+    }
 }

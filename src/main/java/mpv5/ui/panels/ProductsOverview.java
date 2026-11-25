@@ -83,11 +83,36 @@ public class ProductsOverview extends JPanel implements ListPanel {
     private final LabeledCombobox supplier = new LabeledCombobox();
     private final LabeledCombobox manufacturer = new LabeledCombobox();
     private final DragNDropTreeForGroups gtree = new DragNDropTreeForGroups(1);
-    private final JTable listtable = new MPTable(this);
+    private java.util.Set<String> belowThresholdIds = java.util.Collections.emptySet();
+    private final JTable listtable = new MPTable(this) {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public java.awt.Component prepareRenderer(javax.swing.table.TableCellRenderer renderer, int row, int column) {
+            java.awt.Component c = super.prepareRenderer(renderer, row, column);
+            if (!isRowSelected(row)) {
+                int modelRow = convertRowIndexToModel(row);
+                Object id = modelRow >= 0 && modelRow < getModel().getRowCount()
+                        ? getModel().getValueAt(modelRow, 0) : null;
+                if (id != null && belowThresholdIds.contains(String.valueOf(id))) {
+                    c.setBackground(lowStockRowBackground());
+                } else {
+                    java.awt.Color alt = (row % 2 == 1)
+                            ? javax.swing.UIManager.getColor("Table.alternateRowColor") : null;
+                    c.setBackground(alt != null ? alt : getBackground());
+                }
+            }
+            return c;
+        }
+    };
     private final JLabel count = new JLabel();
     private final PrinitingComboBox printing = new PrinitingComboBox();
     private final Timer typing = new Timer(300, e -> refresh());
     private boolean loading;
+
+    private static java.awt.Color lowStockRowBackground() {
+        return ModernTheme.blend(Applets.DANGER, ModernTheme.cardBackground(), ModernTheme.isDark() ? 0.72f : 0.84f);
+    }
 
     public ProductsOverview() {
         super(new BorderLayout(ModernTheme.px(12), ModernTheme.px(12)));
@@ -355,8 +380,9 @@ public class ProductsOverview extends JPanel implements ListPanel {
         } catch (NodataFoundException ex) {
             data = new Object[0][header.length];
         }
+        belowThresholdIds = queryBelowThresholdIds();
         if (belowThreshold.isSelected()) {
-            data = belowThreshold(data);
+            data = filterByIds(data, belowThresholdIds);
         }
         listtable.setModel(new MPTableModel(data, header));
         //the internal id is not shown
@@ -365,12 +391,11 @@ public class ProductsOverview extends JPanel implements ListPanel {
     }
 
     /**
-     * @param data rows with the id of the product in the first column
-     * @return the rows of products whose stock reached the threshold:
+     * @return ids of products whose stock reached the threshold:
      * products with inventory and the stock at or below the threshold
      * (without a threshold: used up, 0 or less)
      */
-    private static Object[][] belowThreshold(Object[][] data) {
+    private static java.util.Set<String> queryBelowThresholdIds() {
         java.util.Set<String> ids = new java.util.HashSet<String>();
         try {
             Object[][] rows = QueryHandler.getConnection().freeSelectQuery(
@@ -386,6 +411,10 @@ public class ProductsOverview extends JPanel implements ListPanel {
         } catch (Exception ex) {
             Log.Debug(ProductsOverview.class, ex.getMessage());
         }
+        return ids;
+    }
+
+    private static Object[][] filterByIds(Object[][] data, java.util.Set<String> ids) {
         List<Object[]> l = new ArrayList<Object[]>();
         for (Object[] r : data) {
             if (r != null && r.length > 0 && ids.contains(String.valueOf(r[0]))) {

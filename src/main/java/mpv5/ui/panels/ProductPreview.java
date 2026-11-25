@@ -224,6 +224,9 @@ public final class ProductPreview extends javax.swing.JPanel {
                 .append(" · ").append(mpv5.utils.numberformat.FormatNumber.formatLokalCurrency(gross)).append(" ").append(Messages.PRODUCTS_GROSS);
         if (p.__getInttype() == Product.TYPE_PRODUCT && p.__getStockvalue() != null) {
             facts.append("<br>").append(Messages.PRODUCTS_STOCK).append(": ").append(mpv5.utils.numberformat.FormatNumber.formatDezimal(p.__getStockvalue()));
+            if (p.isBelowThreshold()) {
+                facts.append(" <span style='color:#b91c1c'><b>(").append(Messages.PRODUCTS_BELOW_THRESHOLD).append(")</b></span>");
+            }
         }
         if (ids.size() > 1) {
             facts.append("<br><b>").append(String.format(Messages.PRODUCTS_SELECTED_N.toString(), ids.size())).append("</b>");
