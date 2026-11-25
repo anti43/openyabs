@@ -1542,6 +1542,7 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
     private JPopupMenu exportMenu() {
         JPopupMenu m = new JPopupMenu();
         m.add(item(Messages.JOURNAL_EXPORT_ADVISER, Messages.JOURNAL_EXPORT_ADVISER_TIP, () -> withCurrentData(() -> exportAdviser())));
+        m.add(item(Messages.JOURNAL_EXPORT_ZM, Messages.JOURNAL_EXPORT_ZM_TIP, () -> withCurrentData(() -> exportEcSalesList())));
         List<JournalExport> pluginExports = ExtensionManager.instance().journalExports();
         if (!pluginExports.isEmpty()) {
             m.addSeparator();

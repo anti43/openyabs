@@ -248,6 +248,15 @@ class EInvoiceRoundTripTest {
         assertEquals("DAP Hamburg", fields.get("item.incoterms"));
         assertEquals("EUR", fields.get("item.currency"));
         assertEquals("4,5", String.valueOf(fields.get("item.netweight")).replace("4,50", "4,5").replace("4.50", "4,5").replace("4.5", "4,5"));
+        @SuppressWarnings("unchecked")
+        java.util.List<String[]> xtable1 = (java.util.List<String[]>) fields.get("item.xtable1");
+        assertNotNull(xtable1, "item.xtable1 must be populated");
+        assertEquals(2, xtable1.size());
+        assertTrue(xtable1.get(0).length >= 16, "SubItem.toStringArray() must provide columns 14-16");
+        assertEquals("84713000", xtable1.get(0)[13]);
+        assertEquals("DE", xtable1.get(0)[14]);
+        assertEquals("1,5", xtable1.get(0)[15].replace("1,50", "1,5").replace("1.50", "1,5").replace("1.5", "1,5"));
+        assertEquals("3", xtable1.get(1)[15].replace("3,00", "3").replace("3.00", "3").replace("3,0", "3").replace("3.0", "3"));
         Path out = tmp.resolve("out");
         Files.createDirectories(out);
         File xml = out.resolve(inv.__getCnumber() + ".xml").toFile();
