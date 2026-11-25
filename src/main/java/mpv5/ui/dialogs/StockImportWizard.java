@@ -103,6 +103,7 @@ public final class StockImportWizard extends JDialog {
 
     //step 3
     private final JCheckBox create;
+    private final JCheckBox ignoreCase;
     private final JLabel summary = new JLabel(" ");
     private final PreviewModel previewModel = new PreviewModel();
     private final JTable preview = new JTable(previewModel);
@@ -125,25 +126,36 @@ public final class StockImportWizard extends JDialog {
      * management (changed here as well)
      * @param target gets the entries (with product found and create flag)
      */
-    public static void open(JCheckBox createUnknown, Consumer<List<Entry>> target) {
+    public static void open(JCheckBox createUnknown, JCheckBox ignoreCaseSetting, Consumer<List<Entry>> target) {
         Window owner = null;
         try {
             owner = mpv5.YabsViewProxy.instance().getIdentifierFrame();
         } catch (Exception e) {
             //no main window
         }
-        StockImportWizard d = new StockImportWizard(owner, createUnknown, target);
+        StockImportWizard d = new StockImportWizard(owner, createUnknown, ignoreCaseSetting, target);
         d.setLocationRelativeTo(owner);
         d.setVisible(true);
     }
 
-    private StockImportWizard(Window owner, JCheckBox createUnknown, Consumer<List<Entry>> target) {
+    private StockImportWizard(Window owner, JCheckBox createUnknown, JCheckBox ignoreCaseSetting, Consumer<List<Entry>> target) {
         super(owner, Messages.STOCK_WIZARD_TITLE.toString(), ModalityType.APPLICATION_MODAL);
         this.target = target;
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         //the same setting as in the stock management, kept in sync
         create = new JCheckBox(Messages.STOCK_AUTOCREATE.toString(), createUnknown.isSelected());
         create.setToolTipText(Messages.STOCK_AUTOCREATE_INFO.toString());
+        //the same setting as in the stock management: changing it here changes it there (and looks up again)
+        ignoreCase = new JCheckBox(Messages.STOCK_IGNORE_CASE.toString(), ignoreCaseSetting.isSelected());
+        ignoreCase.setToolTipText(Messages.STOCK_IGNORE_CASE_INFO.toString());
+        ignoreCase.addActionListener(e -> {
+            if (ignoreCaseSetting.isSelected() != ignoreCase.isSelected()) {
+                ignoreCaseSetting.doClick();
+            }
+            if (step == 2) {
+                buildEntries();
+            }
+        });
         create.addActionListener(e -> {
             createUnknown.setSelected(create.isSelected());
             for (Entry en : entries) {
@@ -292,7 +304,7 @@ public final class StockImportWizard extends JDialog {
         fill.weightx = 1;
         textPage.add(new JLabel(), fill);
         separator.addActionListener(e -> textInfo.setText(String.format(Messages.STOCK_WIZ_CODES.toString(),
-                StockService.fromText(text.getText(), sep()).size())));
+                StockService.fromText(text.getText(), sep(), ignoreCase.isSelected()).size())));
 
         JPanel filePage = new JPanel(new BorderLayout(0, ModernTheme.px(8)));
         filePage.setOpaque(false);
@@ -415,7 +427,9 @@ public final class StockImportWizard extends JDialog {
         create.setFont(ModernTheme.font(1, Font.BOLD));
         JComponent info = wrapped(Messages.STOCK_AUTOCREATE_INFO.toString());
         summary.setFont(ModernTheme.font(1, Font.PLAIN));
-        for (JComponent c : new JComponent[]{create, info, summary}) {
+        ignoreCase.setOpaque(false);
+        ignoreCase.setFont(ModernTheme.font(1, Font.PLAIN));
+        for (JComponent c : new JComponent[]{ignoreCase, create, info, summary}) {
             c.setAlignmentX(Component.LEFT_ALIGNMENT);
             top.add(c);
             top.add(javax.swing.Box.createVerticalStrut(ModernTheme.px(4)));
@@ -448,14 +462,14 @@ public final class StockImportWizard extends JDialog {
     private void buildEntries() {
         skipped.clear();
         if (pasteSource.isSelected()) {
-            entries = StockService.fromText(text.getText(), sep());
+            entries = StockService.fromText(text.getText(), sep(), ignoreCase.isSelected());
         } else {
             int q = quantityColumn.getSelectedIndex() - 1;
-            entries = StockService.fromCsv(data, Math.max(0, codeColumn.getSelectedIndex()), q, mapping, skipped);
+            entries = StockService.fromCsv(data, Math.max(0, codeColumn.getSelectedIndex()), q, mapping, skipped, ignoreCase.isSelected());
         }
         setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.WAIT_CURSOR));
         try {
-            StockService.lookup(entries);
+            StockService.lookup(entries, ignoreCase.isSelected());
         } finally {
             setCursor(java.awt.Cursor.getDefaultCursor());
         }
@@ -555,7 +569,7 @@ public final class StockImportWizard extends JDialog {
         if (step == 0) {
             if (loadSource()) {
                 if (pasteSource.isSelected()) {
-                    textInfo.setText(String.format(Messages.STOCK_WIZ_CODES.toString(), StockService.fromText(text.getText(), sep()).size()));
+                    textInfo.setText(String.format(Messages.STOCK_WIZ_CODES.toString(), StockService.fromText(text.getText(), sep(), ignoreCase.isSelected()).size()));
                 }
                 go(1);
             }
