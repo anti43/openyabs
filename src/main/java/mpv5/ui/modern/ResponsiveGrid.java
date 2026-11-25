@@ -130,25 +130,25 @@ public class ResponsiveGrid extends JPanel implements Scrollable {
     }
 
     /**
-     * Drag the title of a card onto another card: it takes that place.
-     * Right click on a title: back to the original order.
+     * Drag the grip handle on the left of a card onto another card: it takes
+     * that place. Right click on the grip: back to the original order.
      */
     private void handle(final Card card) {
         JPanel h = card.getHeader();
-        h.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.MOVE_CURSOR));
-        h.setToolTipText(mpv5.globals.Messages.CARDS_MOVE.toString());
-        //a small drag handle before the title: the card can be moved
+        //a defined drag handle area on the left of the title: only this zone shows the move cursor
         Component title = ((java.awt.BorderLayout) h.getLayout()).getLayoutComponent(java.awt.BorderLayout.WEST);
         Grip grip = new Grip();
+        grip.setToolTipText(mpv5.globals.Messages.CARDS_MOVE.toString());
         if (title != null) {
             h.remove(title);
-            JPanel left = new JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, ModernTheme.px(6), 0));
+            JPanel left = new JPanel(new java.awt.BorderLayout(ModernTheme.px(2), 0));
             left.setOpaque(false);
-            left.add(grip);
-            left.add(title);
+            left.add(grip, java.awt.BorderLayout.WEST);
+            left.add(title, java.awt.BorderLayout.CENTER);
             h.add(left, java.awt.BorderLayout.WEST);
+        } else {
+            h.add(grip, java.awt.BorderLayout.WEST);
         }
-        final java.util.List<Component> inner = java.util.Arrays.asList(grip, title);
         java.awt.event.MouseAdapter m = new java.awt.event.MouseAdapter() {
             private boolean dragging;
 
@@ -204,24 +204,8 @@ public class ResponsiveGrid extends JPanel implements Scrollable {
                 p.show((Component) e.getSource(), e.getX(), e.getY());
             }
         };
-        h.addMouseListener(m);
-        h.addMouseMotionListener(m);
-        for (Component c : inner) {
-            if (c != null) {
-                c.addMouseListener(m);
-                c.addMouseMotionListener(m);
-                if (c instanceof javax.swing.JComponent) {
-                    ((javax.swing.JComponent) c).setToolTipText(mpv5.globals.Messages.CARDS_MOVE.toString());
-                }
-            }
-        }
-        for (Component c : h.getComponents()) {
-            c.addMouseListener(m);
-            c.addMouseMotionListener(m);
-            if (c instanceof javax.swing.JComponent) {
-                ((javax.swing.JComponent) c).setToolTipText(mpv5.globals.Messages.CARDS_MOVE.toString());
-            }
-        }
+        grip.addMouseListener(m);
+        grip.addMouseMotionListener(m);
     }
 
     @Override
@@ -250,14 +234,14 @@ public class ResponsiveGrid extends JPanel implements Scrollable {
     }
 
     /**
-     * Six dots: the usual sign for "drag here"
+     * Six dots with a padded hit area around them: the drag handle for moving a card
      */
     private static final class Grip extends javax.swing.JComponent {
 
         private static final long serialVersionUID = 1L;
 
         Grip() {
-            setPreferredSize(new Dimension(ModernTheme.px(8), ModernTheme.px(14)));
+            setPreferredSize(new Dimension(ModernTheme.px(18), ModernTheme.px(20)));
             setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.MOVE_CURSOR));
         }
 
