@@ -34,20 +34,36 @@ class StockServiceTest {
     }
 
     @Test
-    void codeAndQuantityOfACsvRow() {
-        Field[] m = mapping("Bezeichnung", "EAN", "Bestand");
-        //the EAN comes before the name
-        assertEquals("4006381333931", StockService.code(new String[]{"Ring", "4006381333931", "3"}, m));
-        assertEquals("Ring", StockService.code(new String[]{"Ring", "", "3"}, m));
-        assertEquals(0, new BigDecimal("3").compareTo(StockService.quantity(new String[]{"Ring", "", "3"}, m)));
-        assertEquals(0, BigDecimal.ONE.compareTo(StockService.quantity(new String[]{"Ring", "", ""}, m)));
-        assertTrue(StockService.check(new String[]{"Ring", "", "2,5"}, m).isEmpty());
-        assertFalse(StockService.check(new String[]{"", "", "2"}, m).isEmpty());
-        assertFalse(StockService.check(new String[]{"Ring", "", "viele"}, m).isEmpty());
-        assertNull(StockService.checkMapping(m));
-        assertNotNull(StockService.checkMapping(mapping("Bestand", "Preis")));
-        //no stock column: 1 per row
-        assertEquals(0, BigDecimal.ONE.compareTo(StockService.quantity(new String[]{"A-1"}, mapping("Artikelnummer"))));
+    void entriesFromAPastedList() {
+        List<StockService.Entry> e = StockService.fromText("A-1, a-1, 4006381333931,A-1", ",");
+        assertEquals(2, e.size());
+        assertEquals("A-1", e.get(0).code);
+        assertEquals(0, new BigDecimal("3").compareTo(e.get(0).quantity));
+        assertNull(e.get(0).row);
+    }
+
+    @Test
+    void entriesFromACsvFile() {
+        CsvImport.Data d = CsvImport.read("Bezeichnung;EAN;Bestand\nRing;4006381333931;3\nKette;;2,5\nRing;4006381333931;1\n;;4\nUhr;;viele\n"
+                .getBytes(java.nio.charset.StandardCharsets.UTF_8));
+        String[] head = d.rows.get(0);
+        Field[] m = CsvImport.guess(head, Kind.PRODUCTS);
+        //the EAN identifies before the name; the stock column is the quantity
+        assertEquals(1, StockService.codeColumn(m));
+        assertEquals(2, StockService.quantityColumn(m));
+        List<Integer> skipped = new java.util.ArrayList<Integer>();
+        List<StockService.Entry> e = StockService.fromCsv(d, 1, 2, m, skipped);
+        //"Kette" has no EAN, the empty row and the row with "viele" are skipped
+        assertEquals(Arrays.asList(3, 5, 6), skipped);
+        assertEquals(1, e.size());
+        assertEquals(0, new BigDecimal("4").compareTo(e.get(0).quantity));
+        //by name, no quantity column: 1 per row
+        e = StockService.fromCsv(d, 0, -1, m, skipped = new java.util.ArrayList<Integer>());
+        assertEquals(3, e.size());
+        assertEquals(0, new BigDecimal("2").compareTo(e.get(0).quantity));
+        assertEquals(Arrays.asList(5), skipped);
+        assertEquals(0, new BigDecimal("2.5").compareTo(StockService.quantity("2,5")));
+        assertEquals(0, BigDecimal.ONE.compareTo(StockService.quantity(" ")));
     }
 
     @Test
