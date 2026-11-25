@@ -2792,37 +2792,44 @@ public class QueryHandler implements Cloneable {
      * @throws java.io.FileNotFoundException
      */
     public String insertFile(final File file) throws FileNotFoundException {
+        if (file == null || !file.isFile()) {
+            throw new FileNotFoundException(String.valueOf(file));
+        }
 
         String name = null;
         String query = "INSERT INTO " + table + "(cname, data, dateadded, filesize, intaddedby) VALUES (?, ?, ?, ?, ?)";
         String jobmessage = null;
         Log.Debug(this, "Adding file: " + file.getName());
-        backgroundSqlQuery j;
 
-        try {
-            start();
-            int fileLength = (int) file.length();
-            name = RandomText.getText(23);
-            java.io.InputStream fin = new java.io.FileInputStream(file);
-            PreparedStatement ps = sqlConn.prepareStatement(query, DatabaseConnection.generatedKeys(query));
-            ps.setString(1, name);
-            ps.setInt(5, mpv5.db.objects.User.getCurrentUser().getID());
-            ps.setLong(4, file.length());
-            ps.setDate(3, new java.sql.Date(new Date().getTime()));
-            ps.setBinaryStream(2, fin, fileLength);
-            j = new backgroundSqlQuery(ps, fin);
-            j.execute();
-
-            Log.Debug(this, "File added: " + name);
-
-        } catch (Exception ex) {
-            Log.Debug(this, "Datenbankfehler: " + query);
-            Log.Debug(this, ex);
-            //Popup.error(ex);
-            jobmessage = Messages.ERROR_OCCURED.toString();
-        } finally {
-
-            stop();
+        synchronized (sqlConn) {
+            try {
+                start();
+                int fileLength = (int) file.length();
+                String candidate = RandomText.getText(23);
+                try (java.io.InputStream fin = new java.io.FileInputStream(file);
+                        PreparedStatement ps = sqlConn.prepareStatement(query, DatabaseConnection.generatedKeys(query))) {
+                    ps.setString(1, candidate);
+                    ps.setBinaryStream(2, fin, fileLength);
+                    ps.setDate(3, new java.sql.Date(new Date().getTime()));
+                    ps.setLong(4, file.length());
+                    ps.setInt(5, mpv5.db.objects.User.getCurrentUser().getID());
+                    ps.execute();
+                    if (!sqlConn.getAutoCommit()) {
+                        sqlConn.commit();
+                    }
+                    name = candidate;
+                    Log.Debug(this, "File added: " + name);
+                }
+            } catch (FileNotFoundException ex) {
+                throw ex;
+            } catch (Exception ex) {
+                Log.Debug(this, "Datenbankfehler: " + query);
+                Log.Debug(this, ex);
+                //Popup.error(ex);
+                jobmessage = Messages.ERROR_OCCURED.toString();
+            } finally {
+                stop();
+            }
         }
         if (viewToBeNotified != null) {
             viewToBeNotified.refresh();

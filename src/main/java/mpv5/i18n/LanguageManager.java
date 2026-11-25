@@ -548,6 +548,55 @@ public class LanguageManager {
         }
     }
 
+    /**
+     * Returns a language display name that does not collide with any existing
+     * {@code languages.longname} entry and fits within the 250-character column limit.
+     */
+    public static String uniqueLanguageName(String baseName) {
+        java.util.List<String> existing = new ArrayList<String>();
+        try {
+            Object[][] data = QueryHandler.instanceOf().clone(Context.getLanguage()).select("longname", (String[]) null);
+            if (data != null) {
+                for (Object[] row : data) {
+                    if (row != null && row.length > 0 && row[0] != null) {
+                        existing.add(String.valueOf(row[0]));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.Debug(LanguageManager.class, e);
+        }
+        return uniqueLanguageName(baseName, existing);
+    }
+
+    static String uniqueLanguageName(String baseName, java.util.Collection<String> existing) {
+        String base = baseName == null ? "" : baseName.trim();
+        if (base.isEmpty()) {
+            base = "Own translation";
+        }
+        if (base.length() > 240) {
+            base = base.substring(0, 240).trim();
+        }
+        Set<String> used = new HashSet<String>();
+        if (existing != null) {
+            for (String s : existing) {
+                if (s != null) {
+                    used.add(s.trim().toLowerCase(Locale.ROOT));
+                }
+            }
+        }
+        if (!used.contains(base.toLowerCase(Locale.ROOT))) {
+            return base;
+        }
+        for (int n = 2; n < 10000; n++) {
+            String candidate = base + " (" + n + ")";
+            if (!used.contains(candidate.toLowerCase(Locale.ROOT))) {
+                return candidate;
+            }
+        }
+        return base + " (" + RandomText.getText(6) + ")";
+    }
+
     public static String importLanguage(String langname, File file, Boolean ignoreErrors) throws Exception {
         try {
             String langid = RandomText.getText();
@@ -556,6 +605,7 @@ public class LanguageManager {
             Log.Debug(LanguageManager.class, "Importing: " + file);
 
             if (ignoreErrors || hasNeededKeys(file, true)) {
+                String dbname = null;
                 try {
                     Runnable runnable = new Runnable() {
                         @Override
@@ -564,11 +614,13 @@ public class LanguageManager {
                         }
                     };
                     SwingUtilities.invokeLater(runnable);
-                    String dbname = QueryHandler.instanceOf().clone(Context.getFiles()).insertFile(file);
-                    try {
-                        Thread.sleep(3333);
-                    } catch (InterruptedException ex) {
-                        Log.Debug(ex);
+                    dbname = QueryHandler.instanceOf().clone(Context.getFiles()).insertFile(file);
+                    if (dbname == null) {
+                        mpv5.YabsViewProxy.instance().addMessage(Messages.ERROR_OCCURED.toString());
+                        if (!quietImport) {
+                            Popup.notice(Messages.ERROR_OCCURED.toString());
+                        }
+                        return null;
                     }
                     QueryData t = new QueryData();
                     t.add("cname", langid);
@@ -582,18 +634,36 @@ public class LanguageManager {
                         if (!quietImport) {
                             Popup.notice(langname + Messages.INSERTED.toString());
                         }
+                        failed = false;
+                        cacheRunWatchdog.remove(langid);
                         cachelanguage(langid, getBundle(langid));
+                        return langid;
                     } else {
+                        try {
+                            QueryHandler.instanceOf().clone(Context.getFiles()).removeFile(dbname);
+                        } catch (Exception ex) {
+                            Log.Debug(LanguageManager.class, ex);
+                        }
                         mpv5.YabsViewProxy.instance().addMessage(Messages.ERROR_OCCURED.toString());
-                        Popup.notice(Messages.ERROR_OCCURED.toString());
+                        if (!quietImport) {
+                            Popup.notice(Messages.ERROR_OCCURED.toString());
+                        }
+                        return null;
                     }
                 } catch (FileNotFoundException ex) {
                     Log.Debug(LanguageManager.class, ex);
+                    return null;
                 } catch (Exception x) {
+                    if (dbname != null) {
+                        try {
+                            QueryHandler.instanceOf().clone(Context.getFiles()).removeFile(dbname);
+                        } catch (Exception ex) {
+                            Log.Debug(LanguageManager.class, ex);
+                        }
+                    }
                     //insert was not possible
-                    throw new UnsupportedOperationException("Language could not be inserted, file already exists!?");
+                    throw new UnsupportedOperationException("Language could not be inserted, file already exists!?", x);
                 }
-                return langid;
             } else {
                 return null;
             }
@@ -601,7 +671,7 @@ public class LanguageManager {
             Popup.error(exception);
             throw exception;
         } finally {
-            mpv5.YabsViewProxy.instance().setWaiting(false);
+            SwingUtilities.invokeLater(() -> mpv5.YabsViewProxy.instance().setWaiting(false));
         }
     }
 
@@ -672,6 +742,9 @@ public class LanguageManager {
      * @throws mpv5.db.common.NodataFoundException
      */
     public static void removeLanguage(String langid) throws NodataFoundException {
+        if (langid == null || langid.trim().isEmpty()) {
+            return;
+        }
         Object[] data;
         if (!langid.contentEquals("buildin_en")) {
             data = QueryHandler.instanceOf().clone(Context.getLanguage()).
@@ -686,6 +759,8 @@ public class LanguageManager {
             //the language itself too (before only its file: the list kept a broken entry)
             QueryHandler.instanceOf().clone(Context.getLanguage()).delete(new mpv5.db.common.QueryCriteria("cname", langid));
             cachedLanguages.remove(langid);
+            cacheRunWatchdog.remove(langid);
+            germanLanguages.remove(langid);
         } else {
             Popup.notice(Messages.NOT_POSSIBLE);
         }

@@ -87,7 +87,9 @@ public class ControlPanel_Translate extends JPanel implements ControlApplet {
     private final JComboBox<MPComboBoxModelItem> base = new JComboBox<MPComboBoxModelItem>();
     private final JTextField filter = new JTextField(22);
     private final JLabel count = new JLabel(" ");
+    private final PrimaryButton saveButton;
     private final JPanel actions;
+    private boolean updatingBase;
 
     public ControlPanel_Translate() {
         super(new BorderLayout(0, ModernTheme.px(8)));
@@ -110,7 +112,11 @@ public class ControlPanel_Translate extends JPanel implements ControlApplet {
                 base.setSelectedIndex(i);
             }
         }
-        base.addActionListener(e -> fill());
+        base.addActionListener(e -> {
+            if (!updatingBase) {
+                fill();
+            }
+        });
 
         table.setRowSorter(sorter);
         List<javax.swing.RowSorter.SortKey> keys = new ArrayList<javax.swing.RowSorter.SortKey>();
@@ -164,9 +170,9 @@ public class ControlPanel_Translate extends JPanel implements ControlApplet {
         exportFile.addActionListener(e -> exportFile());
         JButton delete = Applets.danger(new JButton(Messages.TRANSLATE_DELETE.toString()));
         delete.addActionListener(e -> deleteLanguage());
-        PrimaryButton save = new PrimaryButton(Messages.TRANSLATE_SAVE.toString(), "/images/16/filesave.png");
-        save.addActionListener(e -> save());
-        actions = Applets.actionBar(new JComponent[]{importFile, exportFile, delete}, new JComponent[]{save});
+        saveButton = new PrimaryButton(Messages.TRANSLATE_SAVE.toString(), "/images/16/filesave.png");
+        saveButton.addActionListener(e -> save());
+        actions = Applets.actionBar(new JComponent[]{importFile, exportFile, delete}, new JComponent[]{saveButton});
 
         fill();
     }
@@ -287,24 +293,31 @@ public class ControlPanel_Translate extends JPanel implements ControlApplet {
         final User u = User.getCurrentUser();
         final String previous = u.getProperties().getProperty(OWN_LANGUAGE);
         MPComboBoxModelItem b = (MPComboBoxModelItem) base.getSelectedItem();
-        final String name = String.format(Messages.TRANSLATE_OWN_NAME.toString(),
+        final String baseName = String.format(Messages.TRANSLATE_OWN_NAME.toString(),
                 b == null || b.getId().equals(previous) ? u.__getCname() : b.getValue() + ", " + u.__getCname(),
                 mpv5.utils.date.DateConverter.getTodayFileDate());
+        saveButton.setEnabled(false);
         mpv5.YabsViewProxy.instance().setWaiting(true);
         new SwingWorker<String, Void>() {
             @Override
             protected String doInBackground() throws Exception {
                 File f = File.createTempFile("yabs-own-language", ".properties");
-                LanguageManager.writeLanguageFile(texts, f);
-                return LanguageManager.importLanguageQuietly(name, f);
+                try {
+                    LanguageManager.writeLanguageFile(texts, f);
+                    String uniqueName = LanguageManager.uniqueLanguageName(baseName);
+                    return LanguageManager.importLanguageQuietly(uniqueName, f);
+                } finally {
+                    f.delete();
+                }
             }
 
             @Override
             protected void done() {
+                saveButton.setEnabled(true);
                 mpv5.YabsViewProxy.instance().setWaiting(false);
                 try {
                     String id = get();
-                    if (id == null) {
+                    if (id == null || !LanguageManager.checkLanguage(id)) {
                         Popup.notice(Messages.ERROR_OCCURED);
                         return;
                     }
@@ -314,7 +327,8 @@ public class ControlPanel_Translate extends JPanel implements ControlApplet {
                     //chosen by the user: no automatic switch to German any more
                     u.getProperties().changeProperty("org.openyabs.languageproperty", "autoimportde", true);
                     u.saveProperties();
-                    if (previous != null && !previous.equals(id)) {
+                    if (previous != null && !previous.trim().isEmpty()
+                            && !previous.equals(id) && LanguageManager.checkLanguage(previous)) {
                         try {
                             LanguageManager.removeLanguage(previous);
                         } catch (Exception e) {
@@ -322,15 +336,21 @@ public class ControlPanel_Translate extends JPanel implements ControlApplet {
                         }
                     }
                     LanguageManager.getBundle(id);
-                    base.removeAllItems();
-                    javax.swing.ComboBoxModel<?> langs = LanguageManager.getLanguagesAsComboBoxModel();
-                    for (int i = 0; i < langs.getSize(); i++) {
-                        MPComboBoxModelItem it = (MPComboBoxModelItem) langs.getElementAt(i);
-                        base.addItem(it);
-                        if (it.getId().equals(id)) {
-                            base.setSelectedItem(it);
+                    updatingBase = true;
+                    try {
+                        base.removeAllItems();
+                        javax.swing.ComboBoxModel<?> langs = LanguageManager.getLanguagesAsComboBoxModel();
+                        for (int i = 0; i < langs.getSize(); i++) {
+                            MPComboBoxModelItem it = (MPComboBoxModelItem) langs.getElementAt(i);
+                            base.addItem(it);
+                            if (it.getId().equals(id)) {
+                                base.setSelectedItem(it);
+                            }
                         }
+                    } finally {
+                        updatingBase = false;
                     }
+                    fill();
                     Popup.notice(Messages.TRANSLATE_SAVED);
                 } catch (Exception e) {
                     Log.Debug(this, e);
@@ -352,7 +372,9 @@ public class ControlPanel_Translate extends JPanel implements ControlApplet {
         }
         if (Popup.Y_N_dialog(Messages.REALLY_WIPE + ": " + base.getSelectedItem())) {
             try {
-                LanguageManager.removeLanguage(id);
+                if (LanguageManager.checkLanguage(id)) {
+                    LanguageManager.removeLanguage(id);
+                }
                 if (id.equals(User.getCurrentUser().__getLanguage())) {
                     User.getCurrentUser().setLanguage("buildin_en");
                     User.getCurrentUser().save(true);
