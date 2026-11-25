@@ -359,6 +359,10 @@ public class ModernContactPanel extends ModernDataPanel {
                 Messages.CONTACT_VATID_TOOLTIP.toString(), Messages.CONTACT_VATID_INVALID.toString());
         mpv5.utils.ui.FieldCheck.attach(contactEori, mpv5.utils.export.ZugpferdFile::isValidEori,
                 Messages.CONTACT_EORI_TOOLTIP.toString(), Messages.CONTACT_EORI_INVALID.toString());
+        bankcurrency.setName("bankcurrency");
+        List<ContactService.CurrencyOption> initCurrencies = ContactService.currencyOptions();
+        bankcurrency.setModel(new DefaultComboBoxModel<ContactService.CurrencyOption>(
+                initCurrencies.toArray(new ContactService.CurrencyOption[0])));
 
         groupnameselect.setName("groupnameselect");
         groupnameselect.addPopupMenuListener(new javax.swing.event.PopupMenuListener() {
