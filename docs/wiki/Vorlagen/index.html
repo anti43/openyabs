@@ -889,6 +889,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#außenhandel-zoll--handelsrechnung" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Außenhandel, Zoll &amp; Handelsrechnung
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#mwst-je-steuersatz--14-abs-4-nr-8-ustg" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2187,6 +2198,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#außenhandel-zoll--handelsrechnung" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Außenhandel, Zoll &amp; Handelsrechnung
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#mwst-je-steuersatz--14-abs-4-nr-8-ustg" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2584,7 +2606,61 @@
 </tr>
 </tbody>
 </table>
-<p>Die Standard- und Demo-Rechnungsvorlagen zeigen die EORI-Nummer der Firma (<code>Tabelle2</code>) und des Kunden (<code>Tabelle4</code>) automatisch an. In E-Rechnungen (XRechnung / ZUGFeRD) werden die Peppol-IDs als elektronische Adressen (<code>URIUniversalCommunication</code> mit <code>schemeID</code>) und vorhandene EORI-Nummern als EN-16931-Zollvermerk (<code>BG-1</code> / <code>BT-21 = CUS</code>) ausgegeben; siehe <a href="../E-Rechnung/">E-Rechnung</a>.</p>
+<p>Die Standard- und Demo-Rechnungsvorlagen zeigen die EORI-Nummer der Firma (<code>Tabelle2</code>) sowie die Kunden-USt-IdNr. und EORI-Nummer (<code>&lt;item.contact.taxnumber&gt; &lt;item.contact.eori&gt;</code>, <code>Tabelle4</code>, Art. 226 Abs. 4 MwStSystRL / § 14a UStG) automatisch an. In E-Rechnungen (XRechnung / ZUGFeRD) werden die Peppol-IDs als elektronische Adressen (<code>URIUniversalCommunication</code> mit <code>schemeID</code>) und vorhandene EORI-Nummern als EN-16931-Zollvermerk (<code>BG-1</code> / <code>BT-21 = CUS</code>) ausgegeben; siehe <a href="../E-Rechnung/">E-Rechnung</a>.</p>
+<h2 id="außenhandel-zoll--handelsrechnung">Außenhandel, Zoll &amp; Handelsrechnung<a class="headerlink" href="#außenhandel-zoll--handelsrechnung" title="Permanent link">&para;</a></h2>
+<p>Für den Export in Drittländer und die Zollabwicklung stehen zusätzliche Beleg- und Artikelfelder sowie eine zweisprachige Handelsrechnung (<code>Demo-00-Handelsrechnung-Export.odt</code> / <code>demo-00-commercial.odt</code>) zur Verfügung:</p>
+<table>
+<thead>
+<tr>
+<th>Feld</th>
+<th>Bedeutung</th>
+<th>Wo einzutragen</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;item.currency&gt;</code></td>
+<td>ISO-4217-Währungscode (<code>BT-5</code>, z. B. <code>EUR</code>, <code>CHF</code>, <code>USD</code>)</td>
+<td>Beleg-Eigenschaft <code>currency</code>, sonst Währungs-Auswahl am Kontakt (<code>bankcurrency</code>) oder Kontakt-Eigenschaft <code>currency</code>, Fallback <code>EUR</code></td>
+</tr>
+<tr>
+<td><code>&lt;item.incoterms&gt;</code></td>
+<td>Incoterms® + benannter Ort (z. B. <code>DAP Zürich</code>)</td>
+<td>Eigenschaft <code>incoterms</code> am Beleg oder Kontakt</td>
+</tr>
+<tr>
+<td><code>&lt;item.netweight&gt;</code></td>
+<td>Gesamt-Eigenmasse (kg); ohne Überschreibung automatisch aus den verknüpften Produktgewichten summiert</td>
+<td>Beleg-Eigenschaft <code>netweight</code> (optional)</td>
+</tr>
+<tr>
+<td><code>&lt;item.grossweight&gt;</code></td>
+<td>Gesamt-Rohmasse (kg)</td>
+<td>Beleg-Eigenschaft <code>grossweight</code></td>
+</tr>
+<tr>
+<td><code>&lt;item.packages&gt;</code></td>
+<td>Anzahl / Art der Packstücke</td>
+<td>Beleg-Eigenschaft <code>packages</code></td>
+</tr>
+<tr>
+<td><code>&lt;product.hscode&gt;</code></td>
+<td>Zolltarifnummer / HS-Code (<code>BT-158</code>, 4–11 Ziffern)</td>
+<td>Produkt (moderne Ansicht › <em>Einordnung</em>)</td>
+</tr>
+<tr>
+<td><code>&lt;product.origincountry&gt;</code></td>
+<td>Ursprungsland (<code>BT-159</code>, ISO-3166-Alpha-2)</td>
+<td>Produkt (moderne Ansicht › <em>Einordnung</em>)</td>
+</tr>
+<tr>
+<td><code>&lt;product.netweight&gt;</code></td>
+<td>Eigenmasse pro Einheit (kg)</td>
+<td>Produkt (moderne Ansicht › <em>Einordnung</em>)</td>
+</tr>
+</tbody>
+</table>
+<p>In der Positionstabelle (<code>xtable1</code>) stehen zusätzlich die Spalten <strong>14</strong> (<em>Zolltarifnr. (HS-Code)</em>), <strong>15</strong> (<em>Ursprungsland</em>) und <strong>16</strong> (<em>Eigenmasse (kg)</em> der Position = Stückgewicht × Menge) im Vorlagen-Manager zur Auswahl.</p>
 <h2 id="mwst-je-steuersatz--14-abs-4-nr-8-ustg">MwSt. je Steuersatz (§ 14 Abs. 4 Nr. 8 UStG)<a class="headerlink" href="#mwst-je-steuersatz--14-abs-4-nr-8-ustg" title="Permanent link">&para;</a></h2>
 <p>Enthält eine Rechnung Positionen mit verschiedenen Steuersätzen (z. B. 19 % und 7 %), müssen Nettobetrag und Steuerbetrag <strong>je Steuersatz</strong> ausgewiesen werden. Die Steuer wird je Satz auf die Summe der Nettobeträge gerechnet und einmal gerundet – genau wie in der E-Rechnung (ZUGFeRD / XRechnung, <code>ApplicableTradeTax</code>), so stimmen PDF und XML auf den Cent überein.</p>
 <p><strong>Tabelle mit einer Zeile je Steuersatz:</strong> eine Tabellenzeile mit Platzhaltern <code>vatgroups.*</code> wird für jeden Steuersatz wiederholt (höchster Satz zuerst):</p>

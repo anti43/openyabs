@@ -1746,6 +1746,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#cross-border-trade-customs--commercial-invoice" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cross-border trade, customs &amp; commercial invoice
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#vat-per-tax-rate--14-abs-4-nr-8-ustg" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2204,6 +2215,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#cross-border-trade-customs--commercial-invoice" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cross-border trade, customs &amp; commercial invoice
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#vat-per-tax-rate--14-abs-4-nr-8-ustg" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2562,7 +2584,61 @@
 </tr>
 </tbody>
 </table>
-<p>The default and demo invoice templates display the company EORI (<code>Tabelle2</code>) and customer EORI (<code>Tabelle4</code>). In XRechnung XML and ZUGFeRD PDF, Peppol-IDs are written to <code>&lt;ram:URIUniversalCommunication&gt;&lt;ram:URIID schemeID="..."&gt;</code> (falling back to <code>schemeID="EM"</code> + email when empty, while preserving the contact email in <code>DefinedTradeContact</code>), and EORI numbers are emitted as EN 16931 customs notes (<code>BG-1</code> / <code>BT-21 = CUS</code>, <code>BT-22</code>).</p>
+<p>The default and demo invoice templates display the company EORI (<code>Tabelle2</code>) and customer VAT ID &amp; EORI (<code>&lt;item.contact.taxnumber&gt; &lt;item.contact.eori&gt;</code>, <code>Tabelle4</code>, Art. 226(4) VAT Directive / § 14a UStG). In XRechnung XML and ZUGFeRD PDF, Peppol-IDs are written to <code>&lt;ram:URIUniversalCommunication&gt;&lt;ram:URIID schemeID="..."&gt;</code> (falling back to <code>schemeID="EM"</code> + email when empty, while preserving the contact email in <code>DefinedTradeContact</code>), and EORI numbers are emitted as EN 16931 customs notes (<code>BG-1</code> / <code>BT-21 = CUS</code>, <code>BT-22</code>).</p>
+<h2 id="cross-border-trade-customs--commercial-invoice">Cross-border trade, customs &amp; commercial invoice<a class="headerlink" href="#cross-border-trade-customs--commercial-invoice" title="Permanent link">&para;</a></h2>
+<p>For extra-EU exports and customs clearance, additional invoice and product fields as well as a bilingual commercial invoice template (<code>Demo-00-Handelsrechnung-Export.odt</code> / <code>demo-00-commercial.odt</code>) are available:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Meaning</th>
+<th>Where to enter</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;item.currency&gt;</code></td>
+<td>ISO 4217 currency code (<code>BT-5</code>, e.g. <code>EUR</code>, <code>CHF</code>, <code>USD</code>)</td>
+<td>Invoice property <code>currency</code>, else contact currency dropdown (<code>bankcurrency</code>) or contact property <code>currency</code>, fallback <code>EUR</code></td>
+</tr>
+<tr>
+<td><code>&lt;item.incoterms&gt;</code></td>
+<td>Incoterms® + named place (e.g. <code>DAP Zürich</code>)</td>
+<td>Property <code>incoterms</code> on invoice or contact</td>
+</tr>
+<tr>
+<td><code>&lt;item.netweight&gt;</code></td>
+<td>Total net weight (kg); automatically summed from linked product weights if not overridden</td>
+<td>Invoice property <code>netweight</code> (optional)</td>
+</tr>
+<tr>
+<td><code>&lt;item.grossweight&gt;</code></td>
+<td>Total gross weight (kg)</td>
+<td>Invoice property <code>grossweight</code></td>
+</tr>
+<tr>
+<td><code>&lt;item.packages&gt;</code></td>
+<td>Package count / description</td>
+<td>Invoice property <code>packages</code></td>
+</tr>
+<tr>
+<td><code>&lt;product.hscode&gt;</code></td>
+<td>HS / CN tariff code (<code>BT-158</code>, 4–11 digits)</td>
+<td>Product (modern view › <em>Classification</em>)</td>
+</tr>
+<tr>
+<td><code>&lt;product.origincountry&gt;</code></td>
+<td>Country of origin (<code>BT-159</code>, ISO 3166 alpha-2)</td>
+<td>Product (modern view › <em>Classification</em>)</td>
+</tr>
+<tr>
+<td><code>&lt;product.netweight&gt;</code></td>
+<td>Net weight per unit (kg)</td>
+<td>Product (modern view › <em>Classification</em>)</td>
+</tr>
+</tbody>
+</table>
+<p>In the position table (<code>xtable1</code>), columns <strong>14</strong> (<em>HS / Tariff code</em>), <strong>15</strong> (<em>Country of origin</em>), and <strong>16</strong> (<em>Net weight (kg)</em> per line = unit weight × quantity) are available in the template manager.</p>
 <h2 id="vat-per-tax-rate--14-abs-4-nr-8-ustg">VAT per tax rate (§ 14 Abs. 4 Nr. 8 UStG)<a class="headerlink" href="#vat-per-tax-rate--14-abs-4-nr-8-ustg" title="Permanent link">&para;</a></h2>
 <p>If an invoice has positions with different tax rates (e.g. 19 % and 7 %), the net and the tax amount must be stated <strong>per rate</strong>. YaBS calculates the tax per rate on the sum of the net amounts and rounds once – exactly like the e-invoice (ZUGFeRD / XRechnung, <code>ApplicableTradeTax</code>), so the PDF and the XML match to the cent. The document demo templates show this table below the totals.</p>
 <p><strong>A table with one row per rate:</strong> a table row with <code>vatgroups.*</code> placeholders is repeated for each rate (highest first):</p>

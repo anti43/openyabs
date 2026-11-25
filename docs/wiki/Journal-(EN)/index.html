@@ -2243,7 +2243,9 @@
 <li><code>zusammenfassung.txt</code> – period, filters, EÜR totals, amounts by tax rate, open items, the e-invoice check and what is not included (German),</li>
 <li><code>belege/</code> – the archived receipts of expenses and income (original files, also received e-invoices),</li>
 <li><code>e-rechnungen/</code> – the XRechnung XML of the outgoing invoices to contacts with e-invoice (made from the current document data; the originals sent are in the archive, e.g. <a href="../GoBD-plugin-%28EN%29/">GoBD plugin</a>),</li>
+<li><code>zm.csv</code> – automatically included when intra-EU supplies are present (EC Sales List, § 18a UStG),</li>
 <li><code>datev/</code> – when the <a href="../DATEV-export-%28EN%29/">DATEV export plugin</a> is active, the DATEV posting batch (<code>EXTF_Buchungsstapel_….csv</code>).</li>
+<li><strong>EC Sales List / Zusammenfassende Meldung (§ 18a UStG, CSV):</strong> aggregates intra-community supplies of goods (VAT category <code>K</code> → indicator <code>L</code> / ELSTER <code>0</code>) and EU B2B reverse-charge services (category <code>AE</code> → indicator <code>S</code> / ELSTER <code>1</code>) grouped by customer EU VAT ID. Credit notes reduce the assessment base; amounts are also rounded down to whole euros (§ 18a Abs. 7 UStG, UTF-8 with BOM). Missing, invalid, or non-EU VAT IDs are reported as warnings.</li>
 <li><strong>DATEV-Buchungsstapel (CSV):</strong> when the <a href="../DATEV-export-%28EN%29/">DATEV export plugin</a> is installed, direct EXTF export with pre-export validation.</li>
 <li><strong>CSV file (Excel, semicolon)</strong> and <strong>HTML file:</strong> the table as shown (sorted, searched, column order).</li>
 <li><strong>Template (PDF/ODT):</strong> the journal template (<a href="../Templates-%28EN%29/">Templates</a>); new fields <code>journal.profitgrosvalue</code>, <code>journal.openreceivables</code>, <code>journal.openpayables</code>.</li>
