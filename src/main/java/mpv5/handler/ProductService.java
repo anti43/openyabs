@@ -349,6 +349,168 @@ public final class ProductService {
     }
 
     /**
+     * Check whether an EAN / GTIN / UPC barcode is valid (8, 12, 13, or 14
+     * digits with a valid GS1 Modulo-10 check digit; spaces and hyphens are
+     * ignored).
+     *
+     * @param ean
+     * @return true if valid
+     */
+    public static boolean isValidEan(String ean) {
+        if (ean == null) {
+            return false;
+        }
+        String digits = ean.replaceAll("[\\s\\-]", "").trim();
+        int len = digits.length();
+        if (len != 8 && len != 12 && len != 13 && len != 14) {
+            return false;
+        }
+        for (int i = 0; i < len; i++) {
+            char ch = digits.charAt(i);
+            if (ch < '0' || ch > '9') {
+                return false;
+            }
+        }
+        int sum = 0;
+        for (int i = len - 2, pos = 0; i >= 0; i--, pos++) {
+            int d = digits.charAt(i) - '0';
+            sum += d * (pos % 2 == 0 ? 3 : 1);
+        }
+        int expected = (10 - (sum % 10)) % 10;
+        return (digits.charAt(len - 1) - '0') == expected;
+    }
+
+    /**
+     * Check whether a product web URL is syntactically valid (accepts
+     * {@code http://}, {@code https://}, {@code ftp://}, or a bare domain such
+     * as {@code www.example.com/item}).
+     *
+     * @param url
+     * @return true if valid
+     */
+    public static boolean isValidUrl(String url) {
+        if (url == null) {
+            return false;
+        }
+        String s = url.trim();
+        if (s.isEmpty() || s.matches(".*\\s.*")) {
+            return false;
+        }
+        String candidate;
+        int schemeIdx = s.indexOf("://");
+        if (schemeIdx >= 0) {
+            String scheme = s.substring(0, schemeIdx).toLowerCase(java.util.Locale.ROOT);
+            if (!("http".equals(scheme) || "https".equals(scheme) || "ftp".equals(scheme))) {
+                return false;
+            }
+            candidate = s;
+        } else {
+            int colon = s.indexOf(':');
+            int slash = s.indexOf('/');
+            if (colon >= 0 && (slash < 0 || colon < slash)) {
+                // Only allow host:port, reject unknown schemes like "htp:foo"
+                String after = slash < 0 ? s.substring(colon + 1) : s.substring(colon + 1, slash);
+                if (!after.matches("[0-9]{1,5}")) {
+                    return false;
+                }
+            }
+            candidate = "https://" + s;
+        }
+        try {
+            java.net.URI uri = new java.net.URI(candidate);
+            String host = uri.getHost();
+            if (host == null || host.isEmpty()) {
+                return false;
+            }
+            if ("localhost".equalsIgnoreCase(host)) {
+                return true;
+            }
+            if (!host.contains(".") || host.startsWith(".") || host.endsWith(".") || host.contains("..")) {
+                return false;
+            }
+            String tld = host.substring(host.lastIndexOf('.') + 1);
+            return tld.matches("[A-Za-z]{2,}") || host.matches("([0-9]{1,3}\\.){3}[0-9]{1,3}");
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * One entry in the nullable country-of-origin dropdown (first entry is
+     * empty / {@code "–"}).
+     */
+    public static final class OriginCountryOption {
+
+        public final String code;
+        public final String label;
+
+        public OriginCountryOption(String code, String label) {
+            this.code = code == null ? "" : code;
+            this.label = label == null ? "" : label;
+        }
+
+        @Override
+        public String toString() {
+            return label;
+        }
+    }
+
+    /**
+     * @param currentValue optional currently stored origin country; if
+     * non-empty and not resolvable to an ISO alpha-2 code, appended so it is
+     * not lost
+     * @return selectable origin countries with a leading empty ({@code "–"}) option
+     */
+    public static List<OriginCountryOption> originCountryOptions(String currentValue) {
+        List<OriginCountryOption> countries = new ArrayList<OriginCountryOption>();
+        java.util.Locale displayLocale = java.util.Locale.getDefault();
+        for (String iso : java.util.Locale.getISOCountries()) {
+            String name = new java.util.Locale("", iso).getDisplayCountry(displayLocale);
+            if (name == null || name.trim().isEmpty()) {
+                name = iso;
+            }
+            countries.add(new OriginCountryOption(iso, name + " (" + iso + ")"));
+        }
+        java.text.Collator collator = java.text.Collator.getInstance(displayLocale);
+        countries.sort((a, b) -> collator.compare(a.label, b.label));
+
+        List<OriginCountryOption> list = new ArrayList<OriginCountryOption>(countries.size() + 2);
+        list.add(new OriginCountryOption("", "\u2013"));
+        list.addAll(countries);
+
+        String raw = currentValue == null ? "" : currentValue.trim();
+        if (!raw.isEmpty()) {
+            String iso = mpv5.utils.export.ZugpferdFile.toCountryCode(raw);
+            if (iso.isEmpty()) {
+                list.add(new OriginCountryOption(raw, raw));
+            }
+        }
+        return list;
+    }
+
+    /**
+     * @param options from {@link #originCountryOptions(String)}
+     * @param stored stored ISO alpha-2 code or country name
+     * @return the matching option, or the first (empty) option if none matches
+     */
+    public static OriginCountryOption originCountryOption(List<OriginCountryOption> options, String stored) {
+        if (options == null || options.isEmpty()) {
+            return new OriginCountryOption("", "\u2013");
+        }
+        String raw = stored == null ? "" : stored.trim();
+        if (raw.isEmpty()) {
+            return options.get(0);
+        }
+        String iso = mpv5.utils.export.ZugpferdFile.toCountryCode(raw);
+        for (OriginCountryOption o : options) {
+            if ((!iso.isEmpty() && o.code.equalsIgnoreCase(iso)) || o.code.equalsIgnoreCase(raw)) {
+                return o;
+            }
+        }
+        return options.get(0);
+    }
+
+    /**
      * @param product
      * @param key
      * @return the stored value (product property), "" if none

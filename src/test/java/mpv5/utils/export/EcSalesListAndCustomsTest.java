@@ -197,8 +197,46 @@ class EcSalesListAndCustomsTest {
         Component weight = findByName(panel, ProductService.NET_WEIGHT);
 
         assertTrue(hs instanceof LabeledTextField, "ModernProductPanel must have hsCode field");
-        assertTrue(origin instanceof LabeledTextField, "ModernProductPanel must have originCountry field");
+        assertTrue(origin instanceof JComboBox, "ModernProductPanel originCountry must be a nullable dropdown");
         assertTrue(weight instanceof LabeledTextField, "ModernProductPanel must have netWeight field");
+
+        JComboBox<?> originCombo = (JComboBox<?>) origin;
+        assertTrue(originCombo.getItemCount() > 100, "Origin dropdown must list ISO countries");
+        Object first = originCombo.getItemAt(0);
+        assertTrue(first instanceof ProductService.OriginCountryOption);
+        assertEquals("", ((ProductService.OriginCountryOption) first).code, "First origin option must be empty/nullable");
+    }
+
+    @Test
+    void productEanUrlAndOriginValidation() {
+        // EAN-13, EAN-8, UPC-A (12), GTIN-14
+        assertTrue(ProductService.isValidEan("4006381333931"));
+        assertTrue(ProductService.isValidEan("4006-3813-3393-1"));
+        assertTrue(ProductService.isValidEan("96385074"));
+        assertTrue(ProductService.isValidEan("036000291452"));
+        assertTrue(ProductService.isValidEan("10012345678902"));
+        assertFalse(ProductService.isValidEan("4006381333932")); // wrong check digit
+        assertFalse(ProductService.isValidEan("12345"));          // wrong length
+        assertFalse(ProductService.isValidEan("400638133393A"));  // non-digit
+
+        // Product URLs
+        assertTrue(ProductService.isValidUrl("https://example.com/product/123?ref=a"));
+        assertTrue(ProductService.isValidUrl("http://shop.example.de:8080/item"));
+        assertTrue(ProductService.isValidUrl("www.example.org/catalog"));
+        assertTrue(ProductService.isValidUrl("ftp://files.example.com/spec.pdf"));
+        assertFalse(ProductService.isValidUrl("not a url"));
+        assertFalse(ProductService.isValidUrl("http://"));
+        assertFalse(ProductService.isValidUrl("javascript:alert(1)"));
+        assertFalse(ProductService.isValidUrl("example"));
+
+        // Nullable origin country dropdown options
+        List<ProductService.OriginCountryOption> opts = ProductService.originCountryOptions(null);
+        assertEquals("", opts.get(0).code);
+        assertEquals("", ProductService.originCountryOption(opts, "").code);
+        assertEquals("DE", ProductService.originCountryOption(opts, "DE").code);
+        assertEquals("DE", ProductService.originCountryOption(opts, "Germany").code);
+        List<ProductService.OriginCountryOption> withLegacy = ProductService.originCountryOptions("ZZ-LEGACY");
+        assertEquals("ZZ-LEGACY", ProductService.originCountryOption(withLegacy, "ZZ-LEGACY").code);
     }
 
     @Test

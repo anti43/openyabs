@@ -95,8 +95,7 @@ public class TextFieldUtils {
         if (!(component instanceof JTextComponent || component instanceof JComboBox)) {
             return false;
         }
-        javax.swing.LookAndFeel laf = UIManager.getLookAndFeel();
-        return laf != null && laf.getClass().getName().startsWith("com.formdev.flatlaf.");
+        return UIManager.getLookAndFeel() instanceof com.formdev.flatlaf.FlatLaf;
     }
 
     private static void startBlinkOnEdt(JComponent component, int count, Color color) {
@@ -198,6 +197,7 @@ public class TextFieldUtils {
                 component.setBorder(originalBorder);
             } catch (Exception ignored) {
             }
+            component.revalidate();
             component.repaint();
         }
     }

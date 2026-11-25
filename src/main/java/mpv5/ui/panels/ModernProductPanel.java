@@ -138,7 +138,8 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
     private final LabeledTextField ean = field();
     private final LabeledTextField reference = field();
     private final LabeledTextField hsCode = field();
-    private final LabeledTextField originCountry = field();
+    private final javax.swing.JComboBox<ProductService.OriginCountryOption> originCountry = new javax.swing.JComboBox<ProductService.OriginCountryOption>();
+    private List<ProductService.OriginCountryOption> originCountryOptions = new ArrayList<ProductService.OriginCountryOption>();
     private final LabeledTextField netWeight = field();
     private final LabeledTextField url = field();
     private final LabeledTextField datasheet = field();
@@ -264,10 +265,8 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
         cnumber.setParent(this);
         cnumber.setSearchField("cnumber");
         cnumber.setContext(Context.getProduct());
-        cname.setSearchOnEnterEnabled(true);
-        cname.setParent(this);
-        cname.setSearchField("cname");
-        cname.setContext(Context.getProduct());
+        cname.getTextField().setToolTipText(Messages.SEARCHABLE.toString());
+        cname.getTextField().addActionListener(e -> searchProductToCopy());
 
         netvalue.set_ValueClass(Double.class);
         extvalue.set_ValueClass(Double.class);
@@ -278,11 +277,16 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
         threshold.set_ValueClass(BigDecimal.class);
         hsCode.setName(ProductService.HS_CODE);
         originCountry.setName(ProductService.ORIGIN_COUNTRY);
+        ModernTheme.roomyCombo(originCountry);
+        originCountry.setToolTipText(Messages.PRODUCT_ORIGIN_COUNTRY_TOOLTIP.toString());
+        selectOriginCountry("");
         netWeight.setName(ProductService.NET_WEIGHT);
+        mpv5.utils.ui.FieldCheck.attach(ean, ProductService::isValidEan,
+                Messages.PRODUCT_EAN_TOOLTIP.toString(), Messages.PRODUCT_EAN_INVALID.toString());
+        mpv5.utils.ui.FieldCheck.attach(url, ProductService::isValidUrl,
+                Messages.PRODUCT_URL_TOOLTIP.toString(), Messages.PRODUCT_URL_INVALID.toString());
         mpv5.utils.ui.FieldCheck.attach(hsCode, ProductService::isValidHsCode,
                 Messages.PRODUCT_HSCODE_TOOLTIP.toString(), Messages.PRODUCT_HSCODE_INVALID.toString());
-        mpv5.utils.ui.FieldCheck.attach(originCountry, ProductService::isValidOriginCountry,
-                Messages.PRODUCT_ORIGIN_COUNTRY_TOOLTIP.toString(), Messages.PRODUCT_ORIGIN_COUNTRY_INVALID.toString());
         mpv5.utils.ui.FieldCheck.attach(netWeight, ProductService::isValidWeightKg,
                 Messages.PRODUCT_NET_WEIGHT_TOOLTIP.toString(), Messages.PRODUCT_NET_WEIGHT_INVALID.toString());
 
@@ -763,6 +767,10 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
         final javax.swing.JLabel cheapest = new javax.swing.JLabel();
 
         SupplierRow(Contact c, boolean def) {
+            this(c, def, dataOwner);
+        }
+
+        SupplierRow(Contact c, boolean def, Product propertySource) {
             super(new BorderLayout(ModernTheme.px(6), 0));
             setOpaque(false);
             setBorder(BorderFactory.createEmptyBorder(0, 0, ModernTheme.px(4), 0));
@@ -817,9 +825,9 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
             bottom.add(link, BorderLayout.CENTER);
             bottom.add(right, BorderLayout.EAST);
             add(bottom, BorderLayout.CENTER);
-            if (c != null && c.isExisting()) {
-                link.setText(ProductService.supplierValue(dataOwner, c, ProductService.SUPPLIER_URL));
-                price.setText(ProductService.supplierValue(dataOwner, c, ProductService.SUPPLIER_PRICE));
+            if (propertySource != null && c != null && c.isExisting()) {
+                link.setText(ProductService.supplierValue(propertySource, c, ProductService.SUPPLIER_URL));
+                price.setText(ProductService.supplierValue(propertySource, c, ProductService.SUPPLIER_PRICE));
             }
         }
 
@@ -896,7 +904,11 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
     }
 
     private void addSupplierRow(Contact c, boolean def) {
-        suppliers.add(new SupplierRow(c, def));
+        addSupplierRow(c, def, dataOwner);
+    }
+
+    private void addSupplierRow(Contact c, boolean def, Product propertySource) {
+        suppliers.add(new SupplierRow(c, def, propertySource));
         markCheapest();
         relayout(suppliers);
     }
@@ -1348,9 +1360,10 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
         }
         ProductService.setValue(dataOwner, ProductService.DATASHEET, datasheet.getText());
         ProductService.setValue(dataOwner, ProductService.HS_CODE, ProductService.normalizeHsCode(hsCode.getText()));
-        String originText = originCountry.getText() == null ? "" : originCountry.getText().trim();
-        String originIso = originText.isEmpty() ? "" : mpv5.utils.export.ZugpferdFile.toCountryCode(originText);
-        ProductService.setValue(dataOwner, ProductService.ORIGIN_COUNTRY, originIso.isEmpty() ? originText : originIso);
+        Object originSel = originCountry.getSelectedItem();
+        String originCode = originSel instanceof ProductService.OriginCountryOption
+                ? ((ProductService.OriginCountryOption) originSel).code : "";
+        ProductService.setValue(dataOwner, ProductService.ORIGIN_COUNTRY, originCode);
         ProductService.setValue(dataOwner, ProductService.NET_WEIGHT, netWeight.getText());
         List<Tier> list = new ArrayList<Tier>();
         for (Component c : tiers.getComponents()) {
@@ -1360,6 +1373,130 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
         if (reloadTiers) {
             loadTiers();
         }
+    }
+
+    private void selectOriginCountry(String stored) {
+        originCountryOptions = ProductService.originCountryOptions(stored);
+        originCountry.setModel(new javax.swing.DefaultComboBoxModel<>(
+                originCountryOptions.toArray(new ProductService.OriginCountryOption[0])));
+        originCountry.setSelectedItem(ProductService.originCountryOption(originCountryOptions, stored));
+    }
+
+    /**
+     * Searches products by name/number/EAN/reference when the user presses Enter
+     * in the name field and lets them choose one to copy into this panel.
+     */
+    private void searchProductToCopy() {
+        if (isContentLocked() || (dataOwner != null && dataOwner.isReadOnly())) {
+            return;
+        }
+        String query = cname.getText() == null ? "" : cname.getText().trim();
+        Object[][] rows;
+        try {
+            rows = new mpv5.db.common.DatabaseSearch(Context.getProduct(), 25).getValuesFor(
+                    "ids, cnumber, cname, externalnetvalue",
+                    new String[]{"cname", "cnumber", "ean", "reference"}, query, true);
+        } catch (Exception ex) {
+            Log.Debug(this, ex);
+            TextFieldUtils.blinkerRed(cname);
+            return;
+        }
+        if (rows == null || rows.length == 0) {
+            TextFieldUtils.blinkerRed(cname);
+            return;
+        }
+        javax.swing.JPopupMenu popup = new javax.swing.JPopupMenu();
+        for (Object[] row : rows) {
+            if (row == null || row.length < 3 || row[0] == null) {
+                continue;
+            }
+            final int id;
+            try {
+                id = Integer.parseInt(String.valueOf(row[0]));
+            } catch (NumberFormatException ex) {
+                continue;
+            }
+            String num = row[1] == null ? "" : String.valueOf(row[1]).trim();
+            String name = row[2] == null ? "" : String.valueOf(row[2]).trim();
+            StringBuilder label = new StringBuilder(name.isEmpty() ? num : name);
+            if (!num.isEmpty() && !num.equals(name)) {
+                label.append("  (").append(num).append(")");
+            }
+            if (row.length > 3 && row[3] != null) {
+                try {
+                    BigDecimal price = row[3] instanceof BigDecimal
+                            ? (BigDecimal) row[3]
+                            : new BigDecimal(String.valueOf(row[3]));
+                    label.append("  \u00b7  ").append(FormatNumber.formatDezimal(price));
+                } catch (Exception ignore) {
+                    // skip unparseable price
+                }
+            }
+            JMenuItem item = new JMenuItem(label.toString());
+            item.addActionListener(ev -> {
+                try {
+                    Product selected = (Product) DatabaseObject.getObject(Context.getProduct(), id);
+                    applyCopyFromProduct(selected);
+                } catch (Exception ex) {
+                    Log.Debug(ModernProductPanel.this, ex);
+                }
+            });
+            popup.add(item);
+        }
+        if (popup.getComponentCount() == 0) {
+            TextFieldUtils.blinkerRed(cname);
+            return;
+        }
+        popup.show(cname.getTextField(), 0, cname.getTextField().getHeight());
+    }
+
+    /**
+     * Populates this panel with an unsaved copy of the given product, including
+     * its custom properties, suppliers, and staggered price tiers.
+     */
+    private void applyCopyFromProduct(Product source) {
+        if (source == null) {
+            return;
+        }
+        Product copy = (Product) source.clone();
+        copy.setIDS(-1);
+        copy.setCnumber("");
+        copy.setDefaultimage("");
+        copy.setDateadded(new Date());
+        copy.setIntaddedby(User.getCurrentUser().__getIDS());
+        copy.ReadOnly(false);
+
+        setDataOwner(copy, true);
+
+        loading = true;
+        calculating = true;
+        try {
+            datasheet.setText(ProductService.value(source, ProductService.DATASHEET));
+            hsCode.setText(ProductService.value(source, ProductService.HS_CODE));
+            selectOriginCountry(ProductService.value(source, ProductService.ORIGIN_COUNTRY));
+            netWeight.setText(ProductService.value(source, ProductService.NET_WEIGHT));
+
+            for (Component c : suppliers.getComponents()) {
+                defaultSupplier.remove(((SupplierRow) c).isDefault);
+            }
+            suppliers.removeAll();
+            addSupplierRow(ProductService.getContact(source.__getSuppliersids()), true, source);
+            for (Contact c : ProductService.loadFurtherSuppliers(source)) {
+                addSupplierRow(c, false, source);
+            }
+
+            tiers.removeAll();
+            for (Tier t : ProductService.loadTiers(source)) {
+                tiers.add(new TierRow(t.minimum, t.price));
+            }
+            relayout(tiers);
+        } finally {
+            calculating = false;
+            loading = false;
+        }
+        updateHeader();
+        cname.getTextField().requestFocusInWindow();
+        cname.getTextField().selectAll();
     }
     // </editor-fold>
 
@@ -1478,7 +1615,7 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
             url.setText(url_);
             datasheet.setText(ProductService.value(dataOwner, ProductService.DATASHEET));
             hsCode.setText(ProductService.value(dataOwner, ProductService.HS_CODE));
-            originCountry.setText(ProductService.value(dataOwner, ProductService.ORIGIN_COUNTRY));
+            selectOriginCountry(ProductService.value(dataOwner, ProductService.ORIGIN_COUNTRY));
             netWeight.setText(ProductService.value(dataOwner, ProductService.NET_WEIGHT));
             ean.setText(ean_);
             reference.setText(reference_);
