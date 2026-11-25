@@ -53,17 +53,21 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
     private javax.swing.JPanel dialogRoot;
     private javax.swing.JPanel handlePanel;
     private javax.swing.JButton floatingPinButton;
+    private static final String WIDTH_PROPERTY = "floatingwidth"; //NOI18N
+    private static final String HEIGHT_PROPERTY = "floatingheight"; //NOI18N
     private javax.swing.JPanel searchesPanel;
     private javax.swing.JPanel footerPanel;
     private javax.swing.JPanel buttonsPanel;
+    private javax.swing.JLabel keyHintLabel;
     private java.awt.Dimension floatingSize;
+    private java.awt.Dimension minFloatingSize;
 
     /**
      * Creates new form ItemTextAreaDialog
      */
     public ItemTextAreaDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
-        setResizable(false);
+        setResizable(true);
         setUndecorated(true);
         initComponents();
         textArea.addKeyListener(this);
@@ -160,9 +164,7 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
         handlePanel.repaint();
         if (!docked) {
             pack();
-            if (floatingSize != null) {
-                setSize(Math.max(getWidth(), floatingSize.width), getHeight());
-            }
+            applyFloatingSize();
         }
     }
 
@@ -205,9 +207,7 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
             dialogRoot.add(jPanel1, java.awt.BorderLayout.CENTER);
             dialogRoot.revalidate();
             pack();
-            if (floatingSize != null) {
-                setSize(Math.max(getWidth(), floatingSize.width), getHeight());
-            }
+            applyFloatingSize();
         }
     }
 
@@ -566,6 +566,20 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
         textArea.setWrapStyleWord(true);
         mpv5.ui.modern.ModernTheme.roomy(textArea);
 
+        keyHintLabel = new javax.swing.JLabel(Messages.ITEM_TEXT_KEYS.toString());
+        keyHintLabel.setForeground(mpv5.ui.modern.ModernTheme.muted());
+        java.awt.Font hintFont = keyHintLabel.getFont();
+        if (hintFont != null) {
+            keyHintLabel.setFont(hintFont.deriveFont(Math.max(10f, hintFont.getSize2D() - 1.5f)));
+        }
+        keyHintLabel.setToolTipText(Messages.ITEM_TEXT_KEYS.toString());
+        keyHintLabel.setBorder(javax.swing.BorderFactory.createEmptyBorder(mpv5.ui.modern.ModernTheme.px(2), 0, 0, 0));
+
+        javax.swing.JPanel textAreaPanel = new javax.swing.JPanel(new java.awt.BorderLayout());
+        textAreaPanel.setOpaque(false);
+        textAreaPanel.add(jScrollPane1, java.awt.BorderLayout.CENTER);
+        textAreaPanel.add(keyHintLabel, java.awt.BorderLayout.SOUTH);
+
         buttonsPanel = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, mpv5.ui.modern.ModernTheme.px(6), 0));
         buttonsPanel.setOpaque(false);
         buttonsPanel.add(okButton);
@@ -582,7 +596,7 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
         jPanel1.removeAll();
         jPanel1.setOpaque(false);
         jPanel1.setLayout(new java.awt.BorderLayout(0, mpv5.ui.modern.ModernTheme.px(6)));
-        jPanel1.add(jScrollPane1, java.awt.BorderLayout.CENTER);
+        jPanel1.add(textAreaPanel, java.awt.BorderLayout.CENTER);
         jPanel1.add(controls, java.awt.BorderLayout.SOUTH);
         updateFooterLayout(false);
 
@@ -590,12 +604,174 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
         dialogRoot.setBackground(mpv5.ui.modern.ModernTheme.cardBackground());
         dialogRoot.setBorder(javax.swing.BorderFactory.createLineBorder(line));
         dialogRoot.add(handlePanel, java.awt.BorderLayout.NORTH);
+        dialogRoot.add(createResizeStrip(java.awt.Cursor.W_RESIZE_CURSOR, mpv5.ui.modern.ModernTheme.px(4), 0), java.awt.BorderLayout.WEST);
+        dialogRoot.add(createResizeStrip(java.awt.Cursor.E_RESIZE_CURSOR, mpv5.ui.modern.ModernTheme.px(4), 0), java.awt.BorderLayout.EAST);
+        dialogRoot.add(createBottomResizeBar(), java.awt.BorderLayout.SOUTH);
         dialogRoot.add(jPanel1, java.awt.BorderLayout.CENTER);
         setContentPane(dialogRoot);
         pack();
         java.awt.Dimension size = getSize();
-        floatingSize = new java.awt.Dimension(size.width + mpv5.ui.modern.ModernTheme.px(50), size.height);
+        minFloatingSize = new java.awt.Dimension(
+                Math.max(mpv5.ui.modern.ModernTheme.px(280), Math.min(size.width, mpv5.ui.modern.ModernTheme.px(320))),
+                Math.max(mpv5.ui.modern.ModernTheme.px(200), size.height - mpv5.ui.modern.ModernTheme.px(48)));
+        setMinimumSize(minFloatingSize);
+        floatingSize = loadFloatingSize(new java.awt.Dimension(size.width + mpv5.ui.modern.ModernTheme.px(50), size.height));
         setSize(floatingSize);
+    }
+
+    private javax.swing.JPanel createResizeStrip(final int cursorType, int width, int height) {
+        javax.swing.JPanel strip = new javax.swing.JPanel();
+        strip.setOpaque(false);
+        strip.setPreferredSize(new java.awt.Dimension(width, height));
+        strip.setCursor(java.awt.Cursor.getPredefinedCursor(cursorType));
+        installResizeHandler(strip, e -> cursorType);
+        return strip;
+    }
+
+    private javax.swing.JPanel createBottomResizeBar() {
+        final int corner = mpv5.ui.modern.ModernTheme.px(16);
+        final int barHeight = mpv5.ui.modern.ModernTheme.px(12);
+        javax.swing.JPanel bar = new javax.swing.JPanel() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected void paintComponent(java.awt.Graphics g) {
+                super.paintComponent(g);
+                java.awt.Graphics2D g2 = (java.awt.Graphics2D) g.create();
+                g2.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(mpv5.ui.modern.ModernTheme.muted());
+                int w = getWidth();
+                int h = getHeight();
+                int step = Math.max(3, mpv5.ui.modern.ModernTheme.px(3));
+                int pad = Math.max(2, mpv5.ui.modern.ModernTheme.px(2));
+                for (int i = 1; i <= 3; i++) {
+                    int len = i * step;
+                    g2.drawLine(w - pad - len, h - pad, w - pad, h - pad - len);
+                }
+                g2.dispose();
+            }
+        };
+        bar.setOpaque(false);
+        bar.setPreferredSize(new java.awt.Dimension(10, barHeight));
+        installResizeHandler(bar, e -> {
+            if (e.getX() >= bar.getWidth() - corner) {
+                return java.awt.Cursor.SE_RESIZE_CURSOR;
+            }
+            if (e.getX() <= corner) {
+                return java.awt.Cursor.SW_RESIZE_CURSOR;
+            }
+            return java.awt.Cursor.S_RESIZE_CURSOR;
+        });
+        return bar;
+    }
+
+    private void installResizeHandler(final javax.swing.JComponent target,
+            final java.util.function.ToIntFunction<java.awt.event.MouseEvent> cursorForEvent) {
+        java.awt.event.MouseAdapter adapter = new java.awt.event.MouseAdapter() {
+            private java.awt.Point startScreen;
+            private java.awt.Rectangle startBounds;
+            private int activeCursor;
+
+            @Override
+            public void mouseMoved(java.awt.event.MouseEvent e) {
+                target.setCursor(java.awt.Cursor.getPredefinedCursor(cursorForEvent.applyAsInt(e)));
+            }
+
+            @Override
+            public void mousePressed(java.awt.event.MouseEvent e) {
+                if (docked) {
+                    return;
+                }
+                activeCursor = cursorForEvent.applyAsInt(e);
+                startScreen = e.getLocationOnScreen();
+                startBounds = getBounds();
+            }
+
+            @Override
+            public void mouseDragged(java.awt.event.MouseEvent e) {
+                if (docked || startScreen == null || startBounds == null) {
+                    return;
+                }
+                java.awt.Point current = e.getLocationOnScreen();
+                int dx = current.x - startScreen.x;
+                int dy = current.y - startScreen.y;
+                int minW = minFloatingSize != null ? minFloatingSize.width : mpv5.ui.modern.ModernTheme.px(280);
+                int minH = minFloatingSize != null ? minFloatingSize.height : mpv5.ui.modern.ModernTheme.px(200);
+
+                int x = startBounds.x;
+                int y = startBounds.y;
+                int w = startBounds.width;
+                int h = startBounds.height;
+
+                if (activeCursor == java.awt.Cursor.E_RESIZE_CURSOR || activeCursor == java.awt.Cursor.SE_RESIZE_CURSOR) {
+                    w = Math.max(minW, startBounds.width + dx);
+                }
+                if (activeCursor == java.awt.Cursor.W_RESIZE_CURSOR || activeCursor == java.awt.Cursor.SW_RESIZE_CURSOR) {
+                    int newW = Math.max(minW, startBounds.width - dx);
+                    x = startBounds.x + (startBounds.width - newW);
+                    w = newW;
+                }
+                if (activeCursor == java.awt.Cursor.S_RESIZE_CURSOR
+                        || activeCursor == java.awt.Cursor.SE_RESIZE_CURSOR
+                        || activeCursor == java.awt.Cursor.SW_RESIZE_CURSOR) {
+                    h = Math.max(minH, startBounds.height + dy);
+                }
+
+                setBounds(x, y, w, h);
+                floatingSize = new java.awt.Dimension(w, h);
+                validate();
+            }
+
+            @Override
+            public void mouseReleased(java.awt.event.MouseEvent e) {
+                if (startBounds != null && floatingSize != null) {
+                    saveFloatingSize(floatingSize);
+                }
+                startScreen = null;
+                startBounds = null;
+            }
+        };
+        target.addMouseListener(adapter);
+        target.addMouseMotionListener(adapter);
+    }
+
+    private void applyFloatingSize() {
+        if (floatingSize == null) {
+            return;
+        }
+        int minW = minFloatingSize != null ? minFloatingSize.width : getWidth();
+        int minH = minFloatingSize != null ? minFloatingSize.height : getHeight();
+        setSize(Math.max(minW, floatingSize.width), Math.max(minH, floatingSize.height));
+    }
+
+    private java.awt.Dimension loadFloatingSize(java.awt.Dimension fallback) {
+        try {
+            mpv5.data.PropertyStore props = User.getCurrentUser().getProperties();
+            String ws = props.getProperty(ItemTextAreaDialog.class.getSimpleName() + "$" + WIDTH_PROPERTY);
+            String hs = props.getProperty(ItemTextAreaDialog.class.getSimpleName() + "$" + HEIGHT_PROPERTY);
+            if (ws != null && hs != null) {
+                int w = Integer.parseInt(ws.trim());
+                int h = Integer.parseInt(hs.trim());
+                if (w >= minFloatingSize.width && h >= minFloatingSize.height) {
+                    return new java.awt.Dimension(w, h);
+                }
+            }
+        } catch (Exception ignored) {
+            // use default size
+        }
+        return fallback;
+    }
+
+    private void saveFloatingSize(java.awt.Dimension size) {
+        try {
+            User u = User.getCurrentUser();
+            if (u != null) {
+                u.getProperties().changeProperty(ItemTextAreaDialog.class.getSimpleName(), WIDTH_PROPERTY, size.width);
+                u.getProperties().changeProperty(ItemTextAreaDialog.class.getSimpleName(), HEIGHT_PROPERTY, size.height);
+            }
+        } catch (Exception ex) {
+            Log.Debug(this, ex.getMessage());
+        }
     }
 
     private void updateFooterLayout(boolean isDocked) {
@@ -615,7 +791,8 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
             footerPanel.add(labeledSpinner1, java.awt.BorderLayout.WEST);
             footerPanel.add(buttonsPanel, java.awt.BorderLayout.EAST);
             jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(
-                    mpv5.ui.modern.ModernTheme.px(6), side, mpv5.ui.modern.ModernTheme.px(10), side));
+                    mpv5.ui.modern.ModernTheme.px(6), mpv5.ui.modern.ModernTheme.px(4),
+                    mpv5.ui.modern.ModernTheme.px(2), mpv5.ui.modern.ModernTheme.px(4)));
         }
         footerPanel.revalidate();
         footerPanel.repaint();
