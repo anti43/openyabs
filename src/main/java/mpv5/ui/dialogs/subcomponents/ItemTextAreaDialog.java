@@ -42,6 +42,21 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
     private boolean closing;
     private java.awt.event.AWTEventListener outsidePressListener;
     private boolean outsideListenerInstalled;
+    private boolean docked;
+    private boolean loadingState;
+    private boolean dirty;
+    private boolean quantityDirty;
+    private boolean editorEditable = true;
+    private Runnable pinToggleAction;
+    private java.util.function.Consumer<Boolean> dockedApplyCallback;
+    private Runnable dockedCancelCallback;
+    private javax.swing.JPanel dialogRoot;
+    private javax.swing.JPanel handlePanel;
+    private javax.swing.JButton floatingPinButton;
+    private javax.swing.JPanel searchesPanel;
+    private javax.swing.JPanel footerPanel;
+    private javax.swing.JPanel buttonsPanel;
+    private java.awt.Dimension floatingSize;
 
     /**
      * Creates new form ItemTextAreaDialog
@@ -53,6 +68,11 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
         initComponents();
         textArea.addKeyListener(this);
         cancelButton.setToolTipText("Esc");
+        cancelButton.addActionListener(e -> {
+            if (docked && !closing) {
+                cancel();
+            }
+        });
         labeledCombobox1.setContext(Context.getProduct());
         labeledCombobox1.setSearchOnEnterEnabled(true);
         labeledCombobox1.setReceiver(this);
@@ -61,6 +81,7 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
 
         labeledSpinner1.setValue(1);
         bindKeys();
+        installDirtyTracking();
         installFocusLossHandler();
         makeMovable();
     }
@@ -69,8 +90,280 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
         return userMoved;
     }
 
+    public int getEditedRow() {
+        return editedRow;
+    }
+
     public void setEditedRow(int row) {
         this.editedRow = row;
+    }
+
+    public boolean isDocked() {
+        return docked;
+    }
+
+    public boolean isDirty() {
+        return dirty;
+    }
+
+    public void clearDirty() {
+        dirty = false;
+        quantityDirty = false;
+    }
+
+    public mpv5.db.objects.Product getSelectedProduct() {
+        return product;
+    }
+
+    public Number getQuantityValue() {
+        commitSpinnerEdit();
+        Object val = labeledSpinner1.get_Value();
+        if (val instanceof Number) {
+            return (Number) val;
+        }
+        try {
+            return new BigDecimal(String.valueOf(val));
+        } catch (Exception e) {
+            return Integer.valueOf(1);
+        }
+    }
+
+    /**
+     * @return the inner editor panel (shared between floating dialog and docked pane)
+     */
+    public javax.swing.JPanel getEditorPanel() {
+        return jPanel1;
+    }
+
+    /**
+     * Enables the pin toggle button in the floating dialog's drag header.
+     *
+     * @param action invoked when the user clicks the pin button, null to hide
+     */
+    public void setPinToggleAction(Runnable action) {
+        this.pinToggleAction = action;
+        if (handlePanel == null) {
+            return;
+        }
+        if (floatingPinButton != null) {
+            handlePanel.remove(floatingPinButton);
+            floatingPinButton = null;
+        }
+        if (action != null) {
+            floatingPinButton = createFlatPinButton(false, Messages.ITEM_TEXT_PIN.toString(), action);
+            handlePanel.add(floatingPinButton, java.awt.BorderLayout.EAST);
+            handlePanel.setPreferredSize(new java.awt.Dimension(10, mpv5.ui.modern.ModernTheme.px(22)));
+        } else {
+            handlePanel.setPreferredSize(new java.awt.Dimension(10, mpv5.ui.modern.ModernTheme.px(12)));
+        }
+        handlePanel.revalidate();
+        handlePanel.repaint();
+        if (!docked) {
+            pack();
+            if (floatingSize != null) {
+                setSize(Math.max(getWidth(), floatingSize.width), getHeight());
+            }
+        }
+    }
+
+    /**
+     * Callbacks invoked on apply / cancel while docked.
+     *
+     * @param onApply receives {@code true} when table focus should be restored
+     * @param onCancel invoked when editing is cancelled (Esc / Cancel button)
+     */
+    public void setDockedCallbacks(java.util.function.Consumer<Boolean> onApply, Runnable onCancel) {
+        this.dockedApplyCallback = onApply;
+        this.dockedCancelCallback = onCancel;
+    }
+
+    /**
+     * Switches the editor between floating dialog mode and docked side-panel mode.
+     *
+     * @param docked true to detach editor content for docking, false to re-attach to this dialog
+     */
+    public void setDocked(boolean docked) {
+        if (this.docked == docked) {
+            return;
+        }
+        this.docked = docked;
+        if (docked) {
+            removeOutsidePressListener();
+            if (isVisible()) {
+                super.setVisible(false);
+            }
+            if (jPanel1.getParent() == dialogRoot) {
+                dialogRoot.remove(jPanel1);
+            }
+            updateFooterLayout(true);
+        } else {
+            updateFooterLayout(false);
+            java.awt.Container parent = jPanel1.getParent();
+            if (parent != null && parent != dialogRoot) {
+                parent.remove(jPanel1);
+            }
+            dialogRoot.add(jPanel1, java.awt.BorderLayout.CENTER);
+            dialogRoot.revalidate();
+            pack();
+            if (floatingSize != null) {
+                setSize(Math.max(getWidth(), floatingSize.width), getHeight());
+            }
+        }
+    }
+
+    /**
+     * Loads the given row's description and quantity into the editor without marking it dirty.
+     *
+     * @param row model row index
+     * @param text current description text
+     * @param quantity current quantity (null or 0 defaults to 1)
+     */
+    public void loadRowState(int row, String text, Number quantity) {
+        loadingState = true;
+        try {
+            this.editedRow = row;
+            this.product = null;
+            labeledCombobox1.setSelectedIndex(-1);
+            textArea.setText(text == null ? "" : text);
+            textArea.setCaretPosition(textArea.getDocument().getLength());
+            if (quantity != null && quantity.doubleValue() != 0d) {
+                labeledSpinner1.setValue(quantity);
+            } else {
+                labeledSpinner1.setValue(1);
+            }
+            dirty = false;
+            quantityDirty = false;
+        } finally {
+            loadingState = false;
+        }
+    }
+
+    /**
+     * Restores in-progress unsaved edits (e.g. when pinning while the floating dialog was open).
+     */
+    public void restoreInProgressState(int row, String text, Number quantity, mpv5.db.objects.Product selectedProduct,
+            boolean wasDirty, boolean wasQuantityDirty) {
+        loadingState = true;
+        try {
+            this.editedRow = row;
+            this.product = selectedProduct;
+            textArea.setText(text == null ? "" : text);
+            textArea.setCaretPosition(textArea.getDocument().getLength());
+            if (quantity != null && quantity.doubleValue() != 0d) {
+                labeledSpinner1.setValue(quantity);
+            } else {
+                labeledSpinner1.setValue(1);
+            }
+            this.dirty = wasDirty;
+            this.quantityDirty = wasQuantityDirty;
+        } finally {
+            loadingState = false;
+        }
+    }
+
+    /**
+     * Enables or disables editing in the editor controls (e.g. for locked/read-only documents).
+     */
+    public void setEditorEditable(boolean editable) {
+        this.editorEditable = editable;
+        textArea.setEditable(editable);
+        groupselect.setEnabled(editable);
+        groupselect.getComboBox().setEnabled(editable);
+        labeledCombobox1.setEnabled(editable);
+        labeledCombobox1.getComboBox().setEnabled(editable);
+        labeledSpinner1.setEnabled(editable);
+        okButton.setEnabled(editable);
+        cancelButton.setEnabled(editable);
+    }
+
+    /**
+     * Applies pending changes when docked and dirty.
+     */
+    public void applyIfDirty(boolean restoreTableFocus) {
+        if (docked && dirty && editorEditable) {
+            apply(restoreTableFocus);
+        }
+    }
+
+    public void focusTextArea() {
+        textArea.requestFocusInWindow();
+    }
+
+    public void focusProductSearch() {
+        javax.swing.JComboBox<?> combo = labeledCombobox1.getComboBox();
+        if (combo.getEditor() != null && combo.getEditor().getEditorComponent() != null) {
+            combo.getEditor().getEditorComponent().requestFocusInWindow();
+        } else {
+            combo.requestFocusInWindow();
+        }
+    }
+
+    /**
+     * Creates a compact borderless pin/unpin button with a crisp vector icon.
+     */
+    public static javax.swing.JButton createFlatPinButton(boolean pinned, String tooltip, Runnable onClick) {
+        javax.swing.JButton b = new javax.swing.JButton(createPinIcon(pinned));
+        b.setToolTipText(tooltip);
+        b.setFocusable(false);
+        b.setBorderPainted(false);
+        b.setContentAreaFilled(false);
+        b.setOpaque(false);
+        b.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
+        b.setMargin(new java.awt.Insets(0, mpv5.ui.modern.ModernTheme.px(4), 0, mpv5.ui.modern.ModernTheme.px(4)));
+        b.addActionListener(e -> onClick.run());
+        return b;
+    }
+
+    /**
+     * Crisp HiDPI vector pushpin icon: tilted muted outline when unpinned,
+     * upright accent-filled pin when pinned.
+     */
+    public static javax.swing.Icon createPinIcon(final boolean pinned) {
+        final int size = mpv5.ui.modern.ModernTheme.px(14);
+        return new javax.swing.Icon() {
+            @Override
+            public void paintIcon(java.awt.Component c, java.awt.Graphics g, int x, int y) {
+                java.awt.Graphics2D g2 = (java.awt.Graphics2D) g.create();
+                g2.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setRenderingHint(java.awt.RenderingHints.KEY_STROKE_CONTROL, java.awt.RenderingHints.VALUE_STROKE_PURE);
+                double s = size / 14.0;
+                g2.translate(x + size / 2.0, y + size / 2.0);
+                if (!pinned) {
+                    g2.rotate(Math.toRadians(35));
+                }
+                g2.scale(s, s);
+                java.awt.Color color = pinned ? mpv5.ui.modern.ModernTheme.accent() : mpv5.ui.modern.ModernTheme.muted();
+                g2.setColor(color);
+                g2.setStroke(new java.awt.BasicStroke(1.4f, java.awt.BasicStroke.CAP_ROUND, java.awt.BasicStroke.JOIN_ROUND));
+                // pin head (trapezoid)
+                java.awt.geom.Path2D.Double head = new java.awt.geom.Path2D.Double();
+                head.moveTo(-3.2, -5.5);
+                head.lineTo(3.2, -5.5);
+                head.lineTo(2.4, -1.2);
+                head.lineTo(4.2, 0.8);
+                head.lineTo(-4.2, 0.8);
+                head.lineTo(-2.4, -1.2);
+                head.closePath();
+                if (pinned) {
+                    g2.fill(head);
+                } else {
+                    g2.draw(head);
+                }
+                // needle
+                g2.draw(new java.awt.geom.Line2D.Double(0, 0.8, 0, 5.8));
+                g2.dispose();
+            }
+
+            @Override
+            public int getIconWidth() {
+                return size;
+            }
+
+            @Override
+            public int getIconHeight() {
+                return size;
+            }
+        };
     }
 
     /**
@@ -121,7 +414,7 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
             for (mpv5.db.objects.ProductGroup g : roots) {
                 addGroup(items, children, g, 0, new java.util.HashSet<>());
             }
-        } catch (mpv5.db.common.NodataFoundException ex) {
+        } catch (Exception ex) {
             Log.Debug(this, ex.getMessage());
         }
         groupselect.setModel(new MPComboboxModel(items.toArray(new MPComboBoxModelItem[0])));
@@ -156,13 +449,10 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
         labeledCombobox1.setSearchRestriction("productgroupsids", () -> searchedGroups); //NOI18N
 
         //above the product search
-        javax.swing.JPanel searches = new javax.swing.JPanel(new java.awt.GridLayout(2, 1, 0, mpv5.ui.modern.ModernTheme.px(4)));
-        searches.setOpaque(false);
-        searches.setBorder(javax.swing.BorderFactory.createEmptyBorder(
-                mpv5.ui.modern.ModernTheme.px(4), 0, mpv5.ui.modern.ModernTheme.px(6), 0));
-        ((javax.swing.GroupLayout) jPanel1.getLayout()).replace(labeledCombobox1, searches);
-        searches.add(groupselect);
-        searches.add(labeledCombobox1);
+        searchesPanel = new javax.swing.JPanel(new java.awt.GridLayout(2, 1, 0, mpv5.ui.modern.ModernTheme.px(4)));
+        searchesPanel.setOpaque(false);
+        searchesPanel.add(groupselect);
+        searchesPanel.add(labeledCombobox1);
     }
 
     /**
@@ -228,7 +518,7 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
      */
     private void makeMovable() {
         final java.awt.Color line = mpv5.ui.modern.ModernTheme.border();
-        javax.swing.JPanel handle = new javax.swing.JPanel() {
+        handlePanel = new javax.swing.JPanel(new java.awt.BorderLayout()) {
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -246,10 +536,10 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
                 }
             }
         };
-        handle.setPreferredSize(new java.awt.Dimension(10, mpv5.ui.modern.ModernTheme.px(12)));
-        handle.setBackground(mpv5.ui.modern.ModernTheme.blend(mpv5.ui.modern.ModernTheme.background(), mpv5.ui.modern.ModernTheme.cardBackground(), 0.5f));
-        handle.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, line));
-        handle.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.MOVE_CURSOR));
+        handlePanel.setPreferredSize(new java.awt.Dimension(10, mpv5.ui.modern.ModernTheme.px(12)));
+        handlePanel.setBackground(mpv5.ui.modern.ModernTheme.blend(mpv5.ui.modern.ModernTheme.background(), mpv5.ui.modern.ModernTheme.cardBackground(), 0.5f));
+        handlePanel.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, line));
+        handlePanel.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.MOVE_CURSOR));
         java.awt.event.MouseAdapter drag = new java.awt.event.MouseAdapter() {
             private java.awt.Point offset;
 
@@ -268,22 +558,98 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
                 }
             }
         };
-        handle.addMouseListener(drag);
-        handle.addMouseMotionListener(drag);
+        handlePanel.addMouseListener(drag);
+        handlePanel.addMouseMotionListener(drag);
 
         textArea.setRows(6);
-        javax.swing.JPanel root = new javax.swing.JPanel(new java.awt.BorderLayout());
-        root.setBorder(javax.swing.BorderFactory.createLineBorder(line));
-        root.add(handle, java.awt.BorderLayout.NORTH);
-        root.add(jPanel1, java.awt.BorderLayout.CENTER);
-        int side = mpv5.ui.modern.ModernTheme.px(6);
-        int bottom = mpv5.ui.modern.ModernTheme.px(12);
-        jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(
-                mpv5.ui.modern.ModernTheme.px(2), side, bottom, side));
-        setContentPane(root);
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+        mpv5.ui.modern.ModernTheme.roomy(textArea);
+
+        buttonsPanel = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, mpv5.ui.modern.ModernTheme.px(6), 0));
+        buttonsPanel.setOpaque(false);
+        buttonsPanel.add(okButton);
+        buttonsPanel.add(cancelButton);
+
+        footerPanel = new javax.swing.JPanel();
+        footerPanel.setOpaque(false);
+
+        javax.swing.JPanel controls = new javax.swing.JPanel(new java.awt.BorderLayout(0, mpv5.ui.modern.ModernTheme.px(6)));
+        controls.setOpaque(false);
+        controls.add(searchesPanel, java.awt.BorderLayout.NORTH);
+        controls.add(footerPanel, java.awt.BorderLayout.SOUTH);
+
+        jPanel1.removeAll();
+        jPanel1.setOpaque(false);
+        jPanel1.setLayout(new java.awt.BorderLayout(0, mpv5.ui.modern.ModernTheme.px(6)));
+        jPanel1.add(jScrollPane1, java.awt.BorderLayout.CENTER);
+        jPanel1.add(controls, java.awt.BorderLayout.SOUTH);
+        updateFooterLayout(false);
+
+        dialogRoot = new javax.swing.JPanel(new java.awt.BorderLayout());
+        dialogRoot.setBackground(mpv5.ui.modern.ModernTheme.cardBackground());
+        dialogRoot.setBorder(javax.swing.BorderFactory.createLineBorder(line));
+        dialogRoot.add(handlePanel, java.awt.BorderLayout.NORTH);
+        dialogRoot.add(jPanel1, java.awt.BorderLayout.CENTER);
+        setContentPane(dialogRoot);
         pack();
         java.awt.Dimension size = getSize();
-        setSize(size.width + mpv5.ui.modern.ModernTheme.px(50), size.height);
+        floatingSize = new java.awt.Dimension(size.width + mpv5.ui.modern.ModernTheme.px(50), size.height);
+        setSize(floatingSize);
+    }
+
+    private void updateFooterLayout(boolean isDocked) {
+        if (footerPanel == null) {
+            return;
+        }
+        footerPanel.removeAll();
+        int side = mpv5.ui.modern.ModernTheme.px(8);
+        if (isDocked) {
+            footerPanel.setLayout(new java.awt.BorderLayout(0, mpv5.ui.modern.ModernTheme.px(6)));
+            footerPanel.add(labeledSpinner1, java.awt.BorderLayout.NORTH);
+            footerPanel.add(buttonsPanel, java.awt.BorderLayout.SOUTH);
+            jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(
+                    mpv5.ui.modern.ModernTheme.px(6), side, mpv5.ui.modern.ModernTheme.px(8), side));
+        } else {
+            footerPanel.setLayout(new java.awt.BorderLayout(mpv5.ui.modern.ModernTheme.px(8), 0));
+            footerPanel.add(labeledSpinner1, java.awt.BorderLayout.WEST);
+            footerPanel.add(buttonsPanel, java.awt.BorderLayout.EAST);
+            jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(
+                    mpv5.ui.modern.ModernTheme.px(6), side, mpv5.ui.modern.ModernTheme.px(10), side));
+        }
+        footerPanel.revalidate();
+        footerPanel.repaint();
+    }
+
+    private void installDirtyTracking() {
+        textArea.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            @Override
+            public void insertUpdate(javax.swing.event.DocumentEvent e) {
+                if (!loadingState) {
+                    dirty = true;
+                }
+            }
+
+            @Override
+            public void removeUpdate(javax.swing.event.DocumentEvent e) {
+                if (!loadingState) {
+                    dirty = true;
+                }
+            }
+
+            @Override
+            public void changedUpdate(javax.swing.event.DocumentEvent e) {
+                if (!loadingState) {
+                    dirty = true;
+                }
+            }
+        });
+        labeledSpinner1.getSpinner().addChangeListener(e -> {
+            if (!loadingState) {
+                dirty = true;
+                quantityDirty = true;
+            }
+        });
     }
 
     /**
@@ -332,6 +698,15 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
         rootAm.put("yabs.cancel", cancelAction);
         rootAm.put("yabs.apply", applyAction);
 
+        // Also bind on jPanel1 (scoped to ancestor of focused component) so shortcuts work when docked in a parent window.
+        javax.swing.InputMap panelIm = jPanel1.getInputMap(javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        javax.swing.ActionMap panelAm = jPanel1.getActionMap();
+        panelIm.put(javax.swing.KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "yabs.cancel");
+        panelIm.put(javax.swing.KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, java.awt.event.InputEvent.CTRL_DOWN_MASK), "yabs.apply");
+        panelIm.put(javax.swing.KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, java.awt.event.InputEvent.META_DOWN_MASK), "yabs.apply");
+        panelAm.put("yabs.cancel", cancelAction);
+        panelAm.put("yabs.apply", applyAction);
+
         // JFormattedTextField inside JSpinner consumes ESCAPE (reset-field-edit) in WHEN_FOCUSED,
         // and JComboBox editors may also intercept keys: bind directly on them so Esc and Ctrl+Enter always work.
         javax.swing.JComponent spinnerEditor = labeledSpinner1.getSpinner().getEditor();
@@ -377,7 +752,7 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
             }
             java.awt.event.MouseEvent mouseEvent = (java.awt.event.MouseEvent) event;
             if (mouseEvent.getID() != java.awt.event.MouseEvent.MOUSE_PRESSED
-                    || !isVisible() || closing) {
+                    || docked || !isVisible() || closing) {
                 return;
             }
 
@@ -397,7 +772,7 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
             }
 
             javax.swing.SwingUtilities.invokeLater(() -> {
-                if (isVisible() && !closing) {
+                if (!docked && isVisible() && !closing) {
                     apply(false);
                 }
             });
@@ -477,6 +852,22 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
         if (closing) {
             return;
         }
+        if (docked) {
+            if (!editorEditable) {
+                return;
+            }
+            closing = true;
+            try {
+                setRow();
+                clearDirty();
+                if (dockedApplyCallback != null) {
+                    dockedApplyCallback.accept(restoreTableFocus);
+                }
+            } finally {
+                closing = false;
+            }
+            return;
+        }
         closing = true;
         try {
             commitSpinnerEdit();
@@ -505,6 +896,20 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
         if (closing) {
             return;
         }
+        if (docked) {
+            closing = true;
+            try {
+                product = null;
+                labeledCombobox1.setSelectedIndex(-1);
+                clearDirty();
+                if (dockedCancelCallback != null) {
+                    dockedCancelCallback.run();
+                }
+            } finally {
+                closing = false;
+            }
+            return;
+        }
         closing = true;
         try {
             ActionListener[] listeners = cancelButton.getActionListeners();
@@ -519,7 +924,12 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
 
     @Override
     public void setVisible(boolean visible) {
+        if (docked && visible) {
+            return;
+        }
         if (visible) {
+            dirty = false;
+            quantityDirty = false;
             installOutsidePressListener();
         } else {
             removeOutsidePressListener();
@@ -635,6 +1045,12 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
     }// </editor-fold>//GEN-END:initComponents
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
+        if (docked) {
+            if (!closing) {
+                apply(true);
+            }
+            return;
+        }
         setRow();
 //        Log.Debug(this, evt);
     }//GEN-LAST:event_okButtonActionPerformed
@@ -666,22 +1082,36 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
         } else {
             textArea.setText(obj.__getCname());
         }
+        dirty = true;
     }
 
     private synchronized void setRow() {
         commitSpinnerEdit();
         JTable table = getParentTable();
         if (table == null) {
-            setVisible(false);
+            if (!docked) {
+                setVisible(false);
+            }
             return;
         }
         int row = editedRow >= 0 && editedRow < table.getRowCount() ? editedRow : table.getSelectedRow();
         if (row < 0) {
-            setVisible(false);
+            if (!docked) {
+                setVisible(false);
+            }
+            return;
+        }
+        MPTableModel m = (MPTableModel) table.getModel();
+        if (docked && product == null) {
+            if (quantityDirty) {
+                BigDecimal quantity = new BigDecimal(labeledSpinner1.get_Value().toString());
+                m.setValueAt(quantity, row, 2);
+            }
+            m.setValueAt(textArea.getText(), row, 4);
+            labeledCombobox1.setSelectedIndex(-1);
             return;
         }
         SubItem p;
-        MPTableModel m = (MPTableModel) table.getModel();
         if (product == null) {
             p = SubItem.getFromModel(m, row);
         } else {
@@ -698,7 +1128,9 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
         m.setRowAt(p.getRowData(row), row, 1, 14);
         labeledCombobox1.setSelectedIndex(-1);
         product = null;
-        setVisible(false);
+        if (!docked) {
+            setVisible(false);
+        }
     }
 
     /**
@@ -715,7 +1147,17 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
         this.parentTable = parentTable;
     }
 
+    public boolean isQuantityDirty() {
+        return quantityDirty;
+    }
+
     public void setQuantity(Double valueOf) {
-        labeledSpinner1.setValue(valueOf);
+        boolean prev = loadingState;
+        loadingState = true;
+        try {
+            labeledSpinner1.setValue(valueOf);
+        } finally {
+            loadingState = prev;
+        }
     }
 }

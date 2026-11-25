@@ -261,6 +261,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         //the positions are the main part of a document
         JSplitPane split = split("item", scroll(createOverview()), createPositions(), 0.45);
         split.setResizeWeight(0.4);
+        split.setBorder(BorderFactory.createEmptyBorder(0, ModernTheme.px(12), ModernTheme.px(8), ModernTheme.px(12)));
         content.add(split, BorderLayout.CENTER);
         add(content, BorderLayout.CENTER);
         tb = new ModernCommandBar(this);
@@ -425,6 +426,7 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
 
     private JComponent createOverview() {
         ResponsiveGrid grid = new ResponsiveGrid(320, 3).arrangeable("item");
+        grid.setBorder(BorderFactory.createEmptyBorder(ModernTheme.px(6), 0, ModernTheme.px(8), 0));
 
         JButton showContact = action(text("ItemPanel2.jButton3.text"));
         showContact.addActionListener(e -> showContact());

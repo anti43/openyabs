@@ -191,10 +191,18 @@ public class TextAreaCellEditor extends DefaultCellEditor implements ActionListe
                 }
                 if (dialog instanceof ItemTextAreaDialog) {
                     ItemTextAreaDialog itemDialog = (ItemTextAreaDialog) dialog;
+                    if (itemDialog.isDocked()) {
+                        return;
+                    }
                     itemDialog.setEditedRow(row);
-                    if (!table.getValueAt(row, 2).equals(0)) {
+                    Object qty = table.getModel().getValueAt(row, 2);
+                    if (qty != null && !qty.equals(0)) {
                         Log.Debug(this, "ItemTextDialog");
-                        itemDialog.setQuantity(Double.parseDouble(table.getValueAt(row, 2).toString()));
+                        try {
+                            itemDialog.setQuantity(Double.parseDouble(qty.toString()));
+                        } catch (NumberFormatException ignored) {
+                            itemDialog.setQuantity(1d);
+                        }
                     }
                 }
                 dialog.setVisible(true);
@@ -202,6 +210,10 @@ public class TextAreaCellEditor extends DefaultCellEditor implements ActionListe
         });
 
         return component;
+    }
+
+    private boolean isDockedItemDialog() {
+        return dialog instanceof ItemTextAreaDialog && ((ItemTextAreaDialog) dialog).isDocked();
     }
 
     /**
@@ -221,7 +233,7 @@ public class TextAreaCellEditor extends DefaultCellEditor implements ActionListe
 
     @Override
     public boolean stopCellEditing() {
-        if (dialog != null) {
+        if (dialog != null && !isDockedItemDialog()) {
             if (dialog.isVisible() && dialogsTextComponent != null) {
                 textArea.setText(dialogsTextComponent.getText());
             }
@@ -233,7 +245,7 @@ public class TextAreaCellEditor extends DefaultCellEditor implements ActionListe
 
     @Override
     public void cancelCellEditing() {
-        if (dialog != null) {
+        if (dialog != null && !isDockedItemDialog()) {
             dialog.setVisible(false);
         }
         super.cancelCellEditing();
@@ -242,6 +254,9 @@ public class TextAreaCellEditor extends DefaultCellEditor implements ActionListe
     public static final String OK_KEEP_FOCUS = "OK_KEEP_FOCUS";
 
     public void actionPerformed(ActionEvent e) {
+        if (isDockedItemDialog()) {
+            return;
+        }
         String cmd = e.getActionCommand();
         boolean restoreFocus = true;
         if (OK.equals(cmd) || OK_KEEP_FOCUS.equals(cmd)) {

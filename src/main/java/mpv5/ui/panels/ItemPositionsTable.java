@@ -79,8 +79,12 @@ import mpv5.utils.tables.TableFormat;
  */
 public class ItemPositionsTable extends JPanel {
 
+    public static final String PINNED_PROPERTY = "org.openyabs.layout.positions.editor.pinned";
+    public static final String SPLIT_PROPERTY = "org.openyabs.layout.hsplit.positions.editor";
+
     private static final long serialVersionUID = 1L;
     private final JTable itemtable = new JTable();
+    private final JScrollPane scroll;
     private final JLabel netvalue = total();
     private final JLabel discount = total();
     private final JLabel taxvalue = total();
@@ -99,7 +103,19 @@ public class ItemPositionsTable extends JPanel {
     private final JButton removeButton;
     private final JButton upButton;
     private final JButton downButton;
+    private final javax.swing.JToggleButton pinButton;
     private boolean editable = true;
+    private boolean editorPinned;
+    private boolean restoredPinState;
+    private ItemTextAreaDialog editorDialog;
+    private TextAreaCellEditor currentTextEditor;
+    private javax.swing.JSplitPane editorSplit;
+    private JPanel dockedContainer;
+    private JLabel dockedTitle;
+    private int dockedRow = -1;
+    private boolean syncingDocked;
+    private MPTableModel listenedModel;
+    private final javax.swing.event.TableModelListener dockedModelListener = e -> onDockedModelChanged(e);
 
     public ItemPositionsTable() {
         super(new BorderLayout(0, ModernTheme.px(6)));
@@ -124,12 +140,20 @@ public class ItemPositionsTable extends JPanel {
         upButton.addActionListener(e -> move(-1));
         downButton = button("/images/16/arrow-down.png", Messages.ITEM_MOVE_DOWN.toString());
         downButton.addActionListener(e -> move(1));
+        pinButton = new javax.swing.JToggleButton(ItemTextAreaDialog.createPinIcon(false));
+        pinButton.setSelectedIcon(ItemTextAreaDialog.createPinIcon(true));
+        pinButton.setToolTipText(Messages.ITEM_TEXT_PIN.toString());
+        pinButton.setFocusable(false);
+        pinButton.setMargin(new java.awt.Insets(ModernTheme.px(3), ModernTheme.px(6), ModernTheme.px(3), ModernTheme.px(6)));
+        pinButton.addActionListener(e -> setEditorPinned(pinButton.isSelected()));
+
         JPanel buttons = new JPanel(new FlowLayout(FlowLayout.LEFT, ModernTheme.px(4), 0));
         buttons.setOpaque(false);
         buttons.add(addButton);
         buttons.add(removeButton);
         buttons.add(upButton);
         buttons.add(downButton);
+        buttons.add(pinButton);
 
         //the actions of the document right of the position buttons, directly above the list
         bar.setOpaque(false);
@@ -138,12 +162,436 @@ public class ItemPositionsTable extends JPanel {
         bar.add(actions, BorderLayout.CENTER);
         bar.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, ModernTheme.px(4), 0));
 
-        JScrollPane scroll = new JScrollPane(itemtable);
+        scroll = new JScrollPane(itemtable);
         scroll.getViewport().setBackground(ModernTheme.cardBackground());
         add(bar, BorderLayout.NORTH);
         add(scroll, BorderLayout.CENTER);
         add(createTotals(), BorderLayout.SOUTH);
+
+        itemtable.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting() && editorPinned && !syncingDocked) {
+                onTableSelectionChanged();
+            }
+        });
+        itemtable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (!editorPinned || syncingDocked) {
+                    return;
+                }
+                int row = itemtable.rowAtPoint(e.getPoint());
+                int col = itemtable.columnAtPoint(e.getPoint());
+                if (row >= 0 && row == dockedRow && col >= 0 && itemtable.convertColumnIndexToModel(col) != 4) {
+                    commitDockedIfDirty(false);
+                }
+            }
+        });
         setDefaultPositions();
+    }
+
+    @Override
+    public void addNotify() {
+        super.addNotify();
+        if (!restoredPinState) {
+            restoredPinState = true;
+            if (loadPinnedPreference() && !java.awt.GraphicsEnvironment.isHeadless()) {
+                setEditorPinned(true, false);
+            }
+        }
+    }
+
+    @Override
+    public void removeNotify() {
+        if (editorDialog != null && !editorPinned && editorDialog.isVisible()) {
+            editorDialog.setVisible(false);
+        }
+        super.removeNotify();
+    }
+
+    /**
+     * @return true if the text/product editor is currently pinned left of the table
+     */
+    public boolean isEditorPinned() {
+        return editorPinned;
+    }
+
+    /**
+     * Pins or unpins the position text/product editor left of the positions table
+     * and persists the preference for the current user.
+     *
+     * @param pinned true to dock left of the table, false to use the floating popup
+     */
+    public void setEditorPinned(boolean pinned) {
+        setEditorPinned(pinned, true);
+    }
+
+    private void setEditorPinned(boolean pinned, boolean persist) {
+        if (persist) {
+            savePinnedPreference(pinned);
+        }
+        pinButton.setSelected(pinned);
+        pinButton.setToolTipText((pinned ? Messages.ITEM_TEXT_UNPIN : Messages.ITEM_TEXT_PIN).toString());
+        if (pinned == editorPinned) {
+            return;
+        }
+        if (pinned) {
+            ItemTextAreaDialog dlg = ensureEditorDialog();
+            boolean wasVisible = dlg.isVisible();
+            int wasRow = dlg.getEditedRow();
+            String wasText = dlg.textArea.getText();
+            Number wasQty = dlg.getQuantityValue();
+            mpv5.db.objects.Product wasProduct = dlg.getSelectedProduct();
+            boolean wasDirty = dlg.isDirty();
+            boolean wasQtyDirty = dlg.isQuantityDirty();
+
+            if (itemtable.isEditing() && itemtable.getCellEditor() == currentTextEditor) {
+                itemtable.getCellEditor().cancelCellEditing();
+            }
+
+            dlg.setDocked(true);
+            dlg.setEditorEditable(editable);
+
+            JPanel container = ensureDockedContainer();
+            container.add(dlg.getEditorPanel(), BorderLayout.CENTER);
+            remove(scroll);
+            editorSplit = createEditorSplit(container, scroll);
+            add(editorSplit, BorderLayout.CENTER);
+            editorPinned = true;
+
+            if (wasVisible && wasRow >= 0 && wasRow < itemtable.getRowCount()) {
+                syncingDocked = true;
+                try {
+                    dockedRow = wasRow;
+                    dlg.restoreInProgressState(wasRow, wasText, wasQty, wasProduct, wasDirty, wasQtyDirty);
+                    updateDockedTitle();
+                } finally {
+                    syncingDocked = false;
+                }
+                javax.swing.SwingUtilities.invokeLater(dlg::focusTextArea);
+            } else {
+                loadDockedRow(fallbackDockedRow());
+            }
+            revalidate();
+            repaint();
+        } else {
+            commitDockedIfDirty(false);
+            editorPinned = false;
+            dockedRow = -1;
+            if (editorDialog != null) {
+                editorDialog.setDocked(false);
+            }
+            if (editorSplit != null) {
+                remove(editorSplit);
+                editorSplit.remove(scroll);
+                editorSplit = null;
+            }
+            add(scroll, BorderLayout.CENTER);
+            revalidate();
+            repaint();
+        }
+    }
+
+    ItemTextAreaDialog getEditorDialog() {
+        return editorDialog;
+    }
+
+    private ItemTextAreaDialog ensureEditorDialog() {
+        if (editorDialog == null) {
+            java.awt.Frame owner = null;
+            try {
+                owner = mpv5.YabsViewProxy.instance().getIdentifierFrame();
+            } catch (Exception ignored) {
+                // tests without main window
+            }
+            editorDialog = new ItemTextAreaDialog(owner, false);
+            editorDialog.setParentTable(itemtable);
+            editorDialog.setPinToggleAction(() -> setEditorPinned(!editorPinned));
+            editorDialog.setDockedCallbacks(this::onDockedApply, this::onDockedCancel);
+            editorDialog.setEditorEditable(editable);
+            if (currentTextEditor != null) {
+                editorDialog.okButton.addActionListener(currentTextEditor);
+                editorDialog.cancelButton.addActionListener(currentTextEditor);
+            }
+        }
+        return editorDialog;
+    }
+
+    private JPanel ensureDockedContainer() {
+        if (dockedContainer == null) {
+            dockedContainer = new JPanel(new BorderLayout());
+            dockedContainer.setBackground(ModernTheme.cardBackground());
+            dockedContainer.setBorder(BorderFactory.createLineBorder(ModernTheme.border()));
+            dockedContainer.setMinimumSize(new java.awt.Dimension(ModernTheme.px(220), ModernTheme.px(120)));
+
+            JPanel header = new JPanel(new BorderLayout(ModernTheme.px(6), 0));
+            header.setBackground(ModernTheme.blend(ModernTheme.background(), ModernTheme.cardBackground(), 0.45f));
+            header.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createMatteBorder(0, 0, 1, 0, ModernTheme.border()),
+                    BorderFactory.createEmptyBorder(ModernTheme.px(3), ModernTheme.px(8), ModernTheme.px(3), ModernTheme.px(4))));
+
+            dockedTitle = new JLabel(Messages.ITEM_SECTION_POSITIONS.toString());
+            dockedTitle.setFont(ModernTheme.font(0, Font.BOLD));
+            dockedTitle.setForeground(ModernTheme.foreground());
+            header.add(dockedTitle, BorderLayout.WEST);
+
+            JButton unpin = ItemTextAreaDialog.createFlatPinButton(true, Messages.ITEM_TEXT_UNPIN.toString(),
+                    () -> setEditorPinned(false));
+            header.add(unpin, BorderLayout.EAST);
+
+            dockedContainer.add(header, BorderLayout.NORTH);
+        }
+        return dockedContainer;
+    }
+
+    private javax.swing.JSplitPane createEditorSplit(JComponent left, JComponent right) {
+        right.setMinimumSize(new java.awt.Dimension(ModernTheme.px(260), ModernTheme.px(120)));
+        final javax.swing.JSplitPane split = new javax.swing.JSplitPane(javax.swing.JSplitPane.HORIZONTAL_SPLIT, left, right);
+        split.setBorder(BorderFactory.createEmptyBorder());
+        split.setOpaque(false);
+        split.setContinuousLayout(true);
+        split.setResizeWeight(0.0);
+
+        final Double savedRatio = loadSplitRatio();
+        final Runnable initDivider = () -> {
+            int avail = split.getWidth() - split.getDividerSize();
+            if (avail <= 0) {
+                return;
+            }
+            int minLeft = ModernTheme.px(220);
+            int maxLeft = Math.max(minLeft, avail - ModernTheme.px(260));
+            int loc;
+            if (savedRatio != null) {
+                loc = (int) Math.round(avail * savedRatio);
+            } else {
+                loc = Math.max(ModernTheme.px(300), (int) Math.round(avail * 0.28));
+            }
+            loc = Math.max(minLeft, Math.min(loc, maxLeft));
+            split.setDividerLocation(loc);
+            split.addPropertyChangeListener(javax.swing.JSplitPane.DIVIDER_LOCATION_PROPERTY, ev -> {
+                int w = split.getWidth() - split.getDividerSize();
+                if (w > 0 && split.isShowing()) {
+                    double r = (double) split.getDividerLocation() / w;
+                    if (r >= 0.05 && r <= 0.95) {
+                        saveSplitRatio(r);
+                    }
+                }
+            });
+        };
+
+        if (split.getWidth() > 0) {
+            initDivider.run();
+        } else {
+            split.addComponentListener(new java.awt.event.ComponentAdapter() {
+                @Override
+                public void componentResized(java.awt.event.ComponentEvent e) {
+                    if (split.getWidth() > 0) {
+                        split.removeComponentListener(this);
+                        initDivider.run();
+                    }
+                }
+            });
+        }
+        return split;
+    }
+
+    private static boolean loadPinnedPreference() {
+        try {
+            String v = User.getCurrentUser().getProperties().getProperty(PINNED_PROPERTY);
+            return Boolean.parseBoolean(v);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private static void savePinnedPreference(boolean pinned) {
+        try {
+            User.getCurrentUser().getProperties().changeProperty(PINNED_PROPERTY, String.valueOf(pinned));
+        } catch (Exception ignored) {
+            // tests without user
+        }
+    }
+
+    private static Double loadSplitRatio() {
+        try {
+            String s = User.getCurrentUser().getProperties().getProperty(SPLIT_PROPERTY);
+            if (s != null) {
+                double d = Double.parseDouble(s);
+                if (d >= 0.05 && d <= 0.95) {
+                    return d;
+                }
+            }
+        } catch (Exception ignored) {
+            // default
+        }
+        return null;
+    }
+
+    private static void saveSplitRatio(double ratio) {
+        try {
+            User.getCurrentUser().getProperties().changeProperty(SPLIT_PROPERTY,
+                    String.format(java.util.Locale.ROOT, "%.3f", ratio));
+        } catch (Exception ignored) {
+            // tests without user
+        }
+    }
+
+    private int fallbackDockedRow() {
+        int sel = itemtable.getSelectedRow();
+        if (sel >= 0 && sel < itemtable.getRowCount()) {
+            return sel;
+        }
+        return itemtable.getRowCount() > 0 ? 0 : -1;
+    }
+
+    private void loadDockedRow(int row) {
+        if (!editorPinned || editorDialog == null) {
+            return;
+        }
+        syncingDocked = true;
+        try {
+            MPTableModel m = itemtable.getModel() instanceof MPTableModel ? getModel() : null;
+            if (m == null || row < 0 || row >= m.getRowCount()) {
+                dockedRow = -1;
+                editorDialog.loadRowState(-1, "", 1);
+                editorDialog.setEditorEditable(false);
+                updateDockedTitle();
+                return;
+            }
+            dockedRow = row;
+            Object descObj = m.getValueAt(row, 4);
+            String desc = descObj == null ? "" : descObj.toString();
+            Number qty = parseQuantity(m.getValueAt(row, 2));
+            editorDialog.loadRowState(row, desc, qty);
+            editorDialog.setEditorEditable(editable);
+            updateDockedTitle();
+        } finally {
+            syncingDocked = false;
+        }
+    }
+
+    private static Number parseQuantity(Object val) {
+        if (val instanceof Number) {
+            return (Number) val;
+        }
+        if (val != null) {
+            try {
+                return new BigDecimal(val.toString().trim());
+            } catch (Exception ignored) {
+            }
+        }
+        return Integer.valueOf(1);
+    }
+
+    private void updateDockedTitle() {
+        if (dockedTitle == null) {
+            return;
+        }
+        if (dockedRow >= 0 && dockedRow < itemtable.getRowCount()) {
+            Object posNum = itemtable.getModel().getValueAt(dockedRow, 1);
+            int displayNum = dockedRow + 1;
+            if (posNum instanceof Number && ((Number) posNum).intValue() > 0) {
+                displayNum = ((Number) posNum).intValue();
+            } else if (posNum != null) {
+                try {
+                    int parsed = Integer.parseInt(posNum.toString().trim());
+                    if (parsed > 0) {
+                        displayNum = parsed;
+                    }
+                } catch (NumberFormatException ignored) {
+                }
+            }
+            dockedTitle.setText(String.format(Messages.ITEM_TEXT_POSITION.toString(), displayNum));
+        } else {
+            dockedTitle.setText(Messages.ITEM_SECTION_POSITIONS.toString());
+        }
+    }
+
+    private void commitDockedIfDirty(boolean restoreTableFocus) {
+        if (!editorPinned || editorDialog == null || syncingDocked || !editable) {
+            return;
+        }
+        if (dockedRow < 0 || dockedRow >= itemtable.getRowCount()) {
+            editorDialog.clearDirty();
+            return;
+        }
+        syncingDocked = true;
+        try {
+            editorDialog.setEditedRow(dockedRow);
+            editorDialog.applyIfDirty(restoreTableFocus);
+        } finally {
+            syncingDocked = false;
+        }
+    }
+
+    private void onTableSelectionChanged() {
+        int newRow = itemtable.getSelectedRow();
+        if (newRow < 0 && itemtable.getRowCount() > 0) {
+            newRow = 0;
+        }
+        if (newRow == dockedRow) {
+            return;
+        }
+        commitDockedIfDirty(false);
+        loadDockedRow(newRow);
+    }
+
+    private void onDockedApply(boolean restoreTableFocus) {
+        if (dockedRow >= 0 && dockedRow < itemtable.getRowCount()) {
+            loadDockedRow(dockedRow);
+        }
+        if (restoreTableFocus) {
+            javax.swing.SwingUtilities.invokeLater(itemtable::requestFocusInWindow);
+        }
+    }
+
+    private void onDockedCancel() {
+        if (dockedRow >= 0 && dockedRow < itemtable.getRowCount()) {
+            loadDockedRow(dockedRow);
+        }
+        javax.swing.SwingUtilities.invokeLater(itemtable::requestFocusInWindow);
+    }
+
+    private void onDockedModelChanged(javax.swing.event.TableModelEvent e) {
+        if (!editorPinned || syncingDocked || editorDialog == null) {
+            return;
+        }
+        int count = itemtable.getRowCount();
+        if (dockedRow < 0 || dockedRow >= count) {
+            loadDockedRow(fallbackDockedRow());
+            return;
+        }
+        if (e.getType() == javax.swing.event.TableModelEvent.UPDATE
+                && dockedRow >= e.getFirstRow() && dockedRow <= e.getLastRow()) {
+            if (!editorDialog.isDirty()) {
+                loadDockedRow(dockedRow);
+            } else {
+                updateDockedTitle();
+            }
+        } else {
+            updateDockedTitle();
+        }
+    }
+
+    private void focusDockedTextArea(int row) {
+        if (!editorPinned || editorDialog == null) {
+            return;
+        }
+        int target = row >= 0 && row < itemtable.getRowCount() ? row : fallbackDockedRow();
+        if (target >= 0 && target != dockedRow) {
+            commitDockedIfDirty(false);
+            loadDockedRow(target);
+        }
+        if (target >= 0 && itemtable.getSelectedRow() != target) {
+            itemtable.setRowSelectionInterval(target, target);
+        }
+        javax.swing.SwingUtilities.invokeLater(editorDialog::focusTextArea);
+    }
+
+    private void resetDockedBeforeModelChange() {
+        if (editorDialog != null) {
+            editorDialog.clearDirty();
+        }
+        dockedRow = -1;
     }
 
     private final JPanel bar = new JPanel(new BorderLayout(ModernTheme.px(10), 0));
@@ -301,6 +749,7 @@ public class ItemPositionsTable extends JPanel {
      * Six empty positions (a new document)
      */
     public final void setDefaultPositions() {
+        resetDockedBeforeModelChange();
         SubItem[] items = new SubItem[]{
             SubItem.getDefaultItem(), SubItem.getDefaultItem(),
             SubItem.getDefaultItem(), SubItem.getDefaultItem(),
@@ -313,6 +762,9 @@ public class ItemPositionsTable extends JPanel {
         }
         itemtable.setModel(SubItem.toModel(items));
         formatTable();
+        if (editorPinned) {
+            loadDockedRow(fallbackDockedRow());
+        }
     }
 
     /**
@@ -321,12 +773,16 @@ public class ItemPositionsTable extends JPanel {
      * @param items
      */
     public void setPositions(SubItem[] items) {
+        resetDockedBeforeModelChange();
         itemtable.setModel(SubItem.toModel(items));
         if (editable && getModel().getEmptyRows(new int[]{4}) < 2) {
             getModel().addRow(1);
         }
         formatTable();
         fireUpdate();
+        if (editorPinned) {
+            loadDockedRow(fallbackDockedRow());
+        }
     }
 
     /**
@@ -335,10 +791,14 @@ public class ItemPositionsTable extends JPanel {
      * @param model
      */
     public void setModel(MPTableModel model) {
+        resetDockedBeforeModelChange();
         itemtable.setModel(model);
         keepTrailingEmptyRow(model);
         formatTable();
         fireUpdate();
+        if (editorPinned) {
+            loadDockedRow(fallbackDockedRow());
+        }
     }
 
     /**
@@ -352,6 +812,7 @@ public class ItemPositionsTable extends JPanel {
                 Log.Debug(this, e.getMessage());
             }
         }
+        commitDockedIfDirty(false);
     }
 
     /**
@@ -399,6 +860,9 @@ public class ItemPositionsTable extends JPanel {
         removeButton.setEnabled(editable);
         upButton.setEnabled(editable);
         downButton.setEnabled(editable);
+        if (editorDialog != null) {
+            editorDialog.setEditorEditable(editable && (!editorPinned || (dockedRow >= 0 && dockedRow < itemtable.getRowCount())));
+        }
         if (itemtable.getModel() instanceof MPTableModel) {
             applyCanEdits();
         }
@@ -522,8 +986,18 @@ public class ItemPositionsTable extends JPanel {
         if (index < 0) {
             return;
         }
+        if (editorPinned && index == dockedRow && editorDialog != null) {
+            editorDialog.clearDirty();
+        }
         SubItem.addToDeletionQueue(getModel().getValueAt(index, 0));
         getModel().removeRow(index);
+        if (editorPinned) {
+            int next = Math.min(index, itemtable.getRowCount() - 1);
+            if (next >= 0) {
+                itemtable.setRowSelectionInterval(next, next);
+            }
+            loadDockedRow(next);
+        }
     }
 
     private void move(int direction) {
@@ -535,8 +1009,12 @@ public class ItemPositionsTable extends JPanel {
         if (index < 0 || target < 0 || target >= itemtable.getRowCount()) {
             return;
         }
+        commitDockedIfDirty(false);
         getModel().moveRow(index, index, target);
         itemtable.changeSelection(target, itemtable.getSelectedColumn(), false, false);
+        if (editorPinned) {
+            loadDockedRow(target);
+        }
     }
 
     /**
@@ -680,6 +1158,11 @@ public class ItemPositionsTable extends JPanel {
             return;
         }
         if (!User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "ordersoverproducts")) {
+            if (editorPinned && editorDialog != null) {
+                focusDockedTextArea(row);
+                javax.swing.SwingUtilities.invokeLater(editorDialog::focusProductSearch);
+                return;
+            }
             itemtable.editCellAt(row, itemtable.convertColumnIndexToView(4));
             return;
         }
@@ -766,8 +1249,14 @@ public class ItemPositionsTable extends JPanel {
         }
         int row = selectedRow();
         if (row >= 0) {
+            if (editorPinned && row == dockedRow && editorDialog != null) {
+                editorDialog.clearDirty();
+            }
             SubItem.addToDeletionQueue(getModel().getValueAt(row, 0));
             getModel().setRowAt(SubItem.getDefaultItem().getRowData(row), row, 1);
+            if (editorPinned && row == dockedRow) {
+                loadDockedRow(row);
+            }
         }
     }
 
@@ -793,17 +1282,52 @@ public class ItemPositionsTable extends JPanel {
 
         TextAreaCellRenderer textAreaCellRenderer = new TextAreaCellRenderer(itemtable);
         textAreaCellRenderer.setRendererTo(4);
-        TextAreaCellEditor r = new TextAreaCellEditor(itemtable);
+        TextAreaCellEditor previousEditor = currentTextEditor;
+        TextAreaCellEditor r = new TextAreaCellEditor(itemtable) {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public boolean isCellEditable(java.util.EventObject e) {
+                if (!super.isCellEditable(e)) {
+                    return false;
+                }
+                if (editorPinned) {
+                    if (!editable) {
+                        return false;
+                    }
+                    int row = itemtable.getSelectedRow();
+                    if (e instanceof MouseEvent) {
+                        row = itemtable.rowAtPoint(((MouseEvent) e).getPoint());
+                    }
+                    if (row >= 0) {
+                        focusDockedTextArea(row);
+                    }
+                    return false;
+                }
+                return true;
+            }
+        };
         r.setClickCountToStart(1);
-        //created when the text cell is edited the first time
-        r.setDialog(() -> {
-            ItemTextAreaDialog itemTextAreaDialog = new ItemTextAreaDialog(mpv5.YabsViewProxy.instance().getIdentifierFrame(), false);
-            itemTextAreaDialog.setParentTable(itemtable);
-            itemTextAreaDialog.okButton.addActionListener(r);
-            itemTextAreaDialog.cancelButton.addActionListener(r);
-            return itemTextAreaDialog;
-        }, d -> ((ItemTextAreaDialog) d).textArea);
+        currentTextEditor = r;
+        if (editorDialog != null) {
+            if (previousEditor != null) {
+                editorDialog.okButton.removeActionListener(previousEditor);
+                editorDialog.cancelButton.removeActionListener(previousEditor);
+            }
+            editorDialog.okButton.addActionListener(r);
+            editorDialog.cancelButton.addActionListener(r);
+            r.setDialog(editorDialog, editorDialog.textArea);
+        } else {
+            //created when the text cell is edited the first time
+            r.setDialog(() -> ensureEditorDialog(), d -> ((ItemTextAreaDialog) d).textArea);
+        }
         r.setEditorTo(4);
+
+        if (listenedModel != null) {
+            listenedModel.removeTableModelListener(dockedModelListener);
+        }
+        listenedModel = getModel();
+        listenedModel.addTableModelListener(dockedModelListener);
 
         itemtable.getColumnModel().getColumn(3).setCellEditor(new LazyCellEditor(new JTextField()));
         String quantXnet = "[2]*[5]" + (calcoptionalcol ? "*[14]" : "");
