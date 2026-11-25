@@ -1205,4 +1205,52 @@ public final class ItemService {
             return q.compareTo(def) != 0;
         }
     }
+
+    /**
+     * Checks whether a cross-border invoice contains only free-text positions
+     * (no linked {@link Product}). Customs fields such as HS tariff code
+     * (BT-158), country of origin (BT-159), and per-unit net weight are stored
+     * on the linked product and would therefore stay empty.
+     * <p>
+     * Returns {@code null} when no warning is needed (domestic invoice, unknown
+     * country, reverse-charge services {@link mpv5.utils.export.VatCategory#AE},
+     * no entered positions, or at least one position is linked to a product).
+     *
+     * @param sellerCountry seller country (ISO code or name)
+     * @param buyerCountry buyer country (ISO code or name)
+     * @param vatCategory optional VAT category (may be null)
+     * @param positions the subitem table model
+     * @return localized warning message, or {@code null} if no warning applies
+     */
+    public static String crossBorderFreeTextWarning(String sellerCountry, String buyerCountry,
+            mpv5.utils.export.VatCategory vatCategory, MPTableModel positions) {
+        if (positions == null || positions.getRowCount() == 0) {
+            return null;
+        }
+        String seller = mpv5.utils.export.ZugpferdFile.toCountryCode(sellerCountry);
+        String buyer = mpv5.utils.export.ZugpferdFile.toCountryCode(buyerCountry);
+        if (seller.isEmpty() || buyer.isEmpty() || seller.equalsIgnoreCase(buyer)) {
+            return null;
+        }
+        if (vatCategory == mpv5.utils.export.VatCategory.AE) {
+            return null;
+        }
+        int nonEmptyRows = 0;
+        int linkedProductRows = 0;
+        for (int row = 0; row < positions.getRowCount(); row++) {
+            boolean hasText = TrailingEmptyRowListener.hasText(positions, row, 4);
+            boolean hasPrice = TrailingEmptyRowListener.hasNonZeroNumber(positions, row, 5);
+            boolean hasProd = TrailingEmptyRowListener.hasProduct(positions, row);
+            if (hasText || hasPrice || hasProd) {
+                nonEmptyRows++;
+                if (hasProd) {
+                    linkedProductRows++;
+                }
+            }
+        }
+        if (nonEmptyRows == 0 || linkedProductRows > 0) {
+            return null;
+        }
+        return String.format(Messages.CROSS_BORDER_FREETEXT_WARNING.toString(), buyer);
+    }
 }

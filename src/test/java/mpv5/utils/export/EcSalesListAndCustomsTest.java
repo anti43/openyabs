@@ -201,6 +201,42 @@ class EcSalesListAndCustomsTest {
         assertTrue(weight instanceof LabeledTextField, "ModernProductPanel must have netWeight field");
     }
 
+    @Test
+    void crossBorderFreeTextWarningDetectsMissingProductLinks() {
+        // Build a minimal 17-column subitem table model (col 4 = text, col 5 = price, col 10 = product)
+        Object[][] freeTextOnly = new Object[][]{
+            new Object[]{-1, 1, BigDecimal.ONE, "Stk", "Industrial Sensor", new BigDecimal("120.00"),
+                BigDecimal.ZERO, new BigDecimal("120.00"), 0.0, 0.0, null, "A", "C", "", "", BigDecimal.ZERO, BigDecimal.ZERO}
+        };
+        mpv5.utils.models.MPTableModel freeTextModel = new mpv5.utils.models.MPTableModel(freeTextOnly);
+
+        // Cross-border (DE -> CH) with only free-text positions triggers warning
+        String warn = mpv5.handler.ItemService.crossBorderFreeTextWarning("DE", "CH", VatCategory.G, freeTextModel);
+        assertNotNull(warn, "Cross-border export with pure free-text positions must warn");
+        assertTrue(warn.contains("CH"), warn);
+
+        // Intra-EU goods (DE -> FR, VatCategory.K) with only free-text positions also warns
+        String euWarn = mpv5.handler.ItemService.crossBorderFreeTextWarning("DE", "FR", VatCategory.K, freeTextModel);
+        assertNotNull(euWarn, "Intra-EU goods delivery with pure free-text positions must warn");
+
+        // Domestic (DE -> DE) must NOT warn
+        assertNull(mpv5.handler.ItemService.crossBorderFreeTextWarning("DE", "DE", VatCategory.S, freeTextModel));
+
+        // Reverse-charge services (VatCategory.AE) must NOT warn
+        assertNull(mpv5.handler.ItemService.crossBorderFreeTextWarning("DE", "FR", VatCategory.AE, freeTextModel));
+
+        // Linked product present -> must NOT warn
+        Product linked = new Product();
+        linked.setIDS(42);
+        linked.setCname("Sensor");
+        Object[][] withProduct = new Object[][]{
+            new Object[]{-1, 1, BigDecimal.ONE, "Stk", "Industrial Sensor", new BigDecimal("120.00"),
+                BigDecimal.ZERO, new BigDecimal("120.00"), 0.0, 0.0, linked, "A", "C", "", "", BigDecimal.ZERO, BigDecimal.ZERO}
+        };
+        mpv5.utils.models.MPTableModel productModel = new mpv5.utils.models.MPTableModel(withProduct);
+        assertNull(mpv5.handler.ItemService.crossBorderFreeTextWarning("DE", "CH", VatCategory.G, productModel));
+    }
+
     private static Component findByName(Container root, String name) {
         for (Component c : root.getComponents()) {
             if (name.equals(c.getName())) {

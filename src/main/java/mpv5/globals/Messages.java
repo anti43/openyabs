@@ -2429,7 +2429,9 @@ public enum Messages {
     PRODUCT_ORIGIN_COUNTRY_INVALID("Invalid country of origin: enter a 2-letter ISO code (e.g. DE, FR, CN)"),
     PRODUCT_NET_WEIGHT("Weight (kg)"),
     PRODUCT_NET_WEIGHT_TOOLTIP("Net weight per unit in kg (e.g. 1.25)"),
-    PRODUCT_NET_WEIGHT_INVALID("Invalid weight: enter a non-negative number in kg (e.g. 1.25)");
+    PRODUCT_NET_WEIGHT_INVALID("Invalid weight: enter a non-negative number in kg (e.g. 1.25)"),
+    CROSS_BORDER_FREETEXT_WARNING("This cross-border invoice (%s) contains only free-text positions without a linked product. Customs fields (HS / tariff code, country of origin, net weight) are stored on the product and will remain empty. Ignore this if you are billing services only."),
+    CROSS_BORDER_FREETEXT_SAVE_ANYWAY("Save invoice anyway?");
 
 
     /**
