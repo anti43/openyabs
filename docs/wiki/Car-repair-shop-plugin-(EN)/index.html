@@ -2170,6 +2170,7 @@
 <h1 id="car-repair-shop-plugin-workshopjar">Car Repair Shop Plugin (<code>workshop.jar</code>)<a class="headerlink" href="#car-repair-shop-plugin-workshopjar" title="Permanent link">&para;</a></h1>
 <p>Deutsch: <a href="../Kfz-Werkstatt-Plugin/">Kfz-Werkstatt-Plugin (DE)</a> · Overview: <a href="../Plugins-%28EN%29/">Plugins (EN)</a></p>
 <p>The <strong>Car Repair Shop plugin</strong> (<code>workshop.jar</code>) adds vehicle management, repair order/invoice integration, labor units (<em>AW</em>), tire storage, inspection reminders, and ready-to-use document templates to OpenYaBS. It adapts automatically to <strong>English and German</strong> via the core plugin i18n API (<code>ExtensionContext.tr</code>), keeping all automotive logic strictly outside OpenYaBS core.</p>
+<p><img alt="Car Repair Shop overview showing upcoming HU/AU inspections and tire storage" src="../images/plugin-workshop.png" /></p>
 <h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h2>
 <ul>
 <li><strong>Vehicle Management (1-to-many per contact):</strong> License plate, 17-character ISO 3779 VIN (without enforcing the North American 9th-digit checksum so EU VINs validate cleanly), make/model/variant, optional regional ID (e.g. German HSN/TSN), first registration, current mileage with per-reading unit (<code>km</code>/<code>mi</code>), next mandatory inspection due (<code>YYYY-MM</code> for DE HU/AU or <code>YYYY-MM-DD</code> for UK MOT), tire size, Active/Archived status (<em>sold/deregistered</em>), and notes.</li>
