@@ -1238,9 +1238,9 @@ public final class ItemService {
         int nonEmptyRows = 0;
         int linkedProductRows = 0;
         for (int row = 0; row < positions.getRowCount(); row++) {
-            boolean hasText = TrailingEmptyRowListener.hasText(positions, row, 4);
-            boolean hasPrice = TrailingEmptyRowListener.hasNonZeroNumber(positions, row, 5);
-            boolean hasProd = TrailingEmptyRowListener.hasProduct(positions, row);
+            boolean hasText = TrailingEmptyRow.hasText(positions, row, 4);
+            boolean hasPrice = TrailingEmptyRow.hasNonZeroNumber(positions, row, 5);
+            boolean hasProd = TrailingEmptyRow.hasProduct(positions, row);
             if (hasText || hasPrice || hasProd) {
                 nonEmptyRows++;
                 if (hasProd) {
