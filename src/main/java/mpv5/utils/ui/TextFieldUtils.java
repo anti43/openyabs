@@ -23,23 +23,29 @@ import mpv5.ui.beans.LabeledTextField;
 //~--- JDK imports ------------------------------------------------------------
 
 import java.awt.Color;
-import java.awt.Component;
-
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
-import javax.swing.SwingWorker;
+import javax.swing.SwingUtilities;
+import javax.swing.Timer;
+import javax.swing.UIManager;
 import javax.swing.border.Border;
-import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.text.JTextComponent;
 
 /**
- *
- *
+ * Utility to briefly highlight/blink input fields on validation errors or search misses.
  */
 public class TextFieldUtils {
 
+    private static final String BLINK_STATE_KEY = "yabs.textfield.blinkState";
+    private static final String FLAT_OUTLINE_KEY = "JComponent.outline";
+    private static final int BLINK_INTERVAL_MS = 550;
+
     public static void blinkerGrey(LabeledTextField field) {
-        new blinker(field.getTextField(), 2, Color.GRAY).execute();
+        if (field != null) {
+            blink(field.getTextField(), Color.GRAY);
+        }
     }
 
     /**
@@ -47,7 +53,7 @@ public class TextFieldUtils {
      * @param field
      */
     public static void blinkerRed(JTextField field) {
-        new blinker(field, 2, Color.RED).execute();
+        blink(field, Color.RED);
     }
 
     /**
@@ -55,7 +61,9 @@ public class TextFieldUtils {
      * @param lfield
      */
     public static void blinkerRed(LabeledTextField lfield) {
-        new blinker(lfield.getTextField(), 2, Color.RED).execute();
+        if (lfield != null) {
+            blink(lfield.getTextField(), Color.RED);
+        }
     }
 
     /**
@@ -64,56 +72,133 @@ public class TextFieldUtils {
      * @param color
      */
     public static void blink(JComponent component, Color color) {
-        new blinker(component, 2, color).execute();
+        blink(component, 2, color);
     }
 
     public static void blinker(JTextField jTextField1, Color color) {
         blink(jTextField1, color);
     }
 
-    private static class blinker extends SwingWorker<Void, Void> {
+    private static void blink(final JComponent component, final int count, final Color color) {
+        if (component == null || count <= 0) {
+            return;
+        }
+        Runnable start = () -> startBlinkOnEdt(component, count, color);
+        if (SwingUtilities.isEventDispatchThread()) {
+            start.run();
+        } else {
+            SwingUtilities.invokeLater(start);
+        }
+    }
 
-        private Color color;
-        private int count;
-        private JComponent fi;
+    private static boolean useFlatOutline(JComponent component) {
+        if (!(component instanceof JTextComponent || component instanceof JComboBox)) {
+            return false;
+        }
+        javax.swing.LookAndFeel laf = UIManager.getLookAndFeel();
+        return laf != null && laf.getClass().getName().startsWith("com.formdev.flatlaf.");
+    }
 
-        private blinker(JComponent field, int i, Color col) {
-            fi = field;
-            count = i;
-            color = col;
+    private static void startBlinkOnEdt(JComponent component, int count, Color color) {
+        Object existing = component.getClientProperty(BLINK_STATE_KEY);
+        BlinkState state;
+        if (existing instanceof BlinkState) {
+            state = (BlinkState) existing;
+            if (state.timer != null) {
+                state.timer.stop();
+            }
+        } else {
+            state = new BlinkState(
+                    component.getBorder(),
+                    component.getBackground(),
+                    component.isOpaque(),
+                    component.getClientProperty(FLAT_OUTLINE_KEY),
+                    useFlatOutline(component));
+            component.putClientProperty(BLINK_STATE_KEY, state);
         }
 
-        @Override
-        protected Void doInBackground() throws Exception {
-            fi.setOpaque(true);
-            final Border oborder = fi.getBorder();
-            final Color ocolor = fi.getBackground();
-            boolean roundb = true;
-            int borderthickness = 1;
-            if (oborder instanceof LineBorder) {
-                roundb = ((LineBorder) oborder).getRoundedCorners();
-                borderthickness = ((LineBorder) oborder).getThickness();
-            }
+        state.applyHighlight(component, color);
+        final int[] remainingToggles = {count * 2 - 1};
+        final boolean[] highlighted = {true};
 
-            for (int i = 0; i < count; i++) {
-                try {
-                    Border etch = new LineBorder(color, borderthickness, roundb);
-                    fi.setBorder(etch);
-                } catch (Exception e) {
-                    fi.setBackground(color);
-                }
-                fi.validate();
-                Thread.sleep(550);
-                fi.setBackground(ocolor);
-                try {
-                    fi.setBorder(oborder);
-                } catch (Exception e) {
-                }
-                fi.validate();
-                Thread.sleep(550);
+        Timer timer = new Timer(BLINK_INTERVAL_MS, e -> {
+            if (highlighted[0]) {
+                state.restore(component);
+                highlighted[0] = false;
+            } else {
+                state.applyHighlight(component, color);
+                highlighted[0] = true;
             }
+            remainingToggles[0]--;
+            if (remainingToggles[0] <= 0) {
+                if (highlighted[0]) {
+                    state.restore(component);
+                }
+                ((Timer) e.getSource()).stop();
+                if (component.getClientProperty(BLINK_STATE_KEY) == state) {
+                    component.putClientProperty(BLINK_STATE_KEY, null);
+                }
+            }
+        });
+        timer.setRepeats(true);
+        state.timer = timer;
+        timer.start();
+    }
 
-            return null;
+    private static final class BlinkState {
+        final Border originalBorder;
+        final Color originalBackground;
+        final boolean originalOpaque;
+        final Object originalOutline;
+        final boolean flatOutline;
+        final boolean rounded;
+        final int thickness;
+        Timer timer;
+
+        BlinkState(Border originalBorder, Color originalBackground, boolean originalOpaque,
+                Object originalOutline, boolean flatOutline) {
+            this.originalBorder = originalBorder;
+            this.originalBackground = originalBackground;
+            this.originalOpaque = originalOpaque;
+            this.originalOutline = originalOutline;
+            this.flatOutline = flatOutline;
+            if (originalBorder instanceof LineBorder) {
+                this.rounded = ((LineBorder) originalBorder).getRoundedCorners();
+                this.thickness = ((LineBorder) originalBorder).getThickness();
+            } else {
+                this.rounded = true;
+                this.thickness = 1;
+            }
+        }
+
+        void applyHighlight(JComponent component, Color color) {
+            if (flatOutline) {
+                component.putClientProperty(FLAT_OUTLINE_KEY, Color.RED.equals(color) ? "error" : color);
+                component.repaint();
+                return;
+            }
+            component.setOpaque(true);
+            try {
+                component.setBorder(new LineBorder(color, thickness, rounded));
+            } catch (Exception e) {
+                component.setBackground(color);
+            }
+            component.repaint();
+        }
+
+        void restore(JComponent component) {
+            if (flatOutline) {
+                component.putClientProperty(FLAT_OUTLINE_KEY, originalOutline);
+                component.repaint();
+                return;
+            }
+            component.setOpaque(originalOpaque);
+            component.setBackground(originalBackground);
+            try {
+                component.setBorder(originalBorder);
+            } catch (Exception ignored) {
+            }
+            component.repaint();
         }
     }
 }
