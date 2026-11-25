@@ -149,94 +149,164 @@ public final class StockService {
         return p;
     }
 
-    // ------------------------------------------------------------ CSV rows
+    // ------------------------------------------------------------ import entries
     /**
-     * @param row
-     * @param mapping
-     * @return the code of the row: number, EAN, reference or name (the first
-     * mapped and not empty in this order), "" if none
+     * A code to take into the stock list: from a pasted list or a row of a
+     * CSV file (its values are used when the product is created)
      */
-    public static String code(String[] row, Field[] mapping) {
-        for (String key : CODE_FIELDS) {
+    public static final class Entry {
+
+        public final String code;
+        public BigDecimal quantity;
+        public final String[] row;
+        public final Field[] mapping;
+        /**
+         * the product found, null if none (set by {@link #lookup(List)})
+         */
+        public Product product;
+        /**
+         * create the product if it is not found
+         */
+        public boolean create;
+
+        public Entry(String code, BigDecimal quantity, String[] row, Field[] mapping) {
+            this.code = code;
+            this.quantity = quantity;
+            this.row = row;
+            this.mapping = mapping;
+        }
+    }
+
+    private static Entry merge(List<Entry> entries, Entry e) {
+        for (Entry x : entries) {
+            if (x.code.equalsIgnoreCase(e.code)) {
+                x.quantity = x.quantity.add(e.quantity);
+                return x;
+            }
+        }
+        entries.add(e);
+        return e;
+    }
+
+    /**
+     * @param text a pasted list
+     * @param separator see {@link #split(String, String)}
+     * @return one entry per code, quantity = how often it occurs
+     */
+    public static List<Entry> fromText(String text, String separator) {
+        List<Entry> entries = new ArrayList<Entry>();
+        for (String c : split(text, separator)) {
+            merge(entries, new Entry(c, BigDecimal.ONE, null, null));
+        }
+        return entries;
+    }
+
+    /**
+     * @param s a quantity, empty for 1
+     * @return the quantity
+     * @throws NumberFormatException if it is no number
+     */
+    public static BigDecimal quantity(String s) {
+        String v = s == null ? "" : s.trim();
+        return v.isEmpty() ? BigDecimal.ONE : CsvImport.number(v);
+    }
+
+    /**
+     * @param data the file
+     * @param codeColumn the column that identifies the product (number, EAN,
+     * reference or name)
+     * @param quantityColumn the column of the quantity, &lt; 0 for 1 per row
+     * @param mapping the fields of the columns (values of new products)
+     * @param skipped gets the line numbers of rows without code or with a
+     * quantity that is no number
+     * @return one entry per code, the quantities of duplicate rows added up
+     */
+    public static List<Entry> fromCsv(CsvImport.Data data, int codeColumn, int quantityColumn, Field[] mapping, List<Integer> skipped) {
+        List<Entry> entries = new ArrayList<Entry>();
+        for (int i = data.firstData(); i < data.rows.size(); i++) {
+            String[] row = data.rows.get(i);
+            if (CsvImport.isEmpty(row)) {
+                continue;
+            }
+            String code = cell(row, codeColumn);
+            BigDecimal q;
+            try {
+                q = quantityColumn < 0 ? BigDecimal.ONE : quantity(cell(row, quantityColumn));
+            } catch (Exception e) {
+                q = null;
+            }
+            if (code.isEmpty() || q == null) {
+                skipped.add(i + 1);
+                continue;
+            }
+            merge(entries, new Entry(code, q, row, mapping));
+        }
+        return entries;
+    }
+
+    private static String cell(String[] row, int col) {
+        return col >= 0 && col < row.length && row[col] != null ? row[col].trim() : "";
+    }
+
+    /**
+     * @param mapping the fields guessed for the columns
+     * @return the column that most likely identifies the product (EAN, number,
+     * reference, name), 0 if none
+     */
+    public static int codeColumn(Field[] mapping) {
+        for (String key : new String[]{"ean", "cnumber", "reference", "cname"}) {
             for (int col = 0; col < mapping.length; col++) {
                 if (mapping[col] != null && key.equals(mapping[col].key)) {
-                    String v = col < row.length && row[col] != null ? row[col].trim() : "";
-                    if (!v.isEmpty()) {
-                        return v;
-                    }
+                    return col;
                 }
             }
         }
-        return "";
+        return 0;
     }
 
     /**
-     * @param row
-     * @param mapping
-     * @return the quantity of the stock column, 1 if there is none or it is
-     * empty
-     * @throws NumberFormatException if it is not a number
+     * @param mapping the fields guessed for the columns
+     * @return the column of the stock (quantity), -1 if none
      */
-    public static BigDecimal quantity(String[] row, Field[] mapping) {
+    public static int quantityColumn(Field[] mapping) {
         for (int col = 0; col < mapping.length; col++) {
             if (mapping[col] != null && "stockvalue".equals(mapping[col].key)) {
-                String v = col < row.length && row[col] != null ? row[col].trim() : "";
-                return v.isEmpty() ? BigDecimal.ONE : CsvImport.number(v);
+                return col;
             }
         }
-        return BigDecimal.ONE;
+        return -1;
     }
 
     /**
-     * @param row
-     * @param mapping
-     * @return the problems of a stock row (no code, quantity not a number),
-     * empty if it can be taken
-     */
-    public static List<String> check(String[] row, Field[] mapping) {
-        List<String> p = new ArrayList<String>();
-        if (code(row, mapping).isEmpty()) {
-            p.add(Messages.STOCK_NO_CODE.toString());
-        }
-        try {
-            quantity(row, mapping);
-        } catch (Exception e) {
-            p.add(String.format(Messages.CSV_PROBLEM_NUMBER.toString(), Messages.STOCK_COL_QUANTITY, e.getMessage()));
-        }
-        return p;
-    }
-
-    /**
-     * @param mapping
-     * @return a problem of the mapping (no column to find the product by),
-     * null if fine
-     */
-    public static String checkMapping(Field[] mapping) {
-        for (Field f : mapping) {
-            if (f != null) {
-                for (String k : CODE_FIELDS) {
-                    if (k.equals(f.key)) {
-                        return null;
-                    }
-                }
-            }
-        }
-        return Messages.STOCK_MAPPING_NO_CODE.toString();
-    }
-
-    /**
-     * A new product from a CSV row (all mapped columns), stock 0: the
-     * quantity is booked afterwards
+     * Looks up the products of the entries
      *
-     * @param row
-     * @param mapping
+     * @param entries
+     */
+    public static void lookup(List<Entry> entries) {
+        for (Entry e : entries) {
+            e.product = find(e.code);
+        }
+    }
+
+    /**
+     * A new product from a CSV row (all mapped columns except the stock),
+     * stock 0: the quantity is booked afterwards. Without name the code is the
+     * name, a code that is a valid EAN the EAN.
+     *
+     * @param row may be null
+     * @param mapping may be null
+     * @param code
      * @return the product, not saved
      * @throws Exception
      */
-    public static Product newProduct(String[] row, Field[] mapping) throws Exception {
-        Product p = CsvImport.createProduct(row, mapping);
+    public static Product newProduct(String[] row, Field[] mapping, String code) throws Exception {
+        Product p = row == null || mapping == null ? newProduct(code) : CsvImport.createProduct(row, mapping);
         if (p.__getCname() == null || p.__getCname().trim().isEmpty()) {
-            p.setCname(code(row, mapping));
+            p.setCname(code == null ? "" : code.trim());
+        }
+        String digits = code == null ? "" : code.replaceAll("[\\s\\-]", "");
+        if ((p.__getEan() == null || p.__getEan().trim().isEmpty()) && ProductService.isValidEan(digits)) {
+            p.setEan(digits);
         }
         p.setStockvalue(BigDecimal.ZERO);
         p.setIntinventorytype(1);

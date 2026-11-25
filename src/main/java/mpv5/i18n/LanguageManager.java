@@ -1120,7 +1120,9 @@ public class LanguageManager {
      * @param name the name of a language pack, e.g. "de-2.0.10.properties
      * (...)" (imported from YaBS) or a name given at the import
      * @return true for a German pack: the name starts with "de" as the
-     * language code, or with "language-de", "deutsch", "german"
+     * language code, or with "language-de", "deutsch", "german", or contains
+     * one of the words de, deu, ger, deutsch, german, sprachdatei (older packs:
+     * "Yabs-1.2-beta7-Sprachdatei-DEU.txt", "1508740910373_Yabs-1.2.7.2_DEU")
      */
     static boolean isGermanName(String name) {
         if (name == null) {
@@ -1128,7 +1130,8 @@ public class LanguageManager {
         }
         String n = name.trim().toLowerCase(java.util.Locale.ROOT);
         return n.equals("de") || n.matches("de[-_. (].*") || n.startsWith("language-de")
-                || n.startsWith("deutsch") || n.startsWith("german");
+                || n.startsWith("deutsch") || n.startsWith("german")
+                || n.matches(".*(^|[^a-z])(de|deu|ger|deutsch|german|sprachdatei)([^a-z]|$).*");
     }
 
     /**

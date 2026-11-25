@@ -108,9 +108,9 @@ public class Stockmanager extends JPanel {
     private final JLabel status = new JLabel(" ");
     private final Model model = new Model();
     private final JTable table = new JTable(model);
-    private final JButton loadAll = new JButton();
-    private final JButton exportCsv = new JButton();
-    private final JButton exportHtml = new JButton();
+    private final JButton loadAll = ModernTheme.actionButton(new JButton(), "/images/16/kwikdisk.png");
+    private final JButton exportCsv = ModernTheme.actionButton(new JButton(), "/images/16/fileexport.png");
+    private final JButton exportHtml = ModernTheme.actionButton(new JButton(), "/images/16/fileexport.png");
 
     private Stockmanager() {
         super(new BorderLayout(0, ModernTheme.px(8)));
@@ -128,6 +128,8 @@ public class Stockmanager extends JPanel {
         }
         in.setSelected(true);
         autoCreate.setText(Messages.STOCK_AUTOCREATE.toString());
+        autoCreate.setToolTipText(Messages.STOCK_AUTOCREATE_INFO.toString());
+        autoCreate.setFont(ModernTheme.font(1, java.awt.Font.PLAIN));
         autoCreate.setOpaque(false);
         autoCreate.addActionListener(e -> {
             for (Line l : lines) {
@@ -138,51 +140,65 @@ public class Stockmanager extends JPanel {
             model.fireTableDataChanged();
         });
 
-        scan.setColumns(24);
-        scan.setFont(ModernTheme.font(3, java.awt.Font.PLAIN));
+        scan.setColumns(34);
+        scan.setFont(ModernTheme.font(5, java.awt.Font.PLAIN));
+        ModernTheme.roomy(scan);
+        scan.setToolTipText(Messages.STOCK_SCAN_TOOLTIP.toString());
         scan.addActionListener(e -> {
             String t = scan.getText();
             scan.setText("");
             //a pasted list in the field: every code
             if (t != null && t.matches("(?s).*[\\r\\n\\t;].*")) {
-                addAll(StockService.split(t, StockService.guessSeparator(t)));
+                addEntries(StockService.fromText(t, StockService.guessSeparator(t)));
             } else {
                 add(t, BigDecimal.ONE, null, null);
             }
             refresh();
         });
 
-        JButton paste = new JButton(Messages.STOCK_PASTE.toString());
-        paste.addActionListener(e -> paste());
-        JButton importCsv = new JButton(Messages.STOCK_IMPORT.toString());
-        importCsv.addActionListener(e -> CsvImportDialog.openForStock(this::addRows));
+        JButton importData = ModernTheme.actionButton(new JButton(Messages.STOCK_IMPORT_DATA.toString()), "/images/16/editpaste.png");
+        importData.setToolTipText(Messages.STOCK_WIZ_SOURCE_INFO.toString());
+        importData.addActionListener(e -> importData());
         loadAll.setText(Messages.STOCK_LOAD_ALL.toString());
         loadAll.addActionListener(e -> loadAll());
         exportCsv.setText(Messages.STOCK_EXPORT_CSV.toString());
         exportCsv.addActionListener(e -> export(true));
         exportHtml.setText(Messages.STOCK_EXPORT_HTML.toString());
         exportHtml.addActionListener(e -> export(false));
+        for (JRadioButton b : new JRadioButton[]{in, out, inventory}) {
+            b.setFont(ModernTheme.font(1, java.awt.Font.PLAIN));
+        }
 
         JPanel top = new JPanel();
         top.setOpaque(false);
         top.setLayout(new javax.swing.BoxLayout(top, javax.swing.BoxLayout.PAGE_AXIS));
-        JComponent hint = Applets.hint(Messages.STOCK_INFO.toString());
+        JComponent hint = Applets.plainHint(Messages.STOCK_INFO.toString());
+        //a first width: the text wraps already in the first layout
+        hint.setSize(ModernTheme.px(900), 1);
+        //import, scan field and "create unknown products" in one line
         JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, ModernTheme.px(8), 0));
         row.setOpaque(false);
-        row.add(new JLabel(Messages.STOCK_SCAN + ":"));
+        row.add(importData);
+        JLabel scanLabel = new JLabel(Messages.STOCK_SCAN + ":");
+        scanLabel.setFont(ModernTheme.font(1, java.awt.Font.BOLD));
+        row.add(scanLabel);
         row.add(scan);
-        row.add(in);
-        row.add(out);
-        row.add(inventory);
+        row.add(autoCreate);
+        JComponent createInfo = Applets.plainHint(Messages.STOCK_AUTOCREATE_SHORT.toString());
+        createInfo.setToolTipText(Messages.STOCK_AUTOCREATE_INFO.toString());
         JPanel row2 = new JPanel(new FlowLayout(FlowLayout.LEFT, ModernTheme.px(8), 0));
         row2.setOpaque(false);
-        row2.add(paste);
-        row2.add(importCsv);
-        row2.add(autoCreate);
+        JLabel modeLabel = new JLabel(Messages.STOCK_MODE + ":");
+        modeLabel.setFont(ModernTheme.font(1, java.awt.Font.BOLD));
+        row2.add(modeLabel);
+        row2.add(in);
+        row2.add(out);
+        row2.add(inventory);
+        row2.add(javax.swing.Box.createHorizontalStrut(ModernTheme.px(16)));
         row2.add(loadAll);
         row2.add(exportCsv);
         row2.add(exportHtml);
-        for (JComponent c : new JComponent[]{hint, row, row2}) {
+        for (JComponent c : new JComponent[]{hint, row, createInfo, row2}) {
             c.setAlignmentX(Component.LEFT_ALIGNMENT);
             top.add(c);
             top.add(javax.swing.Box.createVerticalStrut(ModernTheme.px(6)));
@@ -232,7 +248,7 @@ public class Stockmanager extends JPanel {
 
             @Override
             public void actionPerformed(java.awt.event.ActionEvent e) {
-                paste();
+                importData();
             }
         });
         JScrollPane sp = new JScrollPane(table);
@@ -240,7 +256,7 @@ public class Stockmanager extends JPanel {
 
         PrimaryButton book = new PrimaryButton(Messages.STOCK_BOOK.toString(), "/images/16/filesave.png");
         book.addActionListener(e -> book());
-        JButton remove = new JButton(Messages.ACTION_REMOVE.toString());
+        JButton remove = ModernTheme.actionButton(new JButton(Messages.ACTION_REMOVE.toString()), "/images/16/remove.png");
         remove.addActionListener(e -> {
             if (table.isEditing()) {
                 table.getCellEditor().cancelCellEditing();
@@ -251,7 +267,7 @@ public class Stockmanager extends JPanel {
             }
             refresh();
         });
-        JButton clear = Applets.danger(new JButton(Messages.STOCK_CLEAR.toString()));
+        JButton clear = Applets.danger(ModernTheme.actionButton(new JButton(Messages.STOCK_CLEAR.toString()), null));
         clear.addActionListener(e -> {
             if (table.isEditing()) {
                 table.getCellEditor().cancelCellEditing();
@@ -340,70 +356,30 @@ public class Stockmanager extends JPanel {
         l.state = p == null ? Messages.STOCK_NOT_FOUND.toString() : "";
     }
 
-    private void addAll(List<String> codes) {
-        for (String c : codes) {
-            add(c, BigDecimal.ONE, null, null);
-        }
-        status.setText(String.format(Messages.STOCK_ADDED.toString(), codes.size()));
-    }
-
     /**
-     * Pastes a list from the clipboard: the user chooses the separator
+     * The import wizard: a pasted list or a CSV file
      */
-    private void paste() {
-        String text;
-        try {
-            text = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
-        } catch (Exception e) {
-            text = null;
+    private void importData() {
+        if (table.isEditing()) {
+            table.getCellEditor().stopCellEditing();
         }
-        if (text == null || text.trim().isEmpty()) {
-            Popup.notice(Messages.STOCK_PASTE_EMPTY);
-            return;
-        }
-        String[] labels = {Messages.STOCK_SEP_COMMA.toString(), Messages.STOCK_SEP_SEMICOLON.toString(),
-            Messages.STOCK_SEP_SPACE.toString(), Messages.STOCK_SEP_LINE.toString()};
-        String guess = StockService.guessSeparator(text);
-        int pre = java.util.Arrays.asList(StockService.SEPARATORS).indexOf(guess);
-        String shown = text.length() > 200 ? text.substring(0, 200) + " ..." : text;
-        Object choice = JOptionPane.showInputDialog(this, Messages.STOCK_PASTE_SEPARATOR + "\n\n" + shown,
-                Messages.STOCK_PASTE.toString(), JOptionPane.QUESTION_MESSAGE, null, labels, labels[Math.max(0, pre)]);
-        if (choice == null) {
-            return;
-        }
-        int sep = java.util.Arrays.asList(labels).indexOf(choice);
-        addAll(StockService.split(text, StockService.SEPARATORS[sep]));
-        refresh();
+        mpv5.ui.dialogs.StockImportWizard.open(autoCreate, this::addEntries);
         start();
     }
 
     /**
-     * The rows of the CSV wizard: found products are topped up, the others
-     * can be created with the values of their row
+     * The entries of the wizard: found products are topped up, the others are
+     * created when booking if marked
      */
-    private void addRows(CsvImport.Data data, CsvImport.Field[] mapping) {
-        int taken = 0;
-        List<String> skipped = new ArrayList<String>();
-        for (int i = data.firstData(); i < data.rows.size(); i++) {
-            String[] row = data.rows.get(i);
-            if (CsvImport.isEmpty(row)) {
-                continue;
-            }
-            List<String> p = StockService.check(row, mapping);
-            if (!p.isEmpty()) {
-                skipped.add(String.valueOf(i + 1));
-                continue;
-            }
-            if (add(StockService.code(row, mapping), StockService.quantity(row, mapping), row, mapping) != null) {
-                taken++;
+    private void addEntries(List<StockService.Entry> entries) {
+        for (StockService.Entry e : entries) {
+            Line l = add(e.code, e.quantity, e.row, e.mapping);
+            if (l != null && l.product == null) {
+                l.create = e.create;
             }
         }
         refresh();
-        String s = String.format(Messages.STOCK_ADDED.toString(), taken);
-        if (!skipped.isEmpty()) {
-            s += " · " + String.format(Messages.STOCK_SKIPPED_ROWS.toString(), skipped.size(), String.join(", ", skipped));
-        }
-        status.setText(s);
+        status.setText(String.format(Messages.STOCK_ADDED.toString(), entries.size()));
     }
 
     /**
@@ -450,7 +426,7 @@ public class Stockmanager extends JPanel {
      */
     private boolean create(Line l) {
         try {
-            Product p = l.row != null ? StockService.newProduct(l.row, l.mapping) : StockService.newProduct(l.code);
+            Product p = StockService.newProduct(l.row, l.mapping, l.code);
             if (p.saveImport() && p.isExisting()) {
                 setProduct(l, p);
                 l.state = Messages.STOCK_CREATED.toString();
