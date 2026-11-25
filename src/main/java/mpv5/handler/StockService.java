@@ -103,6 +103,18 @@ public final class StockService {
      * @return the product, null if none
      */
     public static Product find(String code) {
+        return find(code, false);
+    }
+
+    /**
+     * Finds a product by its number, EAN (also written with spaces or dashes),
+     * reference or name - the whole value, in this order
+     *
+     * @param code
+     * @param ignoreCase "ring" also finds "Ring" / "RING"
+     * @return the product, null if none
+     */
+    public static Product find(String code, boolean ignoreCase) {
         String c = code == null ? "" : code.trim();
         if (c.isEmpty()) {
             return null;
@@ -113,9 +125,33 @@ public final class StockService {
             if (p == null && "ean".equals(field) && !digits.equals(c)) {
                 p = find(field, digits);
             }
+            if (p == null && ignoreCase && !"ean".equals(field)) {
+                p = findIgnoreCase(field, c);
+            }
             if (p != null) {
                 return p;
             }
+        }
+        return null;
+    }
+
+    /**
+     * @return the first product whose field is the value, ignoring case (the
+     * database search is "contains", the whole value is compared here)
+     */
+    private static Product findIgnoreCase(String field, String value) {
+        try {
+            mpv5.db.common.QueryCriteria2 qc = new mpv5.db.common.QueryCriteria2();
+            qc.and(new mpv5.db.common.QueryParameter(Context.getProduct(), field, value, mpv5.db.common.QueryParameter.LIKE));
+            for (DatabaseObject o : DatabaseObject.getObjects(Context.getProduct(), qc)) {
+                Product p = (Product) o;
+                Object v = p.getValue(field);
+                if (v != null && value.equalsIgnoreCase(String.valueOf(v).trim())) {
+                    return p;
+                }
+            }
+        } catch (Exception e) {
+            //none
         }
         return null;
     }
@@ -177,9 +213,19 @@ public final class StockService {
         }
     }
 
-    private static Entry merge(List<Entry> entries, Entry e) {
+    /**
+     * @param a
+     * @param b
+     * @param ignoreCase
+     * @return true if both codes are the same
+     */
+    public static boolean sameCode(String a, String b, boolean ignoreCase) {
+        return ignoreCase ? a.equalsIgnoreCase(b) : a.equals(b);
+    }
+
+    private static Entry merge(List<Entry> entries, Entry e, boolean ignoreCase) {
         for (Entry x : entries) {
-            if (x.code.equalsIgnoreCase(e.code)) {
+            if (sameCode(x.code, e.code, ignoreCase)) {
                 x.quantity = x.quantity.add(e.quantity);
                 return x;
             }
@@ -191,12 +237,13 @@ public final class StockService {
     /**
      * @param text a pasted list
      * @param separator see {@link #split(String, String)}
+     * @param ignoreCase "ring" and "Ring" are the same code
      * @return one entry per code, quantity = how often it occurs
      */
-    public static List<Entry> fromText(String text, String separator) {
+    public static List<Entry> fromText(String text, String separator, boolean ignoreCase) {
         List<Entry> entries = new ArrayList<Entry>();
         for (String c : split(text, separator)) {
-            merge(entries, new Entry(c, BigDecimal.ONE, null, null));
+            merge(entries, new Entry(c, BigDecimal.ONE, null, null), ignoreCase);
         }
         return entries;
     }
@@ -219,9 +266,11 @@ public final class StockService {
      * @param mapping the fields of the columns (values of new products)
      * @param skipped gets the line numbers of rows without code or with a
      * quantity that is no number
+     * @param ignoreCase "ring" and "Ring" are the same code
      * @return one entry per code, the quantities of duplicate rows added up
      */
-    public static List<Entry> fromCsv(CsvImport.Data data, int codeColumn, int quantityColumn, Field[] mapping, List<Integer> skipped) {
+    public static List<Entry> fromCsv(CsvImport.Data data, int codeColumn, int quantityColumn, Field[] mapping, List<Integer> skipped,
+            boolean ignoreCase) {
         List<Entry> entries = new ArrayList<Entry>();
         for (int i = data.firstData(); i < data.rows.size(); i++) {
             String[] row = data.rows.get(i);
@@ -239,7 +288,7 @@ public final class StockService {
                 skipped.add(i + 1);
                 continue;
             }
-            merge(entries, new Entry(code, q, row, mapping));
+            merge(entries, new Entry(code, q, row, mapping), ignoreCase);
         }
         return entries;
     }
@@ -281,10 +330,11 @@ public final class StockService {
      * Looks up the products of the entries
      *
      * @param entries
+     * @param ignoreCase
      */
-    public static void lookup(List<Entry> entries) {
+    public static void lookup(List<Entry> entries, boolean ignoreCase) {
         for (Entry e : entries) {
-            e.product = find(e.code);
+            e.product = find(e.code, ignoreCase);
         }
     }
 

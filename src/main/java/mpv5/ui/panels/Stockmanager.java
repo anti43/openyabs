@@ -42,6 +42,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.table.AbstractTableModel;
@@ -105,6 +106,11 @@ public class Stockmanager extends JPanel {
     private final JRadioButton out = new JRadioButton();
     private final JRadioButton inventory = new JRadioButton();
     private final JCheckBox autoCreate = new JCheckBox();
+    private final JCheckBox ignoreCase = new JCheckBox();
+    private final JTextArea modeHint = (JTextArea) Applets.plainHint(" ");
+    private final JLabel counter = new JLabel(" ");
+    private PrimaryButton book;
+    private static final String IGNORE_CASE_PROPERTY = "stock.ignorecase";
     private final JLabel status = new JLabel(" ");
     private final Model model = new Model();
     private final JTable table = new JTable(model);
@@ -127,6 +133,29 @@ public class Stockmanager extends JPanel {
             b.addActionListener(e -> modeChanged());
         }
         in.setSelected(true);
+        ignoreCase.setText(Messages.STOCK_IGNORE_CASE.toString());
+        ignoreCase.setToolTipText(Messages.STOCK_IGNORE_CASE_INFO.toString());
+        ignoreCase.setFont(ModernTheme.font(1, java.awt.Font.PLAIN));
+        ignoreCase.setOpaque(false);
+        ignoreCase.setSelected(ignoreCaseSetting());
+        ignoreCase.addActionListener(e -> {
+            try {
+                mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(IGNORE_CASE_PROPERTY, String.valueOf(ignoreCase.isSelected()));
+            } catch (Exception ex) {
+                Log.Debug(this, ex.getMessage());
+            }
+            //look the codes not found up again
+            for (Line l : lines) {
+                if (!l.booked && l.product == null) {
+                    Product p = StockService.find(l.code, ignoreCase.isSelected());
+                    if (p != null) {
+                        setProduct(l, p);
+                    }
+                }
+            }
+            refresh();
+            start();
+        });
         autoCreate.setText(Messages.STOCK_AUTOCREATE.toString());
         autoCreate.setToolTipText(Messages.STOCK_AUTOCREATE_INFO.toString());
         autoCreate.setFont(ModernTheme.font(1, java.awt.Font.PLAIN));
@@ -140,7 +169,7 @@ public class Stockmanager extends JPanel {
             model.fireTableDataChanged();
         });
 
-        scan.setColumns(34);
+        scan.setColumns(26);
         scan.setFont(ModernTheme.font(5, java.awt.Font.PLAIN));
         ModernTheme.roomy(scan);
         scan.setToolTipText(Messages.STOCK_SCAN_TOOLTIP.toString());
@@ -149,7 +178,7 @@ public class Stockmanager extends JPanel {
             scan.setText("");
             //a pasted list in the field: every code
             if (t != null && t.matches("(?s).*[\\r\\n\\t;].*")) {
-                addEntries(StockService.fromText(t, StockService.guessSeparator(t)));
+                addEntries(StockService.fromText(t, StockService.guessSeparator(t), ignoreCase.isSelected()));
             } else {
                 add(t, BigDecimal.ONE, null, null);
             }
@@ -176,17 +205,18 @@ public class Stockmanager extends JPanel {
         //a first width: the text wraps already in the first layout
         hint.setSize(ModernTheme.px(900), 1);
         //import, scan field and "create unknown products" in one line
-        JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, ModernTheme.px(8), 0));
+        JPanel row = new JPanel(new mpv5.ui.modern.WrapLayout(FlowLayout.LEFT, ModernTheme.px(8), ModernTheme.px(4)));
         row.setOpaque(false);
         row.add(importData);
         JLabel scanLabel = new JLabel(Messages.STOCK_SCAN + ":");
         scanLabel.setFont(ModernTheme.font(1, java.awt.Font.BOLD));
         row.add(scanLabel);
         row.add(scan);
+        row.add(ignoreCase);
         row.add(autoCreate);
         JComponent createInfo = Applets.plainHint(Messages.STOCK_AUTOCREATE_SHORT.toString());
         createInfo.setToolTipText(Messages.STOCK_AUTOCREATE_INFO.toString());
-        JPanel row2 = new JPanel(new FlowLayout(FlowLayout.LEFT, ModernTheme.px(8), 0));
+        JPanel row2 = new JPanel(new mpv5.ui.modern.WrapLayout(FlowLayout.LEFT, ModernTheme.px(8), ModernTheme.px(4)));
         row2.setOpaque(false);
         JLabel modeLabel = new JLabel(Messages.STOCK_MODE + ":");
         modeLabel.setFont(ModernTheme.font(1, java.awt.Font.BOLD));
@@ -198,7 +228,18 @@ public class Stockmanager extends JPanel {
         row2.add(loadAll);
         row2.add(exportCsv);
         row2.add(exportHtml);
-        for (JComponent c : new JComponent[]{hint, row, createInfo, row2}) {
+        //what the mode does (stocktaking: the steps)
+        modeHint.setForeground(ModernTheme.foreground());
+        modeHint.setFont(ModernTheme.font(0, java.awt.Font.PLAIN));
+        modeHint.setSize(ModernTheme.px(900), 1);
+        JPanel modeBox = new JPanel(new BorderLayout(0, ModernTheme.px(4)));
+        modeBox.setBackground(new Color(0xEEF4FF));
+        modeBox.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(0xC7D7F5)),
+                BorderFactory.createEmptyBorder(ModernTheme.px(6), ModernTheme.px(10), ModernTheme.px(6), ModernTheme.px(10))));
+        modeBox.add(modeHint, BorderLayout.CENTER);
+        counter.setFont(ModernTheme.font(1, java.awt.Font.BOLD));
+        modeBox.add(counter, BorderLayout.SOUTH);
+        for (JComponent c : new JComponent[]{hint, row, createInfo, row2, modeBox}) {
             c.setAlignmentX(Component.LEFT_ALIGNMENT);
             top.add(c);
             top.add(javax.swing.Box.createVerticalStrut(ModernTheme.px(6)));
@@ -254,7 +295,7 @@ public class Stockmanager extends JPanel {
         JScrollPane sp = new JScrollPane(table);
         sp.getViewport().setBackground(ModernTheme.cardBackground());
 
-        PrimaryButton book = new PrimaryButton(Messages.STOCK_BOOK.toString(), "/images/16/filesave.png");
+        book = new PrimaryButton(Messages.STOCK_BOOK.toString(), "/images/16/filesave.png");
         book.addActionListener(e -> book());
         JButton remove = ModernTheme.actionButton(new JButton(Messages.ACTION_REMOVE.toString()), "/images/16/remove.png");
         remove.addActionListener(e -> {
@@ -282,6 +323,7 @@ public class Stockmanager extends JPanel {
         bottom.add(status, BorderLayout.CENTER);
         bottom.add(Applets.actionBar(new JComponent[]{clear}, new JComponent[]{remove, book}), BorderLayout.SOUTH);
 
+        model.addTableModelListener(e -> updateCounter());
         add(top, BorderLayout.NORTH);
         add(sp, BorderLayout.CENTER);
         add(bottom, BorderLayout.SOUTH);
@@ -297,12 +339,47 @@ public class Stockmanager extends JPanel {
         loadAll.setVisible(inv);
         exportCsv.setVisible(inv);
         exportHtml.setVisible(inv);
+        modeHint.setText((inv ? Messages.STOCK_HINT_INVENTORY : out.isSelected() ? Messages.STOCK_HINT_OUT : Messages.STOCK_HINT_IN).toString());
+        book.setText((inv ? Messages.STOCK_INVENTORY_BOOK : Messages.STOCK_BOOK).toString());
         model.fireTableStructureChanged();
         int[] widths = {150, 70, 300, 90, 80, 80, 140};
         for (int i = 0; i < widths.length && i < table.getColumnCount(); i++) {
             table.getColumnModel().getColumn(i).setPreferredWidth(ModernTheme.px(widths[i]));
         }
         start();
+    }
+
+    private static boolean ignoreCaseSetting() {
+        try {
+            String v = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(IGNORE_CASE_PROPERTY);
+            return v == null || v.trim().isEmpty() || !"false".equalsIgnoreCase(v.trim());
+        } catch (Exception e) {
+            return true;
+        }
+    }
+
+    /**
+     * Stocktaking: counted / not counted / differences; else lines and
+     * quantity
+     */
+    private void updateCounter() {
+        int counted = 0;
+        int open = 0;
+        int diff = 0;
+        int unknown = 0;
+        for (Line l : lines) {
+            if (l.product == null) {
+                unknown++;
+            } else if (!l.counted) {
+                open++;
+            } else {
+                counted++;
+                diff += l.quantity.compareTo(l.expected) != 0 ? 1 : 0;
+            }
+        }
+        counter.setText(inventory.isSelected()
+                ? String.format(Messages.STOCK_COUNTER_INVENTORY.toString(), counted, open, diff, unknown)
+                : String.format(Messages.STOCK_COUNTER.toString(), lines.size(), unknown));
     }
 
     private void refresh() {
@@ -322,13 +399,13 @@ public class Stockmanager extends JPanel {
         if (code.isEmpty()) {
             return null;
         }
-        Product p = StockService.find(code);
+        Product p = StockService.find(code, ignoreCase.isSelected());
         for (Line l : lines) {
             if (l.booked) {
                 continue;
             }
             boolean same = p != null ? l.product != null && l.product.__getIDS().equals(p.__getIDS())
-                    : l.product == null && l.code.equalsIgnoreCase(code);
+                    : l.product == null && StockService.sameCode(l.code, code, ignoreCase.isSelected());
             if (same) {
                 l.quantity = l.counted ? l.quantity.add(quantity) : quantity;
                 l.counted = true;
@@ -363,7 +440,7 @@ public class Stockmanager extends JPanel {
         if (table.isEditing()) {
             table.getCellEditor().stopCellEditing();
         }
-        mpv5.ui.dialogs.StockImportWizard.open(autoCreate, this::addEntries);
+        mpv5.ui.dialogs.StockImportWizard.open(autoCreate, ignoreCase, this::addEntries);
         start();
     }
 

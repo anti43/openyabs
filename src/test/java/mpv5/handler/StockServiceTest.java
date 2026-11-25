@@ -35,7 +35,10 @@ class StockServiceTest {
 
     @Test
     void entriesFromAPastedList() {
-        List<StockService.Entry> e = StockService.fromText("A-1, a-1, 4006381333931,A-1", ",");
+        List<StockService.Entry> e = StockService.fromText("A-1, a-1, 4006381333931,A-1", ",", false);
+        assertEquals(3, e.size());
+        assertEquals(0, new BigDecimal("2").compareTo(e.get(0).quantity));
+        e = StockService.fromText("A-1, a-1, 4006381333931,A-1", ",", true);
         assertEquals(2, e.size());
         assertEquals("A-1", e.get(0).code);
         assertEquals(0, new BigDecimal("3").compareTo(e.get(0).quantity));
@@ -52,18 +55,25 @@ class StockServiceTest {
         assertEquals(1, StockService.codeColumn(m));
         assertEquals(2, StockService.quantityColumn(m));
         List<Integer> skipped = new java.util.ArrayList<Integer>();
-        List<StockService.Entry> e = StockService.fromCsv(d, 1, 2, m, skipped);
+        List<StockService.Entry> e = StockService.fromCsv(d, 1, 2, m, skipped, true);
         //"Kette" has no EAN, the empty row and the row with "viele" are skipped
         assertEquals(Arrays.asList(3, 5, 6), skipped);
         assertEquals(1, e.size());
         assertEquals(0, new BigDecimal("4").compareTo(e.get(0).quantity));
         //by name, no quantity column: 1 per row
-        e = StockService.fromCsv(d, 0, -1, m, skipped = new java.util.ArrayList<Integer>());
+        e = StockService.fromCsv(d, 0, -1, m, skipped = new java.util.ArrayList<Integer>(), true);
         assertEquals(3, e.size());
         assertEquals(0, new BigDecimal("2").compareTo(e.get(0).quantity));
         assertEquals(Arrays.asList(5), skipped);
         assertEquals(0, new BigDecimal("2.5").compareTo(StockService.quantity("2,5")));
         assertEquals(0, BigDecimal.ONE.compareTo(StockService.quantity(" ")));
+    }
+
+    @Test
+    void sameCode() {
+        assertTrue(StockService.sameCode("Ring", "RING", true));
+        assertFalse(StockService.sameCode("Ring", "RING", false));
+        assertTrue(StockService.sameCode("Ring", "Ring", false));
     }
 
     @Test
