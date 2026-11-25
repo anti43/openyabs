@@ -1051,6 +1051,22 @@ public final class ContactService {
         public String toString() {
             return label;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (!(o instanceof CurrencyOption)) {
+                return false;
+            }
+            return code.equals(((CurrencyOption) o).code);
+        }
+
+        @Override
+        public int hashCode() {
+            return code.hashCode();
+        }
     }
 
     /**
