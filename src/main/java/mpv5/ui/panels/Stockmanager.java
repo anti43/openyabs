@@ -20,41 +20,56 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
+import java.awt.Toolkit;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.objects.Product;
 import mpv5.globals.Messages;
+import mpv5.handler.StockService;
 import mpv5.logging.Log;
+import mpv5.ui.dialogs.CsvImportDialog;
+import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.modern.Applets;
 import mpv5.ui.modern.ModernTheme;
 import mpv5.ui.modern.PrimaryButton;
+import mpv5.utils.csv.CsvImport;
+import mpv5.utils.date.DateConverter;
 
 /**
- * Stock booking with a barcode scanner or by hand: scan (or type) a code and
- * press Enter; the product is looked up right away, every further scan of the
- * same code counts up. "Book" adds the quantities to the stock (or takes them
- * off).
+ * Stock management: scan, type, paste or import (CSV wizard) codes; the
+ * product is found by number, EAN, reference or name. Unknown products can be
+ * created. Modes: stock in, stock out and stocktaking (Inventur: expected and
+ * counted stock, exported as CSV or HTML).
  */
 public class Stockmanager extends JPanel {
 
-    private static final long serialVersionUID = 2L;
+    private static final long serialVersionUID = 3L;
     private static Stockmanager me;
 
     public static Stockmanager instanceOf() {
@@ -64,62 +79,89 @@ public class Stockmanager extends JPanel {
         return me;
     }
 
-    /**
-     * One scanned code
-     */
     private static final class Line {
 
         String code;
         BigDecimal quantity = BigDecimal.ONE;
+        //stocktaking: false until the product was scanned or the count typed
+        boolean counted = true;
         Product product;
+        //the stock when the product was found (stocktaking: the expected stock)
+        BigDecimal expected = BigDecimal.ZERO;
+        boolean create;
+        //a row of a CSV file: the values of a product to create
+        String[] row;
+        CsvImport.Field[] mapping;
         String state = "";
         boolean booked;
     }
 
-    /**
-     * The product fields a code can be (field name, label)
-     */
-    private static final String[][] FIELDS = {{"ean", "EAN"}, {"cnumber", null}, {"cname", null}};
+    private static final Color RED = new Color(190, 40, 40);
+    private static final Color GREEN = new Color(30, 130, 60);
 
     private final List<Line> lines = new ArrayList<Line>();
     private final JTextField scan = new JTextField();
-    private final JComboBox<String> field = new JComboBox<String>();
     private final JRadioButton in = new JRadioButton();
     private final JRadioButton out = new JRadioButton();
+    private final JRadioButton inventory = new JRadioButton();
+    private final JCheckBox autoCreate = new JCheckBox();
     private final JLabel status = new JLabel(" ");
     private final Model model = new Model();
     private final JTable table = new JTable(model);
+    private final JButton loadAll = new JButton();
+    private final JButton exportCsv = new JButton();
+    private final JButton exportHtml = new JButton();
 
     private Stockmanager() {
         super(new BorderLayout(0, ModernTheme.px(8)));
         setOpaque(false);
         setBorder(BorderFactory.createEmptyBorder(ModernTheme.px(12), ModernTheme.px(14), ModernTheme.px(12), ModernTheme.px(14)));
 
-        FIELDS[1][1] = Messages.POS_FIELD_NUMBER.toString();
-        FIELDS[2][1] = Messages.POS_FIELD_NAME.toString();
-        for (String[] f : FIELDS) {
-            field.addItem(f[1]);
-        }
         in.setText(Messages.STOCK_IN.toString());
         out.setText(Messages.STOCK_OUT.toString());
-        in.setOpaque(false);
-        out.setOpaque(false);
+        inventory.setText(Messages.STOCK_MODE_INVENTORY.toString());
         ButtonGroup g = new ButtonGroup();
-        g.add(in);
-        g.add(out);
+        for (JRadioButton b : new JRadioButton[]{in, out, inventory}) {
+            b.setOpaque(false);
+            g.add(b);
+            b.addActionListener(e -> modeChanged());
+        }
         in.setSelected(true);
-        in.addActionListener(e -> model.fireTableDataChanged());
-        out.addActionListener(e -> model.fireTableDataChanged());
-
-        scan.setColumns(24);
-        scan.setFont(ModernTheme.font(3, java.awt.Font.PLAIN));
-        scan.addActionListener(e -> add(scan.getText()));
-        field.addActionListener(e -> {
+        autoCreate.setText(Messages.STOCK_AUTOCREATE.toString());
+        autoCreate.setOpaque(false);
+        autoCreate.addActionListener(e -> {
             for (Line l : lines) {
-                lookup(l);
+                if (l.product == null && !l.booked) {
+                    l.create = autoCreate.isSelected();
+                }
             }
             model.fireTableDataChanged();
         });
+
+        scan.setColumns(24);
+        scan.setFont(ModernTheme.font(3, java.awt.Font.PLAIN));
+        scan.addActionListener(e -> {
+            String t = scan.getText();
+            scan.setText("");
+            //a pasted list in the field: every code
+            if (t != null && t.matches("(?s).*[\\r\\n\\t;].*")) {
+                addAll(StockService.split(t, StockService.guessSeparator(t)));
+            } else {
+                add(t, BigDecimal.ONE, null, null);
+            }
+            refresh();
+        });
+
+        JButton paste = new JButton(Messages.STOCK_PASTE.toString());
+        paste.addActionListener(e -> paste());
+        JButton importCsv = new JButton(Messages.STOCK_IMPORT.toString());
+        importCsv.addActionListener(e -> CsvImportDialog.openForStock(this::addRows));
+        loadAll.setText(Messages.STOCK_LOAD_ALL.toString());
+        loadAll.addActionListener(e -> loadAll());
+        exportCsv.setText(Messages.STOCK_EXPORT_CSV.toString());
+        exportCsv.addActionListener(e -> export(true));
+        exportHtml.setText(Messages.STOCK_EXPORT_HTML.toString());
+        exportHtml.addActionListener(e -> export(false));
 
         JPanel top = new JPanel();
         top.setOpaque(false);
@@ -129,11 +171,18 @@ public class Stockmanager extends JPanel {
         row.setOpaque(false);
         row.add(new JLabel(Messages.STOCK_SCAN + ":"));
         row.add(scan);
-        row.add(new JLabel(Messages.STOCK_CODE_IS.toString()));
-        row.add(field);
         row.add(in);
         row.add(out);
-        for (JComponent c : new JComponent[]{hint, row}) {
+        row.add(inventory);
+        JPanel row2 = new JPanel(new FlowLayout(FlowLayout.LEFT, ModernTheme.px(8), 0));
+        row2.setOpaque(false);
+        row2.add(paste);
+        row2.add(importCsv);
+        row2.add(autoCreate);
+        row2.add(loadAll);
+        row2.add(exportCsv);
+        row2.add(exportHtml);
+        for (JComponent c : new JComponent[]{hint, row, row2}) {
             c.setAlignmentX(Component.LEFT_ALIGNMENT);
             top.add(c);
             top.add(javax.swing.Box.createVerticalStrut(ModernTheme.px(6)));
@@ -141,9 +190,7 @@ public class Stockmanager extends JPanel {
 
         table.setRowHeight(ModernTheme.px(26));
         table.setFillsViewportHeight(true);
-        table.getColumnModel().getColumn(0).setPreferredWidth(ModernTheme.px(160));
-        table.getColumnModel().getColumn(1).setPreferredWidth(ModernTheme.px(70));
-        table.getColumnModel().getColumn(2).setPreferredWidth(ModernTheme.px(320));
+        table.setAutoCreateRowSorter(false);
         table.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
             private static final long serialVersionUID = 1L;
 
@@ -152,14 +199,42 @@ public class Stockmanager extends JPanel {
                 super.getTableCellRendererComponent(t, v, sel, focus, r, c);
                 Line l = lines.get(t.convertRowIndexToModel(r));
                 if (!sel) {
-                    setForeground(l.product == null ? new Color(190, 40, 40)
-                            : l.booked ? ModernTheme.muted() : ModernTheme.foreground());
+                    Color fg = l.product == null ? (l.create ? GREEN : RED)
+                            : l.booked ? ModernTheme.muted() : ModernTheme.foreground();
+                    if (c == 5 && inventory.isSelected() && l.product != null && l.counted) {
+                        BigDecimal d = l.quantity.subtract(l.expected);
+                        fg = d.signum() == 0 ? fg : RED;
+                    }
+                    setForeground(fg);
                 }
-                setHorizontalAlignment(c == 1 || c >= 3 ? RIGHT : LEFT);
+                setHorizontalAlignment(c == 1 || c == 4 || c == 5 ? RIGHT : LEFT);
                 return this;
             }
         });
         ModernTheme.style(table);
+        int[] widths = {150, 70, 300, 90, 80, 80, 140};
+        for (int i = 0; i < widths.length; i++) {
+            table.getColumnModel().getColumn(i).setPreferredWidth(ModernTheme.px(widths[i]));
+        }
+        table.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int r = table.rowAtPoint(e.getPoint());
+                if (e.getClickCount() == 2 && r >= 0 && table.columnAtPoint(e.getPoint()) != 1
+                        && table.columnAtPoint(e.getPoint()) != 3) {
+                    open(lines.get(table.convertRowIndexToModel(r)));
+                }
+            }
+        });
+        table.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_V, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()), "stockPaste");
+        table.getActionMap().put("stockPaste", new javax.swing.AbstractAction() {
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                paste();
+            }
+        });
         JScrollPane sp = new JScrollPane(table);
         sp.getViewport().setBackground(ModernTheme.cardBackground());
 
@@ -167,16 +242,22 @@ public class Stockmanager extends JPanel {
         book.addActionListener(e -> book());
         JButton remove = new JButton(Messages.ACTION_REMOVE.toString());
         remove.addActionListener(e -> {
+            if (table.isEditing()) {
+                table.getCellEditor().cancelCellEditing();
+            }
             int[] rows = table.getSelectedRows();
             for (int i = rows.length - 1; i >= 0; i--) {
                 lines.remove(table.convertRowIndexToModel(rows[i]));
             }
-            model.fireTableDataChanged();
+            refresh();
         });
         JButton clear = Applets.danger(new JButton(Messages.STOCK_CLEAR.toString()));
         clear.addActionListener(e -> {
+            if (table.isEditing()) {
+                table.getCellEditor().cancelCellEditing();
+            }
             lines.clear();
-            model.fireTableDataChanged();
+            refresh();
             status.setText(" ");
             start();
         });
@@ -188,79 +269,262 @@ public class Stockmanager extends JPanel {
         add(top, BorderLayout.NORTH);
         add(sp, BorderLayout.CENTER);
         add(bottom, BorderLayout.SOUTH);
+        modeChanged();
     }
 
-    /**
-     * Focus in the scan field
-     */
     public void start() {
         scan.requestFocusInWindow();
     }
 
-    private void add(String text) {
-        String code = text == null ? "" : text.trim();
-        scan.setText("");
-        if (code.isEmpty()) {
-            return;
+    private void modeChanged() {
+        boolean inv = inventory.isSelected();
+        loadAll.setVisible(inv);
+        exportCsv.setVisible(inv);
+        exportHtml.setVisible(inv);
+        model.fireTableStructureChanged();
+        int[] widths = {150, 70, 300, 90, 80, 80, 140};
+        for (int i = 0; i < widths.length && i < table.getColumnCount(); i++) {
+            table.getColumnModel().getColumn(i).setPreferredWidth(ModernTheme.px(widths[i]));
         }
+        start();
+    }
+
+    private void refresh() {
+        model.fireTableDataChanged();
+        if (!lines.isEmpty()) {
+            table.scrollRectToVisible(table.getCellRect(lines.size() - 1, 0, true));
+        }
+    }
+
+    // ------------------------------------------------------------ adding
+    /**
+     * Adds a code: the same product (or the same unknown code) again tops up
+     * its quantity
+     */
+    private Line add(String text, BigDecimal quantity, String[] row, CsvImport.Field[] mapping) {
+        String code = text == null ? "" : text.trim();
+        if (code.isEmpty()) {
+            return null;
+        }
+        Product p = StockService.find(code);
         for (Line l : lines) {
-            if (l.code.equals(code) && !l.booked) {
-                l.quantity = l.quantity.add(BigDecimal.ONE);
-                model.fireTableDataChanged();
-                return;
+            if (l.booked) {
+                continue;
+            }
+            boolean same = p != null ? l.product != null && l.product.__getIDS().equals(p.__getIDS())
+                    : l.product == null && l.code.equalsIgnoreCase(code);
+            if (same) {
+                l.quantity = l.counted ? l.quantity.add(quantity) : quantity;
+                l.counted = true;
+                if (l.row == null && row != null) {
+                    l.row = row;
+                    l.mapping = mapping;
+                }
+                return l;
             }
         }
         Line l = new Line();
         l.code = code;
-        lookup(l);
+        l.quantity = quantity;
+        l.row = row;
+        l.mapping = mapping;
+        setProduct(l, p);
         lines.add(l);
-        model.fireTableDataChanged();
-        table.scrollRectToVisible(table.getCellRect(lines.size() - 1, 0, true));
+        return l;
     }
 
-    private void lookup(Line l) {
-        if (l.booked) {
+    private void setProduct(Line l, Product p) {
+        l.product = p;
+        l.expected = stock(p);
+        l.create = p == null && autoCreate.isSelected();
+        l.state = p == null ? Messages.STOCK_NOT_FOUND.toString() : "";
+    }
+
+    private void addAll(List<String> codes) {
+        for (String c : codes) {
+            add(c, BigDecimal.ONE, null, null);
+        }
+        status.setText(String.format(Messages.STOCK_ADDED.toString(), codes.size()));
+    }
+
+    /**
+     * Pastes a list from the clipboard: the user chooses the separator
+     */
+    private void paste() {
+        String text;
+        try {
+            text = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
+        } catch (Exception e) {
+            text = null;
+        }
+        if (text == null || text.trim().isEmpty()) {
+            Popup.notice(Messages.STOCK_PASTE_EMPTY);
             return;
         }
-        try {
-            l.product = (Product) DatabaseObject.getObject(Context.getProduct(), FIELDS[Math.max(0, field.getSelectedIndex())][0], l.code);
-            l.state = "";
-        } catch (Exception e) {
-            l.product = null;
-            l.state = Messages.STOCK_NOT_FOUND.toString();
+        String[] labels = {Messages.STOCK_SEP_COMMA.toString(), Messages.STOCK_SEP_SEMICOLON.toString(),
+            Messages.STOCK_SEP_SPACE.toString(), Messages.STOCK_SEP_LINE.toString()};
+        String guess = StockService.guessSeparator(text);
+        int pre = java.util.Arrays.asList(StockService.SEPARATORS).indexOf(guess);
+        String shown = text.length() > 200 ? text.substring(0, 200) + " ..." : text;
+        Object choice = JOptionPane.showInputDialog(this, Messages.STOCK_PASTE_SEPARATOR + "\n\n" + shown,
+                Messages.STOCK_PASTE.toString(), JOptionPane.QUESTION_MESSAGE, null, labels, labels[Math.max(0, pre)]);
+        if (choice == null) {
+            return;
         }
+        int sep = java.util.Arrays.asList(labels).indexOf(choice);
+        addAll(StockService.split(text, StockService.SEPARATORS[sep]));
+        refresh();
+        start();
     }
 
+    /**
+     * The rows of the CSV wizard: found products are topped up, the others
+     * can be created with the values of their row
+     */
+    private void addRows(CsvImport.Data data, CsvImport.Field[] mapping) {
+        int taken = 0;
+        List<String> skipped = new ArrayList<String>();
+        for (int i = data.firstData(); i < data.rows.size(); i++) {
+            String[] row = data.rows.get(i);
+            if (CsvImport.isEmpty(row)) {
+                continue;
+            }
+            List<String> p = StockService.check(row, mapping);
+            if (!p.isEmpty()) {
+                skipped.add(String.valueOf(i + 1));
+                continue;
+            }
+            if (add(StockService.code(row, mapping), StockService.quantity(row, mapping), row, mapping) != null) {
+                taken++;
+            }
+        }
+        refresh();
+        String s = String.format(Messages.STOCK_ADDED.toString(), taken);
+        if (!skipped.isEmpty()) {
+            s += " · " + String.format(Messages.STOCK_SKIPPED_ROWS.toString(), skipped.size(), String.join(", ", skipped));
+        }
+        status.setText(s);
+    }
+
+    /**
+     * Stocktaking: every product (not the services) with its expected stock,
+     * not counted yet
+     */
+    private void loadAll() {
+        try {
+            for (DatabaseObject o : DatabaseObject.getObjects(Context.getProduct())) {
+                Product p = (Product) o;
+                if (p.__getInttype() == Product.TYPE_SERVICE) {
+                    continue;
+                }
+                boolean there = false;
+                for (Line l : lines) {
+                    there |= !l.booked && l.product != null && l.product.__getIDS().equals(p.__getIDS());
+                }
+                if (!there) {
+                    Line l = new Line();
+                    l.code = p.__getCnumber();
+                    l.quantity = BigDecimal.ZERO;
+                    l.counted = false;
+                    setProduct(l, p);
+                    lines.add(l);
+                }
+            }
+        } catch (Exception e) {
+            Log.Debug(this, e.getMessage());
+        }
+        refresh();
+        start();
+    }
+
+    // ------------------------------------------------------------ products
     private static BigDecimal stock(Product p) {
         return p == null || p.__getStockvalue() == null ? BigDecimal.ZERO : p.__getStockvalue();
+    }
+
+    /**
+     * Creates the product of an unknown line (with the values of its CSV
+     * row), stock 0
+     *
+     * @return true if created
+     */
+    private boolean create(Line l) {
+        try {
+            Product p = l.row != null ? StockService.newProduct(l.row, l.mapping) : StockService.newProduct(l.code);
+            if (p.saveImport() && p.isExisting()) {
+                setProduct(l, p);
+                l.state = Messages.STOCK_CREATED.toString();
+                return true;
+            }
+        } catch (Exception e) {
+            Log.Debug(this, e);
+        }
+        l.state = Messages.STOCK_CREATE_FAILED.toString();
+        return false;
+    }
+
+    /**
+     * Double click: opens the product; an unknown one is created first
+     */
+    private void open(Line l) {
+        if (l.product == null) {
+            if (l.booked || !create(l)) {
+                model.fireTableDataChanged();
+                return;
+            }
+            model.fireTableDataChanged();
+        }
+        try {
+            mpv5.YabsViewProxy.instance().addTab(l.product);
+        } catch (Exception e) {
+            Log.Debug(this, e);
+        }
     }
 
     private BigDecimal change(Line l) {
         return out.isSelected() ? l.quantity.negate() : l.quantity;
     }
 
-    /**
-     * Adds (or takes off) the quantities of all found, not yet booked lines
-     */
     private void book() {
         if (table.isEditing()) {
             table.getCellEditor().stopCellEditing();
         }
+        boolean inv = inventory.isSelected();
+        if (inv) {
+            int counted = 0;
+            for (Line l : lines) {
+                counted += !l.booked && l.counted && (l.product != null || l.create) ? 1 : 0;
+            }
+            if (counted == 0 || !Popup.Y_N_dialog(String.format(Messages.STOCK_INVENTORY_CONFIRM.toString(), counted))) {
+                return;
+            }
+        }
         int done = 0;
+        int created = 0;
         int missing = 0;
         for (Line l : lines) {
-            if (l.booked) {
+            if (l.booked || (inv && !l.counted)) {
                 continue;
             }
             if (l.product == null) {
-                missing++;
-                continue;
+                if (!l.create) {
+                    missing++;
+                    continue;
+                }
+                if (!create(l)) {
+                    missing++;
+                    continue;
+                }
+                created++;
             }
             try {
                 //fresh from the database: the stock may have changed since the scan
                 Product p = (Product) DatabaseObject.getObject(Context.getProduct(), l.product.__getIDS());
-                p.setStockvalue(stock(p).add(change(l)));
+                p.setStockvalue(inv ? l.quantity : stock(p).add(change(l)));
                 if (p.save(true)) {
+                    if (!inv) {
+                        l.expected = stock(l.product);
+                    }
                     l.product = p;
                     l.booked = true;
                     l.state = Messages.STOCK_BOOKED.toString();
@@ -272,13 +536,52 @@ public class Stockmanager extends JPanel {
             }
         }
         model.fireTableDataChanged();
-        status.setText(String.format(Messages.STOCK_RESULT.toString(), done, missing));
+        String result = String.format(Messages.STOCK_RESULT_FULL.toString(), done, created, missing);
+        status.setText(result);
         if (missing > 0) {
-            Popup.notice(String.format(Messages.STOCK_RESULT.toString(), done, missing));
+            Popup.notice(result);
         }
         start();
     }
 
+    // ------------------------------------------------------------ stocktaking export
+    private List<StockService.Count> counts() {
+        List<StockService.Count> c = new ArrayList<StockService.Count>();
+        for (Line l : lines) {
+            if (l.product != null) {
+                c.add(new StockService.Count(l.product.__getCnumber(), l.product.__getCname(), l.product.__getEan(),
+                        l.product.__getMeasure(), l.expected, l.counted ? l.quantity : null));
+            } else {
+                c.add(new StockService.Count(l.code, Messages.STOCK_NOT_FOUND.toString(), "", "", BigDecimal.ZERO,
+                        l.counted ? l.quantity : null));
+            }
+        }
+        return c;
+    }
+
+    private void export(boolean csv) {
+        if (table.isEditing()) {
+            table.getCellEditor().stopCellEditing();
+        }
+        String ext = csv ? "csv" : "html"; //NOI18N
+        DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY, "inventur-" + DateConverter.getTodayFileDate() + "." + ext); //NOI18N
+        if (!d.saveFile()) {
+            return;
+        }
+        File f = d.getFile();
+        String text = csv ? "﻿" + StockService.inventoryCsv(counts(), ';')
+                : StockService.inventoryHtml(counts(), String.format(Messages.STOCK_INVENTORY_TITLE.toString(),
+                        DateConverter.getDefDateString(new java.util.Date())));
+        try {
+            java.nio.file.Files.write(f.toPath(), text.getBytes(StandardCharsets.UTF_8));
+            status.setText(f.getAbsolutePath());
+        } catch (Exception e) {
+            Log.Debug(this, e);
+            Popup.error(e);
+        }
+    }
+
+    // ------------------------------------------------------------ table
     private final class Model extends AbstractTableModel {
 
         private static final long serialVersionUID = 1L;
@@ -290,22 +593,30 @@ public class Stockmanager extends JPanel {
 
         @Override
         public int getColumnCount() {
-            return 6;
+            return 7;
+        }
+
+        @Override
+        public Class<?> getColumnClass(int c) {
+            return c == 3 ? Boolean.class : Object.class;
         }
 
         @Override
         public String getColumnName(int c) {
+            boolean inv = inventory.isSelected();
             switch (c) {
                 case 0:
                     return Messages.STOCK_COL_CODE.toString();
                 case 1:
-                    return Messages.STOCK_COL_QUANTITY.toString();
+                    return (inv ? Messages.STOCK_COL_COUNTED : Messages.STOCK_COL_QUANTITY).toString();
                 case 2:
                     return Messages.STOCK_COL_PRODUCT.toString();
                 case 3:
-                    return Messages.STOCK_COL_NOW.toString();
+                    return Messages.STOCK_COL_CREATE.toString();
                 case 4:
-                    return Messages.STOCK_COL_NEW.toString();
+                    return (inv ? Messages.STOCK_COL_EXPECTED : Messages.STOCK_COL_NOW).toString();
+                case 5:
+                    return (inv ? Messages.STOCK_COL_DIFF : Messages.STOCK_COL_NEW).toString();
                 default:
                     return Messages.STOCK_COL_STATE.toString();
             }
@@ -313,24 +624,36 @@ public class Stockmanager extends JPanel {
 
         @Override
         public boolean isCellEditable(int r, int c) {
-            return c == 1 && !lines.get(r).booked;
+            Line l = lines.get(r);
+            return !l.booked && (c == 1 || (c == 3 && l.product == null));
         }
 
         @Override
         public Object getValueAt(int r, int c) {
             Line l = lines.get(r);
+            boolean inv = inventory.isSelected();
             switch (c) {
                 case 0:
                     return l.code;
                 case 1:
-                    return l.quantity.stripTrailingZeros().toPlainString();
+                    return l.counted ? plain(l.quantity) : "";
                 case 2:
                     return l.product == null ? "" : l.product.__getCname() + " (" + l.product.__getCnumber() + ")";
                 case 3:
-                    return l.product == null || l.booked ? "" : stock(l.product).stripTrailingZeros().toPlainString();
+                    return l.product == null && l.create;
                 case 4:
-                    return l.product == null ? "" : l.booked ? stock(l.product).stripTrailingZeros().toPlainString()
-                            : stock(l.product).add(change(l)).stripTrailingZeros().toPlainString();
+                    if (inv) {
+                        return l.product == null ? "" : plain(l.expected);
+                    }
+                    return l.product == null || l.booked ? "" : plain(stock(l.product));
+                case 5:
+                    if (inv) {
+                        return l.product == null || !l.counted ? "" : signed(l.quantity.subtract(l.expected));
+                    }
+                    if (l.product == null) {
+                        return l.create ? plain(change(l)) : "";
+                    }
+                    return l.booked ? plain(stock(l.product)) : plain(stock(l.product).add(change(l)));
                 default:
                     return l.state;
             }
@@ -338,15 +661,36 @@ public class Stockmanager extends JPanel {
 
         @Override
         public void setValueAt(Object v, int r, int c) {
-            try {
-                BigDecimal q = new BigDecimal(String.valueOf(v).trim().replace(',', '.'));
-                if (q.signum() > 0) {
-                    lines.get(r).quantity = q;
+            Line l = lines.get(r);
+            if (c == 3) {
+                l.create = Boolean.TRUE.equals(v);
+            } else {
+                try {
+                    String s = String.valueOf(v).trim();
+                    if (s.isEmpty() && inventory.isSelected()) {
+                        l.counted = false;
+                        l.quantity = BigDecimal.ZERO;
+                    } else {
+                        BigDecimal q = CsvImport.number(s);
+                        //stocktaking: 0 is a count; stock in/out: more than 0
+                        if (q.signum() > 0 || (q.signum() == 0 && inventory.isSelected())) {
+                            l.quantity = q;
+                            l.counted = true;
+                        }
+                    }
+                } catch (Exception e) {
+                    //keep the quantity
                 }
-            } catch (Exception e) {
-                //keep the quantity
             }
             fireTableRowsUpdated(r, r);
         }
+    }
+
+    private static String plain(BigDecimal v) {
+        return v == null ? "" : v.stripTrailingZeros().toPlainString();
+    }
+
+    private static String signed(BigDecimal v) {
+        return v.signum() > 0 ? "+" + plain(v) : plain(v);
     }
 }
