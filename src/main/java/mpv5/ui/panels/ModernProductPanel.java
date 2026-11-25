@@ -221,6 +221,7 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
         content.setOpaque(false);
         content.add(createHeader(), BorderLayout.NORTH);
         JSplitPane split = split("product", scroll(createOverview()), createUsagePanel(), 0.6);
+        split.setBorder(BorderFactory.createEmptyBorder(0, ModernTheme.px(12), ModernTheme.px(8), ModernTheme.px(12)));
         content.add(split, BorderLayout.CENTER);
         add(content, BorderLayout.CENTER);
         tb = new ModernCommandBar(this);
@@ -368,7 +369,7 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
     private JComponent createHeader() {
         JPanel header = new JPanel(new BorderLayout(ModernTheme.px(14), 0));
         header.setOpaque(false);
-        header.setBorder(ModernTheme.padding(8, 16));
+        header.setBorder(ModernTheme.padding(8, 12));
         avatar.setSquare(true);
         header.add(avatar, BorderLayout.WEST);
 
@@ -402,6 +403,7 @@ public class ModernProductPanel extends ModernDataPanel implements MPCBSelection
 
     private JComponent createOverview() {
         ResponsiveGrid grid = new ResponsiveGrid(340, 3).arrangeable("product");
+        grid.setBorder(BorderFactory.createEmptyBorder(ModernTheme.px(6), 0, ModernTheme.px(8), 0));
         //the image first: you see at once that it is the right product
         grid.add(createImageCard());
 

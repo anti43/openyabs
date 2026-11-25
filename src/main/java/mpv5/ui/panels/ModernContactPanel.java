@@ -286,6 +286,7 @@ public class ModernContactPanel extends ModernDataPanel {
 
         createRelatedPanel();
         split = split("contact", tabs, relatedPanel, 0.6);
+        split.setBorder(BorderFactory.createEmptyBorder(0, ModernTheme.px(12), ModernTheme.px(8), ModernTheme.px(12)));
         content.add(split, BorderLayout.CENTER);
 
         add(content, BorderLayout.CENTER);
@@ -493,6 +494,7 @@ public class ModernContactPanel extends ModernDataPanel {
 
     private JComponent createOverview() {
         ResponsiveGrid grid = new ResponsiveGrid(340, 3).arrangeable("contact");
+        grid.setBorder(BorderFactory.createEmptyBorder(ModernTheme.px(8), 0, ModernTheme.px(8), 0));
 
         JPanel gender = new JPanel(new FlowLayout(FlowLayout.LEFT, ModernTheme.px(8), 0));
         gender.setOpaque(false);
@@ -577,7 +579,15 @@ public class ModernContactPanel extends ModernDataPanel {
         card.addFull(propertiesHint("contact", Messages.PROPERTIES_HINT_CONTACT.toString()));
         card.addFull(mpv5.ui.modern.Applets.plainHint(Messages.PROPERTIES_EXAMPLE_CONTACT.toString()));
         card.addFull(new JScrollPane(proptable), 1);
-        return padded(card);
+        return tabPadding(card);
+    }
+
+    private static JComponent tabPadding(JComponent c) {
+        JPanel p = new JPanel(new BorderLayout());
+        p.setBackground(ModernTheme.background());
+        p.setBorder(BorderFactory.createEmptyBorder(ModernTheme.px(8), 0, ModernTheme.px(8), 0));
+        p.add(c, BorderLayout.CENTER);
+        return p;
     }
 
     /**
@@ -661,7 +671,7 @@ public class ModernContactPanel extends ModernDataPanel {
         Card card = new Card(text("ContactPanel.filetab.TabConstraints.tabTitle"));
         card.headerAction(buttons);
         card.addFull(new JScrollPane(filetable), 1);
-        return padded(card);
+        return tabPadding(card);
     }
 
     private void createRelatedPanel() {
