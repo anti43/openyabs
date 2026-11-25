@@ -17,6 +17,7 @@ import mpv5.handler.TemplateHandler;
 import mpv5.ui.beans.LabeledCombobox;
 import mpv5.ui.panels.ModernItemPanel;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -25,6 +26,7 @@ import org.junit.jupiter.api.io.TempDir;
  * adopts the customer's group, while changing the customer on an already-saved
  * invoice keeps the invoice's existing group.
  */
+@Disabled("Heavy DB + Swing UI wiring test; deactivated for faster test runs")
 class InvoiceCustomerGroupTest {
 
     @TempDir

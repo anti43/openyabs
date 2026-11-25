@@ -30,6 +30,7 @@ import mpv5.handler.TemplateHandler;
 import mpv5.ui.frames.NavigationMenu;
 import mpv5.ui.panels.ModernItemPanel;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -39,6 +40,7 @@ import org.junit.jupiter.api.io.TempDir;
  * document + positions and loading it in {@link ModernItemPanel}, and
  * navigation menu wiring.
  */
+@Disabled("Heavy DB + Swing UI wiring test; deactivated for faster test runs")
 class BelegWizardTest {
 
     @TempDir

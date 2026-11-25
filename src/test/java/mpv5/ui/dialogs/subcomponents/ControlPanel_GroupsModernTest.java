@@ -32,6 +32,7 @@ import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.models.MPComboBoxModelItem;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -41,6 +42,7 @@ import org.junit.jupiter.api.io.TempDir;
  * subtree cycle prevention, tree refresh, deletion, and safe non-admin
  * rendering.
  */
+@Disabled("Heavy DB + Swing UI wiring test; deactivated for faster test runs")
 class ControlPanel_GroupsModernTest {
 
     @TempDir

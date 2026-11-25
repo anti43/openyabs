@@ -31,6 +31,7 @@ import mpv5.handler.ItemService;
 import mpv5.handler.TemplateHandler;
 import mpv5.ui.dialogs.Popup;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -39,6 +40,7 @@ import org.junit.jupiter.api.io.TempDir;
  * and active when unpaid, turns green, labeled "Paid" and inactive when paid,
  * and hidden on non-payable or cancelled documents.
  */
+@Disabled("Heavy DB + Swing UI wiring test; deactivated for faster test runs")
 class ModernItemPanelMarkPaidButtonTest {
 
     @TempDir

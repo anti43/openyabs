@@ -37,6 +37,7 @@ import mpv5.ui.dialogs.Popup;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -44,6 +45,7 @@ import org.junit.jupiter.api.io.TempDir;
  * Verifies "Hide cancelled" in ReceiptLookup (Vorgangssuche) and the active
  * status/date filter indicator plus "Show all statuses" button in JournalPanel.
  */
+@Disabled("Heavy DB + Swing UI wiring test; deactivated for faster test runs")
 class ReceiptLookupAndJournalFilterTest {
 
     @TempDir

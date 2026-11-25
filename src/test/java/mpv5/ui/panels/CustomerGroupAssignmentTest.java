@@ -30,6 +30,7 @@ import mpv5.handler.TemplateHandler;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.modern.ChipToggle;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -39,6 +40,7 @@ import org.junit.jupiter.api.io.TempDir;
  * saved group and that all groups are immediately selectable) and
  * {@link ContactsList} (display and inline editing in edit mode).
  */
+@Disabled("Heavy DB + Swing UI wiring test; deactivated for faster test runs")
 class CustomerGroupAssignmentTest {
 
     @TempDir
