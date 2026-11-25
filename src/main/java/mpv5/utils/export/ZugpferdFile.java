@@ -369,10 +369,10 @@ public class ZugpferdFile implements Waitable {
         if (isEmpty(number)) {
             return;
         }
-        invoice.setInvoiceReferencedDocumentID(number.trim());
-        if (date != null) {
-            invoice.setInvoiceReferencedIssueDate(date);
-        }
+        org.mustangproject.ReferencedDocument ref = date != null
+                ? new org.mustangproject.ReferencedDocument(number.trim(), date)
+                : new org.mustangproject.ReferencedDocument(number.trim());
+        invoice.setInvoiceReferencedDocuments(new ArrayList<>(java.util.Collections.singletonList(ref)));
     }
 
     /**

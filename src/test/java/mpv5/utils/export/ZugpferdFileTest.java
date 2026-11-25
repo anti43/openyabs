@@ -347,7 +347,7 @@ class ZugpferdFileTest {
         Invoice none = ZugpferdFile.createInvoice(credit, new SubItem[]{line("Beratung", "", "1", "Std.", "100", "19", "0")},
                 ZugpferdFile.createSender(c::get), buyer(), "ref", ZugpferdFile.PAYTERM_UNSET, null);
         ZugpferdFile.applyPrecedingInvoice(none, " ", null);
-        assertNull(none.getInvoiceReferencedDocumentID());
+        assertTrue(none.getInvoiceReferencedDocuments() == null || none.getInvoiceReferencedDocuments().isEmpty());
     }
 
     /**
