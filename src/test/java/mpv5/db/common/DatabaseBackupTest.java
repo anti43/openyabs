@@ -60,4 +60,70 @@ class DatabaseBackupTest {
         File f = DatabaseBackup.resolve("[HOME]/b/[DBNAME]/[YEAR]-[MONTH]-[DAY]", "yabs", d);
         assertEquals(new File(System.getProperty("user.home") + "/b/yabs/2026-11-12").getPath(), f.getPath());
     }
+
+    @Test
+    void zipReportsMonotonicByteProgress() throws Exception {
+        File dbdir = tmp.resolve("dbprog").toFile();
+        dbdir.mkdirs();
+        File data = new File(dbdir, "yabs.mv.db");
+        byte[] payload = new byte[600 * 1024];
+        for (int i = 0; i < payload.length; i++) {
+            payload[i] = (byte) (i * 31);
+        }
+        java.nio.file.Files.write(data.toPath(), payload);
+
+        java.util.List<long[]> updates = new java.util.ArrayList<long[]>();
+        File zip = tmp.resolve("progress.zip").toFile();
+        DatabaseBackup.zip(dbdir, java.util.Collections.singletonList(data), zip,
+                (written, total) -> updates.add(new long[]{written, total}));
+
+        assertTrue(zip.isFile() && zip.length() > 0);
+        assertTrue(updates.size() >= 3, "Expected start, intermediate, and final progress updates, got " + updates.size());
+        assertEquals(0L, updates.get(0)[0]);
+        assertEquals(payload.length, updates.get(0)[1]);
+        long prev = -1L;
+        for (long[] u : updates) {
+            assertTrue(u[0] >= prev, "Progress must be monotonic");
+            assertTrue(u[0] <= u[1], "Written bytes must not exceed total");
+            assertEquals(payload.length, u[1]);
+            prev = u[0];
+        }
+        assertEquals(payload.length, updates.get(updates.size() - 1)[0]);
+
+        assertEquals("512 B", DatabaseBackup.formatBytes(512));
+        assertTrue(DatabaseBackup.formatBytes(2048).endsWith("KB"));
+        assertTrue(DatabaseBackup.formatBytes(5L * 1024 * 1024).endsWith("MB"));
+        assertTrue(DatabaseBackup.formatBytes(2L * 1024 * 1024 * 1024).endsWith("GB"));
+    }
+
+    @Test
+    void shutdownDialogRunsSynchronouslyOffEdt() {
+        java.util.concurrent.atomic.AtomicBoolean ran = new java.util.concurrent.atomic.AtomicBoolean(false);
+        mpv5.ui.dialogs.ShutdownDialog.runWithProgress(null, p -> {
+            p.step(10, "step 1");
+            p.indeterminate("working", "detail");
+            p.step(100, "done", "");
+            ran.set(true);
+        });
+        assertTrue(ran.get(), "Shutdown task must execute synchronously when called off-EDT / headless");
+    }
+
+    @Test
+    void shutdownDialogPumpsEdtAndClosesCleanlyWhenWorkerFinishes() throws Exception {
+        if (java.awt.GraphicsEnvironment.isHeadless()) {
+            return;
+        }
+        java.util.concurrent.atomic.AtomicBoolean ranOnWorker = new java.util.concurrent.atomic.AtomicBoolean(false);
+        javax.swing.SwingUtilities.invokeAndWait(() -> mpv5.ui.dialogs.ShutdownDialog.runWithProgress(null, p -> {
+            ranOnWorker.set(!javax.swing.SwingUtilities.isEventDispatchThread());
+            p.step(20, "Saving settings...");
+            try {
+                Thread.sleep(40);
+            } catch (InterruptedException ignored) {
+            }
+            p.step(75, "Backing up...", "C:\\temp\\backups");
+            p.step(100, "Done.");
+        }));
+        assertTrue(ranOnWorker.get(), "Shutdown work must run off the EDT so the closing popup repaints smoothly");
+    }
 }

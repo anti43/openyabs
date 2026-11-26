@@ -45,6 +45,7 @@ import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import mpv5.db.common.Context;
+import mpv5.db.common.DatabaseBackup;
 import mpv5.db.common.DatabaseConnection;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.DatabaseObjectLock;
@@ -55,6 +56,7 @@ import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.pluginhandling.YabsPluginLoader;
 import mpv5.ui.dialogs.Popup;
+import mpv5.ui.dialogs.ShutdownDialog;
 import mpv5.ui.dialogs.SplashScreen;
 import mpv5.ui.dialogs.Wizard;
 
@@ -331,17 +333,37 @@ public class Main implements Runnable {
             Log.Print(Messages.getMissing());
         }
 
+        Window owner = null;
         if (!HEADLESS) {
-            getApplication().getMainFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));
+            try {
+                owner = getApplication().getMainFrame();
+                if (owner != null) {
+                    owner.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+                }
+            } catch (Exception ex) {
+                Log.Debug(ex);
+            }
+            ShutdownDialog.runWithProgress(owner, this::runShutdown);
+        } else {
+            runShutdown(ShutdownDialog.Progress.NOOP);
         }
+    }
 
-        DatabaseObjectLock.releaseAllObjectsFor(mpv5.db.objects.User.getCurrentUser());
+    void runShutdown(ShutdownDialog.Progress progress) {
+        ShutdownDialog.Progress p = progress != null ? progress : ShutdownDialog.Progress.NOOP;
+
+        p.step(10, Messages.SHUTDOWN_STEP_SETTINGS.toString());
+        try {
+            DatabaseObjectLock.releaseAllObjectsFor(mpv5.db.objects.User.getCurrentUser());
+        } catch (Exception e) {
+            Log.Debug(e);
+        }
         try {
             GlobalSettings.save();
             LocalSettings.save();
 
             if (!mpv5.db.objects.User.getCurrentUser().isDefault()) {
-
+                p.step(25, Messages.SHUTDOWN_STEP_LOGOUT.toString());
                 try {
                     ValueProperty.addOrUpdateProperty("layoutinfo", User.getCurrentUser().getLayoutProperties(), User.getCurrentUser());
                 } catch (Exception ex) {
@@ -360,16 +382,37 @@ public class Main implements Runnable {
             }
 
             //zip backup of the local database, if switched on (closes the connection)
-            mpv5.db.common.DatabaseBackup.backupOnExit();
+            if (DatabaseBackup.onExit() && DatabaseBackup.isPossible()) {
+                final String backupDetail = String.format(Messages.SHUTDOWN_BACKUP_DETAIL.toString(),
+                        DatabaseBackup.folder().getAbsolutePath());
+                p.step(35, Messages.SHUTDOWN_STEP_DB_CLOSE.toString(), backupDetail);
+                DatabaseBackup.backupOnExit((written, total) -> {
+                    if (total > 0) {
+                        int pct = (int) Math.min(100L, (written * 100L) / total);
+                        int bar = 35 + (pct * 50) / 100;
+                        String status = String.format(Messages.SHUTDOWN_STEP_BACKUP_PROGRESS.toString(),
+                                pct, DatabaseBackup.formatBytes(written), DatabaseBackup.formatBytes(total));
+                        p.step(bar, status, backupDetail);
+                    } else {
+                        p.step(60, Messages.SHUTDOWN_STEP_BACKUP.toString(), backupDetail);
+                    }
+                });
+            } else {
+                p.step(60, Messages.SHUTDOWN_STEP_DB_CLOSE.toString());
+                DatabaseBackup.backupOnExit();
+            }
 
-            for (int i = 0; i < oap.size(); i++) {
-                Process p = oap.get(i);
-                try {
-                    Log.Debug(this, "Killing process: " + p);
-                    p.destroy();
-                    p.waitFor();
-                } catch (Exception n) {
-                    Log.Debug(this, n);
+            if (!oap.isEmpty()) {
+                p.step(90, Messages.SHUTDOWN_STEP_PROCESSES.toString());
+                for (int i = 0; i < oap.size(); i++) {
+                    Process proc = oap.get(i);
+                    try {
+                        Log.Debug(this, "Killing process: " + proc);
+                        proc.destroy();
+                        proc.waitFor();
+                    } catch (Exception n) {
+                        Log.Debug(this, n);
+                    }
                 }
             }
         } catch (Exception e) {
@@ -381,11 +424,13 @@ public class Main implements Runnable {
         }
         Log.Print(GOODBYE_MESSAGE);
 
+        p.step(95, Messages.SHUTDOWN_STEP_CLEANUP.toString());
         try {
             //Cleanup
             FileDirectoryHandler.deleteDirectoryContent2(new File(FileDirectoryHandler.getTempDir2()), ".properties", ".xml", ".start");
         } catch (IOException ex) {
         }
+        p.step(100, Messages.SHUTDOWN_STEP_DONE.toString());
     }
 
     /**

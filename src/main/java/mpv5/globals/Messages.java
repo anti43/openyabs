@@ -2571,7 +2571,18 @@ public enum Messages {
     KONSOLE_STATUS_TIMEOUT("Query timed out after %d s."),
     KONSOLE_BADGE_ADMIN_ONLY("Admin required (read-only)"),
     KONSOLE_ADMIN_ONLY_ERROR("Only SELECT queries are allowed for non-administrators."),
-    KONSOLE_HINT_READONLY("Ctrl+Enter or F5 runs the query. Enter inserts a new line. Read-only mode: only SELECT queries are allowed (administrator rights required for changes).");
+    KONSOLE_HINT_READONLY("Ctrl+Enter or F5 runs the query. Enter inserts a new line. Read-only mode: only SELECT queries are allowed (administrator rights required for changes)."),
+    SHUTDOWN_TITLE("Closing YaBS"),
+    SHUTDOWN_HEADING("Closing YaBS..."),
+    SHUTDOWN_STEP_SETTINGS("Saving settings and releasing locks..."),
+    SHUTDOWN_STEP_LOGOUT("Saving layout and logging out..."),
+    SHUTDOWN_STEP_DB_CLOSE("Closing database..."),
+    SHUTDOWN_STEP_BACKUP("Backing up local database..."),
+    SHUTDOWN_STEP_BACKUP_PROGRESS("Backing up local database... (%d%% - %s / %s)"),
+    SHUTDOWN_BACKUP_DETAIL("Automatic backup on exit: %s"),
+    SHUTDOWN_STEP_PROCESSES("Stopping external processes..."),
+    SHUTDOWN_STEP_CLEANUP("Cleaning up temporary files..."),
+    SHUTDOWN_STEP_DONE("Done.");
 
 
     /**

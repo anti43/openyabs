@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -239,6 +240,20 @@ public final class DatabaseBackup {
      * @throws Exception
      */
     public static synchronized File backup(boolean reconnect) throws Exception {
+        return backup(reconnect, null);
+    }
+
+    /**
+     * Closes the database, zips it with optional byte-level progress updates
+     * ({@code progress.accept(bytesWritten, totalBytes)}) and opens it again
+     * (if {@code reconnect}).
+     *
+     * @param reconnect open the connection again
+     * @param progress  optional progress callback (may be null)
+     * @return the zip
+     * @throws Exception
+     */
+    public static synchronized File backup(boolean reconnect, BiConsumer<Long, Long> progress) throws Exception {
         String name = dbName();
         List<File> files = sources(dbPath(), name, isH2());
         if (files.isEmpty()) {
@@ -251,7 +266,7 @@ public final class DatabaseBackup {
         File zip = new File(dir, name + "-" + new SimpleDateFormat(STAMP).format(new Date()) + ".zip");
         DatabaseConnection.shutdown();
         try {
-            zip(new File(dbPath()), files, zip);
+            zip(new File(dbPath()), files, zip, progress);
         } finally {
             if (reconnect) {
                 DatabaseConnection.instanceOf().reconnect(false);
@@ -266,9 +281,19 @@ public final class DatabaseBackup {
      * Backup at exit, if switched on (the connection stays closed)
      */
     public static void backupOnExit() {
+        backupOnExit(null);
+    }
+
+    /**
+     * Backup at exit, if switched on (the connection stays closed), reporting
+     * byte-level progress to {@code progress} while writing the archive.
+     *
+     * @param progress optional progress callback receiving (bytesWritten, totalBytes)
+     */
+    public static void backupOnExit(BiConsumer<Long, Long> progress) {
         try {
             if (onExit() && isPossible()) {
-                backup(false);
+                backup(false, progress);
             }
         } catch (Exception e) {
             Log.Debug(DatabaseBackup.class, e);
@@ -276,16 +301,57 @@ public final class DatabaseBackup {
     }
 
     static void zip(File base, List<File> files, File zip) throws IOException {
+        zip(base, files, zip, null);
+    }
+
+    static void zip(File base, List<File> files, File zip, BiConsumer<Long, Long> progress) throws IOException {
+        long total = totalSize(files);
+        if (progress != null) {
+            progress.accept(0L, total);
+        }
+        long[] state = new long[]{0L, 0L}; // [written, lastReported]
+        byte[] buf = new byte[65536];
         File tmp = new File(zip.getPath() + ".part");
         try (ZipOutputStream out = new ZipOutputStream(new FileOutputStream(tmp))) {
             for (File f : files) {
-                add(out, base, f);
+                add(out, base, f, buf, state, total, progress);
             }
         }
         Files.move(tmp.toPath(), zip.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+        if (progress != null) {
+            progress.accept(total, total);
+        }
     }
 
-    private static void add(ZipOutputStream out, File base, File f) throws IOException {
+    private static long totalSize(List<File> files) {
+        long sum = 0L;
+        for (File f : files) {
+            sum += fileSize(f);
+        }
+        return sum;
+    }
+
+    private static long fileSize(File f) {
+        if (f == null || !f.exists()) {
+            return 0L;
+        }
+        if (f.isDirectory()) {
+            long sum = 0L;
+            File[] children = f.listFiles();
+            if (children != null) {
+                for (File c : children) {
+                    if (!c.getName().equals("db.lck") && !c.getName().equals("dbex.lck")) {
+                        sum += fileSize(c);
+                    }
+                }
+            }
+            return sum;
+        }
+        return f.length();
+    }
+
+    private static void add(ZipOutputStream out, File base, File f, byte[] buf,
+            long[] state, long total, BiConsumer<Long, Long> progress) throws IOException {
         String name = base.toPath().relativize(f.toPath()).toString().replace(File.separatorChar, '/');
         if (f.isDirectory()) {
             out.putNextEntry(new ZipEntry(name + "/"));
@@ -296,17 +362,47 @@ public final class DatabaseBackup {
                 for (File c : children) {
                     //Derby: the lock files are not needed
                     if (!c.getName().equals("db.lck") && !c.getName().equals("dbex.lck")) {
-                        add(out, base, c);
+                        add(out, base, c, buf, state, total, progress);
                     }
                 }
             }
         } else {
             out.putNextEntry(new ZipEntry(name));
             try (InputStream in = new FileInputStream(f)) {
-                in.transferTo(out);
+                int read;
+                while ((read = in.read(buf)) >= 0) {
+                    out.write(buf, 0, read);
+                    state[0] += read;
+                    if (progress != null && state[0] - state[1] >= 262144L) {
+                        state[1] = state[0];
+                        progress.accept(Math.min(state[0], total), total);
+                    }
+                }
             }
             out.closeEntry();
+            if (progress != null && state[0] != state[1]) {
+                state[1] = state[0];
+                progress.accept(Math.min(state[0], total), total);
+            }
         }
+    }
+
+    /**
+     * Formats a byte count cleanly for status displays (e.g. {@code 12.4 MB}).
+     */
+    public static String formatBytes(long bytes) {
+        if (bytes < 1024L) {
+            return bytes + " B";
+        }
+        double kb = bytes / 1024.0;
+        if (kb < 1024.0) {
+            return String.format("%.0f KB", kb);
+        }
+        double mb = kb / 1024.0;
+        if (mb < 1024.0) {
+            return String.format("%.1f MB", mb);
+        }
+        return String.format("%.2f GB", mb / 1024.0);
     }
 
     /**
