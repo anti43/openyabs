@@ -114,6 +114,24 @@ tasks.register('pluginsZip', Zip) {
     from(pluginJarTasks)
 }
 
+// the plugin list of the release (id, name, version, jar of each plugin): release asset
+// openyabs-plugins.json, read by the plugin update check of YaBS (mpv5.handler.PluginUpdateCheck)
+tasks.register('pluginIndex', JavaExec) {
+    group = 'distribution'
+    description = 'Builds build/distributions/openyabs-plugins.json, the plugin list for the plugin update check'
+    dependsOn pluginJarTasks
+    def out = layout.buildDirectory.file('distributions/openyabs-plugins.json')
+    def jars = files(pluginJarTasks)
+    inputs.files(jars)
+    inputs.property('version', project.version)
+    outputs.file(out)
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'mpv5.plugin.PluginIndexWriter'
+    jvmArgs '-Djava.awt.headless=true'
+    argumentProviders.add({ [out.get().asFile.path, project.version.toString()] + jars.files.collect { it.path }.sort() } as CommandLineArgumentProvider)
+}
+tasks.named('pluginsZip') { finalizedBy 'pluginIndex' }
+
 // Java 21 is the minimum (Apache Derby 10.17 needs it); --release also
 // checks that only Java 21 APIs are used when building with a newer JDK
 tasks.withType(JavaCompile).configureEach {

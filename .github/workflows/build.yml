@@ -65,8 +65,11 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: openyabs-${{ github.run_number }}
-          # the zip and the plugins zip (openyabs-plugins-<version>.zip, also a release asset)
-          path: build/distributions/*.zip
+          # the zip, the plugins zip (openyabs-plugins-<version>.zip) and the plugin list for
+          # the plugin update check (openyabs-plugins.json), all release assets
+          path: |
+            build/distributions/*.zip
+            build/distributions/openyabs-plugins.json
           if-no-files-found: error
 
       - uses: actions/upload-artifact@v4

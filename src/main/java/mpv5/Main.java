@@ -959,6 +959,8 @@ public class Main implements Runnable {
         //newer release on GitHub? (release builds only, can be switched off)
         if (!HEADLESS && !mpv5.db.common.ConnectionTypeHandler.DEVMODE) {
             mpv5.ui.dialogs.UpdateNotice.checkAtStart();
+            //newer versions of the installed plugins (same switch)
+            mpv5.ui.dialogs.PluginUpdateNotice.checkAtStart();
         } else if (mpv5.db.common.ConnectionTypeHandler.DEVMODE) {
             Log.Print("Update check: not in developer mode");
         }

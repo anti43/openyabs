@@ -78,6 +78,26 @@ public interface YabsExtension {
     }
 
     /**
+     * Where YaBS looks for new versions of this plugin: a GitHub repository
+     * as "owner/repository" (e.g. "example/yabs-hello"). Its latest release
+     * (no pre-release) must be tagged with the version ("1.2.0" or "v1.2.0")
+     * and have the plugin jar as an asset (the asset of the same file name as
+     * the installed jar, otherwise the only .jar). YaBS compares the tag with
+     * {@link #version()}, tells the user about a newer one and installs it on
+     * request.
+     * <p>
+     * The plugins made with YaBS (folder plugins/ of the YaBS repository) need
+     * nothing here: they are checked against the plugin list
+     * (openyabs-plugins.json) of the latest YaBS release.
+     *
+     * @return "owner/repository" on GitHub, or null for no update check of
+     * its own
+     */
+    default String updateSource() {
+        return null;
+    }
+
+    /**
      * Starts the plugin: register commands, pages, listeners ... (called on
      * the Swing thread)
      *

@@ -82,6 +82,11 @@ jobs:
             echo "::error::Missing release asset: openyabs-plugins-$VERSION.zip"
             exit 1
           }
+          # the plugin list, read by the plugin update check of YaBS
+          test -s "openyabs-plugins.json" || {
+            echo "::error::Missing release asset: openyabs-plugins.json"
+            exit 1
+          }
           for pattern in '*.deb' '*.rpm' '*.msi'; do
             compgen -G "$pattern" > /dev/null || {
               echo "::error::Missing release asset: $pattern"

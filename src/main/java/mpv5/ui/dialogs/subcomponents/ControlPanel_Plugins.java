@@ -42,6 +42,7 @@ import javax.swing.TransferHandler;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import mpv5.data.PropertyStore;
 import mpv5.globals.Messages;
+import mpv5.handler.PluginUpdateCheck;
 import mpv5.logging.Log;
 import mpv5.plugin.ExtensionManager;
 import mpv5.plugin.ExtensionManager.Installed;
@@ -166,7 +167,10 @@ public final class ControlPanel_Plugins extends JPanel implements ControlApplet 
 
         JButton openFolder = new JButton(Messages.PLUGINS_OPEN_FOLDER.toString());
         openFolder.addActionListener(e -> open(manager.folder()));
-        actions = Applets.actionBar(new JComponent[]{openFolder}, new JComponent[]{});
+        JButton updates = new JButton(Messages.PLUGIN_UPDATE_CHECK_NOW.toString());
+        updates.setToolTipText(Messages.PLUGIN_UPDATE_HINT.toString());
+        updates.addActionListener(e -> mpv5.ui.dialogs.PluginUpdateNotice.checkNow(this));
+        actions = Applets.actionBar(new JComponent[]{openFolder}, new JComponent[]{updates});
 
         refresh();
     }
@@ -175,6 +179,7 @@ public final class ControlPanel_Plugins extends JPanel implements ControlApplet 
     public void addNotify() {
         super.addNotify();
         manager.addChangeListener(refresh);
+        mpv5.ui.dialogs.PluginUpdateNotice.addListener(refresh);
         refresh();
     }
 
@@ -222,6 +227,13 @@ public final class ControlPanel_Plugins extends JPanel implements ControlApplet 
         meta.setFont(ModernTheme.font(-1, Font.PLAIN));
         meta.setForeground(ModernTheme.muted());
         text.add(meta);
+        final PluginUpdateCheck.Update update = PluginUpdateCheck.lastFor(i.id());
+        if (update != null) {
+            JLabel up = new JLabel(String.format(Messages.PLUGIN_UPDATE_AVAILABLE.toString(), update.version));
+            up.setForeground(ModernTheme.accent());
+            up.setFont(ModernTheme.font(-1, Font.BOLD));
+            text.add(up);
+        }
         if (i.getState() == State.FAILED && i.getError() != null) {
             JLabel err = new JLabel(i.getError());
             err.setForeground(RichList.RED);
@@ -247,6 +259,15 @@ public final class ControlPanel_Plugins extends JPanel implements ControlApplet 
             JButton reload = new JButton(Messages.PLUGINS_RELOAD.toString());
             reload.addActionListener(e -> manager.reload(i));
             buttons.add(reload);
+        }
+        if (update != null && update.installable()) {
+            JButton install = new JButton(Messages.PLUGIN_UPDATE_BUTTON.toString());
+            install.setToolTipText(String.format(Messages.PLUGIN_UPDATE_LINE.toString(), update.name, update.version, update.installedVersion));
+            install.addActionListener(e -> {
+                install.setEnabled(false);
+                mpv5.ui.dialogs.PluginUpdateNotice.install(this, java.util.Collections.singletonList(update));
+            });
+            buttons.add(install);
         }
         if (groovy) {
             JButton edit = new JButton(Messages.PLUGINS_EDIT.toString());
@@ -402,6 +423,7 @@ public final class ControlPanel_Plugins extends JPanel implements ControlApplet 
     @Override
     public void removeNotify() {
         manager.removeChangeListener(refresh);
+        mpv5.ui.dialogs.PluginUpdateNotice.removeListener(refresh);
         super.removeNotify();
     }
 }
