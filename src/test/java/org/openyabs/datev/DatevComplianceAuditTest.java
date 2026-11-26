@@ -551,9 +551,12 @@ public class DatevComplianceAuditTest {
     // -------------------------------------------------------------------------
     @Test
     public void belegfeld1CollisionAndDiktatAndDocumentDateWarningAndCashSaleHeuristic() throws Exception {
-        // 1-letter Diktatkürzel preserved
-        assertEquals("A", DatevFormat.sanitizeDiktat("a"));
+        // Diktatkürzel, DATEV header field 18: ^["]([A-Z]{2}){0,2}["]$ - empty, 2 or 4 capital letters
+        // (developer.datev.de, DATEV-Format, Header): a single letter is not allowed
+        assertEquals("", DatevFormat.sanitizeDiktat("a"));
         assertEquals("YB", DatevFormat.sanitizeDiktat("yb"));
+        assertEquals("YB", DatevFormat.sanitizeDiktat("ybc"));
+        assertEquals("YBCD", DatevFormat.sanitizeDiktat("ybcde"));
 
         // Cash sale heuristic must NOT misroute "Barverkauf GmbH" to cash register 1000
         Entry b2b = paidEntry(Constants.TYPE_INVOICE, Item.STATUS_PAID, "2026-03-10", "RE-1", "Barverkauf GmbH", "100.00", "19.00", "19");

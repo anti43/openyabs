@@ -667,10 +667,12 @@ public final class DatevFormat {
                 b.append(c);
             }
         }
-        if (b.length() >= 2) {
-            return b.substring(0, 2);
+        //DATEV header field 18: ^["]([A-Z]{2}){0,2}["]$ - empty, 2 or 4 capital letters; a single
+        //letter is not allowed (left out)
+        if (b.length() >= 4) {
+            return b.substring(0, 4);
         }
-        return b.length() == 1 ? b.toString() : "";
+        return b.length() >= 2 ? b.substring(0, 2) : "";
     }
 
     public static String sanitizeHerkunft(String s) {

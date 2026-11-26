@@ -37,6 +37,28 @@ final class DatevExportScreenshots {
         });
     }
 
+    /**
+     * The settings page of the DATEV plugin, the whole form (not only what a
+     * window shows)
+     */
+    static void settings(File dir, String name) throws Exception {
+        dir.mkdirs();
+        SwingUtilities.invokeAndWait(() -> {
+            JComponent page = DatevSettingsPage.create(null);
+            javax.swing.JScrollPane sp = find(page, javax.swing.JScrollPane.class);
+            JComponent form = sp != null ? (JComponent) sp.getViewport().getView() : page;
+            JFrame f = new JFrame("DATEV-Export");
+            f.setContentPane(page);
+            f.setSize(form.getPreferredSize().width + 40, form.getPreferredSize().height + 120);
+            f.setVisible(true);
+            f.validate();
+            form.setSize(form.getPreferredSize());
+            layout(form);
+            shoot(form, new File(dir, name));
+            f.dispose();
+        });
+    }
+
     static void journal(File dir, String name, Date from, Date to) throws Exception {
         dir.mkdirs();
         SwingUtilities.invokeAndWait(() -> {

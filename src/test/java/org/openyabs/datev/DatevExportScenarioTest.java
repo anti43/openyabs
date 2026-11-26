@@ -399,6 +399,7 @@ public class DatevExportScenarioTest {
             DatevExportScreenshots.save(new File(shots), "datev-package-left.png", pkg, 1);
             DatevExportScreenshots.save(new File(shots), "datev-package-notes.png", pkg, 2);
             DatevExportScreenshots.journal(new File(shots), "journal-export-menu.png", from, to);
+            DatevExportScreenshots.settings(new File(shots), "datev-settings.png");
             java.nio.file.Files.write(new File(shots, "DATEV_Belege_20260301_20260331.zip").toPath(), zip);
             java.nio.file.Files.write(new File(shots, DatevFormat.fileName(from, to)).toPath(),
                     DatevFormat.encode(DatevFormat.render(config, from, to, new Date(), batch.lines)));
