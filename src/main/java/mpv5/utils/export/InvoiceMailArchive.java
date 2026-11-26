@@ -66,11 +66,64 @@ import org.mustangproject.Invoice;
 public final class InvoiceMailArchive {
 
     public static final String KEY_ADDRESS = "mailarchive.address";
+    public static final String KEY_FORMAT = "mailarchive.format";
     public static final String KEY_SUBJECT = "mailarchive.subject";
     public static final String KEY_BODY = "mailarchive.body";
 
     public static final String DEFAULT_SUBJECT = "[type] [cnumber] - [contact.cname]";
     public static final String DEFAULT_BODY = "[type] [cnumber] ([grosvaluef])";
+
+    /**
+     * Attachment format sent to the invoice email archive.
+     */
+    public enum ArchiveFormat {
+        BOTH("both", Messages.COMPANY_MAILARCHIVE_FORMAT_BOTH, "ZUGFeRD + XML"),
+        ZUGFERD("zugferd", Messages.COMPANY_MAILARCHIVE_FORMAT_ZUGFERD, "ZUGFeRD"),
+        XRECHNUNG("xrechnung", Messages.COMPANY_MAILARCHIVE_FORMAT_XRECHNUNG, "XRechnung XML");
+
+        private final String key;
+        private final Messages label;
+        private final String shortLabel;
+
+        ArchiveFormat(String key, Messages label, String shortLabel) {
+            this.key = key;
+            this.label = label;
+            this.shortLabel = shortLabel;
+        }
+
+        public String key() {
+            return key;
+        }
+
+        public boolean includeZugferd() {
+            return this == BOTH || this == ZUGFERD;
+        }
+
+        public boolean includeXrechnung() {
+            return this == BOTH || this == XRECHNUNG;
+        }
+
+        public String shortLabel() {
+            return shortLabel;
+        }
+
+        @Override
+        public String toString() {
+            return label.toString();
+        }
+
+        public static ArchiveFormat fromKey(String raw) {
+            if (raw != null) {
+                String trimmed = raw.trim();
+                for (ArchiveFormat f : values()) {
+                    if (f.key.equalsIgnoreCase(trimmed) || f.name().equalsIgnoreCase(trimmed)) {
+                        return f;
+                    }
+                }
+            }
+            return BOTH;
+        }
+    }
 
     /**
      * Deduplication set of {@code "<ids>:<cnumber>"} keys already archived in
@@ -231,10 +284,28 @@ public final class InvoiceMailArchive {
     }
 
     /**
-     * Generates the two archive attachments (1. ZUGFeRD PDF with embedded XML,
-     * 2. XRechnung XML) in {@code targetDir}.
+     * @return the configured archive attachment format (defaults to
+     *         {@link ArchiveFormat#BOTH}).
+     */
+    public static ArchiveFormat getFormat() {
+        return ArchiveFormat.fromKey(CompanyInfo.getProperty(KEY_FORMAT));
+    }
+
+    /**
+     * Generates the archive attachment(s) according to the configured
+     * {@link #getFormat()} in {@code targetDir}.
      */
     public static List<File> createArchiveAttachments(Item item, File exportedFile, Path targetDir) throws Exception {
+        return createArchiveAttachments(item, exportedFile, targetDir, getFormat());
+    }
+
+    /**
+     * Generates the requested archive attachment(s) (ZUGFeRD PDF, XRechnung
+     * XML, or both) in {@code targetDir}.
+     */
+    public static List<File> createArchiveAttachments(Item item, File exportedFile, Path targetDir,
+            ArchiveFormat format) throws Exception {
+        ArchiveFormat effective = format == null ? ArchiveFormat.BOTH : format;
         IN_PROGRESS.set(Boolean.TRUE);
         try {
             Files.createDirectories(targetDir);
@@ -243,33 +314,41 @@ public final class InvoiceMailArchive {
                 baseName = "invoice-" + item.__getIDS();
             }
 
-            File zugferdPdf = targetDir.resolve(baseName + ".pdf").toFile();
-            File xrechnungXml = targetDir.resolve(baseName + ".xml").toFile();
+            List<File> attachments = new ArrayList<>();
 
-            // 1. Create XRechnung XML file
-            Invoice xrechnungInv = ZugpferdFile.createInvoice(item, ZugpferdFile.Format.XRECHNUNG);
-            ZugpferdFile.writeXml(xrechnungInv, xrechnungXml);
-
-            // 2. Create ZUGFeRD PDF file
-            if (exportedFile != null && exportedFile.isFile()
-                    && exportedFile.getName().toLowerCase().endsWith(".pdf")
-                    && hasEmbeddedXml(exportedFile)) {
-                FileDirectoryHandler.copyFile(exportedFile, zugferdPdf);
-            } else {
-                Invoice zugferdInv = ZugpferdFile.createInvoice(item, ZugpferdFile.Format.ZUGFERD);
-                File basePdf = obtainBasePdf(item, exportedFile, targetDir);
-                ZugpferdFile.writePdf(zugferdInv, basePdf, zugferdPdf);
+            // 1. ZUGFeRD PDF file (if requested)
+            if (effective.includeZugferd()) {
+                File zugferdPdf = targetDir.resolve(baseName + ".pdf").toFile();
+                if (exportedFile != null && exportedFile.isFile()
+                        && exportedFile.getName().toLowerCase().endsWith(".pdf")
+                        && hasEmbeddedXml(exportedFile)) {
+                    FileDirectoryHandler.copyFile(exportedFile, zugferdPdf);
+                } else {
+                    Invoice zugferdInv = ZugpferdFile.createInvoice(item, ZugpferdFile.Format.ZUGFERD);
+                    File basePdf = obtainBasePdf(item, exportedFile, targetDir);
+                    ZugpferdFile.writePdf(zugferdInv, basePdf, zugferdPdf);
+                }
+                attachments.add(zugferdPdf);
             }
 
-            return Arrays.asList(zugferdPdf, xrechnungXml);
+            // 2. XRechnung XML file (if requested)
+            if (effective.includeXrechnung()) {
+                File xrechnungXml = targetDir.resolve(baseName + ".xml").toFile();
+                Invoice xrechnungInv = ZugpferdFile.createInvoice(item, ZugpferdFile.Format.XRECHNUNG);
+                ZugpferdFile.writeXml(xrechnungInv, xrechnungXml);
+                attachments.add(xrechnungXml);
+            }
+
+            return attachments;
         } finally {
             IN_PROGRESS.set(Boolean.FALSE);
         }
     }
 
     /**
-     * Builds and sends the archive email with ZUGFeRD PDF + XRechnung XML
-     * attachments, and logs the entry in the YaBS history table.
+     * Builds and sends the archive email with the configured attachments
+     * (ZUGFeRD PDF, XRechnung XML, or both), and logs the entry in the YaBS
+     * history table.
      */
     public static boolean sendArchiveMail(Item item, File exportedFile) {
         List<String> recipients = getValidAddresses();
@@ -278,6 +357,7 @@ public final class InvoiceMailArchive {
         }
         String recipientsLabel = String.join("; ", recipients);
         String docLabel = (Item.getTypeString(item.__getInttype()) + " " + safeNumber(item)).trim();
+        ArchiveFormat format = getFormat();
         Path tempDir = null;
         IN_PROGRESS.set(Boolean.TRUE);
         try {
@@ -285,7 +365,7 @@ public final class InvoiceMailArchive {
             cacheBase.mkdirs();
             tempDir = Files.createTempDirectory(cacheBase.toPath(), "yabs-mailarchive-");
 
-            List<File> attachments = createArchiveAttachments(item, exportedFile, tempDir);
+            List<File> attachments = createArchiveAttachments(item, exportedFile, tempDir, format);
 
             List<String> mailLog = new ArrayList<>();
             SimpleMail mail = new SimpleMail(mailLog);
@@ -317,7 +397,7 @@ public final class InvoiceMailArchive {
             }
 
             String msg = String.format(Messages.COMPANY_MAILARCHIVE_HISTORY_SENT.toString(),
-                    recipientsLabel, docLabel);
+                    recipientsLabel, docLabel, format.shortLabel());
             recordHistory(item, msg);
             lastError = null;
             return true;

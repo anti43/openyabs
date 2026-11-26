@@ -96,6 +96,8 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
      * {@link mpv5.utils.export.InvoiceMailArchive}
      */
     private final LabeledTextField mailArchiveAddress = new LabeledTextField();
+    private final JComboBox<mpv5.utils.export.InvoiceMailArchive.ArchiveFormat> mailArchiveFormat = new JComboBox<>(
+            mpv5.utils.export.InvoiceMailArchive.ArchiveFormat.values());
     private final LabeledTextField mailArchiveSubject = new LabeledTextField();
     private final javax.swing.JTextArea mailArchiveBody = new javax.swing.JTextArea(4, 30);
     private final JButton smtpSettingsBtn = new JButton(Messages.COMPANY_MAILARCHIVE_SMTP_BUTTON.toString() + " \u2026");
@@ -140,6 +142,9 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
         mailArchiveAddress.set_Label(Messages.COMPANY_MAILARCHIVE_ADDRESS.toString());
         mailArchiveAddress.setName(mpv5.utils.export.InvoiceMailArchive.KEY_ADDRESS);
         mailArchiveAddress.getTextField().setToolTipText(Messages.COMPANY_MAILARCHIVE_ADDRESS_TOOLTIP.toString());
+        mailArchiveFormat.setName(mpv5.utils.export.InvoiceMailArchive.KEY_FORMAT);
+        mailArchiveFormat.setToolTipText(Messages.COMPANY_MAILARCHIVE_FORMAT_TOOLTIP.toString());
+        ModernTheme.roomyCombo(mailArchiveFormat);
         mailArchiveSubject.set_Label(Messages.COMPANY_MAILARCHIVE_SUBJECT.toString());
         mailArchiveSubject.setName(mpv5.utils.export.InvoiceMailArchive.KEY_SUBJECT);
         mailArchiveSubject.getTextField().setToolTipText(mpv5.utils.export.InvoiceMailArchive.DEFAULT_SUBJECT);
@@ -216,6 +221,7 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
         smtpRow.add(smtpSettingsBtn);
         Card mailArchiveCard = new Card(Messages.COMPANY_CARD_MAILARCHIVE.toString())
                 .row(Applets.field(mailArchiveAddress))
+                .row(Card.field(Messages.COMPANY_MAILARCHIVE_FORMAT.toString(), mailArchiveFormat))
                 .row(Applets.field(mailArchiveSubject))
                 .row(Card.field(Messages.COMPANY_MAILARCHIVE_BODY.toString(), mailArchiveBodyScroll))
                 .addFull(Applets.hint(Messages.COMPANY_MAILARCHIVE_HINT.toString()))
@@ -400,6 +406,11 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
                 String.valueOf(smallBusiness.isSelected()));
         mpv5.globals.CompanyInfo.setProperty(mpv5.utils.export.InvoiceMailArchive.KEY_BODY,
                 mailArchiveBody.getText() == null ? "" : mailArchiveBody.getText());
+        Object selFormat = mailArchiveFormat.getSelectedItem();
+        mpv5.utils.export.InvoiceMailArchive.ArchiveFormat fmt = selFormat instanceof mpv5.utils.export.InvoiceMailArchive.ArchiveFormat
+                ? (mpv5.utils.export.InvoiceMailArchive.ArchiveFormat) selFormat
+                : mpv5.utils.export.InvoiceMailArchive.ArchiveFormat.BOTH;
+        mpv5.globals.CompanyInfo.setProperty(mpv5.utils.export.InvoiceMailArchive.KEY_FORMAT, fmt.key());
         mpv5.utils.export.EInvoiceDelivery.setZugpferdDefault(defaultZugpferd.isSelected());
         mpv5.globals.LocalSettings.save();
     }
@@ -426,6 +437,7 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
                 }
             }
             String bodyVal = "";
+            String formatVal = "";
             String countryVal = null;
             if (values != null && values.getList() != null) {
                 for (String[] v : values.getList()) {
@@ -433,10 +445,13 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
                         countryVal = v[1];
                     } else if (mpv5.utils.export.InvoiceMailArchive.KEY_BODY.equalsIgnoreCase(v[0])) {
                         bodyVal = v[1] == null ? "" : v[1];
+                    } else if (mpv5.utils.export.InvoiceMailArchive.KEY_FORMAT.equalsIgnoreCase(v[0])) {
+                        formatVal = v[1] == null ? "" : v[1];
                     }
                 }
             }
             mailArchiveBody.setText(bodyVal);
+            mailArchiveFormat.setSelectedItem(mpv5.utils.export.InvoiceMailArchive.ArchiveFormat.fromKey(formatVal));
             selectCountry(countryVal);
             boolean small = false;
             if (values != null && values.getList() != null) {
@@ -581,6 +596,10 @@ public final class ControlPanel_Company extends JPanel implements ControlApplet 
 
     public LabeledTextField getMailArchiveAddressField() {
         return mailArchiveAddress;
+    }
+
+    public JComboBox<mpv5.utils.export.InvoiceMailArchive.ArchiveFormat> getMailArchiveFormatCombo() {
+        return mailArchiveFormat;
     }
 
     public LabeledTextField getMailArchiveSubjectField() {
