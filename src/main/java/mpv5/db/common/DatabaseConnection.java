@@ -70,11 +70,27 @@ public class DatabaseConnection {
          connector = new DatabaseConnection();
          getConnector().connect(false);
          new connectionPing(connector).start();
+      } else if (isClosed(getConnector().getConnection())) {
+         //closed by the database or the driver (not by shutdown(), which sets it to null): open it again
+         Log.Print("Database connection was closed, reconnecting");
+         getConnector().reconnect(false);
       }
       return getConnector();
    }
    private Statement statement;
    private JProgressBar prog;
+
+   /**
+    * @param c
+    * @return true if the connection is closed (or can not tell)
+    */
+   static boolean isClosed(java.sql.Connection c) {
+      try {
+         return c == null || c.isClosed();
+      } catch (SQLException e) {
+         return true;
+      }
+   }
 
    /**
     *

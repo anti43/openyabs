@@ -690,4 +690,13 @@ class ExtensionManagerTest {
             m.stopAll();
         }
     }
+
+    @Test
+    void languageOfTheUser() {
+        assertEquals("en", ExtensionManager.languageOf("buildin_en"));
+        assertEquals("de", ExtensionManager.languageOf("de"));
+        assertEquals("de_DE", ExtensionManager.languageOf("de-DE"));
+        assertEquals("de", ExtensionManager.languageOf("DE-Yabs-2.0"));
+        assertEquals("fr_FR", ExtensionManager.languageOf("fr_FR"));
+    }
 }

@@ -86,6 +86,11 @@ public class QueryHandler implements Cloneable {
      */
     public static synchronized QueryHandler instanceOf() {
         try {
+            if (instance != null && instance.conn != null && DatabaseConnection.isClosed(instance.sqlConn)
+                    && DatabaseConnection.getConnector() != null && DatabaseConnection.getConnector().getConnection() != null) {
+                //closed by the database: reconnect, without the version check and fixes of a new handler
+                instance.ensureOpen();
+            }
             if (instance == null || instance.conn == null || instance.conn.getConnection() == null || !instance.conn.getConnection().isValid(999)) {
                 instance = new QueryHandler();
             }
@@ -1089,6 +1094,7 @@ public class QueryHandler implements Cloneable {
     }
 
     private void start() {
+        ensureOpen();
         if (JOB_WATCHDOG == null) {
             JOB_WATCHDOG = new Thread(new Watchdog());
             JOB_WATCHDOG.start();
@@ -1387,7 +1393,8 @@ public class QueryHandler implements Cloneable {
     public int insertValueProperty(InputStream blobData, QueryData data, String jobmessage) {
         synchronized (ivppsLock) {
             try {
-                if (ivpps == null || !ivpps.getConnection().isValid(333)) {
+                ensureOpen();
+                if (ivpps == null || ivpps.isClosed() || ivpps.getConnection() != sqlConn || !ivpps.getConnection().isValid(333)) {
                     createPs();
                 }
             } catch (SQLException ex) {
@@ -1451,7 +1458,8 @@ public class QueryHandler implements Cloneable {
     public void updateValueProperty(int ids, InputStream blobData, QueryData data, String jobmessage) {
         synchronized (uvppsLock) {
             try {
-                if (uvpps == null || !uvpps.getConnection().isValid(333)) {
+                ensureOpen();
+                if (uvpps == null || uvpps.isClosed() || uvpps.getConnection() != sqlConn || !uvpps.getConnection().isValid(333)) {
                     createPs();
                 }
             } catch (SQLException ex) {
@@ -3402,6 +3410,31 @@ public class QueryHandler implements Cloneable {
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Before a query: if the connection of this handler was closed (by the
+     * database or the driver, e.g. after an error), use the open one again
+     * (reconnects if needed); a connection closed on purpose
+     * ({@link DatabaseConnection#shutdown()}) stays closed
+     */
+    private void ensureOpen() {
+        if (!DatabaseConnection.isClosed(sqlConn) || DatabaseConnection.getConnector() == null
+                || DatabaseConnection.getConnector().getConnection() == null) {
+            return;
+        }
+        try {
+            synchronized (QueryHandler.class) {
+                conn = DatabaseConnection.instanceOf();
+                sqlConn = conn.getConnection();
+                if (instance != null && instance != this) {
+                    instance.conn = conn;
+                    instance.sqlConn = sqlConn;
+                }
+            }
+        } catch (Exception ex) {
+            Log.Debug(QueryHandler.class, "Reconnect failed: " + ex.getMessage());
         }
     }
 

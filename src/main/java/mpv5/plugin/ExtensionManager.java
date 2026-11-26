@@ -1165,6 +1165,32 @@ public final class ExtensionManager {
     }
 
     /**
+     * @param lang the language of a user: "buildin_en", a tag ("de",
+     * "de_DE") or the id of an imported language pack (a random text, e.g.
+     * "aZ3kP9qx")
+     * @return "en", "de", the tag, or "" if not known (then the locale
+     * decides)
+     */
+    static String languageOf(String lang) {
+        String t = lang.trim();
+        if (t.toLowerCase(Locale.ROOT).startsWith("buildin")) {
+            return "en";
+        }
+        String n = normalizeLanguageTag(t);
+        if (n.matches("[a-z]{2,3}(_[A-Z]{2})?")) {
+            return n;
+        }
+        //an imported language pack: its id says nothing, its name does
+        try {
+            if (mpv5.i18n.LanguageManager.isGermanLanguage(t)) {
+                return "de";
+            }
+        } catch (Throwable ignored) {
+        }
+        return "";
+    }
+
+    /**
      * Normalizes a language or locale tag to {@code ll} or {@code ll_CC}
      * (lowercase language, uppercase country).
      */
@@ -1209,7 +1235,7 @@ public final class ExtensionManager {
                 String lang = u.__getLanguage();
                 String locale = u.__getLocale();
                 if (lang != null && !lang.trim().isEmpty()) {
-                    String normLang = normalizeLanguageTag(lang);
+                    String normLang = languageOf(lang);
                     if (locale != null && !locale.trim().isEmpty()) {
                         String normLocale = normalizeLanguageTag(locale);
                         if (normLocale.startsWith(normLang + "_")) {
