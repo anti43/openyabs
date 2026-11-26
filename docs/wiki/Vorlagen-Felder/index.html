@@ -1,0 +1,3577 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Searchable OpenYaBS documentation synced from the GitHub wiki (English & Deutsch)">
+      
+      
+      
+        <link rel="canonical" href="https://anti43.github.io/openyabs/wiki/Vorlagen-Felder/">
+      
+      
+        <link rel="prev" href="../Vorlagen/">
+      
+      
+        <link rel="next" href="../Spaltendefinition/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.2">
+    
+    
+      
+        <title>Vorlagenfelder (alle) - OpenYaBS Wiki</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#alle-vorlagenfelder-vollständige-referenz" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="OpenYaBS Wiki" class="md-header__button md-logo" aria-label="OpenYaBS Wiki" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            OpenYaBS Wiki
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Vorlagenfelder (alle)
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="blue"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/anti43/openyabs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    anti43/openyabs
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="OpenYaBS Wiki" class="md-nav__button md-logo" aria-label="OpenYaBS Wiki" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    OpenYaBS Wiki
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/anti43/openyabs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    anti43/openyabs
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deutsch
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Deutsch
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Openyabs-Dokumentation-%28DE%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dokumentation (DE)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../YaBS-Beschreibung/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Beschreibung
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Hinweise-und-Neuerungen/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hinweise und Neuerungen
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Datenbank/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Datenbank
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../E-Rechnung/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    E-Rechnung
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Kleinunternehmer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kleinunternehmer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Datenschutz-DSGVO/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Datenschutz (DSGVO)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Journal/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Journal
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Rechnung-stornieren/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rechnung stornieren
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Ist-Yabs-GoBD-konforme-Software/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GoBD
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SEPA-Lastschrift/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SEPA-Lastschrift
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Kontaktliste/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kontaktliste
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../QR-Code/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    QR-Code
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Dateinamengrundeinstellung/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dateinamen
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Shopify/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shopify
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Kasse-und-TSE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kasse und TSE
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Vorlagen/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vorlagen
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vorlagenfelder (alle)
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vorlagenfelder (alle)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-belege-item" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Belege (item.*)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Belege (item.*)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#allgemeine-belegdaten" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Allgemeine Belegdaten
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#beträge-rabatte--zahlungseingänge" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Beträge, Rabatte &amp; Zahlungseingänge
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zahlungsziel-bankkonto--skonto" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Zahlungsziel, Bankkonto &amp; Skonto
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mwst-aufschlüsselung--14-abs-4-nr-8-ustg" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MwSt.-Aufschlüsselung (§ 14 Abs. 4 Nr. 8 UStG)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gutschrift--korrektur--abschlags-schlussrechnung" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gutschrift / Korrektur &amp; Abschlags-/Schlussrechnung
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#außenhandel--zoll-export--handelsrechnung" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Außenhandel &amp; Zoll (Export / Handelsrechnung)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-positionstabelle-xtable1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Positionstabelle (xtable1)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-kontakt-contact-bzw-itemcontact--adressen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Kontakt (contact.* bzw. item.contact.*) &amp; Adressen
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Kontakt (contact.* bzw. item.contact.*) &amp; Adressen">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#abweichende-adressen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Abweichende Adressen
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-eigene-firma-companyinfo--vorlagen-texte-template" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Eigene Firma (companyinfo.*) &amp; Vorlagen-Texte (template.*)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-artikel--dienstleistungen-product" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Artikel &amp; Dienstleistungen (product.*)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-mahnungen-reminder-bestellungen-productorder--gespräche-conversation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Mahnungen (reminder.*), Bestellungen (productorder.*) &amp; Gespräche (conversation.*)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-journal-journal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Journal (journal.*)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-kasse--tse-pos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Kasse &amp; TSE (pos.*)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-bild-platzhalter-qr-code--barcode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Bild-Platzhalter (QR-Code &amp; Barcode)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-eigene-felder-eigenschaften--skripte-und-plugins" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Eigene Felder (Eigenschaften &amp; Skripte) und Plugins
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Spaltendefinition/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spaltendefinition
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Skripte/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Skripte
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins (DE)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Plugins (DE)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Plugins/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins (Übersicht)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DATEV-Export/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DATEV-Export
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GoBD-Plugin/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GoBD-Plugin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Handwerker-Plugin/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Handwerker-Plugin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Heilpraktiker-Plugin/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Heilpraktiker-Plugin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Kfz-Werkstatt-Plugin/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kfz-Werkstatt-Plugin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Vereinsverwaltung-Plugin/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vereinsverwaltung-Plugin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ScriptOnSavePlugin/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ScriptOnSavePlugin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Plugins-schreiben/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins schreiben
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    English
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    English
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Openyabs-documentation-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation (EN)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Notes-and-changes-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notes and changes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Database-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Database
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Journal-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Journal
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Cancelling-an-invoice-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cancelling an invoice
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Small-business-VAT-exemption-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Small business VAT exemption
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Data-protection-GDPR-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Data protection (GDPR)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SEPA-direct-debit-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SEPA direct debit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Contact-list-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contact list
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../QR-code-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    QR code
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../File-name-defaults-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    File name defaults
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Shopify-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shopify
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Cash-register-and-TSE-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cash register and TSE
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Templates-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Templates
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Template-fields-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Template fields (all)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Scripts-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scripts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins (EN)
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Plugins (EN)
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Plugins-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Plugins (Overview)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Association-plugin-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Association plugin (e.V.)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Car-repair-shop-plugin-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Car repair shop plugin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../DATEV-export-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DATEV export
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../GoBD-plugin-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GoBD plugin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Heilpraktiker-plugin-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Heilpraktiker plugin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Skilled-trades-plugin-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Skilled trades plugin
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../Writing-plugins-%28EN%29/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Writing plugins
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-belege-item" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Belege (item.*)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Belege (item.*)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#allgemeine-belegdaten" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Allgemeine Belegdaten
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#beträge-rabatte--zahlungseingänge" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Beträge, Rabatte &amp; Zahlungseingänge
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zahlungsziel-bankkonto--skonto" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Zahlungsziel, Bankkonto &amp; Skonto
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mwst-aufschlüsselung--14-abs-4-nr-8-ustg" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MwSt.-Aufschlüsselung (§ 14 Abs. 4 Nr. 8 UStG)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gutschrift--korrektur--abschlags-schlussrechnung" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Gutschrift / Korrektur &amp; Abschlags-/Schlussrechnung
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#außenhandel--zoll-export--handelsrechnung" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Außenhandel &amp; Zoll (Export / Handelsrechnung)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-positionstabelle-xtable1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Positionstabelle (xtable1)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-kontakt-contact-bzw-itemcontact--adressen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Kontakt (contact.* bzw. item.contact.*) &amp; Adressen
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Kontakt (contact.* bzw. item.contact.*) &amp; Adressen">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#abweichende-adressen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Abweichende Adressen
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-eigene-firma-companyinfo--vorlagen-texte-template" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Eigene Firma (companyinfo.*) &amp; Vorlagen-Texte (template.*)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-artikel--dienstleistungen-product" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Artikel &amp; Dienstleistungen (product.*)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-mahnungen-reminder-bestellungen-productorder--gespräche-conversation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Mahnungen (reminder.*), Bestellungen (productorder.*) &amp; Gespräche (conversation.*)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-journal-journal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Journal (journal.*)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-kasse--tse-pos" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Kasse &amp; TSE (pos.*)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-bild-platzhalter-qr-code--barcode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Bild-Platzhalter (QR-Code &amp; Barcode)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-eigene-felder-eigenschaften--skripte-und-plugins" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Eigene Felder (Eigenschaften &amp; Skripte) und Plugins
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="alle-vorlagenfelder-vollständige-referenz">Alle Vorlagenfelder (vollständige Referenz)<a class="headerlink" href="#alle-vorlagenfelder-vollständige-referenz" title="Permanent link">&para;</a></h1>
+<p><em>English: <a href="../Template-fields-%28EN%29/">All template fields (EN)</a> · Zurück zu <a href="../Vorlagen/">Vorlagen</a></em></p>
+<p>Diese Seite listet <strong>alle festen Platzhalter</strong> auf, die YaBS beim Erzeugen von Dokumenten (ODT/PDF) befüllt.</p>
+<ul>
+<li><strong>Schreibweise in ODT-Vorlagen (LibreOffice):</strong> in spitzen Klammern, z. B. <code>&lt;item.cnumber&gt;</code> oder <code>&lt;companyinfo.vatid&gt;</code>.</li>
+<li><strong>Schreibweise in E-Mail-Vorlagen und Textvariablen:</strong> in eckigen Klammern, z. B. <code>[item.cnumber]</code> oder <code>[contact.fullname]</code>.</li>
+<li><strong>Leere Werte:</strong> Ist ein Feld nicht ausgefüllt, wird es leer ausgegeben (kein Platzhaltertext im PDF).</li>
+<li><strong>Live-Ansicht im Programm:</strong> Unter <em>Systemsteuerung › Vorlagen › Alle Platzhalter anzeigen</em> zeigt YaBS für einen echten Beleg alle verfügbaren Felder inklusive ihrer aktuellen Werte (Doppelklick kopiert den Platzhalter).</li>
+</ul>
+<hr />
+<h2 id="1-belege-item">1. Belege (<code>item.*</code>)<a class="headerlink" href="#1-belege-item" title="Permanent link">&para;</a></h2>
+<p>Gilt für <strong>Rechnung (0)</strong>, <strong>Auftrag (1)</strong>, <strong>Angebot (2)</strong>, <strong>Lieferschein (3)</strong>, <strong>Auftragsbestätigung (4)</strong>, <strong>Vertrag (11)</strong>, <strong>Serienbrief (13)</strong>, <strong>Gutschrift (20)</strong>, <strong>Abschlagsrechnung (21)</strong> und <strong>Anzahlungsrechnung (22)</strong>.</p>
+<h3 id="allgemeine-belegdaten">Allgemeine Belegdaten<a class="headerlink" href="#allgemeine-belegdaten" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Feld</th>
+<th>Beschreibung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>item.cnumber</code></td>
+<td>Belegnummer (z. B. <code>RE-2026-0001</code>)</td>
+</tr>
+<tr>
+<td><code>item.cname</code></td>
+<td>Kurzbezeichnung / Betreff des Belegs</td>
+</tr>
+<tr>
+<td><code>item.description</code></td>
+<td>Freitext / Bemerkung des Belegs (Variablen werden ausgewertet)</td>
+</tr>
+<tr>
+<td><code>item.type</code></td>
+<td>Belegart als Text (z. B. <code>Rechnung</code>, <code>Angebot</code>, <code>Gutschrift</code>)</td>
+</tr>
+<tr>
+<td><code>item.status</code></td>
+<td>Status als Text (z. B. <code>Abgeschlossen</code>, <code>Bezahlt</code>, <code>Storniert</code>)</td>
+</tr>
+<tr>
+<td><code>item.dateadded</code></td>
+<td>Belegdatum / Ausstellungsdatum</td>
+</tr>
+<tr>
+<td><code>item.servicedate</code></td>
+<td>Leistungsdatum (<code>BT-72</code>; leer → Belegdatum in der E-Rechnung)</td>
+</tr>
+<tr>
+<td><code>item.dateend</code></td>
+<td>Zahlungsdatum bzw. Enddatum</td>
+</tr>
+<tr>
+<td><code>item.datetodo</code></td>
+<td>Fälligkeits- / Wiedervorlagedatum</td>
+</tr>
+<tr>
+<td><code>item.datelastupdated</code></td>
+<td>Datum der letzten Änderung (automatisch gesetzt)</td>
+</tr>
+<tr>
+<td><code>item.reference</code></td>
+<td>Verknüpfter Referenzbeleg (z. B. Auftragsnummer)</td>
+</tr>
+<tr>
+<td><code>item.account</code></td>
+<td>Buchungskonto des Belegs</td>
+</tr>
+<tr>
+<td><code>item.group</code></td>
+<td>Gruppenname</td>
+</tr>
+<tr>
+<td><code>item.grouppath</code></td>
+<td>Vollständiger Gruppenpfad</td>
+</tr>
+<tr>
+<td><code>item.groupdescription</code></td>
+<td>Beschreibung der Gruppe</td>
+</tr>
+<tr>
+<td><code>item.addedby</code></td>
+<td>Benutzername des Erstellers</td>
+</tr>
+<tr>
+<td><code>item.addedbyfull</code></td>
+<td>Vollständiger Name des Erstellers</td>
+</tr>
+</tbody>
+</table>
+<h3 id="beträge-rabatte--zahlungseingänge">Beträge, Rabatte &amp; Zahlungseingänge<a class="headerlink" href="#beträge-rabatte--zahlungseingänge" title="Permanent link">&para;</a></h3>
+<p>Felder ohne <code>f</code> sind reine Zahlen (z. B. <code>1.226,30</code>), Felder mit <code>f</code> enthalten die lokale Währung (z. B. <code>1.226,30 €</code>).</p>
+<table>
+<thead>
+<tr>
+<th>Feld</th>
+<th>Beschreibung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>item.netvalue</code> / <code>item.netvaluef</code></td>
+<td>Nettobetrag nach Rabatt</td>
+</tr>
+<tr>
+<td><code>item.netnodiscvalue</code> / <code>item.netnodiscvaluef</code></td>
+<td>Nettobetrag vor Rabatt (Listenpreis)</td>
+</tr>
+<tr>
+<td><code>item.taxvalue</code> / <code>item.taxvaluef</code></td>
+<td>Umsatzsteuer gesamt</td>
+</tr>
+<tr>
+<td><code>item.grosvalue</code> / <code>item.grosvaluef</code></td>
+<td>Bruttobetrag / Rechnungsbetrag nach Rabatt</td>
+</tr>
+<tr>
+<td><code>item.grosnodiscvalue</code> / <code>item.grosnodiscvaluef</code></td>
+<td>Bruttobetrag vor Rabatt</td>
+</tr>
+<tr>
+<td><code>item.discountvalue</code> / <code>item.discountvaluef</code></td>
+<td>Gesamtrabatt netto</td>
+</tr>
+<tr>
+<td><code>item.discounttax</code> / <code>item.discounttaxf</code></td>
+<td>Auf den Rabatt entfallende Umsatzsteuer</td>
+</tr>
+<tr>
+<td><code>item.discountgrosvaluef</code></td>
+<td>Gesamtrabatt brutto (formatiert)</td>
+</tr>
+<tr>
+<td><code>item.paidvaluef</code></td>
+<td>Bereits erhaltene Teilzahlungen (leer ohne Zahlungen)</td>
+</tr>
+<tr>
+<td><code>item.openvaluef</code></td>
+<td>Noch offener Restbetrag (leer ohne Zahlungen)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="zahlungsziel-bankkonto--skonto">Zahlungsziel, Bankkonto &amp; Skonto<a class="headerlink" href="#zahlungsziel-bankkonto--skonto" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Feld</th>
+<th>Beschreibung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>item.paymentdays</code></td>
+<td>Zahlungsziel in Tagen (<code>0</code> = sofort fällig)</td>
+</tr>
+<tr>
+<td><code>item.paymentduedate</code></td>
+<td>Berechnetes Fälligkeitsdatum</td>
+</tr>
+<tr>
+<td><code>item.paymentterms</code></td>
+<td>Fertiger Zahlungstext (z. B. „Zahlbar bis 29.11.2026“ oder „Zahlbar sofort ohne Abzug“)</td>
+</tr>
+<tr>
+<td><code>item.paymentiban</code></td>
+<td>IBAN des Zielkontos (Kundenkonto oder Standardkonto der Firma)</td>
+</tr>
+<tr>
+<td><code>item.paymentbic</code></td>
+<td>BIC des Zielkontos</td>
+</tr>
+<tr>
+<td><code>item.paymentbank</code></td>
+<td>Bankname des Zielkontos</td>
+</tr>
+<tr>
+<td><code>item.paymentaccountname</code></td>
+<td>Bezeichnung des Zielkontos</td>
+</tr>
+<tr>
+<td><code>item.skontopercent</code></td>
+<td>Skontosatz in % (leer ohne Skonto)</td>
+</tr>
+<tr>
+<td><code>item.skontodays</code></td>
+<td>Skontofrist in Tagen</td>
+</tr>
+<tr>
+<td><code>item.skontodate</code></td>
+<td>Skonto-Stichtag (Belegdatum + Skontotage)</td>
+</tr>
+<tr>
+<td><code>item.skontoamount</code></td>
+<td>Skontobetrag vom Brutto</td>
+</tr>
+<tr>
+<td><code>item.skontopayamount</code></td>
+<td>Zu zahlender Betrag nach Abzug von Skonto</td>
+</tr>
+</tbody>
+</table>
+<h3 id="mwst-aufschlüsselung--14-abs-4-nr-8-ustg">MwSt.-Aufschlüsselung (§ 14 Abs. 4 Nr. 8 UStG)<a class="headerlink" href="#mwst-aufschlüsselung--14-abs-4-nr-8-ustg" title="Permanent link">&para;</a></h3>
+<p>Für eine dynamische Tabelle mit <strong>einer Zeile je Steuersatz</strong> (höchster Satz zuerst) werden die Felder <code>vatgroups.*</code> in einer Tabellenzeile verwendet:</p>
+<table>
+<thead>
+<tr>
+<th>Feld</th>
+<th>Beschreibung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>vatgroups.name</code></td>
+<td>Name des Steuersatzes (z. B. <code>MwSt. 19,00 %</code> oder <code>Steuerfrei</code>)</td>
+</tr>
+<tr>
+<td><code>vatgroups.rate</code></td>
+<td>Steuersatz formatiert (z. B. <code>19,00 %</code>)</td>
+</tr>
+<tr>
+<td><code>vatgroups.ratevalue</code></td>
+<td>Steuersatz als Zahl (z. B. <code>19</code>, <code>7</code>, <code>0</code>)</td>
+</tr>
+<tr>
+<td><code>vatgroups.net</code> / <code>vatgroups.netf</code></td>
+<td>Netto-Summe dieses Steuersatzes</td>
+</tr>
+<tr>
+<td><code>vatgroups.vat</code> / <code>vatgroups.vatf</code></td>
+<td>Steuerbetrag dieses Steuersatzes</td>
+</tr>
+<tr>
+<td><code>vatgroups.gross</code> / <code>vatgroups.grossf</code></td>
+<td>Brutto-Summe dieses Steuersatzes</td>
+</tr>
+<tr>
+<td><code>vatgroups.category</code></td>
+<td>EN-16931-Steuerkategorie (<code>S</code>, <code>E</code>, <code>K</code>, <code>AE</code>, <code>G</code>)</td>
+</tr>
+<tr>
+<td><code>vatgroups.note</code></td>
+<td>Steuerhinweis / Befreiungsgrund dieses Satzes</td>
+</tr>
+</tbody>
+</table>
+<p>Zusätzlich stehen <strong>feste Felder</strong> direkt am Beleg zur Verfügung:</p>
+<table>
+<thead>
+<tr>
+<th>Feld</th>
+<th>Beschreibung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>item.vatgroup1.*</code> … <code>item.vatgroup3.*</code></td>
+<td>Dieselben Unterfelder (<code>name</code>, <code>rate</code>, <code>ratevalue</code>, <code>net</code>, <code>netf</code>, <code>vat</code>, <code>vatf</code>, <code>gross</code>, <code>grossf</code>, <code>category</code>, <code>note</code>) für feste Layouts</td>
+</tr>
+<tr>
+<td><code>item.vatgroupcount</code></td>
+<td>Anzahl unterschiedlicher Steuersätze im Beleg</td>
+</tr>
+<tr>
+<td><code>item.hasmultipletaxrates</code></td>
+<td><code>true</code>, wenn mehr als ein Steuersatz vorkommt, sonst <code>false</code></td>
+</tr>
+<tr>
+<td><code>item.taxnotes</code></td>
+<td>Zusammengefasste gesetzliche Steuerhinweise (Reverse Charge, innergem. Lieferung, Ausfuhr, Kleinunternehmer)</td>
+</tr>
+<tr>
+<td><code>item.tax</code></td>
+<td>Steuersatz (ältere Vorlagen; bei mehreren Sätzen der niedrigste)</td>
+</tr>
+<tr>
+<td><code>item.taxgroup1</code>, <code>item.taxgroupvalue1</code> …</td>
+<td>Ältere Steuersatz-Einzelfelder</td>
+</tr>
+<tr>
+<td><code>item.taxgroups</code></td>
+<td>Alle Steuersätze als Fließtext (ältere Vorlagen)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="gutschrift--korrektur--abschlags-schlussrechnung">Gutschrift / Korrektur &amp; Abschlags-/Schlussrechnung<a class="headerlink" href="#gutschrift--korrektur--abschlags-schlussrechnung" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Feld</th>
+<th>Beschreibung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>item.correctedinvoice</code></td>
+<td>Fertiger Bezugstext auf die korrigierte Rechnung (z. B. „Rechnung Nr. RE-2026-0001 vom 04.11.2026“)</td>
+</tr>
+<tr>
+<td><code>item.correctedinvoicenumber</code></td>
+<td>Nummer der korrigierten Rechnung</td>
+</tr>
+<tr>
+<td><code>item.correctedinvoicedate</code></td>
+<td>Datum der korrigierten Rechnung</td>
+</tr>
+<tr>
+<td><code>item.finalinvoice</code></td>
+<td><code>true</code>, wenn Abschlags-/Anzahlungsrechnungen abgezogen wurden</td>
+</tr>
+<tr>
+<td><code>item.deductedinvoices</code></td>
+<td>Aufstellung der abgezogenen Abschlags-/Anzahlungsrechnungen</td>
+</tr>
+<tr>
+<td><code>item.deductednetf</code></td>
+<td>Summe der abgezogenen Nettobeträge (formatiert)</td>
+</tr>
+<tr>
+<td><code>item.deductedtaxf</code></td>
+<td>Summe der abgezogenen Steuerbeträge (formatiert)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="außenhandel--zoll-export--handelsrechnung">Außenhandel &amp; Zoll (Export / Handelsrechnung)<a class="headerlink" href="#außenhandel--zoll-export--handelsrechnung" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Feld</th>
+<th>Beschreibung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>item.currency</code></td>
+<td>ISO-4217-Währungscode (<code>BT-5</code>, z. B. <code>EUR</code>, <code>CHF</code>, <code>USD</code>)</td>
+</tr>
+<tr>
+<td><code>item.incoterms</code></td>
+<td>Incoterms® + benannter Ort (z. B. <code>DAP Zürich</code>), aus Beleg- oder Kontakt-Eigenschaft <code>incoterms</code></td>
+</tr>
+<tr>
+<td><code>item.netweight</code></td>
+<td>Gesamt-Eigenmasse (kg); ohne Beleg-Eigenschaft <code>netweight</code> automatisch aus den Produktgewichten summiert</td>
+</tr>
+<tr>
+<td><code>item.grossweight</code></td>
+<td>Gesamt-Rohmasse (kg), aus Beleg-Eigenschaft <code>grossweight</code></td>
+</tr>
+<tr>
+<td><code>item.packages</code></td>
+<td>Anzahl / Art der Packstücke, aus Beleg-Eigenschaft <code>packages</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="2-positionstabelle-xtable1">2. Positionstabelle (<code>xtable1</code>)<a class="headerlink" href="#2-positionstabelle-xtable1" title="Permanent link">&para;</a></h2>
+<p>In ODT-Vorlagen wird die Positionstabelle mit dem Tabellennamen <strong><code>xtable1</code></strong> versehen. Die Spaltenreihenfolge wird im <em>Vorlagen-Manager</em> über <em>Spalten wählen …</em> (Format-String, z. B. <code>1,2,4,5,7,6</code>) festgelegt:</p>
+<table>
+<thead>
+<tr>
+<th>Spalte</th>
+<th>Inhalt</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>1</strong></td>
+<td>Positionsnummer (<code>Count</code>)</td>
+</tr>
+<tr>
+<td><strong>2</strong></td>
+<td>Menge (<code>Quantity</code>)</td>
+</tr>
+<tr>
+<td><strong>3</strong></td>
+<td>Einheit (<code>Measure</code>, z. B. <code>Stk</code>, <code>Std</code>)</td>
+</tr>
+<tr>
+<td><strong>4</strong></td>
+<td>Beschreibung (<code>Description</code>)</td>
+</tr>
+<tr>
+<td><strong>5</strong></td>
+<td>Einzelpreis netto</td>
+</tr>
+<tr>
+<td><strong>6</strong></td>
+<td>Gesamtpreis netto (vor Rabatt)</td>
+</tr>
+<tr>
+<td><strong>7</strong></td>
+<td>MwSt.-Satz (%)</td>
+</tr>
+<tr>
+<td><strong>8</strong></td>
+<td>MwSt.-Betrag</td>
+</tr>
+<tr>
+<td><strong>9</strong></td>
+<td>Gesamtpreis brutto</td>
+</tr>
+<tr>
+<td><strong>10</strong></td>
+<td>Link / URL der Position</td>
+</tr>
+<tr>
+<td><strong>11</strong></td>
+<td>Kurzname (<code>Cname</code>)</td>
+</tr>
+<tr>
+<td><strong>12</strong></td>
+<td>Rabatt (%)</td>
+</tr>
+<tr>
+<td><strong>13</strong></td>
+<td>Gesamtpreis netto nach Rabatt</td>
+</tr>
+<tr>
+<td><strong>14</strong></td>
+<td>Zolltarifnr. / HS-Code des verknüpften Produkts</td>
+</tr>
+<tr>
+<td><strong>15</strong></td>
+<td>Ursprungsland (ISO 3166 Alpha-2) des verknüpften Produkts</td>
+</tr>
+<tr>
+<td><strong>16</strong></td>
+<td>Eigenmasse / Nettogewicht der Position in kg (Stückgewicht × Menge)</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Hinweis:</strong> Ist die globale Einstellung <code>org.openyabs.exportproperty.productsresolved</code> aktiviert, werden ab Spalte 17 alphabetisch alle Felder des verknüpften Artikels angehängt.</p>
+</blockquote>
+<hr />
+<h2 id="3-kontakt-contact-bzw-itemcontact--adressen">3. Kontakt (<code>contact.*</code> bzw. <code>item.contact.*</code>) &amp; Adressen<a class="headerlink" href="#3-kontakt-contact-bzw-itemcontact--adressen" title="Permanent link">&para;</a></h2>
+<p>Im <strong>Kontaktdatenblatt</strong> lautet das Präfix <code>contact.*</code>, in <strong>Belegen</strong> <code>item.contact.*</code>, in <strong>Bestellungen</strong> <code>productorder.contact.*</code> und in <strong>Gesprächsnotizen</strong> <code>conversation.contact.*</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Feld (ohne Präfix)</th>
+<th>Beschreibung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>cnumber</code></td>
+<td>Kunden-/Lieferantennummer</td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td>Titel (z. B. <code>Dr.</code>)</td>
+</tr>
+<tr>
+<td><code>prename</code></td>
+<td>Vorname</td>
+</tr>
+<tr>
+<td><code>cname</code></td>
+<td>Nachname (oder Firmenname bei reinen Firmenkontakten)</td>
+</tr>
+<tr>
+<td><code>fullname</code></td>
+<td>Vorname + Nachname</td>
+</tr>
+<tr>
+<td><code>company</code></td>
+<td>Firmenname</td>
+</tr>
+<tr>
+<td><code>department</code></td>
+<td>Abteilung</td>
+</tr>
+<tr>
+<td><code>gender</code></td>
+<td>Anrede (<code>Herr</code> / <code>Frau</code>)</td>
+</tr>
+<tr>
+<td><code>intro</code></td>
+<td>Briefanrede (z. B. <code>Sehr geehrter Herr</code> / <code>Sehr geehrte Frau</code>)</td>
+</tr>
+<tr>
+<td><code>street</code></td>
+<td>Straße und Hausnummer</td>
+</tr>
+<tr>
+<td><code>zip</code></td>
+<td>Postleitzahl</td>
+</tr>
+<tr>
+<td><code>city</code></td>
+<td>Ort</td>
+</tr>
+<tr>
+<td><code>country</code></td>
+<td>Land (ausgeschriebener Landesname)</td>
+</tr>
+<tr>
+<td><code>mainphone</code></td>
+<td>Haupttelefonnummer</td>
+</tr>
+<tr>
+<td><code>workphone</code></td>
+<td>Telefon geschäftlich</td>
+</tr>
+<tr>
+<td><code>mobilephone</code></td>
+<td>Mobiltelefon</td>
+</tr>
+<tr>
+<td><code>fax</code></td>
+<td>Faxnummer</td>
+</tr>
+<tr>
+<td><code>mailaddress</code></td>
+<td>E-Mail-Adresse</td>
+</tr>
+<tr>
+<td><code>website</code></td>
+<td>Webseite</td>
+</tr>
+<tr>
+<td><code>taxnumber</code></td>
+<td>USt-IdNr. des Kunden</td>
+</tr>
+<tr>
+<td><code>eori</code></td>
+<td>EORI-Nummer des Kunden (Eigenschaft <code>eori</code>)</td>
+</tr>
+<tr>
+<td><code>peppolid</code></td>
+<td>Peppol-ID des Kunden (<code>BT-49</code>, Eigenschaft <code>peppol-id</code>)</td>
+</tr>
+<tr>
+<td><code>bankaccount</code></td>
+<td>IBAN / Kontonummer</td>
+</tr>
+<tr>
+<td><code>bankid</code></td>
+<td>BIC / Bankleitzahl</td>
+</tr>
+<tr>
+<td><code>bankname</code></td>
+<td>Bankname</td>
+</tr>
+<tr>
+<td><code>bankcountry</code></td>
+<td>Land der Bank</td>
+</tr>
+<tr>
+<td><code>bankcurrency</code></td>
+<td>Währung des Kontakts (ISO 4217, z. B. <code>EUR</code>, <code>CHF</code>)</td>
+</tr>
+<tr>
+<td><code>payterm</code></td>
+<td>Zahlungsziel des Kontakts (Tage)</td>
+</tr>
+<tr>
+<td><code>taxrate</code></td>
+<td>Standard-Steuersatz des Kontakts (%)</td>
+</tr>
+<tr>
+<td><code>taxname</code></td>
+<td>Name des Standard-Steuersatzes</td>
+</tr>
+<tr>
+<td><code>notes</code></td>
+<td>Notizen</td>
+</tr>
+<tr>
+<td><code>dateadded</code></td>
+<td>Anlagedatum</td>
+</tr>
+</tbody>
+</table>
+<h3 id="abweichende-adressen">Abweichende Adressen<a class="headerlink" href="#abweichende-adressen" title="Permanent link">&para;</a></h3>
+<p>Zusätzliche Adressen eines Kontakts stehen als Unterobjekte mit denselben Adressfeldern (<code>title</code>, <code>prename</code>, <code>cname</code>, <code>fullname</code>, <code>company</code>, <code>department</code>, <code>gender</code>, <code>intro</code>, <code>street</code>, <code>zip</code>, <code>city</code>, <code>country</code>, <code>taxnumber</code>) bereit:</p>
+<table>
+<thead>
+<tr>
+<th>Unterobjekt</th>
+<th>Beschreibung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>…contact.invoiceaddress.*</code> (auch <code>…contact.invoice.*</code>)</td>
+<td>Rechnungsadresse (Fallback: Hauptadresse)</td>
+</tr>
+<tr>
+<td><code>…contact.deliveryaddress.*</code> (auch <code>…contact.delivery.*</code>)</td>
+<td>Lieferadresse (z. B. <code>&lt;item.contact.deliveryaddress.street&gt;</code>)</td>
+</tr>
+<tr>
+<td><code>…contact.address.*</code></td>
+<td>Standardadresse</td>
+</tr>
+<tr>
+<td><code>…contact.address0.*</code>, <code>…address1.*</code> …</td>
+<td>Alle weiteren Adressen nach Index</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="4-eigene-firma-companyinfo--vorlagen-texte-template">4. Eigene Firma (<code>companyinfo.*</code>) &amp; Vorlagen-Texte (<code>template.*</code>)<a class="headerlink" href="#4-eigene-firma-companyinfo--vorlagen-texte-template" title="Permanent link">&para;</a></h2>
+<p>Die Werte stammen aus <em>Werkzeuge › Einstellungen › Firmeninformation</em> (verfügbar in allen Vorlagen):</p>
+<table>
+<thead>
+<tr>
+<th>Feld</th>
+<th>Beschreibung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>companyinfo.business</code></td>
+<td>Firmenname</td>
+</tr>
+<tr>
+<td><code>companyinfo.firstname</code></td>
+<td>Vorname (Inhaber / Ansprechpartner)</td>
+</tr>
+<tr>
+<td><code>companyinfo.name</code></td>
+<td>Nachname</td>
+</tr>
+<tr>
+<td><code>companyinfo.street</code></td>
+<td>Straße und Hausnummer</td>
+</tr>
+<tr>
+<td><code>companyinfo.zip</code></td>
+<td>Postleitzahl</td>
+</tr>
+<tr>
+<td><code>companyinfo.city</code></td>
+<td>Ort</td>
+</tr>
+<tr>
+<td><code>companyinfo.country</code></td>
+<td>Land</td>
+</tr>
+<tr>
+<td><code>companyinfo.phoneprefix</code></td>
+<td>Telefon-Vorwahl</td>
+</tr>
+<tr>
+<td><code>companyinfo.phone</code></td>
+<td>Telefonnummer</td>
+</tr>
+<tr>
+<td><code>companyinfo.fax</code></td>
+<td>Faxnummer</td>
+</tr>
+<tr>
+<td><code>companyinfo.email</code></td>
+<td>E-Mail-Adresse</td>
+</tr>
+<tr>
+<td><code>companyinfo.account</code></td>
+<td>IBAN</td>
+</tr>
+<tr>
+<td><code>companyinfo.banknumber</code></td>
+<td>BIC</td>
+</tr>
+<tr>
+<td><code>companyinfo.bankname</code></td>
+<td>Bankname</td>
+</tr>
+<tr>
+<td><code>companyinfo.vatid</code> (auch <code>companyinfo.account1</code>)</td>
+<td>USt-IdNr. der eigenen Firma</td>
+</tr>
+<tr>
+<td><code>companyinfo.taxnumber</code></td>
+<td>Steuernummer</td>
+</tr>
+<tr>
+<td><code>companyinfo.taxauthority</code></td>
+<td>Finanzamt</td>
+</tr>
+<tr>
+<td><code>companyinfo.taxmandant</code></td>
+<td>Steuerberater-Mandantennummer</td>
+</tr>
+<tr>
+<td><code>companyinfo.taxadvsior</code></td>
+<td>Name des Steuerberaters</td>
+</tr>
+<tr>
+<td><code>companyinfo.taxadvjob</code></td>
+<td>Berufsbezeichnung des Steuerberaters</td>
+</tr>
+<tr>
+<td><code>companyinfo.payterm</code></td>
+<td>Standard-Zahlungsziel (Tage)</td>
+</tr>
+<tr>
+<td><code>companyinfo.sepacreditorid</code></td>
+<td>SEPA-Gläubiger-ID</td>
+</tr>
+<tr>
+<td><code>companyinfo.eori</code></td>
+<td>EORI-Nummer der eigenen Firma</td>
+</tr>
+<tr>
+<td><code>companyinfo.peppolid</code></td>
+<td>Peppol-ID der eigenen Firma (<code>BT-34</code>)</td>
+</tr>
+<tr>
+<td><code>companyinfo.smallbusinessnote</code></td>
+<td>Kleinunternehmer-Hinweis (§ 19 UStG; leer wenn nicht aktiviert)</td>
+</tr>
+<tr>
+<td><code>template.&lt;Schlüssel&gt;</code></td>
+<td>Eigene Vorlagen-Textbausteine aus den Benutzereinstellungen (<code>template.*</code>)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="5-artikel--dienstleistungen-product">5. Artikel &amp; Dienstleistungen (<code>product.*</code>)<a class="headerlink" href="#5-artikel--dienstleistungen-product" title="Permanent link">&para;</a></h2>
+<p>Gilt für <strong>Artikeldatenblatt (5)</strong> und <strong>Leistungsbeschreibung (6)</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Feld</th>
+<th>Beschreibung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>product.cnumber</code></td>
+<td>Artikel-/Leistungsnummer</td>
+</tr>
+<tr>
+<td><code>product.cname</code></td>
+<td>Bezeichnung</td>
+</tr>
+<tr>
+<td><code>product.description</code></td>
+<td>Beschreibung</td>
+</tr>
+<tr>
+<td><code>product.type</code></td>
+<td>Art (<code>Produkt</code> oder <code>Dienstleistung</code>)</td>
+</tr>
+<tr>
+<td><code>product.measure</code></td>
+<td>Einheit (z. B. <code>Stk</code>, <code>Std</code>)</td>
+</tr>
+<tr>
+<td><code>product.externalnetvalue</code></td>
+<td>Verkaufspreis netto</td>
+</tr>
+<tr>
+<td><code>product.externalbrutvalue</code></td>
+<td>Verkaufspreis brutto</td>
+</tr>
+<tr>
+<td><code>product.internalnetvalue</code></td>
+<td>Einkaufspreis netto</td>
+</tr>
+<tr>
+<td><code>product.tax</code> / <code>product.taxpercentvalue</code></td>
+<td>Steuersatz (%)</td>
+</tr>
+<tr>
+<td><code>product.ean</code></td>
+<td>EAN / GTIN</td>
+</tr>
+<tr>
+<td><code>product.reference</code></td>
+<td>Referenz- / Herstellernummer</td>
+</tr>
+<tr>
+<td><code>product.url</code></td>
+<td>Web-Link</td>
+</tr>
+<tr>
+<td><code>product.stockvalue</code></td>
+<td>Aktueller Lagerbestand</td>
+</tr>
+<tr>
+<td><code>product.thresholdvalue</code></td>
+<td>Mindestbestand</td>
+</tr>
+<tr>
+<td><code>product.hscode</code></td>
+<td>Zolltarifnummer / HS-Code (<code>BT-158</code>)</td>
+</tr>
+<tr>
+<td><code>product.origincountry</code></td>
+<td>Ursprungsland (<code>BT-159</code>, ISO 3166 Alpha-2)</td>
+</tr>
+<tr>
+<td><code>product.netweight</code></td>
+<td>Eigenmasse / Nettogewicht pro Einheit in kg</td>
+</tr>
+<tr>
+<td><code>product.productgroup.cname</code></td>
+<td>Name der Warengruppe</td>
+</tr>
+<tr>
+<td><code>product.supplier.*</code></td>
+<td>Alle Kontaktfelder des Standard-Lieferanten</td>
+</tr>
+<tr>
+<td><code>product.manufacturer.*</code></td>
+<td>Alle Kontaktfelder des Herstellers</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="6-mahnungen-reminder-bestellungen-productorder--gespräche-conversation">6. Mahnungen (<code>reminder.*</code>), Bestellungen (<code>productorder.*</code>) &amp; Gespräche (<code>conversation.*</code>)<a class="headerlink" href="#6-mahnungen-reminder-bestellungen-productorder--gespräche-conversation" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Präfix / Feld</th>
+<th>Beschreibung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>reminder.cnumber</code>, <code>reminder.dateadded</code>, <code>reminder.description</code></td>
+<td>Mahnungsnummer, Datum, Text</td>
+</tr>
+<tr>
+<td><code>reminder.extravalue</code></td>
+<td>Mahngebühr</td>
+</tr>
+<tr>
+<td><code>reminder.stage.cname</code></td>
+<td>Name der Mahnstufe (z. B. <code>1. Mahnung</code>)</td>
+</tr>
+<tr>
+<td><code>reminder.item.*</code></td>
+<td>Alle Beleg- und Kontaktfelder der gemahnten Rechnung (z. B. <code>reminder.item.cnumber</code>, <code>reminder.item.grosvaluef</code>, <code>reminder.item.paymentduedate</code>, <code>reminder.item.contact.fullname</code>)</td>
+</tr>
+<tr>
+<td><code>productorder.*</code></td>
+<td>Bestellung an Lieferanten: <code>cnumber</code>, <code>cname</code>, <code>description</code>, <code>status</code>, <code>dateadded</code>, <code>dateend</code>, <code>datetodo</code>, <code>netvalue(f)</code>, <code>taxvalue(f)</code>, <code>grosvalue(f)</code>, <code>discountvalue(f)</code>, <code>productorder.contact.*</code>, Tabelle <code>productorder.xtable1</code></td>
+</tr>
+<tr>
+<td><code>conversation.*</code></td>
+<td>Gesprächsnotiz: <code>cnumber</code>, <code>cname</code>, <code>description</code>, <code>dateadded</code>, <code>conversation.contact.*</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="7-journal-journal">7. Journal (<code>journal.*</code>)<a class="headerlink" href="#7-journal-journal" title="Permanent link">&para;</a></h2>
+<p>Gilt für die <strong>Journal-Vorlage (9)</strong> (Tabelle <code>Journal.xtable1</code> enthält alle angezeigten Journalzeilen):</p>
+<table>
+<thead>
+<tr>
+<th>Feld</th>
+<th>Beschreibung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>journal.datefrom</code> / <code>journal.dateto</code> / <code>journal.datenow</code></td>
+<td>Zeitraum von / bis / aktuelles Druckdatum</td>
+</tr>
+<tr>
+<td><code>journal.group</code> / <code>journal.childgroups</code></td>
+<td>Gewählte Gruppen / Untergruppen einbezogen (<code>true</code>/<code>false</code>)</td>
+</tr>
+<tr>
+<td><code>journal.user</code> / <code>journal.accounts</code></td>
+<td>Benutzerfilter / Kontenfilter</td>
+</tr>
+<tr>
+<td><code>journal.netvalue</code> / <code>journal.taxvalue</code> / <code>journal.grosvalue</code></td>
+<td>Belegvolumen netto / Steuer / brutto</td>
+</tr>
+<tr>
+<td><code>journal.revenuevalue</code> / <code>journal.revenuetax</code> / <code>journal.revenuegrosvalue</code></td>
+<td>Einnahmen netto / USt. / brutto</td>
+</tr>
+<tr>
+<td><code>journal.expensevalue</code> / <code>journal.expensetax</code> / <code>journal.expensegrosvalue</code></td>
+<td>Ausgaben netto / Vorsteuer / brutto</td>
+</tr>
+<tr>
+<td><code>journal.profitvalue</code> / <code>journal.profittax</code> / <code>journal.profitgrosvalue</code></td>
+<td>Überschuss netto / USt-Saldo / Überschuss brutto</td>
+</tr>
+<tr>
+<td><code>journal.discountvalue</code></td>
+<td>Summe Rabatte</td>
+</tr>
+<tr>
+<td><code>journal.openreceivables</code> / <code>journal.openpayables</code></td>
+<td>Offene Forderungen / offene Verbindlichkeiten</td>
+</tr>
+<tr>
+<td><code>journal.openoffers</code> / <code>journal.openorders</code></td>
+<td>Offene Angebote / offene Aufträge</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="8-kasse--tse-pos">8. Kasse &amp; TSE (<code>pos.*</code>)<a class="headerlink" href="#8-kasse--tse-pos" title="Permanent link">&para;</a></h2>
+<p>Verfügbar auf Kassenbelegen des integrierten Kassenmoduls (<a href="../Kasse-und-TSE/">Kasse und TSE</a>):</p>
+<table>
+<thead>
+<tr>
+<th>Feld</th>
+<th>Beschreibung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pos.time</code></td>
+<td>Uhrzeit des Kassiervorgangs (<code>HH:mm</code>)</td>
+</tr>
+<tr>
+<td><code>pos.seller</code></td>
+<td>Kassierer / Verkäufer</td>
+</tr>
+<tr>
+<td><code>pos.storno</code></td>
+<td>Storno-Kennzeichen bei Stornobeleg</td>
+</tr>
+<tr>
+<td><code>pos.register.serial</code></td>
+<td>Seriennummer / Client-ID der Kasse</td>
+</tr>
+<tr>
+<td><code>pos.tse.note</code> / <code>pos.tse.failed</code></td>
+<td>TSE-Hinweis bzw. Ausfallvermerk</td>
+</tr>
+<tr>
+<td><code>pos.tse.transaction</code> / <code>pos.tse.counter</code></td>
+<td>TSE-Transaktionsnummer / Signaturzähler</td>
+</tr>
+<tr>
+<td><code>pos.tse.start</code> / <code>pos.tse.end</code></td>
+<td>Beginn und Ende des Vorgangs</td>
+</tr>
+<tr>
+<td><code>pos.tse.serial</code> / <code>pos.tse.algorithm</code></td>
+<td>TSE-Seriennummer / Signaturalgorithmus</td>
+</tr>
+<tr>
+<td><code>pos.tse.signature</code> / <code>pos.tse.processdata</code></td>
+<td>Prüfwert (Signatur) / Prozessdaten</td>
+</tr>
+<tr>
+<td><code>pos.tse.qrdata</code></td>
+<td>Inhalt des TSE-QR-Codes (wird automatisch für <code>TSEQRCode.img</code> verwendet)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="9-bild-platzhalter-qr-code--barcode">9. Bild-Platzhalter (QR-Code &amp; Barcode)<a class="headerlink" href="#9-bild-platzhalter-qr-code--barcode" title="Permanent link">&para;</a></h2>
+<p>Der Name wird in LibreOffice Writer unter <em>Bild › Eigenschaften › Zusätze › Name</em> eingetragen:</p>
+<table>
+<thead>
+<tr>
+<th>Bildname</th>
+<th>Beschreibung</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>QRCode.img</code></td>
+<td>EPC-QR-Code (GiroCode) zur Überweisung auf Rechnungen (<a href="../QR-Code/">QR-Code</a>)</td>
+</tr>
+<tr>
+<td><code>Barcode.img</code> (oder <code>Code39.img</code>)</td>
+<td>Code-39-Barcode der Dokumentnummer (<code>cnumber</code>) mit Klartext darunter</td>
+</tr>
+<tr>
+<td><code>TSEQRCode.img</code></td>
+<td>TSE-QR-Code nach KassenSichV auf Kassenbelegen (<a href="../Kasse-und-TSE/">Kasse und TSE</a>)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="10-eigene-felder-eigenschaften--skripte-und-plugins">10. Eigene Felder (Eigenschaften &amp; Skripte) und Plugins<a class="headerlink" href="#10-eigene-felder-eigenschaften--skripte-und-plugins" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Eigene Felder:</strong> Jede am Datensatz oder im <em>Skriptmanager</em> angelegte Eigenschaft <code>NAME</code> steht als <code>&lt;item.property.NAME&gt;</code>, <code>&lt;contact.property.NAME&gt;</code>, <code>&lt;item.contact.property.NAME&gt;</code> bzw. <code>&lt;product.property.NAME&gt;</code> zur Verfügung – Details unter <a href="../Vorlagen/#eigene-vorlagenfelder-eigenschaften">Vorlagen</a> und <a href="../Skripte/">Skripte</a>.</li>
+<li><strong>Offizielle Plugins</strong> stellen bei Aktivierung eigene Platzhalter bereit:</li>
+<li><a href="../Handwerker-Plugin/">Handwerker-Plugin</a> (<code>hw.*</code> – Baustelle, § 35a EStG, § 13b/§ 48b, Sicherheitseinbehalt)</li>
+<li><a href="../Heilpraktiker-Plugin/">Heilpraktiker-Plugin</a> (<code>hp.*</code> – Diagnose, ICD-10, Behandlungsdaten, § 4 Nr. 14 UStG)</li>
+<li><a href="../Vereinsverwaltung-Plugin/">Vereinsverwaltung-Plugin</a> (<code>verein.*</code> – Mitgliedsdaten, 4 Sphären, Zuwendungsbestätigung)</li>
+<li><a href="../Kfz-Werkstatt-Plugin/">Kfz-Werkstatt-Plugin</a> (<code>ws.*</code> – Fahrzeug, Kennzeichen, FIN, Kilometerstand, HU/AU)</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://anti43.github.io/openyabs/" target="_blank" rel="noopener" title="OpenYaBS Website" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M351.9 280H161c2.9 64.5 17.2 123.9 37.5 167.4 11.4 24.5 23.7 41.8 35.1 52.4 11.2 10.5 18.9 12.2 22.9 12.2s11.7-1.7 22.9-12.2c11.4-10.6 23.7-28 35.1-52.4 20.3-43.5 34.6-102.9 37.5-167.4zm-191-48h190.9c-2.8-64.5-17.1-123.9-37.4-167.4-11.4-24.4-23.7-41.8-35.1-52.4C268.1 1.7 260.4 0 256.4 0s-11.7 1.7-22.9 12.2c-11.4 10.6-23.7 28-35.1 52.4-20.3 43.5-34.6 102.9-37.5 167.4m-48 0c3.5-85.6 25.6-165.1 57.9-217.3C78.7 47.3 10.9 131.2 1.5 232zM1.5 280c9.4 100.8 77.2 184.7 169.3 217.3-32.3-52.2-54.4-131.7-57.9-217.3zm398.4 0c-3.5 85.6-25.6 165.1-57.9 217.3 92.1-32.7 159.9-116.5 169.3-217.3zm111.4-48C501.9 131.2 434.1 47.3 342 14.7c32.3 52.2 54.4 131.7 57.9 217.3z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://github.com/anti43/openyabs" target="_blank" rel="noopener" title="GitHub Repository" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://github.com/anti43/openyabs/wiki" target="_blank" rel="noopener" title="GitHub Wiki (source)" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M384 512H96c-53 0-96-43-96-96V96C0 43 43 0 96 0h304c26.5 0 48 21.5 48 48v288c0 20.9-13.4 38.7-32 45.3V448c17.7 0 32 14.3 32 32s-14.3 32-32 32zM96 384c-17.7 0-32 14.3-32 32s14.3 32 32 32h256v-64zm32-232c0 13.3 10.7 24 24 24h176c13.3 0 24-10.7 24-24s-10.7-24-24-24H152c-13.3 0-24 10.7-24 24m24 72c-13.3 0-24 10.7-24 24s10.7 24 24 24h176c13.3 0 24-10.7 24-24s-10.7-24-24-24z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://github.com/anti43/openyabs/releases" target="_blank" rel="noopener" title="Download Releases" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M256 32c0-17.7-14.3-32-32-32s-32 14.3-32 32v210.7l-41.4-41.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l96 96c12.5 12.5 32.8 12.5 45.3 0l96-96c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 242.7zM64 320c-35.3 0-64 28.7-64 64v32c0 35.3 28.7 64 64 64h320c35.3 0 64-28.7 64-64v-32c0-35.3-28.7-64-64-64h-46.9l-56.6 56.6c-31.2 31.2-81.9 31.2-113.1 0L110.9 320zm304 56a24 24 0 1 1 0 48 24 24 0 1 1 0-48"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.sections", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "toc.follow"], "search": "../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.a5f9d56c.min.js"></script>
+      
+    
+  </body>
+</html>
