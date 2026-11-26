@@ -46,7 +46,7 @@ public final class Activity {
      * The kind of an entry
      */
     public enum Kind {
-        MESSAGE, WARNING, FILE, CREATED, CHANGED, DELETED
+        MESSAGE, WARNING, FILE, CREATED, CHANGED, DELETED, SQL
     }
 
     /**
@@ -75,12 +75,24 @@ public final class Activity {
          * issued document, plugins do not finalize on it
          */
         public final boolean draft;
+        /**
+         * Structured metadata for {@link Kind#SQL} entries (empty for other kinds).
+         */
+        public final String sqlAction;
+        public final String sqlTables;
+        public final String sqlStatement;
+        public final String sqlOutcome;
 
         Entry(Kind kind, String text, String detail, File file, Context context, int id) {
-            this(kind, text, detail, file, context, id, false);
+            this(kind, text, detail, file, context, id, false, "", "", "", "");
         }
 
         Entry(Kind kind, String text, String detail, File file, Context context, int id, boolean draft) {
+            this(kind, text, detail, file, context, id, draft, "", "", "", "");
+        }
+
+        Entry(Kind kind, String text, String detail, File file, Context context, int id, boolean draft,
+                String sqlAction, String sqlTables, String sqlStatement, String sqlOutcome) {
             this.draft = draft;
             this.kind = kind;
             this.text = text == null ? "" : text;
@@ -88,6 +100,10 @@ public final class Activity {
             this.file = file;
             this.context = context;
             this.id = id;
+            this.sqlAction = sqlAction == null ? "" : sqlAction;
+            this.sqlTables = sqlTables == null ? "" : sqlTables;
+            this.sqlStatement = sqlStatement == null ? "" : sqlStatement;
+            this.sqlOutcome = sqlOutcome == null ? "" : sqlOutcome;
         }
 
         /**
@@ -147,6 +163,13 @@ public final class Activity {
      */
     public static void addListener(Consumer<Entry> l) {
         listeners.add(l);
+    }
+
+    /**
+     * Unregisters a previously registered activity listener.
+     */
+    public static void removeListener(Consumer<Entry> l) {
+        listeners.remove(l);
     }
 
     /**
@@ -237,6 +260,35 @@ public final class Activity {
         } catch (Exception e) {
             Log.Debug(Activity.class, e);
         }
+    }
+
+    /**
+     * A table-modifying SQL statement (or console script) executed in the SQL
+     * console. Recorded in the session activity list, persisted by
+     * {@code ActivityJournal}, and written into the hash-chained GoBD audit log
+     * when the GoBD plugin is active.
+     *
+     * @param action statement classification (e.g. {@code UPDATE}, {@code ALTER_TABLE}, {@code DELETE})
+     * @param tables comma-separated target table name(s)
+     * @param statement the executed SQL (or script) text
+     * @param outcome result summary (e.g. {@code OK (12 rows, 8 ms)} or {@code ERROR: ...})
+     */
+    public static void sql(String action, String tables, String statement, String outcome) {
+        String act = action == null ? "SQL" : action.trim();
+        String tbl = tables == null ? "" : tables.trim();
+        String stmt = statement == null ? "" : statement.trim();
+        String out = outcome == null ? "" : outcome.trim();
+        if (stmt.isEmpty()) {
+            return;
+        }
+        StringBuilder summary = new StringBuilder("SQL ").append(act);
+        if (!tbl.isEmpty()) {
+            summary.append(" ").append(tbl);
+        }
+        if (!out.isEmpty()) {
+            summary.append(" — ").append(out);
+        }
+        add(new Entry(Kind.SQL, summary.toString(), stmt, null, null, 0, false, act, tbl, stmt, out));
     }
 
     /**

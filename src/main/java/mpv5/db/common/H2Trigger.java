@@ -35,6 +35,9 @@ public class H2Trigger implements Trigger {
 
     private static final Pattern ROW = Pattern.compile("(?is)^\\s*REFERENCING\\s+(NEW|OLD)(?:\\s+ROW)?\\s+AS\\s+(\\w+)\\s+FOR\\s+EACH\\s+ROW\\s+(.*)$");
     private static final Pattern STATEMENT = Pattern.compile("(?is)^\\s*FOR\\s+EACH\\s+(?:ROW|STATEMENT)\\s+(.*)$");
+    private static final Pattern LEGACY_TRASH_DEDUPE = Pattern.compile("(?i)HAVING\\s+trashbin\\.ids\\s*<\\s*MAX\\(tmptable\\.ids\\)");
+    private static final String CLEAN_TRASH_DEDUPE = "DELETE FROM trashbin WHERE EXISTS (SELECT 1 FROM trashbin newer"
+            + " WHERE newer.cname = trashbin.cname AND newer.rowid = trashbin.rowid AND newer.ids > trashbin.ids)";
     private String sql;
     private boolean old;
     private final List<Integer> params = new ArrayList<Integer>();
@@ -57,7 +60,10 @@ public class H2Trigger implements Trigger {
             if (!s.matches()) {
                 throw new SQLException("Unknown trigger " + trigger + ": " + body);
             }
-            sql = s.group(1);
+            String stmt = s.group(1);
+            // Legacy Derby thrash_handler2 uses SELECT ids ... HAVING trashbin.ids < MAX(tmptable.ids)
+            // without GROUP BY, which H2 2.x rejects with [90016] as soon as duplicate trashbin rows exist.
+            sql = LEGACY_TRASH_DEDUPE.matcher(stmt).find() ? CLEAN_TRASH_DEDUPE : stmt;
             return;
         }
         old = m.group(1).equalsIgnoreCase("OLD");

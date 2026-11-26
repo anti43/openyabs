@@ -48,6 +48,12 @@ class H2SchemaTest {
             }
             assertEquals("1", query(c, "SELECT COUNT(*) FROM searchindex WHERE dbidentity = 'contacts'"));
             assertEquals("K1 (Kunde Eins)", query(c, "SELECT description FROM trashbin WHERE cname = 'contacts'"));
+            // Updating an already-trashed record inserts a second trashbin row and exercises thrash_handler2 deduplication
+            try (Statement s = c.createStatement()) {
+                s.execute("UPDATE contacts SET cname = 'Kunde Eins Neu' WHERE cnumber = 'K1'");
+            }
+            assertEquals("1", query(c, "SELECT COUNT(*) FROM trashbin WHERE cname = 'contacts'"));
+            assertEquals("K1 (Kunde Eins Neu)", query(c, "SELECT description FROM trashbin WHERE cname = 'contacts'"));
             try (Statement s = c.createStatement()) {
                 s.execute("DELETE FROM contacts WHERE cnumber = 'K1'");
             }

@@ -503,6 +503,10 @@ public final class ActivityButton extends JButton {
                     text = "!";
                     color = ORANGE;
                     break;
+                case SQL:
+                    text = "SQL";
+                    color = ORANGE;
+                    break;
                 default:
                     text = "i";
                     color = ModernTheme.muted();

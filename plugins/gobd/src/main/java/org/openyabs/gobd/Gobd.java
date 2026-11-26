@@ -1727,6 +1727,13 @@ public final class Gobd {
      * @param entry
      */
     void onActivity(Activity.Entry entry) {
+        if (entry == null) {
+            return;
+        }
+        if (entry.kind == Activity.Kind.SQL) {
+            logSqlConsoleActivity(entry);
+            return;
+        }
         if (entry.file == null || (entry.kind != null && entry.kind.name().equals("DELETED"))) {
             return;
         }
@@ -1807,6 +1814,24 @@ public final class Gobd {
             } else {
                 status("Belegdatei erstellt (" + entry.file.getName() + "). Jetzt ueber 'Plugins > GoBD: 1. Beleg festschreiben' sichern.");
             }
+        }
+    }
+
+    /**
+     * Records a table-modifying SQL statement (or console script) executed via
+     * the SQL console in the tamper-evident, SHA-256 hash-chained
+     * {@code gobd_audit_log}.
+     */
+    void logSqlConsoleActivity(Activity.Entry entry) {
+        try {
+            String rawAction = blank(entry.sqlAction) ? "STATEMENT" : entry.sqlAction.trim().toUpperCase(java.util.Locale.ROOT);
+            String action = rawAction.startsWith("SQL_") ? rawAction : "SQL_" + rawAction;
+            String tables = blank(entry.sqlTables) ? null : entry.sqlTables.trim();
+            String stmt = blank(entry.sqlStatement) ? entry.detail : entry.sqlStatement;
+            String details = blank(entry.sqlOutcome) ? entry.text : entry.sqlOutcome;
+            logAudit("SQL_CONSOLE", 0L, action, tables, stmt, null, details);
+        } catch (Exception e) {
+            Log.Debug(Gobd.class, "GoBD: SQL-Konsolen-Eintrag konnte nicht im Audit-Log gespeichert werden: " + e.getMessage());
         }
     }
 

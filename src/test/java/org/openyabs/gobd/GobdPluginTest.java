@@ -412,4 +412,75 @@ public class GobdPluginTest {
         assertFalse(Gobd.isGobdItemType(mpv5.db.objects.Item.TYPE_OFFER));
         assertFalse(Gobd.isGobdItemType(mpv5.db.objects.Item.TYPE_ORDER));
     }
+
+    @Test
+    public void sqlConsoleModifyingStatementsAreRecordedInGobdAuditLog() throws Exception {
+        Class<?> dc = Class.forName("mpv5.db.common.DatabaseConnection");
+        java.lang.reflect.Field connF = dc.getDeclaredField("conn");
+        java.lang.reflect.Field connectorF = dc.getDeclaredField("connector");
+        connF.setAccessible(true);
+        connectorF.setAccessible(true);
+        Object oldConn = connF.get(null);
+        Object oldConnector = connectorF.get(null);
+        java.util.function.Consumer<mpv5.handler.Activity.Entry> hook = null;
+        try (java.sql.Connection c = java.sql.DriverManager.getConnection(
+                "jdbc:h2:mem:gobdsqlconsole;MODE=Derby;DEFAULT_NULL_ORDERING=HIGH;NON_KEYWORDS="
+                + "VALUE,KEY,YEAR,MONTH,DAY,HOUR,MINUTE,SECOND,USER,ROW,TOP,LIMIT,MINUS", "sa", "")) {
+            java.lang.reflect.Constructor<?> k = dc.getDeclaredConstructor();
+            k.setAccessible(true);
+            connF.set(null, c);
+            connectorF.set(null, k.newInstance());
+
+            Db.update(c, "CREATE TABLE items (ids BIGINT PRIMARY KEY, cnumber VARCHAR(100), dateend DATE)");
+            Db.update(c, "INSERT INTO items VALUES (1, 'RE-2026-001', NULL)");
+
+            Gobd g = new Gobd(null);
+            g.initSchema();
+            hook = g::onActivity;
+            mpv5.handler.Activity.addListener(hook);
+
+            // SELECT must NOT create an audit entry
+            mpv5.db.common.SqlConsole.ExecutionResult rSel = mpv5.db.common.SqlConsole.execute(
+                    c, mpv5.db.common.SqlConsole.analyze("SELECT * FROM items"), 200, true);
+            assertTrue(rSel.success);
+            assertEquals(0, Db.query(c, "SELECT id FROM gobd_audit_log WHERE entity_type = 'SQL_CONSOLE'").length);
+
+            // UPDATE -> logged as SQL_UPDATE
+            mpv5.db.common.SqlConsole.ExecutionResult rUpd = mpv5.db.common.SqlConsole.execute(
+                    c, mpv5.db.common.SqlConsole.analyze("UPDATE items SET dateend = DATE '2026-11-26' WHERE ids = 1"), 200, true);
+            assertTrue(rUpd.success, rUpd.errorMessage);
+
+            // ALTER TABLE -> logged as SQL_ALTER_TABLE
+            mpv5.db.common.SqlConsole.ExecutionResult rAlt = mpv5.db.common.SqlConsole.execute(
+                    c, mpv5.db.common.SqlConsole.analyze("ALTER TABLE items ADD COLUMN sql_note VARCHAR(100)"), 200, true);
+            assertTrue(rAlt.success, rAlt.errorMessage);
+
+            Object[][] entries = Db.query(c,
+                    "SELECT entity_type, action, old_value, new_value, details, prev_hash, row_hash"
+                    + " FROM gobd_audit_log WHERE entity_type = 'SQL_CONSOLE' ORDER BY id");
+            assertEquals(2, entries.length);
+            assertEquals("SQL_CONSOLE", entries[0][0]);
+            assertEquals("SQL_UPDATE", entries[0][1]);
+            assertEquals("items", entries[0][2]);
+            assertTrue(String.valueOf(entries[0][3]).contains("UPDATE items SET dateend"));
+            assertTrue(String.valueOf(entries[0][4]).contains("1 rows affected"));
+            assertNotNull(entries[0][6]);
+
+            assertEquals("SQL_CONSOLE", entries[1][0]);
+            assertEquals("SQL_ALTER_TABLE", entries[1][1]);
+            assertEquals("items", entries[1][2]);
+            assertTrue(String.valueOf(entries[1][3]).contains("ALTER TABLE items ADD COLUMN sql_note"));
+            assertEquals(entries[0][6], entries[1][5], "Second SQL audit entry must chain to first row_hash");
+
+            java.util.List<String> errors = new java.util.ArrayList<String>();
+            new Audit(g).checkAuditLog(errors);
+            assertTrue(errors.isEmpty(), "GoBD audit hash chain must stay valid: " + errors);
+        } finally {
+            if (hook != null) {
+                mpv5.handler.Activity.removeListener(hook);
+            }
+            connF.set(null, oldConn);
+            connectorF.set(null, oldConnector);
+        }
+    }
 }

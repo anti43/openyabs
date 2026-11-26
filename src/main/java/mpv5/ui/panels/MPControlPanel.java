@@ -617,7 +617,6 @@ public class MPControlPanel extends JPanel {
                 || panelClass == ControlPanel_ClassicPlugins.class
                 || panelClass == ControlPanel_Formats.class
                 || panelClass == ControlPanel_Groups.class
-                || panelClass == ControlPanel_Konsole.class
                 || panelClass == ControlPanel_MailTemplates.class
                 || panelClass == ControlPanel_Massprint.class
                 || panelClass == ControlPanel_NumberFormats.class
