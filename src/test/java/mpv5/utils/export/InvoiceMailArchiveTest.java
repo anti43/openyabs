@@ -95,6 +95,7 @@ class InvoiceMailArchiveTest {
         CompanyInfo.setProperty("banknumber", "COBADEFFXXX");
         CompanyInfo.setProperty("account1", "DE123456789");
         CompanyInfo.setProperty(InvoiceMailArchive.KEY_ADDRESS, "");
+        CompanyInfo.setProperty(InvoiceMailArchive.KEY_FORMAT, "");
         CompanyInfo.setProperty(InvoiceMailArchive.KEY_SUBJECT, "");
         CompanyInfo.setProperty(InvoiceMailArchive.KEY_BODY, "");
         CompanyInfo.save();
@@ -131,13 +132,17 @@ class InvoiceMailArchiveTest {
     void companyPanel_savesAndLoadsMailArchiveCardAndHasSmtpButton() throws Exception {
         ControlPanel_Company panel = new ControlPanel_Company();
         assertNotNull(panel.getMailArchiveAddressField());
+        assertNotNull(panel.getMailArchiveFormatCombo());
         assertNotNull(panel.getMailArchiveSubjectField());
         assertNotNull(panel.getMailArchiveBodyArea());
         assertNotNull(panel.getSmtpSettingsButton());
         assertTrue(panel.getSmtpSettingsButton().getActionListeners().length > 0,
                 "SMTP settings button must have an action listener linking to SMTP settings");
+        assertEquals(InvoiceMailArchive.ArchiveFormat.BOTH, panel.getMailArchiveFormatCombo().getSelectedItem(),
+                "Default archive format must be BOTH");
 
         panel.getMailArchiveAddressField().setText("archive@example.com; tax@example.com");
+        panel.getMailArchiveFormatCombo().setSelectedItem(InvoiceMailArchive.ArchiveFormat.XRECHNUNG);
         panel.getMailArchiveSubjectField().setText("Archiv: [type] [cnumber] ([contact.cname])");
         panel.getMailArchiveBodyArea().setText("Beleg [cnumber] fuer [contact.cname] ueber [grosvaluef]");
 
@@ -148,6 +153,9 @@ class InvoiceMailArchiveTest {
 
         assertEquals("archive@example.com; tax@example.com",
                 CompanyInfo.getProperty(InvoiceMailArchive.KEY_ADDRESS));
+        assertEquals("xrechnung",
+                CompanyInfo.getProperty(InvoiceMailArchive.KEY_FORMAT));
+        assertEquals(InvoiceMailArchive.ArchiveFormat.XRECHNUNG, InvoiceMailArchive.getFormat());
         assertEquals("Archiv: [type] [cnumber] ([contact.cname])",
                 CompanyInfo.getProperty(InvoiceMailArchive.KEY_SUBJECT));
         assertEquals("Beleg [cnumber] fuer [contact.cname] ueber [grosvaluef]",
@@ -159,10 +167,21 @@ class InvoiceMailArchiveTest {
         ControlPanel_Company reloaded = new ControlPanel_Company();
         assertEquals("archive@example.com; tax@example.com",
                 reloaded.getMailArchiveAddressField().getText());
+        assertEquals(InvoiceMailArchive.ArchiveFormat.XRECHNUNG,
+                reloaded.getMailArchiveFormatCombo().getSelectedItem());
         assertEquals("Archiv: [type] [cnumber] ([contact.cname])",
                 reloaded.getMailArchiveSubjectField().getText());
         assertEquals("Beleg [cnumber] fuer [contact.cname] ueber [grosvaluef]",
                 reloaded.getMailArchiveBodyArea().getText());
+
+        // Switch to ZUGFeRD-only, save and reload
+        reloaded.getMailArchiveFormatCombo().setSelectedItem(InvoiceMailArchive.ArchiveFormat.ZUGFERD);
+        setSettings.invoke(reloaded);
+        CompanyInfo.save();
+        assertEquals(InvoiceMailArchive.ArchiveFormat.ZUGFERD, InvoiceMailArchive.getFormat());
+        ControlPanel_Company reloaded2 = new ControlPanel_Company();
+        assertEquals(InvoiceMailArchive.ArchiveFormat.ZUGFERD,
+                reloaded2.getMailArchiveFormatCombo().getSelectedItem());
     }
 
     @Test
@@ -367,5 +386,92 @@ class InvoiceMailArchiveTest {
                 "SELECT cname FROM history WHERE dbidentity = 'items' AND intitem = " + storno.__getIDS(),
                 MPSecurityManager.VIEW, null);
         assertTrue(stornoHist != null && stornoHist.hasData(), "History table must contain an entry for the archived Storno-Beleg");
+    }
+
+    @Test
+    void archiveFormatSelection_sendsOnlyConfiguredAttachments() throws Exception {
+        CompanyInfo.setProperty(InvoiceMailArchive.KEY_ADDRESS, "archive@example.com");
+        CompanyInfo.save();
+
+        Contact customer = (Contact) DatabaseObject.getObject(Context.getContact());
+        customer.setCname("Format Kunde GmbH");
+        customer.setCompany("Format Kunde GmbH");
+        customer.setisCompany(true);
+        customer.setisCustomer(true);
+        customer.setStreet("Teststr. 10");
+        customer.setZip("10115");
+        customer.setCity("Berlin");
+        customer.setCountry("DE");
+        customer.setMailaddress("format@example.com");
+        customer.setDateadded(new Date());
+        assertTrue(customer.save(true));
+
+        Item invoice = (Item) DatabaseObject.getObject(Context.getInvoice());
+        invoice.avoidNulls();
+        invoice.setInttype(Item.TYPE_INVOICE);
+        invoice.setCnumber("RE-2026-9050");
+        invoice.setCname("RE-2026-9050");
+        invoice.setContactsids(customer.__getIDS());
+        invoice.setGroupsids(1);
+        invoice.setAccountsids(1);
+        invoice.setDateadded(new Date());
+        invoice.setDatetodo(new Date());
+        invoice.setDateend(new Date());
+        invoice.setIntstatus(Item.STATUS_FINISHED);
+        invoice.setNetvalue(new BigDecimal("200.00"));
+        invoice.setTaxvalue(new BigDecimal("38.00"));
+        assertTrue(invoice.save(true));
+        invoice.setCnumber("RE-2026-9050");
+        invoice.setCname("RE-2026-9050");
+        assertTrue(invoice.save(true));
+
+        SubItem pos = new SubItem();
+        pos.setOrdernr(0);
+        pos.setCname("");
+        pos.setItemsids(invoice.__getIDS());
+        pos.setCountvalue(BigDecimal.ONE);
+        pos.setDatedelivery(invoice.__getDatetodo());
+        pos.setDescription("Software-Wartung");
+        pos.setExternalvalue(new BigDecimal("200.00"));
+        pos.setInternalvalue(new BigDecimal("200.00"));
+        pos.setMeasure("Stk");
+        pos.setOriginalproductsids(-1);
+        pos.setLinkurl("");
+        pos.setQuantityvalue(BigDecimal.ONE);
+        pos.setTaxpercentvalue(new BigDecimal("19.00"));
+        SubItem.calculate(pos);
+        pos.setDateadded(new Date());
+        pos.setGroupsids(invoice.__getGroupsids());
+        assertTrue(pos.save(true));
+
+        // 1. ZUGFeRD PDF only
+        CompanyInfo.setProperty(InvoiceMailArchive.KEY_FORMAT, InvoiceMailArchive.ArchiveFormat.ZUGFERD.key());
+        CompanyInfo.save();
+        assertTrue(InvoiceMailArchive.sendArchiveMail(invoice, null));
+        assertEquals(1, sentMails.size());
+        assertEquals(1, sentMails.get(0).getAttachments().size(), "ZUGFERD-only must attach exactly 1 file");
+        assertTrue(sentMails.get(0).getAttachments().get(0).getName().toLowerCase().endsWith(".pdf"));
+        assertEquals(1, capturedPdfBytes.size());
+        assertEquals(0, capturedXmlContents.size());
+
+        // 2. XRechnung XML only (e-invoice)
+        CompanyInfo.setProperty(InvoiceMailArchive.KEY_FORMAT, InvoiceMailArchive.ArchiveFormat.XRECHNUNG.key());
+        CompanyInfo.save();
+        assertTrue(InvoiceMailArchive.sendArchiveMail(invoice, null));
+        assertEquals(2, sentMails.size());
+        assertEquals(1, sentMails.get(1).getAttachments().size(), "XRECHNUNG-only must attach exactly 1 file");
+        assertTrue(sentMails.get(1).getAttachments().get(0).getName().toLowerCase().endsWith(".xml"));
+        assertEquals(1, capturedPdfBytes.size(), "No PDF should be generated for XRECHNUNG-only");
+        assertEquals(1, capturedXmlContents.size());
+        assertTrue(capturedXmlContents.get(0).contains("RE-2026-9050"));
+
+        // 3. Both (ZUGFeRD PDF + XRechnung XML)
+        CompanyInfo.setProperty(InvoiceMailArchive.KEY_FORMAT, InvoiceMailArchive.ArchiveFormat.BOTH.key());
+        CompanyInfo.save();
+        assertTrue(InvoiceMailArchive.sendArchiveMail(invoice, null));
+        assertEquals(3, sentMails.size());
+        assertEquals(2, sentMails.get(2).getAttachments().size(), "BOTH must attach ZUGFeRD PDF and XRechnung XML");
+        assertEquals(2, capturedPdfBytes.size());
+        assertEquals(2, capturedXmlContents.size());
     }
 }

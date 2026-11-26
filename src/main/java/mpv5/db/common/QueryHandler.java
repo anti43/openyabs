@@ -1503,7 +1503,7 @@ public class QueryHandler implements Cloneable {
     public void insertHistoryItem(String message, String username, String dbidentity, int item, int groupid) {
         synchronized (psHistoryLock) {
             try {
-                if (psHistory == null) {
+                if (psHistory == null || psHistory.isClosed() || psHistory.getConnection() != sqlConn) {
                     try {
                         String query = "INSERT INTO " + Context.getHistory().getDbIdentity() + " (cname, username, dbidentity, intitem, groupsids, dateadded) VALUES (?, ?, ?, ?, ?, ?)";
                         psHistory = sqlConn.prepareStatement(query, DatabaseConnection.generatedKeys(query));
