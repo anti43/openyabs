@@ -49,6 +49,9 @@ public class DateChooser extends javax.swing.JPanel {
      */
     private void keyboard() {
         DateInput.install(jSpinner1);
+        //the field takes the size of its font (columns of the editor): the fixed size of the
+        //form left less room for the date when zoomed in, as the arrows grow with the font
+        jSpinner1.setPreferredSize(null);
         jButton1.setFocusable(false);
         javax.swing.JComponent f = ((DateEditor) jSpinner1.getEditor()).getTextField();
         javax.swing.Action open = new javax.swing.AbstractAction() {

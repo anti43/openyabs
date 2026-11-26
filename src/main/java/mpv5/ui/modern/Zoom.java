@@ -183,7 +183,10 @@ public final class Zoom {
         java.awt.Dimension natural = j.getPreferredSize();
         int h = Math.max(set.height, natural.height);
         //a dropdown or date picker needs the room for its text and button
-        int w = j instanceof javax.swing.JTextField || j.getClass().getName().startsWith("mpv5.ui.beans.Labeled") ? set.width : Math.max(set.width, Math.min(natural.width, set.width * 2));
+        //(a date picker always: its natural width is that of the date in its font)
+        int w = j instanceof javax.swing.JTextField || j.getClass().getName().startsWith("mpv5.ui.beans.Labeled") ? set.width
+                : j instanceof mpv5.ui.beans.DateChooser ? Math.max(set.width, natural.width)
+                : Math.max(set.width, Math.min(natural.width, set.width * 2));
         j.setPreferredSize(new java.awt.Dimension(w, h));
         if (j.isMinimumSizeSet() && j.getMinimumSize().height < h) {
             j.setMinimumSize(new java.awt.Dimension(j.getMinimumSize().width, h));
