@@ -292,24 +292,40 @@ public final class JournalLoader {
                 in.append(in.length() > 0 ? "," : "").append(id.intValue());
             }
             try {
+                //the positions as the document computes them (InvoiceMath, EN 16931): net after the discount of
+                //the position, VAT per rate. The stored totalnetvalue is before the discount - summed up with
+                //totalbrutvalue (after it) the parts of documents with discounted positions came out wrong
                 mpv5.db.common.ReturnValue rv = QueryHandler.instanceOf().clone(Context.getSubItem()).freeSelectQuery(
-                        "SELECT itemsids, taxpercentvalue, SUM(totalnetvalue), SUM(totalbrutvalue) FROM subitems WHERE invisible = 0 AND itemsids IN (" //NOI18N
-                        + in + ") GROUP BY itemsids, taxpercentvalue", mpv5.usermanagement.MPSecurityManager.VIEW, null); //NOI18N
+                        "SELECT itemsids, quantityvalue, externalvalue, discount, taxpercentvalue, cname FROM subitems WHERE invisible = 0 AND inttype <> "
+                        + mpv5.db.objects.SubItem.TYPE_TEXT + " AND itemsids IN (" //NOI18N
+                        + in + ")", mpv5.usermanagement.MPSecurityManager.VIEW, null); //NOI18N
                 if (rv == null || !rv.hasData()) {
                     continue;
                 }
+                Map<Integer, List<mpv5.utils.numberformat.InvoiceMath.Line>> byItem = new HashMap<Integer, List<mpv5.utils.numberformat.InvoiceMath.Line>>();
+                boolean optional = mpv5.db.objects.SubItem.isOptionalColumnCalculated();
                 for (Object[] r : rv.getData()) {
                     Integer id = Integer.valueOf(String.valueOf(r[0]));
-                    BigDecimal rate = JournalCalc.normalizeRate(new BigDecimal(String.valueOf(r[1])), configured);
-                    BigDecimal net = JournalCalc.money(r[2]);
-                    BigDecimal tax = JournalCalc.money(r[3]).subtract(net);
-                    Map<BigDecimal, BigDecimal[]> rates = m.get(id);
-                    if (rates == null) {
-                        rates = new TreeMap<BigDecimal, BigDecimal[]>(JournalCalc.RATE_ORDER);
-                        m.put(id, rates);
+                    BigDecimal q = r[1] == null ? BigDecimal.ZERO : new BigDecimal(String.valueOf(r[1]));
+                    if (optional) {
+                        q = q.multiply(mpv5.db.objects.SubItem.optionalFactor(r[5]));
                     }
-                    BigDecimal[] v = rates.get(rate);
-                    rates.put(rate, v == null ? new BigDecimal[]{net, tax} : new BigDecimal[]{v[0].add(net), v[1].add(tax)});
+                    BigDecimal price = r[2] == null ? BigDecimal.ZERO : new BigDecimal(String.valueOf(r[2]));
+                    BigDecimal discount = r[3] == null ? BigDecimal.ZERO : new BigDecimal(String.valueOf(r[3]));
+                    BigDecimal rate = r[4] == null ? BigDecimal.ZERO : new BigDecimal(String.valueOf(r[4]));
+                    byItem.computeIfAbsent(id, k -> new ArrayList<mpv5.utils.numberformat.InvoiceMath.Line>())
+                            .add(new mpv5.utils.numberformat.InvoiceMath.Line(q, price, discount, rate));
+                }
+                for (Map.Entry<Integer, List<mpv5.utils.numberformat.InvoiceMath.Line>> item : byItem.entrySet()) {
+                    mpv5.utils.numberformat.InvoiceMath.Totals t = mpv5.utils.numberformat.InvoiceMath.totals(item.getValue());
+                    Map<BigDecimal, BigDecimal[]> rates = new TreeMap<BigDecimal, BigDecimal[]>(JournalCalc.RATE_ORDER);
+                    for (Map.Entry<BigDecimal, BigDecimal[]> part : t.byRate.entrySet()) {
+                        BigDecimal rate = JournalCalc.normalizeRate(part.getKey(), configured);
+                        BigDecimal[] v = rates.get(rate);
+                        rates.put(rate, v == null ? new BigDecimal[]{part.getValue()[0], part.getValue()[1]}
+                                : new BigDecimal[]{v[0].add(part.getValue()[0]), v[1].add(part.getValue()[1])});
+                    }
+                    m.put(item.getKey(), rates);
                 }
             } catch (Exception e) {
                 Log.Debug(JournalLoader.class, e);

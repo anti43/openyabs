@@ -38,28 +38,71 @@ public final class DatevConfig {
     }
 
     public static final String PREFIX = "datev.";
-    private static final String K_BERATER = PREFIX + "beraternummer";
-    private static final String K_MANDANT = PREFIX + "mandantennummer";
+    // DATEV EXTF-Header-Felder
+    private static final String K_BERATERNUMMER = PREFIX + "beraternummer";
+    private static final String K_MANDANTENNUMMER = PREFIX + "mandantennummer";
     private static final String K_WJ_BEGINN = PREFIX + "wjbeginn";
     private static final String K_SACHKONTENLAENGE = PREFIX + "sachkontenlaenge";
     private static final String K_KONTENRAHMEN = PREFIX + "kontenrahmen";
     private static final String K_BEZEICHNUNG = PREFIX + "bezeichnung";
-    private static final String K_DIKTAT = PREFIX + "diktatkuerzel";
+    private static final String K_DIKTATKUERZEL = PREFIX + "diktatkuerzel";
     private static final String K_FESTSCHREIBUNG = PREFIX + "festschreibung";
     private static final String K_WAEHRUNG = PREFIX + "waehrung";
-    private static final String K_BELEGDATUM_MODE = PREFIX + "belegdatumMode";
-    private static final String K_MONEY_INCOME = PREFIX + "moneyAccountIncome";
-    private static final String K_MONEY_EXPENSE = PREFIX + "moneyAccountExpense";
-    private static final String K_CASH_ACCOUNT = PREFIX + "cashAccount";
-    private static final String K_AUTOMATIC = PREFIX + "useAutomaticAccounts";
-    private static final String K_EU_ACCOUNT = PREFIX + "euDeliveryAccount";
-    private static final String K_EU_SERVICE_ACCOUNT = PREFIX + "euServiceAccount";
-    private static final String K_REVERSE_CHARGE_ACCOUNT = PREFIX + "reverseChargeAccount";
-    private static final String K_EXPORT_ACCOUNT = PREFIX + "exportAccount";
-    private static final String K_REV_PREFIX = PREFIX + "revAccount.";
-    private static final String K_EXP_PREFIX = PREFIX + "expAccount.";
-    private static final String K_BU_INC_PREFIX = PREFIX + "buKeyIncome.";
-    private static final String K_BU_EXP_PREFIX = PREFIX + "buKeyExpense.";
+    private static final String K_HERKUNFT = PREFIX + "herkunft";
+    private static final String K_EXPORTIERT_VON = PREFIX + "exportiertvon";
+    private static final String K_BUCHUNGSTYP = PREFIX + "buchungstyp";
+    private static final String K_RECHNUNGSLEGUNGSZWECK = PREFIX + "rechnungslegungszweck";
+    private static final String K_ANWENDUNGSINFO = PREFIX + "anwendungsinformation";
+
+    // Buchungs-, Konten- und Export-Einstellungen
+    private static final String K_BELEGDATUM_MODUS = PREFIX + "belegdatummodus";
+    private static final String K_LEISTUNGSDATUM_EXPORTIEREN = PREFIX + "leistungsdatumexportieren";
+    private static final String K_GELDKONTO_EINNAHMEN = PREFIX + "geldkontoeinnahmen";
+    private static final String K_GELDKONTO_AUSGABEN = PREFIX + "geldkontoausgaben";
+    private static final String K_KASSENKONTO = PREFIX + "kassenkonto";
+    private static final String K_AUTOMATIKKONTEN = PREFIX + "automatikkonten";
+    private static final String K_EIGENE_AUTOMATIKKONTEN = PREFIX + "eigeneautomatikkonten";
+    private static final String K_EU_LIEFERKONTO = PREFIX + "eulieferkonto";
+    private static final String K_EU_LEISTUNGSKONTO = PREFIX + "euleistungskonto";
+    private static final String K_STEUERSCHULDUMKEHR_KONTO = PREFIX + "steuerschuldumkehrkonto";
+    private static final String K_AUSFUHRKONTO = PREFIX + "ausfuhrkonto";
+    private static final String K_BELEGORDNER = PREFIX + "belegordner";
+    /**
+     * the folder of the outgoing invoices in Belege online (DATEV
+     * Unternehmen online) the document package goes to; DATEV's default
+     */
+    public static final String DEFAULT_INVOICE_FOLDER = "Ausgangsrechnungen";
+
+    // Steuersatz-Tabellen (Präfixe)
+    private static final String K_ERLOESKONTO_PREFIX = PREFIX + "erloeskonto.";
+    private static final String K_AUFWANDSKONTO_PREFIX = PREFIX + "aufwandskonto.";
+    private static final String K_BU_EINNAHMEN_PREFIX = PREFIX + "buschluesseleinnahmen.";
+    private static final String K_BU_AUSGABEN_PREFIX = PREFIX + "buschluesselausgaben.";
+
+    /**
+     * Standard DATEV SKR03/SKR04 automatic accounts (AM/AV) where DATEV computes
+     * VAT automatically and setting a BU-Schlüssel causes an import error or
+     * double taxation. Non-automatic accounts (e.g., SKR03 4930 Bürobedarf,
+     * 4600 Werbekosten, 0480 GWG; SKR04 6815, 0670) MUST emit a BU-Schlüssel
+     * even when YaBS stores a default tax rate on the account.
+     */
+    private static final java.util.Set<String> SKR03_AUTO_INC_19 = setOf(
+            "8400", "8405", "8406", "8410", "8736", "8760", "8790", "8910", "8920", "8921");
+    private static final java.util.Set<String> SKR03_AUTO_INC_7 = setOf(
+            "8300", "8305", "8306", "8310", "8731", "8750", "8780", "8915");
+    private static final java.util.Set<String> SKR03_AUTO_EXP_19 = setOf(
+            "3400", "3401", "3410", "3425", "3123", "3736", "3760", "3790");
+    private static final java.util.Set<String> SKR03_AUTO_EXP_7 = setOf(
+            "3300", "3301", "3420", "3731", "3750", "3780");
+
+    private static final java.util.Set<String> SKR04_AUTO_INC_19 = setOf(
+            "4400", "4405", "4406", "4410", "4736", "4760", "4790", "4620", "4645");
+    private static final java.util.Set<String> SKR04_AUTO_INC_7 = setOf(
+            "4300", "4305", "4306", "4310", "4731", "4750", "4780", "4610");
+    private static final java.util.Set<String> SKR04_AUTO_EXP_19 = setOf(
+            "5400", "5401", "5410", "5425", "5923", "5736", "5760", "5790");
+    private static final java.util.Set<String> SKR04_AUTO_EXP_7 = setOf(
+            "5300", "5301", "5420", "5731", "5750", "5780");
 
     public int beraterNummer = 0;
     public int mandantenNummer = 0;
@@ -73,6 +116,31 @@ public final class DatevConfig {
     public String diktatKuerzel = "";
     public boolean festschreibung = false;
     public String waehrung = "EUR";
+    /**
+     * Header field 8 (Herkunft): 2-char origin code, default "RE".
+     */
+    public String herkunft = "RE";
+    /**
+     * Header field 9 (Exportiert von), max 25 chars.
+     */
+    public String exportiertVon = "";
+    /**
+     * Header field 19 (Buchungstyp): 1 = Finanzbuchführung, 2 = Jahresabschluss.
+     */
+    public int buchungstyp = 1;
+    /**
+     * Header field 20 (Rechnungslegungszweck): 0 = unabhängig, 30 = Steuerrecht, 50 = Handelsrecht.
+     */
+    public int rechnungslegungszweck = 0;
+    /**
+     * Header field 31 (Anwendungsinformation), max 16 chars.
+     */
+    public String anwendungsinformation = "";
+    /**
+     * Whether to populate col 115 (Leistungsdatum) and col 116 (Datum Zuord. Steuerperiode)
+     * when delivery/service date differs from booking date (§ 14 Abs. 4 Nr. 6 UStG).
+     */
+    public boolean leistungsdatumExportieren = true;
     public DateMode belegdatumMode = DateMode.PAYMENT_DATE;
     public String moneyAccountIncome = "1200";
     public String moneyAccountExpense = "1200";
@@ -95,6 +163,23 @@ public final class DatevConfig {
      * SKR04 4120
      */
     public String exportAccount = "8120";
+    /**
+     * the company uses the small business exemption (§ 19 UStG, company
+     * info): the default account of 0 % is SKR03 8195 / SKR04 4185; read with
+     * the company info, not stored with the DATEV settings
+     */
+    public boolean smallBusiness;
+    /**
+     * the folder of the outgoing invoices in Belege online (document package,
+     * property key 3): each client names it in Belege online
+     */
+    public String invoiceFolder = DEFAULT_INVOICE_FOLDER;
+
+    /**
+     * Additional client-specific automatic accounts (Individuelle Automatikkonten)
+     * for which DATEV expects an empty BU-Schlüssel.
+     */
+    public final java.util.Set<String> customAutomaticAccounts = new java.util.TreeSet<String>();
 
     public final Map<BigDecimal, String> revenueAccounts = new TreeMap<BigDecimal, String>(JournalCalc.RATE_ORDER);
     public final Map<BigDecimal, String> expenseAccounts = new TreeMap<BigDecimal, String>(JournalCalc.RATE_ORDER);
@@ -103,6 +188,81 @@ public final class DatevConfig {
 
     public DatevConfig() {
         applyDefaultBuKeys();
+    }
+
+    private static java.util.Set<String> setOf(String... values) {
+        return java.util.Collections.unmodifiableSet(new java.util.HashSet<String>(java.util.Arrays.asList(values)));
+    }
+
+    /**
+     * Formats an integer account number from {@link Account#__getIntaccountclass()}
+     * preserving leading zeros for class-0 accounts (e.g., 27 -> "0027", 480 -> "0480",
+     * 670 -> "0670") while leaving 4+ digit accounts unchanged.
+     */
+    public static String formatAccount(int accountClass) {
+        if (accountClass <= 0) {
+            return "";
+        }
+        return accountClass < 1000 ? String.format(java.util.Locale.ROOT, "%04d", accountClass) : String.valueOf(accountClass);
+    }
+
+    /**
+     * Returns true iff {@code accountNo} is an official DATEV AM/AV automatic account
+     * in SKR03 or SKR04 matching the given side and tax rate.
+     */
+    public static boolean isDatevAutomaticAccount(String accountNo, boolean isExpense, BigDecimal rate, boolean skr04) {
+        if (isBlank(accountNo) || rate == null || rate.signum() == 0) {
+            return false;
+        }
+        String digits = DatevFormat.digitsOnly(accountNo);
+        if (digits.length() < 4) {
+            return false;
+        }
+        String base4 = digits;
+        if (digits.length() > 4) {
+            String suffix = digits.substring(4);
+            for (int i = 0; i < suffix.length(); i++) {
+                if (suffix.charAt(i) != '0') {
+                    return false;
+                }
+            }
+            base4 = digits.substring(0, 4);
+        }
+        boolean is19 = rate.compareTo(bd("19")) == 0;
+        boolean is7 = rate.compareTo(bd("7")) == 0;
+        if (!is19 && !is7) {
+            return false;
+        }
+        if (skr04) {
+            if (isExpense) {
+                return is19 ? SKR04_AUTO_EXP_19.contains(base4) : SKR04_AUTO_EXP_7.contains(base4);
+            }
+            return is19 ? SKR04_AUTO_INC_19.contains(base4) : SKR04_AUTO_INC_7.contains(base4);
+        } else {
+            if (isExpense) {
+                return is19 ? SKR03_AUTO_EXP_19.contains(base4) : SKR03_AUTO_EXP_7.contains(base4);
+            }
+            return is19 ? SKR03_AUTO_INC_19.contains(base4) : SKR03_AUTO_INC_7.contains(base4);
+        }
+    }
+
+    /**
+     * Returns true if {@code accountNo} should omit BU-Schlüssel under this configuration
+     * (either an official DATEV AM/AV account for the rate or listed in {@link #customAutomaticAccounts}).
+     */
+    public boolean isAutomaticAccount(String accountNo, boolean isExpense, BigDecimal rate) {
+        if (!useAutomaticAccounts || isBlank(accountNo) || rate == null || rate.signum() == 0) {
+            return false;
+        }
+        String digits = DatevFormat.digitsOnly(accountNo);
+        if (customAutomaticAccounts.contains(digits) || customAutomaticAccounts.contains(accountNo.trim())) {
+            return true;
+        }
+        // Only apply SKR03/SKR04 trailing-zero extension when length matches configured SKL
+        if (digits.length() > 4 && digits.length() != sachkontenLaenge) {
+            return false;
+        }
+        return isDatevAutomaticAccount(digits, isExpense, rate, "04".equals(kontenrahmen));
     }
 
     /**
@@ -172,13 +332,13 @@ public final class DatevConfig {
                 }
                 BigDecimal key = JournalCalc.rateKey(r);
                 if (overwriteExisting || isBlank(revenueAccounts.get(key))) {
-                    String found = findDefaultAccountForRate(accounts, Account.INCOME, key, skr04);
+                    String found = findDefaultAccountForRate(accounts, Account.INCOME, key, skr04, smallBusiness);
                     if (found != null) {
                         revenueAccounts.put(key, found);
                     }
                 }
                 if (overwriteExisting || isBlank(expenseAccounts.get(key))) {
-                    String found = findDefaultAccountForRate(accounts, Account.EXPENSE, key, skr04);
+                    String found = findDefaultAccountForRate(accounts, Account.EXPENSE, key, skr04, smallBusiness);
                     if (found != null) {
                         expenseAccounts.put(key, found);
                     }
@@ -223,16 +383,16 @@ public final class DatevConfig {
             return null;
         }
         for (Account a : accounts) {
-            if (a.__getIntaccountclass() > 0 && String.valueOf(a.__getIntaccountclass()).equals(number)) {
+            if (a.__getIntaccountclass() > 0 && formatAccount(a.__getIntaccountclass()).equals(number)) {
                 return number;
             }
         }
         return null;
     }
 
-    private static String findDefaultAccountForRate(List<Account> accounts, int accountType, BigDecimal rate, boolean skr04) {
+    private static String findDefaultAccountForRate(List<Account> accounts, int accountType, BigDecimal rate, boolean skr04, boolean smallBusiness) {
         // Prefer canonical DATEV standard accounts if present in the chart
-        String preferred = canonicalAccount(accountType, rate, skr04);
+        String preferred = canonicalAccount(accountType, rate, skr04, smallBusiness);
         if (preferred != null && findAccountNumber(accounts, preferred) != null) {
             return preferred;
         }
@@ -245,7 +405,7 @@ public final class DatevConfig {
                         ? a.__getIntaccounttype() == Account.INCOME
                         : (a.__getIntaccounttype() == Account.EXPENSE || a.__getIntaccounttype() == Account.COST);
                 if (typeMatch && rateMatches(a.__getTaxvalue(), rate)) {
-                    return String.valueOf(a.__getIntaccountclass());
+                    return formatAccount(a.__getIntaccountclass());
                 }
             }
         }
@@ -253,6 +413,25 @@ public final class DatevConfig {
     }
 
     static String canonicalAccount(int accountType, BigDecimal rate, boolean skr04) {
+        return canonicalAccount(accountType, rate, skr04, false);
+    }
+
+    /**
+     * The standard account of a rate. Sales at 0 % without a VAT category are
+     * tax-free domestic sales (SKR03 8100 / SKR04 4100, § 4 Nr. 8 ff. UStG,
+     * without input tax deduction) - not exports (8120 / 4120, § 4 Nr. 1a
+     * UStG): DATEV reports the export account in field 43 of the VAT return.
+     * Exports, intra-community supplies and reverse charge have their own
+     * accounts by the VAT category of the rate (G, K, AE). A small business
+     * (§ 19 UStG) books its sales on SKR03 8195 / SKR04 4185.
+     *
+     * @param accountType
+     * @param rate
+     * @param skr04
+     * @param smallBusiness the company uses § 19 UStG
+     * @return the account, null if there is no standard
+     */
+    static String canonicalAccount(int accountType, BigDecimal rate, boolean skr04, boolean smallBusiness) {
         if (rate == null) {
             return null;
         }
@@ -264,7 +443,10 @@ public final class DatevConfig {
                 return skr04 ? "4300" : "8300";
             }
             if (rate.compareTo(BigDecimal.ZERO) == 0) {
-                return skr04 ? "4120" : "8120";
+                if (smallBusiness) {
+                    return skr04 ? "4185" : "8195";
+                }
+                return skr04 ? "4100" : "8100";
             }
         } else {
             if (rate.compareTo(bd("19")) == 0) {
@@ -293,34 +475,51 @@ public final class DatevConfig {
      */
     public static DatevConfig load() {
         DatevConfig c = new DatevConfig();
-        c.beraterNummer = readInt(K_BERATER, 0);
-        c.mandantenNummer = readInt(K_MANDANT, 0);
+        c.smallBusiness = mpv5.utils.export.SmallBusiness.isEnabled();
+        c.beraterNummer = readInt(K_BERATERNUMMER, 0);
+        c.mandantenNummer = readInt(K_MANDANTENNUMMER, 0);
         c.wjBeginn = readString(K_WJ_BEGINN, LocalDate.now().getYear() + "0101");
         c.sachkontenLaenge = readInt(K_SACHKONTENLAENGE, 4);
         c.kontenrahmen = readString(K_KONTENRAHMEN, "03");
         c.bezeichnung = readString(K_BEZEICHNUNG, "YaBS Export");
-        c.diktatKuerzel = readString(K_DIKTAT, "");
+        c.diktatKuerzel = readString(K_DIKTATKUERZEL, "");
         c.festschreibung = readBool(K_FESTSCHREIBUNG, false);
         c.waehrung = readString(K_WAEHRUNG, "EUR");
-        String mode = readString(K_BELEGDATUM_MODE, DateMode.PAYMENT_DATE.name());
+        c.herkunft = readString(K_HERKUNFT, "RE");
+        c.exportiertVon = readString(K_EXPORTIERT_VON, "");
+        c.buchungstyp = readInt(K_BUCHUNGSTYP, 1);
+        c.rechnungslegungszweck = readInt(K_RECHNUNGSLEGUNGSZWECK, 0);
+        c.anwendungsinformation = readString(K_ANWENDUNGSINFO, "");
+        c.leistungsdatumExportieren = readBool(K_LEISTUNGSDATUM_EXPORTIEREN, true);
+        String customAuto = readString(K_EIGENE_AUTOMATIKKONTEN, "");
+        if (!isBlank(customAuto)) {
+            for (String part : customAuto.split("[,;\\s]+")) {
+                String d = DatevFormat.digitsOnly(part);
+                if (!d.isEmpty()) {
+                    c.customAutomaticAccounts.add(d);
+                }
+            }
+        }
+        String mode = readString(K_BELEGDATUM_MODUS, DateMode.PAYMENT_DATE.name());
         try {
             c.belegdatumMode = DateMode.valueOf(mode);
         } catch (Exception e) {
             c.belegdatumMode = DateMode.PAYMENT_DATE;
         }
-        c.moneyAccountIncome = readString(K_MONEY_INCOME, "04".equals(c.kontenrahmen) ? "1800" : "1200");
-        c.moneyAccountExpense = readString(K_MONEY_EXPENSE, "04".equals(c.kontenrahmen) ? "1800" : "1200");
-        c.cashAccount = readString(K_CASH_ACCOUNT, "");
-        c.useAutomaticAccounts = readBool(K_AUTOMATIC, true);
-        c.euDeliveryAccount = readString(K_EU_ACCOUNT, "04".equals(c.kontenrahmen) ? "4125" : "8125");
-        c.euServiceAccount = readString(K_EU_SERVICE_ACCOUNT, "04".equals(c.kontenrahmen) ? "4336" : "8336");
-        c.reverseChargeAccount = readString(K_REVERSE_CHARGE_ACCOUNT, "04".equals(c.kontenrahmen) ? "4337" : "8337");
-        c.exportAccount = readString(K_EXPORT_ACCOUNT, "04".equals(c.kontenrahmen) ? "4120" : "8120");
+        c.moneyAccountIncome = readString(K_GELDKONTO_EINNAHMEN, "04".equals(c.kontenrahmen) ? "1800" : "1200");
+        c.moneyAccountExpense = readString(K_GELDKONTO_AUSGABEN, "04".equals(c.kontenrahmen) ? "1800" : "1200");
+        c.cashAccount = readString(K_KASSENKONTO, "");
+        c.useAutomaticAccounts = readBool(K_AUTOMATIKKONTEN, true);
+        c.euDeliveryAccount = readString(K_EU_LIEFERKONTO, "04".equals(c.kontenrahmen) ? "4125" : "8125");
+        c.euServiceAccount = readString(K_EU_LEISTUNGSKONTO, "04".equals(c.kontenrahmen) ? "4336" : "8336");
+        c.reverseChargeAccount = readString(K_STEUERSCHULDUMKEHR_KONTO, "04".equals(c.kontenrahmen) ? "4337" : "8337");
+        c.exportAccount = readString(K_AUSFUHRKONTO, "04".equals(c.kontenrahmen) ? "4120" : "8120");
+        c.invoiceFolder = readString(K_BELEGORDNER, DEFAULT_INVOICE_FOLDER);
 
-        readRateMap(K_REV_PREFIX, c.revenueAccounts);
-        readRateMap(K_EXP_PREFIX, c.expenseAccounts);
-        readRateMap(K_BU_INC_PREFIX, c.buKeysIncome);
-        readRateMap(K_BU_EXP_PREFIX, c.buKeysExpense);
+        readRateMap(K_ERLOESKONTO_PREFIX, c.revenueAccounts);
+        readRateMap(K_AUFWANDSKONTO_PREFIX, c.expenseAccounts);
+        readRateMap(K_BU_EINNAHMEN_PREFIX, c.buKeysIncome);
+        readRateMap(K_BU_AUSGABEN_PREFIX, c.buKeysExpense);
         c.applyDefaultBuKeys();
         return c;
     }
@@ -334,7 +533,7 @@ public final class DatevConfig {
      * @return true if the DATEV settings were saved once for this database
      */
     public static boolean isSaved() {
-        return GlobalSettings.hasProperty(K_BERATER);
+        return GlobalSettings.hasProperty(K_BERATERNUMMER);
     }
 
     /**
@@ -355,22 +554,22 @@ public final class DatevConfig {
             if (!isBlank(detected) && !detected.equals(c.kontenrahmen)) {
                 c.kontenrahmen = detected;
                 //the accounts not saved follow the detected chart
-                if (!GlobalSettings.hasProperty(K_MONEY_INCOME)) {
+                if (!GlobalSettings.hasProperty(K_GELDKONTO_EINNAHMEN)) {
                     c.moneyAccountIncome = "";
                 }
-                if (!GlobalSettings.hasProperty(K_MONEY_EXPENSE)) {
+                if (!GlobalSettings.hasProperty(K_GELDKONTO_AUSGABEN)) {
                     c.moneyAccountExpense = "";
                 }
-                if (!GlobalSettings.hasProperty(K_EU_ACCOUNT)) {
+                if (!GlobalSettings.hasProperty(K_EU_LIEFERKONTO)) {
                     c.euDeliveryAccount = "";
                 }
-                if (!GlobalSettings.hasProperty(K_EU_SERVICE_ACCOUNT)) {
+                if (!GlobalSettings.hasProperty(K_EU_LEISTUNGSKONTO)) {
                     c.euServiceAccount = "";
                 }
-                if (!GlobalSettings.hasProperty(K_REVERSE_CHARGE_ACCOUNT)) {
+                if (!GlobalSettings.hasProperty(K_STEUERSCHULDUMKEHR_KONTO)) {
                     c.reverseChargeAccount = "";
                 }
-                if (!GlobalSettings.hasProperty(K_EXPORT_ACCOUNT)) {
+                if (!GlobalSettings.hasProperty(K_AUSFUHRKONTO)) {
                     c.exportAccount = "";
                 }
             }
@@ -432,29 +631,37 @@ public final class DatevConfig {
      * Saves the DATEV settings to {@link GlobalSettings} (per database).
      */
     public void save() {
-        GlobalSettings.setProperty(K_BERATER, String.valueOf(beraterNummer));
-        GlobalSettings.setProperty(K_MANDANT, String.valueOf(mandantenNummer));
+        GlobalSettings.setProperty(K_BERATERNUMMER, String.valueOf(beraterNummer));
+        GlobalSettings.setProperty(K_MANDANTENNUMMER, String.valueOf(mandantenNummer));
         GlobalSettings.setProperty(K_WJ_BEGINN, safe(wjBeginn));
         GlobalSettings.setProperty(K_SACHKONTENLAENGE, String.valueOf(sachkontenLaenge));
         GlobalSettings.setProperty(K_KONTENRAHMEN, safe(kontenrahmen));
         GlobalSettings.setProperty(K_BEZEICHNUNG, safe(bezeichnung));
-        GlobalSettings.setProperty(K_DIKTAT, safe(diktatKuerzel));
+        GlobalSettings.setProperty(K_DIKTATKUERZEL, safe(diktatKuerzel));
         GlobalSettings.setProperty(K_FESTSCHREIBUNG, String.valueOf(festschreibung));
         GlobalSettings.setProperty(K_WAEHRUNG, isBlank(waehrung) ? "EUR" : waehrung.trim().toUpperCase());
-        GlobalSettings.setProperty(K_BELEGDATUM_MODE, (belegdatumMode == null ? DateMode.PAYMENT_DATE : belegdatumMode).name());
-        GlobalSettings.setProperty(K_MONEY_INCOME, safe(moneyAccountIncome));
-        GlobalSettings.setProperty(K_MONEY_EXPENSE, safe(moneyAccountExpense));
-        GlobalSettings.setProperty(K_CASH_ACCOUNT, safe(cashAccount));
-        GlobalSettings.setProperty(K_AUTOMATIC, String.valueOf(useAutomaticAccounts));
-        GlobalSettings.setProperty(K_EU_ACCOUNT, safe(euDeliveryAccount));
-        GlobalSettings.setProperty(K_EU_SERVICE_ACCOUNT, safe(euServiceAccount));
-        GlobalSettings.setProperty(K_REVERSE_CHARGE_ACCOUNT, safe(reverseChargeAccount));
-        GlobalSettings.setProperty(K_EXPORT_ACCOUNT, safe(exportAccount));
+        GlobalSettings.setProperty(K_HERKUNFT, isBlank(herkunft) ? "RE" : safe(herkunft));
+        GlobalSettings.setProperty(K_EXPORTIERT_VON, safe(exportiertVon));
+        GlobalSettings.setProperty(K_BUCHUNGSTYP, String.valueOf(buchungstyp));
+        GlobalSettings.setProperty(K_RECHNUNGSLEGUNGSZWECK, String.valueOf(rechnungslegungszweck));
+        GlobalSettings.setProperty(K_ANWENDUNGSINFO, safe(anwendungsinformation));
+        GlobalSettings.setProperty(K_LEISTUNGSDATUM_EXPORTIEREN, String.valueOf(leistungsdatumExportieren));
+        GlobalSettings.setProperty(K_EIGENE_AUTOMATIKKONTEN, String.join(",", customAutomaticAccounts));
+        GlobalSettings.setProperty(K_BELEGDATUM_MODUS, (belegdatumMode == null ? DateMode.PAYMENT_DATE : belegdatumMode).name());
+        GlobalSettings.setProperty(K_GELDKONTO_EINNAHMEN, safe(moneyAccountIncome));
+        GlobalSettings.setProperty(K_GELDKONTO_AUSGABEN, safe(moneyAccountExpense));
+        GlobalSettings.setProperty(K_KASSENKONTO, safe(cashAccount));
+        GlobalSettings.setProperty(K_AUTOMATIKKONTEN, String.valueOf(useAutomaticAccounts));
+        GlobalSettings.setProperty(K_EU_LIEFERKONTO, safe(euDeliveryAccount));
+        GlobalSettings.setProperty(K_EU_LEISTUNGSKONTO, safe(euServiceAccount));
+        GlobalSettings.setProperty(K_STEUERSCHULDUMKEHR_KONTO, safe(reverseChargeAccount));
+        GlobalSettings.setProperty(K_AUSFUHRKONTO, safe(exportAccount));
+        GlobalSettings.setProperty(K_BELEGORDNER, isBlank(invoiceFolder) ? DEFAULT_INVOICE_FOLDER : safe(invoiceFolder));
 
-        writeRateMap(K_REV_PREFIX, revenueAccounts);
-        writeRateMap(K_EXP_PREFIX, expenseAccounts);
-        writeRateMap(K_BU_INC_PREFIX, buKeysIncome);
-        writeRateMap(K_BU_EXP_PREFIX, buKeysExpense);
+        writeRateMap(K_ERLOESKONTO_PREFIX, revenueAccounts);
+        writeRateMap(K_AUFWANDSKONTO_PREFIX, expenseAccounts);
+        writeRateMap(K_BU_EINNAHMEN_PREFIX, buKeysIncome);
+        writeRateMap(K_BU_AUSGABEN_PREFIX, buKeysExpense);
         GlobalSettings.save();
     }
 

@@ -106,7 +106,8 @@ class DatevWorkflowTest {
         //the export of the journal (as in the menu and the tax adviser package)
         mpv5.plugin.api.JournalExport export = null;
         for (mpv5.plugin.api.JournalExport e : mpv5.plugin.ExtensionManager.instance().journalExports()) {
-            if (e.title().startsWith("DATEV")) {
+            //the booking batch (the plugin also has the document package for DATEV Unternehmen online)
+            if (e.title().startsWith("DATEV-Buchungsstapel")) {
                 export = e;
             }
         }

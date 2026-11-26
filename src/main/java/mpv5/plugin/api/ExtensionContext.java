@@ -94,6 +94,18 @@ public interface ExtensionContext {
     }
 
     /**
+     * Adds a tab to the Journal (next to "Journal" and "Analysis"), e.g. a
+     * check or an evaluation of the bookkeeping. Journals opened before the
+     * plugin started show the tab when they are opened again.
+     *
+     * @param title the title of the tab
+     * @param tab creates the content when a journal is opened (on the Swing
+     * thread); may return null for no tab
+     */
+    default void addJournalTab(String title, Supplier<JComponent> tab) {
+    }
+
+    /**
      * Supplies additional template placeholders (key -> value) when a
      * {@link mpv5.db.common.DatabaseObject} is formatted for ODT/PDF export.
      *

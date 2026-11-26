@@ -408,11 +408,12 @@ public final class JournalCalc {
             //the volume: the documents of the bookkeeping except payments (part of their invoice)
             //and cancelled ones; credit notes and expenses reduce it
             if (accounting && e.type != Constants.TYPE_PAYMENT && !isCancelled(e)) {
-                boolean minus = e.type == Constants.TYPE_CREDIT || e.type == Constants.TYPE_EXPENSE;
-                t.volumeNet = add(t.volumeNet, e.net, minus);
-                t.volumeTax = add(t.volumeTax, e.tax, minus);
-                t.volumeGross = add(t.volumeGross, e.gross, minus);
-                t.discount = add(t.discount, e.discount, minus);
+                boolean isCredit = e.type == Constants.TYPE_CREDIT;
+                boolean minus = isCredit || e.type == Constants.TYPE_EXPENSE;
+                t.volumeNet = add(t.volumeNet, isCredit ? e.net.abs() : e.net, minus);
+                t.volumeTax = add(t.volumeTax, isCredit ? e.tax.abs() : e.tax, minus);
+                t.volumeGross = add(t.volumeGross, isCredit ? e.gross.abs() : e.gross, minus);
+                t.discount = add(t.discount, isCredit ? e.discount.abs() : e.discount, minus);
             }
             //open items
             if (accounting && isOpen(e)) {
@@ -420,7 +421,8 @@ public final class JournalCalc {
                 if (e.type == Constants.TYPE_EXPENSE) {
                     t.openPayables = t.openPayables.add(open);
                 } else {
-                    t.openReceivables = add(t.openReceivables, open, e.type == Constants.TYPE_CREDIT);
+                    boolean isCredit = e.type == Constants.TYPE_CREDIT;
+                    t.openReceivables = add(t.openReceivables, isCredit ? open.abs() : open, isCredit);
                 }
             }
         }
@@ -484,22 +486,30 @@ public final class JournalCalc {
 
     private static void expense(Totals t, Entry e) {
         e.counted = true;
-        e.effect = e.net.negate();
         if (e.type == Constants.TYPE_CREDIT) {
-            //a credit note reduces the income (and its output tax)
-            t.incomeNet = t.incomeNet.subtract(e.net);
-            t.incomeTax = t.incomeTax.subtract(e.tax);
-            t.incomeGross = t.incomeGross.subtract(e.gross);
-            byRate(t.incomeByRate, e, true);
+            //a credit note reduces the income (and its output tax), regardless of whether stored positive or negative
+            BigDecimal cnNet = e.net.abs();
+            BigDecimal cnTax = e.tax.abs();
+            BigDecimal cnGross = e.gross.abs();
+            e.effect = cnNet.negate();
+            t.incomeNet = t.incomeNet.subtract(cnNet);
+            t.incomeTax = t.incomeTax.subtract(cnTax);
+            t.incomeGross = t.incomeGross.subtract(cnGross);
+            byRate(t.incomeByRate, e, true, true);
             return;
         }
+        e.effect = e.net.negate();
         t.expenseNet = t.expenseNet.add(e.net);
         t.expenseTax = t.expenseTax.add(e.tax);
         t.expenseGross = t.expenseGross.add(e.gross);
-        byRate(t.expensesByRate, e, false);
+        byRate(t.expensesByRate, e, false, false);
     }
 
     private static void byRate(Map<BigDecimal, BigDecimal[]> map, Entry e, boolean minus) {
+        byRate(map, e, minus, false);
+    }
+
+    private static void byRate(Map<BigDecimal, BigDecimal[]> map, Entry e, boolean minus, boolean useAbs) {
         Map<BigDecimal, BigDecimal[]> rates = e.rates;
         if (rates == null || rates.isEmpty()) {
             rates = new TreeMap<BigDecimal, BigDecimal[]>(RATE_ORDER);
@@ -511,8 +521,10 @@ public final class JournalCalc {
                 v = new BigDecimal[]{BigDecimal.ZERO, BigDecimal.ZERO};
                 map.put(r.getKey(), v);
             }
-            v[0] = add(v[0], r.getValue()[0], minus);
-            v[1] = add(v[1], r.getValue()[1], minus);
+            BigDecimal netVal = useAbs ? r.getValue()[0].abs() : r.getValue()[0];
+            BigDecimal taxVal = useAbs ? r.getValue()[1].abs() : r.getValue()[1];
+            v[0] = add(v[0], netVal, minus);
+            v[1] = add(v[1], taxVal, minus);
         }
     }
 

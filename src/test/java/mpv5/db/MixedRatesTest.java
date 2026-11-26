@@ -257,7 +257,10 @@ class MixedRatesTest {
         //gross per account: 19 % 119.00, 7 % 53.50, 0 % 20.00 on each side
         money("119.00", byAccount.get("8400"), "8400 (19 %)");
         money("53.50", byAccount.get("8300"), "8300 (7 %)");
-        money("20.00", byAccount.get("8120"), "8120 (0 %)");
+        //0 % without VAT category: a tax-free domestic sale (§ 4 Nr. 8 ff. UStG, SKR03 8100) - not an export
+        //(8120, § 4 Nr. 1a UStG: DATEV reports it in field 43 of the VAT return); exports, EU supplies and
+        //reverse charge have their own accounts by the category of the rate (G, K, AE)
+        money("20.00", byAccount.get("8100"), "8100 (0 %)");
         money("119.00", byAccount.get("3400"), "3400 (19 %)");
         money("53.50", byAccount.get("3300"), "3300 (7 %)");
         money("20.00", byAccount.get("4900"), "4900 (0 %)");

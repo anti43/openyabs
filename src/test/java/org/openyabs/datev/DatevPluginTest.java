@@ -112,6 +112,8 @@ public class DatevPluginTest {
             if (DatevPlugin.ID.equals(ext.id())) {
                 found = true;
                 assertEquals("DATEV-Export", ext.name());
+                assertEquals("2.0.0", ext.version());
+                assertEquals("2.0.23", ext.minYabsVersion());
             }
         }
         assertTrue(found, "DatevPlugin must be registered in META-INF/services/mpv5.plugin.api.YabsExtension");
@@ -548,60 +550,73 @@ public class DatevPluginTest {
 
     @Test
     public void adviserZipIncludesDatevCsvWhenPluginExportIsActive(@TempDir Path dir) throws Exception {
-        Date from = date("2026-01-01");
-        Date to = date("2026-01-31");
-        Entry inv = new Entry();
-        inv.type = Constants.TYPE_INVOICE;
-        inv.status = Item.STATUS_PAID;
-        inv.date = date("2026-01-10");
-        inv.number = "RE-1";
-        inv.contact = "Testkunde";
-        inv.net = bd("100.00");
-        inv.tax = bd("19.00");
-        inv.gross = bd("119.00");
-        inv.rates.put(bd("19"), new BigDecimal[]{bd("100.00"), bd("19.00")});
-        List<Entry> entries = Collections.singletonList(inv);
-        Totals totals = JournalCalc.compute(entries, Collections.<Integer>emptySet());
+        java.util.Locale prevLocale = java.util.Locale.getDefault();
+        String prevLang = System.getProperty("user.language");
+        java.util.Locale.setDefault(java.util.Locale.US);
+        System.setProperty("user.language", "en");
+        try {
+            Date from = date("2026-01-01");
+            Date to = date("2026-01-31");
+            Entry inv = new Entry();
+            inv.type = Constants.TYPE_INVOICE;
+            inv.status = Item.STATUS_PAID;
+            inv.date = date("2026-01-10");
+            inv.number = "RE-1";
+            inv.contact = "Testkunde";
+            inv.net = bd("100.00");
+            inv.tax = bd("19.00");
+            inv.gross = bd("119.00");
+            inv.rates.put(bd("19"), new BigDecimal[]{bd("100.00"), bd("19.00")});
+            List<Entry> entries = Collections.singletonList(inv);
+            Totals totals = JournalCalc.compute(entries, Collections.<Integer>emptySet());
 
-        final DatevConfig cfg = sampleConfig();
-        JournalExport datevExport = new JournalExport() {
-            @Override
-            public String title() {
-                return "DATEV-Buchungsstapel (CSV)";
+            final DatevConfig cfg = sampleConfig();
+            JournalExport datevExport = new JournalExport() {
+                @Override
+                public String title() {
+                    return "DATEV-Buchungsstapel (CSV)";
+                }
+
+                @Override
+                public void export(JournalExportContext context) {
+                }
+
+                @Override
+                public Map<String, byte[]> adviserPackageEntries(JournalExportContext ctx) {
+                    DatevMapper.Result res = DatevMapper.map(ctx.entries, cfg, ctx.from, ctx.to, null, null, null);
+                    String csv = DatevFormat.render(cfg, ctx.from, ctx.to, ctx.to, res.lines);
+                    return Collections.singletonMap("datev/" + DatevFormat.fileName(ctx.from, ctx.to), DatevFormat.encode(csv));
+                }
+            };
+
+            File zipFile = dir.resolve("journal-package.zip").toFile();
+            new JournalAdviserPackage(entries, totals, from, to, Collections.emptyList(), Collections.emptyMap())
+                    .setPluginExports(Collections.singletonList(datevExport))
+                    .write(zipFile);
+
+            try (ZipFile zf = new ZipFile(zipFile)) {
+                assertNotNull(zf.getEntry("journal.csv"));
+                assertNotNull(zf.getEntry("journal_tax_rates.csv"));
+                ZipEntry datevEntry = zf.getEntry("datev/EXTF_Buchungsstapel_20260101_20260131.csv");
+                assertNotNull(datevEntry, "Tax-adviser ZIP must include datev/EXTF_Buchungsstapel_...csv");
+                String content = new String(zf.getInputStream(datevEntry).readAllBytes(), DatevFormat.CHARSET);
+                assertTrue(content.startsWith("\"EXTF\";700;21;\"Buchungsstapel\";13;"));
+                assertTrue(content.contains("119,00;\"S\";\"EUR\";;;;1200;8400;"));
+
+                ZipEntry summary = zf.getEntry("summary.txt");
+                assertNotNull(summary, "Summary file must use international name summary.txt");
+                String sumText = new String(zf.getInputStream(summary).readAllBytes(), StandardCharsets.UTF_8);
+                assertTrue(sumText.contains("datev/EXTF_Buchungsstapel_20260101_20260131.csv"));
+                assertFalse(sumText.contains("Steuerberater"), "Default English summary must not contain hardcoded German");
+                assertFalse(sumText.contains("Einnahmen-\u00dcberschuss-Rechnung"), "Default English summary must not contain hardcoded German");
             }
-
-            @Override
-            public void export(JournalExportContext context) {
+        } finally {
+            java.util.Locale.setDefault(prevLocale);
+            if (prevLang == null) {
+                System.clearProperty("user.language");
+            } else {
+                System.setProperty("user.language", prevLang);
             }
-
-            @Override
-            public Map<String, byte[]> adviserPackageEntries(JournalExportContext ctx) {
-                DatevMapper.Result res = DatevMapper.map(ctx.entries, cfg, ctx.from, ctx.to, null, null, null);
-                String csv = DatevFormat.render(cfg, ctx.from, ctx.to, ctx.to, res.lines);
-                return Collections.singletonMap("datev/" + DatevFormat.fileName(ctx.from, ctx.to), DatevFormat.encode(csv));
-            }
-        };
-
-        File zipFile = dir.resolve("journal-package.zip").toFile();
-        new JournalAdviserPackage(entries, totals, from, to, Collections.emptyList(), Collections.emptyMap())
-                .setPluginExports(Collections.singletonList(datevExport))
-                .write(zipFile);
-
-        try (ZipFile zf = new ZipFile(zipFile)) {
-            assertNotNull(zf.getEntry("journal.csv"));
-            assertNotNull(zf.getEntry("journal_tax_rates.csv"));
-            ZipEntry datevEntry = zf.getEntry("datev/EXTF_Buchungsstapel_20260101_20260131.csv");
-            assertNotNull(datevEntry, "Tax-adviser ZIP must include datev/EXTF_Buchungsstapel_...csv");
-            String content = new String(zf.getInputStream(datevEntry).readAllBytes(), DatevFormat.CHARSET);
-            assertTrue(content.startsWith("\"EXTF\";700;21;\"Buchungsstapel\";13;"));
-            assertTrue(content.contains("119,00;\"S\";\"EUR\";;;;1200;8400;"));
-
-            ZipEntry summary = zf.getEntry("summary.txt");
-            assertNotNull(summary, "Summary file must use international name summary.txt");
-            String sumText = new String(zf.getInputStream(summary).readAllBytes(), StandardCharsets.UTF_8);
-            assertTrue(sumText.contains("datev/EXTF_Buchungsstapel_20260101_20260131.csv"));
-            assertFalse(sumText.contains("Steuerberater"), "Default English summary must not contain hardcoded German");
-            assertFalse(sumText.contains("Einnahmen-\u00dcberschuss-Rechnung"), "Default English summary must not contain hardcoded German");
         }
     }
 

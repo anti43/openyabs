@@ -201,6 +201,7 @@ public final class ExtensionManager {
     private final List<Owned<DatabaseObjectModifier>> modifiers = new CopyOnWriteArrayList<Owned<DatabaseObjectModifier>>();
     private final List<Owned<Consumer<DataPanel>>> viewListeners = new CopyOnWriteArrayList<Owned<Consumer<DataPanel>>>();
     private final List<Owned<JournalExport>> journalExports = new CopyOnWriteArrayList<Owned<JournalExport>>();
+    private final List<Owned<JournalTab>> journalTabs = new CopyOnWriteArrayList<Owned<JournalTab>>();
     private final List<Owned<Function<mpv5.db.common.DatabaseObject, java.util.Map<String, Object>>>> templateFieldProviders
             = new CopyOnWriteArrayList<Owned<Function<mpv5.db.common.DatabaseObject, java.util.Map<String, Object>>>>();
     private final List<Owned<Function<mpv5.db.common.DatabaseObject, String>>> mailWarningProviders
@@ -924,6 +925,37 @@ public final class ExtensionManager {
     }
 
     /**
+     * A tab of a plugin in the Journal
+     */
+    public static final class JournalTab {
+
+        /**
+         * the title of the tab
+         */
+        public final String title;
+        /**
+         * creates the content
+         */
+        public final Supplier<JComponent> content;
+
+        JournalTab(String title, Supplier<JComponent> content) {
+            this.title = title;
+            this.content = content;
+        }
+    }
+
+    /**
+     * @return the journal tabs registered by running plugins
+     */
+    public List<JournalTab> journalTabs() {
+        List<JournalTab> l = new ArrayList<JournalTab>();
+        for (Owned<JournalTab> e : journalTabs) {
+            l.add(e.value);
+        }
+        return Collections.unmodifiableList(l);
+    }
+
+    /**
      * @return the journal exports registered by running plugins
      */
     public List<JournalExport> journalExports() {
@@ -1301,6 +1333,7 @@ public final class ExtensionManager {
         providers.removeIf(p -> p.owner.equals(owner));
         listeners.removeIf(p -> p.owner.equals(owner));
         journalExports.removeIf(p -> p.owner.equals(owner));
+        journalTabs.removeIf(p -> p.owner.equals(owner));
         templateFieldProviders.removeIf(p -> p.owner.equals(owner));
         mailWarningProviders.removeIf(p -> p.owner.equals(owner));
         eInvoiceSkipRules.removeIf(p -> p.owner.equals(owner));
@@ -1353,6 +1386,9 @@ public final class ExtensionManager {
             n += p.owner.equals(owner) ? 1 : 0;
         }
         for (Owned<?> p : journalExports) {
+            n += p.owner.equals(owner) ? 1 : 0;
+        }
+        for (Owned<?> p : journalTabs) {
             n += p.owner.equals(owner) ? 1 : 0;
         }
         for (Owned<?> p : templateFieldProviders) {
@@ -1507,6 +1543,14 @@ public final class ExtensionManager {
                         }
                     }
                 });
+            }
+        }
+
+        @Override
+        public void addJournalTab(String title, Supplier<JComponent> tab) {
+            if (title != null && tab != null) {
+                journalTabs.add(new Owned<JournalTab>(owner, new JournalTab(title, tab)));
+                fireChanged();
             }
         }
 

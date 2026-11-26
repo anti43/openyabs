@@ -2114,6 +2114,16 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
 
     @Override
     public void actionAfterSave() {
+        //a new document keeps the document date of the view: inserting a record sets the current time,
+        //a document dated back (e.g. written today for last month) landed in the wrong period of the
+        //journal, the VAT return and the DATEV exports
+        Date wanted = documentDateOfNew;
+        documentDateOfNew = null;
+        if (wanted != null && dataOwner != null && dataOwner.isExisting() && dataOwner.__getDateadded() != null
+                && !DateConverter.getSQLDateString(wanted).equals(DateConverter.getSQLDateString(dataOwner.__getDateadded()))) {
+            dataOwner.setDateadded(wanted);
+            dataOwner.save(true);
+        }
         if (!isContentLocked() && getLockedDocument() == null) {
             positions.prepareSave();
             ItemService.savePositions(dataOwner, positions.getModel(), true, positions.getUsedOrders());
@@ -2267,8 +2277,15 @@ public class ModernItemPanel extends ModernDataPanel implements MPCBSelectionCha
         }
     }
 
+    /**
+     * the document date chosen in the view for a new document (the first save
+     * inserts the record with the current time), null if the record exists
+     */
+    private Date documentDateOfNew;
+
     @Override
     public void actionBeforeSave() throws ChangeNotApprovedException {
+        documentDateOfNew = dataOwner != null && !dataOwner.isExisting() ? date1.getDate() : null;
         //no new documents for a blocked contact (GDPR: kept only for the retention of its documents)
         if (!dataOwner.isExisting()) {
             try {

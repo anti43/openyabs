@@ -87,9 +87,13 @@ final class DatevSettingsPage {
         final JTextField euServiceAccount = new JTextField(config.euServiceAccount, 10);
         final JTextField reverseChargeAccount = new JTextField(config.reverseChargeAccount, 10);
         final JTextField exportAccount = new JTextField(config.exportAccount, 10);
+        final JTextField invoiceFolder = new JTextField(config.invoiceFolder, 24);
         final JCheckBox automaticAccounts = new JCheckBox(
-                "Automatikkonten verwenden (kein BU-Schlüssel, wenn der Steuersatz des Kontos passt)",
+                "DATEV-Automatikkonten (AM/AV) ohne BU-Schlüssel exportieren (z. B. SKR03 8400/8300/3400/3300)",
                 config.useAutomaticAccounts);
+        final JCheckBox leistungsdatumExportieren = new JCheckBox(
+                "Leistungsdatum / Steuerperiode (Spalten 115–116) exportieren (§ 14 Abs. 4 Nr. 6 UStG)",
+                config.leistungsdatumExportieren);
 
         final DefaultTableModel ratesModel = new DefaultTableModel(
                 new String[]{"Steuersatz (%)", "Erlöskonto", "Aufwandskonto", "BU Einnahmen", "BU Ausgaben"}, 0) {
@@ -121,7 +125,7 @@ final class DatevSettingsPage {
         addRow(form, g, row++, "Sachkontenlänge (4–8):", sachkontenLaenge);
         addRow(form, g, row++, "Kontenrahmen:", kontenrahmen);
         addRow(form, g, row++, "Bezeichnung des Stapels (max. 30):", bezeichnung);
-        addRow(form, g, row++, "Diktatkürzel (optional, 2 Großbuchstaben):", diktat);
+        addRow(form, g, row++, "Diktatkürzel (optional, 1–2 Großbuchstaben):", diktat);
         addRow(form, g, row++, "Belegdatum:", belegdatumMode);
         addRow(form, g, row++, "Geldkonto Einnahmen (z. B. 1200 / 1800):", moneyIncome);
         addRow(form, g, row++, "Geldkonto Ausgaben (z. B. 1200 / 1800):", moneyExpense);
@@ -130,6 +134,7 @@ final class DatevSettingsPage {
         addRow(form, g, row++, "EU-Leistungen, Reverse Charge (Kategorie AE, z. B. 8336 / 4336):", euServiceAccount);
         addRow(form, g, row++, "§ 13b UStG im Inland (Kategorie AE ohne EU-USt-IdNr., z. B. 8337 / 4337):", reverseChargeAccount);
         addRow(form, g, row++, "Ausfuhr Drittland (Kategorie G, z. B. 8120 / 4120):", exportAccount);
+        addRow(form, g, row++, "Belegpaket: Rechnungsordner in Belege online (Standard: Ausgangsrechnungen):", invoiceFolder);
 
         g.gridx = 0;
         g.gridy = row++;
@@ -138,6 +143,9 @@ final class DatevSettingsPage {
 
         g.gridy = row++;
         form.add(automaticAccounts, g);
+
+        g.gridy = row++;
+        form.add(leistungsdatumExportieren, g);
 
         g.gridy = row++;
         form.add(new JLabel("Konten & BU-Schlüssel je Steuersatz (Fallback, wenn das Belegkonto nicht passt):"), g);
@@ -185,7 +193,9 @@ final class DatevSettingsPage {
             config.euServiceAccount = euServiceAccount.getText().trim();
             config.reverseChargeAccount = reverseChargeAccount.getText().trim();
             config.exportAccount = exportAccount.getText().trim();
+            config.invoiceFolder = invoiceFolder.getText().trim();
             config.useAutomaticAccounts = automaticAccounts.isSelected();
+            config.leistungsdatumExportieren = leistungsdatumExportieren.isSelected();
 
             config.revenueAccounts.clear();
             config.expenseAccounts.clear();

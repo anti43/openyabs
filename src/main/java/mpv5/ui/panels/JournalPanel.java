@@ -1038,6 +1038,17 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
             JTabbedPane tabs = new JTabbedPane();
             tabs.addTab(Messages.JOURNAL_TAB_JOURNAL.toString(), journal);
             tabs.addTab(Messages.JOURNAL_TAB_CHART.toString(), analysis);
+            //tabs of plugins (e.g. the VAT return check of the GmbH plugin)
+            for (ExtensionManager.JournalTab pt : ExtensionManager.instance().journalTabs()) {
+                try {
+                    javax.swing.JComponent c = pt.content.get();
+                    if (c != null) {
+                        tabs.addTab(pt.title, c);
+                    }
+                } catch (Throwable t) {
+                    Log.Debug(JournalPanel.class, t);
+                }
+            }
             tabs.addChangeListener(e -> {
                 if (tabs.getSelectedComponent() == analysis) {
                     analysis.showing();

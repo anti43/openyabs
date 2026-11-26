@@ -163,7 +163,7 @@
       <inttaxfid>0</inttaxfid>
       <inttaxuid>9</inttaxuid>
       <frame>de_skr03</frame>
-      <cname>Geringwertige Wirtschaftsg.b.410EUR</cname>
+      <cname>Geringwertige Wirtschaftsg. bis 800 EUR</cname>
       <groupsids>1</groupsids>
       <dateadded>02.07.09</dateadded>
       <intaddedby>1</intaddedby>
@@ -1406,7 +1406,7 @@
       <intparentaccount>1</intparentaccount>
       <intprofitfid>24</intprofitfid>
       <inttaxfid>0</inttaxfid>
-      <inttaxuid>16</inttaxuid>
+      <inttaxuid>9</inttaxuid>
       <frame>de_skr03</frame>
       <cname>Kosten der Warenabgabe</cname>
       <groupsids>1</groupsids>
@@ -1421,7 +1421,7 @@
       <intparentaccount>1</intparentaccount>
       <intprofitfid>24</intprofitfid>
       <inttaxfid>0</inttaxfid>
-      <inttaxuid>16</inttaxuid>
+      <inttaxuid>9</inttaxuid>
       <frame>de_skr03</frame>
       <cname>Verpackungsmaterial</cname>
       <groupsids>1</groupsids>
@@ -1436,7 +1436,7 @@
       <intparentaccount>1</intparentaccount>
       <intprofitfid>24</intprofitfid>
       <inttaxfid>0</inttaxfid>
-      <inttaxuid>16</inttaxuid>
+      <inttaxuid>9</inttaxuid>
       <frame>de_skr03</frame>
       <cname>Ausgangsfracht</cname>
       <groupsids>1</groupsids>
@@ -1451,7 +1451,7 @@
       <intparentaccount>1</intparentaccount>
       <intprofitfid>24</intprofitfid>
       <inttaxfid>0</inttaxfid>
-      <inttaxuid>16</inttaxuid>
+      <inttaxuid>9</inttaxuid>
       <frame>de_skr03</frame>
       <cname>Transportversicherung</cname>
       <groupsids>1</groupsids>
@@ -1466,7 +1466,7 @@
       <intparentaccount>1</intparentaccount>
       <intprofitfid>24</intprofitfid>
       <inttaxfid>0</inttaxfid>
-      <inttaxuid>16</inttaxuid>
+      <inttaxuid>9</inttaxuid>
       <frame>de_skr03</frame>
       <cname>Verkaufsprovision</cname>
       <groupsids>1</groupsids>
@@ -1481,7 +1481,7 @@
       <intparentaccount>1</intparentaccount>
       <intprofitfid>24</intprofitfid>
       <inttaxfid>0</inttaxfid>
-      <inttaxuid>16</inttaxuid>
+      <inttaxuid>9</inttaxuid>
       <frame>de_skr03</frame>
       <cname>Fremdarbeiten</cname>
       <groupsids>1</groupsids>
