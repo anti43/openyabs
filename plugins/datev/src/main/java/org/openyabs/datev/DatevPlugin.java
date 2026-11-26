@@ -97,12 +97,31 @@ public final class DatevPlugin implements YabsExtension {
         yabs.addJournalExport(new JournalExport() {
             @Override
             public String title() {
-                return "DATEV-Buchungsstapel (CSV)";
+                return "DATEV-Belegpaket (ZIP – Unternehmen online, mit E-Rechnungen)";
             }
 
             @Override
             public String tooltip() {
-                return "Schreibt einen DATEV-Buchungsstapel (EXTF 700, Formatversion 13, Windows-1252) mit einer Zeile je bezahltem Beleg und Steuersatz.";
+                return "Ausgangsrechnungen und Gutschriften des gewählten Zeitraums als ZIP für DATEV Unternehmen online "
+                        + "(DATEV Belegtransfer) mit Original-PDF/ZUGFeRD bzw. XRechnung – ohne Berater- oder Mandantennummer.";
+            }
+
+            @Override
+            public void export(JournalExportContext ctx) {
+                exportPackage(yabs, ctx);
+            }
+        });
+
+        yabs.addJournalExport(new JournalExport() {
+            @Override
+            public String title() {
+                return "DATEV-Buchungsstapel (EXTF-CSV – Kanzlei-Rechnungswesen)";
+            }
+
+            @Override
+            public String tooltip() {
+                return "Schreibt einen DATEV-Buchungsstapel (EXTF 700, Formatversion 13, Windows-1252) mit einer Zeile je "
+                        + "bezahltem Beleg und Steuersatz. Wird auch automatisch ins Steuerberater-Paket (ZIP) aufgenommen.";
             }
 
             @Override
@@ -133,12 +152,13 @@ public final class DatevPlugin implements YabsExtension {
         yabs.addJournalExport(new JournalExport() {
             @Override
             public String title() {
-                return "DATEV-Stammdaten Debitoren/Kreditoren (CSV)";
+                return "DATEV-Stammdaten Debitoren/Kreditoren (EXTF-CSV – Kanzlei-Rechnungswesen)";
             }
 
             @Override
             public String tooltip() {
-                return "Exportiert Kunden (Debitoren) und Lieferanten (Kreditoren) als DATEV-Format EXTF 700 (Kategorie 16, Version 5, Windows-1252).";
+                return "Exportiert alle Kunden (Debitoren) und Lieferanten (Kreditoren) als DATEV-Format EXTF 700 "
+                        + "(Kategorie 16, Formatversion 5, Windows-1252) mit Vorab-Prüfung.";
             }
 
             @Override
@@ -147,39 +167,37 @@ public final class DatevPlugin implements YabsExtension {
             }
         });
 
-        yabs.addJournalExport(new JournalExport() {
-            @Override
-            public String title() {
-                return "DATEV-Belegpaket (XML-Schnittstelle online, mit E-Rechnungen)";
-            }
-
-            @Override
-            public String tooltip() {
-                return "Ausgangsrechnungen und Gutschriften als ZIP für DATEV Unternehmen online (DATEV Belegtransfer): "
-                        + "Rechnungsdaten je Beleg mit dem Original (PDF/ZUGFeRD) bzw. der XRechnung";
-            }
-
-            @Override
-            public void export(JournalExportContext ctx) {
-                exportPackage(yabs, ctx);
-            }
-        });
-
         yabs.addCommand(
                 "DATEV: Einstellungen öffnen",
                 "Öffnet die DATEV-Export-Einstellungen (Kontenrahmen SKR03/SKR04, Konten, Belegpaket, Buchungsstapel)",
-                () -> yabs.openTab("DATEV-Export (Einstellungen)", DatevSettingsPage.create(yabs)));
+                () -> openSettings(yabs));
+
+        yabs.addCommand(
+                "DATEV: Belegpaket exportieren (aktuelles Jahr)",
+                "Exportiert Ausgangsrechnungen und Gutschriften des laufenden Jahres als ZIP für DATEV Unternehmen online",
+                () -> exportPackage(yabs, currentYearContext()));
 
         yabs.addCommand(
                 "DATEV: Buchungsstapel exportieren (aktuelles Jahr)",
-                "Exportiert den DATEV-Buchungsstapel des laufenden Jahres (Datum nach den DATEV-Einstellungen)",
-                () -> {
-                    LocalDate now = LocalDate.now();
-                    Date start = Date.from(LocalDate.of(now.getYear(), 1, 1).atStartOfDay(ZoneId.systemDefault()).toInstant());
-                    Date end = DateConverter.getEndOfDay(Date.from(LocalDate.of(now.getYear(), 12, 31).atStartOfDay(ZoneId.systemDefault()).toInstant()));
-                    exportInteractive(yabs, new JournalExportContext(Collections.emptyList(), null, start, end,
-                            Collections.emptyList(), null, null, null));
-                });
+                "Exportiert den DATEV-Buchungsstapel (EXTF-CSV) des laufenden Jahres für Kanzlei-Rechnungswesen",
+                () -> exportInteractive(yabs, currentYearContext()));
+
+        yabs.addCommand(
+                "DATEV: Stammdaten Debitoren/Kreditoren exportieren",
+                "Exportiert Kunden und Lieferanten als DATEV-Stammdaten (EXTF-CSV) für Kanzlei-Rechnungswesen",
+                () -> exportMasterData(yabs, currentYearContext()));
+    }
+
+    private static void openSettings(final ExtensionContext yabs) {
+        yabs.openTab("DATEV-Export (Einstellungen)", DatevSettingsPage.create(yabs));
+    }
+
+    private static JournalExportContext currentYearContext() {
+        LocalDate now = LocalDate.now();
+        Date start = Date.from(LocalDate.of(now.getYear(), 1, 1).atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date end = DateConverter.getEndOfDay(Date.from(LocalDate.of(now.getYear(), 12, 31).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+        return new JournalExportContext(Collections.emptyList(), null, start, end,
+                Collections.emptyList(), null, null, null);
     }
 
     /**
@@ -246,6 +264,10 @@ public final class DatevPlugin implements YabsExtension {
                 }
                 Date now = new Date();
                 String defaultName = DatevMasterDataFormat.fileName(now);
+                DatevExportDialog.Content content = DatevExportContent.masterData(config, records, defaultName);
+                if (!DatevExportDialog.confirm(ctx.parent, content, () -> openSettings(yabs))) {
+                    return;
+                }
                 DialogForFile chooser = new DialogForFile(DialogForFile.FILES_ONLY, defaultName);
                 if (!chooser.saveFile()) {
                     return;
@@ -303,7 +325,9 @@ public final class DatevPlugin implements YabsExtension {
                             + " eintragen, die Konten prüfen und speichern."));
                 }
                 String defaultName = DatevFormat.fileName(ctx.from, ctx.to);
-                if (!DatevExportDialog.confirm(ctx.parent, DatevExportContent.batch(config, ctx.from, ctx.to, loaded.entries, periodDocs, result, defaultName))) {
+                if (!DatevExportDialog.confirm(ctx.parent,
+                        DatevExportContent.batch(config, ctx.from, ctx.to, loaded.entries, periodDocs, result, defaultName),
+                        () -> openSettings(yabs))) {
                     return;
                 }
                 DialogForFile chooser = new DialogForFile(DialogForFile.FILES_ONLY, defaultName);
@@ -355,7 +379,7 @@ public final class DatevPlugin implements YabsExtension {
             DatevExportDialog.Content content = DatevExportContent.documentPackage(col, c.from, c.to, config.invoiceFolder, name,
                     DatevConfig.isSaved(), config.kontenrahmen);
             content.notes.addAll(0, config.chartConsistencyWarnings(true));
-            if (!DatevExportDialog.confirm(c.parent, content) || col.docs.size() > DatevXml.MAX_DOCUMENTS) {
+            if (!DatevExportDialog.confirm(c.parent, content, () -> openSettings(yabs)) || col.docs.size() > DatevXml.MAX_DOCUMENTS) {
                 return;
             }
             DialogForFile chooser = new DialogForFile(DialogForFile.FILES_ONLY, name);

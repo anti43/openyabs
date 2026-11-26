@@ -243,11 +243,34 @@ final class DatevExportDialog {
      * @return true if the user wants to save the file
      */
     static boolean confirm(Component parent, Content c) {
+        return confirm(parent, c, null);
+    }
+
+    /**
+     * Shows the dialog with an optional button to jump straight to DATEV settings.
+     *
+     * @param parent
+     * @param c
+     * @param openSettings optional action invoked when the user clicks "DATEV-Einstellungen …"
+     * @return true if the user wants to save the file
+     */
+    static boolean confirm(Component parent, Content c, final Runnable openSettings) {
         Window owner = parent == null ? null : SwingUtilities.getWindowAncestor(parent);
         final JDialog dialog = new JDialog(owner, c.title, JDialog.ModalityType.APPLICATION_MODAL);
         final boolean[] accepted = {false};
         JPanel all = new JPanel(new BorderLayout());
         all.add(panel(c), BorderLayout.CENTER);
+        JPanel bar = new JPanel(new BorderLayout());
+        if (openSettings != null) {
+            JPanel left = new JPanel(new FlowLayout(FlowLayout.LEFT, ModernTheme.px(8), ModernTheme.px(8)));
+            JButton settings = new JButton("DATEV-Einstellungen …");
+            settings.addActionListener(e -> {
+                dialog.dispose();
+                openSettings.run();
+            });
+            left.add(settings);
+            bar.add(left, BorderLayout.WEST);
+        }
         JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT, ModernTheme.px(8), ModernTheme.px(8)));
         JButton cancel = new JButton("Abbrechen");
         cancel.addActionListener(e -> dialog.dispose());
@@ -261,7 +284,8 @@ final class DatevExportDialog {
         });
         buttons.add(cancel);
         buttons.add(proceed);
-        all.add(buttons, BorderLayout.SOUTH);
+        bar.add(buttons, BorderLayout.EAST);
+        all.add(bar, BorderLayout.SOUTH);
         dialog.setContentPane(all);
         dialog.pack();
         dialog.setLocationRelativeTo(owner);

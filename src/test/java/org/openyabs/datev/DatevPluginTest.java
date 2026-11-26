@@ -685,9 +685,10 @@ public class DatevPluginTest {
     }
 
     @Test
-    public void pluginRegistersSettingsCommandInPluginsMenu() throws Exception {
+    public void pluginRegistersJournalExportsAndCommandsCleanly() throws Exception {
         final List<String> commands = new ArrayList<String>();
         final List<String> settingsPages = new ArrayList<String>();
+        final List<JournalExport> journalExports = new ArrayList<JournalExport>();
         mpv5.plugin.api.ExtensionContext stub = new mpv5.plugin.api.ExtensionContext() {
             @Override
             public void addCommand(String title, String description, Runnable action) {
@@ -697,6 +698,11 @@ public class DatevPluginTest {
             @Override
             public void addSettingsPage(String title, String description, java.util.function.Supplier<javax.swing.JComponent> page) {
                 settingsPages.add(title);
+            }
+
+            @Override
+            public void addJournalExport(JournalExport export) {
+                journalExports.add(export);
             }
 
             @Override
@@ -735,9 +741,82 @@ public class DatevPluginTest {
         };
 
         new DatevPlugin().start(stub);
+
         assertTrue(settingsPages.contains("DATEV-Export"));
+
+        assertEquals(3, journalExports.size(), "DATEV plugin must register 3 Journal Export entries");
+        for (JournalExport je : journalExports) {
+            assertNotNull(je.title());
+            assertFalse(je.title().trim().isEmpty());
+            assertNotNull(je.tooltip());
+            assertFalse(je.tooltip().trim().isEmpty(), "Export must have a helpful tooltip: " + je.title());
+        }
+        assertTrue(journalExports.get(0).title().startsWith("DATEV-Belegpaket")
+                && journalExports.get(0).title().contains("ZIP")
+                && journalExports.get(0).title().contains("Unternehmen online"),
+                "Unexpected Belegpaket label: " + journalExports.get(0).title());
+        assertTrue(journalExports.get(1).title().startsWith("DATEV-Buchungsstapel")
+                && journalExports.get(1).title().contains("EXTF-CSV")
+                && journalExports.get(1).title().contains("Kanzlei-Rechnungswesen"),
+                "Unexpected Buchungsstapel label: " + journalExports.get(1).title());
+        assertTrue(journalExports.get(2).title().startsWith("DATEV-Stammdaten")
+                && journalExports.get(2).title().contains("Debitoren/Kreditoren")
+                && journalExports.get(2).title().contains("EXTF-CSV"),
+                "Unexpected Stammdaten label: " + journalExports.get(2).title());
+
         assertTrue(commands.stream().anyMatch(c -> c.contains("Einstellungen")),
                 "DATEV plugin must register a command to open settings from the Plugins menu: " + commands);
+        assertTrue(commands.stream().anyMatch(c -> c.contains("Belegpaket")),
+                "DATEV plugin must register Belegpaket command in Plugins menu: " + commands);
+        assertTrue(commands.stream().anyMatch(c -> c.contains("Buchungsstapel")),
+                "DATEV plugin must register Buchungsstapel command in Plugins menu: " + commands);
+        assertTrue(commands.stream().anyMatch(c -> c.contains("Stammdaten")),
+                "DATEV plugin must register Stammdaten command in Plugins menu: " + commands);
+    }
+
+    @Test
+    public void masterDataContentValidatesHeaderAndBuildsPreview() {
+        DatevMasterDataFormat.MasterRecord debtor = new DatevMasterDataFormat.MasterRecord();
+        debtor.konto = "10001";
+        debtor.adressattyp = "2";
+        debtor.companyName = "Musterkunde GmbH";
+        debtor.euCountry = "DE";
+        debtor.euVatNumber = "123456789";
+        debtor.zip = "10115";
+        debtor.city = "Berlin";
+        debtor.iban = "DE89370400440532013000";
+
+        DatevMasterDataFormat.MasterRecord creditor = new DatevMasterDataFormat.MasterRecord();
+        creditor.konto = "70001";
+        creditor.adressattyp = "1";
+        creditor.firstName = "Erika";
+        creditor.lastName = "Muster";
+        creditor.zip = "80331";
+        creditor.city = "München";
+
+        List<DatevMasterDataFormat.MasterRecord> records = Arrays.asList(debtor, creditor);
+
+        // Missing Berater- & Mandantennummer must block export
+        DatevConfig invalid = new DatevConfig();
+        DatevExportDialog.Content bad = DatevExportContent.masterData(invalid, records, "EXTF_Stammdaten_20260101.csv");
+        assertTrue(bad.blockOnErrors, "Missing Berater-/Mandantennummer must block Stammdaten export");
+        assertTrue(bad.errors.stream().anyMatch(e -> e.contains("Beraternummer")));
+        assertTrue(bad.errors.stream().anyMatch(e -> e.contains("Mandantennummer")));
+
+        // Valid config builds clean preview with Debitor/Kreditor counts & Kontakte table
+        DatevConfig valid = sampleConfig();
+        DatevExportDialog.Content ok = DatevExportContent.masterData(valid, records, "EXTF_Stammdaten_20260101.csv");
+        assertTrue(ok.errors.isEmpty(), "Valid config must produce no Stammdaten errors: " + ok.errors);
+        assertFalse(ok.blockOnErrors);
+        assertTrue(ok.facts.stream().anyMatch(f -> f[1].contains("1 Debitoren") && f[1].contains("1 Kreditoren")),
+                "Facts must report Debitor and Kreditor counts");
+        assertEquals(1, ok.tables.size());
+        assertEquals("Kontakte", ok.tables.get(0).title);
+        assertEquals(2, ok.tables.get(0).rows.size());
+        assertEquals("10001", ok.tables.get(0).rows.get(0)[0]);
+        assertEquals("Musterkunde GmbH", ok.tables.get(0).rows.get(0)[2]);
+        assertEquals("70001", ok.tables.get(0).rows.get(1)[0]);
+        assertEquals("Erika Muster", ok.tables.get(0).rows.get(1)[2]);
     }
 
     private static List<Account> flattenAccounts(ArrayList<ArrayList<DatabaseObject>> objs) {

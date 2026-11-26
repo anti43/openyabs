@@ -1563,9 +1563,13 @@ public class JournalPanel extends JPanel implements ListPanel, Scrollable {
                     mi.setToolTipText("<html><div style='width:360px'>" + pe.tooltip() + "</div>"); //NOI18N
                 }
                 mi.addActionListener(ev -> withCurrentData(() -> {
-                    vTimeframe t = timeframeChooser1.getTime();
-                    pe.export(new JournalExportContext(new ArrayList<Entry>(entries), totals,
-                            t.getStart(), t.getEnd(), filterLines(), rateLabels, this, this::showExported));
+                    try {
+                        vTimeframe t = timeframeChooser1.getTime();
+                        pe.export(new JournalExportContext(new ArrayList<Entry>(entries), totals,
+                                t.getStart(), t.getEnd(), filterLines(), rateLabels, this, this::showExported));
+                    } catch (Exception ex) {
+                        failed(ex);
+                    }
                 }));
                 m.add(mi);
             }

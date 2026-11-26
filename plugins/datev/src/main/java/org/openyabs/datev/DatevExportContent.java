@@ -283,6 +283,66 @@ final class DatevExportContent {
         return c;
     }
 
+    /**
+     * Master data (Debitoren / Kreditoren, EXTF 700, Category 16, Version 5)
+     * preview and validation before saving.
+     */
+    static Content masterData(DatevConfig config, List<DatevMasterDataFormat.MasterRecord> records, String fileName) {
+        Content c = new Content("DATEV-Stammdaten (Debitoren/Kreditoren) prüfen und speichern");
+        int debtors = 0;
+        int creditors = 0;
+        int skl = Math.max(4, Math.min(8, config.sachkontenLaenge));
+        long creditorThreshold = 7L * (long) Math.pow(10, skl);
+        for (DatevMasterDataFormat.MasterRecord r : records) {
+            try {
+                if (Long.parseLong(DatevFormat.digitsOnly(r.konto)) >= creditorThreshold) {
+                    creditors++;
+                } else {
+                    debtors++;
+                }
+            } catch (Exception ignored) {
+                debtors++;
+            }
+        }
+        c.fact("Datei:", fileName + " (EXTF 700, Kategorie 16, Formatversion 5, Windows-1252)");
+        c.fact("Ziel:", "DATEV Kanzlei-Rechnungswesen (Debitoren- und Kreditoren-Stammdaten)");
+        c.fact("Mandant:", "Berater " + (config.beraterNummer > 0 ? config.beraterNummer : "–")
+                + ", Mandant " + (config.mandantenNummer > 0 ? config.mandantenNummer : "–")
+                + ", Sachkontenlänge " + skl + " (Personenkonten " + (skl + 1) + "-stellig)");
+        c.fact("Umfang:", records.size() + " Kontakte (" + debtors + " Debitoren, " + creditors + " Kreditoren)");
+
+        Table t = new Table("Kontakte", "Konto", "Adressattyp", "Name", "EU-USt-IdNr.", "PLZ / Ort", "IBAN");
+        for (DatevMasterDataFormat.MasterRecord r : records) {
+            String typ = "2".equals(r.adressattyp) ? "Unternehmen" : ("1".equals(r.adressattyp) ? "Person" : "–");
+            String name = !nvl(r.companyName).isEmpty() ? r.companyName
+                    : (nvl(r.firstName) + " " + nvl(r.lastName)).trim();
+            if (name.isEmpty()) {
+                name = nvl(r.shortName);
+            }
+            String vat = (nvl(r.euCountry) + nvl(r.euVatNumber)).trim();
+            String place = (nvl(r.zip) + " " + nvl(r.city)).trim();
+            t.row(r.konto, typ, name, vat, place, nvl(r.iban));
+        }
+        c.tables.add(t);
+
+        if (config.beraterNummer < 1001 || config.beraterNummer > 9999999) {
+            c.errors.add("Beraternummer fehlt oder ungültig (erlaubt: 1001–9999999, vom Steuerberater; einzutragen unter "
+                    + DatevConfig.SETTINGS_PATH + ").");
+        }
+        if (config.mandantenNummer < 1 || config.mandantenNummer > 99999) {
+            c.errors.add("Mandantennummer fehlt oder ungültig (erlaubt: 1–99999, vom Steuerberater; einzutragen unter "
+                    + DatevConfig.SETTINGS_PATH + ").");
+        }
+        if (config.wjBeginn == null || !config.wjBeginn.trim().matches("20\\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\\d|3[01])")) {
+            c.errors.add("Wirtschaftsjahresbeginn fehlt oder ist ungültig (Format JJJJMMTT, z. B. 20260101).");
+        }
+        if (config.sachkontenLaenge < 4 || config.sachkontenLaenge > 8) {
+            c.errors.add("Sachkontenlänge muss zwischen 4 und 8 liegen.");
+        }
+        c.blockOnErrors = !c.errors.isEmpty();
+        return c;
+    }
+
     static String nvl(String s) {
         return s == null || "null".equals(s) ? "" : s;
     }
