@@ -1122,6 +1122,9 @@ public final class DatevMapper {
                         + "). DATEV lehnt den Stapel ab (Belegdatum ist TTMM); WJ-Beginn oder Zeitraum anpassen."));
             }
         }
+        for (String w : config.chartConsistencyWarnings(false)) {
+            issues.add(new Issue(Issue.Severity.WARNING, w));
+        }
     }
 
     private static String resolveMoneyAccount(Entry e, DatevConfig config) {

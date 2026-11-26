@@ -91,7 +91,7 @@ public final class DatevPlugin implements YabsExtension {
     public void start(final ExtensionContext yabs) throws Exception {
         yabs.addSettingsPage(
                 "DATEV-Export",
-                "Berater-/Mandantennummer, Kontenrahmen (SKR03/SKR04), Geldkonten, Steuersatz-Konten und BU-Schlüssel",
+                "Kontenrahmen (SKR03/SKR04), Konten & BU-Schlüssel, Belegpaket (Unternehmen online) sowie Buchungsstapel (EXTF-CSV)",
                 () -> DatevSettingsPage.create(yabs));
 
         yabs.addJournalExport(new JournalExport() {
@@ -164,6 +164,11 @@ public final class DatevPlugin implements YabsExtension {
                 exportPackage(yabs, ctx);
             }
         });
+
+        yabs.addCommand(
+                "DATEV: Einstellungen öffnen",
+                "Öffnet die DATEV-Export-Einstellungen (Kontenrahmen SKR03/SKR04, Konten, Belegpaket, Buchungsstapel)",
+                () -> yabs.openTab("DATEV-Export (Einstellungen)", DatevSettingsPage.create(yabs)));
 
         yabs.addCommand(
                 "DATEV: Buchungsstapel exportieren (aktuelles Jahr)",
@@ -349,6 +354,7 @@ public final class DatevPlugin implements YabsExtension {
             }
             DatevExportDialog.Content content = DatevExportContent.documentPackage(col, c.from, c.to, config.invoiceFolder, name,
                     DatevConfig.isSaved(), config.kontenrahmen);
+            content.notes.addAll(0, config.chartConsistencyWarnings(true));
             if (!DatevExportDialog.confirm(c.parent, content) || col.docs.size() > DatevXml.MAX_DOCUMENTS) {
                 return;
             }

@@ -281,35 +281,38 @@ public final class DatevConfig {
     }
 
     /**
-     * Detects Kontenrahmen (SKR03 vs SKR04) and fills missing money, EU,
-     * revenue and expense accounts from the given chart of accounts and tax
-     * rates.
+     * Fills money, EU, revenue and expense accounts from the given chart of
+     * accounts and tax rates. If {@link #kontenrahmen} is blank, detects SKR03
+     * vs SKR04 from {@code accounts}; if {@link #kontenrahmen} is already set
+     * ({@code "03"} or {@code "04"}), respects the chosen chart instead of
+     * silently reverting it.
      *
      * @param accounts accounts from the database (may be empty)
      * @param rates tax rates from the Tax control panel / period (may be empty)
-     * @param overwriteExisting true to overwrite existing values with detected defaults
+     * @param overwriteExisting true to overwrite existing values with defaults for the chosen chart
      */
     public void prefillFromAccounts(List<Account> accounts, Collection<BigDecimal> rates, boolean overwriteExisting) {
-        String detectedFrame = detectKontenrahmen(accounts);
-        if (overwriteExisting || isBlank(kontenrahmen)) {
+        if (isBlank(kontenrahmen)) {
+            String detectedFrame = detectKontenrahmen(accounts);
             if (!isBlank(detectedFrame)) {
                 kontenrahmen = detectedFrame;
             }
         }
         boolean skr04 = "04".equals(kontenrahmen);
+        List<Account> chartAccounts = accountsForChart(accounts, skr04);
         String defaultBank = skr04 ? "1800" : "1200";
         String defaultCash = skr04 ? "1600" : "1000";
         String defaultEu = skr04 ? "4125" : "8125";
 
         if (overwriteExisting || isBlank(moneyAccountIncome)) {
-            String bank = findAccountNumber(accounts, defaultBank);
+            String bank = findAccountNumber(chartAccounts, defaultBank);
             moneyAccountIncome = bank != null ? bank : defaultBank;
         }
         if (overwriteExisting || isBlank(moneyAccountExpense)) {
-            String bank = findAccountNumber(accounts, defaultBank);
+            String bank = findAccountNumber(chartAccounts, defaultBank);
             moneyAccountExpense = bank != null ? bank : defaultBank;
         }
-        if (overwriteExisting && findAccountNumber(accounts, defaultCash) != null) {
+        if (overwriteExisting && (!isBlank(cashAccount) || findAccountNumber(chartAccounts, defaultCash) != null)) {
             cashAccount = defaultCash;
         }
         if (overwriteExisting || isBlank(euDeliveryAccount)) {
@@ -332,13 +335,13 @@ public final class DatevConfig {
                 }
                 BigDecimal key = JournalCalc.rateKey(r);
                 if (overwriteExisting || isBlank(revenueAccounts.get(key))) {
-                    String found = findDefaultAccountForRate(accounts, Account.INCOME, key, skr04, smallBusiness);
+                    String found = findDefaultAccountForRate(chartAccounts, Account.INCOME, key, skr04, smallBusiness);
                     if (found != null) {
                         revenueAccounts.put(key, found);
                     }
                 }
                 if (overwriteExisting || isBlank(expenseAccounts.get(key))) {
-                    String found = findDefaultAccountForRate(accounts, Account.EXPENSE, key, skr04, smallBusiness);
+                    String found = findDefaultAccountForRate(chartAccounts, Account.EXPENSE, key, skr04, smallBusiness);
                     if (found != null) {
                         expenseAccounts.put(key, found);
                     }
@@ -346,6 +349,237 @@ public final class DatevConfig {
             }
         }
         applyDefaultBuKeys();
+    }
+
+    /**
+     * Role of a configured account for SKR03/SKR04 classification.
+     */
+    enum AccountRole {
+        MONEY, REVENUE, EXPENSE
+    }
+
+    /**
+     * Infers whether a configured account number clearly belongs to SKR03
+     * ({@code "03"}) or SKR04 ({@code "04"}) for its role, or returns
+     * {@code ""} when custom/ambiguous.
+     * <ul>
+     * <li>Money/cash: {@code 1000–1299} → SKR03 (Kasse/Bank), {@code 1600–1899} → SKR04 (Kasse/Bank)</li>
+     * <li>Revenue/EU/export: {@code 8000–8999} → SKR03, {@code 4000–4999} → SKR04</li>
+     * <li>Expense: {@code 3000–4999} → SKR03, {@code 5000–6999} → SKR04</li>
+     * </ul>
+     */
+    static String inferAccountChart(String accountNo, AccountRole role) {
+        if (isBlank(accountNo) || role == null) {
+            return "";
+        }
+        String digits = DatevFormat.digitsOnly(accountNo);
+        if (digits.length() < 4) {
+            return "";
+        }
+        int base4;
+        try {
+            base4 = Integer.parseInt(digits.substring(0, 4));
+        } catch (NumberFormatException ex) {
+            return "";
+        }
+        switch (role) {
+            case MONEY:
+                if (base4 >= 1000 && base4 <= 1299) {
+                    return "03";
+                }
+                if (base4 >= 1600 && base4 <= 1899) {
+                    return "04";
+                }
+                return "";
+            case REVENUE:
+                if (base4 >= 8000 && base4 <= 8999) {
+                    return "03";
+                }
+                if (base4 >= 4000 && base4 <= 4999) {
+                    return "04";
+                }
+                return "";
+            case EXPENSE:
+                if (base4 >= 3000 && base4 <= 4999) {
+                    return "03";
+                }
+                if (base4 >= 5000 && base4 <= 6999) {
+                    return "04";
+                }
+                return "";
+            default:
+                return "";
+        }
+    }
+
+    /**
+     * Checks whether configured accounts mix SKR03 and SKR04 or conflict with
+     * the selected {@link #kontenrahmen}.
+     *
+     * @return list of German warnings (empty when consistent)
+     */
+    public List<String> chartConsistencyWarnings() {
+        return chartConsistencyWarnings(false);
+    }
+
+    /**
+     * Checks whether configured accounts mix SKR03 and SKR04 or conflict with
+     * the selected {@link #kontenrahmen}.
+     *
+     * @param revenueOnly true to inspect only revenue/EU/export accounts (used
+     * by the DATEV Belegpaket XML export)
+     * @return list of German warnings (empty when consistent)
+     */
+    public List<String> chartConsistencyWarnings(boolean revenueOnly) {
+        List<String> skr03 = new java.util.ArrayList<String>();
+        List<String> skr04 = new java.util.ArrayList<String>();
+
+        if (!revenueOnly) {
+            classifyAccount("Geldkonto Einnahmen", moneyAccountIncome, AccountRole.MONEY, skr03, skr04);
+            classifyAccount("Geldkonto Ausgaben", moneyAccountExpense, AccountRole.MONEY, skr03, skr04);
+            classifyAccount("Kassenkonto", cashAccount, AccountRole.MONEY, skr03, skr04);
+        }
+        classifyAccount("EU-Lieferung", euDeliveryAccount, AccountRole.REVENUE, skr03, skr04);
+        classifyAccount("EU-Leistung", euServiceAccount, AccountRole.REVENUE, skr03, skr04);
+        classifyAccount("§ 13b Inland", reverseChargeAccount, AccountRole.REVENUE, skr03, skr04);
+        classifyAccount("Ausfuhr Drittland", exportAccount, AccountRole.REVENUE, skr03, skr04);
+
+        for (Map.Entry<BigDecimal, String> e : revenueAccounts.entrySet()) {
+            String rateLabel = e.getKey() == null ? "?" : e.getKey().stripTrailingZeros().toPlainString() + " %";
+            classifyAccount("Erlös " + rateLabel, e.getValue(), AccountRole.REVENUE, skr03, skr04);
+        }
+        if (!revenueOnly) {
+            for (Map.Entry<BigDecimal, String> e : expenseAccounts.entrySet()) {
+                String rateLabel = e.getKey() == null ? "?" : e.getKey().stripTrailingZeros().toPlainString() + " %";
+                classifyAccount("Aufwand " + rateLabel, e.getValue(), AccountRole.EXPENSE, skr03, skr04);
+            }
+        }
+
+        List<String> warnings = new java.util.ArrayList<String>();
+        String chosen = kontenrahmen == null ? "" : kontenrahmen.trim();
+        if (!skr03.isEmpty() && !skr04.isEmpty()) {
+            warnings.add("SKR03- und SKR04-Konten sind gemischt! SKR03: " + summarizeAccounts(skr03)
+                    + " · SKR04: " + summarizeAccounts(skr04)
+                    + ". Folge in DATEV: Buchungen landen auf falschen Konten (z. B. 4400 ist im SKR03 Aufwand statt Erlös, "
+                    + "1200 ist im SKR04 Forderungen statt Bank) und Automatikkonten/BU-Schlüssel werden falsch erkannt.");
+        } else if ("03".equals(chosen) && !skr04.isEmpty()) {
+            warnings.add("Gewählter Kontenrahmen ist SKR03, aber folgende Konten gehören zu SKR04: " + summarizeAccounts(skr04)
+                    + ". Folge: DATEV-Automatikkonten werden nach SKR03 geprüft (falsche BU-Schlüssel) und Konten passen nicht zu SKR03.");
+        } else if ("04".equals(chosen) && !skr03.isEmpty()) {
+            warnings.add("Gewählter Kontenrahmen ist SKR04, aber folgende Konten gehören zu SKR03: " + summarizeAccounts(skr03)
+                    + ". Folge: DATEV-Automatikkonten werden nach SKR04 geprüft (falsche BU-Schlüssel) und Konten passen nicht zu SKR04.");
+        } else if (isBlank(chosen) && !skr04.isEmpty()) {
+            warnings.add("Kontenrahmen ist nicht gesetzt (Automatikkonten werden als SKR03 geprüft), "
+                    + "aber folgende Konten gehören zu SKR04: " + summarizeAccounts(skr04)
+                    + ". Bitte „04 (SKR04)“ auswählen.");
+        }
+        return warnings;
+    }
+
+    /**
+     * @return informational note when the imported YaBS chart of accounts
+     * differs from the selected {@link #kontenrahmen}, or {@code null}
+     */
+    public String detectChartMismatchWithAccounts(List<Account> dbAccounts) {
+        String detected = detectKontenrahmen(dbAccounts);
+        if (isBlank(detected) || isBlank(kontenrahmen) || detected.equals(kontenrahmen.trim())) {
+            return null;
+        }
+        return "In YaBS unter Einstellungen › Konten ist SKR" + detected
+                + " hinterlegt, hier ist SKR" + kontenrahmen.trim()
+                + " gewählt. Das ist nur richtig, wenn Ihre Steuerberatung in DATEV mit SKR" + kontenrahmen.trim() + " bucht.";
+    }
+
+    /**
+     * Returns {@code true} if any account mapping or automatic-account setting
+     * differs from the canonical DATEV standard for the current
+     * {@link #kontenrahmen} ({@code "03"} or {@code "04"}).
+     */
+    public boolean hasCustomAccountOverrides(Collection<BigDecimal> rates) {
+        if (!"03".equals(kontenrahmen) && !"04".equals(kontenrahmen)) {
+            return true;
+        }
+        boolean skr04 = "04".equals(kontenrahmen);
+        String stdBank = skr04 ? "1800" : "1200";
+        String stdCash = skr04 ? "1600" : "1000";
+        if (!stdBank.equals(trim(moneyAccountIncome))
+                || !stdBank.equals(trim(moneyAccountExpense))
+                || (!isBlank(cashAccount) && !stdCash.equals(trim(cashAccount)))
+                || !(skr04 ? "4125" : "8125").equals(trim(euDeliveryAccount))
+                || !(skr04 ? "4336" : "8336").equals(trim(euServiceAccount))
+                || !(skr04 ? "4337" : "8337").equals(trim(reverseChargeAccount))
+                || !(skr04 ? "4120" : "8120").equals(trim(exportAccount))
+                || !useAutomaticAccounts
+                || !customAutomaticAccounts.isEmpty()) {
+            return true;
+        }
+        java.util.Set<BigDecimal> allRates = new java.util.TreeSet<BigDecimal>(JournalCalc.RATE_ORDER);
+        if (rates != null) {
+            for (BigDecimal r : rates) {
+                if (r != null) {
+                    allRates.add(JournalCalc.rateKey(r));
+                }
+            }
+        }
+        allRates.addAll(revenueAccounts.keySet());
+        allRates.addAll(expenseAccounts.keySet());
+        for (BigDecimal r : allRates) {
+            String stdRev = canonicalAccount(Account.INCOME, r, skr04, smallBusiness);
+            String stdExp = canonicalAccount(Account.EXPENSE, r, skr04, smallBusiness);
+            if (stdRev != null && !stdRev.equals(trim(revenueAccounts.get(r)))) {
+                return true;
+            }
+            if (stdExp != null && !stdExp.equals(trim(expenseAccounts.get(r)))) {
+                return true;
+            }
+            String stdBuInc = r.compareTo(bd("19")) == 0 ? "3" : (r.compareTo(bd("7")) == 0 ? "2" : "");
+            String stdBuExp = r.compareTo(bd("19")) == 0 ? "9" : (r.compareTo(bd("7")) == 0 ? "8" : "");
+            if (stdRev != null && !stdBuInc.equals(trim(buKeysIncome.get(r)))) {
+                return true;
+            }
+            if (stdExp != null && !stdBuExp.equals(trim(buKeysExpense.get(r)))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static String trim(String s) {
+        return s == null ? "" : s.trim();
+    }
+
+    private static void classifyAccount(String label, String accountNo, AccountRole role,
+            List<String> skr03, List<String> skr04) {
+        String chart = inferAccountChart(accountNo, role);
+        if ("03".equals(chart)) {
+            skr03.add(label + " (" + accountNo.trim() + ")");
+        } else if ("04".equals(chart)) {
+            skr04.add(label + " (" + accountNo.trim() + ")");
+        }
+    }
+
+    private static String summarizeAccounts(List<String> items) {
+        int max = 5;
+        if (items.size() <= max) {
+            return String.join(", ", items);
+        }
+        return String.join(", ", items.subList(0, max)) + " (+ " + (items.size() - max) + " weitere)";
+    }
+
+    private static List<Account> accountsForChart(List<Account> accounts, boolean skr04) {
+        if (accounts == null || accounts.isEmpty()) {
+            return java.util.Collections.emptyList();
+        }
+        String otherFrame = skr04 ? "skr03" : "skr04";
+        List<Account> filtered = new java.util.ArrayList<Account>(accounts.size());
+        for (Account a : accounts) {
+            String f = a.__getFrame();
+            if (f != null && f.toLowerCase().contains(otherFrame)) {
+                continue;
+            }
+            filtered.add(a);
+        }
+        return filtered;
     }
 
     /**
@@ -396,6 +630,8 @@ public final class DatevConfig {
         if (preferred != null && findAccountNumber(accounts, preferred) != null) {
             return preferred;
         }
+        String expectedChart = skr04 ? "04" : "03";
+        AccountRole role = accountType == Account.INCOME ? AccountRole.REVENUE : AccountRole.EXPENSE;
         if (accounts != null) {
             for (Account a : accounts) {
                 if (a.__getIntaccountclass() <= 0) {
@@ -405,7 +641,12 @@ public final class DatevConfig {
                         ? a.__getIntaccounttype() == Account.INCOME
                         : (a.__getIntaccounttype() == Account.EXPENSE || a.__getIntaccounttype() == Account.COST);
                 if (typeMatch && rateMatches(a.__getTaxvalue(), rate)) {
-                    return formatAccount(a.__getIntaccountclass());
+                    String num = formatAccount(a.__getIntaccountclass());
+                    String inferred = inferAccountChart(num, role);
+                    if (!inferred.isEmpty() && !expectedChart.equals(inferred)) {
+                        continue;
+                    }
+                    return num;
                 }
             }
         }

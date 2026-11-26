@@ -620,6 +620,126 @@ public class DatevPluginTest {
         }
     }
 
+    @Test
+    public void prefillRespectsExplicitKontenrahmenAndAvoidsCrossChartLeakage() {
+        Account skr03Bank = new Account();
+        skr03Bank.setIntaccountclass(1200);
+        skr03Bank.setFrame("SKR03");
+        Account skr03Rev19 = new Account();
+        skr03Rev19.setIntaccountclass(8400);
+        skr03Rev19.setIntaccounttype(Account.INCOME);
+        skr03Rev19.setTaxvalue(19.0);
+        skr03Rev19.setFrame("SKR03");
+        List<Account> skr03DbAccounts = Arrays.asList(skr03Bank, skr03Rev19);
+
+        DatevConfig cfg = new DatevConfig();
+        cfg.kontenrahmen = "04";
+        cfg.cashAccount = "1000";
+        cfg.prefillFromAccounts(skr03DbAccounts, Arrays.asList(bd("19"), bd("7"), bd("0")), true);
+
+        assertEquals("04", cfg.kontenrahmen, "Explicit SKR04 choice must not be reverted to DB SKR03");
+        assertEquals("1800", cfg.moneyAccountIncome);
+        assertEquals("1800", cfg.moneyAccountExpense);
+        assertEquals("1600", cfg.cashAccount, "Existing SKR03 cash account must switch to SKR04 1600");
+        assertEquals("4400", cfg.revenueAccounts.get(bd("19")));
+        assertEquals("5400", cfg.expenseAccounts.get(bd("19")));
+        assertEquals("4125", cfg.euDeliveryAccount);
+        assertTrue(cfg.chartConsistencyWarnings().isEmpty(), "Clean SKR04 config must have no consistency warnings");
+        assertFalse(cfg.hasCustomAccountOverrides(Arrays.asList(bd("19"), bd("7"), bd("0"))),
+                "Standard SKR04 accounts must be recognized as DATEV standard");
+        cfg.moneyAccountIncome = "1810";
+        assertTrue(cfg.hasCustomAccountOverrides(Arrays.asList(bd("19"), bd("7"), bd("0"))),
+                "Custom bank account 1810 must be detected as custom override");
+        assertNotNull(cfg.detectChartMismatchWithAccounts(skr03DbAccounts),
+                "Should inform user when YaBS DB accounts are SKR03 while config is SKR04");
+    }
+
+    @Test
+    public void mixedSkr03AndSkr04AccountsTriggerWarningsInConfigAndMapper() throws Exception {
+        DatevConfig mixed = sampleConfig();
+        mixed.kontenrahmen = "03";
+        mixed.revenueAccounts.put(bd("19"), "4400"); // SKR04 revenue mixed into SKR03 config
+
+        List<String> warnings = mixed.chartConsistencyWarnings(false);
+        assertFalse(warnings.isEmpty(), "Mixed SKR03/SKR04 accounts must emit warning");
+        assertTrue(warnings.get(0).contains("gemischt"), "Warning should clearly state accounts are mixed: " + warnings.get(0));
+        assertTrue(warnings.get(0).contains("4400"), "Warning should name offending SKR04 account");
+        assertTrue(warnings.get(0).contains("1200"), "Warning should name SKR03 account");
+
+        // Mapper must also surface the warning during Buchungsstapel validation
+        DatevMapper.Result res = DatevMapper.map(Collections.emptyList(), mixed, date("2026-01-01"), date("2026-01-31"),
+                null, null, null);
+        assertTrue(res.issues.stream().anyMatch(i -> i.severity == DatevMapper.Issue.Severity.WARNING
+                && i.message.contains("gemischt")),
+                "DatevMapper must report mixed SKR03/SKR04 warning");
+
+        // All SKR03 accounts while SKR04 is selected must also warn
+        DatevConfig mismatch = sampleConfig();
+        mismatch.kontenrahmen = "04";
+        List<String> mismatchWarnings = mismatch.chartConsistencyWarnings(false);
+        assertFalse(mismatchWarnings.isEmpty());
+        assertTrue(mismatchWarnings.get(0).contains("SKR04") && mismatchWarnings.get(0).contains("SKR03"));
+
+        // Clean SKR03 config has zero warnings
+        assertTrue(sampleConfig().chartConsistencyWarnings(false).isEmpty());
+    }
+
+    @Test
+    public void pluginRegistersSettingsCommandInPluginsMenu() throws Exception {
+        final List<String> commands = new ArrayList<String>();
+        final List<String> settingsPages = new ArrayList<String>();
+        mpv5.plugin.api.ExtensionContext stub = new mpv5.plugin.api.ExtensionContext() {
+            @Override
+            public void addCommand(String title, String description, Runnable action) {
+                commands.add(title);
+            }
+
+            @Override
+            public void addSettingsPage(String title, String description, java.util.function.Supplier<javax.swing.JComponent> page) {
+                settingsPages.add(title);
+            }
+
+            @Override
+            public void addSearchProvider(java.util.function.Function<String, List<mpv5.plugin.api.SearchResult>> provider) {
+            }
+
+            @Override
+            public void onActivity(java.util.function.Consumer<mpv5.handler.Activity.Entry> listener) {
+            }
+
+            @Override
+            public void addRecordModifier(mpv5.db.common.DatabaseObjectModifier modifier) {
+            }
+
+            @Override
+            public void openTab(String title, javax.swing.JComponent content) {
+            }
+
+            @Override
+            public void notify(String message) {
+            }
+
+            @Override
+            public mpv5.plugin.api.PluginSettings settings() {
+                return null;
+            }
+
+            @Override
+            public File dataFolder() {
+                return null;
+            }
+
+            @Override
+            public <T> void background(java.util.function.Supplier<T> work, java.util.function.Consumer<T> then) {
+            }
+        };
+
+        new DatevPlugin().start(stub);
+        assertTrue(settingsPages.contains("DATEV-Export"));
+        assertTrue(commands.stream().anyMatch(c -> c.contains("Einstellungen")),
+                "DATEV plugin must register a command to open settings from the Plugins menu: " + commands);
+    }
+
     private static List<Account> flattenAccounts(ArrayList<ArrayList<DatabaseObject>> objs) {
         List<Account> res = new ArrayList<Account>();
         if (objs != null) {
