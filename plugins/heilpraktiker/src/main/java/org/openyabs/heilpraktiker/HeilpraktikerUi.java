@@ -167,11 +167,11 @@ final class HeilpraktikerUi {
             addActionRow(setupBox, sg, srow++, importCatalogBtn,
                     "Legt alle 144 offiziellen Geb\u00fcH-85/2002-Leistungen (Ziffern 1\u201339.13) als steuerfreie Leistungen (0 % USt) an");
 
-            JButton exportTemplateBtn = new JButton("Rechnungsvorlage (.fodt) speichern");
-            exportTemplateBtn.setToolTipText("Speichert die vorgefertigte LibreOffice-Rechnungsvorlage mit [hp.*]-Platzhaltern");
-            exportTemplateBtn.addActionListener(e -> plugin.exportTemplate(yabs));
-            addActionRow(setupBox, sg, srow++, exportTemplateBtn,
-                    "Speichert die vorgefertigte LibreOffice-Rechnungsvorlage mit [hp.*]-Platzhaltern");
+            JButton importTemplateBtn = new JButton("Rechnungsvorlage importieren");
+            importTemplateBtn.setToolTipText("Importiert die Heilpraktiker-Rechnungsvorlage (.odt) in OpenYaBS und weist sie Ihrem Benutzer zu");
+            importTemplateBtn.addActionListener(e -> yabs.background(plugin::importTemplate, msg -> yabs.popup(msg)));
+            addActionRow(setupBox, sg, srow++, importTemplateBtn,
+                    "Importiert die Heilpraktiker-Rechnungsvorlage (.odt) in OpenYaBS und weist sie Ihrem Benutzer zu");
 
             g.gridx = 0;
             g.gridy = row++;

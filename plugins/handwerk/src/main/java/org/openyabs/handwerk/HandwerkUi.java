@@ -183,10 +183,10 @@ final class HandwerkUi {
             });
             addActionRow(setupBox, sg, srow++, importDatanormBtn, yabs.tr("cmd.importDatanorm.desc"));
 
-            JButton exportTemplatesBtn = new JButton(yabs.tr("cmd.exportTemplates.title"));
-            exportTemplatesBtn.setToolTipText(yabs.tr("cmd.exportTemplates.desc"));
-            exportTemplatesBtn.addActionListener(e -> plugin.exportTemplates(yabs));
-            addActionRow(setupBox, sg, srow++, exportTemplatesBtn, yabs.tr("cmd.exportTemplates.desc"));
+            JButton importTemplatesBtn = new JButton(yabs.tr("cmd.importTemplates.title"));
+            importTemplatesBtn.setToolTipText(yabs.tr("cmd.importTemplates.desc"));
+            importTemplatesBtn.addActionListener(e -> yabs.background(() -> plugin.importTemplates(yabs), msg -> yabs.popup(msg)));
+            addActionRow(setupBox, sg, srow++, importTemplatesBtn, yabs.tr("cmd.importTemplates.desc"));
 
             g.gridx = 0;
             g.gridy = row++;

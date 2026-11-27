@@ -16,10 +16,13 @@
  */
 package mpv5.handler;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.text.Normalizer;
 import java.util.ArrayList;
@@ -32,8 +35,12 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
@@ -45,6 +52,7 @@ import mpv5.db.objects.User;
 import mpv5.globals.Constants;
 import mpv5.logging.Log;
 import mpv5.utils.export.ZugpferdFile;
+import mpv5.utils.files.FileDirectoryHandler;
 
 /**
  * Bulk import (multi-file and ZIP extraction), filename-based template type
@@ -530,6 +538,375 @@ public final class TemplateImportService {
             }
         }
         return out;
+    }
+
+    /**
+     * Outcome of importing a bundled plugin template.
+     */
+    public static final class PluginTemplateResult {
+
+        public final Template template;
+        public final boolean created;
+        public final boolean assigned;
+
+        public PluginTemplateResult(Template template, boolean created, boolean assigned) {
+            this.template = template;
+            this.created = created;
+            this.assigned = assigned;
+        }
+    }
+
+    /**
+     * Ensures {@code user} is assigned to {@code template} in
+     * {@code templatestousers} without removing existing assignments for other
+     * users.
+     *
+     * @param template saved template
+     * @param user user to assign
+     * @return {@code true} if a new assignment row was added
+     */
+    public static boolean ensureUserAssigned(Template template, User user) {
+        if (template == null || !template.isExisting() || user == null || user.__getIDS() == null || user.__getIDS() <= 0) {
+            return false;
+        }
+        int uid = user.__getIDS();
+        for (User existing : loadAssignedUsers(template)) {
+            if (existing != null && existing.__getIDS() != null && existing.__getIDS() == uid) {
+                return false;
+            }
+        }
+        int gid = template.__getGroupsids() > 0 ? template.__getGroupsids()
+                : (user.__getGroupsids() > 0 ? user.__getGroupsids() : 1);
+        QueryData row = new QueryData();
+        row.add("usersids", uid);
+        row.add("templatesids", template.__getIDS());
+        row.add("groupsids", gid);
+        row.add("cname", template.__getIDS() + "@" + uid + "@" + gid);
+        QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).insert(row, null);
+        DatabaseObject.uncacheObject(Context.getTemplate(), template.__getIDS());
+        TemplateHandler.clearCache();
+        refreshOpenTabsSafely();
+        return true;
+    }
+
+    /**
+     * Finds a template by its exact display name ({@code cname}), or returns
+     * {@code null} if none exists.
+     */
+    public static Template findTemplateByName(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            return null;
+        }
+        try {
+            for (DatabaseObject o : DatabaseObject.getObjects(Context.getTemplate())) {
+                if (o instanceof Template && name.equals(o.__getCname())) {
+                    return (Template) o;
+                }
+            }
+        } catch (Exception ex) {
+            Log.Debug(TemplateImportService.class, ex.getMessage());
+        }
+        return null;
+    }
+
+    /**
+     * Imports a bundled plugin template ({@code .fodt} or {@code .odt}) into
+     * OpenYaBS (converting {@code .fodt} into a valid XDocReport/ODF
+     * {@code .odt} package) and assigns it to the current user. Idempotent: if
+     * a template with {@code templateName} already exists, ensures the current
+     * user is assigned without creating a duplicate.
+     *
+     * @param resourceOwner class whose classloader provides {@code resourcePath}
+     * @param resourcePath classpath path to the bundled {@code .fodt} or {@code .odt}
+     * @param templateName display name stored in OpenYaBS templates
+     * @param documentType {@code Constants.TYPE_*} document type
+     * @param format position table column order (defaults to {@link FirstStartSetup#ITEM_FORMAT})
+     * @param description template description stored in the database
+     * @return result with the imported/existing template and flags
+     * @throws Exception if reading, converting, or storing fails
+     */
+    public static PluginTemplateResult importPluginTemplate(
+            Class<?> resourceOwner,
+            String resourcePath,
+            String templateName,
+            int documentType,
+            String format,
+            String description) throws Exception {
+        User currentUser = User.getCurrentUser();
+        Template existing = findTemplateByName(templateName);
+        if (existing != null) {
+            boolean assigned = ensureUserAssigned(existing, currentUser);
+            return new PluginTemplateResult(existing, false, assigned);
+        }
+
+        byte[] raw;
+        try (InputStream in = resourceOwner.getResourceAsStream(resourcePath)) {
+            if (in == null) {
+                throw new IOException("Template resource not found: " + resourcePath);
+            }
+            raw = in.readAllBytes();
+        }
+        byte[] odtBytes = resourcePath.toLowerCase(Locale.ROOT).endsWith(".fodt")
+                ? fodtToOdt(raw) : raw;
+
+        String stem = defaultTemplateName(baseName(resourcePath)).replaceAll("[^A-Za-z0-9._-]+", "_");
+        File tmp = FileDirectoryHandler.getTempFile(stem.isEmpty() ? "plugin-template" : stem, "odt");
+        try {
+            Files.write(tmp.toPath(), odtBytes);
+            String stored = QueryHandler.instanceOf().clone(Context.getFiles()).insertFileNow(tmp);
+            if (stored == null || stored.trim().isEmpty()) {
+                throw new IOException("Failed to store template file: " + templateName);
+            }
+            int addedBy = currentUser != null && currentUser.__getIDS() != null && currentUser.__getIDS() > 0
+                    ? currentUser.__getIDS() : 1;
+            int groupId = currentUser != null && currentUser.__getGroupsids() > 0
+                    ? currentUser.__getGroupsids() : 1;
+
+            QueryData x = new QueryData();
+            x.add("cname", templateName);
+            x.add("filename", stored);
+            x.add("description", description == null ? "" : description);
+            x.add("dateadded", mpv5.utils.date.DateConverter.getTodayDBDate());
+            x.add("intaddedby", addedBy);
+            x.add("intsize", tmp.length());
+            x.add("mimetype", String.valueOf(documentType));
+            x.add("format", (format == null || format.trim().isEmpty()) ? FirstStartSetup.ITEM_FORMAT : format);
+            x.add("groupsids", groupId);
+            int id = QueryHandler.instanceOf().clone(Context.getTemplate()).insert(x, null);
+            if (id <= 0) {
+                throw new IOException("Could not create template record: " + templateName);
+            }
+            DatabaseObject.uncacheObject(Context.getTemplate(), id);
+            Template created = (Template) DatabaseObject.getObject(Context.getTemplate(), id);
+            boolean assigned = ensureUserAssigned(created, currentUser);
+            TemplateHandler.clearCache();
+            refreshOpenTabsSafely();
+            return new PluginTemplateResult(created, true, assigned);
+        } finally {
+            if (tmp != null && tmp.exists()) {
+                tmp.delete();
+            }
+        }
+    }
+
+    private static void refreshOpenTabsSafely() {
+        try {
+            if (!mpv5.Main.HEADLESS && !java.awt.GraphicsEnvironment.isHeadless()
+                    && mpv5.ui.frames.MPView.identifierView != null) {
+                mpv5.YabsViewProxy.instance().refreshOpenTabsTemplates();
+            }
+        } catch (Throwable ignored) {
+        }
+    }
+
+    private static final Pattern FODT_PLACEHOLDER = Pattern.compile("\\[([a-zA-Z][a-zA-Z0-9_.]*)\\]");
+    private static final Pattern FODT_XTABLE1_PARA = Pattern.compile("<text:p(?:\\s[^>]*)?>\\s*\\[xtable1\\]\\s*</text:p>");
+    private static final Pattern FODT_XTABLE0 = Pattern.compile(
+            "<table:table[^>]*table:name=\"xtable0\"[^>]*>.*?</table:table>", Pattern.DOTALL);
+    private static final Pattern FODT_FIRST_ROW = Pattern.compile(
+            "<table:table-row[^>]*>.*?</table:table-row>", Pattern.DOTALL);
+    private static final Pattern FODT_STYLES_BLOCK = Pattern.compile(
+            "<office:styles[^>]*>(.*?)</office:styles>", Pattern.DOTALL);
+    private static final Pattern FODT_AUTO_STYLES_BLOCK = Pattern.compile(
+            "<office:automatic-styles[^>]*>(.*?)</office:automatic-styles>", Pattern.DOTALL);
+    private static final Pattern FODT_HEADING_NO_STYLE = Pattern.compile("<text:h(?![^>]*text:style-name=)");
+
+    /**
+     * Converts a flat OpenDocument text template ({@code .fodt}) using
+     * {@code [field.name]} placeholders into a standard ZIP-packaged ODF 1.2
+     * {@code .odt} file compatible with OpenYaBS ({@code ODTFile2} / XDocReport
+     * and LibreOffice Writer).
+     *
+     * @param fodtBytes UTF-8 bytes of a {@code .fodt} document
+     * @return valid {@code .odt} archive bytes
+     * @throws IOException if the input has no {@code <office:body>} or ZIP creation fails
+     */
+    public static byte[] fodtToOdt(byte[] fodtBytes) throws IOException {
+        String xml = new String(fodtBytes, StandardCharsets.UTF_8);
+        int bodyStart = xml.indexOf("<office:body");
+        int bodyEnd = xml.lastIndexOf("</office:body>");
+        if (bodyStart < 0 || bodyEnd < 0 || bodyEnd <= bodyStart) {
+            throw new IOException("Invalid FODT template: missing <office:body>");
+        }
+        String body = xml.substring(bodyStart, bodyEnd + "</office:body>".length());
+
+        String extraStyles = "";
+        Matcher sm = FODT_STYLES_BLOCK.matcher(xml);
+        if (sm.find()) {
+            extraStyles = sm.group(1);
+        }
+        String extraAutoStyles = "";
+        Matcher am = FODT_AUTO_STYLES_BLOCK.matcher(xml);
+        if (am.find()) {
+            extraAutoStyles = am.group(1);
+        }
+
+        boolean english = body.contains("Invoice Date:") || body.contains("Gross Total:")
+                || body.contains("Work Summary:") || body.contains("Customer:");
+
+        // 1. Convert <text:p>[xtable1]</text:p> into a header table + OpenYaBS xtable1 position table
+        body = FODT_XTABLE1_PARA.matcher(body).replaceAll(Matcher.quoteReplacement(buildPositionTables(english, null)));
+
+        // 2. Convert legacy <table:table table:name="xtable0"> into header_table1 + xtable1
+        Matcher tm = FODT_XTABLE0.matcher(body);
+        if (tm.find()) {
+            String origTable = tm.group(0);
+            Matcher rm = FODT_FIRST_ROW.matcher(origTable);
+            String customHeaderRow = rm.find() ? rm.group(0) : null;
+            body = tm.replaceAll(Matcher.quoteReplacement(buildPositionTables(english, customHeaderRow)));
+        }
+
+        // 3. Convert [placeholder] syntax to ODF <text:placeholder> for YabsODTContentHandler
+        body = FODT_PLACEHOLDER.matcher(body)
+                .replaceAll("<text:placeholder text:placeholder-type=\"text\">&lt;$1&gt;</text:placeholder>");
+
+        // 4. Give unstyled headings the default Heading style
+        body = FODT_HEADING_NO_STYLE.matcher(body).replaceAll("<text:h text:style-name=\"Heading\"");
+
+        StringBuilder stylesInner = new StringBuilder();
+        if (!extraStyles.contains("style:name=\"Standard\"")) {
+            stylesInner.append("<style:style style:name=\"Standard\" style:family=\"paragraph\">")
+                    .append("<style:paragraph-properties fo:margin-top=\"0cm\" fo:margin-bottom=\"0.12cm\"/>")
+                    .append("<style:text-properties style:font-name=\"Liberation Sans\" fo:font-family=\"Liberation Sans\" fo:font-size=\"10pt\"/>")
+                    .append("</style:style>");
+        }
+        if (!extraStyles.contains("style:name=\"Heading\"")) {
+            stylesInner.append("<style:style style:name=\"Heading\" style:family=\"paragraph\" style:parent-style-name=\"Standard\">")
+                    .append("<style:paragraph-properties fo:margin-top=\"0.3cm\" fo:margin-bottom=\"0.2cm\"/>")
+                    .append("<style:text-properties style:font-name=\"Liberation Sans\" fo:font-family=\"Liberation Sans\" fo:font-size=\"14pt\" fo:font-weight=\"bold\"/>")
+                    .append("</style:style>");
+        }
+        if (!extraStyles.contains("style:name=\"Bold\"")) {
+            stylesInner.append("<style:style style:name=\"Bold\" style:family=\"paragraph\" style:parent-style-name=\"Standard\">")
+                    .append("<style:text-properties style:font-name=\"Liberation Sans\" fo:font-family=\"Liberation Sans\" fo:font-size=\"10pt\" fo:font-weight=\"bold\"/>")
+                    .append("</style:style>");
+        }
+        if (!extraStyles.contains("style:name=\"Small\"")) {
+            stylesInner.append("<style:style style:name=\"Small\" style:family=\"paragraph\" style:parent-style-name=\"Standard\">")
+                    .append("<style:text-properties style:font-name=\"Liberation Sans\" fo:font-family=\"Liberation Sans\" fo:font-size=\"8.5pt\"/>")
+                    .append("</style:style>");
+        }
+        stylesInner.append(extraStyles);
+
+        String stylesXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                + "<office:document-styles"
+                + " xmlns:office=\"urn:oasis:names:tc:opendocument:xmlns:office:1.0\""
+                + " xmlns:style=\"urn:oasis:names:tc:opendocument:xmlns:style:1.0\""
+                + " xmlns:text=\"urn:oasis:names:tc:opendocument:xmlns:text:1.0\""
+                + " xmlns:table=\"urn:oasis:names:tc:opendocument:xmlns:table:1.0\""
+                + " xmlns:fo=\"urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0\""
+                + " xmlns:svg=\"urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0\""
+                + " office:version=\"1.2\">"
+                + "<office:font-face-decls>"
+                + "<style:font-face style:name=\"Liberation Sans\" svg:font-family=\"&apos;Liberation Sans&apos;, Arial, sans-serif\" style:font-family-generic=\"swiss\" style:font-pitch=\"variable\"/>"
+                + "</office:font-face-decls>"
+                + "<office:styles>"
+                + stylesInner
+                + "</office:styles>"
+                + "<office:automatic-styles>"
+                + "<style:page-layout style:name=\"Mpm1\">"
+                + "<style:page-layout-properties fo:page-width=\"21cm\" fo:page-height=\"29.7cm\" style:print-orientation=\"portrait\""
+                + " fo:margin-top=\"2cm\" fo:margin-bottom=\"2cm\" fo:margin-left=\"2cm\" fo:margin-right=\"2cm\"/>"
+                + "</style:page-layout>"
+                + "</office:automatic-styles>"
+                + "<office:master-styles>"
+                + "<style:master-page style:name=\"Standard\" style:page-layout-name=\"Mpm1\"/>"
+                + "</office:master-styles>"
+                + "</office:document-styles>";
+
+        String contentXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                + "<office:document-content"
+                + " xmlns:office=\"urn:oasis:names:tc:opendocument:xmlns:office:1.0\""
+                + " xmlns:style=\"urn:oasis:names:tc:opendocument:xmlns:style:1.0\""
+                + " xmlns:text=\"urn:oasis:names:tc:opendocument:xmlns:text:1.0\""
+                + " xmlns:table=\"urn:oasis:names:tc:opendocument:xmlns:table:1.0\""
+                + " xmlns:fo=\"urn:oasis:names:tc:opendocument:xmlns:xsl-fo-compatible:1.0\""
+                + " xmlns:svg=\"urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0\""
+                + " office:version=\"1.2\">"
+                + "<office:font-face-decls>"
+                + "<style:font-face style:name=\"Liberation Sans\" svg:font-family=\"&apos;Liberation Sans&apos;, Arial, sans-serif\" style:font-family-generic=\"swiss\" style:font-pitch=\"variable\"/>"
+                + "</office:font-face-decls>"
+                + "<office:automatic-styles>"
+                + "<style:style style:name=\"xtable1\" style:family=\"table\"><style:table-properties style:width=\"17cm\" table:align=\"left\"/></style:style>"
+                + "<style:style style:name=\"xtable1.A\" style:family=\"table-column\"><style:table-column-properties style:column-width=\"1.2cm\"/></style:style>"
+                + "<style:style style:name=\"xtable1.B\" style:family=\"table-column\"><style:table-column-properties style:column-width=\"1.8cm\"/></style:style>"
+                + "<style:style style:name=\"xtable1.C\" style:family=\"table-column\"><style:table-column-properties style:column-width=\"7.2cm\"/></style:style>"
+                + "<style:style style:name=\"xtable1.D\" style:family=\"table-column\"><style:table-column-properties style:column-width=\"2.4cm\"/></style:style>"
+                + "<style:style style:name=\"xtable1.E\" style:family=\"table-column\"><style:table-column-properties style:column-width=\"1.8cm\"/></style:style>"
+                + "<style:style style:name=\"xtable1.F\" style:family=\"table-column\"><style:table-column-properties style:column-width=\"2.6cm\"/></style:style>"
+                + "<style:style style:name=\"xtable1.H\" style:family=\"table-cell\"><style:table-cell-properties fo:padding=\"0.1cm\" fo:border-top=\"0.05pt solid #000000\" fo:border-bottom=\"0.05pt solid #000000\"/></style:style>"
+                + "<style:style style:name=\"xtable1.Cell\" style:family=\"table-cell\"><style:table-cell-properties fo:padding=\"0.08cm\" fo:border=\"none\"/></style:style>"
+                + extraAutoStyles
+                + "</office:automatic-styles>"
+                + body
+                + "</office:document-content>";
+
+        String manifestXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                + "<manifest:manifest xmlns:manifest=\"urn:oasis:names:tc:opendocument:xmlns:manifest:1.0\" manifest:version=\"1.2\">"
+                + "<manifest:file-entry manifest:media-type=\"application/vnd.oasis.opendocument.text\" manifest:version=\"1.2\" manifest:full-path=\"/\"/>"
+                + "<manifest:file-entry manifest:media-type=\"text/xml\" manifest:full-path=\"content.xml\"/>"
+                + "<manifest:file-entry manifest:media-type=\"text/xml\" manifest:full-path=\"styles.xml\"/>"
+                + "</manifest:manifest>";
+
+        byte[] mime = "application/vnd.oasis.opendocument.text".getBytes(StandardCharsets.UTF_8);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        try (ZipOutputStream zout = new ZipOutputStream(out)) {
+            ZipEntry m = new ZipEntry("mimetype");
+            m.setMethod(ZipEntry.STORED);
+            m.setSize(mime.length);
+            CRC32 crc = new CRC32();
+            crc.update(mime);
+            m.setCrc(crc.getValue());
+            zout.putNextEntry(m);
+            zout.write(mime);
+            zout.closeEntry();
+
+            writeZipEntry(zout, "META-INF/manifest.xml", manifestXml);
+            writeZipEntry(zout, "styles.xml", stylesXml);
+            writeZipEntry(zout, "content.xml", contentXml);
+        }
+        return out.toByteArray();
+    }
+
+    private static String buildPositionTables(boolean english, String customHeaderRow) {
+        String cols = "<table:table-column table:style-name=\"xtable1.A\"/>"
+                + "<table:table-column table:style-name=\"xtable1.B\"/>"
+                + "<table:table-column table:style-name=\"xtable1.C\"/>"
+                + "<table:table-column table:style-name=\"xtable1.D\"/>"
+                + "<table:table-column table:style-name=\"xtable1.E\"/>"
+                + "<table:table-column table:style-name=\"xtable1.F\"/>";
+        String headerRow;
+        if (customHeaderRow != null) {
+            headerRow = customHeaderRow;
+        } else {
+            String[] labels = english
+                    ? new String[]{"Pos.", "Qty", "Description", "Unit", "VAT %", "Total"}
+                    : new String[]{"Pos.", "Menge", "Bezeichnung", "Einzel", "USt %", "Gesamt"};
+            StringBuilder hr = new StringBuilder("<table:table-row>");
+            for (String lbl : labels) {
+                hr.append("<table:table-cell table:style-name=\"xtable1.H\" office:value-type=\"string\"><text:p text:style-name=\"Bold\">")
+                        .append(lbl).append("</text:p></table:table-cell>");
+            }
+            hr.append("</table:table-row>");
+            headerRow = hr.toString();
+        }
+        // Header table name must NOT start with "xtable" (YabsODTContentHandler matches prefix "xtable")
+        StringBuilder sb = new StringBuilder();
+        sb.append("<table:table table:name=\"header_table1\" table:style-name=\"xtable1\">")
+                .append(cols).append(headerRow).append("</table:table>");
+        sb.append("<table:table table:name=\"xtable1\" table:style-name=\"xtable1\">")
+                .append(cols).append("<table:table-row>");
+        for (int i = 0; i < 6; i++) {
+            sb.append("<table:table-cell table:style-name=\"xtable1.Cell\" office:value-type=\"string\"><text:p text:style-name=\"Standard\"/></table:table-cell>");
+        }
+        sb.append("</table:table-row></table:table>");
+        return sb.toString();
+    }
+
+    private static void writeZipEntry(ZipOutputStream zout, String name, String content) throws IOException {
+        zout.putNextEntry(new ZipEntry(name));
+        zout.write(content.getBytes(StandardCharsets.UTF_8));
+        zout.closeEntry();
     }
 
     private static String baseName(String path) {

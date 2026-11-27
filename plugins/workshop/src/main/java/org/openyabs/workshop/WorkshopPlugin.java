@@ -293,34 +293,36 @@ public final class WorkshopPlugin implements YabsExtension {
         }
     }
 
-    void exportTemplates(ExtensionContext yabs) {
+    String importTemplates(ExtensionContext yabs) {
+        Object[][] specs = {
+            {"/org/openyabs/workshop/templates/workshop_invoice_de.fodt", "Werkstatt - Rechnung (DE)", Constants.TYPE_INVOICE},
+            {"/org/openyabs/workshop/templates/workshop_invoice_en.fodt", "Workshop - Invoice (EN)", Constants.TYPE_INVOICE},
+            {"/org/openyabs/workshop/templates/workshop_order_de.fodt", "Werkstatt - Auftrag (DE)", Constants.TYPE_ORDER},
+            {"/org/openyabs/workshop/templates/workshop_order_en.fodt", "Workshop - Order (EN)", Constants.TYPE_ORDER},
+            {"/org/openyabs/workshop/templates/tire_storage_de.fodt", "Werkstatt - Reifeneinlagerung (DE)", Constants.TYPE_CONTACT},
+            {"/org/openyabs/workshop/templates/tire_storage_en.fodt", "Workshop - Tire Storage (EN)", Constants.TYPE_CONTACT}
+        };
+        int imported = 0;
+        int existed = 0;
         try {
-            DialogForFile d = new DialogForFile(DialogForFile.DIRECTORIES_ONLY);
-            if (!d.chooseFile()) {
-                return;
-            }
-            File dir = d.getFile();
-            if (dir == null) {
-                return;
-            }
-            if (!dir.exists()) {
-                dir.mkdirs();
-            }
-            int count = 0;
-            for (String res : TEMPLATE_RESOURCES) {
-                String name = res.substring(res.lastIndexOf('/') + 1);
-                try (InputStream in = WorkshopPlugin.class.getResourceAsStream(res)) {
-                    if (in == null) {
-                        continue;
-                    }
-                    Files.write(new File(dir, name).toPath(), in.readAllBytes());
-                    count++;
+            for (Object[] spec : specs) {
+                mpv5.handler.TemplateImportService.PluginTemplateResult r = mpv5.handler.TemplateImportService.importPluginTemplate(
+                        WorkshopPlugin.class,
+                        (String) spec[0],
+                        (String) spec[1],
+                        (Integer) spec[2],
+                        mpv5.handler.FirstStartSetup.ITEM_FORMAT,
+                        "Workshop plugin");
+                if (r.created) {
+                    imported++;
+                } else {
+                    existed++;
                 }
             }
-            yabs.notify(yabs.tr("cmd.exportTemplates.done", count, dir.getAbsolutePath()));
+            return yabs.tr("cmd.importTemplates.done", imported, existed);
         } catch (Exception e) {
             Log.Debug(WorkshopPlugin.class, e);
-            yabs.error(yabs.tr("cmd.exportTemplates.failed", e.getMessage()));
+            return yabs.tr("cmd.importTemplates.failed", e.getMessage());
         }
     }
 

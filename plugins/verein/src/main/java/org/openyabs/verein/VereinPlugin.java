@@ -550,34 +550,32 @@ public final class VereinPlugin implements YabsExtension {
         return 1;
     }
 
-    void exportTemplates(ExtensionContext yabs) {
+    String importTemplates(ExtensionContext yabs) {
+        Object[][] specs = {
+            {"/org/openyabs/verein/templates/beitragsrechnung.fodt", "Verein - Beitragsrechnung", Constants.TYPE_INVOICE},
+            {"/org/openyabs/verein/templates/zuwendungsbestaetigung_geld.fodt", "Verein - Zuwendungsbest\u00e4tigung (Geld)", Constants.TYPE_INVOICE}
+        };
+        int imported = 0;
+        int existed = 0;
         try {
-            DialogForFile d = new DialogForFile(DialogForFile.DIRECTORIES_ONLY);
-            if (!d.chooseFile()) {
-                return;
-            }
-            File dir = d.getFile();
-            if (dir == null) {
-                return;
-            }
-            if (!dir.exists()) {
-                dir.mkdirs();
-            }
-            int count = 0;
-            for (String res : TEMPLATE_RESOURCES) {
-                String name = res.substring(res.lastIndexOf('/') + 1);
-                try (InputStream in = VereinPlugin.class.getResourceAsStream(res)) {
-                    if (in == null) {
-                        continue;
-                    }
-                    Files.write(new File(dir, name).toPath(), in.readAllBytes());
-                    count++;
+            for (Object[] spec : specs) {
+                mpv5.handler.TemplateImportService.PluginTemplateResult r = mpv5.handler.TemplateImportService.importPluginTemplate(
+                        VereinPlugin.class,
+                        (String) spec[0],
+                        (String) spec[1],
+                        (Integer) spec[2],
+                        mpv5.handler.FirstStartSetup.ITEM_FORMAT,
+                        "Verein plugin");
+                if (r.created) {
+                    imported++;
+                } else {
+                    existed++;
                 }
             }
-            yabs.notify(yabs.tr("cmd.exportTemplates.done", count, dir.getAbsolutePath()));
+            return yabs.tr("cmd.importTemplates.done", imported, existed);
         } catch (Exception e) {
             Log.Debug(VereinPlugin.class, e);
-            yabs.error(yabs.tr("cmd.exportTemplates.failed", e.getMessage()));
+            return yabs.tr("cmd.importTemplates.failed", e.getMessage());
         }
     }
 
