@@ -524,9 +524,9 @@ public class GobdPluginTest {
                 + " sha256 CHAR(64), mimetype VARCHAR(100), imported_at TIMESTAMP, imported_by VARCHAR(100))",
                 "CREATE TABLE revenue_receipts (ids BIGINT PRIMARY KEY, revenuesids BIGINT, originalname VARCHAR(500), archivepath VARCHAR(1000), filesize BIGINT,"
                 + " sha256 CHAR(64), mimetype VARCHAR(100), imported_at TIMESTAMP, imported_by VARCHAR(100))",
-                "INSERT INTO items VALUES (1, 'RE-1', 0, 1, 1, DATE '2026-01-01', DATE '2026-01-01', NULL, 100, 0, 19, 0, 'Rechnung 1')",
+                "INSERT INTO items VALUES (1, 'RE-1', 0, 1, 1, '2026-01-01', '2026-01-01', NULL, 100, 0, 19, 0, 'Rechnung 1')",
                 "INSERT INTO subitems VALUES (1, 1, 'Pos 1', 1, 100, 0, 19)",
-                "INSERT INTO expenses VALUES (1, 'A-1', DATE '2026-02-01', 1, 10, 19, 11.9, 'Ausgabe 1')"}) {
+                "INSERT INTO expenses VALUES (1, 'A-1', '2026-02-01', 1, 10, 19, 11.9, 'Ausgabe 1')"}) {
                 Db.update(c, sql);
             }
             Db.update(c, "INSERT INTO expense_receipts VALUES (1, 1, 'beleg.pdf', ?, ?, ?, 'application/pdf', CURRENT_TIMESTAMP, 'u')",
