@@ -31,6 +31,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import mpv5.ui.modern.Applets;
+import mpv5.ui.modern.Card;
+import mpv5.ui.modern.ModernTheme;
+import mpv5.ui.modern.PrimaryButton;
+import mpv5.ui.modern.SetupPage;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -135,85 +140,48 @@ final class HandwerkUi {
             s.save();
         };
 
-        JPanel form = new JPanel(new GridBagLayout());
-        form.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
-        GridBagConstraints g = gbc();
-
-        int row = 0;
-        addRow(form, g, row++, yabs.tr("settings.chamberName"), chamberNameField);
-        addRow(form, g, row++, yabs.tr("settings.chamberNumber"), chamberNoField);
-        addRow(form, g, row++, yabs.tr("settings.ownFreistellungTaxNo"), freiTaxField);
-        addRow(form, g, row++, yabs.tr("settings.ownFreistellungSecNo"), freiSecField);
-        addRow(form, g, row++, yabs.tr("settings.ownFreistellungValidUntil"), freiUntilField);
-        addRow(form, g, row++, yabs.tr("settings.ownUst1TgValidUntil"), ustUntilField);
-        addRow(form, g, row++, yabs.tr("settings.rateMaster"), rateMasterField);
-        addRow(form, g, row++, yabs.tr("settings.rateJourneyman"), rateJourneyField);
-        addRow(form, g, row++, yabs.tr("settings.rateApprentice"), rateApprenticeField);
-        addRow(form, g, row++, yabs.tr("settings.rateTravel"), rateTravelField);
-        addRow(form, g, row++, yabs.tr("settings.datanormMarkup"), markupField);
-        addRow(form, g, row++, yabs.tr("settings.defaultContractType"), contractBox);
-        addRow(form, g, row++, yabs.tr("settings.defaultRetentionPercent"), retPctField);
-        addRow(form, g, row++, yabs.tr("settings.defaultRetentionBasis"), retBasisBox);
-        addRow(form, g, row++, yabs.tr("settings.certLeadDays"), leadDaysField);
-
-        g.gridx = 0;
-        g.gridy = row++;
-        g.gridwidth = 2;
-        form.add(warnBox, g);
-
+        SetupPage page = new SetupPage(yabs.tr("setup.title"), yabs.tr("setup.subtitle"));
         if (plugin != null) {
-            JPanel setupBox = new JPanel(new GridBagLayout());
-            setupBox.setBorder(BorderFactory.createTitledBorder(yabs.tr("setup.imports.title")));
-            GridBagConstraints sg = gbc();
-            int srow = 0;
-
-            JButton importCatalogBtn = new JButton(yabs.tr("cmd.importCatalog.title"));
-            importCatalogBtn.setToolTipText(yabs.tr("cmd.importCatalog.desc"));
+            String cardTitle = yabs.tr("setup.imports.title");
+            JButton importCatalogBtn = new PrimaryButton(yabs.tr("cmd.importCatalog.title"), null);
             importCatalogBtn.addActionListener(e -> {
                 applySettings.run();
                 yabs.background(() -> plugin.importStarterCatalog(yabs), msg -> yabs.popup(msg));
             });
-            addActionRow(setupBox, sg, srow++, importCatalogBtn, yabs.tr("cmd.importCatalog.desc"));
+            page.action(cardTitle, importCatalogBtn, yabs.tr("cmd.importCatalog.title"), yabs.tr("cmd.importCatalog.desc"));
 
             JButton importDatanormBtn = new JButton(yabs.tr("cmd.importDatanorm.title"));
-            importDatanormBtn.setToolTipText(yabs.tr("cmd.importDatanorm.desc"));
             importDatanormBtn.addActionListener(e -> {
                 applySettings.run();
                 plugin.importDatanorm(yabs);
             });
-            addActionRow(setupBox, sg, srow++, importDatanormBtn, yabs.tr("cmd.importDatanorm.desc"));
+            page.action(cardTitle, importDatanormBtn, yabs.tr("cmd.importDatanorm.title"), yabs.tr("cmd.importDatanorm.desc"));
 
             JButton importTemplatesBtn = new JButton(yabs.tr("cmd.importTemplates.title"));
-            importTemplatesBtn.setToolTipText(yabs.tr("cmd.importTemplates.desc"));
             importTemplatesBtn.addActionListener(e -> yabs.background(() -> plugin.importTemplates(yabs), msg -> yabs.popup(msg)));
-            addActionRow(setupBox, sg, srow++, importTemplatesBtn, yabs.tr("cmd.importTemplates.desc"));
-
-            g.gridx = 0;
-            g.gridy = row++;
-            g.gridwidth = 2;
-            g.insets = new Insets(10, 0, 6, 0);
-            form.add(setupBox, g);
+            page.action(cardTitle, importTemplatesBtn, yabs.tr("cmd.importTemplates.title"), yabs.tr("cmd.importTemplates.desc"));
         }
+        page.card(new Card(yabs.tr("setup.card.company"))
+                .row(Card.field(yabs.tr("settings.chamberName"), ModernTheme.roomy(chamberNameField), 2), Card.field(yabs.tr("settings.chamberNumber"), ModernTheme.roomy(chamberNoField), 1))
+                .row(Card.field(yabs.tr("settings.ownFreistellungTaxNo"), ModernTheme.roomy(freiTaxField)), Card.field(yabs.tr("settings.ownFreistellungSecNo"), ModernTheme.roomy(freiSecField)))
+                .row(Card.field(yabs.tr("settings.ownFreistellungValidUntil"), ModernTheme.roomy(freiUntilField)), Card.field(yabs.tr("settings.ownUst1TgValidUntil"), ModernTheme.roomy(ustUntilField))));
+        page.card(new Card(yabs.tr("setup.card.rates"))
+                .row(Card.field(yabs.tr("settings.rateMaster"), ModernTheme.roomy(rateMasterField)), Card.field(yabs.tr("settings.rateJourneyman"), ModernTheme.roomy(rateJourneyField)),
+                        Card.field(yabs.tr("settings.rateApprentice"), ModernTheme.roomy(rateApprenticeField)))
+                .row(Card.field(yabs.tr("settings.rateTravel"), ModernTheme.roomy(rateTravelField)), Card.field(yabs.tr("settings.datanormMarkup"), ModernTheme.roomy(markupField)),
+                        Card.field(" ", new JPanel() {{ setOpaque(false); }})));
+        page.card(new Card(yabs.tr("setup.card.contract"))
+                .row(Card.field(yabs.tr("settings.defaultContractType"), ModernTheme.roomyCombo(contractBox)), Card.field(yabs.tr("settings.defaultRetentionPercent"), ModernTheme.roomy(retPctField)),
+                        Card.field(yabs.tr("settings.defaultRetentionBasis"), ModernTheme.roomyCombo(retBasisBox)))
+                .row(Card.field(yabs.tr("settings.certLeadDays"), ModernTheme.roomy(leadDaysField), 1), Card.field(" ", SetupPage.plain(warnBox), 2))
+                .addFull(Applets.hint(yabs.tr("settings.info"))));
 
-        g.gridx = 0;
-        g.gridy = row++;
-        g.gridwidth = 2;
-        g.insets = new Insets(8, 6, 6, 6);
-        form.add(new JLabel(yabs.tr("settings.info")), g);
-
-        JButton saveBtn = new JButton(yabs.tr("common.save"));
+        PrimaryButton saveBtn = SetupPage.saveButton(yabs.tr("common.save"));
         saveBtn.addActionListener(e -> {
             applySettings.run();
             yabs.notify(yabs.tr("settings.saved"));
         });
-
-        JPanel actions = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 8));
-        actions.add(saveBtn);
-
-        JPanel root = new JPanel(new BorderLayout());
-        root.add(new JScrollPane(form), BorderLayout.CENTER);
-        root.add(actions, BorderLayout.SOUTH);
-        return root;
+        return page.build(saveBtn);
     }
 
     // --------------------------------------------------------------- banners

@@ -398,16 +398,29 @@ final class Pages {
         sealRow.add(sealBtn);
         sealRow.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
 
-        panel.add(autoLock);
-        panel.add(label("Revisionssicherer GoBD-Archivordner:", 10));
-        panel.add(archiveRow);
-        panel.add(sealRow);
+        mpv5.ui.modern.SetupPage page = new mpv5.ui.modern.SetupPage("GoBD-Setup",
+                "Revisionssichere Buchf\u00fchrung: automatisches Festschreiben, Archivordner und Bestandsversiegelung. \u00c4nderungen werden sofort gespeichert.");
+        autoLock.setOpaque(false);
+        archiveRow.setOpaque(false);
+        for (java.awt.Component c : archiveRow.getComponents()) {
+            if (c instanceof JPanel) {
+                ((JPanel) c).setOpaque(false);
+            }
+        }
+        page.card(new mpv5.ui.modern.Card("Festschreiben & Archiv")
+                .addFull(autoLock)
+                .section("Revisionssicherer GoBD-Archivordner")
+                .addFull(archiveRow));
+        JButton sealPrimary = new mpv5.ui.modern.PrimaryButton("Jetzt versiegeln", null);
+        for (java.awt.event.ActionListener l : sealBtn.getActionListeners()) {
+            sealPrimary.addActionListener(l);
+        }
+        page.action("Bestandsversiegelung", sealPrimary, "Bestand jetzt versiegeln",
+                "Versiegelt alle steuerrelevanten Datens\u00e4tze (Hash je Datensatz, Hash-Kette der Versiegelungen).");
         //e-invoices (expenses and income) are imported by YaBS: import buttons, drag and drop and
         //the e-invoice folder (settings > folders); the plugin locks the records with their receipts
-        panel.add(label("E-Rechnungen (Ausgaben und Einnahmen) importiert YaBS: Import-Schaltflaechen, Drag & Drop und der"
-                + " E-Rechnungs-Ordner (Einstellungen > Ordner). Das Plugin schreibt die Buchungen mit ihrem Beleg fest.", 14));
-        JPanel root = new JPanel(new BorderLayout());
-        root.add(panel, BorderLayout.NORTH);
-        return new JScrollPane(root);
+        page.note("E-Rechnungen (Ausgaben und Einnahmen) importiert YaBS: Import-Schaltfl\u00e4chen, Drag & Drop und der"
+                + " E-Rechnungs-Ordner (Einstellungen > Ordner). Das Plugin schreibt die Buchungen mit ihrem Beleg fest.");
+        return page.build(null);
     }
 }

@@ -27,6 +27,11 @@ import java.awt.Insets;
 import java.awt.Window;
 import java.time.LocalDate;
 import java.util.List;
+import mpv5.ui.modern.Applets;
+import mpv5.ui.modern.Card;
+import mpv5.ui.modern.ModernTheme;
+import mpv5.ui.modern.PrimaryButton;
+import mpv5.ui.modern.SetupPage;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -95,75 +100,35 @@ final class WorkshopUi {
             s.save();
         };
 
-        JPanel form = new JPanel(new GridBagLayout());
-        form.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
-        GridBagConstraints g = new GridBagConstraints();
-        g.insets = new Insets(5, 6, 5, 6);
-        g.anchor = GridBagConstraints.WEST;
-        g.fill = GridBagConstraints.HORIZONTAL;
-
-        int row = 0;
-        addRow(form, g, row++, yabs.tr("settings.distanceUnit"), unitBox);
-        addRow(form, g, row++, yabs.tr("settings.awPerHour"), awField);
-        addRow(form, g, row++, yabs.tr("settings.rateMechanical"), mechField);
-        addRow(form, g, row++, yabs.tr("settings.rateElectrical"), elecField);
-        addRow(form, g, row++, yabs.tr("settings.rateBodywork"), bodyField);
-        addRow(form, g, row++, yabs.tr("settings.inspectionLeadDays"), leadField);
-        addRow(form, g, row++, yabs.tr("settings.quoteOverrunPercent"), overrunField);
-
-        g.gridx = 0;
-        g.gridy = row++;
-        g.gridwidth = 2;
-        form.add(warnBox, g);
-
+        SetupPage page = new SetupPage(yabs.tr("setup.title"), yabs.tr("setup.subtitle"));
         if (plugin != null) {
-            JPanel setupBox = new JPanel(new GridBagLayout());
-            setupBox.setBorder(BorderFactory.createTitledBorder(yabs.tr("setup.imports.title")));
-            GridBagConstraints sg = new GridBagConstraints();
-            sg.insets = new Insets(4, 6, 4, 6);
-            sg.anchor = GridBagConstraints.WEST;
-            sg.fill = GridBagConstraints.HORIZONTAL;
-            int srow = 0;
-
-            JButton importCatalogBtn = new JButton(yabs.tr("cmd.importCatalog.title"));
-            importCatalogBtn.setToolTipText(yabs.tr("cmd.importCatalog.desc"));
+            String cardTitle = yabs.tr("setup.imports.title");
+            JButton importCatalogBtn = new PrimaryButton(yabs.tr("cmd.importCatalog.title"), null);
             importCatalogBtn.addActionListener(e -> {
                 applySettings.run();
                 yabs.background(() -> plugin.importStarterCatalog(yabs), msg -> yabs.popup(msg));
             });
-            addActionRow(setupBox, sg, srow++, importCatalogBtn, yabs.tr("cmd.importCatalog.desc"));
+            page.action(cardTitle, importCatalogBtn, yabs.tr("cmd.importCatalog.title"), yabs.tr("cmd.importCatalog.desc"));
 
             JButton importTemplatesBtn = new JButton(yabs.tr("cmd.importTemplates.title"));
-            importTemplatesBtn.setToolTipText(yabs.tr("cmd.importTemplates.desc"));
             importTemplatesBtn.addActionListener(e -> yabs.background(() -> plugin.importTemplates(yabs), msg -> yabs.popup(msg)));
-            addActionRow(setupBox, sg, srow++, importTemplatesBtn, yabs.tr("cmd.importTemplates.desc"));
-
-            g.gridx = 0;
-            g.gridy = row++;
-            g.gridwidth = 2;
-            g.insets = new Insets(10, 0, 6, 0);
-            form.add(setupBox, g);
+            page.action(cardTitle, importTemplatesBtn, yabs.tr("cmd.importTemplates.title"), yabs.tr("cmd.importTemplates.desc"));
         }
+        page.card(new Card(yabs.tr("setup.card.rates"))
+                .row(Card.field(yabs.tr("settings.distanceUnit"), ModernTheme.roomyCombo(unitBox)), Card.field(yabs.tr("settings.awPerHour"), ModernTheme.roomy(awField)))
+                .row(Card.field(yabs.tr("settings.rateMechanical"), ModernTheme.roomy(mechField)), Card.field(yabs.tr("settings.rateElectrical"), ModernTheme.roomy(elecField)),
+                        Card.field(yabs.tr("settings.rateBodywork"), ModernTheme.roomy(bodyField))));
+        page.card(new Card(yabs.tr("setup.card.checks"))
+                .row(Card.field(yabs.tr("settings.inspectionLeadDays"), ModernTheme.roomy(leadField)), Card.field(yabs.tr("settings.quoteOverrunPercent"), ModernTheme.roomy(overrunField)))
+                .addFull(SetupPage.plain(warnBox))
+                .addFull(Applets.hint(yabs.tr("settings.info"))));
 
-        g.gridx = 0;
-        g.gridy = row++;
-        g.gridwidth = 2;
-        g.insets = new Insets(12, 6, 6, 6);
-        form.add(new JLabel(yabs.tr("settings.info")), g);
-
-        JButton saveBtn = new JButton(yabs.tr("common.save"));
+        PrimaryButton saveBtn = SetupPage.saveButton(yabs.tr("common.save"));
         saveBtn.addActionListener(e -> {
             applySettings.run();
             yabs.notify(yabs.tr("settings.saved"));
         });
-
-        JPanel actions = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 8));
-        actions.add(saveBtn);
-
-        JPanel root = new JPanel(new BorderLayout());
-        root.add(new JScrollPane(form), BorderLayout.CENTER);
-        root.add(actions, BorderLayout.SOUTH);
-        return root;
+        return page.build(saveBtn);
     }
 
     static void decorate(final DataPanel panel, final ExtensionContext yabs) {
