@@ -215,8 +215,20 @@ final class Pages {
         Runnable reload = () -> {
             String selectedYear = str(yearCombo.getSelectedItem()).trim();
             boolean byYear = !selectedYear.isEmpty() && !selectedYear.equals(ALL_YEARS);
-            Object[][] invRows = g.rows("SELECT document_id, document_number, status, finalized_at, finalized_by, artifact_format, sha256_hash,"
-                    + " cancels_document_id, archive_path FROM gobd_document_lock ORDER BY COALESCE(chain_seq, document_id) DESC, finalized_at DESC");
+            java.util.List<Object[]> invList = new java.util.ArrayList<Object[]>(java.util.Arrays.asList(
+                    g.rows("SELECT document_id, document_number, status, finalized_at, finalized_by, artifact_format, sha256_hash,"
+                            + " cancels_document_id, archive_path, finalized_at FROM gobd_document_lock ORDER BY COALESCE(chain_seq, document_id) DESC, finalized_at DESC")));
+            //invoices only covered by the inventory seal (existing before the plugin): no document lock, but part of the records
+            //sealed; they belong to the year of the invoice (r[9]), the seal date is shown
+            for (Object[] s : g.rows("SELECT s.entity_id, i.cnumber, s.sealed_in, z.sealed_at, z.sealed_by, s.record_hash, i.dateadded"
+                    + " FROM gobd_seal_state s JOIN items i ON i.ids = s.entity_id LEFT JOIN gobd_seal z ON z.chain_seq = s.sealed_in"
+                    + " WHERE s.entity_type = 'INVOICE' AND s.sealed_in IS NOT NULL"
+                    + " AND NOT EXISTS (SELECT 1 FROM gobd_document_lock l WHERE l.document_id = s.entity_id)"
+                    + " ORDER BY s.entity_id DESC")) {
+                invList.add(new Object[]{s[0], s[1], "Bestand (versiegelt #" + s[2] + ")", s[3], s[4], "", str(s[5]).trim(), "", "",
+                    s[6] != null ? s[6] : s[3]});
+            }
+            Object[][] invRows = invList.toArray(new Object[0][]);
             Object[][] incRows = g.rows("SELECT revenue_id, document_number, status, imported_at, imported_by, original_name, artifact_format,"
                     + " file_sha256, chain_hash, archive_path FROM gobd_income_lock ORDER BY chain_seq DESC, imported_at DESC");
             Object[][] expRows = g.rows("SELECT e.ids, e.cnumber, e.description, e.dateadded, e.brutvalue, r.originalname, r.sha256, r.archivepath"
@@ -231,7 +243,7 @@ final class Pages {
                 }
             };
             for (Object[] r : invRows) {
-                year.accept(r[3]);
+                year.accept(r[9]);
             }
             for (Object[] r : incRows) {
                 year.accept(r[3]);
@@ -261,7 +273,7 @@ final class Pages {
             final boolean f = byYear;
             inv.setRowCount(0);
             for (Object[] r : invRows) {
-                if (!f || fmtDate(r[3]).startsWith(selectedYear)) {
+                if (!f || fmtDate(r[9]).startsWith(selectedYear)) {
                     inv.addRow(new Object[]{r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7] == null ? "" : r[7], r[8] == null ? "" : r[8]});
                 }
             }
