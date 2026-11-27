@@ -75,20 +75,24 @@ public final class WheelScroll {
             return;
         }
         Component src = (Component) e.getSource();
-        if (src instanceof JScrollPane) {
-            JScrollPane sp = (JScrollPane) src;
+        // Find nearest JScrollPane ancestor (including source if it is one)
+        JScrollPane sp = (src instanceof JScrollPane) ? (JScrollPane) src : (JScrollPane) SwingUtilities.getAncestorOfClass(JScrollPane.class, src);
+        if (sp != null) {
             ensureUnitIncrement(sp);
             JScrollPane target = findForwardTarget(sp, e, rot);
             if (target != null) {
-                forward(src, target, e);
+                forward(sp, target, e);
             }
-        } else if (src instanceof JTabbedPane) {
-            JTabbedPane tp = (JTabbedPane) src;
+            return;
+        }
+        // Find nearest JTabbedPane ancestor (including source)
+        JTabbedPane tp = (src instanceof JTabbedPane) ? (JTabbedPane) src : (JTabbedPane) SwingUtilities.getAncestorOfClass(JTabbedPane.class, src);
+        if (tp != null) {
             Component selected = tp.getSelectedComponent();
             if (selected != null && selected.getBounds().contains(e.getPoint())) {
                 JScrollPane target = findScrollableAncestor(tp, e, rot);
                 if (target != null) {
-                    forward(src, target, e);
+                    forward(tp, target, e);
                 }
             }
         }
