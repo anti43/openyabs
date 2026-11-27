@@ -40,21 +40,22 @@ class WheelScrollTest {
     }
 
     private static void wheel(Component target, int x, int y, int rotation) {
-        Window w = SwingUtilities.getWindowAncestor(target);
-        Point p = SwingUtilities.convertPoint(target, x, y, w);
+        // Dispatch straight to the component under the pointer (AWT then walks up to the
+        // nearest ancestor with a wheel listener, like for real events). Dispatching at the
+        // window only gets retargeted reliably for the first synthetic event.
         MouseWheelEvent ev = new MouseWheelEvent(
-                w,
+                target,
                 MouseEvent.MOUSE_WHEEL,
                 System.currentTimeMillis(),
                 0,
-                p.x,
-                p.y,
+                x,
+                y,
                 0,
                 false,
                 MouseWheelEvent.WHEEL_UNIT_SCROLL,
                 3,
                 rotation);
-        w.dispatchEvent(ev);
+        target.dispatchEvent(ev);
     }
 
     @Test
