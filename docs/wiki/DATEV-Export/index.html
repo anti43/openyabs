@@ -72,7 +72,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#datev-export-buchungsstapel-stammdaten--belegpaket" class="md-skip">
+        <a href="#datev-export-belegpaket-buchungsstapel--stammdaten" class="md-skip">
           Skip to content
         </a>
       
@@ -1066,10 +1066,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#1-datev-buchungsstapel-csv" class="md-nav__link">
+  <a href="#1-datev-belegpaket-zip--unternehmen-online-mit-e-rechnungen" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. DATEV-Buchungsstapel (CSV)
+        1. DATEV-Belegpaket (ZIP – Unternehmen online, mit E-Rechnungen)
       
     </span>
   </a>
@@ -1077,10 +1077,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-datev-stammdaten-debitorenkreditoren-csv" class="md-nav__link">
+  <a href="#2-datev-buchungsstapel-extf-csv--kanzlei-rechnungswesen" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. DATEV-Stammdaten Debitoren/Kreditoren (CSV)
+        2. DATEV-Buchungsstapel (EXTF-CSV – Kanzlei-Rechnungswesen)
       
     </span>
   </a>
@@ -1088,10 +1088,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#3-datev-belegpaket-xml-schnittstelle-online-mit-e-rechnungen" class="md-nav__link">
+  <a href="#3-datev-stammdaten-debitorenkreditoren-extf-csv--kanzlei-rechnungswesen" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3. DATEV-Belegpaket (XML-Schnittstelle online, mit E-Rechnungen)
+        3. DATEV-Stammdaten Debitoren/Kreditoren (EXTF-CSV – Kanzlei-Rechnungswesen)
       
     </span>
   </a>
@@ -2171,10 +2171,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#1-datev-buchungsstapel-csv" class="md-nav__link">
+  <a href="#1-datev-belegpaket-zip--unternehmen-online-mit-e-rechnungen" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. DATEV-Buchungsstapel (CSV)
+        1. DATEV-Belegpaket (ZIP – Unternehmen online, mit E-Rechnungen)
       
     </span>
   </a>
@@ -2182,10 +2182,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#2-datev-stammdaten-debitorenkreditoren-csv" class="md-nav__link">
+  <a href="#2-datev-buchungsstapel-extf-csv--kanzlei-rechnungswesen" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. DATEV-Stammdaten Debitoren/Kreditoren (CSV)
+        2. DATEV-Buchungsstapel (EXTF-CSV – Kanzlei-Rechnungswesen)
       
     </span>
   </a>
@@ -2193,10 +2193,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#3-datev-belegpaket-xml-schnittstelle-online-mit-e-rechnungen" class="md-nav__link">
+  <a href="#3-datev-stammdaten-debitorenkreditoren-extf-csv--kanzlei-rechnungswesen" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3. DATEV-Belegpaket (XML-Schnittstelle online, mit E-Rechnungen)
+        3. DATEV-Stammdaten Debitoren/Kreditoren (EXTF-CSV – Kanzlei-Rechnungswesen)
       
     </span>
   </a>
@@ -2245,15 +2245,14 @@
   
 
 
-<h1 id="datev-export-buchungsstapel-stammdaten--belegpaket">DATEV-Export (Buchungsstapel, Stammdaten &amp; Belegpaket)<a class="headerlink" href="#datev-export-buchungsstapel-stammdaten--belegpaket" title="Permanent link">&para;</a></h1>
+<h1 id="datev-export-belegpaket-buchungsstapel--stammdaten">DATEV-Export (Belegpaket, Buchungsstapel &amp; Stammdaten)<a class="headerlink" href="#datev-export-belegpaket-buchungsstapel--stammdaten" title="Permanent link">&para;</a></h1>
 <p>English: <a href="../DATEV-export-%28EN%29/">DATEV export (EN)</a></p>
-<p>Das <strong>DATEV-Export-Plugin</strong> (<code>datev.jar</code>, Version <strong>2.0.0</strong>, ab OpenYaBS <strong>2.0.23</strong>) stellt aus dem <a href="../Journal/">Journal</a> drei DATEV-konforme Exporte für <strong>DATEV Kanzlei-Rechnungswesen</strong> und <strong>DATEV Unternehmen online</strong> bereit:</p>
+<p>Das <strong>DATEV-Export-Plugin</strong> (<code>datev.jar</code>, Version <strong>2.0.0</strong>, ab OpenYaBS <strong>2.0.23</strong>) stellt aus dem <a href="../Journal/">Journal</a> drei DATEV-konforme Exporte für <strong>DATEV Unternehmen online</strong> und <strong>DATEV Kanzlei-Rechnungswesen</strong> bereit:</p>
 <ol>
-<li><strong>DATEV-Buchungsstapel (CSV)</strong> – DATEV-Format EXTF, Header-Version 700, Formatkategorie 21, Formatversion 13 (125 Spalten), inkl. automatischer Einbindung im Steuerberater-ZIP.</li>
-<li><strong>DATEV-Stammdaten Debitoren/Kreditoren (CSV)</strong> – DATEV-Format EXTF, Header-Version 700, Formatkategorie 16, Formatversion 5 (51 Spalten).</li>
-<li><strong>DATEV-Belegpaket (ZIP)</strong> – DATEV XML-Schnittstelle online (Version 6.0) für <em>Belege online</em> / <em>DATEV Belegtransfer</em> mit Rechnungsdaten und Originalbelegen (PDF/ZUGFeRD bzw. XRechnung).</li>
+<li><strong>DATEV-Belegpaket (ZIP – Unternehmen online, mit E-Rechnungen)</strong> – DATEV XML-Schnittstelle online (Version 6.0) für <em>Belege online</em> / <em>DATEV Belegtransfer</em> mit Rechnungsdaten und Originalbelegen (PDF/ZUGFeRD bzw. XRechnung). Benötigt <strong>keine</strong> Berater- oder Mandantennummer.</li>
+<li><strong>DATEV-Buchungsstapel (EXTF-CSV – Kanzlei-Rechnungswesen)</strong> – DATEV-Format EXTF, Header-Version 700, Formatkategorie 21, Formatversion 13 (125 Spalten), inkl. automatischer Einbindung im Steuerberater-ZIP.</li>
+<li><strong>DATEV-Stammdaten Debitoren/Kreditoren (EXTF-CSV – Kanzlei-Rechnungswesen)</strong> – DATEV-Format EXTF, Header-Version 700, Formatkategorie 16, Formatversion 5 (51 Spalten).</li>
 </ol>
-<p><img alt="DATEV-Export-Einstellungen mit SKR03/SKR04, EU-/Export-Erlöskonten und Steuersatz-Zuordnung" src="../images/plugin-datev.png" /></p>
 <h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h2>
 <ol>
 <li><code>datev.jar</code> aus dem Ordner <code>plugins/</code> der OpenYaBS-Distribution (bzw. <code>openyabs-plugins-&lt;version&gt;.zip</code>) unter <strong>Einstellungen › Plugins › Plugin importieren</strong> einbinden (erfordert OpenYaBS <strong>2.0.23</strong> oder neuer).</li>
@@ -2262,21 +2261,18 @@
 <li><code>ext/accounts-german-skr04.xml</code> – <strong>SKR04</strong>.</li>
 </ol>
 <h2 id="einstellungen">Einstellungen<a class="headerlink" href="#einstellungen" title="Permanent link">&para;</a></h2>
-<p>Unter <strong>Einstellungen › Plugins › DATEV-Export</strong> (je Datenbank unter dem Präfix <code>datev.*</code> gespeichert; wurden noch keine Einstellungen gespeichert, nutzt der Export automatisch die passenden Standardwerte des erkannten Kontenrahmens und weist im Exportdialog darauf hin):</p>
+<p>Erreichbar über <strong>Einstellungen › Plugins › DATEV-Export</strong>, direkt über <strong>Plugins › DATEV: Einstellungen öffnen</strong> oder über die Schaltfläche <strong>Einstellungen…</strong> in jedem DATEV-Exportdialog. Alle Werte werden je Datenbank unter dem Präfix <code>datev.*</code> gespeichert; wurden noch keine Einstellungen gespeichert, nutzt der Export automatisch die passenden Standardwerte des erkannten Kontenrahmens und weist im Exportdialog darauf hin.</p>
+<p><img alt="DATEV-Export-Einstellungen mit Übersicht für Belegpaket vs. EXTF-CSV, Konsistenzstatus und SKR03/SKR04-Konfiguration" src="../images/plugin-datev.png" /></p>
+<p>Die Einstellungsseite ist in drei klare Bereiche gegliedert und prüft Eingaben direkt beim Speichern:</p>
 <ul>
-<li><strong>Kopfdaten &amp; Wirtschaftsjahr:</strong></li>
-<li><strong>Beraternummer</strong> (<code>1001–9999999</code>) und <strong>Mandantennummer</strong> (<code>1–99999</code>) – vom Steuerberater erfragen.</li>
-<li><strong>Wirtschaftsjahresbeginn</strong> (<code>JJJJMMTT</code>, z. B. <code>20260101</code>) – unterstützt auch <strong>abweichende Wirtschaftsjahre</strong> (z. B. <code>20250701</code>) ohne falsche Jahreswechsel-Warnung; ungültige Kalenderdaten werden geprüft.</li>
-<li><strong>Sachkontenlänge</strong> (<code>4–8</code>, üblicherweise <code>4</code>) – Konten der Klasse 0 (z. B. <code>0480</code> GWG, <code>0670</code>) werden korrekt links mit Nullen aufgefüllt; zu lange Kontonummern werden beim Export gemeldet.</li>
-<li><strong>Kontenrahmen</strong> (<code>03</code> = SKR03, <code>04</code> = SKR04 – wird aus den importierten Konten vorbefüllt).</li>
-<li><strong>Bezeichnung des Stapels</strong> (max. 30 Zeichen), optional <strong>Diktatkürzel</strong> (1–2 Großbuchstaben), <strong>Festschreibung</strong> (Standard: aus, damit die Kanzlei vor dem Festschreiben prüfen kann).</li>
-<li><strong>Belegdatum &amp; Leistungsdatum:</strong></li>
-<li><strong>Belegdatum:</strong> <em>Zahlungsdatum (EÜR / Ist-Versteuerung)</em> (Standard) oder <em>Belegdatum (Rechnungsdatum)</em>.</li>
-<li><strong>Leistungsdatum / Steuerperiode (Spalten 115–116) exportieren (§ 14 Abs. 4 Nr. 6 UStG):</strong> Standardmäßig aktiv. Weicht das Liefer-/Leistungsdatum vom Buchungsdatum ab, werden Leistungsdatum (<code>TTMMJJJJ</code>) und Zuordnung zur Steuerperiode mitexportiert – wichtig für Periodenabgrenzung und Steuersatzwechsel.</li>
+<li><strong>Übersicht &amp; Statusprüfung:</strong></li>
+<li>Zeigt auf einen Blick, welche Angaben für das <strong>Belegpaket (Unternehmen online)</strong> ausreichen (Kontenrahmen + Rechnungsordner; keine Berater-/Mandantennummer) und welche nur für <strong>Buchungsstapel &amp; Stammdaten (EXTF-CSV)</strong> benötigt werden.</li>
+<li><strong>SKR03/SKR04-Konsistenzprüfung:</strong> Erkennt automatisch den in YaBS importierten Kontenrahmen, zeigt an, ob die <strong>Kleinunternehmerregelung (§ 19 UStG)</strong> in den Firmendaten aktiv ist, und warnt sofort bei gemischten SKR03-/SKR04-Konten (sowohl auf der Einstellungsseite als auch in den Export-Vorschauen).</li>
+<li><strong>1. Kontenrahmen &amp; Kontenzuordnung:</strong></li>
+<li><strong>Kontenrahmen</strong> (<code>SKR03</code> oder <code>SKR04</code> – wird aus den importierten Konten vorbefüllt). Beim Umschalten zwischen SKR03 und SKR04 werden die DATEV-Standardkonten automatisch auf den gewählten Kontenrahmen umgestellt.</li>
+<li><strong>Erweiterte Konten- und BU-Schlüssel-Zuordnung</strong> (standardmäßig eingeklappt, sofern keine eigenen Anpassungen gespeichert sind):<ul>
 <li><strong>Geldkonten:</strong> Geldkonto Einnahmen und Geldkonto Ausgaben (Standard <code>1200</code> bei SKR03, <code>1800</code> bei SKR04), optional ein <strong>Kassenkonto</strong> (z. B. <code>1000</code> / <code>1600</code>) für Barverkäufe aus der <a href="../Kasse-und-TSE/">Kasse (POS)</a>.</li>
-<li><strong>Automatikkonten &amp; BU-Schlüssel:</strong></li>
-<li>Option <strong>DATEV-Automatikkonten (AM/AV) ohne BU-Schlüssel exportieren</strong> (Standard: aktiv): Der BU-Schlüssel wird ausschließlich bei offiziellen DATEV-Automatikkonten (AM/AV in SKR03/SKR04, z. B. <code>8400</code>/<code>8300</code>/<code>3400</code>/<code>3300</code> bzw. <code>4400</code>/<code>4300</code>/<code>5400</code>/<code>5300</code>) sowie optional konfigurierten eigenen Automatikkonten weggelassen.</li>
-<li>Auf regulären Sachkonten ohne Automatikfunktion (z. B. SKR03 <code>4930</code> Bürobedarf, <code>4600</code> Werbekosten, <code>0480</code> GWG) wird immer der passende BU-Schlüssel (<code>9</code>/<code>8</code> für 19 %/7 % Ausgaben, <code>3</code>/<code>2</code> für 19 %/7 % Einnahmen) gesetzt, sodass weder Doppelbesteuerung noch fehlender Vorsteuerabzug entsteht.</li>
+<li><strong>Automatikkonten &amp; BU-Schlüssel:</strong> Option <strong>DATEV-Automatikkonten (AM/AV) ohne BU-Schlüssel exportieren</strong> (Standard: aktiv) sowie ein eigenes Feld für <strong>mandantenspezifische Automatikkonten</strong>. Der BU-Schlüssel wird ausschließlich bei offiziellen DATEV-Automatikkonten (AM/AV in SKR03/SKR04, z. B. <code>8400</code>/<code>8300</code>/<code>3400</code>/<code>3300</code> bzw. <code>4400</code>/<code>4300</code>/<code>5400</code>/<code>5300</code>) und den konfigurierten eigenen Automatikkonten weggelassen. Auf regulären Sachkonten ohne Automatikfunktion (z. B. SKR03 <code>4930</code> Bürobedarf, <code>4600</code> Werbekosten, <code>0480</code> GWG) wird immer der passende BU-Schlüssel (<code>9</code>/<code>8</code> für 19 %/7 % Ausgaben, <code>3</code>/<code>2</code> für 19 %/7 % Einnahmen) gesetzt.</li>
 <li><strong>Konten für 0-%-Umsätze nach USt-Kategorie &amp; Kleinunternehmer (§ 19 UStG):</strong>
   Die Kategorie stammt aus dem Steuersatz der Positionen (Steuersatz des Kunden, des Produkts, sonst Standard-Steuersatz; siehe <a href="../E-Rechnung/">E-Rechnung</a>):</li>
 <li><strong>Steuerfreier Inlandsumsatz (0 %, ohne spezielle Kategorie / Kategorie <code>E</code>):</strong> <code>8100</code> (SKR03) bzw. <code>4100</code> (SKR04). Ist in den Firmendaten die <strong>Kleinunternehmerregelung (§ 19 UStG)</strong> aktiv (<a href="../Kleinunternehmer/">Kleinunternehmer</a>), wird automatisch <code>8195</code> (SKR03) bzw. <code>4185</code> (SKR04) ohne BU-Schlüssel verwendet.</li>
@@ -2285,14 +2281,39 @@
 <li><strong>§ 13b UStG im Inland</strong> (Kategorie <code>AE</code> ohne EU-USt-IdNr.): <code>8337</code> bzw. <code>4337</code>.</li>
 <li><strong>Ausfuhr Drittland</strong> (Kategorie <code>G</code>, § 4 Nr. 1a UStG): <code>8120</code> bzw. <code>4120</code>.</li>
 <li>Rechnungen mit gemischten 0-%-Kategorien werden sauber je Kategorie aufgeteilt. Bei 0-%-EU-Umsätzen wird die USt-IdNr. des Kontakts (inkl. Normalisierung <code>GR</code> → <code>EL</code> für Griechenland) in Spalte 40 (<em>EU-Land u. UStID</em>) für die Zusammenfassende Meldung übergeben.</li>
-<li><strong>Belegpaket:</strong> <strong>Rechnungsordner in Belege online</strong> (Standard: <code>Ausgangsrechnungen</code>).</li>
-<li><strong>Konten &amp; BU-Schlüssel je Steuersatz:</strong> Fallback-Erlös- und Aufwandskonten sowie BU-Schlüssel für jeden Steuersatz (Button <em>Standardwerte aus Kontenrahmen</em> übernimmt die SKR03-/SKR04-Vorgaben).</li>
+<li><strong>Konten &amp; BU-Schlüssel je Steuersatz:</strong> Fallback-Erlös- und Aufwandskonten sowie BU-Schlüssel für jeden Steuersatz (Schaltfläche <em>Standardwerte aus Kontenrahmen</em> stellt die SKR03-/SKR04-Vorgaben wieder her).</li>
 </ul>
-<h2 id="1-datev-buchungsstapel-csv">1. DATEV-Buchungsstapel (CSV)<a class="headerlink" href="#1-datev-buchungsstapel-csv" title="Permanent link">&para;</a></h2>
-<p>Aufruf über <strong>Journal › Exportieren › DATEV-Buchungsstapel (CSV)</strong> oder direkt für das laufende Jahr über <strong>Plugins › DATEV: Buchungsstapel exportieren (aktuelles Jahr)</strong>.</p>
+</li>
+<li><strong>2. Belegpaket (DATEV Unternehmen online):</strong></li>
+<li><strong>Rechnungsordner in Belege online</strong> (Standard: <code>Ausgangsrechnungen</code>).</li>
+<li><strong>3. Buchungsstapel &amp; Stammdaten (EXTF-CSV für Kanzlei-Rechnungswesen):</strong></li>
+<li><strong>Beraternummer</strong> (<code>1001–9999999</code>) und <strong>Mandantennummer</strong> (<code>1–99999</code>) – vom Steuerberater erfragen.</li>
+<li><strong>Wirtschaftsjahresbeginn</strong> (<code>JJJJMMTT</code>, z. B. <code>20260101</code>) – unterstützt auch <strong>abweichende Wirtschaftsjahre</strong> (z. B. <code>20250701</code>) ohne falsche Jahreswechsel-Warnung; ungültige Kalenderdaten werden geprüft.</li>
+<li><strong>Sachkontenlänge</strong> (<code>4–8</code>, üblicherweise <code>4</code>) – Konten der Klasse 0 (z. B. <code>0480</code> GWG, <code>0670</code>) werden korrekt links mit Nullen aufgefüllt; zu lange Kontonummern werden beim Export gemeldet.</li>
+<li><strong>Bezeichnung des Stapels</strong> (max. 30 Zeichen), optional <strong>Diktatkürzel</strong> (<strong>leer, 2 oder 4 Großbuchstaben</strong>, z. B. <code>AB</code> oder <code>ABCD</code> – gemäß DATEV-EXTF-Spezifikation Feld 18 ist ein einzelner Buchstabe unzulässig und wird nicht übernommen), <strong>Festschreibung</strong> (Standard: aus, damit die Kanzlei vor dem Festschreiben prüfen kann).</li>
+<li><strong>Belegdatum:</strong> <em>Zahlungsdatum (EÜR / Ist-Versteuerung)</em> (Standard) oder <em>Belegdatum (Rechnungsdatum)</em>.</li>
+<li><strong>Leistungsdatum / Steuerperiode (Spalten 115–116) exportieren (§ 14 Abs. 4 Nr. 6 UStG):</strong> Standardmäßig aktiv. Weicht das Liefer-/Leistungsdatum vom Buchungsdatum ab, werden Leistungsdatum (<code>TTMMJJJJ</code>) und Zuordnung zur Steuerperiode mitexportiert – wichtig für Periodenabgrenzung und Steuersatzwechsel.</li>
+</ul>
+<h2 id="1-datev-belegpaket-zip--unternehmen-online-mit-e-rechnungen">1. DATEV-Belegpaket (ZIP – Unternehmen online, mit E-Rechnungen)<a class="headerlink" href="#1-datev-belegpaket-zip--unternehmen-online-mit-e-rechnungen" title="Permanent link">&para;</a></h2>
+<p>Aufruf über <strong>Journal › Exportieren › DATEV-Belegpaket (ZIP – Unternehmen online, mit E-Rechnungen)</strong>.</p>
+<p><img alt="Vorschau- und Prüfdialog für das DATEV-Belegpaket (ZIP) mit Belegliste, Konten und Summen" src="../images/plugin-datev-belegpaket.png" /></p>
+<ul>
+<li><strong>Format &amp; Ziel:</strong> Erzeugt ein ZIP-Archiv <code>DATEV_Belege_&lt;JJJJMMTT&gt;_&lt;JJJJMMTT&gt;.zip</code> nach den offiziellen DATEV-XSD-Schemata der <strong>XML-Schnittstelle online (Version 6.0)</strong> für <strong>DATEV Unternehmen online / Belege online</strong> (Einreichung über <strong>DATEV Belegtransfer</strong> in den konfigurierten Rechnungsordner, Standard <code>Ausgangsrechnungen</code>).</li>
+<li><strong>Keine Berater-/Mandantennummer nötig:</strong> Gemäß DATEV-Empfehlung für die XML-Schnittstelle online v6.0 werden Berater- und Mandantennummer im Belegpaket weggelassen, da der Zielmandant beim Upload in <em>DATEV Belegtransfer</em> ausgewählt wird.</li>
+<li><strong>Auswahl:</strong> Alle Ausgangsrechnungen, Anzahlungs- und Abschlagsrechnungen sowie Gutschriften, deren <strong>Rechnungsdatum</strong> im gewählten Zeitraum liegt – unabhängig von Zahlungsstatus und Journal-Filtern. Stornierte Rechnungen werden nur zusammen mit ihrer Stornorechnung exportiert (ohne Stornorechnung werden sie ausgelassen und im Dialog benannt).</li>
+<li><strong>Inhalt des ZIP-Pakets:</strong></li>
+<li><code>document.xml</code> (Beleg-Index),</li>
+<li>je Rechnung/Gutschrift eine Belegsatzdatei (<code>accountsReceivableLedger</code>, <code>Rechnungsdaten_RA_….xml</code> bzw. <code>Rechnungskorrektur_RAK_….xml</code>) mit identischer Steuersatz-, Konten- und BU-Schlüssel-Zuordnung wie im Buchungsstapel sowie Rechnungs-, Leistungs- und (bei bezahlten Rechnungen) Zahlungsdatum,</li>
+<li>je Beleg die zugehörige Originaldatei: bevorzugt das <strong>archivierte Original</strong> (PDF, ZUGFeRD oder XRechnung, z. B. aus dem <a href="../GoBD-Plugin/">GoBD-Plugin</a>); für E-Rechnungskunden ohne Archivdatei die erzeugte <strong>XRechnung-XML</strong> (niemals ein abweichendes zweites „Original“).</li>
+<li><strong>Prüfung &amp; DATEV-Grenzen:</strong> Der Vorschau- und Prüfdialog zeigt Summen (Netto, USt, Brutto), die Tabs <em>Belege</em>, <em>Nicht exportiert</em> und <em>Hinweise</em> (inkl. SKR03/SKR04-Konsistenzprüfung) sowie einen direkten Zugriff auf <em>Einstellungen…</em>. Dateien über 20 MB (DATEV-Limit) werden gemeldet; Pakete über dem DATEV-Beleglimit oder über 100 MB erzeugen einen entsprechenden Hinweis bzw. blockieren das Schreiben.</li>
+<li><strong>Hinweis:</strong> Das Paket ist nach den offiziellen Musterdateien und XSD-Schemata von DATEV (Version 6.0) aufgebaut, aber nicht von DATEV zertifiziert – den ersten Import bitte gemeinsam mit der Steuerberatung prüfen.</li>
+</ul>
+<h2 id="2-datev-buchungsstapel-extf-csv--kanzlei-rechnungswesen">2. DATEV-Buchungsstapel (EXTF-CSV – Kanzlei-Rechnungswesen)<a class="headerlink" href="#2-datev-buchungsstapel-extf-csv--kanzlei-rechnungswesen" title="Permanent link">&para;</a></h2>
+<p>Aufruf über <strong>Journal › Exportieren › DATEV-Buchungsstapel (EXTF-CSV – Kanzlei-Rechnungswesen)</strong> oder direkt für das laufende Jahr über <strong>Plugins › DATEV: Buchungsstapel exportieren (aktuelles Jahr)</strong>.</p>
+<p><img alt="Vorschau- und Prüfdialog für den DATEV-Buchungsstapel (EXTF-CSV) mit Buchungszeilen, Konten, EU-USt-IdNr. und Summen" src="../images/plugin-datev-buchungsstapel.png" /></p>
 <ul>
 <li><strong>Vollständig &amp; filterunabhängig:</strong> Der Export lädt alle Belege des gewählten Zeitraums neu (nach Zahlungsdatum oder Belegdatum gemäß DATEV-Einstellungen). Aktive Such- oder Tabellenfilter im Journal beeinflussen den Buchungsstapel nicht.</li>
-<li><strong>Vorschau- und Prüfdialog:</strong> Vor dem Speichern zeigt der Dialog Zeitraum, Dateiname, Auswahlregel, Mandantendaten, Summen (Zugänge Soll, Abgänge Haben, Saldo, Anzahl Buchungszeilen), alle erzeugten <strong>Buchungen</strong> (inkl. Leistungsdatum, WKZ, Konto, Gegenkonto, BU-Schlüssel, EU-USt-IdNr.) sowie eine zweite Tabelle <strong>Nicht exportiert</strong> mit konkretem Grund (z. B. <em>offen</em>, <em>storniert</em>, <em>in anderem Zeitraum bezahlt</em>).</li>
+<li><strong>Vorschau- und Prüfdialog:</strong> Vor dem Speichern zeigt der Dialog Zeitraum, Dateiname, Auswahlregel, Mandantendaten, Summen (Zugänge Soll, Abgänge Haben, Saldo, Anzahl Buchungszeilen) sowie die drei Reiter <strong>Buchungen</strong> (inkl. Leistungsdatum, WKZ, Konto, Gegenkonto, BU-Schlüssel, EU-USt-IdNr.), <strong>Nicht oder nur teilweise im Stapel</strong> (mit konkretem Grund, z. B. <em>offen</em>, <em>storniert</em>, <em>in anderem Zeitraum bezahlt</em>) und <strong>Hinweise</strong> (inkl. SKR03/SKR04-Konsistenzprüfung und direkter Schaltfläche <em>Einstellungen…</em>).</li>
 <li><strong>Blockierende Fehlerprüfung:</strong> Fehler, die zu einem DATEV-Importabbruch oder fehlerhaften Buchungen führen würden (z. B. fehlende/ungültige Berater- oder Mandantennummer, Buchungsdatum außerhalb des Stapelzeitraums, Kontonummer überschreitet Sachkontenlänge, Belegnummer länger als 36 Zeichen, Fremdwährung ohne Wechselkurs/Basis-Umsatz), sperren das Speichern. Im <strong>Steuerberater-ZIP</strong> wird ein fehlerhafter Stapel nicht still eingebunden, sondern als Fehler gemeldet.</li>
 <li><strong>Dateiformat &amp; Zeichensatz:</strong> <code>EXTF_Buchungsstapel_&lt;JJJJMMTT&gt;_&lt;JJJJMMTT&gt;.csv</code> in <strong>Windows-1252</strong>, CRLF, Semikolon, Dezimalkomma, Texte in Anführungszeichen. Sonderzeichen werden NFC-normalisiert und verlustfrei für Windows-1252 aufbereitet (Umlaute in Belegnummern werden ausgeschrieben statt gelöscht; Steuerzeichen und nicht darstellbare Emojis werden sicher entfernt).</li>
 <li><strong>Buchungsregeln:</strong></li>
@@ -2305,30 +2326,20 @@
 <li>Jeder gespeicherte Stapel wird im <strong>Exportprotokoll</strong> (mit Dateiname, Zeitraum, Zeilenzahl, SHA-256-Prüfsumme und exportierten Buchungsschlüsseln) vermerkt. Bei einem erneuten Export bereits übertragener Buchungszeilen warnt der Dialog vor einem möglichen <strong>Doppelimport</strong>.</li>
 <li><strong>Paket für den Steuerberater (ZIP):</strong> Ist das Plugin aktiv, wird der Buchungsstapel automatisch unter <code>datev/EXTF_Buchungsstapel_&lt;JJJJMMTT&gt;_&lt;JJJJMMTT&gt;.csv</code> in das Steuerberater-ZIP aufgenommen.</li>
 </ul>
-<h2 id="2-datev-stammdaten-debitorenkreditoren-csv">2. DATEV-Stammdaten Debitoren/Kreditoren (CSV)<a class="headerlink" href="#2-datev-stammdaten-debitorenkreditoren-csv" title="Permanent link">&para;</a></h2>
-<p>Aufruf über <strong>Journal › Exportieren › DATEV-Stammdaten Debitoren/Kreditoren (CSV)</strong>.</p>
+<h2 id="3-datev-stammdaten-debitorenkreditoren-extf-csv--kanzlei-rechnungswesen">3. DATEV-Stammdaten Debitoren/Kreditoren (EXTF-CSV – Kanzlei-Rechnungswesen)<a class="headerlink" href="#3-datev-stammdaten-debitorenkreditoren-extf-csv--kanzlei-rechnungswesen" title="Permanent link">&para;</a></h2>
+<p>Aufruf über <strong>Journal › Exportieren › DATEV-Stammdaten Debitoren/Kreditoren (EXTF-CSV – Kanzlei-Rechnungswesen)</strong>.</p>
+<p><img alt="Vorschau- und Prüfdialog für DATEV-Stammdaten (Debitoren und Kreditoren) im EXTF-CSV-Format" src="../images/plugin-datev-stammdaten.png" /></p>
 <ul>
 <li><strong>Format:</strong> DATEV-Format <strong>EXTF 700, Formatkategorie 16, Formatversion 5</strong>, Windows-1252, CRLF, Semikolon, 51 Spalten.</li>
 <li><strong>Dateiname:</strong> <code>EXTF_Stammdaten_Debitoren_Kreditoren_&lt;JJJJMMTT&gt;.csv</code>.</li>
+<li><strong>Vorschau- und Prüfdialog:</strong> Zeigt vor dem Speichern die Anzahl der Debitoren und Kreditoren, alle zu exportierenden Kontakte (Konto, Art, Adressattyp, Name, EU-USt-IdNr., PLZ/Ort, IBAN), eventuelle nicht exportierte Einträge sowie Warnungen/Fehler (inkl. Prüfung von Berater- und Mandantennummer) und direkten Zugriff auf <em>Einstellungen…</em>.</li>
 <li><strong>Inhalt:</strong> Exportiert Kunden (Debitoren, z. B. <code>10000–69999</code>) und Lieferanten (Kreditoren, z. B. <code>70000–99999</code>) mit Personenkonten der Länge <code>Sachkontenlänge + 1</code>, korrektem <strong>Adressattyp</strong> (<code>1</code> = natürliche Person, <code>2</code> = Unternehmen), Name/Vorname, Postanschrift, <strong>EU-Land &amp; USt-IdNr.</strong> (inkl. <code>EL</code> für Griechenland), Kommunikationsdaten sowie Bankverbindung (IBAN, SWIFT/BIC inkl. Pflicht-Leerfeld in Spalte 46).</li>
-</ul>
-<h2 id="3-datev-belegpaket-xml-schnittstelle-online-mit-e-rechnungen">3. DATEV-Belegpaket (XML-Schnittstelle online, mit E-Rechnungen)<a class="headerlink" href="#3-datev-belegpaket-xml-schnittstelle-online-mit-e-rechnungen" title="Permanent link">&para;</a></h2>
-<p>Aufruf über <strong>Journal › Exportieren › DATEV-Belegpaket (XML-Schnittstelle online, mit E-Rechnungen)</strong>.</p>
-<ul>
-<li><strong>Format &amp; Ziel:</strong> Erzeugt ein ZIP-Archiv <code>DATEV_Belege_&lt;JJJJMMTT&gt;_&lt;JJJJMMTT&gt;.zip</code> nach den offiziellen DATEV-XSD-Schemata der <strong>XML-Schnittstelle online (Version 6.0)</strong> für <strong>DATEV Unternehmen online / Belege online</strong> (Einreichung über <strong>DATEV Belegtransfer</strong> in den konfigurierten Rechnungsordner, Standard <code>Ausgangsrechnungen</code>).</li>
-<li><strong>Auswahl:</strong> Alle Ausgangsrechnungen, Anzahlungs- und Abschlagsrechnungen sowie Gutschriften, deren <strong>Rechnungsdatum</strong> im gewählten Zeitraum liegt – unabhängig von Zahlungsstatus und Journal-Filtern. Stornierte Rechnungen werden nur zusammen mit ihrer Stornorechnung exportiert (ohne Stornorechnung werden sie ausgelassen und im Dialog benannt).</li>
-<li><strong>Inhalt des ZIP-Pakets:</strong></li>
-<li><code>document.xml</code> (Beleg-Index),</li>
-<li>je Rechnung/Gutschrift eine Belegsatzdatei (<code>accountsReceivableLedger</code>, <code>Rechnungsdaten_RA_….xml</code> bzw. <code>Rechnungskorrektur_RAK_….xml</code>) mit identischer Steuersatz-, Konten- und BU-Schlüssel-Zuordnung wie im Buchungsstapel sowie Rechnungs-, Leistungs- und (bei bezahlten Rechnungen) Zahlungsdatum,</li>
-<li>je Beleg die zugehörige Originaldatei: bevorzugt das <strong>archivierte Original</strong> (PDF, ZUGFeRD oder XRechnung, z. B. aus dem <a href="../GoBD-Plugin/">GoBD-Plugin</a>); für E-Rechnungskunden ohne Archivdatei die erzeugte <strong>XRechnung-XML</strong> (niemals ein abweichendes zweites „Original“).</li>
-<li><strong>Prüfung &amp; DATEV-Grenzen:</strong> Der Vorschau- und Prüfdialog zeigt Summen (Netto, USt, Brutto), alle Belege samt Konten und Belegdateien sowie die Tabelle <em>Nicht exportiert</em>. Dateien über 20 MB (DATEV-Limit) werden gemeldet; Pakete über dem DATEV-Beleglimit oder über 100 MB erzeugen einen entsprechenden Hinweis bzw. blockieren das Schreiben.</li>
-<li><strong>Hinweis:</strong> Das Paket ist nach den offiziellen Musterdateien und XSD-Schemata von DATEV (Version 6.0) aufgebaut, aber nicht von DATEV zertifiziert – den ersten Import bitte gemeinsam mit der Steuerberatung prüfen.</li>
 </ul>
 <h2 id="hinweis-zum-import-in-datev">Hinweis zum Import in DATEV<a class="headerlink" href="#hinweis-zum-import-in-datev" title="Permanent link">&para;</a></h2>
 <ul>
 <li>Die CSV-Dateien <strong>nicht</strong> in Excel öffnen und erneut speichern (Excel verändert Kopfzeile, Trennzeichen, führende Nullen und Zahlenformate).</li>
-<li><strong>DATEV Kanzlei-Rechnungswesen</strong> (Buchungsstapel und Stammdaten): Import über <strong>Bestand › Importieren › Stapelverarbeitung</strong>.</li>
 <li><strong>DATEV Unternehmen online</strong> (Belegpaket-ZIP): Übertragung über <strong>DATEV Belegtransfer</strong> in den konfigurierten Ordner (Standard <code>Ausgangsrechnungen</code>).</li>
+<li><strong>DATEV Kanzlei-Rechnungswesen</strong> (Buchungsstapel und Stammdaten): Import über <strong>Bestand › Importieren › Stapelverarbeitung</strong>.</li>
 </ul>
 <h2 id="siehe-auch">Siehe auch<a class="headerlink" href="#siehe-auch" title="Permanent link">&para;</a></h2>
 <ul>
