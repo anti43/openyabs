@@ -25,10 +25,12 @@ import mpv5.globals.Messages;
 import mpv5.globals.VersionInfo;
 import mpv5.handler.UpdateCheck;
 import mpv5.logging.Log;
+import mpv5.plugin.builtin.UpdateManager;
 
 /**
- * Tells the user about a newer release of YaBS: at start (if switched on,
- * once per version unless "Later") or when asked in the settings
+ * Tells the user about a newer release of YaBS: at start (if switched on and
+ * the built-in {@link UpdateManager} plugin is enabled, once per version unless
+ * "Later") or when asked in the settings
  */
 public final class UpdateNotice {
 
@@ -45,6 +47,10 @@ public final class UpdateNotice {
      * shows a notice if there is a newer release
      */
     public static void checkAtStart() {
+        if (!UpdateManager.isActive()) {
+            mpv5.logging.Log.Print("Update check: disabled (Updates plugin)");
+            return;
+        }
         if (!UpdateCheck.isSwitchedOn()) {
             mpv5.logging.Log.Print("Update check: switched off (local settings > Updates)");
             return;
@@ -59,7 +65,13 @@ public final class UpdateNotice {
             } catch (InterruptedException e) {
                 return;
             }
+            if (!UpdateManager.isActive()) {
+                return;
+            }
             UpdateCheck.Release r = UpdateCheck.latest();
+            if (!UpdateManager.isActive()) {
+                return;
+            }
             if (r != null && !UpdateCheck.isNewer(r.version, VersionInfo.number())) {
                 //up to date: a short note in the status bar
                 SwingUtilities.invokeLater(() -> mpv5.YabsViewProxy.instance().addMessage(
@@ -84,6 +96,10 @@ public final class UpdateNotice {
      * @param parent
      */
     public static void checkNow(final Component parent) {
+        if (!UpdateManager.isActive()) {
+            Popup.notice(parent, Messages.UPDATES_PLUGIN_DISABLED.toString());
+            return;
+        }
         Thread t = new Thread(() -> {
             UpdateCheck.Release r = UpdateCheck.latest();
             SwingUtilities.invokeLater(() -> {

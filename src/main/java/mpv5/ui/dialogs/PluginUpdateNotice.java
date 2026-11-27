@@ -38,13 +38,15 @@ import mpv5.handler.PluginUpdateCheck.Update;
 import mpv5.handler.UpdateCheck;
 import mpv5.logging.Log;
 import mpv5.plugin.ExtensionManager;
+import mpv5.plugin.builtin.UpdateManager;
 
 /**
  * Tells the user about newer versions of the installed plugins: at start (if
- * the update check is switched on; an update the user skipped is not shown
- * again) or when asked in Settings &gt; Plugins, fetches the available plugins
- * catalog ({@value PluginUpdateCheck#INDEX_ASSET}) and installs plugins or
- * updates on request
+ * the update check is switched on and the built-in {@link UpdateManager} plugin
+ * is enabled; an update the user skipped is not shown again) or when asked in
+ * Settings &gt; Plugins, fetches the available plugins catalog
+ * ({@value PluginUpdateCheck#INDEX_ASSET}) and installs plugins or updates on
+ * request
  */
 public final class PluginUpdateNotice {
 
@@ -70,6 +72,23 @@ public final class PluginUpdateNotice {
 
     public static void removeListener(Runnable r) {
         listeners.remove(r);
+    }
+
+    /**
+     * Notifies listeners that plugin update/catalog state changed (e.g. when
+     * the built-in {@link UpdateManager} plugin starts).
+     */
+    public static void notifyChanged() {
+        fire();
+    }
+
+    /**
+     * Resets catalog status flags and notifies listeners (e.g. when the
+     * built-in {@link UpdateManager} plugin stops).
+     */
+    public static void resetState() {
+        catalogFailed = false;
+        fire();
     }
 
     /**
@@ -110,7 +129,7 @@ public final class PluginUpdateNotice {
      * check): asks GitHub for updates and caches the plugin catalog
      */
     public static void checkAtStart() {
-        if (!UpdateCheck.enabledAtStart()) {
+        if (!UpdateManager.isActive() || !UpdateCheck.enabledAtStart()) {
             return;
         }
         Thread t = new Thread(() -> {
@@ -119,13 +138,22 @@ public final class PluginUpdateNotice {
             } catch (InterruptedException e) {
                 return;
             }
+            if (!UpdateManager.isActive()) {
+                return;
+            }
             List<Update> found = PluginUpdateCheck.check(ExtensionManager.instance().list());
+            if (!UpdateManager.isActive()) {
+                return;
+            }
             if (PluginUpdateCheck.lastCatalog() == null && catalogLoading.compareAndSet(false, true)) {
                 try {
                     catalogFailed = PluginUpdateCheck.fetchCatalog() == null;
                 } finally {
                     catalogLoading.set(false);
                 }
+            }
+            if (!UpdateManager.isActive()) {
+                return;
             }
             fire();
             if (found == null) {
@@ -152,10 +180,14 @@ public final class PluginUpdateNotice {
      * @param parent
      */
     public static void checkNow(final Component parent) {
+        if (!UpdateManager.isActive()) {
+            Popup.notice(parent, Messages.UPDATES_PLUGIN_DISABLED.toString());
+            return;
+        }
         Thread t = new Thread(() -> {
             Catalog before = PluginUpdateCheck.lastCatalog();
             List<Update> found = PluginUpdateCheck.check(ExtensionManager.instance().list());
-            if (found != null) {
+            if (found != null && UpdateManager.isActive()) {
                 if (PluginUpdateCheck.lastCatalog() == before && catalogLoading.compareAndSet(false, true)) {
                     try {
                         catalogFailed = PluginUpdateCheck.fetchCatalog() == null;
@@ -189,6 +221,12 @@ public final class PluginUpdateNotice {
      * @param notifyOnFailure show an error popup if GitHub cannot be reached
      */
     public static void loadCatalog(final Component parent, final boolean notifyOnFailure) {
+        if (!UpdateManager.isActive()) {
+            if (notifyOnFailure) {
+                Popup.notice(parent, Messages.UPDATES_PLUGIN_DISABLED.toString());
+            }
+            return;
+        }
         if (!catalogLoading.compareAndSet(false, true)) {
             return;
         }
@@ -198,12 +236,17 @@ public final class PluginUpdateNotice {
             Catalog loaded = null;
             try {
                 loaded = PluginUpdateCheck.fetchCatalog();
-                catalogFailed = (loaded == null);
+                if (UpdateManager.isActive()) {
+                    catalogFailed = (loaded == null);
+                } else {
+                    PluginUpdateCheck.setLastCatalog(null);
+                    loaded = null;
+                }
             } finally {
                 catalogLoading.set(false);
                 fire();
             }
-            if (loaded == null && notifyOnFailure) {
+            if (loaded == null && notifyOnFailure && UpdateManager.isActive()) {
                 SwingUtilities.invokeLater(() -> Popup.notice(parent, Messages.UPDATE_CHECK_FAILED.toString()));
             }
         }, "plugin catalog");
@@ -271,6 +314,10 @@ public final class PluginUpdateNotice {
      * @param updates
      */
     public static void install(final Component parent, final List<Update> updates) {
+        if (!UpdateManager.isActive()) {
+            Popup.notice(parent, Messages.UPDATES_PLUGIN_DISABLED.toString());
+            return;
+        }
         List<Update> todo = new ArrayList<Update>();
         for (Update u : updates) {
             if (installing.add(u.id)) {
@@ -353,6 +400,10 @@ public final class PluginUpdateNotice {
      * @param plugin
      */
     public static void installAvailable(final Component parent, final Available plugin) {
+        if (!UpdateManager.isActive()) {
+            Popup.notice(parent, Messages.UPDATES_PLUGIN_DISABLED.toString());
+            return;
+        }
         if (plugin == null || !installing.add(plugin.id)) {
             return;
         }

@@ -57,6 +57,7 @@ import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.PluginUpdateNotice;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.misc.RichList;
+import mpv5.plugin.builtin.UpdateManager;
 import mpv5.ui.modern.Applets;
 import mpv5.ui.modern.Card;
 import mpv5.ui.modern.ModernTheme;
@@ -75,9 +76,13 @@ public final class ControlPanel_Plugins extends JPanel implements ControlApplet 
     private final JPanel availableList = new JPanel();
     private final JLabel availableSource = new JLabel();
     private final JButton refreshCatalog = new JButton(Messages.PLUGINS_AVAILABLE_LOAD.toString());
+    private final Card availableCard;
+    private final Component availableStrut;
+    private final JButton updatesButton;
     private final JPanel actions;
     private final ExtensionManager manager = ExtensionManager.instance();
     private final Runnable refresh = () -> SwingUtilities.invokeLater(this::refresh);
+    private boolean wasUpdatePluginActive;
 
     public ControlPanel_Plugins() {
         super(new BorderLayout());
@@ -111,7 +116,7 @@ public final class ControlPanel_Plugins extends JPanel implements ControlApplet 
         availableSource.setVisible(false);
         refreshCatalog.setToolTipText(Messages.PLUGINS_AVAILABLE_HINT.toString());
         refreshCatalog.addActionListener(e -> PluginUpdateNotice.loadCatalog(this, true));
-        Card availableCard = new Card(Messages.PLUGINS_AVAILABLE.toString())
+        availableCard = new Card(Messages.PLUGINS_AVAILABLE.toString())
                 .addFull(availableList)
                 .addFull(availableSource);
         availableCard.getHeader().add(refreshCatalog, BorderLayout.EAST);
@@ -123,7 +128,8 @@ public final class ControlPanel_Plugins extends JPanel implements ControlApplet 
         cards.add(adding);
         cards.add(Box.createVerticalStrut(ModernTheme.px(12)));
         cards.add(plugins);
-        cards.add(Box.createVerticalStrut(ModernTheme.px(12)));
+        availableStrut = Box.createVerticalStrut(ModernTheme.px(12));
+        cards.add(availableStrut);
         cards.add(availableCard);
 
         //the classic plugins of the database: rarely needed, so folded
@@ -190,10 +196,10 @@ public final class ControlPanel_Plugins extends JPanel implements ControlApplet 
 
         JButton openFolder = new JButton(Messages.PLUGINS_OPEN_FOLDER.toString());
         openFolder.addActionListener(e -> open(manager.folder()));
-        JButton updates = new JButton(Messages.PLUGIN_UPDATE_CHECK_NOW.toString());
-        updates.setToolTipText(Messages.PLUGIN_UPDATE_HINT.toString());
-        updates.addActionListener(e -> PluginUpdateNotice.checkNow(this));
-        actions = Applets.actionBar(new JComponent[]{openFolder}, new JComponent[]{updates});
+        updatesButton = new JButton(Messages.PLUGIN_UPDATE_CHECK_NOW.toString());
+        updatesButton.setToolTipText(Messages.PLUGIN_UPDATE_HINT.toString());
+        updatesButton.addActionListener(e -> PluginUpdateNotice.checkNow(this));
+        actions = Applets.actionBar(new JComponent[]{openFolder}, new JComponent[]{updatesButton});
 
         refresh();
     }
@@ -203,13 +209,18 @@ public final class ControlPanel_Plugins extends JPanel implements ControlApplet 
         super.addNotify();
         manager.addChangeListener(refresh);
         PluginUpdateNotice.addListener(refresh);
-        if (PluginUpdateCheck.lastCatalog() == null
+        maybeAutoLoadCatalog();
+        refresh();
+    }
+
+    private void maybeAutoLoadCatalog() {
+        if (UpdateManager.isActive()
+                && PluginUpdateCheck.lastCatalog() == null
                 && UpdateCheck.isSwitchedOn()
                 && !PluginUpdateNotice.isCatalogLoading()
                 && !PluginUpdateNotice.isCatalogFailed()) {
             PluginUpdateNotice.loadCatalog(this, false);
         }
-        refresh();
     }
 
     private void refresh() {
@@ -232,6 +243,23 @@ public final class ControlPanel_Plugins extends JPanel implements ControlApplet 
     }
 
     private void refreshAvailable(Map<String, Installed> installedById) {
+        boolean active = UpdateManager.isActive();
+        availableCard.setVisible(active);
+        availableStrut.setVisible(active);
+        updatesButton.setVisible(active);
+        if (!active) {
+            wasUpdatePluginActive = false;
+            availableList.removeAll();
+            availableSource.setVisible(false);
+            revalidate();
+            repaint();
+            return;
+        }
+        if (!wasUpdatePluginActive && isDisplayable()) {
+            maybeAutoLoadCatalog();
+        }
+        wasUpdatePluginActive = true;
+
         availableList.removeAll();
         Catalog catalog = PluginUpdateCheck.lastCatalog();
         boolean loading = PluginUpdateNotice.isCatalogLoading();
@@ -270,6 +298,8 @@ public final class ControlPanel_Plugins extends JPanel implements ControlApplet 
         }
         availableList.revalidate();
         availableList.repaint();
+        revalidate();
+        repaint();
     }
 
     private JComponent availableRow(final Available a, final Installed installed) {
