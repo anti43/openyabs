@@ -344,6 +344,19 @@ class WorkshopPluginTest {
         }
     }
 
+    @Test
+    void registersDedicatedSetupCommand() throws Exception {
+        File tmpDir = Files.createTempDirectory("yabs-workshop-setup").toFile();
+        ExtensionManager mgr = new ExtensionManager(tmpDir, null);
+        ExtensionManager.Installed inst = mgr.register(new WorkshopPlugin());
+        assertTrue(mgr.start(inst));
+        assertEquals(3, mgr.commands().size(), "Expected Setup + Overview + Check commands");
+        assertTrue(mgr.commands().get(0).title.endsWith(": Setup"),
+                "First command must be Setup: " + mgr.commands().get(0).title);
+        assertEquals(1, mgr.pages().size());
+        mgr.stop(inst);
+    }
+
     private static Properties loadUtf8Props(String resourcePath) throws Exception {
         Properties p = new Properties();
         try (InputStream in = WorkshopPlugin.class.getResourceAsStream(resourcePath)) {

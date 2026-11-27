@@ -83,14 +83,13 @@ public final class GmbhPlugin implements YabsExtension {
         yabs.addTranslationBundle("en", I18N_EN, cl);
         yabs.addTranslationBundle("de", I18N_DE, cl);
 
-        yabs.addSettingsPage(yabs.tr("settings.title"), yabs.tr("settings.description"),
+        yabs.addSetup(yabs.tr("cmd.setup.title"), yabs.tr("settings.title"), yabs.tr("settings.description"),
                 () -> GmbhSettingsPage.create(yabs, this));
 
         yabs.addTemplateFields(obj -> templateFields());
 
         yabs.addMailWarningProvider(this::mailWarning);
 
-        yabs.addCommand(yabs.tr("cmd.template.title"), yabs.tr("cmd.template.desc"), this::importTemplate);
         yabs.addCommand(yabs.tr("cmd.check.title"), yabs.tr("cmd.check.desc"), this::checkCurrent);
         yabs.addCommand(yabs.tr("cmd.ustva.title"), yabs.tr("cmd.ustva.desc"),
                 () -> yabs.openTab(yabs.tr("ustva.tab"), UstvaPanel.create(yabs)));

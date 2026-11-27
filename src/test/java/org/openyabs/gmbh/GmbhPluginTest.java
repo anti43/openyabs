@@ -269,4 +269,16 @@ public class GmbhPluginTest {
             java.text.MessageFormat.format(en.getProperty(k), "a", "b", "c");
         }
     }
+
+    @Test
+    public void registersDedicatedSetupCommand() throws Exception {
+        java.io.File tmpDir = java.nio.file.Files.createTempDirectory("yabs-gmbh-test").toFile();
+        mpv5.plugin.ExtensionManager mgr = new mpv5.plugin.ExtensionManager(tmpDir, null);
+        mpv5.plugin.ExtensionManager.Installed inst = mgr.register(new GmbhPlugin());
+        assertTrue(mgr.start(inst));
+        assertEquals(3, mgr.commands().size(), "Expected Setup + Check + UStVA commands");
+        assertEquals("GmbH: Setup", mgr.commands().get(0).title);
+        assertEquals(1, mgr.pages().size());
+        mgr.stop(inst);
+    }
 }

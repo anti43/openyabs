@@ -125,10 +125,11 @@ public final class HeilpraktikerPlugin implements YabsExtension {
             HeilpraktikerStore.initSchema(HeilpraktikerStore.connection());
         }
 
-        yabs.addSettingsPage(
+        yabs.addSetup(
+                "Heilpraktiker: Setup",
                 "Heilpraktiker & Geb\u00fcH",
-                "Berufsbezeichnung, Gesundheitsamt (\u00a7 1 HeilprG), \u00a7 4 Nr. 14 UStG, Art.-9-DSGVO-Datenschutz und Geb\u00fcH-Pr\u00fcfung",
-                () -> HeilpraktikerUi.settingsPage(yabs));
+                "Berufsbezeichnung, Gesundheitsamt (\u00a7 1 HeilprG), \u00a7 4 Nr. 14 UStG, Art.-9-DSGVO-Datenschutz, Geb\u00fcH-Katalog & Rechnungsvorlage",
+                () -> HeilpraktikerUi.settingsPage(yabs, this));
 
         yabs.addTemplateFields(this::provideTemplateFields);
         yabs.addMailWarningProvider(this::mailWarningForObject);
@@ -142,16 +143,6 @@ public final class HeilpraktikerPlugin implements YabsExtension {
         });
 
         yabs.addRecordModifier(createSaveValidator(yabs));
-
-        yabs.addCommand(
-                "Heilpraktiker: Geb\u00fcH-Katalog (144 Ziffern) importieren",
-                "Legt alle 144 offiziellen Geb\u00fcH-85/2002-Leistungen (Ziffern 1\u201339.13) als steuerfreie Leistungen (0 % USt) an",
-                () -> yabs.background(this::importGebuehCatalog, msg -> yabs.popup(msg)));
-
-        yabs.addCommand(
-                "Heilpraktiker: Rechnungsvorlage (.fodt) speichern",
-                "Speichert die vorgefertigte LibreOffice-Rechnungsvorlage mit [hp.*]-Platzhaltern",
-                () -> exportTemplate(yabs));
 
         yabs.addCommand(
                 "Heilpraktiker: Aktuelle Rechnung pr\u00fcfen",
@@ -386,7 +377,7 @@ public final class HeilpraktikerPlugin implements YabsExtension {
         };
     }
 
-    private String importGebuehCatalog() {
+    String importGebuehCatalog() {
         try {
             int zeroTaxId = findOrCreateZeroTaxId();
             Set<String> existing = new HashSet<String>();
@@ -456,7 +447,7 @@ public final class HeilpraktikerPlugin implements YabsExtension {
         return 1;
     }
 
-    private void exportTemplate(ExtensionContext yabs) {
+    void exportTemplate(ExtensionContext yabs) {
         try {
             DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY, "heilpraktiker_rechnung.fodt");
             if (!d.saveFile()) {

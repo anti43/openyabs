@@ -89,7 +89,8 @@ public final class DatevPlugin implements YabsExtension {
 
     @Override
     public void start(final ExtensionContext yabs) throws Exception {
-        yabs.addSettingsPage(
+        yabs.addSetup(
+                "DATEV: Setup",
                 "DATEV-Export",
                 "Kontenrahmen (SKR03/SKR04), Konten & BU-Schlüssel, Belegpaket (Unternehmen online) sowie Buchungsstapel (EXTF-CSV)",
                 () -> DatevSettingsPage.create(yabs));
@@ -168,11 +169,6 @@ public final class DatevPlugin implements YabsExtension {
         });
 
         yabs.addCommand(
-                "DATEV: Einstellungen öffnen",
-                "Öffnet die DATEV-Export-Einstellungen (Kontenrahmen SKR03/SKR04, Konten, Belegpaket, Buchungsstapel)",
-                () -> openSettings(yabs));
-
-        yabs.addCommand(
                 "DATEV: Belegpaket exportieren (aktuelles Jahr)",
                 "Exportiert Ausgangsrechnungen und Gutschriften des laufenden Jahres als ZIP für DATEV Unternehmen online",
                 () -> exportPackage(yabs, currentYearContext()));
@@ -189,7 +185,7 @@ public final class DatevPlugin implements YabsExtension {
     }
 
     private static void openSettings(final ExtensionContext yabs) {
-        yabs.openTab("DATEV-Export (Einstellungen)", DatevSettingsPage.create(yabs));
+        yabs.openTab("DATEV-Export \u2013 Setup", DatevSettingsPage.create(yabs));
     }
 
     private static JournalExportContext currentYearContext() {

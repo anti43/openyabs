@@ -111,7 +111,9 @@ class HandwerkPluginTest {
         ExtensionManager.Installed inst = mgr.register(plugin);
 
         assertTrue(mgr.start(inst), "HandwerkPlugin must start cleanly without a database");
-        assertEquals(7, mgr.commands().size(), "Expected 7 registered commands");
+        assertEquals(5, mgr.commands().size(), "Expected 5 registered commands (Setup + 4 operational)");
+        assertTrue(mgr.commands().get(0).title.endsWith(": Setup"),
+                "First command must be Setup: " + mgr.commands().get(0).title);
         assertEquals(1, mgr.pages().size(), "Expected 1 settings page");
         assertEquals(1, mgr.privacyContributors().size(), "Expected 1 privacy contributor");
         assertEquals("Handwerksbetriebe & Bau",

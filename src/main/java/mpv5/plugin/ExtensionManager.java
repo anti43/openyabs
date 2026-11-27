@@ -535,6 +535,11 @@ public final class ExtensionManager {
     }
 
     /**
+     * Plugin settings key recording whether first-load Setup has already been opened.
+     */
+    public static final String SETUP_SHOWN_KEY = "setup.shown";
+
+    /**
      * Starts a plugin; a failure is recorded, not thrown
      *
      * @param i
@@ -562,9 +567,12 @@ public final class ExtensionManager {
             }
         }
 
+        Context ctx = new Context(i);
         try {
-            i.extension.start(new Context(i));
+            i.extension.start(ctx);
             i.state = State.RUNNING;
+            fireChanged();
+            ctx.runFirstLoadSetupIfNeeded();
             return true;
         } catch (Throwable t) {
             //what it added before the failure goes too
@@ -575,10 +583,19 @@ public final class ExtensionManager {
             if (host != null) {
                 host.error(name(i), t);
             }
-            return false;
-        } finally {
             fireChanged();
+            return false;
         }
+    }
+
+    private static boolean canAutoOpenSwingSetup() {
+        if (mpv5.Main.HEADLESS || java.awt.GraphicsEnvironment.isHeadless()) {
+            return false;
+        }
+        if (mpv5.ui.dialogs.Popup.isSilent()) {
+            return false;
+        }
+        return mpv5.ui.frames.MPView.identifierView != null;
     }
 
     /**
@@ -1522,6 +1539,7 @@ public final class ExtensionManager {
 
         private final Installed plugin;
         private final String owner;
+        private Runnable firstLoadSetup;
 
         Context(Installed plugin) {
             this.plugin = plugin;
@@ -1538,6 +1556,44 @@ public final class ExtensionManager {
         public void addSettingsPage(String title, String description, Supplier<JComponent> page) {
             pages.add(new Page(owner, title, description, page));
             fireChanged();
+        }
+
+        @Override
+        public void addSetup(String commandTitle, String title, String description, Supplier<JComponent> page) {
+            if (page == null) {
+                return;
+            }
+            String pageTitle = (title == null || title.trim().isEmpty()) ? name(plugin) : title.trim();
+            String cmdTitle = (commandTitle == null || commandTitle.trim().isEmpty()) ? pageTitle + ": Setup" : commandTitle.trim();
+            String tabTitle = pageTitle.toLowerCase(Locale.ROOT).contains("setup") ? pageTitle : pageTitle + " \u2013 Setup";
+            addSettingsPage(pageTitle, description, page);
+            Runnable open = () -> {
+                JComponent view = page.get();
+                if (view != null) {
+                    openTab(tabTitle, view);
+                }
+            };
+            addCommand(cmdTitle, description, open);
+            this.firstLoadSetup = guarded(open);
+        }
+
+        void runFirstLoadSetupIfNeeded() {
+            if (firstLoadSetup == null || host == null) {
+                return;
+            }
+            if (host instanceof SwingHost && !canAutoOpenSwingSetup()) {
+                return;
+            }
+            PluginSettings s = settings();
+            if (s.getBoolean(SETUP_SHOWN_KEY, false)) {
+                return;
+            }
+            s.setBoolean(SETUP_SHOWN_KEY, true);
+            if (host instanceof SwingHost) {
+                javax.swing.SwingUtilities.invokeLater(firstLoadSetup);
+            } else {
+                host.ui(firstLoadSetup);
+            }
         }
 
         @Override

@@ -111,10 +111,11 @@ public final class VereinPlugin implements YabsExtension {
             VereinStore.initSchema(VereinStore.connection());
         }
 
-        yabs.addSettingsPage(
+        yabs.addSetup(
+                yabs.tr("cmd.setup.title"),
                 yabs.tr("settings.title"),
                 yabs.tr("settings.description"),
-                () -> VereinUi.settingsPage(yabs));
+                () -> VereinUi.settingsPage(yabs, this));
 
         yabs.addTemplateFields(obj -> provideTemplateFields(obj, yabs));
 
@@ -125,11 +126,6 @@ public final class VereinPlugin implements YabsExtension {
         });
 
         yabs.addRecordModifier(createSaveValidator(yabs));
-
-        yabs.addCommand(
-                yabs.tr("cmd.importTiers.title"),
-                yabs.tr("cmd.importTiers.desc"),
-                () -> yabs.background(() -> importStarterTiers(yabs), msg -> yabs.popup(msg)));
 
         yabs.addCommand(
                 yabs.tr("cmd.batchRun.title"),
@@ -145,11 +141,6 @@ public final class VereinPlugin implements YabsExtension {
                 yabs.tr("cmd.sphereReport.title"),
                 yabs.tr("cmd.sphereReport.desc"),
                 () -> VereinUi.openSphereOverviewTab(yabs));
-
-        yabs.addCommand(
-                yabs.tr("cmd.exportTemplates.title"),
-                yabs.tr("cmd.exportTemplates.desc"),
-                () -> exportTemplates(yabs));
 
         yabs.addCommand(
                 yabs.tr("cmd.check.title"),
@@ -270,7 +261,7 @@ public final class VereinPlugin implements YabsExtension {
         return rates;
     }
 
-    private String importStarterTiers(ExtensionContext yabs) {
+    String importStarterTiers(ExtensionContext yabs) {
         try {
             int zeroTaxId = findOrCreateZeroTaxId();
             Set<String> existing = new HashSet<String>();
@@ -559,7 +550,7 @@ public final class VereinPlugin implements YabsExtension {
         return 1;
     }
 
-    private void exportTemplates(ExtensionContext yabs) {
+    void exportTemplates(ExtensionContext yabs) {
         try {
             DialogForFile d = new DialogForFile(DialogForFile.DIRECTORIES_ONLY);
             if (!d.chooseFile()) {

@@ -764,8 +764,8 @@ public class DatevPluginTest {
                 && journalExports.get(2).title().contains("EXTF-CSV"),
                 "Unexpected Stammdaten label: " + journalExports.get(2).title());
 
-        assertTrue(commands.stream().anyMatch(c -> c.contains("Einstellungen")),
-                "DATEV plugin must register a command to open settings from the Plugins menu: " + commands);
+        assertEquals("DATEV: Setup", commands.get(0),
+                "DATEV plugin must register 'DATEV: Setup' as first command in Plugins menu: " + commands);
         assertTrue(commands.stream().anyMatch(c -> c.contains("Belegpaket")),
                 "DATEV plugin must register Belegpaket command in Plugins menu: " + commands);
         assertTrue(commands.stream().anyMatch(c -> c.contains("Buchungsstapel")),
