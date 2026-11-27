@@ -52,6 +52,7 @@ case "$type" in
       --linux-shortcut
       --linux-menu-group "Office;Finance"
       --linux-app-category office
+      --resource-dir "$root/src/packaging/linux"
     )
     if [ "$type" = deb ]; then
       extra+=(--linux-deb-maintainer "openyabs@googlegroups.com")
