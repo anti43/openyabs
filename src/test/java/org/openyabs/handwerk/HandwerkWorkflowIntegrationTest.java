@@ -583,7 +583,7 @@ class HandwerkWorkflowIntegrationTest {
 
         // Templates are immediately selectable via TemplateHandler for the current user
         mpv5.db.objects.Template[] invoiceTemplates = mpv5.handler.TemplateHandler.getTemplatesForType(
-                currentUser.__getGroupsids(), Constants.TYPE_INVOICE);
+                currentUser.__getGroupsids(), mpv5.globals.Constants.TYPE_INVOICE);
         assertTrue(java.util.Arrays.stream(invoiceTemplates)
                 .anyMatch(t -> t != null && "Handwerk - Rechnung (DE)".equals(t.__getCname())));
 
