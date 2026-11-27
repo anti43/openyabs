@@ -78,6 +78,12 @@ public final class PluginIndexWriter {
                     p.put("name", e.name());
                     p.put("version", e.version());
                     p.put("jar", jar.getName());
+                    if (e.description() != null && !e.description().trim().isEmpty()) {
+                        p.put("description", e.description().trim());
+                    }
+                    if (e.author() != null && !e.author().trim().isEmpty()) {
+                        p.put("author", e.author().trim());
+                    }
                     if (e.minYabsVersion() != null && !e.minYabsVersion().trim().isEmpty()) {
                         p.put("minYabsVersion", e.minYabsVersion().trim());
                     }

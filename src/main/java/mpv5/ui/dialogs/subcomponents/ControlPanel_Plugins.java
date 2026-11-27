@@ -27,7 +27,10 @@ import java.awt.datatransfer.DataFlavor;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -43,11 +46,15 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import mpv5.data.PropertyStore;
 import mpv5.globals.Messages;
 import mpv5.handler.PluginUpdateCheck;
+import mpv5.handler.PluginUpdateCheck.Available;
+import mpv5.handler.PluginUpdateCheck.Catalog;
+import mpv5.handler.UpdateCheck;
 import mpv5.logging.Log;
 import mpv5.plugin.ExtensionManager;
 import mpv5.plugin.ExtensionManager.Installed;
 import mpv5.plugin.ExtensionManager.State;
 import mpv5.ui.dialogs.ControlApplet;
+import mpv5.ui.dialogs.PluginUpdateNotice;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.misc.RichList;
 import mpv5.ui.modern.Applets;
@@ -57,14 +64,17 @@ import mpv5.ui.modern.ModernTheme;
 /**
  * The plugin manager: the plugins of YaBS and of the plugins folder (jars and
  * Groovy scripts) with their state; enable, disable, reload, remove, install
- * (also by drag and drop) and a new Groovy plugin from a template. The classic
- * plugins of the database are below.
+ * (also by drag and drop or from the latest release catalog) and a new Groovy
+ * plugin from a template. The classic plugins of the database are below.
  */
 public final class ControlPanel_Plugins extends JPanel implements ControlApplet {
 
     private static final long serialVersionUID = 1L;
     public final String UNAME = "plugins";
     private final JPanel list = new JPanel();
+    private final JPanel availableList = new JPanel();
+    private final JLabel availableSource = new JLabel();
+    private final JButton refreshCatalog = new JButton(Messages.PLUGINS_AVAILABLE_LOAD.toString());
     private final JPanel actions;
     private final ExtensionManager manager = ExtensionManager.instance();
     private final Runnable refresh = () -> SwingUtilities.invokeLater(this::refresh);
@@ -76,6 +86,8 @@ public final class ControlPanel_Plugins extends JPanel implements ControlApplet 
 
         list.setLayout(new BoxLayout(list, BoxLayout.Y_AXIS));
         list.setOpaque(false);
+        availableList.setLayout(new BoxLayout(availableList, BoxLayout.Y_AXIS));
+        availableList.setOpaque(false);
 
         //the three ways to add a plugin, side by side and of the same weight
         JPanel add = new JPanel(new GridLayout(1, 3, ModernTheme.px(10), 0));
@@ -95,6 +107,15 @@ public final class ControlPanel_Plugins extends JPanel implements ControlApplet 
                 .addFull(list)
                 .addFull(folder);
 
+        availableSource.setForeground(ModernTheme.muted());
+        availableSource.setVisible(false);
+        refreshCatalog.setToolTipText(Messages.PLUGINS_AVAILABLE_HINT.toString());
+        refreshCatalog.addActionListener(e -> PluginUpdateNotice.loadCatalog(this, true));
+        Card availableCard = new Card(Messages.PLUGINS_AVAILABLE.toString())
+                .addFull(availableList)
+                .addFull(availableSource);
+        availableCard.getHeader().add(refreshCatalog, BorderLayout.EAST);
+
         JPanel cards = new JPanel();
         cards.setLayout(new BoxLayout(cards, BoxLayout.Y_AXIS));
         cards.setOpaque(false);
@@ -102,6 +123,8 @@ public final class ControlPanel_Plugins extends JPanel implements ControlApplet 
         cards.add(adding);
         cards.add(Box.createVerticalStrut(ModernTheme.px(12)));
         cards.add(plugins);
+        cards.add(Box.createVerticalStrut(ModernTheme.px(12)));
+        cards.add(availableCard);
 
         //the classic plugins of the database: rarely needed, so folded
         ControlPanel_ClassicPlugins old = null;
@@ -169,7 +192,7 @@ public final class ControlPanel_Plugins extends JPanel implements ControlApplet 
         openFolder.addActionListener(e -> open(manager.folder()));
         JButton updates = new JButton(Messages.PLUGIN_UPDATE_CHECK_NOW.toString());
         updates.setToolTipText(Messages.PLUGIN_UPDATE_HINT.toString());
-        updates.addActionListener(e -> mpv5.ui.dialogs.PluginUpdateNotice.checkNow(this));
+        updates.addActionListener(e -> PluginUpdateNotice.checkNow(this));
         actions = Applets.actionBar(new JComponent[]{openFolder}, new JComponent[]{updates});
 
         refresh();
@@ -179,24 +202,157 @@ public final class ControlPanel_Plugins extends JPanel implements ControlApplet 
     public void addNotify() {
         super.addNotify();
         manager.addChangeListener(refresh);
-        mpv5.ui.dialogs.PluginUpdateNotice.addListener(refresh);
+        PluginUpdateNotice.addListener(refresh);
+        if (PluginUpdateCheck.lastCatalog() == null
+                && UpdateCheck.isSwitchedOn()
+                && !PluginUpdateNotice.isCatalogLoading()
+                && !PluginUpdateNotice.isCatalogFailed()) {
+            PluginUpdateNotice.loadCatalog(this, false);
+        }
         refresh();
     }
 
     private void refresh() {
         list.removeAll();
         List<Installed> all = manager.list();
+        Map<String, Installed> installedById = new HashMap<String, Installed>();
         if (all.isEmpty()) {
             JLabel none = new JLabel(Messages.PLUGINS_NONE.toString());
             none.setForeground(ModernTheme.muted());
             list.add(none);
         }
         for (Installed i : all) {
+            installedById.put(i.id(), i);
             list.add(row(i));
             list.add(Box.createVerticalStrut(ModernTheme.px(8)));
         }
         list.revalidate();
         list.repaint();
+        refreshAvailable(installedById);
+    }
+
+    private void refreshAvailable(Map<String, Installed> installedById) {
+        availableList.removeAll();
+        Catalog catalog = PluginUpdateCheck.lastCatalog();
+        boolean loading = PluginUpdateNotice.isCatalogLoading();
+        refreshCatalog.setEnabled(!loading);
+        refreshCatalog.setText(loading ? Messages.PLUGINS_AVAILABLE_LOADING.toString()
+                : catalog == null ? Messages.PLUGINS_AVAILABLE_LOAD.toString()
+                : Messages.PLUGINS_AVAILABLE_REFRESH.toString());
+
+        if (loading && catalog == null) {
+            JLabel l = new JLabel(Messages.PLUGINS_AVAILABLE_LOADING.toString());
+            l.setForeground(ModernTheme.muted());
+            availableList.add(l);
+            availableSource.setVisible(false);
+        } else if (catalog == null) {
+            if (PluginUpdateNotice.isCatalogFailed()) {
+                JLabel err = new JLabel(Messages.UPDATE_CHECK_FAILED.toString());
+                err.setForeground(RichList.RED);
+                availableList.add(err);
+            } else {
+                availableList.add(Applets.hint(Messages.PLUGINS_AVAILABLE_HINT.toString()));
+            }
+            availableSource.setVisible(false);
+        } else {
+            if (catalog.plugins.isEmpty()) {
+                JLabel none = new JLabel(Messages.PLUGINS_AVAILABLE_NONE.toString());
+                none.setForeground(ModernTheme.muted());
+                availableList.add(none);
+            } else {
+                for (Available a : catalog.plugins) {
+                    availableList.add(availableRow(a, installedById.get(a.id)));
+                    availableList.add(Box.createVerticalStrut(ModernTheme.px(8)));
+                }
+            }
+            availableSource.setText(String.format(Messages.PLUGINS_AVAILABLE_SOURCE.toString(), catalog.yabsVersion));
+            availableSource.setVisible(true);
+        }
+        availableList.revalidate();
+        availableList.repaint();
+    }
+
+    private JComponent availableRow(final Available a, final Installed installed) {
+        JPanel r = new JPanel(new BorderLayout(ModernTheme.px(12), 0));
+        r.setOpaque(true);
+        r.setBackground(ModernTheme.cardBackground());
+        r.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(ModernTheme.border()), ModernTheme.padding(10, 12)));
+        r.setAlignmentX(LEFT_ALIGNMENT);
+        r.add(new JLabel(new RichList.Badge("J", RichList.PURPLE, ModernTheme.px(32))), BorderLayout.WEST);
+
+        JPanel text = new JPanel();
+        text.setOpaque(false);
+        text.setLayout(new BoxLayout(text, BoxLayout.Y_AXIS));
+        JLabel title = new JLabel(a.name + "   " + a.version);
+        title.setFont(ModernTheme.font(1, Font.BOLD));
+        text.add(title);
+        if (!a.description.isEmpty()) {
+            text.add(Applets.hint(a.description));
+        }
+        JLabel meta = new JLabel((a.author.isEmpty() ? "" : a.author + "  ·  ") + a.jar + "  ·  " + a.id);
+        meta.setFont(ModernTheme.font(-1, Font.PLAIN));
+        meta.setForeground(ModernTheme.muted());
+        text.add(meta);
+        if (!a.isCompatible() && a.minYabsVersion != null) {
+            JLabel req = new JLabel(String.format(Messages.PLUGIN_UPDATE_NEEDS_YABS.toString(), a.minYabsVersion));
+            req.setFont(ModernTheme.font(-1, Font.PLAIN));
+            req.setForeground(ModernTheme.muted());
+            text.add(req);
+        }
+        for (Component c : text.getComponents()) {
+            ((JComponent) c).setAlignmentX(LEFT_ALIGNMENT);
+        }
+        text.setMinimumSize(new java.awt.Dimension(ModernTheme.px(120), 0));
+        r.add(text, BorderLayout.CENTER);
+
+        JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT, ModernTheme.px(6), 0));
+        buttons.setOpaque(false);
+        if (PluginUpdateNotice.isInstalling(a.id)) {
+            JButton busy = new JButton(Messages.PLUGINS_INSTALLING.toString());
+            busy.setEnabled(false);
+            buttons.add(busy);
+        } else if (installed != null) {
+            JLabel state = new JLabel(Messages.PLUGINS_ALREADY_INSTALLED.toString());
+            state.setForeground(RichList.GREEN);
+            state.setFont(ModernTheme.font(-1, Font.BOLD));
+            buttons.add(state);
+            String installedVersion = safe(() -> installed.extension.version());
+            if (!installed.isBuiltIn() && installed.jar != null
+                    && UpdateCheck.isNewer(a.version, installedVersion) && a.installable()) {
+                JButton update = new JButton(Messages.PLUGIN_UPDATE_BUTTON.toString());
+                update.setToolTipText(String.format(Messages.PLUGIN_UPDATE_LINE.toString(), a.name, a.version, installedVersion));
+                update.addActionListener(e -> {
+                    update.setEnabled(false);
+                    PluginUpdateCheck.Update u = new PluginUpdateCheck.Update(
+                            a.id, a.name, installedVersion, a.version, a.page,
+                            a.download, a.jar, a.sums, a.assetName, a.minYabsVersion, installed.jar);
+                    PluginUpdateNotice.install(this, Collections.singletonList(u));
+                });
+                buttons.add(update);
+            }
+        } else if (a.installable()) {
+            JButton install = new JButton(Messages.PLUGINS_INSTALL.toString());
+            install.addActionListener(e -> {
+                install.setEnabled(false);
+                PluginUpdateNotice.installAvailable(this, a);
+            });
+            buttons.add(install);
+        } else if (a.download == null) {
+            JLabel noDl = new JLabel(Messages.PLUGIN_UPDATE_NO_DOWNLOAD.toString());
+            noDl.setForeground(ModernTheme.muted());
+            noDl.setFont(ModernTheme.font(-1, Font.PLAIN));
+            buttons.add(noDl);
+        } else {
+            JButton install = new JButton(Messages.PLUGINS_INSTALL.toString());
+            install.setEnabled(false);
+            if (a.minYabsVersion != null) {
+                install.setToolTipText(String.format(Messages.PLUGIN_UPDATE_NEEDS_YABS.toString(), a.minYabsVersion));
+            }
+            buttons.add(install);
+        }
+        r.add(buttons, BorderLayout.EAST);
+        r.setMaximumSize(new java.awt.Dimension(Integer.MAX_VALUE, r.getPreferredSize().height));
+        return r;
     }
 
     private JComponent row(final Installed i) {
@@ -261,11 +417,13 @@ public final class ControlPanel_Plugins extends JPanel implements ControlApplet 
             buttons.add(reload);
         }
         if (update != null && update.installable()) {
-            JButton install = new JButton(Messages.PLUGIN_UPDATE_BUTTON.toString());
+            boolean busy = PluginUpdateNotice.isInstalling(i.id());
+            JButton install = new JButton(busy ? Messages.PLUGINS_INSTALLING.toString() : Messages.PLUGIN_UPDATE_BUTTON.toString());
+            install.setEnabled(!busy);
             install.setToolTipText(String.format(Messages.PLUGIN_UPDATE_LINE.toString(), update.name, update.version, update.installedVersion));
             install.addActionListener(e -> {
                 install.setEnabled(false);
-                mpv5.ui.dialogs.PluginUpdateNotice.install(this, java.util.Collections.singletonList(update));
+                PluginUpdateNotice.install(this, Collections.singletonList(update));
             });
             buttons.add(install);
         }

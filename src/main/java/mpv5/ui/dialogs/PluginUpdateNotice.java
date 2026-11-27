@@ -25,11 +25,15 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.handler.PluginUpdateCheck;
+import mpv5.handler.PluginUpdateCheck.Available;
+import mpv5.handler.PluginUpdateCheck.Catalog;
 import mpv5.handler.PluginUpdateCheck.Update;
 import mpv5.handler.UpdateCheck;
 import mpv5.logging.Log;
@@ -38,7 +42,9 @@ import mpv5.plugin.ExtensionManager;
 /**
  * Tells the user about newer versions of the installed plugins: at start (if
  * the update check is switched on; an update the user skipped is not shown
- * again) or when asked in Settings &gt; Plugins, and installs them on request
+ * again) or when asked in Settings &gt; Plugins, fetches the available plugins
+ * catalog ({@value PluginUpdateCheck#INDEX_ASSET}) and installs plugins or
+ * updates on request
  */
 public final class PluginUpdateNotice {
 
@@ -47,12 +53,16 @@ public final class PluginUpdateNotice {
      */
     public static final String SKIPPED = "pluginupdatesskipped";
     private static final List<Runnable> listeners = new java.util.concurrent.CopyOnWriteArrayList<Runnable>();
+    private static final AtomicBoolean catalogLoading = new AtomicBoolean(false);
+    private static volatile boolean catalogFailed;
+    private static final Set<String> installing = ConcurrentHashMap.newKeySet();
 
     private PluginUpdateNotice() {
     }
 
     /**
-     * @param r called (in any thread) when a check or an installation is done
+     * @param r called (in any thread) when a check, catalog load or
+     * installation changes state
      */
     public static void addListener(Runnable r) {
         listeners.add(r);
@@ -60,6 +70,29 @@ public final class PluginUpdateNotice {
 
     public static void removeListener(Runnable r) {
         listeners.remove(r);
+    }
+
+    /**
+     * @return true while {@value PluginUpdateCheck#INDEX_ASSET} is being
+     * fetched in the background
+     */
+    public static boolean isCatalogLoading() {
+        return catalogLoading.get();
+    }
+
+    /**
+     * @return true if the last attempt to fetch the plugin catalog failed
+     */
+    public static boolean isCatalogFailed() {
+        return catalogFailed;
+    }
+
+    /**
+     * @param id plugin id
+     * @return true while the plugin is currently being downloaded/installed
+     */
+    public static boolean isInstalling(String id) {
+        return id != null && installing.contains(id);
     }
 
     private static void fire() {
@@ -74,7 +107,7 @@ public final class PluginUpdateNotice {
 
     /**
      * In the background some seconds after the start (after the YaBS update
-     * check): asks GitHub and shows a notice if there are newer plugins
+     * check): asks GitHub for updates and caches the plugin catalog
      */
     public static void checkAtStart() {
         if (!UpdateCheck.enabledAtStart()) {
@@ -87,6 +120,13 @@ public final class PluginUpdateNotice {
                 return;
             }
             List<Update> found = PluginUpdateCheck.check(ExtensionManager.instance().list());
+            if (PluginUpdateCheck.lastCatalog() == null && catalogLoading.compareAndSet(false, true)) {
+                try {
+                    catalogFailed = PluginUpdateCheck.fetchCatalog() == null;
+                } finally {
+                    catalogLoading.set(false);
+                }
+            }
             fire();
             if (found == null) {
                 return;
@@ -113,7 +153,19 @@ public final class PluginUpdateNotice {
      */
     public static void checkNow(final Component parent) {
         Thread t = new Thread(() -> {
+            Catalog before = PluginUpdateCheck.lastCatalog();
             List<Update> found = PluginUpdateCheck.check(ExtensionManager.instance().list());
+            if (found != null) {
+                if (PluginUpdateCheck.lastCatalog() == before && catalogLoading.compareAndSet(false, true)) {
+                    try {
+                        catalogFailed = PluginUpdateCheck.fetchCatalog() == null;
+                    } finally {
+                        catalogLoading.set(false);
+                    }
+                } else if (PluginUpdateCheck.lastCatalog() != null) {
+                    catalogFailed = false;
+                }
+            }
             fire();
             SwingUtilities.invokeLater(() -> {
                 if (found == null) {
@@ -125,6 +177,36 @@ public final class PluginUpdateNotice {
                 }
             });
         }, "plugin update check");
+        t.setDaemon(true);
+        t.start();
+    }
+
+    /**
+     * Fetches the latest {@value PluginUpdateCheck#INDEX_ASSET} from GitHub in
+     * the background and notifies listeners when done.
+     *
+     * @param parent
+     * @param notifyOnFailure show an error popup if GitHub cannot be reached
+     */
+    public static void loadCatalog(final Component parent, final boolean notifyOnFailure) {
+        if (!catalogLoading.compareAndSet(false, true)) {
+            return;
+        }
+        catalogFailed = false;
+        fire();
+        Thread t = new Thread(() -> {
+            Catalog loaded = null;
+            try {
+                loaded = PluginUpdateCheck.fetchCatalog();
+                catalogFailed = (loaded == null);
+            } finally {
+                catalogLoading.set(false);
+                fire();
+            }
+            if (loaded == null && notifyOnFailure) {
+                SwingUtilities.invokeLater(() -> Popup.notice(parent, Messages.UPDATE_CHECK_FAILED.toString()));
+            }
+        }, "plugin catalog");
         t.setDaemon(true);
         t.start();
     }
@@ -189,37 +271,54 @@ public final class PluginUpdateNotice {
      * @param updates
      */
     public static void install(final Component parent, final List<Update> updates) {
+        List<Update> todo = new ArrayList<Update>();
+        for (Update u : updates) {
+            if (installing.add(u.id)) {
+                todo.add(u);
+            }
+        }
+        if (todo.isEmpty()) {
+            return;
+        }
+        fire();
         Thread t = new Thread(() -> {
             List<String> done = new ArrayList<String>();
             Set<String> updated = new java.util.HashSet<String>();
             List<String> failed = new ArrayList<String>();
-            for (Update u : updates) {
-                File dir = null;
-                try {
-                    dir = Files.createTempDirectory("yabs-plugin-update").toFile();
-                    File jar = PluginUpdateCheck.download(u, dir);
-                    final File f = jar;
-                    final Exception[] err = new Exception[1];
-                    //plugins start in the Swing thread
-                    SwingUtilities.invokeAndWait(() -> {
-                        try {
-                            ExtensionManager.instance().install(f);
-                        } catch (Exception e) {
-                            err[0] = e;
+            try {
+                for (Update u : todo) {
+                    File dir = null;
+                    try {
+                        dir = Files.createTempDirectory("yabs-plugin-update").toFile();
+                        File jar = PluginUpdateCheck.download(u, dir);
+                        final File f = jar;
+                        final Exception[] err = new Exception[1];
+                        //plugins start in the Swing thread
+                        SwingUtilities.invokeAndWait(() -> {
+                            try {
+                                ExtensionManager.instance().install(f);
+                            } catch (Exception e) {
+                                err[0] = e;
+                            }
+                        });
+                        if (err[0] != null) {
+                            throw err[0];
                         }
-                    });
-                    if (err[0] != null) {
-                        throw err[0];
+                        Log.Print("Plugin update: " + u.id + " " + u.installedVersion + " -> " + u.version);
+                        done.add(u.name + " " + u.version);
+                        updated.add(u.id);
+                    } catch (Exception e) {
+                        Log.Debug(PluginUpdateNotice.class, e);
+                        Log.Print("Plugin update: " + u.id + " failed (" + e.getMessage() + ")");
+                        failed.add(u.name + ": " + e.getMessage());
+                    } finally {
+                        delete(dir);
+                        installing.remove(u.id);
                     }
-                    Log.Print("Plugin update: " + u.id + " " + u.installedVersion + " -> " + u.version);
-                    done.add(u.name + " " + u.version);
-                    updated.add(u.id);
-                } catch (Exception e) {
-                    Log.Debug(PluginUpdateNotice.class, e);
-                    Log.Print("Plugin update: " + u.id + " failed (" + e.getMessage() + ")");
-                    failed.add(u.name + ": " + e.getMessage());
-                } finally {
-                    delete(dir);
+                }
+            } finally {
+                for (Update u : todo) {
+                    installing.remove(u.id);
                 }
             }
             //the installed ones are no longer shown as updates
@@ -241,6 +340,66 @@ public final class PluginUpdateNotice {
                 Popup.notice(parent, s.toString());
             });
         }, "plugin update");
+        t.setDaemon(true);
+        t.start();
+    }
+
+    /**
+     * Downloads an available plugin from {@value PluginUpdateCheck#INDEX_ASSET}
+     * to a temporary folder (in the background), verifies its checksum, installs
+     * it into the plugins folder, and removes the temporary download.
+     *
+     * @param parent
+     * @param plugin
+     */
+    public static void installAvailable(final Component parent, final Available plugin) {
+        if (plugin == null || !installing.add(plugin.id)) {
+            return;
+        }
+        fire();
+        Thread t = new Thread(() -> {
+            File dir = null;
+            Exception failure = null;
+            try {
+                dir = Files.createTempDirectory("yabs-plugin-install").toFile();
+                File jar = PluginUpdateCheck.download(plugin, dir);
+                final File f = jar;
+                final Exception[] err = new Exception[1];
+                //plugins start in the Swing thread
+                SwingUtilities.invokeAndWait(() -> {
+                    try {
+                        ExtensionManager.instance().install(f);
+                    } catch (Exception e) {
+                        err[0] = e;
+                    }
+                });
+                if (err[0] != null) {
+                    throw err[0];
+                }
+                List<Update> left = new ArrayList<Update>(PluginUpdateCheck.lastResult());
+                if (left.removeIf(x -> plugin.id.equals(x.id))) {
+                    PluginUpdateCheck.setLastResult(left);
+                }
+                Log.Print("Plugin install: " + plugin.id + " " + plugin.version);
+            } catch (Exception e) {
+                failure = e;
+                Log.Debug(PluginUpdateNotice.class, e);
+                Log.Print("Plugin install: " + plugin.id + " failed (" + e.getMessage() + ")");
+            } finally {
+                delete(dir);
+                installing.remove(plugin.id);
+                fire();
+            }
+            final Exception failed = failure;
+            SwingUtilities.invokeLater(() -> {
+                if (failed == null) {
+                    mpv5.YabsViewProxy.instance().addMessage(
+                            String.format(Messages.PLUGINS_INSTALL_DONE.toString(), plugin.name, plugin.version));
+                } else {
+                    Popup.notice(parent, Messages.PLUGINS_INSTALL_FAILED + ": " + plugin.name + "\n" + failed.getMessage());
+                }
+            });
+        }, "plugin install");
         t.setDaemon(true);
         t.start();
     }
