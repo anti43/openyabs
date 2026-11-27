@@ -481,6 +481,17 @@ final class Audit {
                 locks.add(r);
             }
         }
+        //invoices only covered by the inventory seal (no document lock): listed with the status BESTAND_VERSIEGELT and the hash of the record
+        for (Object[] s : g.rows("SELECT s.entity_id, i.cnumber, s.record_hash, i.dateadded, i.datetodo, i.contactsids,"
+                + " (COALESCE(i.netvalue, 0) - COALESCE(i.discountvalue, 0)), COALESCE(i.taxvalue, 0),"
+                + " (COALESCE(i.netvalue, 0) - COALESCE(i.discountvalue, 0) + COALESCE(i.taxvalue, 0))"
+                + " FROM gobd_seal_state s JOIN items i ON i.ids = s.entity_id WHERE s.entity_type = 'INVOICE' AND s.sealed_in IS NOT NULL"
+                + " AND NOT EXISTS (SELECT 1 FROM gobd_document_lock l WHERE l.document_id = s.entity_id) ORDER BY s.entity_id ASC")) {
+            if (GobdUtil.inYear(s[3], y)) {
+                locks.add(new Object[]{s[0], s[1], "BESTAND_VERSIEGELT", null, null, null, null, null, null, str(s[2]).trim(), null, null,
+                    s[3], s[4], s[5], s[6], s[7], s[8]});
+            }
+        }
         Set<String> docIds = new HashSet<String>();
         for (Object[] r : locks) {
             docIds.add(str(r[0]));
