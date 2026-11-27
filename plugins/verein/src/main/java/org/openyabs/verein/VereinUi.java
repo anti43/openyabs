@@ -33,6 +33,11 @@ import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import mpv5.ui.modern.Applets;
+import mpv5.ui.modern.Card;
+import mpv5.ui.modern.ModernTheme;
+import mpv5.ui.modern.PrimaryButton;
+import mpv5.ui.modern.SetupPage;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -108,82 +113,37 @@ final class VereinUi {
             s.save();
         };
 
-        JPanel form = new JPanel(new GridBagLayout());
-        form.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
-        GridBagConstraints g = new GridBagConstraints();
-        g.insets = new Insets(4, 6, 4, 6);
-        g.anchor = GridBagConstraints.WEST;
-        g.fill = GridBagConstraints.HORIZONTAL;
-
-        int row = 0;
-        addRow(form, g, row++, yabs.tr("settings.creditorId"), creditorField);
-        addRow(form, g, row++, yabs.tr("settings.finanzamt"), finanzamtField);
-        addRow(form, g, row++, yabs.tr("settings.taxNumber"), taxNumField);
-        addRow(form, g, row++, yabs.tr("settings.bescheidType"), bescheidBox);
-        addRow(form, g, row++, yabs.tr("settings.freistellungDate"), dateField);
-        addRow(form, g, row++, yabs.tr("settings.freistellungPeriod"), periodField);
-        addRow(form, g, row++, yabs.tr("settings.purposeClause"), purposeField);
-
-        g.gridx = 0;
-        g.gridwidth = 2;
-        g.gridy = row++;
-        form.add(duesDeductibleBox, g);
-        g.gridy = row++;
-        form.add(kuBox, g);
-        g.gridy = row++;
-        form.add(warnBox, g);
-
+        SetupPage page = new SetupPage(yabs.tr("setup.title"), yabs.tr("setup.subtitle"));
         if (plugin != null) {
-            JPanel setupBox = new JPanel(new GridBagLayout());
-            setupBox.setBorder(BorderFactory.createTitledBorder(yabs.tr("setup.imports.title")));
-            GridBagConstraints sg = new GridBagConstraints();
-            sg.insets = new Insets(4, 6, 4, 6);
-            sg.anchor = GridBagConstraints.WEST;
-            sg.fill = GridBagConstraints.HORIZONTAL;
-            int srow = 0;
-
-            JButton importTiersBtn = new JButton(yabs.tr("cmd.importTiers.title"));
-            importTiersBtn.setToolTipText(yabs.tr("cmd.importTiers.desc"));
+            String cardTitle = yabs.tr("setup.imports.title");
+            JButton importTiersBtn = new PrimaryButton(yabs.tr("cmd.importTiers.title"), null);
             importTiersBtn.addActionListener(e -> {
                 applySettings.run();
                 yabs.background(() -> plugin.importStarterTiers(yabs), msg -> yabs.popup(msg));
             });
-            addActionRow(setupBox, sg, srow++, importTiersBtn, yabs.tr("cmd.importTiers.desc"));
+            page.action(cardTitle, importTiersBtn, yabs.tr("cmd.importTiers.title"), yabs.tr("cmd.importTiers.desc"));
 
-            JButton exportTemplatesBtn = new JButton(yabs.tr("cmd.exportTemplates.title"));
-            exportTemplatesBtn.setToolTipText(yabs.tr("cmd.exportTemplates.desc"));
-            exportTemplatesBtn.addActionListener(e -> plugin.exportTemplates(yabs));
-            addActionRow(setupBox, sg, srow++, exportTemplatesBtn, yabs.tr("cmd.exportTemplates.desc"));
-
-            g.gridx = 0;
-            g.gridy = row++;
-            g.gridwidth = 2;
-            g.insets = new Insets(10, 0, 6, 0);
-            form.add(setupBox, g);
+            JButton importTemplatesBtn = new JButton(yabs.tr("cmd.importTemplates.title"));
+            importTemplatesBtn.addActionListener(e -> yabs.background(() -> plugin.importTemplates(yabs), msg -> yabs.popup(msg)));
+            page.action(cardTitle, importTemplatesBtn, yabs.tr("cmd.importTemplates.title"), yabs.tr("cmd.importTemplates.desc"));
         }
+        page.card(new Card(yabs.tr("setup.card.association"))
+                .row(Card.field(yabs.tr("settings.creditorId"), ModernTheme.roomy(creditorField)), Card.field(yabs.tr("settings.finanzamt"), ModernTheme.roomy(finanzamtField)))
+                .row(Card.field(yabs.tr("settings.taxNumber"), ModernTheme.roomy(taxNumField)), Card.field(yabs.tr("settings.bescheidType"), ModernTheme.roomyCombo(bescheidBox)))
+                .row(Card.field(yabs.tr("settings.freistellungDate"), ModernTheme.roomy(dateField), 1), Card.field(yabs.tr("settings.freistellungPeriod"), ModernTheme.roomy(periodField), 2))
+                .row(Card.field(yabs.tr("settings.purposeClause"), ModernTheme.roomy(purposeField))));
+        page.card(new Card(yabs.tr("setup.card.options"))
+                .addFull(SetupPage.plain(duesDeductibleBox))
+                .addFull(SetupPage.plain(kuBox))
+                .addFull(SetupPage.plain(warnBox))
+                .addFull(Applets.hint(yabs.tr("settings.info"))));
 
-        g.gridx = 0;
-        g.gridwidth = 2;
-        g.gridy = row++;
-        g.insets = new Insets(10, 6, 6, 6);
-        form.add(new JLabel(yabs.tr("settings.info")), g);
-
-        JPanel topWrapper = new JPanel(new BorderLayout());
-        topWrapper.add(form, BorderLayout.NORTH);
-
-        JButton saveBtn = new JButton(yabs.tr("common.save"));
+        PrimaryButton saveBtn = SetupPage.saveButton(yabs.tr("common.save"));
         saveBtn.addActionListener(e -> {
             applySettings.run();
             yabs.notify(yabs.tr("settings.saved"));
         });
-
-        JPanel actions = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 8));
-        actions.add(saveBtn);
-
-        JPanel root = new JPanel(new BorderLayout());
-        root.add(new JScrollPane(topWrapper), BorderLayout.CENTER);
-        root.add(actions, BorderLayout.SOUTH);
-        return root;
+        return page.build(saveBtn);
     }
 
     static void decorate(final DataPanel panel, final ExtensionContext yabs) {

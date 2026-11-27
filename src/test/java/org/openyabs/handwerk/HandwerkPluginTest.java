@@ -598,6 +598,66 @@ class HandwerkPluginTest {
         assertThrows(IllegalArgumentException.class, () -> MeasurementEvaluator.evaluate("Runtime.getRuntime()"));
     }
 
+    @Test
+    void fodtToOdtProducesValidOpenYabsOdtForAllBundledTemplates() throws Exception {
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        dbf.setNamespaceAware(true);
+        java.nio.file.Path tmpDir = Files.createTempDirectory("yabs-fodt-odt-test");
+        for (String res : HandwerkPlugin.TEMPLATE_RESOURCES) {
+            byte[] fodt;
+            try (InputStream in = HandwerkPlugin.class.getResourceAsStream(res)) {
+                assertNotNull(in, "Missing resource: " + res);
+                fodt = in.readAllBytes();
+            }
+            byte[] odt = mpv5.handler.TemplateImportService.fodtToOdt(fodt);
+            assertNotNull(odt);
+
+            String firstEntry = null;
+            String contentXml = null;
+            String stylesXml = null;
+            String manifestXml = null;
+            try (java.util.zip.ZipInputStream zin = new java.util.zip.ZipInputStream(new ByteArrayInputStream(odt))) {
+                java.util.zip.ZipEntry e;
+                while ((e = zin.getNextEntry()) != null) {
+                    if (firstEntry == null) {
+                        firstEntry = e.getName();
+                        assertEquals(java.util.zip.ZipEntry.STORED, e.getMethod(), "mimetype must be stored uncompressed");
+                    }
+                    String text = new String(zin.readAllBytes(), StandardCharsets.UTF_8);
+                    if ("content.xml".equals(e.getName())) {
+                        contentXml = text;
+                    } else if ("styles.xml".equals(e.getName())) {
+                        stylesXml = text;
+                    } else if ("META-INF/manifest.xml".equals(e.getName())) {
+                        manifestXml = text;
+                    }
+                }
+            }
+            assertEquals("mimetype", firstEntry, "mimetype must be first ZIP entry for " + res);
+            assertNotNull(contentXml, "content.xml missing for " + res);
+            assertNotNull(stylesXml, "styles.xml missing for " + res);
+            assertNotNull(manifestXml, "META-INF/manifest.xml missing for " + res);
+
+            // All XML parts must be well-formed
+            dbf.newDocumentBuilder().parse(new ByteArrayInputStream(contentXml.getBytes(StandardCharsets.UTF_8)));
+            dbf.newDocumentBuilder().parse(new ByteArrayInputStream(stylesXml.getBytes(StandardCharsets.UTF_8)));
+            dbf.newDocumentBuilder().parse(new ByteArrayInputStream(manifestXml.getBytes(StandardCharsets.UTF_8)));
+
+            assertTrue(contentXml.contains("<text:placeholder text:placeholder-type=\"text\">&lt;hw."),
+                    "Expected OpenYaBS <text:placeholder> tags in " + res);
+            assertFalse(contentXml.contains("[hw."), "Raw [hw.*] placeholder must be converted in " + res);
+            if (new String(fodt, StandardCharsets.UTF_8).contains("[xtable1]")) {
+                assertTrue(contentXml.contains("<table:table table:name=\"xtable1\""),
+                        "Expected xtable1 ODF table in " + res);
+            }
+
+            // Must load cleanly in OpenYaBS ODTFile2 / XDocReport
+            File odtFile = tmpDir.resolve(res.substring(res.lastIndexOf('/') + 1).replace(".fodt", ".odt")).toFile();
+            Files.write(odtFile.toPath(), odt);
+            assertNotNull(new mpv5.utils.export.ODTFile2(odtFile.getAbsolutePath()));
+        }
+    }
+
     private static Properties loadUtf8Props(String resourcePath) throws Exception {
         Properties p = new Properties();
         try (InputStream in = HandwerkPlugin.class.getResourceAsStream(resourcePath)) {

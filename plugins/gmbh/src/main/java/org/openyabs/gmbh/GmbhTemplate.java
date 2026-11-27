@@ -197,8 +197,10 @@ public final class GmbhTemplate {
                 return null;
             }
             DatabaseObject.uncacheObject(Context.getTemplate(), id);
+            Template t = (Template) DatabaseObject.getObject(Context.getTemplate(), id);
+            mpv5.handler.TemplateImportService.ensureUserAssigned(t, User.getCurrentUser());
             TemplateHandler.clearCache();
-            return (Template) DatabaseObject.getObject(Context.getTemplate(), id);
+            return t;
         } finally {
             f.delete();
         }

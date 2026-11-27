@@ -553,6 +553,46 @@ class HandwerkWorkflowIntegrationTest {
         assertEquals("", HandwerkStore.loadContactMeta(HandwerkStore.connection(), c.__getIDS()).notes);
     }
 
+    @Test
+    @Order(7)
+    void importTemplatesImportsAndAssignsCurrentUser() throws Exception {
+        String firstMsg = plugin.importTemplates(plugin.context());
+        assertNotNull(firstMsg);
+        assertTrue(firstMsg.contains("5"), "Expected 5 imported templates: " + firstMsg);
+
+        User currentUser = User.getCurrentUser();
+        assertNotNull(currentUser);
+        String[] expectedNames = {
+            "Handwerk - Rechnung (DE)",
+            "Trades - Invoice (EN)",
+            "Handwerk - Schlussrechnung (DE)",
+            "Handwerk - Abnahmeprotokoll (DE)",
+            "Handwerk - Regiebericht (DE)"
+        };
+        for (String name : expectedNames) {
+            mpv5.db.objects.Template tpl = mpv5.handler.TemplateImportService.findTemplateByName(name);
+            assertNotNull(tpl, "Template must exist in DB: " + name);
+            List<User> assigned = mpv5.handler.TemplateImportService.loadAssignedUsers(tpl);
+            assertTrue(assigned.stream().anyMatch(u -> u.__getIDS().equals(currentUser.__getIDS())),
+                    "Current user must be assigned to template: " + name);
+            File storedFile = tpl.getFile();
+            assertNotNull(storedFile);
+            assertTrue(storedFile.isFile() && storedFile.length() > 0);
+            assertNotNull(new mpv5.utils.export.ODTFile2(storedFile.getAbsolutePath()));
+        }
+
+        // Templates are immediately selectable via TemplateHandler for the current user
+        mpv5.db.objects.Template[] invoiceTemplates = mpv5.handler.TemplateHandler.getTemplatesForType(
+                currentUser.__getGroupsids(), mpv5.globals.Constants.TYPE_INVOICE);
+        assertTrue(java.util.Arrays.stream(invoiceTemplates)
+                .anyMatch(t -> t != null && "Handwerk - Rechnung (DE)".equals(t.__getCname())));
+
+        // Second run is idempotent: 0 newly imported, 5 already existed
+        String secondMsg = plugin.importTemplates(plugin.context());
+        assertNotNull(secondMsg);
+        assertTrue(secondMsg.contains("0") && secondMsg.contains("5"), "Expected idempotent summary: " + secondMsg);
+    }
+
     // --------------------------------------------------------------- helpers
 
     private static Contact createContact(String name, String street, String zip, String city,

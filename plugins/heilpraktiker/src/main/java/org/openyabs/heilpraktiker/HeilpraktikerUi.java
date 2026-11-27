@@ -28,6 +28,10 @@ import java.awt.Window;
 import java.sql.Connection;
 import java.time.LocalDate;
 import java.util.List;
+import mpv5.ui.modern.Card;
+import mpv5.ui.modern.ModernTheme;
+import mpv5.ui.modern.PrimaryButton;
+import mpv5.ui.modern.SetupPage;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -122,64 +126,35 @@ final class HeilpraktikerUi {
             s.save();
         };
 
-        JPanel form = new JPanel(new GridBagLayout());
-        form.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
-        GridBagConstraints g = new GridBagConstraints();
-        g.insets = new Insets(5, 6, 5, 6);
-        g.anchor = GridBagConstraints.WEST;
-        g.fill = GridBagConstraints.HORIZONTAL;
-
-        int row = 0;
-        addRow(form, g, row++, "Berufsbezeichnung ([hp.practitionerTitle]):", titleField);
-        addRow(form, g, row++, "Erlaubnis / Gesundheitsamt ([hp.licenseAuthority]):", licenseField);
-        addRow(form, g, row++, "USt-Befreiungshinweis ([hp.ustgNotice]):", new JScrollPane(ustgArea));
-        addRow(form, g, row++, "Standard-Honorar bei Geb\u00fcH-Import:", priceMode);
-
-        g.gridx = 0;
-        g.gridy = row++;
-        g.gridwidth = 2;
-        form.add(warnOnSave, g);
-        g.gridy = row++;
-        form.add(skipEInvoice, g);
-        g.gridy = row++;
-        form.add(restrictSoap, g);
-        addRow(form, g, row++, "Berechtigte Benutzer f\u00fcr SOAP-Notizen (kommagetrennt):", soapUsers);
-        g.gridx = 0;
-        g.gridy = row++;
-        g.gridwidth = 2;
-        form.add(encryptSoap, g);
-
+        SetupPage page = new SetupPage("Heilpraktiker-Setup",
+                "In wenigen Klicks startklar: Geb\u00fcH-Katalog und Rechnungsvorlage importieren, dann Praxisangaben und Datenschutz festlegen.");
         if (plugin != null && yabs != null) {
-            JPanel setupBox = new JPanel(new GridBagLayout());
-            setupBox.setBorder(BorderFactory.createTitledBorder("Setup: Geb\u00fcH-Katalog & Rechnungsvorlage"));
-            GridBagConstraints sg = new GridBagConstraints();
-            sg.insets = new Insets(4, 6, 4, 6);
-            sg.anchor = GridBagConstraints.WEST;
-            sg.fill = GridBagConstraints.HORIZONTAL;
-            int srow = 0;
-
-            JButton importCatalogBtn = new JButton("Geb\u00fcH-Katalog (144 Ziffern) importieren");
-            importCatalogBtn.setToolTipText("Legt alle 144 offiziellen Geb\u00fcH-85/2002-Leistungen (Ziffern 1\u201339.13) als steuerfreie Leistungen (0 % USt) an");
+            String cardTitle = "Schnellstart: Geb\u00fcH-Katalog & Rechnungsvorlage";
+            JButton importCatalogBtn = new PrimaryButton("Katalog importieren", null);
             importCatalogBtn.addActionListener(e -> {
                 applySettings.run();
                 yabs.background(plugin::importGebuehCatalog, msg -> yabs.popup(msg));
             });
-            addActionRow(setupBox, sg, srow++, importCatalogBtn,
-                    "Legt alle 144 offiziellen Geb\u00fcH-85/2002-Leistungen (Ziffern 1\u201339.13) als steuerfreie Leistungen (0 % USt) an");
+            page.action(cardTitle, importCatalogBtn, "Geb\u00fcH-Katalog (144 Ziffern)",
+                    "Legt alle 144 offiziellen Geb\u00fcH-85/2002-Leistungen (Ziffern 1\u201339.13) als steuerfreie Leistungen (0 % USt) an.");
 
-            JButton exportTemplateBtn = new JButton("Rechnungsvorlage (.fodt) speichern");
-            exportTemplateBtn.setToolTipText("Speichert die vorgefertigte LibreOffice-Rechnungsvorlage mit [hp.*]-Platzhaltern");
-            exportTemplateBtn.addActionListener(e -> plugin.exportTemplate(yabs));
-            addActionRow(setupBox, sg, srow++, exportTemplateBtn,
-                    "Speichert die vorgefertigte LibreOffice-Rechnungsvorlage mit [hp.*]-Platzhaltern");
-
-            g.gridx = 0;
-            g.gridy = row++;
-            g.gridwidth = 2;
-            g.insets = new Insets(10, 0, 6, 0);
-            form.add(setupBox, g);
+            JButton importTemplateBtn = new JButton("Vorlage importieren");
+            importTemplateBtn.addActionListener(e -> yabs.background(plugin::importTemplate, msg -> yabs.popup(msg)));
+            page.action(cardTitle, importTemplateBtn, "Rechnungsvorlage",
+                    "Importiert die Heilpraktiker-Rechnungsvorlage (.odt) in OpenYaBS und weist sie Ihrem Benutzer zu.");
         }
-
+        JScrollPane ustgScroll = new JScrollPane(ustgArea);
+        page.card(new Card("Praxis & Abrechnung")
+                .row(Card.field("Berufsbezeichnung ([hp.practitionerTitle])", ModernTheme.roomy(titleField)),
+                        Card.field("Erlaubnis / Gesundheitsamt ([hp.licenseAuthority])", ModernTheme.roomy(licenseField)))
+                .row(Card.field("USt-Befreiungshinweis ([hp.ustgNotice])", ustgScroll))
+                .row(Card.field("Standard-Honorar bei Geb\u00fcH-Import", ModernTheme.roomyCombo(priceMode), 1), Card.field(" ", new JPanel() {{ setOpaque(false); }}, 1))
+                .addFull(SetupPage.plain(warnOnSave))
+                .addFull(SetupPage.plain(skipEInvoice)));
+        page.card(new Card("Datenschutz & SOAP-Notizen")
+                .addFull(SetupPage.plain(restrictSoap))
+                .row(Card.field("Berechtigte Benutzer f\u00fcr SOAP-Notizen (kommagetrennt)", ModernTheme.roomy(soapUsers)))
+                .addFull(SetupPage.plain(encryptSoap)));
         JLabel info = new JLabel("<html><div style='width:560px'>"
                 + "<b>Hinweise (Datenschutz &amp; Abrechnung, Stand 2026):</b><br>"
                 + "&bull; <b>Art. 9 DSGVO / &sect; 203 StGB:</b> Diagnosen und SOAP-Notizen sind besondere Kategorien "
@@ -194,27 +169,16 @@ final class HeilpraktikerUi {
                 + "<code>[hp.treatmentDates]</code>, <code>[hp.ustgNotice]</code>, <code>[hp.practitionerTitle]</code>, "
                 + "<code>[hp.licenseAuthority]</code>."
                 + "</div></html>");
-        g.gridx = 0;
-        g.gridy = row++;
-        g.gridwidth = 2;
-        g.insets = new Insets(12, 6, 6, 6);
-        form.add(info, g);
+        page.card(new Card("Hinweise").addFull(info));
 
-        JButton saveBtn = new JButton("Speichern");
+        PrimaryButton saveBtn = SetupPage.saveButton("Speichern");
         saveBtn.addActionListener(e -> {
             applySettings.run();
             if (yabs != null) {
                 yabs.notify("Heilpraktiker-Einstellungen gespeichert.");
             }
         });
-
-        JPanel actions = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 8));
-        actions.add(saveBtn);
-
-        JPanel root = new JPanel(new BorderLayout());
-        root.add(new JScrollPane(form), BorderLayout.CENTER);
-        root.add(actions, BorderLayout.SOUTH);
-        return root;
+        return page.build(saveBtn);
     }
 
     static void decorate(final DataPanel panel, final ExtensionContext yabs, final GebuehCatalog catalog) {

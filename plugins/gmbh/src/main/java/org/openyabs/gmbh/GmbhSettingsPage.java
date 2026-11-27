@@ -32,6 +32,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import mpv5.plugin.api.ExtensionContext;
+import mpv5.ui.modern.Card;
+import mpv5.ui.modern.ModernTheme;
+import mpv5.ui.modern.PrimaryButton;
+import mpv5.ui.modern.SetupPage;
 
 /**
  * Settings › Plugins › GmbH: the mandatory details, the checks, the demo
@@ -60,48 +64,42 @@ final class GmbhSettingsPage {
         final JCheckBox warnMail = new JCheckBox(yabs.tr("settings.warnMail"), plugin.warnOnMail());
         final JCheckBox warnTemplate = new JCheckBox(yabs.tr("settings.warnTemplate"), plugin.warnOnTemplate());
 
-        JPanel form = new JPanel(new GridBagLayout());
-        form.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
-        GridBagConstraints g = new GridBagConstraints();
-        g.insets = new Insets(4, 6, 4, 6);
-        g.anchor = GridBagConstraints.NORTHWEST;
-        g.fill = GridBagConstraints.HORIZONTAL;
-        int row = 0;
-        JTextArea intro = new JTextArea(yabs.tr("settings.intro"));
-        intro.setEditable(false);
-        intro.setOpaque(false);
-        intro.setLineWrap(true);
-        intro.setWrapStyleWord(true);
-        g.gridx = 0;
-        g.gridy = row++;
-        g.gridwidth = 2;
-        g.weightx = 1;
-        form.add(intro, g);
-        g.gridwidth = 1;
-        row = add(form, g, row, yabs.tr("field." + GmbhData.K_LEGALFORM), legalForm);
-        row = add(form, g, row, yabs.tr("field." + GmbhData.K_SEAT), seat);
-        row = add(form, g, row, yabs.tr("field." + GmbhData.K_COURT), court);
-        row = add(form, g, row, yabs.tr("field." + GmbhData.K_NUMBER), number);
-        row = add(form, g, row, yabs.tr("field." + GmbhData.K_DIRECTORS), new JScrollPane(directors));
-        row = add(form, g, row, yabs.tr("field." + GmbhData.K_BOARD), board);
-        row = add(form, g, row, yabs.tr("field." + GmbhData.K_CAPITAL), capital);
-        g.gridx = 0;
-        g.gridy = row++;
-        g.gridwidth = 2;
-        form.add(warnMail, g);
-        g.gridy = row++;
-        form.add(warnTemplate, g);
-
         final JLabel preview = new JLabel(" ");
-        g.gridy = row++;
-        form.add(preview, g);
         Runnable updatePreview = () -> {
             GmbhData p = read(legalForm, seat, court, number, directors, board, capital);
             preview.setText("<html><b>" + yabs.tr("settings.preview") + "</b> " + esc(plugin.legalLine(p)) + "</html>");
         };
         updatePreview.run();
 
-        JButton save = new JButton(yabs.tr("settings.save"));
+        SetupPage page = new SetupPage(yabs.tr("setup.title"), yabs.tr("settings.intro"));
+        String quick = yabs.tr("setup.card.quick");
+        JButton template = new PrimaryButton(yabs.tr("setup.btn.template"), null);
+        template.addActionListener(e -> plugin.importTemplate());
+        page.action(quick, template, yabs.tr("cmd.template.title"), yabs.tr("cmd.template.desc"));
+        JButton check = new JButton(yabs.tr("setup.btn.check"));
+        check.addActionListener(e -> plugin.checkCurrent());
+        page.action(quick, check, yabs.tr("cmd.check.title"), yabs.tr("cmd.check.desc"));
+
+        JPanel previewBox = new JPanel(new java.awt.BorderLayout());
+        previewBox.setBackground(ModernTheme.accentSoft());
+        previewBox.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(ModernTheme.border()), ModernTheme.padding(8, 10)));
+        previewBox.add(preview, java.awt.BorderLayout.CENTER);
+        page.card(new Card(yabs.tr("setup.card.details"))
+                .row(Card.field(yabs.tr("field." + GmbhData.K_LEGALFORM), ModernTheme.roomyCombo(legalForm), 1),
+                        Card.field(yabs.tr("field." + GmbhData.K_SEAT), ModernTheme.roomy(seat), 1))
+                .row(Card.field(yabs.tr("field." + GmbhData.K_COURT), ModernTheme.roomy(court), 1),
+                        Card.field(yabs.tr("field." + GmbhData.K_NUMBER), ModernTheme.roomy(number), 1))
+                .row(Card.field(yabs.tr("field." + GmbhData.K_DIRECTORS), new JScrollPane(directors)))
+                .row(Card.field(yabs.tr("field." + GmbhData.K_BOARD), ModernTheme.roomy(board), 1),
+                        Card.field(yabs.tr("field." + GmbhData.K_CAPITAL), ModernTheme.roomy(capital), 1))
+                .section(yabs.tr("settings.preview"))
+                .addFull(previewBox));
+        page.card(new Card(yabs.tr("setup.card.checks"))
+                .addFull(SetupPage.plain(warnMail))
+                .addFull(SetupPage.plain(warnTemplate)));
+
+        PrimaryButton save = SetupPage.saveButton(yabs.tr("settings.save"));
         save.addActionListener(e -> {
             GmbhData p = read(legalForm, seat, court, number, directors, board, capital);
             p.save();
@@ -111,25 +109,7 @@ final class GmbhSettingsPage {
             java.util.List<String> missing = p.missing();
             yabs.notify(missing.isEmpty() ? yabs.tr("settings.saved") : yabs.tr("settings.savedMissing", plugin.names(missing)));
         });
-        JButton template = new JButton(yabs.tr("cmd.template.title"));
-        template.addActionListener(e -> plugin.importTemplate());
-        JButton check = new JButton(yabs.tr("cmd.check.title"));
-        check.addActionListener(e -> plugin.checkCurrent());
-
-        JPanel buttons = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        buttons.add(save);
-        buttons.add(template);
-        buttons.add(check);
-        g.gridy = row++;
-        form.add(buttons, g);
-
-        g.gridy = row;
-        g.weighty = 1;
-        form.add(new JPanel(), g);
-
-        JPanel root = new JPanel(new BorderLayout());
-        root.add(form, BorderLayout.NORTH);
-        return new JScrollPane(root);
+        return page.build(save);
     }
 
     private static GmbhData read(JComboBox<String> legalForm, JTextField seat, JTextField court, JTextField number,

@@ -527,4 +527,31 @@ public class HeilpraktikerPluginTest {
         assertEquals(1, mgr.pages().size());
         mgr.stop(inst);
     }
+
+    @Test
+    public void bundledTemplateConvertsToValidOdtWithXtable1() throws Exception {
+        byte[] fodt;
+        try (InputStream in = HeilpraktikerPlugin.class.getResourceAsStream(HeilpraktikerPlugin.TEMPLATE_RESOURCE)) {
+            assertNotNull(in);
+            fodt = in.readAllBytes();
+        }
+        byte[] odt = mpv5.handler.TemplateImportService.fodtToOdt(fodt);
+        java.io.File f = java.nio.file.Files.createTempFile("hp-tpl-", ".odt").toFile();
+        f.deleteOnExit();
+        java.nio.file.Files.write(f.toPath(), odt);
+        String contentXml = null;
+        try (java.util.zip.ZipInputStream zin = new java.util.zip.ZipInputStream(new java.io.ByteArrayInputStream(odt))) {
+            java.util.zip.ZipEntry e;
+            while ((e = zin.getNextEntry()) != null) {
+                if ("content.xml".equals(e.getName())) {
+                    contentXml = new String(zin.readAllBytes(), StandardCharsets.UTF_8);
+                }
+            }
+        }
+        assertNotNull(contentXml);
+        assertTrue(contentXml.contains("<table:table table:name=\"xtable1\""));
+        assertTrue(contentXml.contains("<table:table table:name=\"header_table1\""));
+        assertTrue(contentXml.contains("&lt;hp.diagnosis&gt;"));
+        assertNotNull(new mpv5.utils.export.ODTFile2(f.getAbsolutePath()));
+    }
 }

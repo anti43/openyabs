@@ -216,7 +216,9 @@ public final class GmbhPlugin implements YabsExtension {
         final String name = ctx.tr("template.name");
         ctx.background(() -> {
             try {
-                if (GmbhTemplate.exists(name)) {
+                Template existing = mpv5.handler.TemplateImportService.findTemplateByName(name);
+                if (existing != null) {
+                    mpv5.handler.TemplateImportService.ensureUserAssigned(existing, mpv5.db.objects.User.getCurrentUser());
                     return ctx.tr("template.exists", name);
                 }
                 Template t = GmbhTemplate.importDemo(name);

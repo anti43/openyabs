@@ -943,34 +943,35 @@ public final class HandwerkPlugin implements YabsExtension {
         HandwerkUi.showValidationResult(null, warnings, yabs);
     }
 
-    void exportTemplates(ExtensionContext yabs) {
+    String importTemplates(ExtensionContext yabs) {
+        Object[][] specs = {
+            {"/org/openyabs/handwerk/templates/trades_invoice_de.fodt", "Handwerk - Rechnung (DE)", mpv5.globals.Constants.TYPE_INVOICE},
+            {"/org/openyabs/handwerk/templates/trades_invoice_en.fodt", "Trades - Invoice (EN)", mpv5.globals.Constants.TYPE_INVOICE},
+            {"/org/openyabs/handwerk/templates/trades_final_invoice_de.fodt", "Handwerk - Schlussrechnung (DE)", mpv5.globals.Constants.TYPE_INVOICE},
+            {"/org/openyabs/handwerk/templates/trades_acceptance_de.fodt", "Handwerk - Abnahmeprotokoll (DE)", mpv5.globals.Constants.TYPE_ORDER},
+            {"/org/openyabs/handwerk/templates/trades_timesheet_de.fodt", "Handwerk - Regiebericht (DE)", mpv5.globals.Constants.TYPE_ORDER}
+        };
+        int imported = 0;
+        int existed = 0;
         try {
-            DialogForFile d = new DialogForFile(DialogForFile.DIRECTORIES_ONLY);
-            if (!d.chooseFile()) {
-                return;
-            }
-            File dir = d.getFile();
-            if (dir == null) {
-                return;
-            }
-            if (!dir.exists()) {
-                dir.mkdirs();
-            }
-            int count = 0;
-            for (String res : TEMPLATE_RESOURCES) {
-                String name = res.substring(res.lastIndexOf('/') + 1);
-                try (InputStream in = HandwerkPlugin.class.getResourceAsStream(res)) {
-                    if (in == null) {
-                        continue;
-                    }
-                    Files.write(new File(dir, name).toPath(), in.readAllBytes());
-                    count++;
+            for (Object[] spec : specs) {
+                mpv5.handler.TemplateImportService.PluginTemplateResult r = mpv5.handler.TemplateImportService.importPluginTemplate(
+                        HandwerkPlugin.class,
+                        (String) spec[0],
+                        (String) spec[1],
+                        (Integer) spec[2],
+                        mpv5.handler.FirstStartSetup.ITEM_FORMAT,
+                        "Handwerk plugin");
+                if (r.created) {
+                    imported++;
+                } else {
+                    existed++;
                 }
             }
-            yabs.notify(yabs.tr("cmd.exportTemplates.done", count, dir.getAbsolutePath()));
+            return yabs.tr("cmd.importTemplates.done", imported, existed);
         } catch (Exception e) {
             Log.Debug(HandwerkPlugin.class, e);
-            yabs.error(yabs.tr("cmd.exportTemplates.failed", e.getMessage()));
+            return yabs.tr("cmd.importTemplates.failed", e.getMessage());
         }
     }
 

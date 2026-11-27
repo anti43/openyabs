@@ -447,27 +447,22 @@ public final class HeilpraktikerPlugin implements YabsExtension {
         return 1;
     }
 
-    void exportTemplate(ExtensionContext yabs) {
+    String importTemplate() {
         try {
-            DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY, "heilpraktiker_rechnung.fodt");
-            if (!d.saveFile()) {
-                return;
+            mpv5.handler.TemplateImportService.PluginTemplateResult r = mpv5.handler.TemplateImportService.importPluginTemplate(
+                    HeilpraktikerPlugin.class,
+                    TEMPLATE_RESOURCE,
+                    "Heilpraktiker - Honorarrechnung",
+                    Constants.TYPE_INVOICE,
+                    "1,4,2,5,7,6",
+                    "Heilpraktiker plugin");
+            if (r.created) {
+                return "Heilpraktiker-Rechnungsvorlage importiert und Ihrem Benutzer zugewiesen: " + r.template.__getCname();
             }
-            File target = d.getFile();
-            if (!target.getName().toLowerCase().endsWith(".fodt")) {
-                target = new File(target.getParentFile(), target.getName() + ".fodt");
-            }
-            try (InputStream in = HeilpraktikerPlugin.class.getResourceAsStream(TEMPLATE_RESOURCE)) {
-                if (in == null) {
-                    yabs.error("Vorlage nicht gefunden: " + TEMPLATE_RESOURCE);
-                    return;
-                }
-                Files.write(target.toPath(), in.readAllBytes());
-            }
-            yabs.notify("Heilpraktiker-Rechnungsvorlage gespeichert: " + target.getName());
+            return "Heilpraktiker-Rechnungsvorlage ist bereits vorhanden (aktueller Benutzer zugewiesen): " + r.template.__getCname();
         } catch (Exception e) {
             Log.Debug(HeilpraktikerPlugin.class, e);
-            yabs.error("Vorlage konnte nicht gespeichert werden: " + e.getMessage());
+            return "Vorlage konnte nicht importiert werden: " + e.getMessage();
         }
     }
 
