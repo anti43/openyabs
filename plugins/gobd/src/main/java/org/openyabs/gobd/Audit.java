@@ -252,22 +252,25 @@ final class Audit {
                     "id;created_at;user_id;entity_type;entity_id;action;old_value;new_value;file_hash;details;prev_hash;row_hash"));
             w.write(System.lineSeparator());
             java.sql.Connection c = Db.connection();
-            try (java.sql.PreparedStatement ps = c.prepareStatement("SELECT " + AUDIT_COLUMNS + " FROM gobd_audit_log ORDER BY id ASC");
-                    java.sql.ResultSet rs = ps.executeQuery()) {
-                ps.setFetchSize(500);
-                while (rs.next()) {
-                    Object[] a = new Object[12];
-                    for (int i = 0; i < a.length; i++) {
-                        a[i] = rs.getObject(i + 1);
-                        if (a[i] instanceof java.sql.Clob) {
-                            java.sql.Clob clob = (java.sql.Clob) a[i];
-                            a[i] = clob.getSubString(1, (int) clob.length());
+            synchronized (c) {
+                try (java.sql.PreparedStatement ps = c.prepareStatement("SELECT " + AUDIT_COLUMNS + " FROM gobd_audit_log ORDER BY id ASC")) {
+                    ps.setFetchSize(500);
+                    try (java.sql.ResultSet rs = ps.executeQuery()) {
+                        while (rs.next()) {
+                            Object[] a = new Object[12];
+                            for (int i = 0; i < a.length; i++) {
+                                a[i] = rs.getObject(i + 1);
+                                if (a[i] instanceof java.sql.Clob) {
+                                    java.sql.Clob clob = (java.sql.Clob) a[i];
+                                    a[i] = clob.getSubString(1, (int) clob.length());
+                                }
+                            }
+                            chain.accept(a);
+                            w.write(auditLine(a));
+                            w.write(System.lineSeparator());
+                            count++;
                         }
                     }
-                    chain.accept(a);
-                    w.write(auditLine(a));
-                    w.write(System.lineSeparator());
-                    count++;
                 }
             }
             w.write(String.join(System.lineSeparator(),

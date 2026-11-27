@@ -483,4 +483,107 @@ public class GobdPluginTest {
             connectorF.set(null, oldConnector);
         }
     }
+
+    /**
+     * Real embedded Apache Derby: schema init (and idempotent re-init), CLOB columns,
+     * NULL parameter binding, UNIQUE constraint allowing multiple NULLs on prev_hash,
+     * audit hash chain, inventory seal and receipt chaining without CAST(... AS VARCHAR).
+     */
+    @Test
+    public void worksOnApacheDerby() throws Exception {
+        Class<?> dc = Class.forName("mpv5.db.common.DatabaseConnection");
+        java.lang.reflect.Field connF = dc.getDeclaredField("conn");
+        java.lang.reflect.Field connectorF = dc.getDeclaredField("connector");
+        connF.setAccessible(true);
+        connectorF.setAccessible(true);
+        Object oldConn = connF.get(null);
+        Object oldConnector = connectorF.get(null);
+        java.nio.file.Path tempReceipt = java.nio.file.Files.createTempFile("gobd-derby-receipt-", ".pdf");
+        java.nio.file.Files.writeString(tempReceipt, "%PDF-1.4 test receipt", StandardCharsets.UTF_8);
+        String receiptSha = GobdUtil.sha256(tempReceipt);
+        long receiptSize = java.nio.file.Files.size(tempReceipt);
+        String dbUrl = "jdbc:derby:memory:gobdderbytest;create=true";
+        try (java.sql.Connection c = java.sql.DriverManager.getConnection(dbUrl)) {
+            java.lang.reflect.Constructor<?> k = dc.getDeclaredConstructor();
+            k.setAccessible(true);
+            connF.set(null, c);
+            connectorF.set(null, k.newInstance());
+            assertTrue(Db.isDerby(c));
+            assertEquals("CLOB", Db.largeTextType(c));
+
+            for (String sql : new String[]{
+                "CREATE TABLE items (ids BIGINT PRIMARY KEY, cnumber VARCHAR(100), inttype INT, contactsids INT, accountsids INT, dateadded DATE,"
+                + " datetodo DATE, dateend DATE, netvalue DOUBLE, discountvalue DOUBLE, taxvalue DOUBLE, discountgrosvalue DOUBLE, description VARCHAR(500))",
+                "CREATE TABLE subitems (ids BIGINT PRIMARY KEY, itemsids BIGINT, description VARCHAR(500), quantityvalue DOUBLE, externalvalue DOUBLE,"
+                + " discount DOUBLE, taxpercentvalue DOUBLE)",
+                "CREATE TABLE revenues (ids BIGINT PRIMARY KEY, cnumber VARCHAR(100), dateadded DATE, accountsids INT, netvalue DOUBLE, taxpercentvalue DOUBLE,"
+                + " brutvalue DOUBLE, description VARCHAR(500))",
+                "CREATE TABLE expenses (ids BIGINT PRIMARY KEY, cnumber VARCHAR(100), dateadded DATE, accountsids INT, netvalue DOUBLE, taxpercentvalue DOUBLE,"
+                + " brutvalue DOUBLE, description VARCHAR(500))",
+                "CREATE TABLE expense_receipts (ids BIGINT PRIMARY KEY, expensesids BIGINT, originalname VARCHAR(500), archivepath VARCHAR(1000), filesize BIGINT,"
+                + " sha256 CHAR(64), mimetype VARCHAR(100), imported_at TIMESTAMP, imported_by VARCHAR(100))",
+                "CREATE TABLE revenue_receipts (ids BIGINT PRIMARY KEY, revenuesids BIGINT, originalname VARCHAR(500), archivepath VARCHAR(1000), filesize BIGINT,"
+                + " sha256 CHAR(64), mimetype VARCHAR(100), imported_at TIMESTAMP, imported_by VARCHAR(100))",
+                "INSERT INTO items VALUES (1, 'RE-1', 0, 1, 1, '2026-01-01', '2026-01-01', NULL, 100, 0, 19, 0, 'Rechnung 1')",
+                "INSERT INTO subitems VALUES (1, 1, 'Pos 1', 1, 100, 0, 19)",
+                "INSERT INTO expenses VALUES (1, 'A-1', '2026-02-01', 1, 10, 19, 11.9, 'Ausgabe 1')"}) {
+                Db.update(c, sql);
+            }
+            Db.update(c, "INSERT INTO expense_receipts VALUES (1, 1, 'beleg.pdf', ?, ?, ?, 'application/pdf', CURRENT_TIMESTAMP, 'u')",
+                    tempReceipt.toAbsolutePath().toString(), receiptSize, receiptSha);
+
+            mpv5.plugin.api.ExtensionContext stubCtx = (mpv5.plugin.api.ExtensionContext) java.lang.reflect.Proxy.newProxyInstance(
+                    mpv5.plugin.api.ExtensionContext.class.getClassLoader(),
+                    new Class<?>[]{mpv5.plugin.api.ExtensionContext.class},
+                    (proxy, method, args) -> {
+                        if ("select".equals(method.getName())) {
+                            return Db.query(c, (String) args[0]);
+                        }
+                        return null;
+                    });
+            Gobd g = new Gobd(stubCtx);
+            // First initSchema on fresh Derby database
+            g.initSchema();
+            // Multiple legacy NULL prev_hash rows must be allowed by gobd_audit_log_prev_u on Derby
+            Db.update(c, "INSERT INTO gobd_audit_log (user_id, entity_type, entity_id, action) VALUES ('u', 'OLD', 1, 'a')");
+            Db.update(c, "INSERT INTO gobd_audit_log (user_id, entity_type, entity_id, action) VALUES ('u', 'OLD', 2, 'b')");
+            // Second initSchema must be completely idempotent on Derby
+            g.initSchema();
+
+            // Audit log with NULL parameters (Derby requires typed setNull, not setObject(i, null))
+            g.logAudit("PLUGIN", 0L, "PLUGIN_STARTED", null, "STATE=RUNNING", null, null);
+            g.logAudit("INVOICE", 1L, "DRAFT_CREATED", null, "RE-1", GobdUtil.GENESIS_HASH, "Test");
+            java.util.List<String> errors = new java.util.ArrayList<String>();
+            new Audit(g).checkAuditLog(errors);
+            assertTrue(errors.isEmpty(), "Audit chain must be valid on Derby: " + errors);
+
+            // Duplicate non-NULL prev_hash must still be rejected on Derby
+            java.sql.SQLException dup = org.junit.jupiter.api.Assertions.assertThrows(java.sql.SQLException.class, () -> Db.update(c,
+                    "INSERT INTO gobd_audit_log (user_id, entity_type, entity_id, action, prev_hash, row_hash) VALUES ('u', 't', 1, 'a', ?, ?)",
+                    GobdUtil.GENESIS_HASH, GobdUtil.GENESIS_HASH));
+            assertTrue(Db.isUniqueViolation(dup));
+
+            // Receipt chaining must work on Derby (no CAST(BIGINT AS VARCHAR))
+            assertEquals(1, g.chainReceipts(Gobd.Receipts.EXPENSE));
+            assertEquals(0, g.chainReceipts(Gobd.Receipts.EXPENSE));
+
+            // Inventory seal (CLOB columns, FETCH FIRST 1 ROWS ONLY, null timestamps/bigints)
+            Inventory.Result r = g.inventory.sealAtStart();
+            assertEquals("FIRST_ACTIVATION", r.reason);
+            assertTrue(r.added >= 3, "Expected invoices, expense, receipt and legacy audit rows sealed");
+            assertFalse(r.suspicious());
+            errors.clear();
+            g.inventory.check(errors);
+            assertTrue(errors.isEmpty(), "Inventory check must pass on Derby: " + errors);
+        } finally {
+            connF.set(null, oldConn);
+            connectorF.set(null, oldConnector);
+            java.nio.file.Files.deleteIfExists(tempReceipt);
+            try {
+                java.sql.DriverManager.getConnection("jdbc:derby:memory:gobdderbytest;drop=true");
+            } catch (java.sql.SQLException expected) {
+                // Derby throws SQLState 08006 on successful in-memory drop
+            }
+        }
+    }
 }

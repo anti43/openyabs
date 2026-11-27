@@ -2282,40 +2282,43 @@ public class QueryHandler implements Cloneable {
         ResultSet resultSet = null;
 
         Log.Debug(this, query);
+        final Connection dbConn = sqlConn;
         try {
-            // Select-Anweisung ausführen
-            stm = sqlConn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            resultSet = stm.executeQuery(query);
+            synchronized (dbConn) {
+                try {
+                    // Select-Anweisung ausführen
+                    stm = dbConn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+                    resultSet = stm.executeQuery(query);
 
-            if (resultSet.first()) {
-                Log.Debug(this, "Count " + resultSet.getInt("rowcount"));
-                stop();
-                return resultSet.getInt("rowcount");
-            } else {
-                stop();
-                return 0;
+                    if (resultSet.first()) {
+                        int count = resultSet.getInt("rowcount");
+                        Log.Debug(this, "Count " + count);
+                        return count;
+                    } else {
+                        return 0;
+                    }
+                } finally {
+                    // Alle Ressourcen wieder freigeben
+                    if (resultSet != null) {
+                        try {
+                            resultSet.close();
+                        } catch (SQLException ex) {
+                            Log.Debug(this, message + ex.getMessage());
+                        }
+                    }
+                    if (stm != null) {
+                        try {
+                            stm.close();
+                        } catch (SQLException ex) {
+                            Log.Debug(this, message + ex.getMessage());
+                        }
+                    }
+                }
             }
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         } finally {
             stop();
-            // Alle Ressourcen wieder freigeben
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException ex) {
-                    Log.Debug(this, message + ex.getMessage());
-                    //Popup.error(ex);
-                }
-            }
-            if (stm != null) {
-                try {
-                    stm.close();
-                } catch (SQLException ex) {
-                    Log.Debug(this, message + ex.getMessage());
-                    //Popup.error(ex);
-                }
-            }
         }
     }
 
@@ -2343,40 +2346,41 @@ public class QueryHandler implements Cloneable {
         ResultSet resultSet = null;
 
         Log.Debug(this, query);
+        final Connection dbConn = sqlConn;
         try {
-            // Select-Anweisung ausführen
-            stm = sqlConn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            resultSet = stm.executeQuery(query);
+            synchronized (dbConn) {
+                try {
+                    // Select-Anweisung ausführen
+                    stm = dbConn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+                    resultSet = stm.executeQuery(query);
 
-            if (resultSet.first()) {
-                Log.Debug(this, "Count " + resultSet.getInt("rowcount"));
-                stop();
-                return resultSet.getInt("rowcount");
-            } else {
-                stop();
-                return 0;
+                    if (resultSet.first()) {
+                        int count = resultSet.getInt("rowcount");
+                        Log.Debug(this, "Count " + count);
+                        return count;
+                    } else {
+                        return 0;
+                    }
+                } finally {
+                    // Alle Ressourcen wieder freigeben
+                    if (resultSet != null) {
+                        try {
+                            resultSet.close();
+                        } catch (SQLException ex) {
+                            Log.Debug(this, message + ex.getMessage());
+                        }
+                    }
+                    if (stm != null) {
+                        try {
+                            stm.close();
+                        } catch (SQLException ex) {
+                            Log.Debug(this, message + ex.getMessage());
+                        }
+                    }
+                }
             }
-        } catch (SQLException ex) {
-            throw ex;
         } finally {
             stop();
-            // Alle Ressourcen wieder freigeben
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException ex) {
-                    Log.Debug(this, message + ex.getMessage());
-                    //Popup.error(ex);
-                }
-            }
-            if (stm != null) {
-                try {
-                    stm.close();
-                } catch (SQLException ex) {
-                    Log.Debug(this, message + ex.getMessage());
-                    //Popup.error(ex);
-                }
-            }
         }
     }
 
@@ -2422,108 +2426,124 @@ public class QueryHandler implements Cloneable {
         ArrayList z;
         int id = -1;
         String[] columnnames = null;
+        final Connection dbConn = sqlConn;
         try {
-            // Select-Anweisung ausführen
-            stm = sqlConn.createStatement();
-            if (0 < this.limit) {
-                stm.setMaxRows(limit);
-            }
-            Log.Debug(this, query);
-            if (log != null) {
-                log.append("\n " + query + "\n\n_________________________________________________________________________________\n");
-            }
-            bool = stm.execute(query);
-
-            try {
-                ResultSet keys = stm.getGeneratedKeys();
-                if (keys != null && keys.next()) {
-                    id = keys.getInt(1);
-                }
-            } catch (SQLException sQLException) {
-//                Log.Debug(sQLException);
-            }
-            if (bool) {
-                resultSet = stm.getResultSet();
-                ArrayList spalten = new ArrayList();
-                ArrayList zeilen = new ArrayList();
-                rsmd = resultSet.getMetaData();
-
-                columnnames = new String[rsmd.getColumnCount()];
-                for (int i = 1; i <= rsmd.getColumnCount(); i++) {
-                    columnnames[i - 1] = rsmd.getColumnName(i);
-                }
-
-                //read once per query, not for every value
-                boolean unescape = true;//older versions stored "<removedbackslash>" (setting dbescape): always read back as \\
-                while (resultSet.next()) {
-                    spalten = new ArrayList();
-                    for (int i = 1; i <= rsmd.getColumnCount(); i++) {
-                        Object object = resultSet.getObject(i);
-                        if (object instanceof String && unescape) {
-                            object = rescapeBackslashes((String) object);
-                        }
-                        spalten.add(object);
-                    }
-                    zeilen.add(spalten);
-                }
-                data = new Object[zeilen.size()][spalten.size()];
-
-                for (int h = 0; h < zeilen.size(); h++) {
-                    z = (ArrayList) zeilen.get(h);
-                    for (int i = 0; i < spalten.size(); i++) {
-                        data[h][i] = z.get(i);
-                        if (log != null) {
-                            log.append("| " + data[h][i] + "\t");
-                        }
-                    }
-                    if (log != null) {
-                        log.append("\n ");
-                    }
-                }
-            }
-            retval = new ReturnValue(id, data, columnnames);
-            if (log != null) {
-                log.append("\n " + stm.getUpdateCount() + " rows affected.");
-            }
-
-        } catch (SQLException ex) {
-
-            jobmessage = Messages.ERROR_OCCURED.toString();
-            Log.Debug(this, message + ex.getMessage());
-//            retval = null;
-            if (log != null) {
-                log.append("\n " + ex.getMessage());
-            }
-        } finally {
-            // Alle Ressourcen wieder freigeben
-            stop();
-            if (resultSet != null) {
+            synchronized (dbConn) {
                 try {
-                    resultSet.close();
+                    // Select-Anweisung ausführen
+                    stm = dbConn.createStatement();
+                    if (0 < this.limit) {
+                        stm.setMaxRows(limit);
+                    }
+                    Log.Debug(this, query);
+                    if (log != null) {
+                        log.append("\n " + query + "\n\n_________________________________________________________________________________\n");
+                    }
+                    bool = stm.execute(query);
+
+                    try {
+                        ResultSet keys = stm.getGeneratedKeys();
+                        if (keys != null && keys.next()) {
+                            id = keys.getInt(1);
+                        }
+                    } catch (SQLException sQLException) {
+//                Log.Debug(sQLException);
+                    }
+                    if (bool) {
+                        resultSet = stm.getResultSet();
+                        ArrayList spalten = new ArrayList();
+                        ArrayList zeilen = new ArrayList();
+                        rsmd = resultSet.getMetaData();
+
+                        columnnames = new String[rsmd.getColumnCount()];
+                        for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+                            columnnames[i - 1] = rsmd.getColumnName(i);
+                        }
+
+                        //read once per query, not for every value
+                        boolean unescape = true;//older versions stored "<removedbackslash>" (setting dbescape): always read back as \\
+                        while (resultSet.next()) {
+                            spalten = new ArrayList();
+                            for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+                                Object object = resultSet.getObject(i);
+                                if (object instanceof String && unescape) {
+                                    object = rescapeBackslashes((String) object);
+                                } else if (object instanceof java.sql.Clob) {
+                                    try {
+                                        java.sql.Clob clob = (java.sql.Clob) object;
+                                        long len = clob.length();
+                                        String text = len == 0 ? "" : clob.getSubString(1, (int) len);
+                                        object = unescape ? rescapeBackslashes(text) : text;
+                                    } catch (Exception sQLException) {
+                                        Log.Debug(sQLException);
+                                        object = sQLException;
+                                    }
+                                }
+                                spalten.add(object);
+                            }
+                            zeilen.add(spalten);
+                        }
+                        data = new Object[zeilen.size()][spalten.size()];
+
+                        for (int h = 0; h < zeilen.size(); h++) {
+                            z = (ArrayList) zeilen.get(h);
+                            for (int i = 0; i < spalten.size(); i++) {
+                                data[h][i] = z.get(i);
+                                if (log != null) {
+                                    log.append("| " + data[h][i] + "\t");
+                                }
+                            }
+                            if (log != null) {
+                                log.append("\n ");
+                            }
+                        }
+                    }
+                    retval = new ReturnValue(id, data, columnnames);
+                    if (log != null) {
+                        log.append("\n " + stm.getUpdateCount() + " rows affected.");
+                    }
+
                 } catch (SQLException ex) {
 
                     jobmessage = Messages.ERROR_OCCURED.toString();
                     Log.Debug(this, message + ex.getMessage());
+//            retval = null;
                     if (log != null) {
-                        log.append(" \n" + ex.getMessage());
+                        log.append("\n " + ex.getMessage());
                     }
+                } finally {
+                    // Alle Ressourcen wieder freigeben
+                    if (resultSet != null) {
+                        try {
+                            resultSet.close();
+                        } catch (SQLException ex) {
+
+                            jobmessage = Messages.ERROR_OCCURED.toString();
+                            Log.Debug(this, message + ex.getMessage());
+                            if (log != null) {
+                                log.append(" \n" + ex.getMessage());
+                            }
+                        }
+                    }
+                    if (stm != null) {
+                        try {
+                            stm.close();
+                        } catch (SQLException ex) {
+
+                            Log.Debug(this, message + ex.getMessage());
+                            if (log != null) {
+                                log.append(" \n" + ex.getMessage());
+                            }
+                        }
+                    }
+
+                    stm = null;
+                    resultSet = null;
+                    rsmd = null;
                 }
             }
-            if (stm != null) {
-                try {
-                    stm.close();
-                } catch (SQLException ex) {
-
-                    Log.Debug(this, message + ex.getMessage());
-                    if (log != null) {
-                        log.append(" \n" + ex.getMessage());
-                    }
-                }
-            }
-
-            stm = null;
-            resultSet = null;
-            rsmd = null;
+        } finally {
+            stop();
         }
 
         if (jobmessage != null && retval != null) {
@@ -2574,69 +2594,75 @@ public class QueryHandler implements Cloneable {
         Integer id = -1;
         ResultSet keys;
 
+        final Connection dbConn = sqlConn;
         try {
-            // Select-Anweisung ausführen
-            stm = sqlConn.createStatement();
-            Log.Debug(this, "freeUpdateQuery::" + query);
-            if (log != null) {
-                log.append("\n " + query);
-            }
-            int wantKeys = DatabaseConnection.generatedKeys(query);
-            stm.executeUpdate(query, wantKeys);
-            int res = stm.getUpdateCount();
-            if (log != null) {
-                log.append("\n " + res + " rows affected.");
-            }
-
-            //only for INSERT: Connector/J 8 throws if no keys were requested
-            if (wantKeys == Statement.RETURN_GENERATED_KEYS) try {
-                keys = stm.getGeneratedKeys();
-
-                if (keys != null && keys.next()) {
-                    id = keys.getInt(1);
-                }
-            } catch (SQLException sQLException) {
-                Log.Debug(sQLException);
-            }
-
-            retval = new ReturnValue(id, null, null);
-            retval.setUpdateCount(stm.getUpdateCount());
-
-        } catch (SQLException ex) {
-
-            jobmessage = Messages.ERROR_OCCURED.toString();
-            Log.Debug(this, message + ex.getMessage() + "\n" + query);
-            if (log != null) {
-                log.append("\n " + ex.getMessage());
-            }
-        } finally {
-            // Alle Ressourcen wieder freigeben
-            stop();
-            if (resultSet != null) {
+            synchronized (dbConn) {
                 try {
-                    resultSet.close();
+                    // Select-Anweisung ausführen
+                    stm = dbConn.createStatement();
+                    Log.Debug(this, "freeUpdateQuery::" + query);
+                    if (log != null) {
+                        log.append("\n " + query);
+                    }
+                    int wantKeys = DatabaseConnection.generatedKeys(query);
+                    stm.executeUpdate(query, wantKeys);
+                    int res = stm.getUpdateCount();
+                    if (log != null) {
+                        log.append("\n " + res + " rows affected.");
+                    }
+
+                    //only for INSERT: Connector/J 8 throws if no keys were requested
+                    if (wantKeys == Statement.RETURN_GENERATED_KEYS) try {
+                        keys = stm.getGeneratedKeys();
+
+                        if (keys != null && keys.next()) {
+                            id = keys.getInt(1);
+                        }
+                    } catch (SQLException sQLException) {
+                        Log.Debug(sQLException);
+                    }
+
+                    retval = new ReturnValue(id, null, null);
+                    retval.setUpdateCount(stm.getUpdateCount());
+
                 } catch (SQLException ex) {
 
                     jobmessage = Messages.ERROR_OCCURED.toString();
-                    Log.Debug(this, message + ex.getMessage());
+                    Log.Debug(this, message + ex.getMessage() + "\n" + query);
                     if (log != null) {
-                        log.append(" \n" + ex.getMessage());
+                        log.append("\n " + ex.getMessage());
                     }
-                }
-            }
-            if (stm != null) {
-                try {
-                    stm.close();
-                } catch (SQLException ex) {
+                } finally {
+                    // Alle Ressourcen wieder freigeben
+                    if (resultSet != null) {
+                        try {
+                            resultSet.close();
+                        } catch (SQLException ex) {
 
-                    Log.Debug(this, message + ex.getMessage());
-                    if (log != null) {
-                        log.append(" \n" + ex.getMessage());
+                            jobmessage = Messages.ERROR_OCCURED.toString();
+                            Log.Debug(this, message + ex.getMessage());
+                            if (log != null) {
+                                log.append(" \n" + ex.getMessage());
+                            }
+                        }
                     }
+                    if (stm != null) {
+                        try {
+                            stm.close();
+                        } catch (SQLException ex) {
+
+                            Log.Debug(this, message + ex.getMessage());
+                            if (log != null) {
+                                log.append(" \n" + ex.getMessage());
+                            }
+                        }
+                    }
+                    stm = null;
+                    resultSet = null;
                 }
             }
-            stm = null;
-            resultSet = null;
+        } finally {
+            stop();
         }
 
         if (jobmessage != null && retval != null) {
@@ -2690,96 +2716,112 @@ public class QueryHandler implements Cloneable {
         ArrayList<Object> spalten = new ArrayList<Object>();
         ArrayList<Object> zeilen = new ArrayList<Object>();
 
+        final Connection dbConn = sqlConn;
         try {
-            stm = sqlConn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            if (0 < this.limit) {
-                stm.setMaxRows(limit);
-            }
+            synchronized (dbConn) {
+                try {
+                    stm = dbConn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+                    if (0 < this.limit) {
+                        stm.setMaxRows(limit);
+                    }
 
-            Log.Debug(this, "freeSelectQuery: limit " + limit + ":" + query);
-            try {
-                resultSet = stm.executeQuery(query);
-            } catch (SQLException sQLException) {
-                Log.Debug(sQLException);
-                throw sQLException;
-            }
+                    Log.Debug(this, "freeSelectQuery: limit " + limit + ":" + query);
+                    try {
+                        resultSet = stm.executeQuery(query);
+                    } catch (SQLException sQLException) {
+                        Log.Debug(sQLException);
+                        throw sQLException;
+                    }
 
-            rsmd = resultSet.getMetaData();
-            try {
-                ResultSet keys = stm.getGeneratedKeys();
-                if (keys != null && keys.next()) {
-                    id = keys.getInt(1);
-                }
-            } catch (SQLException sQLException) {
+                    rsmd = resultSet.getMetaData();
+                    try {
+                        ResultSet keys = stm.getGeneratedKeys();
+                        if (keys != null && keys.next()) {
+                            id = keys.getInt(1);
+                        }
+                    } catch (SQLException sQLException) {
 //                Log.Debug(sQLException);
-            }
+                    }
 
-            columnnames = new String[rsmd.getColumnCount()];
-            fullcolnames = new String[rsmd.getColumnCount()];
-            for (int i = 1; i <= rsmd.getColumnCount(); i++) {
-                columnnames[i - 1] = rsmd.getColumnName(i);
-                fullcolnames[i - 1] = rsmd.getTableName(i) + "." + rsmd.getColumnName(i);
-            }
+                    columnnames = new String[rsmd.getColumnCount()];
+                    fullcolnames = new String[rsmd.getColumnCount()];
+                    for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+                        columnnames[i - 1] = rsmd.getColumnName(i);
+                        fullcolnames[i - 1] = rsmd.getTableName(i) + "." + rsmd.getColumnName(i);
+                    }
 
-            //read once per query, not for every value
-            boolean unescape = true;//older versions stored "<removedbackslash>" (setting dbescape): always read back as \\
-            while (resultSet.next()) {
-                spalten = new ArrayList<Object>();
-                for (int i = 1; i <= rsmd.getColumnCount(); i++) {
-                    Object object = resultSet.getObject(i);
-                    if (object instanceof String && unescape) {
-                        object = rescapeBackslashes((String) object);
-                    } else if (object instanceof Blob) {
-                        try {
-                            object = ((Blob) object).getBytes(1, (int) ((Blob) object).length());
-                        } catch (Exception sQLException) {
-                            Log.Debug(sQLException);
-                            object = sQLException;
+                    //read once per query, not for every value
+                    boolean unescape = true;//older versions stored "<removedbackslash>" (setting dbescape): always read back as \\
+                    while (resultSet.next()) {
+                        spalten = new ArrayList<Object>();
+                        for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+                            Object object = resultSet.getObject(i);
+                            if (object instanceof String && unescape) {
+                                object = rescapeBackslashes((String) object);
+                            } else if (object instanceof java.sql.Clob) {
+                                try {
+                                    java.sql.Clob clob = (java.sql.Clob) object;
+                                    long len = clob.length();
+                                    String text = len == 0 ? "" : clob.getSubString(1, (int) len);
+                                    object = unescape ? rescapeBackslashes(text) : text;
+                                } catch (Exception sQLException) {
+                                    Log.Debug(sQLException);
+                                    object = sQLException;
+                                }
+                            } else if (object instanceof Blob) {
+                                try {
+                                    object = ((Blob) object).getBytes(1, (int) ((Blob) object).length());
+                                } catch (Exception sQLException) {
+                                    Log.Debug(sQLException);
+                                    object = sQLException;
+                                }
+                            }
+                            spalten.add(object);
+                        }
+                        zeilen.add(spalten);
+                    }
+                    data = new Object[zeilen.size()][spalten.size()];
+
+                    for (int h = 0; h < zeilen.size(); h++) {
+                        row = (ArrayList<Object>) zeilen.get(h);
+                        for (int i = 0; i < spalten.size(); i++) {
+                            data[h][i] = row.get(i);
                         }
                     }
-                    spalten.add(object);
-                }
-                zeilen.add(spalten);
-            }
-            data = new Object[zeilen.size()][spalten.size()];
-
-            for (int h = 0; h < zeilen.size(); h++) {
-                row = (ArrayList<Object>) zeilen.get(h);
-                for (int i = 0; i < spalten.size(); i++) {
-                    data[h][i] = row.get(i);
-                }
-            }
-        } catch (SQLException ex) {
-            Log.Debug(this, "Datenbankfehler: " + query);
-            Log.Debug(this, message + ex.getMessage());
-            //Popup.error(ex);
-            jobmessage = Messages.ERROR_OCCURED.toString();
-        } finally {
-            // Alle Ressourcen wieder freigeben
-            stop();
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
                 } catch (SQLException ex) {
+                    Log.Debug(this, "Datenbankfehler: " + query);
+                    Log.Debug(this, message + ex.getMessage());
+                    //Popup.error(ex);
                     jobmessage = Messages.ERROR_OCCURED.toString();
-                    Log.Debug(this, message + ex.getMessage());
-                    //Popup.error(ex);
+                } finally {
+                    // Alle Ressourcen wieder freigeben
+                    if (resultSet != null) {
+                        try {
+                            resultSet.close();
+                        } catch (SQLException ex) {
+                            jobmessage = Messages.ERROR_OCCURED.toString();
+                            Log.Debug(this, message + ex.getMessage());
+                            //Popup.error(ex);
+                        }
+                    }
+                    if (stm != null) {
+                        try {
+                            stm.close();
+                        } catch (SQLException ex) {
+                            Log.Debug(this, message + ex.getMessage());
+                            //Popup.error(ex);
+                        }
+                    }
+                    stm = null;
+                    resultSet = null;
+                    rsmd = null;
+                    row = null;
+                    spalten = null;
+                    zeilen = null;
                 }
             }
-            if (stm != null) {
-                try {
-                    stm.close();
-                } catch (SQLException ex) {
-                    Log.Debug(this, message + ex.getMessage());
-                    //Popup.error(ex);
-                }
-            }
-            stm = null;
-            resultSet = null;
-            rsmd = null;
-            row = null;
-            spalten = null;
-            zeilen = null;
+        } finally {
+            stop();
         }
 
         if (jobmessage != null) {
