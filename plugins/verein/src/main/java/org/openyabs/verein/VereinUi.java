@@ -75,7 +75,7 @@ final class VereinUi {
     private VereinUi() {
     }
 
-    static JComponent settingsPage(final ExtensionContext yabs) {
+    static JComponent settingsPage(final ExtensionContext yabs, final VereinPlugin plugin) {
         final Settings s = Settings.load();
 
         final JTextField creditorField = new JTextField(s.creditorId, 26);
@@ -93,6 +93,20 @@ final class VereinUi {
         final JCheckBox duesDeductibleBox = new JCheckBox(yabs.tr("settings.duesDeductible"), s.duesTaxDeductible);
         final JCheckBox kuBox = new JCheckBox(yabs.tr("settings.kleinunternehmer"), s.kleinunternehmer);
         final JCheckBox warnBox = new JCheckBox(yabs.tr("settings.warnOnSave"), s.warnOnSave);
+
+        Runnable applySettings = () -> {
+            s.creditorId = creditorField.getText().trim();
+            s.finanzamt = finanzamtField.getText().trim();
+            s.taxNumber = taxNumField.getText().trim();
+            s.bescheidType = bescheidCodes[Math.max(0, bescheidBox.getSelectedIndex())];
+            s.freistellungDate = dateField.getText().trim();
+            s.freistellungPeriod = periodField.getText().trim();
+            s.purposeClause = purposeField.getText().trim();
+            s.duesTaxDeductible = duesDeductibleBox.isSelected();
+            s.kleinunternehmer = kuBox.isSelected();
+            s.warnOnSave = warnBox.isSelected();
+            s.save();
+        };
 
         JPanel form = new JPanel(new GridBagLayout());
         form.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
@@ -118,6 +132,38 @@ final class VereinUi {
         form.add(kuBox, g);
         g.gridy = row++;
         form.add(warnBox, g);
+
+        if (plugin != null) {
+            JPanel setupBox = new JPanel(new GridBagLayout());
+            setupBox.setBorder(BorderFactory.createTitledBorder(yabs.tr("setup.imports.title")));
+            GridBagConstraints sg = new GridBagConstraints();
+            sg.insets = new Insets(4, 6, 4, 6);
+            sg.anchor = GridBagConstraints.WEST;
+            sg.fill = GridBagConstraints.HORIZONTAL;
+            int srow = 0;
+
+            JButton importTiersBtn = new JButton(yabs.tr("cmd.importTiers.title"));
+            importTiersBtn.setToolTipText(yabs.tr("cmd.importTiers.desc"));
+            importTiersBtn.addActionListener(e -> {
+                applySettings.run();
+                yabs.background(() -> plugin.importStarterTiers(yabs), msg -> yabs.popup(msg));
+            });
+            addActionRow(setupBox, sg, srow++, importTiersBtn, yabs.tr("cmd.importTiers.desc"));
+
+            JButton exportTemplatesBtn = new JButton(yabs.tr("cmd.exportTemplates.title"));
+            exportTemplatesBtn.setToolTipText(yabs.tr("cmd.exportTemplates.desc"));
+            exportTemplatesBtn.addActionListener(e -> plugin.exportTemplates(yabs));
+            addActionRow(setupBox, sg, srow++, exportTemplatesBtn, yabs.tr("cmd.exportTemplates.desc"));
+
+            g.gridx = 0;
+            g.gridy = row++;
+            g.gridwidth = 2;
+            g.insets = new Insets(10, 0, 6, 0);
+            form.add(setupBox, g);
+        }
+
+        g.gridx = 0;
+        g.gridwidth = 2;
         g.gridy = row++;
         g.insets = new Insets(10, 6, 6, 6);
         form.add(new JLabel(yabs.tr("settings.info")), g);
@@ -127,17 +173,7 @@ final class VereinUi {
 
         JButton saveBtn = new JButton(yabs.tr("common.save"));
         saveBtn.addActionListener(e -> {
-            s.creditorId = creditorField.getText().trim();
-            s.finanzamt = finanzamtField.getText().trim();
-            s.taxNumber = taxNumField.getText().trim();
-            s.bescheidType = bescheidCodes[Math.max(0, bescheidBox.getSelectedIndex())];
-            s.freistellungDate = dateField.getText().trim();
-            s.freistellungPeriod = periodField.getText().trim();
-            s.purposeClause = purposeField.getText().trim();
-            s.duesTaxDeductible = duesDeductibleBox.isSelected();
-            s.kleinunternehmer = kuBox.isSelected();
-            s.warnOnSave = warnBox.isSelected();
-            s.save();
+            applySettings.run();
             yabs.notify(yabs.tr("settings.saved"));
         });
 
@@ -511,5 +547,18 @@ final class VereinUi {
         g.gridx = 1;
         g.weightx = 1.0;
         panel.add(field, g);
+    }
+
+    private static void addActionRow(JPanel panel, GridBagConstraints g, int row, JButton btn, String desc) {
+        g.gridwidth = 1;
+        g.weighty = 0;
+        g.fill = GridBagConstraints.HORIZONTAL;
+        g.gridx = 0;
+        g.gridy = row;
+        g.weightx = 0.0;
+        panel.add(btn, g);
+        g.gridx = 1;
+        g.weightx = 1.0;
+        panel.add(new JLabel("<html><div style='width:380px'>" + desc + "</div></html>"), g);
     }
 }

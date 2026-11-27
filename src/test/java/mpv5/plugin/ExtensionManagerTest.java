@@ -33,9 +33,11 @@ class ExtensionManagerTest {
 
         final List<String> messages = new ArrayList<String>();
         final List<String> errors = new ArrayList<String>();
+        final List<String> tabs = new ArrayList<String>();
         final List<mpv5.ui.panels.DataPanel> views = new ArrayList<mpv5.ui.panels.DataPanel>();
 
         public void openTab(String title, JComponent content) {
+            tabs.add(title);
         }
 
         public void notify(String message) {
@@ -698,5 +700,67 @@ class ExtensionManagerTest {
         assertEquals("de_DE", ExtensionManager.languageOf("de-DE"));
         assertEquals("de", ExtensionManager.languageOf("DE-Yabs-2.0"));
         assertEquals("fr_FR", ExtensionManager.languageOf("fr_FR"));
+    }
+
+    @Test
+    void setupOpensOnceOnFirstLoadAndCanBeOpenedFromPluginMenu(@TempDir Path dir) {
+        TestHost h = new TestHost();
+        ExtensionManager m = new ExtensionManager(dir.toFile(), h);
+        final int[] built = {0};
+        ExtensionManager.Installed inst = m.register(new YabsExtension() {
+            @Override public String id() { return "test.setup"; }
+            @Override public String name() { return "Demo"; }
+            @Override public void start(ExtensionContext ctx) {
+                ctx.addSetup("Demo: Setup", "Demo", "Demo setup", () -> {
+                    built[0]++;
+                    return new javax.swing.JPanel();
+                });
+            }
+        });
+
+        // First load: opens Setup automatically and registers both menu command and settings page
+        assertTrue(m.start(inst));
+        assertEquals(1, m.pages().size());
+        assertEquals("Demo", m.pages().get(0).title);
+        assertEquals(1, m.commands().size());
+        assertEquals("Demo: Setup", m.commands().get(0).title);
+        assertEquals(1, h.tabs.size());
+        assertEquals("Demo \u2013 Setup", h.tabs.get(0));
+        assertEquals(1, built[0]);
+
+        // Reload / second load: does NOT auto-open Setup again
+        m.reload(inst);
+        assertEquals(1, h.tabs.size(), "Setup must not auto-open on subsequent loads");
+        assertEquals(1, built[0]);
+
+        // Invoking the Setup menu command opens it again on demand
+        m.commands().get(0).action.run();
+        assertEquals(2, h.tabs.size());
+        assertEquals(2, built[0]);
+    }
+
+    @Test
+    void setupDoesNotRunOrMarkShownWithoutHost(@TempDir Path dir) {
+        ExtensionManager headless = new ExtensionManager(dir.toFile(), null);
+        final int[] built = {0};
+        YabsExtension plugin = new YabsExtension() {
+            @Override public String id() { return "test.setup.headless"; }
+            @Override public String name() { return "HeadlessDemo"; }
+            @Override public void start(ExtensionContext ctx) {
+                ctx.addSetup("HeadlessDemo: Setup", "HeadlessDemo", "desc", () -> {
+                    built[0]++;
+                    return new javax.swing.JPanel();
+                });
+            }
+        };
+        assertTrue(headless.start(headless.register(plugin)));
+        assertEquals(0, built[0], "Headless start must not build Setup UI");
+
+        // Later start with a real host still counts as first UI load
+        TestHost h = new TestHost();
+        ExtensionManager gui = new ExtensionManager(dir.toFile(), h);
+        assertTrue(gui.start(gui.register(plugin)));
+        assertEquals(1, h.tabs.size());
+        assertEquals(1, built[0]);
     }
 }

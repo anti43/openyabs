@@ -378,13 +378,36 @@ final class Pages {
         }, panel);
 
 
+        JButton sealBtn = new JButton("Bestand jetzt versiegeln");
+        sealBtn.setToolTipText("Versiegelt alle steuerrelevanten Datensaetze (Hash je Datensatz, Hash-Kette der Versiegelungen)");
+        sealBtn.addActionListener(e -> g.yabs.background(() -> {
+            try {
+                return g.inventory.seal("MANUAL");
+            } catch (Exception ex) {
+                throw new IllegalStateException("GoBD-Bestandsversiegelung fehlgeschlagen: " + ex.getMessage(), ex);
+            }
+        }, r -> {
+            if (r.suspicious()) {
+                g.error(r.message());
+            } else {
+                g.popup(r.message());
+            }
+        }));
+        JPanel sealRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        sealRow.setAlignmentX(Component.LEFT_ALIGNMENT);
+        sealRow.add(sealBtn);
+        sealRow.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
+
         panel.add(autoLock);
         panel.add(label("Revisionssicherer GoBD-Archivordner:", 10));
         panel.add(archiveRow);
+        panel.add(sealRow);
         //e-invoices (expenses and income) are imported by YaBS: import buttons, drag and drop and
         //the e-invoice folder (settings > folders); the plugin locks the records with their receipts
         panel.add(label("E-Rechnungen (Ausgaben und Einnahmen) importiert YaBS: Import-Schaltflaechen, Drag & Drop und der"
                 + " E-Rechnungs-Ordner (Einstellungen > Ordner). Das Plugin schreibt die Buchungen mit ihrem Beleg fest.", 14));
-        return panel;
+        JPanel root = new JPanel(new BorderLayout());
+        root.add(panel, BorderLayout.NORTH);
+        return new JScrollPane(root);
     }
 }

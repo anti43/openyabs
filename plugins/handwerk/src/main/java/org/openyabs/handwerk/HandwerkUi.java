@@ -87,7 +87,7 @@ final class HandwerkUi {
 
     // --------------------------------------------------------- settings page
 
-    static JComponent settingsPage(final ExtensionContext yabs) {
+    static JComponent settingsPage(final ExtensionContext yabs, final HandwerkPlugin plugin) {
         final Settings s = Settings.load();
 
         final JTextField chamberNameField = new JTextField(s.chamberName, 24);
@@ -115,6 +115,26 @@ final class HandwerkUi {
         final JTextField leadDaysField = new JTextField(String.valueOf(s.certLeadDays), 6);
         final JCheckBox warnBox = new JCheckBox(yabs.tr("settings.warnOnSave"), s.warnOnSave);
 
+        Runnable applySettings = () -> {
+            s.chamberName = chamberNameField.getText().trim();
+            s.chamberNumber = chamberNoField.getText().trim();
+            s.ownFreistellungTaxNo = freiTaxField.getText().trim();
+            s.ownFreistellungSecNo = freiSecField.getText().trim();
+            s.ownFreistellungValidUntil = freiUntilField.getText().trim();
+            s.ownUst1TgValidUntil = ustUntilField.getText().trim();
+            s.rateMaster = HandwerkStore.parseDecimal(rateMasterField.getText(), s.rateMaster);
+            s.rateJourneyman = HandwerkStore.parseDecimal(rateJourneyField.getText(), s.rateJourneyman);
+            s.rateApprentice = HandwerkStore.parseDecimal(rateApprenticeField.getText(), s.rateApprentice);
+            s.rateTravel = HandwerkStore.parseDecimal(rateTravelField.getText(), s.rateTravel);
+            s.datanormMarkupPercent = HandwerkStore.parseDecimal(markupField.getText(), s.datanormMarkupPercent);
+            s.defaultContractType = String.valueOf(contractBox.getSelectedItem());
+            s.defaultRetentionPercent = HandwerkStore.parseDecimal(retPctField.getText(), s.defaultRetentionPercent);
+            s.defaultRetentionBasis = String.valueOf(retBasisBox.getSelectedItem());
+            s.certLeadDays = HandwerkStore.parseInt(leadDaysField.getText(), s.certLeadDays);
+            s.warnOnSave = warnBox.isSelected();
+            s.save();
+        };
+
         JPanel form = new JPanel(new GridBagLayout());
         form.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
         GridBagConstraints g = gbc();
@@ -141,29 +161,49 @@ final class HandwerkUi {
         g.gridwidth = 2;
         form.add(warnBox, g);
 
+        if (plugin != null) {
+            JPanel setupBox = new JPanel(new GridBagLayout());
+            setupBox.setBorder(BorderFactory.createTitledBorder(yabs.tr("setup.imports.title")));
+            GridBagConstraints sg = gbc();
+            int srow = 0;
+
+            JButton importCatalogBtn = new JButton(yabs.tr("cmd.importCatalog.title"));
+            importCatalogBtn.setToolTipText(yabs.tr("cmd.importCatalog.desc"));
+            importCatalogBtn.addActionListener(e -> {
+                applySettings.run();
+                yabs.background(() -> plugin.importStarterCatalog(yabs), msg -> yabs.popup(msg));
+            });
+            addActionRow(setupBox, sg, srow++, importCatalogBtn, yabs.tr("cmd.importCatalog.desc"));
+
+            JButton importDatanormBtn = new JButton(yabs.tr("cmd.importDatanorm.title"));
+            importDatanormBtn.setToolTipText(yabs.tr("cmd.importDatanorm.desc"));
+            importDatanormBtn.addActionListener(e -> {
+                applySettings.run();
+                plugin.importDatanorm(yabs);
+            });
+            addActionRow(setupBox, sg, srow++, importDatanormBtn, yabs.tr("cmd.importDatanorm.desc"));
+
+            JButton exportTemplatesBtn = new JButton(yabs.tr("cmd.exportTemplates.title"));
+            exportTemplatesBtn.setToolTipText(yabs.tr("cmd.exportTemplates.desc"));
+            exportTemplatesBtn.addActionListener(e -> plugin.exportTemplates(yabs));
+            addActionRow(setupBox, sg, srow++, exportTemplatesBtn, yabs.tr("cmd.exportTemplates.desc"));
+
+            g.gridx = 0;
+            g.gridy = row++;
+            g.gridwidth = 2;
+            g.insets = new Insets(10, 0, 6, 0);
+            form.add(setupBox, g);
+        }
+
+        g.gridx = 0;
         g.gridy = row++;
-        g.insets = new Insets(10, 6, 6, 6);
+        g.gridwidth = 2;
+        g.insets = new Insets(8, 6, 6, 6);
         form.add(new JLabel(yabs.tr("settings.info")), g);
 
         JButton saveBtn = new JButton(yabs.tr("common.save"));
         saveBtn.addActionListener(e -> {
-            s.chamberName = chamberNameField.getText().trim();
-            s.chamberNumber = chamberNoField.getText().trim();
-            s.ownFreistellungTaxNo = freiTaxField.getText().trim();
-            s.ownFreistellungSecNo = freiSecField.getText().trim();
-            s.ownFreistellungValidUntil = freiUntilField.getText().trim();
-            s.ownUst1TgValidUntil = ustUntilField.getText().trim();
-            s.rateMaster = HandwerkStore.parseDecimal(rateMasterField.getText(), s.rateMaster);
-            s.rateJourneyman = HandwerkStore.parseDecimal(rateJourneyField.getText(), s.rateJourneyman);
-            s.rateApprentice = HandwerkStore.parseDecimal(rateApprenticeField.getText(), s.rateApprentice);
-            s.rateTravel = HandwerkStore.parseDecimal(rateTravelField.getText(), s.rateTravel);
-            s.datanormMarkupPercent = HandwerkStore.parseDecimal(markupField.getText(), s.datanormMarkupPercent);
-            s.defaultContractType = String.valueOf(contractBox.getSelectedItem());
-            s.defaultRetentionPercent = HandwerkStore.parseDecimal(retPctField.getText(), s.defaultRetentionPercent);
-            s.defaultRetentionBasis = String.valueOf(retBasisBox.getSelectedItem());
-            s.certLeadDays = HandwerkStore.parseInt(leadDaysField.getText(), s.certLeadDays);
-            s.warnOnSave = warnBox.isSelected();
-            s.save();
+            applySettings.run();
             yabs.notify(yabs.tr("settings.saved"));
         });
 
@@ -1524,5 +1564,16 @@ final class HandwerkUi {
         g.gridx = 1;
         g.weightx = 1;
         panel.add(comp, g);
+    }
+
+    private static void addActionRow(JPanel panel, GridBagConstraints g, int row, JButton btn, String desc) {
+        g.gridx = 0;
+        g.gridy = row;
+        g.gridwidth = 1;
+        g.weightx = 0;
+        panel.add(btn, g);
+        g.gridx = 1;
+        g.weightx = 1;
+        panel.add(new JLabel("<html><div style='width:380px'>" + desc + "</div></html>"), g);
     }
 }

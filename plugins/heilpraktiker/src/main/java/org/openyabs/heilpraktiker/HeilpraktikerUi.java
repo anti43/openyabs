@@ -67,7 +67,7 @@ final class HeilpraktikerUi {
     private HeilpraktikerUi() {
     }
 
-    static JComponent settingsPage(final ExtensionContext yabs) {
+    static JComponent settingsPage(final ExtensionContext yabs, final HeilpraktikerPlugin plugin) {
         final Settings s = Settings.load();
         final boolean isAdmin = HeilpraktikerSecurity.isCurrentUserAdmin();
 
@@ -106,6 +106,22 @@ final class HeilpraktikerUi {
         soapUsers.setEnabled(isAdmin);
         encryptSoap.setEnabled(isAdmin);
 
+        Runnable applySettings = () -> {
+            s.practitionerTitle = titleField.getText().trim();
+            s.licenseAuthority = licenseField.getText().trim();
+            s.ustgNotice = ustgArea.getText().trim();
+            int idx = priceMode.getSelectedIndex();
+            s.defaultPriceMode = idx == 1 ? PriceMode.MID : idx == 2 ? PriceMode.MIN : PriceMode.MAX;
+            s.warnOnSave = warnOnSave.isSelected();
+            s.skipEInvoiceForTaxExempt = skipEInvoice.isSelected();
+            if (isAdmin) {
+                s.restrictSoapAccess = restrictSoap.isSelected();
+                s.soapAllowedUsers = soapUsers.getText().trim();
+                s.encryptSoapNotes = encryptSoap.isSelected();
+            }
+            s.save();
+        };
+
         JPanel form = new JPanel(new GridBagLayout());
         form.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
         GridBagConstraints g = new GridBagConstraints();
@@ -133,6 +149,37 @@ final class HeilpraktikerUi {
         g.gridwidth = 2;
         form.add(encryptSoap, g);
 
+        if (plugin != null && yabs != null) {
+            JPanel setupBox = new JPanel(new GridBagLayout());
+            setupBox.setBorder(BorderFactory.createTitledBorder("Setup: Geb\u00fcH-Katalog & Rechnungsvorlage"));
+            GridBagConstraints sg = new GridBagConstraints();
+            sg.insets = new Insets(4, 6, 4, 6);
+            sg.anchor = GridBagConstraints.WEST;
+            sg.fill = GridBagConstraints.HORIZONTAL;
+            int srow = 0;
+
+            JButton importCatalogBtn = new JButton("Geb\u00fcH-Katalog (144 Ziffern) importieren");
+            importCatalogBtn.setToolTipText("Legt alle 144 offiziellen Geb\u00fcH-85/2002-Leistungen (Ziffern 1\u201339.13) als steuerfreie Leistungen (0 % USt) an");
+            importCatalogBtn.addActionListener(e -> {
+                applySettings.run();
+                yabs.background(plugin::importGebuehCatalog, msg -> yabs.popup(msg));
+            });
+            addActionRow(setupBox, sg, srow++, importCatalogBtn,
+                    "Legt alle 144 offiziellen Geb\u00fcH-85/2002-Leistungen (Ziffern 1\u201339.13) als steuerfreie Leistungen (0 % USt) an");
+
+            JButton exportTemplateBtn = new JButton("Rechnungsvorlage (.fodt) speichern");
+            exportTemplateBtn.setToolTipText("Speichert die vorgefertigte LibreOffice-Rechnungsvorlage mit [hp.*]-Platzhaltern");
+            exportTemplateBtn.addActionListener(e -> plugin.exportTemplate(yabs));
+            addActionRow(setupBox, sg, srow++, exportTemplateBtn,
+                    "Speichert die vorgefertigte LibreOffice-Rechnungsvorlage mit [hp.*]-Platzhaltern");
+
+            g.gridx = 0;
+            g.gridy = row++;
+            g.gridwidth = 2;
+            g.insets = new Insets(10, 0, 6, 0);
+            form.add(setupBox, g);
+        }
+
         JLabel info = new JLabel("<html><div style='width:560px'>"
                 + "<b>Hinweise (Datenschutz &amp; Abrechnung, Stand 2026):</b><br>"
                 + "&bull; <b>Art. 9 DSGVO / &sect; 203 StGB:</b> Diagnosen und SOAP-Notizen sind besondere Kategorien "
@@ -147,25 +194,15 @@ final class HeilpraktikerUi {
                 + "<code>[hp.treatmentDates]</code>, <code>[hp.ustgNotice]</code>, <code>[hp.practitionerTitle]</code>, "
                 + "<code>[hp.licenseAuthority]</code>."
                 + "</div></html>");
+        g.gridx = 0;
         g.gridy = row++;
+        g.gridwidth = 2;
         g.insets = new Insets(12, 6, 6, 6);
         form.add(info, g);
 
         JButton saveBtn = new JButton("Speichern");
         saveBtn.addActionListener(e -> {
-            s.practitionerTitle = titleField.getText().trim();
-            s.licenseAuthority = licenseField.getText().trim();
-            s.ustgNotice = ustgArea.getText().trim();
-            int idx = priceMode.getSelectedIndex();
-            s.defaultPriceMode = idx == 1 ? PriceMode.MID : idx == 2 ? PriceMode.MIN : PriceMode.MAX;
-            s.warnOnSave = warnOnSave.isSelected();
-            s.skipEInvoiceForTaxExempt = skipEInvoice.isSelected();
-            if (isAdmin) {
-                s.restrictSoapAccess = restrictSoap.isSelected();
-                s.soapAllowedUsers = soapUsers.getText().trim();
-                s.encryptSoapNotes = encryptSoap.isSelected();
-            }
-            s.save();
+            applySettings.run();
             if (yabs != null) {
                 yabs.notify("Heilpraktiker-Einstellungen gespeichert.");
             }
@@ -549,5 +586,18 @@ final class HeilpraktikerUi {
         g.gridx = 1;
         g.weightx = 1.0;
         panel.add(field, g);
+    }
+
+    private static void addActionRow(JPanel panel, GridBagConstraints g, int row, JButton btn, String desc) {
+        g.gridwidth = 1;
+        g.weighty = 0;
+        g.fill = GridBagConstraints.HORIZONTAL;
+        g.gridx = 0;
+        g.gridy = row;
+        g.weightx = 0.0;
+        panel.add(btn, g);
+        g.gridx = 1;
+        g.weightx = 1.0;
+        panel.add(new JLabel("<html><div style='width:380px'>" + desc + "</div></html>"), g);
     }
 }

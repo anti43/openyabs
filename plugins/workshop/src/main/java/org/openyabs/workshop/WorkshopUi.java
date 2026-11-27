@@ -70,7 +70,7 @@ final class WorkshopUi {
     private WorkshopUi() {
     }
 
-    static JComponent settingsPage(final ExtensionContext yabs) {
+    static JComponent settingsPage(final ExtensionContext yabs, final WorkshopPlugin plugin) {
         final Settings s = Settings.load();
 
         final JComboBox<String> unitBox = new JComboBox<String>(new String[]{"km", "mi"});
@@ -82,6 +82,18 @@ final class WorkshopUi {
         final JTextField leadField = new JTextField(String.valueOf(s.inspectionLeadDays), 8);
         final JTextField overrunField = new JTextField(String.valueOf(s.quoteOverrunPercent), 8);
         final JCheckBox warnBox = new JCheckBox(yabs.tr("settings.warnOnSave"), s.warnOnSave);
+
+        Runnable applySettings = () -> {
+            s.distanceUnit = String.valueOf(unitBox.getSelectedItem());
+            s.awPerHour = WorkshopStore.parseInt(awField.getText(), s.awPerHour);
+            s.rateMechanical = WorkshopStore.parseDecimal(mechField.getText(), s.rateMechanical);
+            s.rateElectrical = WorkshopStore.parseDecimal(elecField.getText(), s.rateElectrical);
+            s.rateBodywork = WorkshopStore.parseDecimal(bodyField.getText(), s.rateBodywork);
+            s.inspectionLeadDays = WorkshopStore.parseInt(leadField.getText(), s.inspectionLeadDays);
+            s.quoteOverrunPercent = WorkshopStore.parseInt(overrunField.getText(), s.quoteOverrunPercent);
+            s.warnOnSave = warnBox.isSelected();
+            s.save();
+        };
 
         JPanel form = new JPanel(new GridBagLayout());
         form.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
@@ -104,21 +116,44 @@ final class WorkshopUi {
         g.gridwidth = 2;
         form.add(warnBox, g);
 
+        if (plugin != null) {
+            JPanel setupBox = new JPanel(new GridBagLayout());
+            setupBox.setBorder(BorderFactory.createTitledBorder(yabs.tr("setup.imports.title")));
+            GridBagConstraints sg = new GridBagConstraints();
+            sg.insets = new Insets(4, 6, 4, 6);
+            sg.anchor = GridBagConstraints.WEST;
+            sg.fill = GridBagConstraints.HORIZONTAL;
+            int srow = 0;
+
+            JButton importCatalogBtn = new JButton(yabs.tr("cmd.importCatalog.title"));
+            importCatalogBtn.setToolTipText(yabs.tr("cmd.importCatalog.desc"));
+            importCatalogBtn.addActionListener(e -> {
+                applySettings.run();
+                yabs.background(() -> plugin.importStarterCatalog(yabs), msg -> yabs.popup(msg));
+            });
+            addActionRow(setupBox, sg, srow++, importCatalogBtn, yabs.tr("cmd.importCatalog.desc"));
+
+            JButton exportTemplatesBtn = new JButton(yabs.tr("cmd.exportTemplates.title"));
+            exportTemplatesBtn.setToolTipText(yabs.tr("cmd.exportTemplates.desc"));
+            exportTemplatesBtn.addActionListener(e -> plugin.exportTemplates(yabs));
+            addActionRow(setupBox, sg, srow++, exportTemplatesBtn, yabs.tr("cmd.exportTemplates.desc"));
+
+            g.gridx = 0;
+            g.gridy = row++;
+            g.gridwidth = 2;
+            g.insets = new Insets(10, 0, 6, 0);
+            form.add(setupBox, g);
+        }
+
+        g.gridx = 0;
         g.gridy = row++;
+        g.gridwidth = 2;
         g.insets = new Insets(12, 6, 6, 6);
         form.add(new JLabel(yabs.tr("settings.info")), g);
 
         JButton saveBtn = new JButton(yabs.tr("common.save"));
         saveBtn.addActionListener(e -> {
-            s.distanceUnit = String.valueOf(unitBox.getSelectedItem());
-            s.awPerHour = WorkshopStore.parseInt(awField.getText(), s.awPerHour);
-            s.rateMechanical = WorkshopStore.parseDecimal(mechField.getText(), s.rateMechanical);
-            s.rateElectrical = WorkshopStore.parseDecimal(elecField.getText(), s.rateElectrical);
-            s.rateBodywork = WorkshopStore.parseDecimal(bodyField.getText(), s.rateBodywork);
-            s.inspectionLeadDays = WorkshopStore.parseInt(leadField.getText(), s.inspectionLeadDays);
-            s.quoteOverrunPercent = WorkshopStore.parseInt(overrunField.getText(), s.quoteOverrunPercent);
-            s.warnOnSave = warnBox.isSelected();
-            s.save();
+            applySettings.run();
             yabs.notify(yabs.tr("settings.saved"));
         });
 
@@ -837,6 +872,19 @@ final class WorkshopUi {
         g.gridx = 1;
         g.weightx = 1.0;
         panel.add(field, g);
+    }
+
+    private static void addActionRow(JPanel panel, GridBagConstraints g, int row, JButton btn, String desc) {
+        g.gridwidth = 1;
+        g.weighty = 0;
+        g.fill = GridBagConstraints.HORIZONTAL;
+        g.gridx = 0;
+        g.gridy = row;
+        g.weightx = 0.0;
+        panel.add(btn, g);
+        g.gridx = 1;
+        g.weightx = 1.0;
+        panel.add(new JLabel("<html><div style='width:380px'>" + desc + "</div></html>"), g);
     }
 
     private static long parseLong(String s, long fallback) {

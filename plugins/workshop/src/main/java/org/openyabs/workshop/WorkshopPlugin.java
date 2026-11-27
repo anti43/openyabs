@@ -106,10 +106,11 @@ public final class WorkshopPlugin implements YabsExtension {
             WorkshopStore.initSchema(WorkshopStore.connection());
         }
 
-        yabs.addSettingsPage(
+        yabs.addSetup(
+                yabs.tr("cmd.setup.title"),
                 yabs.tr("settings.title"),
                 yabs.tr("settings.description"),
-                () -> WorkshopUi.settingsPage(yabs));
+                () -> WorkshopUi.settingsPage(yabs, this));
 
         yabs.addTemplateFields(obj -> provideTemplateFields(obj, yabs));
 
@@ -120,16 +121,6 @@ public final class WorkshopPlugin implements YabsExtension {
         });
 
         yabs.addRecordModifier(createSaveValidator(yabs));
-
-        yabs.addCommand(
-                yabs.tr("cmd.importCatalog.title"),
-                yabs.tr("cmd.importCatalog.desc"),
-                () -> yabs.background(() -> importStarterCatalog(yabs), msg -> yabs.popup(msg)));
-
-        yabs.addCommand(
-                yabs.tr("cmd.exportTemplates.title"),
-                yabs.tr("cmd.exportTemplates.desc"),
-                () -> exportTemplates(yabs));
 
         yabs.addCommand(
                 yabs.tr("cmd.overview.title"),
@@ -252,7 +243,7 @@ public final class WorkshopPlugin implements YabsExtension {
         return WorkshopValidator.validate(job, v, total, prevMaxKm, Settings.load(), yabs);
     }
 
-    private String importStarterCatalog(ExtensionContext yabs) {
+    String importStarterCatalog(ExtensionContext yabs) {
         try {
             Set<String> existing = new HashSet<String>();
             try {
@@ -302,7 +293,7 @@ public final class WorkshopPlugin implements YabsExtension {
         }
     }
 
-    private void exportTemplates(ExtensionContext yabs) {
+    void exportTemplates(ExtensionContext yabs) {
         try {
             DialogForFile d = new DialogForFile(DialogForFile.DIRECTORIES_ONLY);
             if (!d.chooseFile()) {

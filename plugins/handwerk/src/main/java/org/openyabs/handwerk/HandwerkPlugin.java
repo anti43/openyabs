@@ -152,10 +152,11 @@ public final class HandwerkPlugin implements YabsExtension {
             HandwerkStore.initSchema(HandwerkStore.connection());
         }
 
-        yabs.addSettingsPage(
+        yabs.addSetup(
+                yabs.tr("cmd.setup.title"),
                 yabs.tr("settings.title"),
                 yabs.tr("settings.description"),
-                () -> HandwerkUi.settingsPage(yabs));
+                () -> HandwerkUi.settingsPage(yabs, this));
 
         yabs.addTemplateFields(obj -> provideTemplateFields(obj, yabs));
 
@@ -170,6 +171,11 @@ public final class HandwerkPlugin implements YabsExtension {
         yabs.addPrivacyContributor(createPrivacyContributor());
 
         yabs.addCommand(
+                yabs.tr("cmd.overview.title"),
+                yabs.tr("cmd.overview.desc"),
+                () -> HandwerkUi.openOverviewTab(yabs));
+
+        yabs.addCommand(
                 yabs.tr("cmd.importBoq.title"),
                 yabs.tr("cmd.importBoq.desc"),
                 () -> importBoqToCurrentItem(yabs));
@@ -180,29 +186,9 @@ public final class HandwerkPlugin implements YabsExtension {
                 () -> exportBoqFromCurrentItem(yabs));
 
         yabs.addCommand(
-                yabs.tr("cmd.importDatanorm.title"),
-                yabs.tr("cmd.importDatanorm.desc"),
-                () -> importDatanorm(yabs));
-
-        yabs.addCommand(
-                yabs.tr("cmd.overview.title"),
-                yabs.tr("cmd.overview.desc"),
-                () -> HandwerkUi.openOverviewTab(yabs));
-
-        yabs.addCommand(
-                yabs.tr("cmd.importCatalog.title"),
-                yabs.tr("cmd.importCatalog.desc"),
-                () -> yabs.background(() -> importStarterCatalog(yabs), msg -> yabs.popup(msg)));
-
-        yabs.addCommand(
                 yabs.tr("cmd.check.title"),
                 yabs.tr("cmd.check.desc"),
                 () -> checkCurrentDocument(yabs));
-
-        yabs.addCommand(
-                yabs.tr("cmd.exportTemplates.title"),
-                yabs.tr("cmd.exportTemplates.desc"),
-                () -> exportTemplates(yabs));
     }
 
     // --------------------------------------------------- template fields
@@ -736,7 +722,7 @@ public final class HandwerkPlugin implements YabsExtension {
 
     // --------------------------------------------------- DATANORM command
 
-    private void importDatanorm(final ExtensionContext yabs) {
+    void importDatanorm(final ExtensionContext yabs) {
         JFileChooser chooser = new JFileChooser();
         chooser.setMultiSelectionEnabled(true);
         chooser.setDialogTitle(yabs.tr("cmd.importDatanorm.title"));
@@ -957,7 +943,7 @@ public final class HandwerkPlugin implements YabsExtension {
         HandwerkUi.showValidationResult(null, warnings, yabs);
     }
 
-    private void exportTemplates(ExtensionContext yabs) {
+    void exportTemplates(ExtensionContext yabs) {
         try {
             DialogForFile d = new DialogForFile(DialogForFile.DIRECTORIES_ONLY);
             if (!d.chooseFile()) {

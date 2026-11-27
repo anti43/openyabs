@@ -52,6 +52,46 @@ public interface ExtensionContext {
     void addSettingsPage(String title, String description, Supplier<JComponent> page);
 
     /**
+     * Registers the plugin's dedicated Setup view (settings, initial imports,
+     * templates, etc.): adds a dedicated {@code Setup} command in the
+     * {@code Plugins} menu, registers the same view under Settings › Plugins,
+     * and opens it automatically once on first load of the plugin.
+     *
+     * @param title title of the settings page and setup tab
+     * @param description short description shown in settings and as tooltip
+     * @param page creates the setup UI when opened
+     */
+    default void addSetup(String title, String description, Supplier<JComponent> page) {
+        String pageTitle = (title == null || title.trim().isEmpty()) ? "Setup" : title.trim();
+        addSetup(pageTitle + ": Setup", pageTitle, description, page);
+    }
+
+    /**
+     * Same as {@link #addSetup(String, String, Supplier)} with an explicit
+     * command title for the {@code Plugins} menu (e.g. {@code "DATEV: Setup"}).
+     *
+     * @param commandTitle title of the entry in the {@code Plugins} menu
+     * @param title title of the settings page and setup tab
+     * @param description short description shown in settings and as tooltip
+     * @param page creates the setup UI when opened
+     */
+    default void addSetup(String commandTitle, String title, String description, Supplier<JComponent> page) {
+        if (page == null) {
+            return;
+        }
+        String pageTitle = (title == null || title.trim().isEmpty()) ? "Setup" : title.trim();
+        String cmdTitle = (commandTitle == null || commandTitle.trim().isEmpty()) ? pageTitle + ": Setup" : commandTitle.trim();
+        String tabTitle = pageTitle.toLowerCase(java.util.Locale.ROOT).contains("setup") ? pageTitle : pageTitle + " \u2013 Setup";
+        addSettingsPage(pageTitle, description, page);
+        addCommand(cmdTitle, description, () -> {
+            JComponent view = page.get();
+            if (view != null) {
+                openTab(tabTitle, view);
+            }
+        });
+    }
+
+    /**
      * Adds results to Search anything
      *
      * @param provider gets the text the user typed, returns results (called

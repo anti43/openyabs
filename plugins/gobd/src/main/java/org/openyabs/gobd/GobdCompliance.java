@@ -98,6 +98,10 @@ public final class GobdCompliance implements YabsExtension {
         yabs.onActivity(g::onActivity);
         yabs.addLockedDocumentProvider(g.lockedDocuments());
 
+        yabs.addSetup("GoBD: Setup", "GoBD-Konformitaet",
+                "Einstellungen fuer automatische Beleg-Festschreibung, GoBD-Archivpfad und Bestandsversiegelung",
+                pages::settingsPage);
+
         yabs.addCommand("GoBD: 1. Beleg festschreiben", "Schreibt eine Rechnung unveraenderbar nach GoBD fest (inkl. Stammdaten-Snapshot & SHA-256 Hash-Kette)", () -> {
             Item doc = g.selectInvoice("GoBD-Festschreibung", false);
             if (doc != null) {
@@ -166,9 +170,6 @@ public final class GobdCompliance implements YabsExtension {
                         g.popup(r.message());
                     }
                 }));
-
-        yabs.addSettingsPage("GoBD-Konformitaet", "Einstellungen fuer automatische Beleg-Festschreibung und GoBD-Archivpfad",
-                pages::settingsPage);
 
         //Search anything (Shift Shift): finalized invoices and income by number
         yabs.addSearchProvider(text -> {
