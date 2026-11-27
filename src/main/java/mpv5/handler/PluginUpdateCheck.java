@@ -72,8 +72,90 @@ public final class PluginUpdateCheck {
     private static final int MAX_JSON = 2_000_000;
     private static final int MAX_DOWNLOAD = 200_000_000;
     private static volatile List<Update> last = Collections.emptyList();
+    private static volatile Catalog lastCatalog;
 
     private PluginUpdateCheck() {
+    }
+
+    /**
+     * A plugin listed in {@value #INDEX_ASSET} of a YaBS release
+     */
+    public static final class Available {
+
+        public final String id;
+        public final String name;
+        public final String version;
+        public final String description;
+        public final String author;
+        /**
+         * Plain file name of the jar inside the plugins zip (e.g. "datev.jar")
+         */
+        public final String jar;
+        /**
+         * The YaBS version the plugin needs, null for any
+         */
+        public final String minYabsVersion;
+        /**
+         * The release on github.com
+         */
+        public final String page;
+        /**
+         * Download URL of the plugins zip that holds {@link #jar}, null if absent
+         */
+        public final String download;
+        /**
+         * Download URL of the checksums file of the release, null if absent
+         */
+        public final String sums;
+        /**
+         * File name of the plugins zip asset (for checksum verification)
+         */
+        public final String assetName;
+
+        public Available(String id, String name, String version, String description, String author, String jar,
+                String minYabsVersion, String page, String download, String sums, String assetName) {
+            this.id = id;
+            this.name = name;
+            this.version = version;
+            this.description = description == null ? "" : description;
+            this.author = author == null ? "" : author;
+            this.jar = jar;
+            this.minYabsVersion = minYabsVersion;
+            this.page = page;
+            this.download = download;
+            this.sums = sums;
+            this.assetName = assetName;
+        }
+
+        /**
+         * @return true if this YaBS version satisfies {@link #minYabsVersion}
+         */
+        public boolean isCompatible() {
+            return ExtensionManager.isVersionCompatible(VersionInfo.number(), minYabsVersion);
+        }
+
+        /**
+         * @return true if this YaBS can download and run the plugin
+         */
+        public boolean installable() {
+            return download != null && isCompatible();
+        }
+    }
+
+    /**
+     * The available plugins from {@value #INDEX_ASSET} of a YaBS release
+     */
+    public static final class Catalog {
+
+        public final String yabsVersion;
+        public final String page;
+        public final List<Available> plugins;
+
+        public Catalog(String yabsVersion, String page, List<Available> plugins) {
+            this.yabsVersion = yabsVersion;
+            this.page = page;
+            this.plugins = Collections.unmodifiableList(new ArrayList<Available>(plugins));
+        }
     }
 
     /**
@@ -173,13 +255,18 @@ public final class PluginUpdateCheck {
         final String version;
         final String jar;
         final String minYabsVersion;
+        final String description;
+        final String author;
 
-        IndexEntry(String id, String name, String version, String jar, String minYabsVersion) {
+        IndexEntry(String id, String name, String version, String jar, String minYabsVersion,
+                String description, String author) {
             this.id = id;
             this.name = name;
             this.version = version;
             this.jar = jar;
             this.minYabsVersion = minYabsVersion;
+            this.description = description == null ? "" : description;
+            this.author = author == null ? "" : author;
         }
     }
 
@@ -195,6 +282,56 @@ public final class PluginUpdateCheck {
      */
     public static void setLastResult(List<Update> updates) {
         last = Collections.unmodifiableList(new ArrayList<Update>(updates));
+    }
+
+    /**
+     * @return the catalog fetched from the latest {@value #INDEX_ASSET}, null
+     * if not yet fetched
+     */
+    public static Catalog lastCatalog() {
+        return lastCatalog;
+    }
+
+    /**
+     * @param catalog the catalog to cache
+     */
+    public static void setLastCatalog(Catalog catalog) {
+        lastCatalog = catalog;
+    }
+
+    /**
+     * Fetches {@value #INDEX_ASSET} from the latest YaBS release on GitHub
+     * (not in the Swing thread: it goes online) and caches the result.
+     *
+     * @return the available plugins, or null if GitHub or the index could not
+     * be reached
+     */
+    public static Catalog fetchCatalog() {
+        Release yabs = release(repoOfYabs());
+        if (yabs == null) {
+            return null;
+        }
+        Map<String, IndexEntry> idx = index(yabs);
+        if (idx == null) {
+            return null;
+        }
+        Catalog c = buildCatalog(yabs, idx);
+        lastCatalog = c;
+        Log.Print("Plugin catalog: " + c.plugins.size() + " plugin(s) in YaBS " + c.yabsVersion);
+        return c;
+    }
+
+    static Catalog buildCatalog(Release yabs, Map<String, IndexEntry> index) {
+        String zip = "openyabs-plugins-" + yabs.version + ".zip";
+        String download = yabs.assets.get(zip);
+        String sums = yabs.assets.get(SUMS_ASSET);
+        List<Available> list = new ArrayList<Available>();
+        for (IndexEntry e : index.values()) {
+            String displayName = (e.name == null || e.name.trim().isEmpty()) ? e.id : e.name.trim();
+            list.add(new Available(e.id, displayName, e.version, e.description, e.author,
+                    e.jar, e.minYabsVersion, yabs.page, download, sums, zip));
+        }
+        return new Catalog(yabs.version, yabs.page, list);
     }
 
     /**
@@ -257,8 +394,11 @@ public final class PluginUpdateCheck {
             }
             if (index == null) {
                 yabs = release(repoOfYabs());
-                index = yabs == null ? null : index(yabs);
-                if (index == null) {
+                Map<String, IndexEntry> loaded = yabs == null ? null : index(yabs);
+                if (loaded != null) {
+                    lastCatalog = buildCatalog(yabs, loaded);
+                    index = loaded;
+                } else {
                     index = Collections.emptyMap();
                 }
             }
@@ -423,7 +563,10 @@ public final class PluginUpdateCheck {
                 continue;
             }
             String min = x.optString("minYabsVersion", "").trim();
-            m.put(id, new IndexEntry(id, x.optString("name", null), version, jar, min.isEmpty() ? null : min));
+            String desc = x.optString("description", "").trim();
+            String author = x.optString("author", "").trim();
+            m.put(id, new IndexEntry(id, x.optString("name", null), version, jar,
+                    min.isEmpty() ? null : min, desc, author));
         }
         return m;
     }
@@ -439,35 +582,57 @@ public final class PluginUpdateCheck {
      * not match
      */
     public static File download(Update u, File dir) throws IOException {
-        if (u.download == null) {
-            throw new IOException("No download for " + u.name + " " + u.version);
+        return downloadJar(u.name, u.version, u.download, u.zipEntry, u.sums, u.assetName, u.jar.getName(), dir);
+    }
+
+    /**
+     * Downloads an available plugin from the latest release plugins zip into a
+     * temporary folder (not in the Swing thread)
+     *
+     * @param a
+     * @param dir an empty folder
+     * @return the extracted plugin jar in dir
+     * @throws IOException if it can not be downloaded, the checksum does not
+     * match, or the jar is not a valid YaBS plugin
+     */
+    public static File download(Available a, File dir) throws IOException {
+        return downloadJar(a.name, a.version, a.download, a.jar, a.sums, a.assetName, a.jar, dir);
+    }
+
+    private static File downloadJar(String label, String version, String downloadUrl, String zipEntry,
+            String sumsUrl, String assetName, String targetFileName, File dir) throws IOException {
+        if (downloadUrl == null) {
+            throw new IOException("No download for " + label + " " + version);
         }
-        Log.Print("Plugin update: GET " + u.download);
-        byte[] data = get(u.download, "application/octet-stream", MAX_DOWNLOAD);
+        if (targetFileName == null || !targetFileName.matches("[A-Za-z0-9_.-]+\\.jar")) {
+            throw new IOException("Invalid plugin file name: " + targetFileName);
+        }
+        Log.Print("Plugin download: GET " + downloadUrl);
+        byte[] data = get(downloadUrl, "application/octet-stream", MAX_DOWNLOAD);
         if (data == null) {
-            throw new IOException("Download failed: " + u.download);
+            throw new IOException("Download failed: " + downloadUrl);
         }
-        if (u.sums != null) {
-            byte[] sums = get(u.sums, "application/octet-stream", MAX_JSON);
-            String expected = sums == null ? null : checksum(new String(sums, StandardCharsets.UTF_8), u.assetName);
+        if (sumsUrl != null) {
+            byte[] sums = get(sumsUrl, "application/octet-stream", MAX_JSON);
+            String expected = sums == null ? null : checksum(new String(sums, StandardCharsets.UTF_8), assetName);
             if (expected == null) {
-                throw new IOException("No checksum for " + u.assetName + " in " + SUMS_ASSET);
+                throw new IOException("No checksum for " + assetName + " in " + SUMS_ASSET);
             }
             if (!expected.equalsIgnoreCase(sha256(data))) {
-                throw new IOException("Checksum of " + u.assetName + " does not match");
+                throw new IOException("Checksum of " + assetName + " does not match");
             }
         }
-        if (u.zipEntry != null) {
-            data = unzip(data, u.zipEntry);
+        if (zipEntry != null) {
+            data = unzip(data, zipEntry);
             if (data == null) {
-                throw new IOException(u.zipEntry + " not in " + u.assetName);
+                throw new IOException(zipEntry + " not in " + assetName);
             }
         }
-        File f = new File(dir, u.jar.getName());
+        File f = new File(dir, targetFileName);
         Files.write(f.toPath(), data);
         if (!ExtensionManager.isExtensionFile(f)) {
             Files.deleteIfExists(f.toPath());
-            throw new IOException(u.assetName + " is no YaBS plugin");
+            throw new IOException(assetName + " is no YaBS plugin");
         }
         return f;
     }

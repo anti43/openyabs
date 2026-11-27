@@ -2,17 +2,22 @@ package mpv5.handler;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 class PluginUpdateCheckTest {
 
@@ -69,7 +74,8 @@ class PluginUpdateCheckTest {
     @Test
     void indexIsRead() {
         String json = "{\"yabsVersion\":\"2.1.0\",\"plugins\":["
-                + "{\"id\":\"org.openyabs.datev\",\"name\":\"DATEV\",\"version\":\"2.1.0\",\"jar\":\"datev.jar\",\"minYabsVersion\":\"2.1.0\"},"
+                + "{\"id\":\"org.openyabs.datev\",\"name\":\"DATEV\",\"version\":\"2.1.0\",\"jar\":\"datev.jar\","
+                + "\"description\":\"DATEV export\",\"author\":\"OpenYaBS\",\"minYabsVersion\":\"2.1.0\"},"
                 + "{\"id\":\"bad\",\"version\":\"1.0\",\"jar\":\"../evil.jar\"},"
                 + "{\"id\":\"org.openyabs.gobd\",\"version\":\"1.0\",\"jar\":\"gobd-compliance.jar\"}]}";
         Map<String, PluginUpdateCheck.IndexEntry> m = PluginUpdateCheck.parseIndex(json);
@@ -77,8 +83,65 @@ class PluginUpdateCheckTest {
         assertEquals("2.1.0", m.get("org.openyabs.datev").version);
         assertEquals("2.1.0", m.get("org.openyabs.datev").minYabsVersion);
         assertEquals("datev.jar", m.get("org.openyabs.datev").jar);
+        assertEquals("DATEV export", m.get("org.openyabs.datev").description);
+        assertEquals("OpenYaBS", m.get("org.openyabs.datev").author);
         assertNull(m.get("org.openyabs.gobd").minYabsVersion);
+        assertEquals("", m.get("org.openyabs.gobd").description);
+        assertEquals("", m.get("org.openyabs.gobd").author);
         assertTrue(PluginUpdateCheck.parseIndex("garbage").isEmpty());
+    }
+
+    @Test
+    void catalogIsBuiltFromReleaseAndIndex() {
+        Map<String, String> assets = new LinkedHashMap<String, String>();
+        assets.put("openyabs-plugins-2.0.26.zip", "https://github.com/anti43/openyabs/releases/download/v2.0.26/openyabs-plugins-2.0.26.zip");
+        assets.put("SHA256SUMS", "https://github.com/anti43/openyabs/releases/download/v2.0.26/SHA256SUMS");
+        PluginUpdateCheck.Release release = new PluginUpdateCheck.Release(
+                "2.0.26", "https://github.com/anti43/openyabs/releases/tag/v2.0.26", assets);
+        String json = "{\"yabsVersion\":\"2.0.26\",\"plugins\":["
+                + "{\"id\":\"org.openyabs.datev\",\"name\":\"DATEV-Export\",\"version\":\"2.0.0\",\"jar\":\"datev.jar\",\"description\":\"Export\",\"author\":\"Community\",\"minYabsVersion\":\"1.0.0\"},"
+                + "{\"id\":\"org.openyabs.future\",\"version\":\"3.0.0\",\"jar\":\"future.jar\",\"minYabsVersion\":\"99.0.0\"}]}";
+        PluginUpdateCheck.Catalog c = PluginUpdateCheck.buildCatalog(release, PluginUpdateCheck.parseIndex(json));
+        assertEquals("2.0.26", c.yabsVersion);
+        assertEquals(2, c.plugins.size());
+
+        PluginUpdateCheck.Available datev = c.plugins.get(0);
+        assertEquals("DATEV-Export", datev.name);
+        assertEquals("Export", datev.description);
+        assertEquals("Community", datev.author);
+        assertEquals("openyabs-plugins-2.0.26.zip", datev.assetName);
+        assertEquals(assets.get("openyabs-plugins-2.0.26.zip"), datev.download);
+        assertEquals(assets.get("SHA256SUMS"), datev.sums);
+        assertTrue(datev.isCompatible());
+        assertTrue(datev.installable());
+
+        PluginUpdateCheck.Available future = c.plugins.get(1);
+        //falls back to id when name is omitted
+        assertEquals("org.openyabs.future", future.name);
+        assertFalse(future.isCompatible());
+        assertFalse(future.installable());
+
+        PluginUpdateCheck.Catalog prev = PluginUpdateCheck.lastCatalog();
+        try {
+            PluginUpdateCheck.setLastCatalog(c);
+            assertEquals(c, PluginUpdateCheck.lastCatalog());
+        } finally {
+            PluginUpdateCheck.setLastCatalog(prev);
+        }
+    }
+
+    @Test
+    void downloadAvailableValidatesInputs(@TempDir Path dir) {
+        PluginUpdateCheck.Available noUrl = new PluginUpdateCheck.Available(
+                "id", "Name", "1.0", "", "", "ok.jar", null, null, null, null, "openyabs-plugins-2.0.26.zip");
+        assertFalse(noUrl.installable());
+        assertThrows(IOException.class, () -> PluginUpdateCheck.download(noUrl, dir.toFile()));
+
+        PluginUpdateCheck.Available badName = new PluginUpdateCheck.Available(
+                "id", "Name", "1.0", "", "", "../evil.jar", null, null,
+                "https://github.com/anti43/openyabs/releases/download/v2.0.26/openyabs-plugins-2.0.26.zip",
+                null, "openyabs-plugins-2.0.26.zip");
+        assertThrows(IOException.class, () -> PluginUpdateCheck.download(badName, dir.toFile()));
     }
 
     @Test
