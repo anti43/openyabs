@@ -33,6 +33,8 @@ class WheelScrollTest {
                 UIManager.setLookAndFeel(new YabsLookAndFeel());
             } catch (Exception ignored) {
             }
+            // FlatLaf animates wheel scrolling asynchronously; make values change synchronously.
+            UIManager.put("ScrollPane.smoothScrolling", Boolean.FALSE);
             WheelScroll.install();
         });
     }
