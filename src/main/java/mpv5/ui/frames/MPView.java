@@ -759,6 +759,7 @@ public final class MPView extends FrameView implements YabsView, FlowProvider {
         viewMenu.add(zoomReset);
         //the other key variants (the menu handles the ones shown there)
         mpv5.ui.modern.Zoom.install(getFrame().getRootPane());
+        mpv5.ui.modern.WheelScroll.install();
         //Search anything: double Shift (like IntelliJ), Edit > Search anything (Ctrl+F)
         mpv5.ui.dialogs.SearchAnything.installDoubleShift();
         mpv5.plugin.PluginMenu.install(getMenuBar());
